@@ -1,0 +1,95 @@
+# Copyright 2026 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# SANDBOX-ONLY. This workflow does not exist upstream and must never be
+# ported back to GoogleCloudPlatform/k8s-config-connector.
+#
+# Keeps a read-only `upstream-master` branch in sync with
+# GoogleCloudPlatform/k8s-config-connector's master, so topic branches can be
+# rebased onto current upstream without a local fetch.
+#
+# It deliberately does NOT merge into master. Aggressive experimental changes
+# will conflict, and those conflicts should be resolved by hand in a PR where
+# CI can prove no regressions.
+
+name: sync-upstream
+
+on:
+  schedule:
+    # Daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Fetch upstream and update upstream-master
+        run: |
+          set -o errexit
+          set -o nounset
+          set -o pipefail
+
+          git remote add upstream https://github.com/GoogleCloudPlatform/k8s-config-connector.git
+          git fetch --no-tags upstream master
+
+          UPSTREAM_SHA=$(git rev-parse upstream/master)
+          echo "upstream/master is at ${UPSTREAM_SHA}"
+
+          if git rev-parse --verify --quiet origin/upstream-master >/dev/null; then
+            CURRENT_SHA=$(git rev-parse origin/upstream-master)
+            if [[ "${CURRENT_SHA}" == "${UPSTREAM_SHA}" ]]; then
+              echo "upstream-master already up to date; nothing to do."
+              exit 0
+            fi
+            echo "Advancing upstream-master from ${CURRENT_SHA} to ${UPSTREAM_SHA}"
+          else
+            echo "Creating upstream-master at ${UPSTREAM_SHA}"
+          fi
+
+          git push --force origin "${UPSTREAM_SHA}:refs/heads/upstream-master"
+
+      - name: Report divergence from sandbox master
+        run: |
+          set -o errexit
+          set -o pipefail
+
+          BEHIND=$(git rev-list --count origin/master..upstream/master)
+          AHEAD=$(git rev-list --count upstream/master..origin/master)
+
+          {
+            echo "### Sandbox vs upstream"
+            echo ""
+            echo "- \`master\` is **${BEHIND}** commit(s) behind \`upstream/master\`"
+            echo "- \`master\` is **${AHEAD}** commit(s) ahead (sandbox-only commits)"
+            echo ""
+            if [[ "${BEHIND}" -gt 0 ]]; then
+              echo "To integrate, open a PR merging \`upstream-master\` into \`master\` so CI runs."
+            else
+              echo "Sandbox master is current with upstream."
+            fi
+          } >> "${GITHUB_STEP_SUMMARY}"
