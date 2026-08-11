@@ -295,3 +295,5 @@ func (a *adapter) Export(ctx context.Context) (*unstructured.Unstructured, error
 func (a *adapter) fullyQualifiedName() string {
 	return fmt.Sprintf("projects/%s/locations/%s/keys/%s", a.id.Project, a.id.Location, a.id.Key)
 }
+
+// CI baseline probe: verifies sandbox test-matrix selection. Remove after baseline run.
