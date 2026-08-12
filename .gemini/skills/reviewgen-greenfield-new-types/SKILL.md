@@ -4,6 +4,47 @@ description: Provides provides clear review criteria for reviewing PRs that add 
 ---
 
 # Review guide for KCC Greenfield new types PRs
+
+## Scope: a Step 1 PR is types + CRD only  [SANDBOX DECISION]
+
+Review **types and the generated CRD**. `<kind>_identity.go` and `<kind>_reference.go` are **Step 2**
+and are expected to be absent - do not request them, and do not treat their absence as incomplete
+work.
+
+Upstream groups types, identity and reference into one step; the sandbox splits them. Identity and
+reference generation is mechanical and hard to get wrong, so it barely needs review. The types and
+CRD carry the judgement - which fields exist, which are references, what was dropped and why - so
+review effort belongs here.
+
+## What is already machine-checked  [SANDBOX]
+
+Do not spend review effort re-deriving these; `tests/apichecks` fails the PR if they are wrong:
+
+- `v1alpha1` only; CRD labels `managed-by-kcc`, `system`, `stability-level=alpha`
+- Copyright 2026 on `.go` and `generate.sh`
+- Scalars are pointers; slices and maps are not
+- `status.observedGeneration` is exactly `*int64`
+- `+kcc:spec:proto=` / `+kcc:observedstate:proto=` present
+- `refs.Normalize`, never `refs.NormalizeWithFallback`
+- No `+kubebuilder:validation:Enum` (see the types skill for why)
+- No new files under the deprecated `apis/refs/v1beta1/`
+- Proto fields with no KRM representation, including on shared nested types
+
+**These checks are sandbox-only and are not team-vetted policy.** See `docs/ai/refs-decision-guide.md`
+for which ref rules are upstream and which are ours.
+
+## Where review effort actually pays
+
+The checks cannot judge these, so they are the review:
+
+1. **Is a string field really a reference?** The detector uses description heuristics and misses
+   cases; it also cannot tell a reference from a glob or an ID that has no KCC resource.
+2. **Was dropping a field the right call?** Every drop carries a `reason=`. Check the reason is true,
+   not just present.
+3. **Spec vs ObservedState placement**, which no check verifies - it needs the proto's
+   `OUTPUT_ONLY` behaviour, which the CRD does not record.
+4. **Field naming and shape** against KRM conventions.
+
 Please respect the following review criteria and invariants when reviewing.
 
 ## 1. API Versioning

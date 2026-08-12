@@ -592,7 +592,7 @@ func TestCheckGoSourceObservedGeneration(t *testing.T) {
 	}
 }
 
-func TestCheckGoSourceEnumField(t *testing.T) {
+func TestCheckGoSourceEnumMarkerProhibited(t *testing.T) {
 	const header = "// Copyright 2026 Google LLC\n\npackage v1alpha1\n\n"
 
 	tests := []struct {
@@ -601,26 +601,27 @@ func TestCheckGoSourceEnumField(t *testing.T) {
 		wantProblem string
 	}{
 		{
-			name: "enum as *string is clean",
+			// The marker hardcodes a value list the GCP API already enforces, and
+			// couples KCC releases to GCP enum additions.
+			name: "enum marker is prohibited",
 			src: header + `type FooFields struct {
 	// +kubebuilder:validation:Enum=A;B
 	Scheme *string ` + "`json:\"scheme,omitempty\"`" + `
 }`,
+			wantProblem: "do not hardcode enum values",
 		},
 		{
-			name: "enum as custom wrapped type is flagged",
+			name: "prohibited even when the type is already *string",
 			src: header + `type FooFields struct {
-	// +kubebuilder:validation:Enum=A;B
-	Scheme *SchemeType ` + "`json:\"scheme,omitempty\"`" + `
+	// +kubebuilder:validation:Enum=INTERNAL_MANAGED;EXTERNAL_MANAGED
+	LoadBalancingScheme *string ` + "`json:\"loadBalancingScheme,omitempty\"`" + `
 }`,
-			wantProblem: "must be *string, not a custom wrapped type",
+			wantProblem: "do not hardcode enum values",
 		},
 		{
-			// No Enum marker means the rule does not apply; a named string type
-			// elsewhere must not be flagged.
-			name: "named type without the enum marker is ignored",
+			name: "plain *string with no marker is clean",
 			src: header + `type FooFields struct {
-	Scheme *SchemeType ` + "`json:\"scheme,omitempty\"`" + `
+	Scheme *string ` + "`json:\"scheme,omitempty\"`" + `
 }`,
 		},
 	}
@@ -633,6 +634,91 @@ func TestCheckGoSourceEnumField(t *testing.T) {
 			}
 			assertProblem(t, problems, tc.wantProblem)
 		})
+	}
+}
+
+func TestNestedDroppedFields(t *testing.T) {
+	const mapper = `
+func FooSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Foo) *krm.FooSpec {
+	// MISSING: KindLevelField
+	return out
+}
+func FooObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Foo) *krm.FooObservedState {
+	// MISSING: KindLevelField
+	return out
+}
+func ExtensionChain_Extension_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.X) *krm.X {
+	// MISSING: Service
+	return out
+}
+func ExtensionChain_Extension_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krm.X) *pb.X {
+	// MISSING: Service
+	return out
+}
+func SharedThing_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Y) *krm.Y {
+	// MISSING: Other
+	return out
+}
+`
+
+	path := writeTemp(t, "mapper.generated.go", mapper)
+	got, err := NestedDroppedFields(path, []string{"Foo"})
+	if err != nil {
+		t.Fatalf("NestedDroppedFields: %v", err)
+	}
+
+	want := []NestedDrop{
+		{Type: "ExtensionChain_Extension", Field: "Service"},
+		{Type: "SharedThing", Field: "Other"},
+	}
+	if diff := cmp.Diff(want, got, cmpopts.EquateEmpty()); diff != "" {
+		t.Errorf("NestedDroppedFields diff (-want +got):\n%s", diff)
+	}
+}
+
+func TestNestedDroppedFieldsExcludesKindLevel(t *testing.T) {
+	// Kind-level types are DroppedFields' job; reporting them here too would
+	// duplicate every entry under a second key.
+	const mapper = `
+func BarSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Bar) *krm.BarSpec {
+	// MISSING: Mine
+	return out
+}
+func BarObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krm.BarObservedState) *pb.Bar {
+	// MISSING: Mine
+	return out
+}
+`
+	path := writeTemp(t, "mapper.generated.go", mapper)
+	got, err := NestedDroppedFields(path, []string{"Bar"})
+	if err != nil {
+		t.Fatalf("NestedDroppedFields: %v", err)
+	}
+	if len(got) != 0 {
+		t.Errorf("expected no nested drops for Kind-level types, got %v", got)
+	}
+}
+
+func TestNestedDroppedFieldsDeduplicates(t *testing.T) {
+	// The same type appears in both FromProto and ToProto; the drop is one fact,
+	// not two.
+	const mapper = `
+func Shared_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.S) *krm.S {
+	// MISSING: Field
+	return out
+}
+func Shared_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krm.S) *pb.S {
+	// MISSING: Field
+	return out
+}
+`
+	path := writeTemp(t, "mapper.generated.go", mapper)
+	got, err := NestedDroppedFields(path, nil)
+	if err != nil {
+		t.Fatalf("NestedDroppedFields: %v", err)
+	}
+	if len(got) != 1 {
+		t.Errorf("expected 1 deduplicated drop, got %v", got)
 	}
 }
 
