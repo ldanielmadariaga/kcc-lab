@@ -1,0 +1,15 @@
+# Fields on bulk-generated greenfield resources that are accepted as not
+# exercised by any test fixture.
+#
+# This is the escape hatch for TestGreenfieldBulkFieldCoverage
+# (GREENFIELD_STRICT=1). It is NOT for "not done yet" - fields awaiting fixture
+# coverage should simply stay in alpha-missingfields.txt and be fixed. Use this
+# only when a field genuinely cannot be exercised, and say why.
+#
+# Format, mirroring refs_not_representable.txt:
+#
+#   [accepted] crd=<crd-name> version=v1alpha1: field ".spec.foo" reason=<why>
+#
+# A reason= token is mandatory; entries without one fail the test.
+#
+# SANDBOX-ONLY. Not upstream policy.
