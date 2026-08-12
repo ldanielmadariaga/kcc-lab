@@ -108,6 +108,13 @@ ForwardingRuleRefs []*computev1beta1.ForwardingRuleRef `json:"forwardingRuleRefs
 Note the field **and JSON name change** (`forwardingRules` → `forwardingRuleRefs`). Getting this
 wrong is the expensive mistake, because it is baked into the CRD schema.
 
+The cost is confined to `_types.go`. Once the type is right, the **mapper generator handles the ref
+by itself** — on the pilot it emitted, with no hand-editing:
+
+```go
+out.ForwardingRuleRefs = append(out.ForwardingRuleRefs, &krmcomputev1beta1.ForwardingRuleRef{External: v[i]})
+```
+
 Check the proto for `(google.api.resource_reference)` first — it names the target type exactly and is
 authoritative where present, but covers only ~15% of string fields overall and 0% in compute. Where
 it is absent, use field name plus a corroborating description. **Do not add entries to
@@ -135,7 +142,26 @@ Resources in the bulk manifest are held to the generation bar by
 real CRDs and files, the per-resource Go files conform (2026 header, pointer rules, no
 `refs.NormalizeWithFallback`), and the CRD is `v1alpha1` only.
 
-The fourth is **local-only and opt-in**, because Step 1 legitimately fails it until fixtures exist:
+### Dropped fields
+
+A proto field with no KRM representation at all is invisible to every other check: it is not in the
+CRD, so `missingfields.txt` cannot see it. It can be commented out, or simply never written, and
+nothing notices.
+
+`TestGreenfieldDroppedFields` catches these. It reads the `// MISSING: <Field>` markers the mapper
+generator emits while walking proto fields, so the source of truth is the proto itself. A field is
+only counted when it is missing from **both** the Spec and ObservedState mappers — those map the same
+proto message, so each otherwise reports the other's fields.
+
+Its baseline, `testdata/exceptions/greenfield_dropped_fields.txt`, is a **ratchet**: new drops fail
+even under `WRITE_GOLDEN_OUTPUT=1` and are never written automatically; fixed drops are pruned. The
+list can only shrink. Every entry needs a `reason=` — either implement the field, or say why it is
+intentionally absent.
+
+### Field coverage
+
+The fourth check is **local-only and opt-in**, because Step 1 legitimately fails it until fixtures
+exist:
 
 ```bash
 GREENFIELD_STRICT=1 go test ./tests/apichecks/ -run TestGreenfieldBulkFieldCoverage

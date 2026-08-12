@@ -26,10 +26,12 @@ import (
 	"go/parser"
 	"go/token"
 	"os"
+	"sort"
 	"strings"
 	"testing"
 
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/crd/crdloader"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/test"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/tests/apichecks/greenfield"
 )
 
@@ -178,6 +180,83 @@ func TestGreenfieldBulkCRDConformance(t *testing.T) {
 				t.Errorf("FAIL: crd=%s has version %q; greenfield resources must be v1alpha1 only",
 					crd.Name, version.Name)
 			}
+		}
+	}
+}
+
+// TestGreenfieldDroppedFields reports proto fields that have no representation
+// at all in a bulk resource's KRM types.
+//
+// This is a different concern from alpha-missingfields.txt. That file records
+// fields that exist in the CRD but no test fixture sets. A dropped field is not
+// in the CRD at all, so nothing else in the repo can see it: it can be commented
+// out, or simply never written, and disappear silently.
+//
+// The baseline is a ratchet, not a golden file: new drops fail even under
+// WRITE_GOLDEN_OUTPUT, so a field cannot be regenerated out of existence. Fixed
+// drops are pruned, so the list can only shrink.
+func TestGreenfieldDroppedFields(t *testing.T) {
+	t.Parallel()
+
+	m := loadBulkManifest(t)
+	crds, err := crdloader.LoadAllCRDs()
+	if err != nil {
+		t.Fatalf("loading CRDs: %v", err)
+	}
+
+	// The baseline carries a "reason=" suffix per entry, but detection only knows
+	// the entry itself. Re-emit the baseline's line verbatim when the drop is
+	// still present, so an already-justified drop compares equal. A newly
+	// detected drop has no baseline line, so it appears bare, is not in the
+	// baseline, and fails - which is the point.
+	baselineByKey := map[string]string{}
+	baselineLines, err := readBaselineLines("testdata/exceptions/greenfield_dropped_fields.txt")
+	if err != nil {
+		t.Fatalf("reading greenfield_dropped_fields.txt: %v", err)
+	}
+	for _, line := range baselineLines {
+		key, _, _ := strings.Cut(line, " reason=")
+		baselineByKey[strings.TrimSpace(key)] = line
+	}
+
+	var got []string
+	for _, r := range m.Resources() {
+		crd, ok := greenfield.FindCRD(crds, r)
+		if !ok {
+			continue // reported by TestGreenfieldBulkManifestIsResolvable
+		}
+		dropped, err := greenfield.DroppedFields(greenfield.MapperPath(repoRoot, r), r.Kind)
+		if err != nil {
+			t.Fatalf("finding dropped fields for %s: %v", r.Kind, err)
+		}
+		for _, field := range dropped {
+			key := fmt.Sprintf("[dropped] crd=%s: field %q", crd.Name, field)
+			if line, ok := baselineByKey[key]; ok {
+				got = append(got, line)
+			} else {
+				got = append(got, key)
+			}
+		}
+	}
+	sort.Strings(got)
+
+	test.CompareRatchetFile(t, "testdata/exceptions/greenfield_dropped_fields.txt", strings.Join(got, "\n"))
+}
+
+// TestGreenfieldDroppedFieldsHaveReasons requires every recorded drop to carry a
+// reason. Recording a drop is a decision, and a decision without a stated reason
+// is indistinguishable from an oversight.
+func TestGreenfieldDroppedFieldsHaveReasons(t *testing.T) {
+	t.Parallel()
+
+	lines, err := readBaselineLines("testdata/exceptions/greenfield_dropped_fields.txt")
+	if err != nil {
+		t.Fatalf("reading greenfield_dropped_fields.txt: %v", err)
+	}
+	for _, line := range lines {
+		if !strings.Contains(line, "reason=") {
+			t.Errorf("FAIL: dropped-field entry has no reason=: %q\n"+
+				"Either implement the field, or say why it is intentionally absent.", line)
 		}
 	}
 }
