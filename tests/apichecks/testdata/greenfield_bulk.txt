@@ -1,0 +1,16 @@
+# Resources produced by the experimental bulk greenfield workflow.
+#
+# This file is the scope for the greenfield conformance checks in
+# greenfield_test.go. Resources listed here are held to the bulk generation
+# bar; everything else in the repo is not, because it predates it.
+#
+# Format: <group>/<Kind>, one per line. Blank lines and # comments ignored.
+#
+# Append your Kind here as part of generating it. The Kind is enough to locate
+# every file for the resource: TestDirectResourceFileNaming already requires
+# each file under apis/ and pkg/controller/direct/ to be prefixed with the
+# lowercased Kind.
+#
+# SANDBOX-ONLY. Not upstream policy.
+
+networkservices.cnrm.cloud.google.com/NetworkServicesLBTrafficExtension

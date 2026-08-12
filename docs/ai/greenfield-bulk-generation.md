@@ -54,7 +54,15 @@ the most reliable template.
 
 **4. Re-run `generate.sh`**, then `go build ./apis/...`.
 
-**5. Regenerate baselines.** `WRITE_GOLDEN_OUTPUT=1 go test ./tests/apichecks/...`, then re-run
+**5. Add the Kind to the bulk manifest.** Append `<group>/<Kind>` to
+`tests/apichecks/testdata/greenfield_bulk.txt`. This is what puts the resource in scope for the
+greenfield conformance checks — resources not listed are not checked, because they predate this bar.
+
+The Kind alone is enough to find every file for the resource: `TestDirectResourceFileNaming` already
+requires each file under `apis/` and `pkg/controller/direct/` to be prefixed with the lowercased
+Kind.
+
+**6. Regenerate baselines.** `WRITE_GOLDEN_OUTPUT=1 go test ./tests/apichecks/...`, then re-run
 without the flag to confirm clean.
 
 ## What the generator gets right on its own
@@ -119,6 +127,24 @@ step and is not part of Step 1.
 Expect **`alpha-missingfields.txt` to grow** — it records fields not exercised by test fixtures, and
 Step 1 has no fixtures. On the pilot it grew by 17 lines. That is correct at this stage; the entries
 are attributed by `crd=` and are removed when fixtures arrive in a later step.
+
+## Checking your work
+
+Resources in the bulk manifest are held to the generation bar by
+`tests/apichecks/greenfield_test.go`. Three of its checks run in normal CI: the manifest resolves to
+real CRDs and files, the per-resource Go files conform (2026 header, pointer rules, no
+`refs.NormalizeWithFallback`), and the CRD is `v1alpha1` only.
+
+The fourth is **local-only and opt-in**, because Step 1 legitimately fails it until fixtures exist:
+
+```bash
+GREENFIELD_STRICT=1 go test ./tests/apichecks/ -run TestGreenfieldBulkFieldCoverage
+```
+
+It lists every field of your resource that no fixture exercises — the worklist for the fixture step.
+A field that genuinely cannot be covered goes in
+`tests/apichecks/testdata/exceptions/greenfield_fields_accepted.txt` with a mandatory `reason=`.
+That file is for "cannot be covered", not "not done yet"; entries without a reason fail the check.
 
 ## Gotchas
 
