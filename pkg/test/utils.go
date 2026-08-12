@@ -104,36 +104,6 @@ func extractEventsWithURLPrefix(allEvents, urlPrefix string) string {
 func CompareRatchetFile(t *testing.T, p, fullGot string) {
 	t.Helper()
 
-	writeOutput := os.Getenv("WRITE_GOLDEN_OUTPUT") != ""
-
-	// Comment lines are documentation, not entries. They must be excluded from the
-	// comparison, or they look like violations that have been "fixed" and get
-	// pruned away - silently deleting the file's own instructions.
-	splitLines := func(s string) []string {
-		var out []string
-		for _, line := range strings.Split(s, "\n") {
-			line = strings.TrimSpace(line)
-			if line == "" || strings.HasPrefix(line, "#") {
-				continue
-			}
-			out = append(out, line)
-		}
-		return out
-	}
-
-	// Leading comment block, preserved verbatim when rewriting.
-	headerLines := func(s string) []string {
-		var out []string
-		for _, line := range strings.Split(s, "\n") {
-			trimmed := strings.TrimSpace(line)
-			if trimmed != "" && !strings.HasPrefix(trimmed, "#") {
-				break
-			}
-			out = append(out, line)
-		}
-		return out
-	}
-
 	wantBytes, err := os.ReadFile(p)
 	if err != nil {
 		if !os.IsNotExist(err) {
@@ -147,34 +117,96 @@ func CompareRatchetFile(t *testing.T, p, fullGot string) {
 			"Create the baseline deliberately; it is not generated automatically.", p)
 	}
 
-	baseline := sets.NewString(splitLines(string(wantBytes))...)
-	got := sets.NewString(splitLines(fullGot)...)
+	decision := ComputeRatchet(string(wantBytes), fullGot)
 
-	added := got.Difference(baseline).List()
-	removed := baseline.Difference(got).List()
-
-	if len(added) > 0 {
-		sort.Strings(added)
+	if len(decision.Added) > 0 {
 		t.Errorf("FAIL: %d new violation(s) not present in %s.\n\n%s\n\n"+
 			"Fix these rather than adding them to the exceptions file. "+
 			"This check does not accept new entries, even with WRITE_GOLDEN_OUTPUT set.",
-			len(added), p, strings.Join(added, "\n"))
+			len(decision.Added), p, strings.Join(decision.Added, "\n"))
 		// Deliberately do not write: writing here is what lets violations slip in.
 		return
 	}
 
-	if len(removed) > 0 {
-		if writeOutput {
-			// Preserve the file's leading comment block; it documents what the file
-			// is for and how to add entries.
-			out := append(headerLines(string(wantBytes)), got.List()...)
-			if err := os.WriteFile(p, []byte(strings.Join(out, "\n")), 0644); err != nil {
+	if len(decision.Removed) > 0 {
+		if ShouldPrune(decision, os.Getenv("WRITE_GOLDEN_OUTPUT") != "") {
+			if err := os.WriteFile(p, []byte(decision.Pruned), 0644); err != nil {
 				t.Fatalf("FAIL: failed to write ratchet file %s: %v", p, err)
 			}
-			t.Logf("pruned %d fixed violation(s) from %s", len(removed), p)
+			t.Logf("pruned %d fixed violation(s) from %s", len(decision.Removed), p)
 		} else {
-			t.Logf("%d violation(s) in %s appear to be fixed; rerun with WRITE_GOLDEN_OUTPUT=1 to prune them", len(removed), p)
+			t.Logf("%d violation(s) in %s appear to be fixed; rerun with WRITE_GOLDEN_OUTPUT=1 to prune them", len(decision.Removed), p)
 		}
+	}
+}
+
+// ShouldPrune reports whether the baseline file may be rewritten.
+//
+// The critical property of a ratchet lives here: when there are new violations
+// the file is never written, regardless of WRITE_GOLDEN_OUTPUT. Absorbing new
+// entries during the regenerate-goldens workflow is precisely what turns the
+// check into a no-op for the changes it exists to catch.
+func ShouldPrune(d RatchetDecision, writeEnabled bool) bool {
+	if len(d.Added) > 0 {
+		return false
+	}
+	return writeEnabled && len(d.Removed) > 0
+}
+
+// RatchetDecision is the outcome of comparing a ratchet baseline against
+// freshly detected violations.
+type RatchetDecision struct {
+	// Added are violations present in got but not in the baseline. Any entry here
+	// must fail the check; they are never written to the file.
+	Added []string
+	// Removed are baseline entries no longer detected, i.e. fixed.
+	Removed []string
+	// Pruned is the full file content to write when Removed is non-empty: the
+	// baseline's leading comment block followed by the surviving entries.
+	Pruned string
+}
+
+// ComputeRatchet is the pure comparison at the heart of CompareRatchetFile,
+// separated so its behaviour can be tested directly.
+//
+// Comment lines are documentation, not entries. They are excluded from the
+// comparison; counting them would classify a file's own header as violations
+// that have been "fixed", and pruning would then delete the instructions.
+func ComputeRatchet(baselineContent, fullGot string) RatchetDecision {
+	entries := func(s string) []string {
+		var out []string
+		for _, line := range strings.Split(s, "\n") {
+			line = strings.TrimSpace(line)
+			if line == "" || strings.HasPrefix(line, "#") {
+				continue
+			}
+			out = append(out, line)
+		}
+		return out
+	}
+
+	// Leading comment block, preserved verbatim when rewriting.
+	var header []string
+	for _, line := range strings.Split(baselineContent, "\n") {
+		trimmed := strings.TrimSpace(line)
+		if trimmed != "" && !strings.HasPrefix(trimmed, "#") {
+			break
+		}
+		header = append(header, line)
+	}
+
+	baseline := sets.NewString(entries(baselineContent)...)
+	got := sets.NewString(entries(fullGot)...)
+
+	added := got.Difference(baseline).List()
+	removed := baseline.Difference(got).List()
+	sort.Strings(added)
+	sort.Strings(removed)
+
+	return RatchetDecision{
+		Added:   added,
+		Removed: removed,
+		Pruned:  strings.Join(append(header, got.List()...), "\n"),
 	}
 }
 
