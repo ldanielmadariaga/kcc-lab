@@ -14,9 +14,6 @@
 # SANDBOX-ONLY. Not upstream policy.
 [dropped] crd=networkserviceslbtrafficextensions.networkservices.cnrm.cloud.google.com: field "Labels" reason=mirrors-sibling-lbrouteextension-needs-review
 [dropped] crd=networkserviceslbtrafficextensions.networkservices.cnrm.cloud.google.com: field "Name" reason=identifier-handled-by-identity
-[dropped] crd=vertexaibatchpredictionjobs.vertexai.cnrm.cloud.google.com: field "ModelParameters" reason=protobuf-value-mapper-never-generated
-[dropped] crd=vertexaibatchpredictionjobs.vertexai.cnrm.cloud.google.com: field "ExplanationSpec" reason=transitively-reaches-protobuf-value-mapper-never-generated
-[dropped] crd=vertexaibatchpredictionjobs.vertexai.cnrm.cloud.google.com: field "PartialFailures" reason=repeated-rpc-status-mapper-emitted-without-import
 [dropped] service=networkservices version=v1alpha1 type=ExtensionChain_Extension: field "Service" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
 [dropped] service=networkservices version=v1alpha1 type=HttprouteAction: field "DirectResponse" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
 [dropped] service=networkservices version=v1alpha1 type=HttprouteAction: field "IdleTimeout" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
@@ -67,57 +64,3 @@
 [dropped] service=networkservices version=v1alpha1 type=WasmPlugin_VersionDetails: field "ImageDigest" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
 [dropped] service=networkservices version=v1alpha1 type=WasmPlugin_VersionDetails: field "PluginConfigDigest" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
 [dropped] service=networkservices version=v1alpha1 type=WasmPlugin_VersionDetails: field "UpdateTime" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=EncryptionSpec: field "KMSKeyName" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=ModelMonitoringObjectiveConfig_PredictionDriftDetectionConfig: field "AttributionScoreDriftThresholds" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=ModelMonitoringObjectiveConfig_PredictionDriftDetectionConfig: field "DriftThresholds" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=ModelMonitoringObjectiveConfig_TrainingPredictionSkewDetectionConfig: field "AttributionScoreSkewThresholds" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=ModelMonitoringObjectiveConfig_TrainingPredictionSkewDetectionConfig: field "SkewThresholds" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=PythonPackageSpec: field "Env" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=PythonPackageSpec: field "PackageUris" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAICustomJobObservedState: field "WebAccessUris" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAICustomJobSpec: field "WebAccessUris" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDataLabelingJobObservedState: field "Datasets" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetObservedState: field "DataItemCount" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetObservedState: field "Description" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetObservedState: field "Etag" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetObservedState: field "Labels" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetObservedState: field "Metadata" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetObservedState: field "MetadataArtifact" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetObservedState: field "ModelReference" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetObservedState: field "SatisfiesPzi" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetObservedState: field "SatisfiesPzs" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetObservedState: field "SavedQueries" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetObservedState: field "UpdateTime" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetSpec: field "DataItemCount" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetSpec: field "Description" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetSpec: field "Etag" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetSpec: field "Labels" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetSpec: field "Metadata" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetSpec: field "MetadataArtifact" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetSpec: field "ModelReference" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetSpec: field "SatisfiesPzi" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetSpec: field "SatisfiesPzs" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetSpec: field "SavedQueries" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDatasetSpec: field "UpdateTime" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDeploymentResourcePoolObservedState: field "Name" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIDeploymentResourcePoolSpec: field "Name" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIExampleStoreObservedState: field "Name" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIExampleStoreSpec: field "Name" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIFeatureGroupObservedState: field "Etag" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIFeatureGroupObservedState: field "Name" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIFeatureGroupSpec: field "Etag" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIFeatureGroupSpec: field "Name" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIFeaturestoreObservedState: field "Etag" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIFeaturestoreObservedState: field "Name" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIFeaturestoreObservedState: field "SatisfiesPzi" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIFeaturestoreObservedState: field "SatisfiesPzs" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIFeaturestoreSpec: field "Etag" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIFeaturestoreSpec: field "Name" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIFeaturestoreSpec: field "SatisfiesPzi" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAIFeaturestoreSpec: field "SatisfiesPzs" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAITensorboardExperimentObservedState: field "Etag" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAITensorboardExperimentSpec: field "Etag" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAITensorboardObservedState: field "Etag" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAITensorboardObservedState: field "Labels" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAITensorboardSpec: field "Etag" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
-[dropped] service=vertexai version=v1alpha1 type=VertexAITensorboardSpec: field "Labels" reason=pre-existing-nested-drop-seeded-with-service-level-tracking
