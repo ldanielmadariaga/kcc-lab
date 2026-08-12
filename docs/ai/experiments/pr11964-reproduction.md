@@ -1,5 +1,52 @@
 # Experiment: can the checks reproduce PR #11964's human review?
 
+**Result after porting #12345/#12346: 8 of 13 addressed, and the disagreements are the useful part.**
+
+> This document has two rounds. Round 1 ran against the weak detector and is kept below because the
+> contrast is the point. Round 2 (this section) ran after porting the #12344 work.
+
+## Round 2 — after porting the detector work
+
+| Measure | Round 1 | Round 2 |
+|---|---:|---:|
+| URI-shaped fields reported | 0 | **18** |
+| ...classified `gcs-object-path-no-crd` | - | 10 |
+| ...classified `gcs-prefix-needs-bucket-ref-plus-path` | - | 3 |
+| ...classified `bq-scheme-not-a-gcp-resource-name` | - | 4 |
+| ...classified `container-image-uri-not-a-storage-object` | - | 1 |
+| `notificationChannels` (review #8) | missed | **caught** |
+
+**Where the classifier disagrees with the reviewer, the classifier is right.** Review #2 said
+`gcsSource.uris` "should be a list of GCS Refs". It cannot be: `StorageBucketIdentity` rejects
+anything with a `/` after the bucket and there is no StorageObject CRD. The classifier says
+`gcs-object-path-no-crd`, with a reason, which is the better answer.
+
+**The GCS reason is now split**, because "not representable" was doing double duty:
+`gcs-object-path-no-crd` for object paths and wildcards that cannot be refs at all, and
+`gcs-prefix-needs-bucket-ref-plus-path` for output prefixes that could be, given an API change. Only
+the second is a backlog item.
+
+**`notificationChannels` needed a real detector fix.** Its description reads ``Must be of the format
+`projects/<project_id_or_number>/notificationChannels/<channel_id>` `` - angle brackets rather than
+braces. Accepting `<placeholder>` alongside `{placeholder}` fixes it and finds 8 genuine refs
+corpus-wide, all with existing KCC target types.
+
+**The proto annotation was measured and rejected.** `(google.api.resource_reference)` is ground
+truth, but matched by field *name* it produced **2,164** findings against **78** - a name like
+`network` is annotated in one service and appears in hundreds of unrelated CRD fields. Using it
+safely needs the CRD field mapped to its proto field via `+kcc:proto:field=`. The generator and data
+file are committed as groundwork; the signal is not wired in.
+
+**Two refs remain blocked, both recorded in `refs_deferred.txt` with reasons:**
+`.spec.model` has no `VertexAIModelRef`, and `notificationChannels` sits in a nested type inside the
+*generated* `types.generated.go`, so it needs generator support rather than a hand edit. That second
+one is a structural limit worth knowing: **only top-level Spec fields can be hand-converted to refs
+in Step 1.**
+
+---
+
+## Round 1 — before the port
+
 **Result: partially, and the misses are more interesting than the hits.**
 
 PR #11964 (18 batch-generated Vertex AI resources) was reviewed by hand and closed unmerged. Human
