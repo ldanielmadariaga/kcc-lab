@@ -14,4 +14,3 @@
 # SANDBOX-ONLY. Not upstream policy.
 
 networkservices.cnrm.cloud.google.com/NetworkServicesLBTrafficExtension
-vertexai.cnrm.cloud.google.com/VertexAIBatchPredictionJob

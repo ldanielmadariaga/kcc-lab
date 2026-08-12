@@ -1,5 +1,12 @@
 # Experiment: can the checks reproduce PR #11964's human review?
 
+> [!IMPORTANT]
+> **The VertexAIBatchPredictionJob resource produced by this experiment has been reverted.** The
+> findings below stand - they were measured against a real generation run - but the resource itself
+> is no longer in the tree, and the numbers will be re-measured once the full check stack is in
+> place. Treat specific counts as of the original run, not as current state.
+
+
 **Result after porting #12345/#12346: 8 of 13 addressed, and the disagreements are the useful part.**
 
 > This document has two rounds. Round 1 ran against the weak detector and is kept below because the

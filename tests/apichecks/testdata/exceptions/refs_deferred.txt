@@ -13,5 +13,3 @@
 #   [refs] crd=<crd> version=v1alpha1: field ".spec.foo" reason=<why>
 #
 # SANDBOX-ONLY. Not upstream policy.
-[refs] crd=vertexaibatchpredictionjobs.vertexai.cnrm.cloud.google.com version=v1alpha1: field ".spec.model" reason=no-vertexaimodel-ref-type-exists-creating-one-is-a-separate-step
-[refs] crd=vertexaibatchpredictionjobs.vertexai.cnrm.cloud.google.com version=v1alpha1: field ".spec.modelMonitoringConfig.alertConfig.notificationChannels" reason=nested-type-lives-in-types-generated-go-needs-generator-support
