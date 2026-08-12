@@ -21,6 +21,9 @@ package greenfield
 import (
 	"bufio"
 	"fmt"
+	"go/ast"
+	"go/parser"
+	"go/token"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -220,6 +223,148 @@ func DroppedFields(mapperPath string, kind string) ([]string, error) {
 // MapperPath returns the generated mapper file for r's service.
 func MapperPath(repoRoot string, r Resource) string {
 	return filepath.Join(repoRoot, "pkg", "controller", "direct", r.Service(), "mapper.generated.go")
+}
+
+// scalarKinds are the Go primitives that must be represented as pointers so that
+// "unset" is distinguishable from "zero".
+var scalarKinds = map[string]bool{
+	"string": true, "bool": true, "int": true, "int32": true,
+	"int64": true, "float32": true, "float64": true, "byte": true,
+}
+
+// CheckGoFile returns the conformance problems in a single hand-edited resource
+// file, or nil when it is clean.
+//
+// Everything checked here is a syntax-level fact, so the file is parsed with
+// go/parser; no type information is required.
+func CheckGoFile(path string) ([]string, error) {
+	src, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("reading %q: %w", path, err)
+	}
+	return checkGoSource(path, src)
+}
+
+// checkGoSource is CheckGoFile against in-memory source, so the rules can be
+// tested without touching the filesystem.
+func checkGoSource(path string, src []byte) ([]string, error) {
+	var problems []string
+
+	// Copyright header. The generator emits 2025; new files must say 2026.
+	if !strings.Contains(string(src), "Copyright 2026 Google LLC") {
+		problems = append(problems,
+			"missing `// Copyright 2026 Google LLC` header (the generator emits 2025 - fix it by hand)")
+	}
+
+	// refs.NormalizeWithFallback is not permitted for greenfield resources.
+	if strings.Contains(string(src), "NormalizeWithFallback") {
+		problems = append(problems,
+			"uses refs.NormalizeWithFallback; greenfield resources must use refs.Normalize")
+	}
+
+	fset := token.NewFileSet()
+	f, err := parser.ParseFile(fset, path, src, parser.ParseComments)
+	if err != nil {
+		return append(problems, fmt.Sprintf("could not parse: %v", err)), nil
+	}
+
+	ast.Inspect(f, func(n ast.Node) bool {
+		ts, ok := n.(*ast.TypeSpec)
+		if !ok {
+			return true
+		}
+		st, ok := ts.Type.(*ast.StructType)
+		if !ok || st.Fields == nil {
+			return true
+		}
+		for _, field := range st.Fields.List {
+			if len(field.Names) == 0 {
+				continue // embedded, e.g. *parent.ProjectAndLocationRef
+			}
+			if !field.Names[0].IsExported() {
+				continue
+			}
+			if problem := checkFieldType(ts.Name.Name, field); problem != "" {
+				problems = append(problems, problem)
+			}
+		}
+		return true
+	})
+
+	return problems, nil
+}
+
+// checkFieldType enforces the pointer rules:
+//   - scalar primitives must be pointers
+//   - slices and maps must NOT be pointers
+func checkFieldType(structName string, field *ast.Field) string {
+	name := field.Names[0].Name
+
+	switch t := field.Type.(type) {
+	case *ast.Ident:
+		if scalarKinds[t.Name] {
+			return fmt.Sprintf("%s.%s is %s; scalar primitives must be pointers (*%s)",
+				structName, name, t.Name, t.Name)
+		}
+	case *ast.StarExpr:
+		// Pointer to a slice or map is wrong; pointer to anything else is fine.
+		switch t.X.(type) {
+		case *ast.ArrayType:
+			return fmt.Sprintf("%s.%s is a pointer to a slice; slices must not be pointers", structName, name)
+		case *ast.MapType:
+			return fmt.Sprintf("%s.%s is a pointer to a map; maps must not be pointers", structName, name)
+		}
+	}
+	return ""
+}
+
+// BaselineLines returns the non-empty, non-comment lines of an exceptions file.
+// A missing file is treated as empty, so a not-yet-created list is not an error.
+func BaselineLines(path string) ([]string, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	var out []string
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		out = append(out, line)
+	}
+	return out, nil
+}
+
+// ParseBaselineEntry extracts the CRD name and field path from an apichecks
+// exceptions line, which look like:
+//
+//	[missing_field] crd=foo.example.com version=v1alpha1: field ".spec.bar" is not set ...
+func ParseBaselineEntry(line string) (crdName string, fieldPath string, ok bool) {
+	_, rest, found := strings.Cut(line, "crd=")
+	if !found {
+		return "", "", false
+	}
+	crdName, rest, found = strings.Cut(rest, " ")
+	if !found {
+		return "", "", false
+	}
+	// Entry shapes differ: "crd=<name> version=v1alpha1: field ..." puts a space
+	// after the name, while "crd=<name>: field ..." does not. Trim the separator
+	// so both parse to the same CRD name.
+	crdName = strings.TrimSuffix(crdName, ":")
+	_, rest, found = strings.Cut(rest, `field "`)
+	if !found {
+		return "", "", false
+	}
+	fieldPath, _, found = strings.Cut(rest, `"`)
+	if !found {
+		return "", "", false
+	}
+	return crdName, fieldPath, true
 }
 
 // FindCRD returns the CRD matching r from crds, and whether it was found.
