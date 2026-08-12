@@ -277,6 +277,15 @@ func checkGoSource(path string, src []byte) ([]string, error) {
 		if !ok || st.Fields == nil {
 			return true
 		}
+
+		// Spec and ObservedState structs must carry the proto annotation that
+		// drives mapper generation. Missing it does not merely look untidy: the
+		// mapper generator uses it, so the failure surfaces in a later phase as
+		// rework rather than here as a diff.
+		if problem := checkProtoAnnotation(ts, f); problem != "" {
+			problems = append(problems, problem)
+		}
+
 		for _, field := range st.Fields.List {
 			if len(field.Names) == 0 {
 				continue // embedded, e.g. *parent.ProjectAndLocationRef
@@ -287,11 +296,115 @@ func checkGoSource(path string, src []byte) ([]string, error) {
 			if problem := checkFieldType(ts.Name.Name, field); problem != "" {
 				problems = append(problems, problem)
 			}
+			if problem := checkObservedGeneration(ts.Name.Name, field); problem != "" {
+				problems = append(problems, problem)
+			}
+			if problem := checkEnumField(ts.Name.Name, field); problem != "" {
+				problems = append(problems, problem)
+			}
 		}
 		return true
 	})
 
 	return problems, nil
+}
+
+// checkProtoAnnotation requires the +kcc:*:proto= marker on Spec and
+// ObservedState structs. The mapper generator reads it; without it, mapper
+// generation for the resource silently produces nothing usable.
+func checkProtoAnnotation(ts *ast.TypeSpec, f *ast.File) string {
+	name := ts.Name.Name
+
+	var want string
+	switch {
+	case strings.HasSuffix(name, "ObservedState"):
+		want = "+kcc:observedstate:proto="
+	case strings.HasSuffix(name, "Spec"):
+		want = "+kcc:spec:proto="
+	default:
+		return ""
+	}
+
+	// The marker sits in the doc comment of the enclosing GenDecl, which the
+	// TypeSpec itself does not carry, so scan the declaration that holds it.
+	for _, decl := range f.Decls {
+		gd, ok := decl.(*ast.GenDecl)
+		if !ok {
+			continue
+		}
+		for _, spec := range gd.Specs {
+			if spec != ast.Spec(ts) {
+				continue
+			}
+			for _, cg := range []*ast.CommentGroup{gd.Doc, ts.Doc} {
+				if cg == nil {
+					continue
+				}
+				if strings.Contains(cg.Text(), strings.TrimPrefix(want, "+")) {
+					return ""
+				}
+			}
+		}
+	}
+	return fmt.Sprintf("%s is missing the `// %sgoogle...` annotation; mapper generation depends on it", name, want)
+}
+
+// checkObservedGeneration requires status.observedGeneration to be exactly
+// *int64, per the base types skill.
+func checkObservedGeneration(structName string, field *ast.Field) string {
+	if field.Names[0].Name != "ObservedGeneration" {
+		return ""
+	}
+	star, ok := field.Type.(*ast.StarExpr)
+	if ok {
+		if id, ok := star.X.(*ast.Ident); ok && id.Name == "int64" {
+			return ""
+		}
+	}
+	return fmt.Sprintf("%s.ObservedGeneration must be exactly *int64", structName)
+}
+
+// checkEnumField requires proto enum fields to be represented as *string rather
+// than a custom wrapped string type, per the greenfield types skill.
+//
+// Detection is by the kubebuilder Enum validation marker: a field carrying
+// +kubebuilder:validation:Enum is an enum by definition, whatever its Go type.
+// This deliberately does not try to infer enum-ness from the type name, which
+// would flag ordinary named string types.
+func checkEnumField(structName string, field *ast.Field) string {
+	if field.Doc == nil || !strings.Contains(field.Doc.Text(), "kubebuilder:validation:Enum") {
+		return ""
+	}
+	if star, ok := field.Type.(*ast.StarExpr); ok {
+		if id, ok := star.X.(*ast.Ident); ok && id.Name == "string" {
+			return ""
+		}
+	}
+	return fmt.Sprintf("%s.%s is an enum (has kubebuilder:validation:Enum) and must be *string, not a custom wrapped type",
+		structName, field.Names[0].Name)
+}
+
+// CheckShellFile applies the copyright rule to generated shell scripts. The
+// reviewgen skill requires the 2026 header on new .go AND .sh files; only .go
+// was covered before.
+func CheckShellFile(path string) ([]string, error) {
+	src, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("reading %q: %w", path, err)
+	}
+	if !strings.Contains(string(src), "Copyright 2026 Google LLC") {
+		return []string{"missing `# Copyright 2026 Google LLC` header"}, nil
+	}
+	return nil, nil
+}
+
+// GenerateScriptFor returns the service's generate.sh path, which is shared by
+// every resource in the service rather than being per-resource.
+func GenerateScriptFor(repoRoot string, r Resource) string {
+	return filepath.Join(repoRoot, "apis", r.Service(), "generate.sh")
 }
 
 // checkFieldType enforces the pointer rules:

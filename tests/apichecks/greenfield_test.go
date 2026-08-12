@@ -116,6 +116,14 @@ func TestGreenfieldBulkCRDConformance(t *testing.T) {
 		t.Fatalf("loading CRDs: %v", err)
 	}
 
+	// Required CRD labels. managed-by-kcc and system come from the base types
+	// skill; stability-level=alpha from the greenfield skill.
+	requiredLabels := map[string]string{
+		"cnrm.cloud.google.com/managed-by-kcc":  "true",
+		"cnrm.cloud.google.com/system":          "true",
+		"cnrm.cloud.google.com/stability-level": "alpha",
+	}
+
 	for _, r := range m.Resources() {
 		crd, ok := greenfield.FindCRD(crds, r)
 		if !ok {
@@ -126,6 +134,68 @@ func TestGreenfieldBulkCRDConformance(t *testing.T) {
 				t.Errorf("FAIL: crd=%s has version %q; greenfield resources must be v1alpha1 only",
 					crd.Name, version.Name)
 			}
+		}
+		for key, want := range requiredLabels {
+			got, present := crd.Labels[key]
+			if !present {
+				t.Errorf("FAIL: crd=%s is missing label %q (add `// +kubebuilder:metadata:labels=\"%s=%s\"` to the Kind)",
+					crd.Name, key, key, want)
+				continue
+			}
+			if got != want {
+				t.Errorf("FAIL: crd=%s has label %s=%q, want %q", crd.Name, key, got, want)
+			}
+		}
+	}
+}
+
+// TestGreenfieldNoNewDeprecatedRefs guards the deprecated apis/refs/v1beta1
+// directory. New Ref types belong in apis/<service>/<version>/<kind>_reference.go.
+//
+// Scoped by a committed baseline of the files that exist today rather than by
+// the bulk manifest: the rule is about where a file is placed, so it must catch
+// additions regardless of which resource prompted them.
+func TestGreenfieldNoNewDeprecatedRefs(t *testing.T) {
+	t.Parallel()
+
+	const dir = "../../apis/refs/v1beta1"
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		t.Fatalf("reading %s: %v", dir, err)
+	}
+	var got []string
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".go") {
+			continue
+		}
+		got = append(got, e.Name())
+	}
+	sort.Strings(got)
+
+	test.CompareRatchetFile(t, "testdata/exceptions/deprecated_refs_v1beta1.txt", strings.Join(got, "\n"))
+}
+
+// TestGreenfieldGenerateScriptCopyright applies the 2026 copyright rule to the
+// service generate.sh, which the .go-only check missed.
+func TestGreenfieldGenerateScriptCopyright(t *testing.T) {
+	t.Parallel()
+
+	m := loadBulkManifest(t)
+	seen := map[string]bool{}
+	for _, r := range m.Resources() {
+		path := greenfield.GenerateScriptFor(repoRoot, r)
+		if seen[path] {
+			continue // one generate.sh per service, not per resource
+		}
+		seen[path] = true
+
+		problems, err := greenfield.CheckShellFile(path)
+		if err != nil {
+			t.Errorf("FAIL: %s: %v", path, err)
+			continue
+		}
+		for _, p := range problems {
+			t.Errorf("FAIL: %s: %s", path, p)
 		}
 	}
 }

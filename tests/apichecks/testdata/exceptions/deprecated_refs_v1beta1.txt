@@ -1,0 +1,26 @@
+# Files in the deprecated apis/refs/v1beta1 directory.
+#
+# New Ref types must NOT go here - they belong in
+# apis/<service>/<version>/<kind>_reference.go. This is a ratchet: adding a file
+# fails even under WRITE_GOLDEN_OUTPUT, and removing one prunes the entry, so
+# the list can only shrink as these are migrated out.
+#
+# SANDBOX-ONLY. Not upstream policy.
+alloydbref.go
+appengineref.go
+bigquerydatasetref.go
+computerefs.go
+computerefs_test.go
+folderref.go
+gcpserviceaccountref.go
+helper.go
+interface.go
+kmsrefs.go
+organizationref.go
+organizationref_test.go
+projectref.go
+projectref_test.go
+registry.go
+secretmanagerrefs.go
+sqldatabaseref.go
+sqlinstanceref.go
