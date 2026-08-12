@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -148,6 +149,77 @@ func (m *Manifest) FilesFor(repoRoot string, r Resource) ([]string, error) {
 	}
 	sort.Strings(found)
 	return found, nil
+}
+
+// missingRe matches the generator's marker for a proto field with no KRM
+// representation, e.g. "\t// MISSING: Labels".
+var missingRe = regexp.MustCompile(`^\s*//\s*MISSING:\s*(\S+)\s*$`)
+
+// funcRe matches a generated mapper function, capturing the KRM type name and
+// the direction, e.g. "func FooSpec_v1alpha1_FromProto(" -> "FooSpec", "FromProto".
+var funcRe = regexp.MustCompile(`^func ([A-Za-z0-9_]+)_v\d+(?:alpha|beta)?\d*_(FromProto|ToProto)\(`)
+
+// DroppedFields returns the proto fields that have no representation in r's KRM
+// types, keyed by field name.
+//
+// The generator emits "// MISSING: <Field>" while walking proto fields, whenever
+// the KRM struct has neither <Field> nor <Field>Ref
+// (dev/tools/controllerbuilder/pkg/codegen/mappergenerator.go).
+//
+// Spec and ObservedState map the *same* proto message, so each reports the
+// other's fields: a field living in Spec shows up as MISSING in the
+// ObservedState mapper and vice versa. A field is only genuinely dropped when it
+// is MISSING in both. Resources with no ObservedState mapper use the Spec list
+// alone.
+func DroppedFields(mapperPath string, kind string) ([]string, error) {
+	data, err := os.ReadFile(mapperPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("reading %q: %w", mapperPath, err)
+	}
+
+	// krmType -> set of MISSING field names (union of FromProto and ToProto).
+	byType := map[string]map[string]bool{}
+	currentType := ""
+
+	for _, line := range strings.Split(string(data), "\n") {
+		if m := funcRe.FindStringSubmatch(line); m != nil {
+			currentType = m[1]
+			continue
+		}
+		if currentType == "" {
+			continue
+		}
+		if m := missingRe.FindStringSubmatch(line); m != nil {
+			if byType[currentType] == nil {
+				byType[currentType] = map[string]bool{}
+			}
+			byType[currentType][m[1]] = true
+		}
+	}
+
+	spec, hasSpec := byType[kind+"Spec"]
+	observed, hasObserved := byType[kind+"ObservedState"]
+	if !hasSpec {
+		return nil, nil
+	}
+
+	var dropped []string
+	for field := range spec {
+		if hasObserved && !observed[field] {
+			continue // present in ObservedState; not dropped
+		}
+		dropped = append(dropped, field)
+	}
+	sort.Strings(dropped)
+	return dropped, nil
+}
+
+// MapperPath returns the generated mapper file for r's service.
+func MapperPath(repoRoot string, r Resource) string {
+	return filepath.Join(repoRoot, "pkg", "controller", "direct", r.Service(), "mapper.generated.go")
 }
 
 // FindCRD returns the CRD matching r from crds, and whether it was found.

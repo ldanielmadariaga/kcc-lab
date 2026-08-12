@@ -1,0 +1,16 @@
+# Proto fields with no representation at all in a bulk greenfield KRM type.
+#
+# Distinct from missingfields.txt: that file records fields present in the CRD
+# but not exercised by any fixture. A field here is absent from the CRD entirely -
+# commented out, or never written - so nothing else in the repo can see it.
+#
+# This is a RATCHET, not a golden file. New entries fail even under
+# WRITE_GOLDEN_OUTPUT=1 and are never written automatically; fixed drops are
+# pruned. The list can only shrink.
+#
+# Every entry needs a reason=. Either implement the field, or say why it is
+# intentionally absent.
+#
+# SANDBOX-ONLY. Not upstream policy.
+[dropped] crd=networkserviceslbtrafficextensions.networkservices.cnrm.cloud.google.com: field "Labels" reason=mirrors-sibling-lbrouteextension-needs-review
+[dropped] crd=networkserviceslbtrafficextensions.networkservices.cnrm.cloud.google.com: field "Name" reason=identifier-handled-by-identity
