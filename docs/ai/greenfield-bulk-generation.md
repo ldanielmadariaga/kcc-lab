@@ -1,69 +1,135 @@
-# Bulk greenfield generation: mechanics
+# Bulk greenfield generation: Step 1 (types + CRD)
 
-**Status: PLACEHOLDER — do not follow yet.** **Scope:** the experimental sandbox (`kcc-lab`).
+**Scope:** the experimental sandbox (`kcc-lab`). Verified end-to-end on
+`NetworkServicesLBTrafficExtension`.
 
-This document will carry the executable instructions for generating resources in bulk: the exact
-command sequence, what the tooling does and does not do for you, what needs hand-fixing, and the
-definition of done for a first-pass resource.
-
-It is deliberately unwritten. See §3.
+Step 1 produces `<kind>_types.go` and the CRD. It does **not** produce `<kind>_identity.go`,
+`<kind>_reference.go`, controllers, mappers, MockGCP or fixtures — those are separate steps.
 
 ---
 
-## 1. What it will cover
+## The one thing to understand first
 
-- **Ground rules for pass 1** — explicit permission to ship crudely, and the explicit non-goals:
-  references as plain `string`, no e2e fixtures, no MockGCP, minimal field coverage, `v1alpha1` only.
-- **The command sequence** — per-service generation, end to end.
-- **Minimum viable resource** — the artifact list that constitutes done for pass 1.
-- **Batch workflow** — picking a batch from the tracker through to a PR.
-- **What breaks** — the failure modes, and how to recover from each.
+`generate-types` does **not** write your Spec. It does two things:
 
-## 2. What is known so far
+1. Writes the complete struct — every proto field, correct Go types — into
+   `apis/<service>/<version>/types.generated.go`, **wrapped in `/* unreachable type ... */`**
+   because nothing references it yet.
+2. Writes a near-empty scaffold `<kind>_types.go` with only `ProjectRef`, `Location` and
+   `ResourceID`, and prints `Please EDIT it!`
 
-Preliminary findings from reading the tooling. **Unverified by execution** — treat as orientation,
-not instructions.
+**Your job is the assembly**: move the fields from the unreachable block into the scaffold's Spec and
+ObservedState. When the Spec references a generated type, `prunetypes` un-comments it on the next run
+automatically — the `unreachable` marker disappears on its own. Do not hand-edit
+`types.generated.go`.
 
-The batch unit is the per-service `generate.sh`. 129 services already have one under
-`apis/<service>/`, and they follow a common shape:
+This is the per-resource manual cost. Everything else is mechanical.
+
+## Procedure
+
+**1. Add the resource to the service's `generate.sh`.** 129 services already have one. Append one
+line to the `v1alpha1` block:
 
 ```bash
-cd ${REPO_ROOT}/dev/tools/controllerbuilder
-./generate-proto.sh                      # note: lives here, not under apis/
 ${CONTROLLERBUILDER} generate-types \
-  --service google.cloud.<service>.v1 \
-  --api-version <service>.cnrm.cloud.google.com/v1alpha1 \
-  --resource <Kind>:<ProtoMessage>       # repeatable
-${CONTROLLERBUILDER} generate-mapper --service ... --api-version ...
-cd ${REPO_ROOT} && dev/tasks/generate-crds
+    --service google.cloud.networkservices.v1 \
+    --api-version "networkservices.cnrm.cloud.google.com/v1alpha1" \
+    --resource NetworkServicesLBRouteExtension:LbRouteExtension \
+    --resource NetworkServicesLBTrafficExtension:LbTrafficExtension \   # <- added
 ```
 
-Three things worth knowing before writing this up properly:
+`--resource` is repeatable, so a whole batch of resources for one service generates in one command.
+Kind naming follows the service's existing convention — note `LBTrafficExtension`, not
+`LbTrafficExtension`, matching the sibling.
 
-- **`generate-types` takes a repeatable `--resource` flag**, so a whole service's types and mappers
-  generate in one command. This is the batch lever.
-- **`generate-controller` and `generate-direct-reconciler` take a single `--resource`**, so
-  controllers are a per-resource loop inside the batch.
-- **There are two configuration styles.** Most services pass `--resource` flags inline; a few
-  (e.g. `apis/accesscontextmanager/`) use a `generatetypes.yaml` config file listing `kind`/
-  `protoName` pairs. Which is better for bulk work is an open question, and picking one is part of
-  writing this document.
+If the service only has a `v1beta1` block, add a separate `v1alpha1` block; greenfield resources are
+always `v1alpha1`.
 
-## 3. Why this is a placeholder
+**2. Run it.** `./apis/<service>/generate.sh`
 
-Everything in §2 was derived from reading `--help` output and example scripts, not from running
-anything. That approach has already produced two errors in a single sitting: `generate-proto.sh` was
-initially recorded as living under `apis/<service>/` when it is actually in
-`dev/tools/controllerbuilder/` and requires a `cd` first — meaning the documented first command would
-have failed — and the second configuration style was missed entirely.
+**3. Assemble the Spec.** Copy fields from the `/* unreachable type <Proto> */` block in
+`types.generated.go` into `<kind>_types.go`, and the `<Proto>ObservedState` fields into the
+ObservedState struct. Follow an existing sibling resource in the same service if there is one — it is
+the most reliable template.
 
-A mechanics document written from flag inspection is a hypothesis. If it is wrong, every agent
-following it inherits the error, and it will be wrong precisely where it matters, because those are
-the parts you only discover by running them.
+**4. Re-run `generate.sh`**, then `go build ./apis/...`.
 
-**This document will be written from a pilot batch**: one small service taken end to end, recording
-the real command path, the real failures, and the real recovery steps. It then describes a path known
-to work rather than one believed to work.
+**5. Regenerate baselines.** `WRITE_GOLDEN_OUTPUT=1 go test ./tests/apichecks/...`, then re-run
+without the flag to confirm clean.
 
-Until then, `greenfield-coverage-strategy.md` holds the direction and `greenfield-tracker.md` holds
-the work-selection process.
+## What the generator gets right on its own
+
+Verified on the pilot — no hand-fixing needed for any of these:
+
+- `v1alpha1`, correct file path
+- Scalars as pointers (`*string`); collections **not** pointers (`map[string]string`, `[]string`)
+- Enums as `*string` (not custom wrapped types)
+- `status.observedGeneration` as `*int64`
+- `+kcc:spec:proto=`, `+kcc:observedstate:proto=`, `+kcc:proto:field=` annotations
+- `OUTPUT_ONLY` proto fields split into a separate `<Proto>ObservedState` type
+- CRD labels `managed-by-kcc=true` and `system=true`
+- Every proto field present in `types.generated.go`
+
+## What you must fix by hand
+
+| Fix | Detail |
+|---|---|
+| **Assembly** | The main cost — see above. |
+| **Copyright year** | Generator emits **2025**. Must be **2026**. |
+| **Parent** | Scaffold emits `ProjectRef` + `Location` separately; existing resources use `*parent.ProjectAndLocationRef` inline. |
+| **Reference fields** | Generator emits plain strings. See below. |
+| **`+required` markers** | Generator emits none. Add for proto `REQUIRED` fields. |
+| **`+kubebuilder:validation:Enum`** | Generator emits none, though the Go type is correct. |
+| **`google.protobuf.Struct`** | Generator emits `apiextensionsv1.JSON`; existing resources use `*apiextensionsv1.JSON`. |
+
+### Reference fields are the one that matters
+
+The generator does **not** convert reference-shaped fields. On the pilot it emitted:
+
+```go
+ForwardingRules []string `json:"forwardingRules,omitempty"`
+```
+
+The correct form, matching the hand-reviewed sibling:
+
+```go
+// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.forwarding_rules
+ForwardingRuleRefs []*computev1beta1.ForwardingRuleRef `json:"forwardingRuleRefs,omitempty"`
+```
+
+Note the field **and JSON name change** (`forwardingRules` → `forwardingRuleRefs`). Getting this
+wrong is the expensive mistake, because it is baked into the CRD schema.
+
+Check the proto for `(google.api.resource_reference)` first — it names the target type exactly and is
+authoritative where present, but covers only ~15% of string fields overall and 0% in compute. Where
+it is absent, use field name plus a corroborating description. **Do not add entries to
+`missingrefs.txt`** — implement the reference instead.
+
+Creating a *new* `<kind>_reference.go` / `<kind>_identity.go` for the resource itself is a separate
+step and is not part of Step 1.
+
+## Definition of done
+
+- `go build ./apis/...` clean.
+- Re-running `generate.sh` produces no further diff.
+- No `unreachable type <YourProto>` remains in `types.generated.go`.
+- CRD spec contains every proto field; `OUTPUT_ONLY` fields appear under `status.observedState`.
+- `go test ./tests/apichecks/...` passes.
+
+Expect **`alpha-missingfields.txt` to grow** — it records fields not exercised by test fixtures, and
+Step 1 has no fixtures. On the pilot it grew by 17 lines. That is correct at this stage; the entries
+are attributed by `crd=` and are removed when fixtures arrive in a later step.
+
+## Gotchas
+
+- **Worktrees have no `.build/`.** It is gitignored (~2.9 GB). Symlink it from a full checkout, or
+  `generate-proto.sh` rebuilds every proto descriptor:
+  `ln -sfn /path/to/main/checkout/.build .build`
+- **`WRITE_GOLDEN_OUTPUT=1` picks up unrelated drift.** The pilot run also rewrote
+  `multi_version_crd_diff/IAPSettings.diff`, which had nothing to do with the change. Check
+  `git diff` and revert anything not attributable to your resource.
+- **A resource may look missing when it is not.** Proto→CRD matching is case-sensitive: proto
+  `LbRouteExtension` vs KCC kind `NetworkServicesLBRouteExtension` does not match on a naive
+  comparison. Grep `apis/` and `config/crds/resources/` before generating.
+- **`SupportsIAM` warns** for a types-only resource (`not recognized as a direct kind`). Expected
+  until a controller exists.
