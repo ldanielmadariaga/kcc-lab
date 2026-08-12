@@ -14,3 +14,6 @@
 # SANDBOX-ONLY. Not upstream policy.
 [dropped] crd=networkserviceslbtrafficextensions.networkservices.cnrm.cloud.google.com: field "Labels" reason=mirrors-sibling-lbrouteextension-needs-review
 [dropped] crd=networkserviceslbtrafficextensions.networkservices.cnrm.cloud.google.com: field "Name" reason=identifier-handled-by-identity
+[dropped] crd=vertexaibatchpredictionjobs.vertexai.cnrm.cloud.google.com: field "ModelParameters" reason=protobuf-value-mapper-never-generated
+[dropped] crd=vertexaibatchpredictionjobs.vertexai.cnrm.cloud.google.com: field "ExplanationSpec" reason=transitively-reaches-protobuf-value-mapper-never-generated
+[dropped] crd=vertexaibatchpredictionjobs.vertexai.cnrm.cloud.google.com: field "PartialFailures" reason=repeated-rpc-status-mapper-emitted-without-import

@@ -203,10 +203,13 @@ func ComputeRatchet(baselineContent, fullGot string) RatchetDecision {
 	sort.Strings(added)
 	sort.Strings(removed)
 
+	// Trailing newline matters: these files are appended to by hand and by
+	// agents. Without it, `cat >> file` concatenates the new entry onto the last
+	// existing one and silently corrupts both.
 	return RatchetDecision{
 		Added:   added,
 		Removed: removed,
-		Pruned:  strings.Join(append(header, got.List()...), "\n"),
+		Pruned:  strings.Join(append(header, got.List()...), "\n") + "\n",
 	}
 }
 

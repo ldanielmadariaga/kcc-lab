@@ -121,6 +121,17 @@ func TestComputeRatchetPreservesHeader(t *testing.T) {
 	}
 }
 
+// TestComputeRatchetPrunedEndsWithNewline is a regression test. Pruning once
+// wrote the file without a trailing newline, so a later `cat >> file` appended
+// the new entry onto the last existing one and silently corrupted both. These
+// baselines are appended to by hand and by agents, so the newline is load-bearing.
+func TestComputeRatchetPrunedEndsWithNewline(t *testing.T) {
+	got := ComputeRatchet("# header\nviolation a\nviolation b\n", "violation a")
+	if !strings.HasSuffix(got.Pruned, "\n") {
+		t.Errorf("pruned content must end with a newline, got %q", got.Pruned)
+	}
+}
+
 // TestShouldPrune covers the property the whole mechanism exists for: when there
 // are new violations the baseline is never rewritten, even with
 // WRITE_GOLDEN_OUTPUT set. Absorbing new entries during the regenerate-goldens
