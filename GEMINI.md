@@ -184,7 +184,9 @@ When promoting a resource from `v1alpha1` to `v1beta1`, we should keep `krm` as 
 * `docs/ai/add-missing-field.md` describes how to add a missing field, for example when the GCP service adds a new field.
 * `docs/ai/create-crd-for-existing-terraform-resource.md` describes how to create a CRD for an existing terraform resource.
 * `docs/ai/github-workflow.md` describes how to generate github workflows.
-* `docs/ai/greenfield-coverage-strategy.md` is the acceptance bar and sequencing rule for bulk greenfield resource implementation. Agentic invocations doing bulk resource work should treat it as normative. (Sandbox-only; not upstream policy.)
+* `docs/ai/greenfield-coverage-strategy.md` is the direction and sequencing rule for bulk greenfield resource implementation. Agentic invocations doing bulk resource work should treat it as normative. (Sandbox-only; not upstream policy.)
+* `docs/ai/greenfield-tracker.md` describes how to build and maintain the greenfield work tracker, and how to pick work from it. (Sandbox-only.)
+* `docs/ai/greenfield-bulk-generation.md` will hold the generation mechanics. **Currently a placeholder — do not follow it yet.** (Sandbox-only.)
 
 # Helpful scripts
 
