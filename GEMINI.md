@@ -186,7 +186,8 @@ When promoting a resource from `v1alpha1` to `v1beta1`, we should keep `krm` as 
 * `docs/ai/github-workflow.md` describes how to generate github workflows.
 * `docs/ai/greenfield-coverage-strategy.md` is the direction and sequencing rule for bulk greenfield resource implementation. Agentic invocations doing bulk resource work should treat it as normative. (Sandbox-only; not upstream policy.)
 * `docs/ai/greenfield-tracker.md` describes how to build and maintain the greenfield work tracker, and how to pick work from it. (Sandbox-only.)
-* `docs/ai/greenfield-bulk-generation.md` will hold the generation mechanics. **Currently a placeholder — do not follow it yet.** (Sandbox-only.)
+* `docs/ai/greenfield-bulk-generation.md` holds the Step 1 generation mechanics (types + CRD). (Sandbox-only.)
+* `docs/ai/refs-decision-guide.md` decides when a field should be a Ref. **Read its provenance section first**: much of the ref tooling here is a sandbox experiment rather than team policy, and the two are easy to confuse. (Sandbox-only.)
 
 # Helpful scripts
 

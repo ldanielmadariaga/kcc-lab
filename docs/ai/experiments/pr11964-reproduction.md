@@ -23,6 +23,10 @@
 | ...classified `container-image-uri-not-a-storage-object` | - | 1 |
 | `notificationChannels` (review #8) | missed | **caught** |
 
+**The ref taxonomy that came out of this experiment is written up in `docs/ai/refs-decision-guide.md`**,
+including which parts are team-vetted and which are ours. Read that before treating any reason string
+here as policy.
+
 **Where the classifier disagrees with the reviewer, the classifier is right.** Review #2 said
 `gcsSource.uris` "should be a list of GCS Refs". It cannot be: `StorageBucketIdentity` rejects
 anything with a `/` after the bucket and there is no StorageObject CRD. The classifier says
