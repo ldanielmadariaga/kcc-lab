@@ -6,6 +6,11 @@
 Step 1 produces `<kind>_types.go` and the CRD. It does **not** produce `<kind>_identity.go`,
 `<kind>_reference.go`, controllers, mappers, MockGCP or fixtures — those are separate steps.
 
+This document describes the procedure against the generator **as it exists today**. A design for
+mechanising most of the hand-fixing below — so that only genuine judgement is left to a human — is in
+[`greenfield-generator-mechanics.md`](greenfield-generator-mechanics.md). It is not implemented yet;
+follow this document until it is.
+
 ---
 
 ## The one thing to understand first
