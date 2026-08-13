@@ -112,12 +112,19 @@ func TestMissingRefs(t *testing.T) {
 				desc := field.props.Description
 
 				// NOTE: (google.api.resource_reference) is deliberately NOT consulted
-				// here yet. See protorefs.go - matching it by field name produced 2,164
-				// findings against 78 for the description heuristics alone, because a
-				// name like "network" is annotated in one service and appears in
-				// hundreds of unrelated CRD contexts. Using the annotation safely needs
-				// the CRD field mapped to its originating proto field via the
-				// +kcc:proto:field= markers, which is its own change.
+				// here. It is upstream ground truth and names the exact target type,
+				// so it looks like the obvious signal - but matching it by field NAME
+				// was tried and measured: 2,164 findings against 78 for the description
+				// heuristics alone. A name like "network" is annotated in one service
+				// and appears in hundreds of unrelated CRD fields elsewhere.
+				//
+				// A CRD does not record which proto field it came from, so the leaf
+				// name is the only bridge available at this layer, and it is too weak.
+				// Using the annotation safely needs the CRD field mapped to its
+				// originating proto field via the +kcc:proto:field= markers the
+				// generator emits into _types.go, then looking up the fully-qualified
+				// proto path. That is its own change, and it would not reuse a
+				// leaf-name list.
 
 				// Signal: a resource-name path template in the description,
 				// e.g. "should be of the form projects/{projectID}/locations/{location}/bars/{name}".
