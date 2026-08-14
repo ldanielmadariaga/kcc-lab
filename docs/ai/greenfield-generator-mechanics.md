@@ -114,6 +114,10 @@ omissions — exactly the judgement Step 1 is supposed to concentrate on.
 
 Four phases. Phases 1–2 are independently useful; phase 4 depends on 3.
 
+Every phase that changes generated output is opt-in per service. That was not the original intent —
+phase 1 looked safe enough to apply globally — but measuring it showed otherwise (below), and the same
+reasoning applies to anything else that reshapes an existing CRD.
+
 ### Phase 1 — emit `+required` from `field_behavior`
 
 `+required` is what produces the CRD's `required:` list. Without it, every field carrying
@@ -123,8 +127,31 @@ has an entirely permissive spec and nothing fails.
 `+optional` is deliberately **not** emitted: `omitempty` already implies optional to controller-gen.
 The gap is `+required` alone.
 
-*Risk:* resources whose proto marks a field REQUIRED that KCC intentionally treats as optional. Any
-change to an existing CRD's `required:` list is such a case and needs a decision before merging.
+**Gated behind `--emit-required-from-proto`, default off.** This was written ungated first, on the
+assumption that it was the low-risk phase, and then measured. Regenerating all 116 services:
+
+| | |
+|---|---:|
+| New `+required` markers | 638 |
+| CRDs changed | 47 (45 alpha, `redisclusters` beta, `runjobs` stable) |
+| `required:` added under `spec:` | 223 |
+| `required:` added under `status:` | **18** |
+
+The status entries are the reason for the gate. Nested message types are generated **once** by
+`WriteMessage` and shared between the spec and the observed state, so a marker derived from a field's
+own annotation lands in every schema position that type occupies — redis `PscConfig` /
+`PscConnection` are the clearest case. CRD structural validation covers the status subresource, so if
+GCP returns an object missing such a field, KCC writes a status the API server rejects and
+reconciliation fails at runtime. That is worse than an apply-time tightening, and it is invisible if
+you only look at the field being annotated.
+
+Suppressing it in `WriteObservedStateMessage` does not fix it, because the shared struct is written by
+`WriteMessage`. It is done anyway, on the principle that an observed-state struct describes what GCP
+returned and should never constrain it.
+
+*Remaining risk once opted in:* a resource whose proto marks a field REQUIRED that KCC intentionally
+treats as optional. That is a real divergence and needs a decision, but it is now confined to services
+that opted in.
 
 ### Phase 2 — feed `google.api.resource` into the scaffolder
 
