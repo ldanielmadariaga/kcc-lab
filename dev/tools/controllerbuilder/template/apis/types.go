@@ -12,6 +12,17 @@ type APIArgs struct {
 	ProtoMessageName string
 	// ProtoMessageFullName is the fully qualified proto message name, e.g. google.cloud.v1.Foo
 	ProtoMessageFullName string
+
+	// Collection is the resource's collection segment as the API spells it, taken
+	// from google.api.resource, e.g. "lbTrafficExtensions". Empty when the proto
+	// declares no pattern, in which case templates fall back to guessing.
+	Collection string
+	// ParentStyle is the shape of the resource's parent: "project_location",
+	// "project", "organization", "folder", "other" or "unknown".
+	ParentStyle string
+	// ResourcePattern is the declared pattern, carried through verbatim so the
+	// generated file can show a human what the real name looks like.
+	ResourcePattern string
 }
 
 const TypesTemplate = `

@@ -16,6 +16,22 @@ const IdentityTemplate = `// Copyright 2025 Google LLC
 
 package {{ .Version }}
 
+{{ if .ResourcePattern -}}
+// Resource name pattern, from google.api.resource on {{ .ProtoMessageFullName }}:
+//
+//	{{ .ResourcePattern }}
+{{- if eq .ParentStyle "other" }}
+//
+// TODO: this parent shape is not one the scaffolder models. The Parent struct and
+// Parse{{.ProtoMessageName}}External below assume projects/locations and are almost
+// certainly wrong for this resource - rewrite them to match the pattern above.
+{{- end }}
+{{- else }}
+// TODO: {{ .ProtoMessageFullName }} declares no google.api.resource pattern, so the
+// parent shape and collection segment below are guesses. Verify them against the
+// service's API documentation before relying on this file.
+{{- end }}
+
 import (
 	"context"
 	"fmt"
@@ -34,7 +50,7 @@ type {{.ProtoMessageName}}Identity struct {
 }
 
 func (i *{{.ProtoMessageName}}Identity) String() string {
-	return  i.parent.String() + "/{{.ProtoMessageName | ToLower}}s/" + i.id
+	return  i.parent.String() + "/{{.Collection}}/" + i.id
 }
 
 func (i *{{.ProtoMessageName}}Identity) ID() string {
@@ -45,6 +61,15 @@ func (i *{{.ProtoMessageName}}Identity) Parent() *{{.ProtoMessageName}}Parent {
 	return  i.parent
 }
 
+{{ if eq .ParentStyle "project" -}}
+type {{.ProtoMessageName}}Parent struct {
+	ProjectID string
+}
+
+func (p *{{.ProtoMessageName}}Parent) String() string {
+	return "projects/" + p.ProjectID
+}
+{{- else -}}
 type {{.ProtoMessageName}}Parent struct {
 	ProjectID string
 	Location  string
@@ -53,6 +78,7 @@ type {{.ProtoMessageName}}Parent struct {
 func (p *{{.ProtoMessageName}}Parent) String() string {
 	return "projects/" + p.ProjectID + "/locations/" + p.Location
 }
+{{- end }}
 
 
 // New builds a {{.ProtoMessageName}}Identity from the Config Connector {{.ProtoMessageName}} object.
@@ -67,7 +93,9 @@ func New{{.ProtoMessageName}}Identity(ctx context.Context, reader client.Reader,
 	if projectID == "" {
 		return nil, fmt.Errorf("cannot resolve project")
 	}
+{{- if ne .ParentStyle "project" }}
 	location := obj.Spec.Location
+{{- end }}
 
 	// Get desired ID
 	resourceID := common.ValueOf(obj.Spec.ResourceID)
@@ -89,9 +117,11 @@ func New{{.ProtoMessageName}}Identity(ctx context.Context, reader client.Reader,
 		if actualParent.ProjectID != projectID {
 			return nil, fmt.Errorf("spec.projectRef changed, expect %s, got %s", actualParent.ProjectID, projectID)
 		}
+{{- if ne .ParentStyle "project" }}
 		if actualParent.Location != location {
 			return nil, fmt.Errorf("spec.location changed, expect %s, got %s", actualParent.Location, location)
 		}
+{{- end }}
 		if actualResourceID != resourceID {
 			return nil, fmt.Errorf("cannot reset ` + "`" + `metadata.name` + "`" + ` or ` + "`" + `spec.resourceID` + "`" + ` to %s, since it has already assigned to %s",
 				resourceID, actualResourceID)
@@ -100,7 +130,9 @@ func New{{.ProtoMessageName}}Identity(ctx context.Context, reader client.Reader,
 	return &{{.ProtoMessageName}}Identity{
 		parent: &{{.ProtoMessageName}}Parent{
 			ProjectID: projectID,
+{{- if ne .ParentStyle "project" }}
 			Location:  location,
+{{- end }}
 		},
 		id: resourceID,
 	}, nil
@@ -108,14 +140,24 @@ func New{{.ProtoMessageName}}Identity(ctx context.Context, reader client.Reader,
 
 func Parse{{.ProtoMessageName}}External(external string) (parent *{{.ProtoMessageName}}Parent, resourceID string, err error) {
 	tokens := strings.Split(external, "/")
-	if len(tokens) != 6 || tokens[0] != "projects" || tokens[2] != "locations" || tokens[4] != "{{.ProtoMessageName | ToLower }}s" {
-		return nil, "", fmt.Errorf("format of {{.Kind}} external=%q was not known (use projects/{{"{{"}}projectID{{"}}"}}/locations/{{"{{"}}location{{"}}"}}/{{.ProtoMessageName | ToLower }}s/{{"{{"}}{{.ProtoMessageName | ToLower }}ID{{"}}"}})", external)
+{{- if eq .ParentStyle "project" }}
+	if len(tokens) != 4 || tokens[0] != "projects" || tokens[2] != "{{.Collection}}" {
+		return nil, "", fmt.Errorf("format of {{.Kind}} external=%q was not known (use projects/{{"{{"}}projectID{{"}}"}}/{{.Collection}}/{{"{{"}}{{.ProtoMessageName | ToLower }}ID{{"}}"}})", external)
+	}
+	parent = &{{.ProtoMessageName}}Parent{
+		ProjectID: tokens[1],
+	}
+	resourceID = tokens[3]
+{{- else }}
+	if len(tokens) != 6 || tokens[0] != "projects" || tokens[2] != "locations" || tokens[4] != "{{.Collection}}" {
+		return nil, "", fmt.Errorf("format of {{.Kind}} external=%q was not known (use projects/{{"{{"}}projectID{{"}}"}}/locations/{{"{{"}}location{{"}}"}}/{{.Collection}}/{{"{{"}}{{.ProtoMessageName | ToLower }}ID{{"}}"}})", external)
 	}
 	parent = &{{.ProtoMessageName}}Parent{
 		ProjectID: tokens[1],
 		Location:  tokens[3],
 	}
 	resourceID = tokens[5]
+{{- end }}
 	return parent, resourceID, nil
 }
 `
