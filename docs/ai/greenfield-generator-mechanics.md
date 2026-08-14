@@ -156,8 +156,33 @@ that opted in.
 ### Phase 2 — feed `google.api.resource` into the scaffolder
 
 Thread `pattern` and `plural` into `APIArgs` so the identity template stops hardcoding
-project+location and naive pluralisation. Prerequisite for phase 4 being correct on org-parented,
-folder-parented and irregularly-pluralised resources.
+project+location and naive pluralisation.
+
+Measured over the 1417 messages carrying `google.api.resource`:
+
+| Guess | Wrong for | Share |
+|---|---:|---:|
+| Collection segment, `ToLower(name) + "s"` | 852 / 1417 | **60.1%** |
+| `projects/*/locations/*` parent | 912 / 1417 | 64.4%, across 257 distinct shapes |
+
+The collection fails two ways — casing and English:
+
+| Proto message | Template emits | API uses |
+|---|---|---|
+| `LbTrafficExtension` | `lbtrafficextensions` | `lbTrafficExtensions` |
+| `Batch` | `batchs` | `batches` |
+| `Policy` | `policys` | `policies` |
+
+The first row is the pilot, so this was already being fixed by hand.
+
+**Parent handling is deliberately narrow.** Only `projects/*` and `projects/*/locations/*` are
+specialised, because those are the shapes the scaffolded spec supports; an org- or folder-parented
+resource has no matching spec field, so generating code for it would not compile. Everything else
+keeps the projects/locations shape and gains a TODO naming the real pattern. The collection fix
+applies regardless of parent shape.
+
+**No opt-in flag needed**, unlike phase 1: every scaffold path is guarded by an "already exists,
+skipping" check, so the scaffolder only ever writes new files and cannot change an existing resource.
 
 ### Phase 3 — the judgement queue
 
