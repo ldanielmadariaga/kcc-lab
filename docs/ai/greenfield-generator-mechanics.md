@@ -239,16 +239,39 @@ Checked against an oracle independent of the proto — recorded GCP traffic unde
 `pkg/test/resourcefixture/testdata/` — camelCase is what GCP actually receives: `backupVaults` 27
 files to 0, `nodeGroups` 6 to 0, `conversionWorkspaces` 5 to 0.
 
-`StorageManagedFolder` is the clearest case, because both halves are committed in the same fixture
-directory:
+`StorageManagedFolder` is the clearest case. GCP's own response body, in `_http.log` after the `OK`
+marker — a **response**, not one of KCC's requests, which is the distinction that matters when
+citing this file as evidence:
 
-```
-_http.log                    …/managedFolders/managedfolder-${uniqueId}   <- real GCP
-_generated_object_….yaml     externalRef: …/managedfolders/managedfolder-${uniqueId}   <- KCC's status
+```json
+{
+  "createTime": "2024-04-01T12:34:56.123456Z",
+  "metageneration": "1",
+  "name": "projects/_/buckets/bucket-${uniqueId}/managedFolders/managedfolder-${uniqueId}/",
+  "updateTime": "2024-04-01T12:34:56.123456Z"
+}
 ```
 
-KCC calls GCP correctly and then writes a resource name into `status.externalRef` that GCP would not
-recognise. Nothing compares the two, so it passes.
+The normative source agrees and does not depend on a recording at all:
+`+kcc:spec:proto=google.storage.control.v2.ManagedFolder`, whose `google.api.resource` pattern
+declares `managedFolders`.
+
+Against that, three sources inside KCC disagree with GCP and with each other:
+
+| Source | Format |
+|---|---|
+| GCP (response above, and the proto pattern) | `projects/_/buckets/{b}/managedFolders/{f}/` |
+| `ParseManagedFolderExternal` (`_identity.go:107`) | requires `buckets` and `managedfolders`, exactly 6 tokens |
+| `ManagedFolderRef` doc comment (`_reference.go:34`) | `projects/{p}/locations/{l}/managedfolders/{id}` |
+
+The doc comment says `locations` where the parser demands `buckets`; both disagree with GCP on
+casing. GCP's trailing slash makes `strings.Split` yield seven tokens, so a name copied from GCP
+fails the length check before casing is even reached.
+
+The path is user-reachable: `NormalizedExternal` (`_reference.go:53`) parses a user-supplied
+`external:` value and returns the error. KCC's own round-trip still works, because the writer at
+`_identity.go:34` and the parser at line 107 share the same wrong constant — the system is internally
+consistent and disagrees only with the outside world, which is why nothing catches it.
 
 **No existing test covers this.** `TestCRDsAcronyms` checks acronym casing in CRD *field* names,
 `shortname_pluralization.txt` checks CRD `shortNames`, and `naming_violations.txt` checks *file*
