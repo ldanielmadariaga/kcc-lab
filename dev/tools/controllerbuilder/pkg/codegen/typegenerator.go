@@ -43,11 +43,28 @@ type TypeGenerator struct {
 	observedStateMessages   sets.String
 	generatedFileAnnotation *codegenannotations.FileAnnotation
 	includeSkippedOutput    bool
+	writeOptions            WriteOptions
 }
 
 type OutputMessageDetails struct {
 	Message      protoreflect.MessageDescriptor
 	OutputFields []protoreflect.FieldDescriptor
+}
+
+// WriteOptions gates behaviour that derives KRM markers from proto annotations.
+//
+// These are opt-in per service rather than on by default. Nested message types are
+// generated once and shared between the spec and the observed state, so a marker
+// derived from a field's proto annotation lands in every schema position the type
+// occupies. Turning this on for an existing resource can therefore change its CRD in
+// ways that are not obvious from the field alone - including inside status, where a
+// tightened schema can make the API server reject a status that KCC itself writes.
+//
+// New resources are generated with it on from the start, so the shape is right before
+// anyone depends on it.
+type WriteOptions struct {
+	// EmitRequired writes "// +required" for fields the proto marks REQUIRED.
+	EmitRequired bool
 }
 
 func NewTypeGenerator(goPackage string, outputBaseDir string, api *protoapi.Proto) *TypeGenerator {
@@ -69,6 +86,12 @@ func (g *TypeGenerator) WithGeneratedFileAnnotation(generatedFileAnnotation *cod
 // WithIncludeSkippedOutput sets whether to output skipped types as commented-out code
 func (g *TypeGenerator) WithIncludeSkippedOutput(includeSkippedOutput bool) *TypeGenerator {
 	g.includeSkippedOutput = includeSkippedOutput
+	return g
+}
+
+// WithWriteOptions sets the opt-in proto-derived marker behaviour.
+func (g *TypeGenerator) WithWriteOptions(opts WriteOptions) *TypeGenerator {
+	g.writeOptions = opts
 	return g
 }
 
@@ -253,7 +276,7 @@ func (g *TypeGenerator) WriteVisitedMessages() error {
 		if goType != nil {
 			klog.V(1).Infof("found existing non-generated go type %q, won't generate", goTypeName)
 			if g.includeSkippedOutput {
-				WriteMessageAsComment(&out.body, msg, fmt.Sprintf("found existing non-generated go type %q, skipping", goTypeName))
+				WriteMessageAsComment(&out.body, msg, fmt.Sprintf("found existing non-generated go type %q, skipping", goTypeName), g.writeOptions)
 			}
 			continue
 		}
@@ -265,12 +288,12 @@ func (g *TypeGenerator) WriteVisitedMessages() error {
 		if goType != nil {
 			klog.V(1).Infof("found existing non-generated go type with proto tag %q, won't generate", msg.FullName())
 			if g.includeSkippedOutput {
-				WriteMessageAsComment(&out.body, msg, fmt.Sprintf("found existing non-generated go type with proto tag %q, skipping", msg.FullName()))
+				WriteMessageAsComment(&out.body, msg, fmt.Sprintf("found existing non-generated go type with proto tag %q, skipping", msg.FullName()), g.writeOptions)
 			}
 			continue
 		}
 
-		WriteMessage(&out.body, msg)
+		WriteMessage(&out.body, msg, g.writeOptions)
 	}
 	return errors.Join(g.errors...)
 }
@@ -336,9 +359,9 @@ func (g *TypeGenerator) WriteOutputMessages() error {
 	return errors.Join(g.errors...)
 }
 
-func WriteMessageAsComment(out io.Writer, msg protoreflect.MessageDescriptor, reason string) {
+func WriteMessageAsComment(out io.Writer, msg protoreflect.MessageDescriptor, reason string, opts WriteOptions) {
 	var b bytes.Buffer
-	WriteMessage(&b, msg)
+	WriteMessage(&b, msg, opts)
 	fmt.Fprintf(out, "\n/* %s\n", reason)
 	fmt.Fprintf(out, "%s", strings.ReplaceAll(b.String(), "*/", "* /"))
 	fmt.Fprintf(out, "*/\n")
@@ -352,7 +375,7 @@ func WriteObservedStateMessageAsComment(out io.Writer, msgDetails *OutputMessage
 	fmt.Fprintf(out, "*/\n")
 }
 
-func WriteMessage(out io.Writer, msg protoreflect.MessageDescriptor) {
+func WriteMessage(out io.Writer, msg protoreflect.MessageDescriptor, opts WriteOptions) {
 	goType := GoNameForProtoMessage(msg)
 
 	fmt.Fprintf(out, "\n")
@@ -362,7 +385,7 @@ func WriteMessage(out io.Writer, msg protoreflect.MessageDescriptor) {
 		field := msg.Fields().Get(i)
 		if !IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
 			// Only write non-output fields.
-			WriteField(out, field, msg, i, false)
+			WriteField(out, field, msg, i, false, opts)
 		}
 	}
 	fmt.Fprintf(out, "}\n")
@@ -383,7 +406,10 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 				useObservedState = true
 			}
 		}
-		WriteField(out, field, msg, i, useObservedState)
+		// Never +required here: an observed-state struct describes what GCP returned,
+		// and the API server validates status too, so requiring a field GCP may omit
+		// would make it reject a status KCC wrote.
+		WriteField(out, field, msg, i, useObservedState, WriteOptions{})
 	}
 	fmt.Fprintf(out, "}\n")
 }
@@ -434,7 +460,7 @@ func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool)
 	return goType, nil
 }
 
-func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protoreflect.MessageDescriptor, fieldIndex int, isTransitiveOutput bool) {
+func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protoreflect.MessageDescriptor, fieldIndex int, isTransitiveOutput bool, opts WriteOptions) {
 	sourceLocations := msg.ParentFile().SourceLocations().ByDescriptor(field)
 
 	jsonName := GetJSONForKRM(field)
@@ -463,6 +489,21 @@ func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protorefl
 	}
 
 	fmt.Fprintf(out, "\t// %s=%s\n", KCCProtoFieldAnnotation, field.FullName())
+
+	// +required is what produces the CRD's required: list. Without it every field
+	// is optional, because we emit json:",omitempty" on all of them and that is
+	// what controller-gen reads. We do not emit +optional: omitempty already
+	// implies it, so the marker would be redundant.
+	//
+	// OUTPUT_ONLY wins over REQUIRED. An output field is never user-supplied, so
+	// requiring it would make the CRD reject valid objects. The two behaviors are
+	// not expected to co-occur, but the proto allows repeating field_behavior.
+	if opts.EmitRequired &&
+		IsFieldBehavior(field, annotations.FieldBehavior_REQUIRED) &&
+		!IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
+		fmt.Fprintf(out, "\t// +required\n")
+	}
+
 	fmt.Fprintf(out, "\t%s %s `json:\"%s,omitempty\"`\n",
 		GoFieldName,
 		goType,

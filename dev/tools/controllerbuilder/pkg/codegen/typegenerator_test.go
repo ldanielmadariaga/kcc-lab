@@ -452,6 +452,92 @@ func TestDeduplicateAndSort(t *testing.T) {
 	}
 }
 
+func TestWriteFieldRequiredMarker(t *testing.T) {
+	grid := []struct {
+		name       string
+		behaviors  []annotations.FieldBehavior
+		opts       WriteOptions
+		wantMarker bool
+	}{
+		{
+			name:       "REQUIRED with the flag on emits the marker",
+			behaviors:  []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED},
+			opts:       WriteOptions{EmitRequired: true},
+			wantMarker: true,
+		},
+		{
+			// The gate is the point: existing services must generate byte-identical
+			// output until they opt in.
+			name:      "REQUIRED with the flag off emits nothing",
+			behaviors: []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED},
+			opts:      WriteOptions{},
+		},
+		{
+			name:      "OPTIONAL never emits the marker",
+			behaviors: []annotations.FieldBehavior{annotations.FieldBehavior_OPTIONAL},
+			opts:      WriteOptions{EmitRequired: true},
+		},
+		{
+			// 59% of proto fields carry no field_behavior at all; they must stay
+			// optional, which is what omitempty already gives us.
+			name:      "no field_behavior stays optional",
+			behaviors: nil,
+			opts:      WriteOptions{EmitRequired: true},
+		},
+		{
+			// An output field is never user-supplied, and the API server validates
+			// status, so requiring it would let GCP's response fail our own schema.
+			name: "OUTPUT_ONLY wins over REQUIRED",
+			behaviors: []annotations.FieldBehavior{
+				annotations.FieldBehavior_REQUIRED,
+				annotations.FieldBehavior_OUTPUT_ONLY,
+			},
+			opts: WriteOptions{EmitRequired: true},
+		},
+	}
+
+	for _, g := range grid {
+		t.Run(g.name, func(t *testing.T) {
+			fieldOpts := &descriptorpb.FieldOptions{}
+			if g.behaviors != nil {
+				proto.SetExtension(fieldOpts, annotations.E_FieldBehavior, g.behaviors)
+			}
+
+			fdp := &descriptorpb.FileDescriptorProto{
+				Name:    protoPtr("test.proto"),
+				Package: protoPtr("google.cloud.test.v1"),
+				MessageType: []*descriptorpb.DescriptorProto{
+					{
+						Name: protoPtr("TestMessage"),
+						Field: []*descriptorpb.FieldDescriptorProto{
+							{
+								Name:    protoPtr("project_id"),
+								Number:  protoPtr(int32(1)),
+								Type:    typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING),
+								Options: fieldOpts,
+							},
+						},
+					},
+				},
+			}
+
+			fd, err := protodesc.NewFile(fdp, nil)
+			if err != nil {
+				t.Fatalf("failed to create file descriptor: %v", err)
+			}
+
+			msg := fd.Messages().ByName("TestMessage")
+			var buf bytes.Buffer
+			WriteField(&buf, msg.Fields().Get(0), msg, 0, false, g.opts)
+
+			got := strings.Contains(buf.String(), "// +required")
+			if got != g.wantMarker {
+				t.Errorf("+required present = %v, want %v\noutput:\n%s", got, g.wantMarker, buf.String())
+			}
+		})
+	}
+}
+
 func TestWriteMessage(t *testing.T) {
 	fdp := &descriptorpb.FileDescriptorProto{
 		Name:    protoPtr("test.proto"),
@@ -477,7 +563,7 @@ func TestWriteMessage(t *testing.T) {
 
 	msg := fd.Messages().ByName("TestMessage")
 	var buf bytes.Buffer
-	WriteMessage(&buf, msg)
+	WriteMessage(&buf, msg, WriteOptions{})
 
 	got := buf.String()
 	expected := "\n// +kcc:proto=google.cloud.test.v1.TestMessage\ntype TestMessage struct {\n\t// +kcc:proto:field=google.cloud.test.v1.TestMessage.project_id\n\tProjectID *string `json:\"projectID,omitempty\"`\n}\n"
