@@ -144,6 +144,29 @@ assumption that it was the low-risk phase, and then measured. Regenerating all 1
 | `required:` added under `spec:` | 223 |
 | `required:` added under `status:` | **18** |
 
+**Consistency with the proto is not the same as desirability.** An earlier draft argued that
+tightening the CRD is good because it moves the failure from a GCP round-trip to `kubectl apply`.
+That is wrong, and the opposite is closer to the truth: KCC will never know an API's rules as well as
+the team that owns it, so deferring to the API is the safer default. `required` is also a
+backwards-incompatible change, so absent certainty, lax presence validation is preferable. What the
+measurement establishes is only that these additions agree with what the proto declares.
+
+**All 241 additions are nested, and nested `required` is conditional by construction.** In JSON
+Schema, a `required` list inside an object applies only when that object is present, so
+`httpHeaders[].name` means "if you supply a header it must have a name" — not "every object must have
+a header". The dangerous class is a `required` at the *top level* of `spec`, where it means "always".
+
+That class is structurally empty here. `+required` is emitted by `WriteField` into
+`types.generated.go`, which holds only nested types; the top-level `<Kind>Spec` lives in the
+hand-written `<kind>_types.go`, which `generate-types` never overwrites. Verified across the whole
+tree: no generated `<Kind>Spec` struct belongs to a CRD of the same service. (Three apparent hits —
+`BigQueryRoutineSpec`, `BigQueryTableSpec`, `ServiceSpec` — are datacatalog's own nested proto types
+colliding by name with unrelated Kinds in other groups.)
+
+**The real risk is a type reused across contexts with different requirements**, and the 18 status
+entries are exactly that. Nested `required` handles "optional parent, required child" correctly; what
+it cannot express is "required when a user supplies this, not guaranteed when GCP returns it".
+
 The status entries are the reason for the gate. Nested message types are generated **once** by
 `WriteMessage` and shared between the spec and the observed state, so a marker derived from a field's
 own annotation lands in every schema position that type occupies — redis `PscConfig` /
@@ -165,22 +188,72 @@ that opted in.
 Thread `pattern` and `plural` into `APIArgs` so the identity template stops hardcoding
 project+location and naive pluralisation.
 
-Measured over the 1417 messages carrying `google.api.resource`:
+Measured over the 1417 messages carrying `google.api.resource`, using
+`protoapi.GetResourceMetadata` — the production path — rather than a separate reimplementation:
 
-| Guess | Wrong for | Share |
+| Bucket | Count | Share |
 |---|---:|---:|
-| Collection segment, `ToLower(name) + "s"` | 852 / 1417 | **60.1%** |
-| `projects/*/locations/*` parent | 912 / 1417 | 64.4%, across 257 distinct shapes |
+| correct | 562 | 39.7% |
+| wrong: casing only | 554 | 39.1% |
+| wrong: pluralisation | 198 | 14.0% |
+| not comparable (pattern declares no collection) | 103 | 7.3% |
+| **wrong overall** | **752** | **53.1%** |
 
-The collection fails two ways — casing and English:
+*(An earlier draft said 60.1%. That came from a throwaway probe that normalised every `{placeholder}`
+to `*` and took the second-to-last segment, so patterns ending in a literal — `projects/{project}/locations`
+— were scored as wrong when there is simply nothing to compare. Those are the 103 above.)*
 
-| Proto message | Template emits | API uses |
-|---|---|---|
-| `LbTrafficExtension` | `lbtrafficextensions` | `lbTrafficExtensions` |
-| `Batch` | `batchs` | `batches` |
-| `Policy` | `policys` | `policies` |
+The two failure modes are worth keeping apart, because they are different arguments:
 
-The first row is the pilot, so this was already being fixed by hand.
+| Mode | Proto message | Template emits | API uses |
+|---|---|---|---|
+| casing | `LbTrafficExtension` | `lbtrafficextensions` | `lbTrafficExtensions` |
+| casing | `ChannelGroup` | `channelgroups` | `channelGroups` |
+| pluralisation | `Batch` | `batchs` | `batches` |
+| pluralisation | `Property` | `propertys` | `properties` |
+
+The `LbTrafficExtension` row is the pilot, so this was already being fixed by hand.
+
+**On casing specifically: this is not KRM naming.** Two different namespaces, and only the second is
+in scope here:
+
+| | Example | Set by | Covered by |
+|---|---|---|---|
+| KRM field name | `spec.forwardingRules` | `GetJSONForKRM` | `TestCRDsAcronyms` |
+| GCP collection segment | `projects/p/locations/l/lbTrafficExtensions/x` | identity template | nothing |
+
+KRM field names must not follow proto casing, and nothing here changes them — `GetJSONForKRM` is
+untouched and no CRD field name moves. The collection segment is part of a **GCP resource name**,
+written into `status.externalRef` and into request URLs, so it has to match GCP byte-for-byte.
+
+### The naive casing has already shipped, and it is observably wrong
+
+Auditing the 90 `_identity.go` files that can be matched to a declared pattern finds **9 mismatches,
+every one of them casing**:
+
+`apphubdiscoveredservice`, `apphubdiscoveredworkload`, `bigquerydatapolicy`,
+`clouddmsconversionworkspace`, `dataprocnodegroup`, `discoveryenginedatastore`,
+`managedkafkaconsumergroup`, `netappbackupvault`, `storagemanagedfolder`.
+
+Checked against an oracle independent of the proto — recorded GCP traffic under
+`pkg/test/resourcefixture/testdata/` — camelCase is what GCP actually receives: `backupVaults` 27
+files to 0, `nodeGroups` 6 to 0, `conversionWorkspaces` 5 to 0.
+
+`StorageManagedFolder` is the clearest case, because both halves are committed in the same fixture
+directory:
+
+```
+_http.log                    …/managedFolders/managedfolder-${uniqueId}   <- real GCP
+_generated_object_….yaml     externalRef: …/managedfolders/managedfolder-${uniqueId}   <- KCC's status
+```
+
+KCC calls GCP correctly and then writes a resource name into `status.externalRef` that GCP would not
+recognise. Nothing compares the two, so it passes.
+
+**No existing test covers this.** `TestCRDsAcronyms` checks acronym casing in CRD *field* names,
+`shortname_pluralization.txt` checks CRD `shortNames`, and `naming_violations.txt` checks *file*
+naming. `naming_test.go:67` mentions `_identity.go` only as a filename suffix. Nothing inspects a
+collection segment or compares it to the proto pattern — which is why these nine shipped unnoticed.
 
 **Parent handling is deliberately narrow.** Only `projects/*` and `projects/*/locations/*` are
 specialised, because those are the shapes the scaffolded spec supports; an org- or folder-parented
