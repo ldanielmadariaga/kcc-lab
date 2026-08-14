@@ -1,7 +1,14 @@
 # Greenfield generator mechanics: mechanising the manual half
 
-**Status:** design, not yet implemented. **Scope:** the experimental sandbox (`kcc-lab`), not
+**Status:** all four phases implemented. **Scope:** the experimental sandbox (`kcc-lab`), not
 upstream policy.
+
+| Phase | Change | PR | Gated? |
+|---|---|---|---|
+| 1 | `+required` from `field_behavior` | #14 | `--emit-required-from-proto` |
+| 2 | `google.api.resource` into the scaffolder | #15 | no — only writes new files |
+| 3 | judgement queue + `[refs]` suppression | #16 | n/a |
+| 4 | pre-populate the Spec | #17 | `--prepopulate-spec` |
 
 Companion to [`greenfield-bulk-generation.md`](greenfield-bulk-generation.md). That document is the
 *procedure* an agent follows per resource, given the generator as it exists today. This one is about
@@ -201,6 +208,31 @@ Queue entries cover only what nothing can derive: reference candidates, delibera
 renames. Required/optional divergence is *not* a queue entry — with phase 1 the annotation answers it
 mechanically, and only deliberate contradiction of the proto needs a human.
 
+**The queue must always mark the resource, whatever the detector found.** This was designed
+annotation-driven — field entries from `google.api.resource_reference` — and implementing it killed
+that design. `LbTrafficExtension` carries no `resource_reference` on any field, including
+`forwarding_rules`, which is exactly the field that has to become a ref:
+
+```
+google.cloud.networkservices.v1.LbTrafficExtension
+  name                  resource_reference: -
+  forwarding_rules      resource_reference: -   <-- must become a ref
+  extension_chains      resource_reference: -
+```
+
+An annotation-only queue would have been empty, so no file would have been written, no suppression
+would have happened, and the resource would have gone straight into the ratchet and failed — the
+precise thing the queue exists to prevent. So a resource-level entry is emitted unconditionally, and
+field-level entries are a bonus rather than the mechanism.
+
+**Emit undecided fields, do not omit them.** A field emitted with a listed open question is visible;
+an omitted one is invisible to every other check, because a field absent from the CRD cannot be
+reported as missing from it.
+
+**ObservedState is out of scope.** Output fields reached through nested messages need the generated
+`<Proto>ObservedState` variants rather than the plain structs, and choosing per field is its own
+problem.
+
 **Gate phase 4 behind a flag** on `generate-types` (alongside the existing `--skip-scaffold-files`),
 set per service in `apis/<service>/generate.sh`. Not the bulk manifest: the documented procedure
 appends the Kind to `greenfield_bulk.txt` *after* generation runs, so a generator gated on it would
@@ -252,6 +284,16 @@ surface immediately rather than at the judgement pass.
 `loadDeferredRefs` + `refEntryKey` + `.Has()` (`crds_test.go:254-282`) is already a
 load-key-subtract pipeline over this exact entry format. Suppression is a second call to the same
 pattern, not new machinery.
+
+### Suppression must not look like a fix
+
+A queued resource contributes no findings, so anything it *already owed* reads as removed, gets
+pruned from the ratchet, and then reappears as a **new** violation the moment it graduates — failing
+the check for work nobody did.
+
+The fix is to carry those baseline entries forward, so queueing only ever stops findings being
+*added*. Verified against `AlloyDBBackup`: queueing it without the carry-forward reported its two
+entries as fixed; with it, they stay.
 
 ## 6. Two caveats
 
