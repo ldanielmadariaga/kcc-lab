@@ -580,3 +580,105 @@ func labelDescriptor(l descriptorpb.FieldDescriptorProto_Label) *descriptorpb.Fi
 func typeDescriptor(t descriptorpb.FieldDescriptorProto_Type) *descriptorpb.FieldDescriptorProto_Type {
 	return &t
 }
+
+// TestNeedsObservedStateRequired covers the shape that made this necessary: a message
+// with a REQUIRED field and no OUTPUT_ONLY field anywhere, used from both the spec and
+// the observed state. Container's NodeTaint is the real example.
+//
+// Without a separate ObservedState struct the two positions share one Go type, so the
+// "// +required" marker WriteMessage stamps on it also lands in the status schema.
+func TestNeedsObservedStateRequired(t *testing.T) {
+	requiredOptions := &descriptorpb.FieldOptions{}
+	proto.SetExtension(requiredOptions, annotations.E_FieldBehavior,
+		[]annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED})
+
+	outputOnlyOptions := &descriptorpb.FieldOptions{}
+	proto.SetExtension(outputOnlyOptions, annotations.E_FieldBehavior,
+		[]annotations.FieldBehavior{annotations.FieldBehavior_OUTPUT_ONLY})
+
+	fdp := &descriptorpb.FileDescriptorProto{
+		Name:    protoPtr("test.proto"),
+		Package: protoPtr("google.cloud.test.v1"),
+		MessageType: []*descriptorpb.DescriptorProto{
+			{
+				// No OUTPUT_ONLY field, so today this deduplicates to a single struct.
+				Name: protoPtr("SharedConfig"),
+				Field: []*descriptorpb.FieldDescriptorProto{
+					{
+						Name:    protoPtr("key"),
+						Number:  protoPtr(int32(1)),
+						Type:    typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING),
+						Options: requiredOptions,
+					},
+					{
+						Name:   protoPtr("value"),
+						Number: protoPtr(int32(2)),
+						Type:   typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING),
+					},
+				},
+			},
+			{
+				Name: protoPtr("RootMessage"),
+				Field: []*descriptorpb.FieldDescriptorProto{
+					{
+						// Spec-side use.
+						Name:     protoPtr("config"),
+						Number:   protoPtr(int32(1)),
+						Type:     typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE),
+						TypeName: protoPtr(".google.cloud.test.v1.SharedConfig"),
+					},
+					{
+						// Status-side use of the same message.
+						Name:     protoPtr("observed_config"),
+						Number:   protoPtr(int32(2)),
+						Type:     typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE),
+						TypeName: protoPtr(".google.cloud.test.v1.SharedConfig"),
+						Options:  outputOnlyOptions,
+					},
+				},
+			},
+		},
+	}
+
+	fd, err := protodesc.NewFile(fdp, nil)
+	if err != nil {
+		t.Fatalf("failed to create file descriptor: %v", err)
+	}
+	shared := fd.Messages().ByName("SharedConfig")
+	root := fd.Messages().ByName("RootMessage")
+
+	t.Run("EmitRequired off leaves the dedup alone", func(t *testing.T) {
+		g := &TypeGenerator{}
+		if g.needsObservedState(shared, make(map[string]bool)) {
+			t.Error("SharedConfig should not need an ObservedState struct when the marker is not emitted; " +
+				"forcing one here would change generated output for services that have not opted in")
+		}
+	})
+
+	t.Run("EmitRequired on forces a state-only struct", func(t *testing.T) {
+		g := &TypeGenerator{}
+		g.writeOptions = WriteOptions{EmitRequired: true}
+		if !g.needsObservedState(shared, make(map[string]bool)) {
+			t.Error("SharedConfig carries a REQUIRED field and is reachable from status, so it needs its " +
+				"own ObservedState struct; sharing one would put required: into the status schema")
+		}
+	})
+
+	// The forced struct is written from OutputFields, so it must not be empty. It is not,
+	// because a message only reaches outputDeps once a field has been appended to it - here
+	// via the OUTPUT_ONLY parent, which forces every field in.
+	t.Run("the forced struct has fields to write", func(t *testing.T) {
+		g := &TypeGenerator{}
+		g.writeOptions = WriteOptions{EmitRequired: true}
+		outputDeps := make(map[string]*OutputMessageDetails)
+		g.identifyOutputs(root, make(map[string]string), outputDeps, false)
+
+		details, ok := outputDeps["google.cloud.test.v1.SharedConfig"]
+		if !ok {
+			t.Fatal("expected SharedConfig in outputDeps, reached through the OUTPUT_ONLY parent")
+		}
+		if len(details.OutputFields) != 2 {
+			t.Errorf("expected both fields to be written into the ObservedState struct, got %d", len(details.OutputFields))
+		}
+	})
+}
