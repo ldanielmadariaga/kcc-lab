@@ -28,7 +28,7 @@ The coverage figures matter less than what *absence* implies. For `field_behavio
 That asymmetry, not the percentages, is why the design derives field behaviour mechanically and
 treats references as judgement.
 
-## Phase 1: what emitting `+required` actually changes
+## Phase 1: what `+required` changes
 
 Regenerating all 116 services with the marker enabled:
 
@@ -75,7 +75,7 @@ the team that owns it, and `required` is backwards-incompatible — and invertin
 these additions agree with what the proto declares, which is a statement about consistency, not
 desirability.
 
-## Phase 2: how often the template's guess is wrong
+## Phase 2: how wrong the guess is
 
 Measured over the 1417 messages carrying `google.api.resource`, using `protoapi.GetResourceMetadata`
 — the production path — rather than a separate reimplementation:
@@ -116,7 +116,7 @@ targets against field names, produced **2,164** findings against **78** for desc
 alone. Abandoned. This is the concrete reason references are treated as judgement rather than
 derivation: the fallback is not merely incomplete, it is noisy enough to be worse than nothing.
 
-## Rejected: an annotation-driven judgement queue
+## Rejected: annotation-driven queue
 
 The queue was designed to take field-level entries from `google.api.resource_reference`.
 Implementing it killed that design. `LbTrafficExtension` — the pilot — carries no

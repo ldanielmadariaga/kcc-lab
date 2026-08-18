@@ -27,17 +27,19 @@ judgement that should be tracked explicitly rather than left implicit.
 
 ## Why the file was manual
 
-**Two passes write Go files during generation, and they share no state.** The type generator
-(`pkg/codegen/typegenerator.go`) has the full message descriptor: it walks every field, resolves
-each to a Go type, and splits Spec from ObservedState by checking `IsFieldBehavior(f,
-annotations.FieldBehavior_OUTPUT_ONLY)` — three call sites, at lines 130, 168 and 363. The
-scaffolder (`scaffold/apis.go`), which writes `<kind>_types.go`, cannot see the proto message at
-all: `APIScaffolder` holds five strings, and `buildAPIArgs` passes only names onward — `Kind`,
-`KindProtoTag`, `ProtoResource`, `ProtoMessageName`, `ProtoMessageFullName` — so the template could
-not enumerate fields even if it wanted to.
+Two passes write Go files during generation, and neither can see what the other has.
 
-The identity template shows the limitation most visibly, because it has to guess at facts it cannot
-look up:
+**The type generator** (`pkg/codegen/typegenerator.go`) works from the full message descriptor. It
+walks every field, resolves each to a Go type, and splits Spec from ObservedState on
+`IsFieldBehavior(f, annotations.FieldBehavior_OUTPUT_ONLY)` — three call sites, at lines 130, 168
+and 363.
+
+**The scaffolder** (`scaffold/apis.go`), which writes `<kind>_types.go`, never receives the message.
+`APIScaffolder` carries five strings, and `buildAPIArgs` forwards names only: `Kind`,
+`KindProtoTag`, `ProtoResource`, `ProtoMessageName`, `ProtoMessageFullName`. No descriptor travels
+that path, so the template has no field list to work from.
+
+The identity template makes the gap visible, because it has to assert facts it cannot look up:
 
 ```go
 // template/apis/identity.go
@@ -45,28 +47,31 @@ return "projects/" + p.ProjectID + "/locations/" + p.Location          // assume
 return i.parent.String() + "/{{.ProtoMessageName | ToLower}}s/" + i.id // plural = name + "s"
 ```
 
-Both facts are stated in the proto's `google.api.resource` annotation, as `pattern` and `plural`.
-Neither reaches the scaffolder. `Please EDIT it!` is the template admitting it guessed.
+The proto states both, in `google.api.resource`, as `pattern` and `plural`. Neither reaches the
+scaffolder, and `Please EDIT it!` is the template conceding the guess.
 
-So the field data exists, and the file that needs it is written by a pass that cannot see it. A
-human copies fields out of the commented-out block `prunetypes` produced into a scaffold written
-without any knowledge of them — and that transcription is where the pilot's defects came from: a
-`Location string` in the scaffold, a 2025 copyright, a missing `stability-level` label. None were
-judgement errors.
+What this leaves behind is a transcription step. `prunetypes` comments out the complete top-level
+struct the type generator produced, because nothing references it yet, and a human copies fields
+from that commented block into a scaffold that knows nothing about them. Every defect in the pilot
+came from that step — a `Location string` left in the scaffold, a 2025 copyright, a missing
+`stability-level` label — and not one of them was a judgement error.
 
-**Proto annotations are authoritative where they appear, but coverage is partial by nature** — there
-will always be fields and services nobody annotated, so annotations are a strong input to
-generation, never a complete one. What matters more than coverage is what *absence* implies, and it
-differs sharply by annotation:
+### What the annotations can carry
+
+Annotations are authoritative where they appear and partial by nature: there will always be fields
+and services nobody annotated. That makes them a strong input to generation and never a complete
+one. The useful question is not how much coverage each has, but what a *missing* annotation lets you
+conclude — and on that the two this design depends on are opposites:
 
 | Annotation | Coverage | Absent means | Fallback |
 |---|---|---|---|
-| `field_behavior` | 40.7% of fields | assume optional | inert — that is already the behaviour |
+| `field_behavior` | 40.7% of fields | assume optional | inert — already the behaviour |
 | `resource_reference` | ~15%, 0% across compute | nothing can be concluded | must actively guess |
 
-This is why the two are treated differently below. Reading an annotation where it exists buys far
-more for field behaviour, where being wrong costs nothing, than for references, where the fallback
-*is* the problem.
+Reading `field_behavior` wherever it appears therefore costs nothing on the fields where it is
+missing. Reading `resource_reference` the same way leaves the hard half of the problem untouched,
+because there the fallback *is* the problem. That asymmetry is why the phases below derive field
+behaviour mechanically and route references to a human.
 
 ## What is derivable, and what is judgement
 
@@ -105,76 +110,74 @@ consistency, not an argument that the constraint is desirable.
 existing CRD gets a flag and stays off by default; only phases that write genuinely new files run
 unconditionally.
 
-**Phase ordering.** Phases 1–2 are independent. Phase 3 depends on the judgement queue, which is
-described after it as phase 4: the queue is small and exists to serve phase 3, so the substantive
-change reads first.
-
 ### Phase 1 — emit `+required` from `field_behavior`
 
-`+required` is what produces the CRD's `required:` list. Without it every field carrying
-`json:",omitempty"` — which the generator emits for everything — is optional, so a generated
-resource has an entirely permissive spec and nothing fails. `+optional` is deliberately **not**
-emitted: `omitempty` already implies optional to controller-gen.
+`+required` is what produces the CRD's `required:` list. Without it every field the generator writes
+carries `json:",omitempty"` and is therefore optional, so a generated resource accepts almost
+anything. `+optional` is deliberately not emitted: `omitempty` already tells controller-gen the same
+thing.
 
-**Gated behind `--emit-required-from-proto`, default off.** Applying it to all 116 services adds 638
-markers and changes 47 CRDs. Every addition is nested, and nested `required` is conditional by
-construction — it binds only when the enclosing object is present — so the dangerous "always
-required" class at the top level of `spec` is structurally empty here.
+Across all 116 services this adds 638 markers and changes 47 CRDs, and nearly all of that is safe.
+Every addition lands on a nested type, and a nested `required` binds only when its enclosing object
+is present. The class that would be dangerous — a `required` at the top level of `spec`, which means
+"always" — cannot arise, because the top-level Spec is hand-written and `generate-types` never
+overwrites it.
 
-**The gate exists for 18 additions under `status:`**, which are the one case nesting does not cover.
-Nested message types are generated **once** by `WriteMessage` and shared between spec and observed
-state, so a marker taken from a field's own annotation lands in every schema position that type
-occupies — redis `PscConfig` / `PscConnection` are the clearest case. CRD structural validation
-covers the status subresource, so if GCP returns an object missing such a field, KCC writes a status
-the API server rejects and reconciliation fails at runtime. That is worse than an apply-time
-tightening, and it is invisible if you only look at the field being annotated. ([Numbers and the
-structural argument in
-full.](greenfield-generator-findings.md#phase-1-what-emitting-required-actually-changes))
+**The 18 additions under `status:` are the exception, and the reason for the flag.** Nested message
+types are generated once by `WriteMessage` and shared between the spec and the observed state, so a
+marker taken from one field's annotation lands in every schema position that type occupies — redis
+`PscConfig` and `PscConnection` are the clearest case. Structural validation covers the status
+subresource, so a GCP response that omits such a field makes KCC write a status its own API server
+rejects, and reconciliation fails at runtime. Nothing about the annotated field reveals this; it is
+visible only from where the type is reused.
 
-Suppressing it in `WriteObservedStateMessage` does not fix it, because the shared struct is written
-by `WriteMessage`. It is done anyway, on the principle that an observed-state struct describes what
-GCP returned and should never constrain it.
+**Gated behind `--emit-required-from-proto`, default off.** The counts, and the verification that
+the top-level class is empty, are in the
+[findings doc](greenfield-generator-findings.md#phase-1-what-required-changes).
 
-*Remaining risk once opted in:* a resource whose proto marks a field REQUIRED that KCC intentionally
-treats as optional. That is a real divergence and needs a decision, but it is now confined to
-services that opted in.
+`WriteObservedStateMessage` suppresses the marker as well. That does not solve the sharing problem,
+since `WriteMessage` has already written the struct, but an observed-state type describes what GCP
+returned and has no business constraining it.
+
+**Remaining risk once a service opts in:** a proto marking a field REQUIRED where KCC deliberately
+treats it as optional. That is a real divergence and needs a decision, but it is now confined to the
+services that asked for it.
 
 ### Phase 2 — feed `google.api.resource` into the scaffolder
 
-Thread `pattern` and `plural` into `APIArgs` so the identity template stops hardcoding
-project+location and naive pluralisation. The guess it replaces is [wrong 53.1% of the
-time](greenfield-generator-findings.md#phase-2-how-often-the-templates-guess-is-wrong), split
-between casing (`lbtrafficextensions` for `lbTrafficExtensions`) and pluralisation (`batchs` for
-`batches`).
+Thread `pattern` and `plural` through `APIArgs`, so the identity template reads the declared
+resource name instead of manufacturing one from the message name. What it replaces is wrong for more
+than half the messages that declare a pattern: `lbtrafficextensions` where the API says
+`lbTrafficExtensions`, `batchs` where it says `batches`. Measured in the
+[findings doc](greenfield-generator-findings.md#phase-2-how-wrong-the-guess-is).
 
-**On casing specifically: this is not KRM naming.** Two different namespaces, and only the second is
-in scope:
+**This is a GCP resource name, not a KRM field name.** Two separate namespaces, and only the second
+is in scope:
 
-| | Example | Set by | Covered by |
+| | Example | Set by | Checked by |
 |---|---|---|---|
 | KRM field name | `spec.forwardingRules` | `GetJSONForKRM` | `TestCRDsAcronyms` |
-| GCP collection segment | `projects/p/locations/l/lbTrafficExtensions/x` | identity template | nothing |
+| GCP collection segment | `projects/p/locations/l/lbTrafficExtensions/x` | identity template | `TestIdentityCollectionCasing` (PR #18) |
 
-KRM field names must not follow proto casing, and nothing here changes them — `GetJSONForKRM` is
-untouched and no CRD field name moves. The collection segment is part of a **GCP resource name**,
-written into `status.externalRef` and into request URLs, so it has to match GCP byte-for-byte.
+Field names must *not* follow proto casing, and nothing here touches them — `GetJSONForKRM` is
+unchanged and no CRD field moves. The collection segment goes into `status.externalRef` and into
+request URLs, so it has to match GCP byte for byte.
 
-**The naive casing has already shipped.** Nine `_identity.go` files emit a lowercased collection
-segment where GCP uses camelCase, one of them reachable through a user-supplied `external:` value.
-This phase fixes the generator, not those files — the scaffolder never rewrites an existing resource
-— and PR #18 ratchets four of the nine rather than correcting them, because changing a segment
-changes a published `status.externalRef`. Evidence and remaining work:
+**Nine resources already ship with the wrong segment**, one of them reachable through a
+user-supplied `external:` value. This phase changes the template, not those files: the scaffolder
+never rewrites an existing resource, and correcting one would change a published
+`status.externalRef`, so PR #18 ratchets four of the nine rather than fixing them. Evidence and
+remaining work in
 [`experiments/identity-collection-casing.md`](experiments/identity-collection-casing.md).
 
-**Parent handling is deliberately narrow.** Only `projects/*` and `projects/*/locations/*` are
-specialised, because those are the shapes the scaffolded spec supports; an org- or folder-parented
-resource has no matching spec field, so generating code for it would not compile. Everything else
-keeps the projects/locations shape and gains a TODO naming the real pattern. The collection fix
-applies regardless of parent shape.
+**Parent handling stays narrow on purpose.** Only `projects/*` and `projects/*/locations/*` get
+specialised treatment, because those are the shapes the scaffolded spec has fields for. An org- or
+folder-parented resource has nowhere to put its parent, so generated code for it would not compile;
+everything else keeps the projects/locations shape and gains a TODO naming its real pattern. The
+collection segment is fixed either way.
 
-**No opt-in flag needed**, unlike phase 1: every scaffold path is guarded by an "already exists,
-skipping" check, so the scaffolder only ever writes new files and cannot change an existing
-resource.
+**No flag here**, unlike phase 1: every scaffold path is guarded by an "already exists, skipping"
+check, so this phase can only add new files. There is no existing resource for it to change.
 
 ### Phase 3 — pre-populate the Spec
 
@@ -189,10 +192,10 @@ answers it mechanically, and only deliberate contradiction of the proto needs a 
 
 **The queue must always mark the resource, whatever the detector found.** A resource-level entry is
 emitted unconditionally and field-level entries are a bonus, because the annotations that would
-drive field-level detection are [routinely absent on exactly the fields that
-matter](greenfield-generator-findings.md#rejected-an-annotation-driven-judgement-queue). A queue
-that only fired on annotations would write no file for such a resource, suppress nothing, and send
-it straight into the ratchet to fail — the precise thing the queue exists to prevent.
+drive field-level detection are routinely absent on exactly the fields that matter — see
+[the rejected design](greenfield-generator-findings.md#rejected-annotation-driven-queue). A queue
+firing only on annotations would write no file for such a resource, suppress nothing, and send it
+straight into the ratchet to fail, which is the precise thing the queue exists to prevent.
 
 **Emit undecided fields, do not omit them.** A field emitted with a listed open question is visible;
 an omitted one is invisible to every other check, because a field absent from the CRD cannot be
@@ -216,14 +219,14 @@ the next resource to refine.
 
 ## Where a decision gets recorded
 
-`TestMissingRefs` already maintains three files, and they are not interchangeable. The distinction
-that matters is **derived versus curated**: `missingrefs.txt` is recomputed from the CRDs each run
-and written through `CompareRatchetFile` (`tests/apichecks/crds_test.go:192`), so anything a human
-writes into it is erased on the next `WRITE_GOLDEN_OUTPUT=1` run. `refs_deferred.txt` is the ledger
-— hand-edited, one stated reason per entry, subtracted from the findings before the ratchet applies
-(`crds_test.go:178-186`).
+Three files already exist for this, and what separates them is **derived versus curated**.
+`missingrefs.txt` is recomputed from the CRDs on every run and written through `CompareRatchetFile`
+(`tests/apichecks/crds_test.go:192`), so a reason written into it survives exactly until the next
+`WRITE_GOLDEN_OUTPUT=1`. `refs_deferred.txt` is the opposite — hand-edited, one stated reason per
+entry, subtracted from the findings before the ratchet applies (`crds_test.go:178-186`). It is the
+only one of the three that can carry an explanation.
 
-Adding the queue gives four states, and a resource is in exactly one:
+The queue adds a fourth state, and a resource sits in exactly one of them:
 
 | State | File | Written by | Holds a reason? |
 |---|---|---|---|
@@ -232,22 +235,23 @@ Adding the queue gives four states, and a resource is in exactly one:
 | triaged: still owed, actionable | `missingrefs.txt` | computed ratchet | no — recomputed each run |
 | structurally impossible | `refs_not_representable.txt` | computed golden | reason set by the classifier |
 
-**Suppression is load-bearing, not bookkeeping.** `missingrefs.txt` is a ratchet: new entries fail
-the check, and a mechanically generated resource has ref-shaped string fields that produce exactly
-those entries. Without suppression every mechanical-pass PR is blocked on day one. So while a
-resource has open entries in its service's queue, its `[refs]` findings are suppressed; clearing the
-queue graduates it and the normal ratchet takes over. `loadDeferredRefs` + `refEntryKey` + `.Has()`
-(`crds_test.go:254-282`) is already a load-key-subtract pipeline over this entry format, so
-suppression is a second call to the same pattern, not new machinery.
+**Suppression is load-bearing, not bookkeeping.** `missingrefs.txt` fails on new entries, and a
+mechanically generated resource arrives full of ref-shaped strings that are exactly that. Without
+suppression the first mechanical-pass PR is blocked on the day it opens.
 
-Suppression is scoped to `[refs]` only. Every other greenfield check — proto annotations,
-`observedGeneration`, copyright, labels, CRD conformance — still applies, so mechanical defects
-surface immediately rather than at the judgement pass.
+So a resource with open entries in its service's queue has its `[refs]` findings dropped, and
+clearing the queue graduates it to the normal ratchet. The machinery for this already exists:
+`loadDeferredRefs` + `refEntryKey` + `.Has()` (`crds_test.go:254-282`) is a load-key-subtract
+pipeline over this same entry format, and suppression is a second call to it.
 
-**Suppression must not look like a fix.** A queued resource contributes no findings, so anything it
-*already owed* reads as removed, gets pruned from the ratchet, and reappears as a **new** violation
-the moment it graduates — failing the check for work nobody did. Baseline entries therefore carry
-forward, so queueing only ever stops findings being *added*.
+Only `[refs]` is suppressed. Proto annotations, `observedGeneration`, copyright, labels and CRD
+conformance all still apply, so a mechanical defect surfaces on the PR that generated it rather than
+waiting for the judgement pass.
+
+**Suppression must not read as a fix.** A queued resource reports nothing, so whatever it already
+owed looks resolved, gets pruned from the ratchet, and returns as a *new* violation the moment it
+graduates — failing the check for work nobody did. Baseline entries therefore carry forward:
+queueing can stop a finding being added, never remove one already recorded.
 
 ## Two caveats
 
