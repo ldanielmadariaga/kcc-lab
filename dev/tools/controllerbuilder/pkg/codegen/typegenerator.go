@@ -141,12 +141,6 @@ func (g *TypeGenerator) visitMessage(message protoreflect.MessageDescriptor) err
 // needsObservedState determines if a message requires a separate ObservedState struct.
 // If the regular Go struct and the ObservedState version are identical, we fall back
 // to using the regular Go struct to reduce redundancy.
-//
-// Two things make them differ. An OUTPUT_ONLY field appears only in the observed-state
-// version. A REQUIRED field is marked "// +required" only in the spec-side version,
-// because WriteObservedStateMessage deliberately does not emit the marker - so sharing
-// one struct would put required: into the status schema, which the API server validates
-// against a body GCP produces rather than one the user wrote.
 func (g *TypeGenerator) needsObservedState(msg protoreflect.MessageDescriptor, seen map[string]bool) bool {
 	fqn := string(msg.FullName())
 	if val, ok := seen[fqn]; ok {
@@ -157,14 +151,6 @@ func (g *TypeGenerator) needsObservedState(msg protoreflect.MessageDescriptor, s
 	for i := 0; i < msg.Fields().Len(); i++ {
 		f := msg.Fields().Get(i)
 		if IsFieldBehavior(f, annotations.FieldBehavior_OUTPUT_ONLY) {
-			seen[fqn] = true
-			return true
-		}
-		// Only when the marker is actually being emitted: with EmitRequired off
-		// nothing writes "// +required", the two versions stay identical, and the
-		// dedup above is still correct. Gating here is what keeps generated output
-		// byte-identical for services that have not opted in.
-		if g.writeOptions.EmitRequired && IsFieldBehavior(f, annotations.FieldBehavior_REQUIRED) {
 			seen[fqn] = true
 			return true
 		}
