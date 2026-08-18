@@ -188,6 +188,7 @@ When promoting a resource from `v1alpha1` to `v1beta1`, we should keep `krm` as 
 * `docs/ai/greenfield-tracker.md` describes how to build and maintain the greenfield work tracker, and how to pick work from it. (Sandbox-only.)
 * `docs/ai/greenfield-bulk-generation.md` is the per-resource Step 1 procedure (types + CRD), verified end-to-end on `NetworkServicesLBTrafficExtension`. (Sandbox-only.)
 * `docs/ai/greenfield-generator-mechanics.md` is the design for mechanising the manual half of Step 1: `+required` from `field_behavior`, parent shape from `google.api.resource`, Spec pre-population, and a per-service `needs_judgement_call.txt` queue for what only a human can decide. (Sandbox-only.)
+* `docs/ai/experiments/identity-collection-casing.md` records nine `_identity.go` files whose GCP collection segment is lowercased where the API uses camelCase, the recorded-traffic oracle that proves it, and what the PR #18 check does and does not cover. (Sandbox-only.)
 * `docs/ai/refs-decision-guide.md` decides when a field should be a Ref. **Read its provenance section first**: much of the ref tooling here is a sandbox experiment rather than team policy, and the two are easy to confuse. (Sandbox-only.)
 
 # Helpful scripts
