@@ -355,9 +355,35 @@ func isPatternField(fieldPath, desc string) bool {
 		}
 	}
 	trimmed := strings.TrimSpace(desc)
-	return strings.HasPrefix(trimmed, "Regex") ||
+	if strings.HasPrefix(trimmed, "Regex") ||
 		strings.HasPrefix(trimmed, "Optional. Regex") ||
-		strings.Contains(desc, "Regex to test")
+		strings.Contains(desc, "Regex to test") {
+		return true
+	}
+
+	// A glob names a SET of objects, so it is not a reference in any form: a Ref
+	// identifies one resource. This is the same reasoning as the regex cases
+	// above, applied to wildcard paths - e.g. aiplatform's GcsSource.uris, "Google
+	// Cloud Storage URI(-s) to the input file(s). May contain wildcards."
+	//
+	// NOTE: this rule is ours, not upstream policy. See
+	// docs/ai/refs-decision-guide.md for what is team-vetted and what is not.
+	return mentionsWildcard(desc)
+}
+
+// mentionsWildcard reports whether a description says its value may be a glob.
+//
+// Deliberately conservative: it requires the description to say so, rather than
+// inferring from a literal "*" anywhere, because "*" appears in ordinary prose
+// (markdown emphasis, footnote markers) far more often than it denotes a glob.
+func mentionsWildcard(desc string) bool {
+	lower := strings.ToLower(desc)
+	for _, phrase := range []string{"wildcard", "may contain wildcards", "glob pattern"} {
+		if strings.Contains(lower, phrase) {
+			return true
+		}
+	}
+	return false
 }
 
 // mentionsContainerImage reports whether a description names a container image
@@ -411,7 +437,16 @@ func notRepresentableReason(fieldPath, desc string) string {
 			strings.Contains(desc, "output directory") || strings.Contains(desc, "directory path") {
 			return "gcs-prefix-needs-bucket-ref-plus-path"
 		}
-		return "gcs-object-path-no-crd"
+		// A single object path. Kept as a string for now, but recorded rather than
+		// dropped: this is a deferred design decision, NOT a claim that the field
+		// cannot be a reference. KCC already manages StorageFolder and
+		// StorageManagedFolder inside buckets, so objects are not categorically out
+		// of scope. The same bucketRef + path decomposition would work here, with
+		// composerenvironment (BucketRef + DagGCSPrefix) as precedent.
+		//
+		// refs_not_representable.txt is a golden file, not a ratchet, so this is a
+		// warning: visible and countable, never blocking.
+		return "gcs-object-path-string-for-now-decomposable-as-bucketref-plus-path"
 	}
 
 	return ""
