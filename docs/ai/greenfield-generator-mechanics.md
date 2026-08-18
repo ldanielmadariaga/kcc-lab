@@ -120,30 +120,31 @@ anything. `+optional` is deliberately not emitted: `omitempty` already tells con
 thing.
 
 Across all 116 services this adds 638 markers and changes 47 CRDs, and nearly all of that is safe.
-Every addition lands on a nested type, and a nested `required` binds only when its enclosing object
-is present. The class that would be dangerous — a `required` at the top level of `spec`, which means
+Every addition lands on a nested type, where a `required` binds only when its enclosing object is
+present. The class that would be dangerous — a `required` at the top level of `spec`, which means
 "always" — cannot arise, because the top-level Spec is hand-written and `generate-types` never
 overwrites it.
 
-**The 18 additions under `status:` are the exception, and the reason for the flag.** Nested message
-types are generated once by `WriteMessage` and shared between the spec and the observed state, so a
-marker taken from one field's annotation lands in every schema position that type occupies — redis
-`PscConfig` and `PscConnection` are the clearest case. Structural validation covers the status
-subresource, so a GCP response that omits such a field makes KCC write a status its own API server
-rejects, and reconciliation fails at runtime. Nothing about the annotated field reveals this; it is
-visible only from where the type is reused.
+**18 additions land under `status:`, and that is a defect, not a trade-off.** Nested message types
+are generated once and shared between the spec and the observed state, so a marker taken from one
+field's annotation renders into every schema position that type occupies. redis `PSCConfig` is the
+case: turning the flag on for redis alone gives `RedisCluster` a `required: [network]` inside its
+status, in v1beta1 as well as v1alpha1. Structural validation covers the status subresource, so a
+GCP response that omits such a field makes KCC write a status its own API server rejects, and
+reconciliation fails at runtime. Nothing about the annotated field reveals this; it is visible only
+from where the type is reused.
 
-**Gated behind `--emit-required-from-proto`, default off.** The counts, and the verification that
-the top-level class is empty, are in the
-[findings doc](greenfield-generator-findings.md#phase-1-what-required-changes).
+Required-in-status also runs against KCC's own practice — 2 of 1,341 markers sit inside an
+ObservedState struct — and it asserts a guarantee about GCP's response body that KCC cannot enforce.
+The root cause is understood: `needsObservedState` deduplicates the spec and observed-state structs
+while they are identical, which emitting `+required` is precisely what stops. A fix along those
+lines was tried and reverted, because it breaks `generate-crds` in two opposite directions. See
+[the findings](greenfield-generator-findings.md#the-root-cause-is-known-the-fix-is-still-open).
 
-`WriteObservedStateMessage` suppresses the marker as well. That does not solve the sharing problem,
-since `WriteMessage` has already written the struct, but an observed-state type describes what GCP
-returned and has no business constraining it.
-
-**Remaining risk once a service opts in:** a proto marking a field REQUIRED where KCC deliberately
-treats it as optional. That is a real divergence and needs a decision, but it is now confined to the
-services that asked for it.
+**Gated behind `--emit-required-from-proto`, default off.** Until the status leak is closed the flag
+is the containment for it, as well as for the spec-side question it was originally meant to cover: a
+proto marking a field REQUIRED where KCC deliberately treats it as optional. A service opting in
+should check its own status schemas rather than assume the additions are all spec-side.
 
 ### Phase 2 — feed `google.api.resource` into the scaffolder
 
