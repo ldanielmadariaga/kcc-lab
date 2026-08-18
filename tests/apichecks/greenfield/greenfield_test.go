@@ -774,3 +774,26 @@ func assertProblem(t *testing.T, problems []string, want string) {
 	}
 	t.Errorf("expected a problem containing %q, got %v", want, problems)
 }
+
+func TestKindLevelTypes(t *testing.T) {
+	got := kindLevelTypes([]string{"NetworkServicesLBTrafficExtension", "StorageBucket"})
+
+	// Each Kind contributes exactly the two types DroppedFields covers.
+	for _, want := range []string{
+		"NetworkServicesLBTrafficExtensionSpec",
+		"NetworkServicesLBTrafficExtensionObservedState",
+		"StorageBucketSpec",
+		"StorageBucketObservedState",
+	} {
+		if !got[want] {
+			t.Errorf("missing %q", want)
+		}
+	}
+	if len(got) != 4 {
+		t.Errorf("got %d entries, want 4: %v", len(got), got)
+	}
+	// A nested type must not be treated as Kind-level, or its drops are skipped.
+	if got["ExtensionChain"] {
+		t.Error("nested type ExtensionChain must not be skipped as Kind-level")
+	}
+}

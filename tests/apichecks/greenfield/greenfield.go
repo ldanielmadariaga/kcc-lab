@@ -230,6 +230,18 @@ type NestedDrop struct {
 	Field string
 }
 
+// kindLevelTypes returns the KRM type names that DroppedFields already reports
+// on, so that NestedDroppedFields can skip them. Each Kind contributes two:
+// <Kind>Spec and <Kind>ObservedState.
+func kindLevelTypes(kinds []string) map[string]bool {
+	out := make(map[string]bool, len(kinds)*2)
+	for _, k := range kinds {
+		out[k+"Spec"] = true
+		out[k+"ObservedState"] = true
+	}
+	return out
+}
+
 // NestedDroppedFields returns proto fields with no KRM representation on nested
 // and shared types, meaning every type except <Kind>Spec and
 // <Kind>ObservedState. DroppedFields covers those two.
@@ -251,20 +263,26 @@ func NestedDroppedFields(mapperPath string, kinds []string) ([]NestedDrop, error
 		return nil, fmt.Errorf("reading %q: %w", mapperPath, err)
 	}
 
-	kindLevel := map[string]bool{}
-	for _, k := range kinds {
-		kindLevel[k+"Spec"] = true
-		kindLevel[k+"ObservedState"] = true
-	}
+	kindLevel := kindLevelTypes(kinds)
 
+	// Every type gets both a FromProto and a ToProto mapper, and both repeat the
+	// same MISSING markers, so collect into a set rather than a slice.
 	seen := map[NestedDrop]bool{}
+
+	// The file is scanned line by line: a mapper function header sets the type
+	// that subsequent MISSING markers belong to.
 	currentType := ""
 	for _, line := range strings.Split(string(data), "\n") {
 		if m := funcRe.FindStringSubmatch(line); m != nil {
 			currentType = m[1]
 			continue
 		}
-		if currentType == "" || kindLevel[currentType] {
+		// Anything before the first mapper function belongs to no type.
+		if currentType == "" {
+			continue
+		}
+		// The Kind-level types are DroppedFields' responsibility.
+		if kindLevel[currentType] {
 			continue
 		}
 		if m := missingRe.FindStringSubmatch(line); m != nil {
@@ -272,6 +290,7 @@ func NestedDroppedFields(mapperPath string, kinds []string) ([]NestedDrop, error
 		}
 	}
 
+	// Sorted so the baseline file is stable from run to run.
 	out := make([]NestedDrop, 0, len(seen))
 	for d := range seen {
 		out = append(out, d)
