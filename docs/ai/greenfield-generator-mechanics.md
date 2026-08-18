@@ -27,19 +27,21 @@ judgement that should be tracked explicitly rather than left implicit.
 
 ## Why the file was manual
 
-Two passes write Go files during generation, and neither can see what the other has.
+The generator already knows everything the file needs. It reads the proto message, resolves every
+field to a Go type, and writes the complete struct into `types.generated.go`. Then it hands you
+`<kind>_types.go` — three fields and an instruction to edit it — and leaves you to copy the rest
+across by hand.
 
-**The type generator** (`pkg/codegen/typegenerator.go`) works from the full message descriptor. It
-walks every field, resolves each to a Go type, and splits Spec from ObservedState on
-`IsFieldBehavior(f, annotations.FieldBehavior_OUTPUT_ONLY)` — three call sites, at lines 130, 168
-and 363.
+That looks like an oversight. It is not: two passes write Go during generation, and only one of them
+can see the proto.
 
-**The scaffolder** (`scaffold/apis.go`), which writes `<kind>_types.go`, never receives the message.
-`APIScaffolder` carries five strings, and `buildAPIArgs` forwards names only: `Kind`,
-`KindProtoTag`, `ProtoResource`, `ProtoMessageName`, `ProtoMessageFullName`. No descriptor travels
-that path, so the template has no field list to work from.
+`pkg/codegen/typegenerator.go` holds the message descriptor, which is how it produces complete types
+and knows to split Spec from ObservedState on each field's `OUTPUT_ONLY` behaviour.
+`scaffold/apis.go`, which writes `<kind>_types.go`, is handed names — the Kind, the package, the
+proto message's *name* — and never the message itself. A template on that path has no field list to
+iterate over, so a near-empty scaffold is the most it could ever produce.
 
-The identity template makes the gap visible, because it has to assert facts it cannot look up:
+The identity template shows what that costs, because it has to assert facts it cannot look up:
 
 ```go
 // template/apis/identity.go
@@ -50,11 +52,11 @@ return i.parent.String() + "/{{.ProtoMessageName | ToLower}}s/" + i.id // plural
 The proto states both, in `google.api.resource`, as `pattern` and `plural`. Neither reaches the
 scaffolder, and `Please EDIT it!` is the template conceding the guess.
 
-What this leaves behind is a transcription step. `prunetypes` comments out the complete top-level
-struct the type generator produced, because nothing references it yet, and a human copies fields
-from that commented block into a scaffold that knows nothing about them. Every defect in the pilot
-came from that step — a `Location string` left in the scaffold, a 2025 copyright, a missing
-`stability-level` label — and not one of them was a judgement error.
+The copying is not even from live code: `prunetypes` comments the generated struct out first,
+because nothing references it yet, so fields get transcribed out of a commented block into a
+scaffold that knows nothing about them. Every defect in the pilot came from that step — a
+`Location string` left in the scaffold, a 2025 copyright, a missing `stability-level` label — and
+not one of them was a judgement error.
 
 ### What the annotations can carry
 
@@ -87,8 +89,8 @@ behaviour mechanically and route references to a human.
 | Field renames for KRM conventions | nowhere | **judgement** |
 
 `FieldBehavior_REQUIRED` was already parsed at `pkg/protoapi/overlay.go:281-282` and appeared
-**nowhere** in `pkg/codegen`. `IsFieldBehavior` is generic over the behaviour, so emitting `//
-+required` was a small change against machinery that existed.
+**nowhere** in `pkg/codegen`. `IsFieldBehavior` is generic over the behaviour, so emitting
+`// +required` was a small change against machinery that existed.
 
 Roughly: the Spec is ~90% mechanically derivable. The residue is reference decisions and deliberate
 omissions — exactly the judgement Step 1 is supposed to concentrate on.
@@ -181,35 +183,42 @@ check, so this phase can only add new files. There is no existing resource for i
 
 ### Phase 3 — pre-populate the Spec
 
-Emit the top-level Spec from the generated type: all fields minus identity fields, plus the parent
-ref derived from the phase-2 pattern, with `+required` from phase 1. Fields the generator cannot
-decide are still emitted as their raw proto-derived type **and** recorded in the per-service
-judgement queue (phase 4), so the file compiles and the open questions are explicit.
+This is the phase that removes the copying. Rather than a three-field scaffold and a commented-out
+block to transcribe, `<kind>_types.go` arrives with its Spec already assembled: every field from the
+proto message, less the ones the identity owns, plus the parent ref implied by the pattern phase 2
+now reads, carrying the `+required` markers phase 1 derives.
 
-Queue entries cover only what nothing can derive: reference candidates, deliberate omissions, and
-KRM renames. Required/optional divergence is *not* a queue entry — with phase 1 the annotation
-answers it mechanically, and only deliberate contradiction of the proto needs a human.
+Whatever the generator cannot decide it writes out anyway, as the plain proto-derived type, and
+records in the per-service judgement queue (phase 4). The file compiles, and the questions nobody
+has answered yet are written down instead of waiting to be noticed.
 
-**The queue must always mark the resource, whatever the detector found.** A resource-level entry is
-emitted unconditionally and field-level entries are a bonus, because the annotations that would
-drive field-level detection are routinely absent on exactly the fields that matter — see
+Only three kinds of question get that far, because only three cannot be derived from anything: which
+strings are really references, which fields KCC deliberately leaves out, and which need renaming to
+suit KRM conventions. Required versus optional is not one of them — phase 1 answers it from the
+annotation, and only a deliberate contradiction of the proto needs a person.
+
+**The queue must mark the resource whether or not the detector found anything.** The entry is
+written at resource level unconditionally, and field-level entries are a bonus on top, because the
+annotations that would drive field-level detection are routinely missing on exactly the fields that
+matter — see
 [the rejected design](greenfield-generator-findings.md#rejected-annotation-driven-queue). A queue
-firing only on annotations would write no file for such a resource, suppress nothing, and send it
-straight into the ratchet to fail, which is the precise thing the queue exists to prevent.
+that fired only on annotations would write nothing for such a resource, suppress nothing, and send
+it into the ratchet to fail, which is the one outcome the queue exists to prevent.
 
-**Emit undecided fields, do not omit them.** A field emitted with a listed open question is visible;
-an omitted one is invisible to every other check, because a field absent from the CRD cannot be
-reported as missing from it.
+**Undecided fields get emitted, not omitted.** A field that ships with an open question against it
+is visible to everyone. A field left out is invisible to every other check, because nothing can
+report a field missing from a CRD it was never in.
 
-**ObservedState is out of scope.** Output fields reached through nested messages need the generated
-`<Proto>ObservedState` variants rather than the plain structs, and choosing per field is its own
-problem.
+**ObservedState is left alone.** Output fields reached through nested messages need the generated
+`<Proto>ObservedState` variants rather than the plain structs, and deciding that per field is a
+problem of its own.
 
-**Gated behind `--prepopulate-spec`** on `generate-types` (alongside the existing
-`--skip-scaffold-files`), set per service in `apis/<service>/generate.sh`. Not the bulk manifest:
-the documented procedure appends the Kind to `greenfield_bulk.txt` *after* generation runs, so a
-generator gated on it would never fire for the resource being generated — and that file is test data
-consumed by checks, so reading it from the generator inverts the dependency.
+**Gated behind `--prepopulate-spec`** on `generate-types`, alongside the existing
+`--skip-scaffold-files`, and set per service in `apis/<service>/generate.sh`. The bulk manifest
+cannot be the switch: the documented procedure adds the Kind to `greenfield_bulk.txt` only *after*
+generation has run, so a generator reading it would never fire for the resource being generated.
+That file is also test data the checks consume, so having the generator read it points the
+dependency backwards.
 
 ### Phase 4 — the judgement queue
 
@@ -219,12 +228,16 @@ the next resource to refine.
 
 ## Where a decision gets recorded
 
-Three files already exist for this, and what separates them is **derived versus curated**.
+A generated resource arrives with open questions attached, and they need somewhere to live —
+somewhere that survives the next regeneration, keeps "nobody has looked at this yet" apart from
+"someone looked and chose to wait", and does not wedge the checks while the answer is outstanding.
+
+Three files already do part of that job, and the line between them is **derived versus curated**.
 `missingrefs.txt` is recomputed from the CRDs on every run and written through `CompareRatchetFile`
-(`tests/apichecks/crds_test.go:192`), so a reason written into it survives exactly until the next
+(`tests/apichecks/crds_test.go:192`), so a reason typed into it lasts exactly until the next
 `WRITE_GOLDEN_OUTPUT=1`. `refs_deferred.txt` is the opposite — hand-edited, one stated reason per
 entry, subtracted from the findings before the ratchet applies (`crds_test.go:178-186`). It is the
-only one of the three that can carry an explanation.
+only one of the three that can carry an explanation, and that is its entire purpose.
 
 The queue adds a fourth state, and a resource sits in exactly one of them:
 
