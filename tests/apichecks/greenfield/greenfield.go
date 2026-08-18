@@ -230,16 +230,18 @@ type NestedDrop struct {
 	Field string
 }
 
-// NestedDroppedFields returns proto fields with no KRM representation on types
-// other than <Kind>Spec / <Kind>ObservedState.
+// NestedDroppedFields returns proto fields with no KRM representation on nested
+// and shared types, meaning every type except <Kind>Spec and
+// <Kind>ObservedState. DroppedFields covers those two.
 //
-// The Spec/ObservedState cross-talk rule does NOT apply here: that rule exists
-// because those two types map the same proto message and so each reports the
-// other's fields. Nested types have no such pairing, so their MISSING markers
-// are taken at face value.
+// kinds is the set of manifest Kinds for the service, used to skip those
+// Kind-level types.
 //
-// kinds is the set of manifest Kinds for the service, used to skip the
-// Kind-level types that DroppedFields already covers.
+// A single MISSING marker is enough to report a field here, where DroppedFields
+// requires one in both the Spec and the ObservedState mapper. It needs both
+// because those two types map the same proto message, so a field present in one
+// is reported as MISSING by the other. A nested type has only one mapper, and
+// therefore no second place the field could have gone.
 func NestedDroppedFields(mapperPath string, kinds []string) ([]NestedDrop, error) {
 	data, err := os.ReadFile(mapperPath)
 	if err != nil {
