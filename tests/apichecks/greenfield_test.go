@@ -255,10 +255,11 @@ func TestGreenfieldDroppedFields(t *testing.T) {
 		}
 	}
 
-	// Nested and shared types, keyed by service rather than by Kind: a nested
-	// type belongs to every resource in its service, so attributing a drop to one
-	// Kind would be a fiction. Collected per service so a type shared by two
-	// manifest Kinds is reported once.
+	// Nested and shared types, keyed by service rather than by Kind. A nested type
+	// may be referenced by several Kinds in the service, and the mapper file does
+	// not record which ones, so a drop in it cannot be attributed to a single
+	// Kind. Collected once per service, so a type used by two manifest Kinds is
+	// reported once rather than twice.
 	kindsByService := map[string][]string{}
 	for _, r := range m.Resources() {
 		kindsByService[r.Service()] = append(kindsByService[r.Service()], r.Kind)
