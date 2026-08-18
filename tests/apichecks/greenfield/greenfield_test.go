@@ -286,7 +286,7 @@ func TestCheckGoSource(t *testing.T) {
 	}{
 		{
 			name: "clean",
-			src: header + `type FooSpec struct {
+			src: header + `type FooFields struct {
 	Description *string ` + "`json:\"description,omitempty\"`" + `
 	Labels map[string]string ` + "`json:\"labels,omitempty\"`" + `
 	Items []string ` + "`json:\"items,omitempty\"`" + `
@@ -304,28 +304,28 @@ func TestCheckGoSource(t *testing.T) {
 		},
 		{
 			name: "scalar must be a pointer",
-			src: header + `type FooSpec struct {
+			src: header + `type FooFields struct {
 	Description string ` + "`json:\"description,omitempty\"`" + `
 }`,
 			wantProblem: "scalar primitives must be pointers",
 		},
 		{
 			name: "bool scalar must be a pointer",
-			src: header + `type FooSpec struct {
+			src: header + `type FooFields struct {
 	Enabled bool ` + "`json:\"enabled,omitempty\"`" + `
 }`,
 			wantProblem: "scalar primitives must be pointers",
 		},
 		{
 			name: "slice must not be a pointer",
-			src: header + `type FooSpec struct {
+			src: header + `type FooFields struct {
 	Items *[]string ` + "`json:\"items,omitempty\"`" + `
 }`,
 			wantProblem: "slices must not be pointers",
 		},
 		{
 			name: "map must not be a pointer",
-			src: header + `type FooSpec struct {
+			src: header + `type FooFields struct {
 	Labels *map[string]string ` + "`json:\"labels,omitempty\"`" + `
 }`,
 			wantProblem: "maps must not be pointers",
@@ -338,21 +338,21 @@ func TestCheckGoSource(t *testing.T) {
 		{
 			// Embedded fields have no name; they must not panic or be flagged.
 			name: "embedded field is ignored",
-			src: header + `type FooSpec struct {
+			src: header + `type FooFields struct {
 	*parent.ProjectAndLocationRef ` + "`json:\",inline\"`" + `
 }`,
 		},
 		{
 			// Unexported fields are not part of the API surface.
 			name: "unexported field is ignored",
-			src: header + `type FooSpec struct {
+			src: header + `type FooFields struct {
 	internal string
 }`,
 		},
 		{
 			// Pointer to a struct is the normal case for optional messages.
 			name: "pointer to struct is fine",
-			src: header + `type FooSpec struct {
+			src: header + `type FooFields struct {
 	Nested *NestedType ` + "`json:\"nested,omitempty\"`" + `
 }`,
 		},
@@ -503,4 +503,188 @@ func TestFindCRD(t *testing.T) {
 	if _, ok := FindCRD(crds, Resource{Group: "example.com", Kind: "Nope"}); ok {
 		t.Error("FindCRD matched a nonexistent Kind")
 	}
+}
+
+func TestCheckGoSourceProtoAnnotation(t *testing.T) {
+	const header = "// Copyright 2026 Google LLC\n\npackage v1alpha1\n\n"
+
+	tests := []struct {
+		name        string
+		src         string
+		wantProblem string
+	}{
+		{
+			name: "spec with annotation is clean",
+			src: header + `// FooSpec defines the desired state.
+// +kcc:spec:proto=google.cloud.foo.v1.Foo
+type FooSpec struct {
+	Description *string ` + "`json:\"description,omitempty\"`" + `
+}`,
+		},
+		{
+			name: "spec without annotation is flagged",
+			src: header + `// FooSpec defines the desired state.
+type FooSpec struct {
+	Description *string ` + "`json:\"description,omitempty\"`" + `
+}`,
+			wantProblem: "missing the `// +kcc:spec:proto=",
+		},
+		{
+			name: "observedstate with annotation is clean",
+			src: header + `// FooObservedState is observed state.
+// +kcc:observedstate:proto=google.cloud.foo.v1.Foo
+type FooObservedState struct {
+	CreateTime *string ` + "`json:\"createTime,omitempty\"`" + `
+}`,
+		},
+		{
+			name: "observedstate without annotation is flagged",
+			src: header + `// FooObservedState is observed state.
+type FooObservedState struct {
+	CreateTime *string ` + "`json:\"createTime,omitempty\"`" + `
+}`,
+			wantProblem: "missing the `// +kcc:observedstate:proto=",
+		},
+		{
+			// Structs that are neither Spec nor ObservedState carry a different
+			// marker and must not be flagged by this rule.
+			name: "nested type is not required to have the spec annotation",
+			src: header + `type ExtensionChain struct {
+	Name *string ` + "`json:\"name,omitempty\"`" + `
+}`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			problems, err := checkGoSource("test.go", []byte(tc.src))
+			if err != nil {
+				t.Fatalf("checkGoSource: %v", err)
+			}
+			assertProblem(t, problems, tc.wantProblem)
+		})
+	}
+}
+
+func TestCheckGoSourceObservedGeneration(t *testing.T) {
+	const header = "// Copyright 2026 Google LLC\n\npackage v1alpha1\n\n"
+
+	tests := []struct {
+		name        string
+		field       string
+		wantProblem string
+	}{
+		{name: "correct type", field: "ObservedGeneration *int64 `json:\"observedGeneration,omitempty\"`"},
+		{name: "non-pointer", field: "ObservedGeneration int64 `json:\"observedGeneration,omitempty\"`", wantProblem: "must be exactly *int64"},
+		{name: "wrong width", field: "ObservedGeneration *int32 `json:\"observedGeneration,omitempty\"`", wantProblem: "must be exactly *int64"},
+		{name: "string", field: "ObservedGeneration *string `json:\"observedGeneration,omitempty\"`", wantProblem: "must be exactly *int64"},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			src := header + "type FooStatus struct {\n\t" + tc.field + "\n}"
+			problems, err := checkGoSource("test.go", []byte(src))
+			if err != nil {
+				t.Fatalf("checkGoSource: %v", err)
+			}
+			assertProblem(t, problems, tc.wantProblem)
+		})
+	}
+}
+
+func TestCheckGoSourceEnumField(t *testing.T) {
+	const header = "// Copyright 2026 Google LLC\n\npackage v1alpha1\n\n"
+
+	tests := []struct {
+		name        string
+		src         string
+		wantProblem string
+	}{
+		{
+			name: "enum as *string is clean",
+			src: header + `type FooFields struct {
+	// +kubebuilder:validation:Enum=A;B
+	Scheme *string ` + "`json:\"scheme,omitempty\"`" + `
+}`,
+		},
+		{
+			name: "enum as custom wrapped type is flagged",
+			src: header + `type FooFields struct {
+	// +kubebuilder:validation:Enum=A;B
+	Scheme *SchemeType ` + "`json:\"scheme,omitempty\"`" + `
+}`,
+			wantProblem: "must be *string, not a custom wrapped type",
+		},
+		{
+			// No Enum marker means the rule does not apply; a named string type
+			// elsewhere must not be flagged.
+			name: "named type without the enum marker is ignored",
+			src: header + `type FooFields struct {
+	Scheme *SchemeType ` + "`json:\"scheme,omitempty\"`" + `
+}`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			problems, err := checkGoSource("test.go", []byte(tc.src))
+			if err != nil {
+				t.Fatalf("checkGoSource: %v", err)
+			}
+			assertProblem(t, problems, tc.wantProblem)
+		})
+	}
+}
+
+func TestCheckShellFile(t *testing.T) {
+	t.Run("correct year", func(t *testing.T) {
+		p := writeTemp(t, "generate.sh", "#!/bin/bash\n# Copyright 2026 Google LLC\n")
+		problems, err := CheckShellFile(p)
+		if err != nil {
+			t.Fatalf("CheckShellFile: %v", err)
+		}
+		if len(problems) != 0 {
+			t.Errorf("expected no problems, got %v", problems)
+		}
+	})
+
+	t.Run("wrong year", func(t *testing.T) {
+		p := writeTemp(t, "generate.sh", "#!/bin/bash\n# Copyright 2025 Google LLC\n")
+		problems, err := CheckShellFile(p)
+		if err != nil {
+			t.Fatalf("CheckShellFile: %v", err)
+		}
+		if len(problems) == 0 {
+			t.Error("expected a problem for the 2025 header, got none")
+		}
+	})
+
+	t.Run("missing file is not an error", func(t *testing.T) {
+		problems, err := CheckShellFile(filepath.Join(t.TempDir(), "nope.sh"))
+		if err != nil {
+			t.Fatalf("expected no error for a missing file, got %v", err)
+		}
+		if len(problems) != 0 {
+			t.Errorf("expected no problems, got %v", problems)
+		}
+	})
+}
+
+// assertProblem checks that problems contains want (or is clean when want is "").
+func assertProblem(t *testing.T, problems []string, want string) {
+	t.Helper()
+	if want == "" {
+		for _, p := range problems {
+			// The copyright rule is satisfied by the shared header in these
+			// fixtures; anything else is an unexpected finding.
+			t.Errorf("expected no problems, got %q", p)
+		}
+		return
+	}
+	for _, p := range problems {
+		if strings.Contains(p, want) {
+			return
+		}
+	}
+	t.Errorf("expected a problem containing %q, got %v", want, problems)
 }
