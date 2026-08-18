@@ -220,6 +220,90 @@ func DroppedFields(mapperPath string, kind string) ([]string, error) {
 	return dropped, nil
 }
 
+// NestedDrop is a proto field with no KRM representation on a nested type.
+//
+// Nested types (e.g. ExtensionChain_Extension) are shared by every resource in a
+// service, so a drop cannot honestly be attributed to one Kind. It is keyed by
+// service, version and type instead - enough to find the field.
+type NestedDrop struct {
+	Type  string
+	Field string
+}
+
+// kindLevelTypes returns the KRM type names that DroppedFields already reports
+// on, so that NestedDroppedFields can skip them. Each Kind contributes two:
+// <Kind>Spec and <Kind>ObservedState.
+func kindLevelTypes(kinds []string) map[string]bool {
+	out := make(map[string]bool, len(kinds)*2)
+	for _, k := range kinds {
+		out[k+"Spec"] = true
+		out[k+"ObservedState"] = true
+	}
+	return out
+}
+
+// NestedDroppedFields returns proto fields with no KRM representation on nested
+// and shared types, meaning every type except <Kind>Spec and
+// <Kind>ObservedState. DroppedFields covers those two.
+//
+// kinds is the set of manifest Kinds for the service, used to skip those
+// Kind-level types.
+//
+// A single MISSING marker is enough to report a field here, where DroppedFields
+// requires one in both the Spec and the ObservedState mapper. It needs both
+// because those two types map the same proto message, so a field present in one
+// is reported as MISSING by the other. A nested type has only one mapper, and
+// therefore no second place the field could have gone.
+func NestedDroppedFields(mapperPath string, kinds []string) ([]NestedDrop, error) {
+	data, err := os.ReadFile(mapperPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("reading %q: %w", mapperPath, err)
+	}
+
+	kindLevel := kindLevelTypes(kinds)
+
+	// Every type gets both a FromProto and a ToProto mapper, and both repeat the
+	// same MISSING markers, so collect into a set rather than a slice.
+	seen := map[NestedDrop]bool{}
+
+	// The file is scanned line by line: a mapper function header sets the type
+	// that subsequent MISSING markers belong to.
+	currentType := ""
+	for _, line := range strings.Split(string(data), "\n") {
+		if m := funcRe.FindStringSubmatch(line); m != nil {
+			currentType = m[1]
+			continue
+		}
+		// Anything before the first mapper function belongs to no type.
+		if currentType == "" {
+			continue
+		}
+		// The Kind-level types are DroppedFields' responsibility.
+		if kindLevel[currentType] {
+			continue
+		}
+		if m := missingRe.FindStringSubmatch(line); m != nil {
+			seen[NestedDrop{Type: currentType, Field: m[1]}] = true
+		}
+	}
+
+	// Sorted so the baseline file is stable from run to run.
+	out := make([]NestedDrop, 0, len(seen))
+	for d := range seen {
+		out = append(out, d)
+	}
+	sort.Slice(out, func(i, j int) bool {
+		if out[i].Type != out[j].Type {
+			return out[i].Type < out[j].Type
+		}
+		return out[i].Field < out[j].Field
+	})
+	return out, nil
+}
+
 // MapperPath returns the generated mapper file for r's service.
 func MapperPath(repoRoot string, r Resource) string {
 	return filepath.Join(repoRoot, "pkg", "controller", "direct", r.Service(), "mapper.generated.go")
@@ -364,23 +448,27 @@ func checkObservedGeneration(structName string, field *ast.Field) string {
 	return fmt.Sprintf("%s.ObservedGeneration must be exactly *int64", structName)
 }
 
-// checkEnumField requires proto enum fields to be represented as *string rather
-// than a custom wrapped string type, per the greenfield types skill.
+// checkEnumField prohibits +kubebuilder:validation:Enum on new resources.
 //
-// Detection is by the kubebuilder Enum validation marker: a field carrying
-// +kubebuilder:validation:Enum is an enum by definition, whatever its Go type.
-// This deliberately does not try to infer enum-ness from the type name, which
-// would flag ordinary named string types.
+// Hardcoding the permitted values duplicates validation the GCP API already
+// performs, and couples KCC releases to GCP enum additions: every new value
+// upstream requires a KCC release before users can set it. A field typed
+// *string accepts new values with no code change.
+//
+// Existing resources are grandfathered automatically, without an exception
+// list: this runs only over resources in the bulk manifest.
+//
+// Note the related rule "enum fields must be *string, not a custom wrapped
+// type" is NOT enforced. Its only detection signal was this marker, so
+// prohibiting the marker leaves nothing to key on short of proto access. It
+// lives in the skill as guidance. That is deliberate, not an oversight.
 func checkEnumField(structName string, field *ast.Field) string {
 	if field.Doc == nil || !strings.Contains(field.Doc.Text(), "kubebuilder:validation:Enum") {
 		return ""
 	}
-	if star, ok := field.Type.(*ast.StarExpr); ok {
-		if id, ok := star.X.(*ast.Ident); ok && id.Name == "string" {
-			return ""
-		}
-	}
-	return fmt.Sprintf("%s.%s is an enum (has kubebuilder:validation:Enum) and must be *string, not a custom wrapped type",
+	return fmt.Sprintf("%s.%s has +kubebuilder:validation:Enum; do not hardcode enum values. "+
+		"The GCP API already validates them, and a hardcoded list means a KCC release is needed "+
+		"whenever GCP adds a value. Use *string with no Enum marker.",
 		structName, field.Names[0].Name)
 }
 

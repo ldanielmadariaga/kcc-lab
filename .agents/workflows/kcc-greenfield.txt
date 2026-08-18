@@ -80,6 +80,12 @@ Only declare the PR as fully passed/verified if no failures are returned across 
 ## Steps
 
 
+> [!NOTE]
+> **SANDBOX DIVERGENCE**: in this experimental repo Step 1 is **types + CRD only**. Identity and
+> reference generation moves to its own step, because it is mechanical and hard to get wrong, while
+> deciding the types and CRD carries the judgement and deserves a dedicated phase. Follow
+> `.gemini/skills/kcc-direct-greenfield-types-implementer/SKILL.md`, which reflects this split.
+
 ### Step 1: Direct API Types and Identity and Reference Types Pattern
 
 Open a GitHub issue to coordinate the implementation of direct KRM types, identity files, and reference files for a specific Kubernetes resource.

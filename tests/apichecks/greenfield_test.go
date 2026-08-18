@@ -254,6 +254,38 @@ func TestGreenfieldDroppedFields(t *testing.T) {
 			}
 		}
 	}
+
+	// Nested and shared types, keyed by service rather than by Kind. A nested type
+	// may be referenced by several Kinds in the service, and the mapper file does
+	// not record which ones, so a drop in it cannot be attributed to a single
+	// Kind. Collected once per service, so a type used by two manifest Kinds is
+	// reported once rather than twice.
+	kindsByService := map[string][]string{}
+	for _, r := range m.Resources() {
+		kindsByService[r.Service()] = append(kindsByService[r.Service()], r.Kind)
+	}
+	for _, r := range m.Resources() {
+		svc := r.Service()
+		kinds, pending := kindsByService[svc]
+		if !pending {
+			continue // already processed this service
+		}
+		delete(kindsByService, svc)
+
+		nested, err := greenfield.NestedDroppedFields(greenfield.MapperPath(repoRoot, r), kinds)
+		if err != nil {
+			t.Fatalf("finding nested dropped fields for %s: %v", svc, err)
+		}
+		for _, d := range nested {
+			key := fmt.Sprintf("[dropped] service=%s version=v1alpha1 type=%s: field %q", svc, d.Type, d.Field)
+			if line, ok := baselineByKey[key]; ok {
+				got = append(got, line)
+			} else {
+				got = append(got, key)
+			}
+		}
+	}
+
 	sort.Strings(got)
 
 	test.CompareRatchetFile(t, "testdata/exceptions/greenfield_dropped_fields.txt", strings.Join(got, "\n"))
