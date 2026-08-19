@@ -3,7 +3,7 @@
 Evidence behind the four phases in
 [`greenfield-generator-mechanics.md`](greenfield-generator-mechanics.md). Nothing here is needed to
 understand what the generator does; it is here because several of these results overturned the
-assumption the design started with, and each is a trap worth knowing about before repeating it.
+assumption the design started with, and because each one is easy to repeat by accident.
 
 **Scope:** the experimental sandbox (`kcc-lab`). Measurements are point-in-time against googleapis
 and the tree as it stood when each phase landed.
@@ -31,8 +31,8 @@ treats references as judgement.
 ## Phase 1: what `+required` changes
 
 Measured over three full sweeps of all 131 `apis/*/generate.sh` — identical procedure, one variable,
-the flag forced on for every service. That is never the intended use, since the flag is opt-in per
-service, but it is the stress test that exposes what breaks:
+the flag forced on for every service. That is not the intended use, since the flag is opt-in per
+service, but running it everywhere is what surfaces the failure modes:
 
 | sweep | `+required` marker lines | `required:` under `spec:` | `required:` under `status:` |
 |---|---:|---:|---:|
@@ -44,29 +44,28 @@ The flag adds 699 markers and 255 `required` lists under `spec:`, across 62 CRD 
 counts here are strict `// +required` lines; the 1,341 in the prior-art table below counts every
 line containing the string.)
 
-**Every spec-side addition is nested, and nested `required` is conditional by construction.** In
-JSON Schema a `required` list inside an object applies only when that object is present, so
-`httpHeaders[].name` means "if you supply a header it must have a name", not "every object must have
-a header". The dangerous class is a `required` at the *top level* of `spec`, where it means
-"always".
+Every spec-side addition is nested, and a nested `required` is conditional. In JSON Schema a
+`required` list inside an object applies only when that object is present, so `httpHeaders[].name`
+means "if you supply a header it must have a name", not "every object must have a header". The case
+to watch for is a `required` at the *top level* of `spec`, where it means "always".
 
-That class is structurally empty. `+required` is emitted by `WriteField` into `types.generated.go`,
-which holds only nested types; the top-level `<Kind>Spec` lives in the hand-written
-`<kind>_types.go`, which `generate-types` never overwrites. Verified across the whole tree: no
-generated `<Kind>Spec` struct belongs to a CRD of the same service. Three apparent hits —
-`BigQueryRoutineSpec`, `BigQueryTableSpec`, `ServiceSpec` — are datacatalog's own nested proto
-types, colliding by name with unrelated Kinds in other groups.
+That cannot arise here. `+required` is emitted by `WriteField` into `types.generated.go`, which
+holds only nested types; the top-level `<Kind>Spec` lives in the hand-written `<kind>_types.go`,
+which `generate-types` never overwrites. Verified across the whole tree: no generated `<Kind>Spec`
+struct belongs to a CRD of the same service. Three apparent hits — `BigQueryRoutineSpec`,
+`BigQueryTableSpec`, `ServiceSpec` — are datacatalog's own nested proto types, colliding by name
+with unrelated Kinds in other groups.
 
-**The 20 status entries are the one case nesting does not cover**: a type reused across contexts
-with different requirements. Nested `required` expresses "optional parent, required child"
-correctly; what it cannot express is "required when a user supplies this, not guaranteed when GCP
-returns it". Nested message types are generated once by `WriteMessage` and shared between spec and
-observed state, so a marker taken from a field's own annotation lands in every schema position that
-type occupies. CRD structural validation covers the status subresource, so a GCP response missing
-such a field makes KCC write a status the API server rejects, and reconciliation fails at runtime.
+The 20 status entries are the one case nesting does not cover: a type reused across contexts with
+different requirements. Nested `required` expresses "optional parent, required child" correctly;
+what it cannot express is "required when a user supplies this, not guaranteed when GCP returns it".
+Nested message types are generated once by `WriteMessage` and shared between spec and observed
+state, so a marker taken from a field's own annotation lands in every schema position that type
+occupies. CRD structural validation covers the status subresource, so a GCP response missing such a
+field makes KCC write a status the API server rejects, and reconciliation fails at runtime.
 
-Splitting the struct removes 14 of those 20, and costs nothing — spec and marker counts are
-identical with and without it, so it changes struct topology only:
+Splitting the struct removes 14 of those 20. Spec and marker counts are identical with and without
+it, so the only difference is how the structs are arranged:
 
 | removed by the split | lists |
 |---|---:|
@@ -81,7 +80,8 @@ that started this.
 
 ### Prior art: required in status
 
-The gate is containment, not endorsement. Required-in-status runs against what KCC already does:
+The gate contains the behaviour rather than endorsing it. Required-in-status runs against what KCC
+already does:
 
 | | count |
 |---|---:|
@@ -100,20 +100,20 @@ returns 3.
 it gives is a Spec. It says nothing about status, so there is no written rule to cite — only 2
 markers in 1,341.
 
-The other 13 arrived exactly the way this phase would industrialise. `NodeTaint`
+The other 13 arrived the same way this phase would produce them, only by hand. `NodeTaint`
 (`apis/container/v1beta1/containercluster_types.go:1266`) carries `+required` on `effect`, `key` and
 `value`, and is used by both the spec-side node config and `NodePoolNodeConfigObservedState`
 (`apis/container/v1beta1/containernodepool_types.go:424`), with no `NodeTaintObservedState` between
 them. One struct, two schema positions, one set of markers — shipped in v1beta1.
 
-**The deliberate case is already a latent bug.** `CloudBuildWorkerPoolObservedState_FromProto`
+The deliberate case is already a latent bug. `CloudBuildWorkerPoolObservedState_FromProto`
 (`pkg/controller/direct/cloudbuild/workerpool_mappings.go:26`) returns a non-nil struct and fills
 `WorkerConfig` only when `GetPrivatePoolV1Config()` is non-nil. The CRD declares
 `required: [workerConfig]` under `status.observedState` and declares a status subresource, so a
 WorkerPool returned without that config makes KCC write a status its own API server rejects. Nothing
 about the `+required` line says so. Pre-existing, and not fixed by anything here.
 
-**Incomplete responses are normal, not exceptional.**
+Incomplete responses are common.
 `pkg/controller/direct/videostitcher/videostitchercdnkey_controller.go:279` — "private keys and
 token keys are write-only fields and not returned by GCP".
 `pkg/controller/direct/documentai/documentaiprocessor_controller.go:209` — "the
@@ -131,13 +131,13 @@ contains an `OUTPUT_ONLY` field. Its comment states the premise: *"If the regula
 ObservedState version are identical, we fall back to using the regular Go struct to reduce
 redundancy."*
 
-Emitting `+required` is exactly what makes them stop being identical, so the premise no longer holds
-once the flag is on. `PSCConfig` has no output-only field, deduplicates to one struct, and that one
+Emitting `+required` is what makes them stop being identical, so the premise no longer holds once
+the flag is on. `PSCConfig` has no output-only field, deduplicates to one struct, and that one
 struct carries the marker into both schema positions — even though `WriteObservedStateMessage`
 already passes `WriteOptions{}` so variants never emit it.
 
 The obvious repair is a second trigger: a message carrying a REQUIRED field also needs its own
-ObservedState struct. **On its own it breaks `generate-crds` in two opposite directions**, because a
+ObservedState struct. On its own it breaks `generate-crds` in two opposite directions, because a
 split needs two decisions taken in different places — how a nested field is *named*, from membership
 in `observedStateMessages`, and whether the struct is *written*, from a filesystem scan, since the
 generator never overwrites a hand-written type. When they disagree, a field points at a type nothing
@@ -163,10 +163,9 @@ owns.** A kind-aware parser variant reports which annotation matched; one pass o
 non-generated files records every hand-written type name and every proto message claimed under any
 annotation; the REQUIRED trigger fires only where that scan finds nothing.
 
-The exclusion costs nothing, which is why the rule is sound rather than merely cautious. A message
-with a hand-written counterpart is skipped by `WriteVisitedMessages` and never gets a generated
-struct at all — so it never receives a generated marker and could not have leaked. The rule
-separates all three observed cases:
+Excluding those messages costs nothing. A message with a hand-written counterpart is skipped by
+`WriteVisitedMessages` and never gets a generated struct at all — so it never receives a generated
+marker and could not have leaked. The rule separates all three observed cases:
 
 | message | hand-written? | outcome |
 |---|---|---|
@@ -175,8 +174,8 @@ separates all three observed cases:
 | dataplex `DataQualityDimensionResult` | yes, `+kcc:observedstate:proto` | excluded |
 
 It also scopes the change to new resources without a second flag. Greenfield resources have no
-hand-written types yet, so they are precisely the set that gets split; existing resources are
-untouched by construction rather than by opt-in.
+hand-written types yet, so they are the set that gets split; existing resources are left alone as a
+consequence of the rule rather than by opting out.
 
 ### What the fix does not close
 
@@ -208,10 +207,11 @@ their last referent and `prunetypes` comments them out. aiplatform is the one ca
 stops compiling.
 
 `prunetypes` only considers references within `apis/<service>/<version>/`, so hand-written mappers
-are invisible to it — that is the underlying gap, and it is not addressed here. A type swap is not
-the remedy either, since those mappers are bidirectional and an ObservedState type in a `ToProto` is
-meaningless. **aiplatform must reconcile its mappers before opting in.** Nothing else in the tree is
-affected, and neither limit is reachable with the flag off.
+are invisible to it. That is the underlying gap, it is not addressed here, and it is filed upstream
+as [#12465](https://github.com/GoogleCloudPlatform/k8s-config-connector/issues/12465). A type swap
+is not the remedy either, since those mappers are bidirectional and an ObservedState type in a
+`ToProto` is meaningless. aiplatform would need its mappers reconciled before opting in. Nothing
+else in the tree is affected, and neither limit is reachable with the flag off.
 
 ### The assumption this overturned
 
@@ -232,22 +232,25 @@ desirability.
 Regenerating is not a no-op, so measuring a generator change against the committed CRDs attributes
 pre-existing drift to the change. Six `apis/` files change when their own `generate.sh` is re-run
 with no flag and no local edit — `bigtable`, `datastream`, `edgecontainer`, `orgpolicy`, `tpu`,
-`vertexai` — and two of them break outright:
+`vertexai` — and two of them break:
 
 - **orgpolicy** — `generate.sh` generates only `OrgPolicyCustomConstraint`, while
   `v1beta1/types.generated.go` also carries `// resource: OrgPolicyPolicy:Policy` and defines
   `AlternatePolicySpec`, `PolicySpec_PolicyRule_StringValues` and `Expr`. Commit `71af28e15d`
   ("promote OrgPolicyPolicy to v1beta1") added those 50 lines without adding the resource to the
   script. Re-running deletes them, and `generate-crds` fails with `unknown type
-  PolicySpec_PolicyRule_StringValues`. Reproducible on `origin/master`.
+  PolicySpec_PolicyRule_StringValues`. Reproduced on upstream `master` with a controllerbuilder
+  built from the same commit, and filed as
+  [#12463](https://github.com/GoogleCloudPlatform/k8s-config-connector/issues/12463).
 - **tpu** — regenerating emits `pb "cloud.google.com/go/tpu/apiv2/tpupb"` into
   `pkg/controller/direct/tpu/mapper.generated.go`; that module is not in `go.mod`, so `go build
-  ./...` fails.
+  ./...` fails. Filed as
+  [#12464](https://github.com/GoogleCloudPlatform/k8s-config-connector/issues/12464).
 
-`datastream` picks up newer proto field descriptions. None of this touches `required` counts — the
-control sweep measures 10,233 / 15, matching the committed tree — but that agreement is luck, not
-method. A generated file is only as current as the last person who ran the script, and nothing
-checks that re-running it is a no-op.
+`datastream` picks up newer proto field descriptions. None of this touches `required` counts: the
+control sweep measures 10,233 / 15, matching the committed tree. That agreement is a coincidence,
+though, not something the method guarantees. A generated file is only as current as the last person
+who ran the script, and nothing checks that re-running it is a no-op.
 
 Two smaller traps in the same family. `SKIP_GENERATE_CRDS` must be scoped per invocation rather than
 exported, or the final `generate-crds` skips itself and exits 0 while appearing to pass. And after a
@@ -292,13 +295,13 @@ in [`identity-collection-casing.md`](identity-collection-casing.md).
 
 An attempt to close the reference-annotation gap heuristically, by matching `resource_reference`
 targets against field names, produced **2,164** findings against **78** for description heuristics
-alone. Abandoned. This is the concrete reason references are treated as judgement rather than
-derivation: the fallback is not merely incomplete, it is noisy enough to be worse than nothing.
+alone. Abandoned. This is why references are treated as judgement rather than derivation: the
+fallback is not just incomplete, it produces far more noise than signal.
 
 ## Rejected: annotation-driven queue
 
 The queue was designed to take field-level entries from `google.api.resource_reference`.
-Implementing it killed that design. `LbTrafficExtension` — the pilot — carries no
+Implementing it ruled that design out. `LbTrafficExtension` — the pilot — carries no
 `resource_reference` on any field, including `forwarding_rules`, which is exactly the field that has
 to become a ref:
 
@@ -311,7 +314,7 @@ google.cloud.networkservices.v1.LbTrafficExtension
 
 An annotation-only queue would have been empty for this resource, so no file would have been
 written, no suppression would have happened, and it would have gone straight into the ratchet and
-failed — the precise thing the queue exists to prevent. Hence a resource-level entry emitted
+failed — the thing the queue exists to prevent. Hence a resource-level entry emitted
 unconditionally, with field-level entries as a bonus rather than the mechanism.
 
 ## Verified: baseline entries must carry forward
@@ -325,6 +328,5 @@ findings being *added*.
 
 ## Limit of what was checked
 
-The scaffolder demonstrably has no access to field data and the type generator does. Whether anyone
-has previously tried joining the two and hit a problem not visible from the code was not
-investigated.
+The scaffolder has no access to field data and the type generator does. Whether anyone has
+previously tried joining the two and hit a problem not visible from the code was not investigated.
