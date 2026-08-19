@@ -31,10 +31,20 @@ for sha in $(grep -E "PROTO_SHA=" ${REPO_ROOT}/apis/*/generate.sh 2>/dev/null | 
 done
 popd > /dev/null
 
-# Prebuild controllerbuilder for fast execution across all services
+# Prebuild controllerbuilder for fast execution across all services.
+#
+# A build older than CONTROLLERBUILDER_MAX_AGE_MINUTES is rebuilt rather than reused. Nothing
+# compares the binary against its sources, so a stale one generates the wrong output silently, and
+# the symptom turns up far from the cause: a diff in a service you never touched. An hour is long
+# enough that repeated sweeps still reuse the binary, and short enough that a binary from an earlier
+# editing session never does.
 export CONTROLLERBUILDER="${REPO_ROOT}/bin/controllerbuilder"
+CONTROLLERBUILDER_MAX_AGE_MINUTES="${CONTROLLERBUILDER_MAX_AGE_MINUTES:-60}"
 if [[ ! -x "${CONTROLLERBUILDER}" ]]; then
   echo "Prebuilding controllerbuilder..."
+  go build -o "${CONTROLLERBUILDER}" ./dev/tools/controllerbuilder
+elif [[ -n "$(find "${CONTROLLERBUILDER}" -mmin "+${CONTROLLERBUILDER_MAX_AGE_MINUTES}" 2>/dev/null)" ]]; then
+  echo "Rebuilding controllerbuilder (existing build is over ${CONTROLLERBUILDER_MAX_AGE_MINUTES} minutes old)..."
   go build -o "${CONTROLLERBUILDER}" ./dev/tools/controllerbuilder
 fi
 
