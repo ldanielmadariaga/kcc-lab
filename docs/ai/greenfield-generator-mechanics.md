@@ -119,32 +119,34 @@ carries `json:",omitempty"` and is therefore optional, so a generated resource a
 anything. `+optional` is deliberately not emitted: `omitempty` already tells controller-gen the same
 thing.
 
-Across all 116 services this adds 638 markers and changes 47 CRDs, and nearly all of that is safe.
+Across all 131 services this adds 699 markers and changes 62 CRDs, and nearly all of that is safe.
 Every addition lands on a nested type, where a `required` binds only when its enclosing object is
 present. The class that would be dangerous — a `required` at the top level of `spec`, which means
 "always" — cannot arise, because the top-level Spec is hand-written and `generate-types` never
 overwrites it.
 
-**18 additions land under `status:`, and that is a defect, not a trade-off.** Nested message types
-are generated once and shared between the spec and the observed state, so a marker taken from one
-field's annotation renders into every schema position that type occupies. redis `PSCConfig` is the
-case: turning the flag on for redis alone gives `RedisCluster` a `required: [network]` inside its
-status, in v1beta1 as well as v1alpha1. Structural validation covers the status subresource, so a
-GCP response that omits such a field makes KCC write a status its own API server rejects, and
-reconciliation fails at runtime. Nothing about the annotated field reveals this; it is visible only
-from where the type is reused.
+The exception is a nested type shared between the spec and the observed state. Those are generated
+once and reused, so a marker taken from one field's annotation renders into every schema position
+the type occupies — including `status`. redis `PSCConfig` is the case: it has no output-only field,
+so it deduplicates to a single struct, and turning the flag on gave `RedisCluster` a
+`required: [network]` inside its status, in v1beta1 as well as v1alpha1. That is a defect rather
+than a trade-off. Structural validation covers the status subresource, so a GCP response omitting
+such a field makes KCC write a status its own API server rejects, and reconciliation fails at
+runtime — and required-in-status runs against KCC's own practice besides, at 2 of 1,341 markers.
 
-Required-in-status also runs against KCC's own practice — 2 of 1,341 markers sit inside an
-ObservedState struct — and it asserts a guarantee about GCP's response body that KCC cannot enforce.
-The root cause is understood: `needsObservedState` deduplicates the spec and observed-state structs
-while they are identical, which emitting `+required` is precisely what stops. A fix along those
-lines was tried and reverted, because it breaks `generate-crds` in two opposite directions. See
-[the findings](greenfield-generator-findings.md#the-root-cause-is-known-the-fix-is-still-open).
+**The generator splits the struct instead.** When a message carries a REQUIRED field it gets its own
+`XObservedState`, so the marker lands only on the spec copy. The split is confined to messages the
+generator fully owns — nothing hand-written claims the proto message — which is both what keeps the
+two decisions behind a split from disagreeing, and what scopes the change to new resources. It
+removes 14 of the 20 status entries at no cost to the spec side.
 
-**Gated behind `--emit-required-from-proto`, default off.** Until the status leak is closed the flag
-is the containment for it, as well as for the spec-side question it was originally meant to cover: a
-proto marking a field REQUIRED where KCC deliberately treats it as optional. A service opting in
-should check its own status schemas rather than assume the additions are all spec-side.
+**Gated behind `--emit-required-from-proto`, default off.** The gate now covers the spec-side
+question it was originally meant for — a proto marking a field REQUIRED where KCC deliberately
+treats it as optional — plus two residues the split does not reach: six status entries in resources
+whose *hand-written* ObservedState struct names a plain generated type, and aiplatform, where
+splitting orphans a type its hand-written mapper still references. A service opting in should check
+its own status schemas and mappers rather than assume the additions are all spec-side. See
+[the findings](greenfield-generator-findings.md#the-root-cause-and-what-it-took-to-fix).
 
 ### Phase 2 — feed `google.api.resource` into the scaffolder
 
