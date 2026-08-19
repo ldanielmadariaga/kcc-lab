@@ -99,6 +99,35 @@ func TestIdentityTemplateRendersValidGo(t *testing.T) {
 			want: []string{"TODO", "nodePools", "clusters/{c}"},
 		},
 		{
+			// An organization-parented resource compiles but is wrong: the Parent
+			// struct below still carries ProjectID and Location. The TODO is what
+			// tells the reader that, so it has to be there.
+			name: "organization parent renders, with a warning",
+			args: &apis.APIArgs{
+				Version:              "v1alpha1",
+				Kind:                 "ExamplePolicy",
+				ProtoMessageName:     "Policy",
+				ProtoMessageFullName: "google.cloud.example.v1.Policy",
+				Collection:           "policies",
+				ParentStyle:          "organization",
+				ResourcePattern:      "organizations/{o}/policies/{p}",
+			},
+			want: []string{"TODO", "policies", "organizations/{o}"},
+		},
+		{
+			name: "folder parent renders, with a warning",
+			args: &apis.APIArgs{
+				Version:              "v1alpha1",
+				Kind:                 "ExampleFeed",
+				ProtoMessageName:     "Feed",
+				ProtoMessageFullName: "google.cloud.example.v1.Feed",
+				Collection:           "feeds",
+				ParentStyle:          "folder",
+				ResourcePattern:      "folders/{f}/feeds/{feed}",
+			},
+			want: []string{"TODO", "feeds", "folders/{f}"},
+		},
+		{
 			name: "no annotation falls back to the old guess",
 			args: &apis.APIArgs{
 				Version:              "v1alpha1",

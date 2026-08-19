@@ -44,11 +44,11 @@ const (
 )
 
 // ResourceMetadata holds what google.api.resource states about a resource. The
-// scaffolding templates would otherwise guess these, and measurement says the
-// guesses are wrong more often than not: the naive "lowercase name + s"
-// collection segment disagrees with the declared pattern for 852 of 1417
-// annotated messages, and the assumed projects/locations parent holds for only
-// about a third.
+// scaffolding templates would otherwise guess these, and the guesses are wrong
+// more often than they are right: the naive "lowercase name + s" collection
+// segment disagrees with the declared pattern for 752 of 1417 annotated
+// messages, and the assumed projects/locations parent holds for only about a
+// third. See docs/ai/greenfield-generator-findings.md for the derivation.
 type ResourceMetadata struct {
 	// Pattern is the first declared resource name pattern, e.g.
 	// "projects/{project}/locations/{location}/lbTrafficExtensions/{extension}".

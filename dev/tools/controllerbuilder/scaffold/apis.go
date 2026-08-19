@@ -41,9 +41,9 @@ type APIScaffolder struct {
 	// Proto is optional. When set, the scaffolder reads google.api.resource to
 	// learn the resource's real collection segment and parent shape instead of
 	// guessing them. Without it the templates fall back to their old guesses,
-	// which are wrong for most resources: the naive "lowercase name + s"
-	// collection disagrees with the declared pattern for 852 of 1417 annotated
-	// messages, and the assumed projects/locations parent holds for about a third.
+	// which are wrong for most resources: the collection segment disagrees with
+	// the declared pattern for 752 of 1417 annotated messages, and the assumed
+	// projects/locations parent holds for about a third.
 	Proto *protoapi.Proto
 }
 

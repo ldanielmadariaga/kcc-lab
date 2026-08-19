@@ -20,11 +20,12 @@ package {{ .Version }}
 // Resource name pattern, from google.api.resource on {{ .ProtoMessageFullName }}:
 //
 //	{{ .ResourcePattern }}
-{{- if eq .ParentStyle "other" }}
+{{- if or (eq .ParentStyle "other") (eq .ParentStyle "organization") (eq .ParentStyle "folder") }}
 //
-// TODO: this parent shape is not one the scaffolder models. The Parent struct and
-// Parse{{.ProtoMessageName}}External below assume projects/locations and are almost
-// certainly wrong for this resource - rewrite them to match the pattern above.
+// TODO: the scaffolder does not model this parent shape. The Parent struct and
+// Parse{{.ProtoMessageName}}External below assume projects/locations, so they are
+// wrong for this resource: rewrite them to match the pattern above. The scaffolded
+// Spec needs the matching change, since it carries projectRef and location.
 {{- end }}
 {{- else }}
 // TODO: {{ .ProtoMessageFullName }} declares no google.api.resource pattern, so the
