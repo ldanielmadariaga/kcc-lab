@@ -114,39 +114,38 @@ unconditionally.
 
 ### Phase 1 — emit `+required` from `field_behavior`
 
-`+required` is what produces the CRD's `required:` list. Without it every field the generator writes
-carries `json:",omitempty"` and is therefore optional, so a generated resource accepts almost
-anything. `+optional` is deliberately not emitted: `omitempty` already tells controller-gen the same
-thing.
+`+required` is what produces the CRD's `required:` list. Without it every generated field carries
+`json:",omitempty"`, so the schema treats all of them as optional. `+optional` is not emitted,
+because `omitempty` already tells controller-gen the same thing.
 
-Across all 131 services this adds 699 markers and changes 62 CRDs, and nearly all of that is safe.
-Every addition lands on a nested type, where a `required` binds only when its enclosing object is
-present. The class that would be dangerous — a `required` at the top level of `spec`, which means
-"always" — cannot arise, because the top-level Spec is hand-written and `generate-types` never
-overwrites it.
+Turning this on for all 131 services adds 699 markers and changes 62 CRDs. Every one of those
+additions lands on a nested type, where `required` binds only if the enclosing object is present. A
+`required` at the top level of `spec` would apply unconditionally, but the generator cannot produce
+one: the top-level Spec lives in the hand-written `<kind>_types.go`, which `generate-types` does not
+overwrite.
 
-The exception is a nested type shared between the spec and the observed state. Those are generated
-once and reused, so a marker taken from one field's annotation renders into every schema position
-the type occupies — including `status`. redis `PSCConfig` is the case: it has no output-only field,
-so it deduplicates to a single struct, and turning the flag on gave `RedisCluster` a
-`required: [network]` inside its status, in v1beta1 as well as v1alpha1. That is a defect rather
-than a trade-off. Structural validation covers the status subresource, so a GCP response omitting
-such a field makes KCC write a status its own API server rejects, and reconciliation fails at
-runtime — and required-in-status runs against KCC's own practice besides, at 2 of 1,341 markers.
+Shared types are the problem. A nested message is generated once and reused, so when it appears in
+both the spec and the observed state, a marker from the proto annotation shows up in both schema
+positions, `status` included. redis `PSCConfig` is the example. It has no output-only field, so it
+deduplicates to a single struct, and enabling the flag gave `RedisCluster` a `required: [network]`
+inside its status, in v1beta1 as well as v1alpha1. That matters because structural validation
+applies to the status subresource: if GCP returns a response without the field, KCC writes a status
+its own API server rejects and reconciliation fails. It is also not how KCC is normally written —
+only 2 of 1,341 `+required` markers sit inside an ObservedState struct.
 
-**The generator splits the struct instead.** When a message carries a REQUIRED field it gets its own
-`XObservedState`, so the marker lands only on the spec copy. The split is confined to messages the
-generator fully owns — nothing hand-written claims the proto message — which is both what keeps the
-two decisions behind a split from disagreeing, and what scopes the change to new resources. It
-removes 14 of the 20 status entries at no cost to the spec side.
+The generator now splits the struct. A message carrying a REQUIRED field gets its own
+`XObservedState`, so the marker only reaches the spec copy. Splitting is limited to messages that
+nothing hand-written claims, which keeps the naming of a field and the writing of its struct from
+disagreeing, and has the useful side effect of scoping the change to new resources. That removes 14
+of the 20 status entries, and the spec-side output is the same either way.
 
-**Gated behind `--emit-required-from-proto`, default off.** The gate now covers the spec-side
-question it was originally meant for — a proto marking a field REQUIRED where KCC deliberately
-treats it as optional — plus two residues the split does not reach: six status entries in resources
-whose *hand-written* ObservedState struct names a plain generated type, and aiplatform, where
-splitting orphans a type its hand-written mapper still references. A service opting in should check
-its own status schemas and mappers rather than assume the additions are all spec-side. See
-[the findings](greenfield-generator-findings.md#the-root-cause-and-what-it-took-to-fix).
+The flag `--emit-required-from-proto` is off by default. It still covers the question it was added
+for — a proto marking a field REQUIRED where KCC has chosen to treat it as optional — and it now
+also contains the two cases the split does not reach: six status entries where a hand-written
+ObservedState struct names a plain generated type, and aiplatform, where splitting orphans a type
+its hand-written mapper still uses. Check a service's status schemas and mappers before opting it
+in. See [the findings](greenfield-generator-findings.md#the-root-cause-and-what-it-took-to-fix) for
+the measurements and the two limits.
 
 ### Phase 2 — feed `google.api.resource` into the scaffolder
 
