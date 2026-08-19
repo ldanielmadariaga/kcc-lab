@@ -152,7 +152,7 @@ func (a *APIScaffolder) buildAPIArgs(resource *options.Resource) *apis.APIArgs {
 		}
 		if args.Collection == "" {
 			// No pattern to read. Fall back to what the template did before, so
-			// behaviour is unchanged for anything the proto does not describe.
+			// behavior is unchanged for anything the proto does not describe.
 			args.Collection = strings.ToLower(args.ProtoMessageName) + "s"
 		}
 		if args.ParentStyle == "" {
