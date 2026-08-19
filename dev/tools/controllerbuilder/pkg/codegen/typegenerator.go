@@ -44,6 +44,11 @@ type TypeGenerator struct {
 	generatedFileAnnotation *codegenannotations.FileAnnotation
 	includeSkippedOutput    bool
 	writeOptions            WriteOptions
+
+	// handWritten is what the target package already defines by hand, scanned once. Both the
+	// decision to give a message its own ObservedState struct and the decision to write that
+	// struct read from it, so the two cannot disagree.
+	handWritten *handWrittenTypes
 }
 
 type OutputMessageDetails struct {
@@ -113,6 +118,14 @@ func (g *TypeGenerator) VisitProto(resourceProtoFullName string) error {
 	return nil
 }
 
+// typesOutputDir is the package directory types.generated.go is written to.
+func (g *TypeGenerator) typesOutputDir() string {
+	return g.getOutputFile(generatedFileKey{
+		GoPackage: g.goPackage,
+		FileName:  "types.generated.go",
+	}).OutputDir()
+}
+
 func (g *TypeGenerator) visitMessage(message protoreflect.MessageDescriptor) error {
 	//klog.Infof("found message %q", messageDescriptor.FullName())
 
@@ -126,6 +139,14 @@ func (g *TypeGenerator) visitMessage(message protoreflect.MessageDescriptor) err
 
 	outputDeps := make(map[string]*OutputMessageDetails)
 	g.identifyOutputs(message, make(map[string]string), outputDeps, false)
+
+	if g.handWritten == nil {
+		handWritten, err := g.scanHandWrittenTypes(g.typesOutputDir())
+		if err != nil {
+			return err
+		}
+		g.handWritten = handWritten
+	}
 
 	needsObservedStateCache := make(map[string]bool)
 	for fqn, details := range outputDeps {
@@ -148,9 +169,26 @@ func (g *TypeGenerator) needsObservedState(msg protoreflect.MessageDescriptor, s
 	}
 	seen[fqn] = false // Assume false for recursion
 
+	// A REQUIRED field also makes the two versions differ, because WriteMessage marks it
+	// "// +required" and WriteObservedStateMessage deliberately does not. Sharing one struct there
+	// puts required: into the status schema, which the API server validates against a body GCP
+	// produces rather than one the user wrote.
+	//
+	// Only for messages the generator owns outright. Where a hand-written type already claims the
+	// message the generator writes no struct for it at all, so no marker is emitted and there is
+	// nothing to leak - and splitting would name a struct that either collides with the
+	// hand-written one or does not exist. Only when the flag is on, so output stays byte-identical
+	// for services that have not opted in.
+	splitOnRequired := g.writeOptions.EmitRequired &&
+		g.handWritten.ownedByGenerator(fqn, GoNameForProtoMessage(msg), goNameForOutputProtoMessage(msg))
+
 	for i := 0; i < msg.Fields().Len(); i++ {
 		f := msg.Fields().Get(i)
 		if IsFieldBehavior(f, annotations.FieldBehavior_OUTPUT_ONLY) {
+			seen[fqn] = true
+			return true
+		}
+		if splitOnRequired && IsFieldBehavior(f, annotations.FieldBehavior_REQUIRED) {
 			seen[fqn] = true
 			return true
 		}

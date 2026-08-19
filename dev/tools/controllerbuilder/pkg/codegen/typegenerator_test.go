@@ -16,6 +16,8 @@ package codegen
 
 import (
 	"bytes"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -579,4 +581,176 @@ func labelDescriptor(l descriptorpb.FieldDescriptorProto_Label) *descriptorpb.Fi
 
 func typeDescriptor(t descriptorpb.FieldDescriptorProto_Type) *descriptorpb.FieldDescriptorProto_Type {
 	return &t
+}
+
+// TestNeedsObservedStateRequired covers the shape that makes the split necessary, and the two
+// hand-written shapes that must be left alone.
+//
+// SharedConfig has a REQUIRED field and no OUTPUT_ONLY field anywhere, so today it deduplicates to
+// one struct used by both the spec and the observed state - and WriteMessage stamps "// +required"
+// on it, putting required: into the status schema. redis PscConfig is the real example.
+//
+// It is only safe to split when nothing hand-written claims the message. aiplatform
+// FunctionDeclaration (a hand-written plain type) and dataplex DataQualityDimensionResult (a
+// hand-written ObservedState type) are the two ways that goes wrong.
+func TestNeedsObservedStateRequired(t *testing.T) {
+	requiredOptions := &descriptorpb.FieldOptions{}
+	proto.SetExtension(requiredOptions, annotations.E_FieldBehavior,
+		[]annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED})
+
+	fdp := &descriptorpb.FileDescriptorProto{
+		Name:    protoPtr("test.proto"),
+		Package: protoPtr("google.cloud.test.v1"),
+		MessageType: []*descriptorpb.DescriptorProto{
+			{
+				Name: protoPtr("SharedConfig"),
+				Field: []*descriptorpb.FieldDescriptorProto{
+					{
+						Name:    protoPtr("key"),
+						Number:  protoPtr(int32(1)),
+						Type:    typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING),
+						Options: requiredOptions,
+					},
+					{
+						Name:   protoPtr("value"),
+						Number: protoPtr(int32(2)),
+						Type:   typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING),
+					},
+				},
+			},
+		},
+	}
+
+	fd, err := protodesc.NewFile(fdp, nil)
+	if err != nil {
+		t.Fatalf("failed to create file descriptor: %v", err)
+	}
+	shared := fd.Messages().ByName("SharedConfig")
+	fqn := "google.cloud.test.v1.SharedConfig"
+
+	empty := &handWrittenTypes{typeNames: map[string]bool{}, protoTagged: map[string]bool{}}
+
+	grid := []struct {
+		name         string
+		emitRequired bool
+		handWritten  *handWrittenTypes
+		want         bool
+	}{
+		{
+			name:         "generator owns the message: split it",
+			emitRequired: true,
+			handWritten:  empty,
+			want:         true,
+		},
+		{
+			name:         "flag off: leave the dedup alone",
+			emitRequired: false,
+			handWritten:  empty,
+			// Splitting with the flag off would change generated output for every service that
+			// has not opted in.
+			want: false,
+		},
+		{
+			name:         "hand-written plain type claims the message: leave it alone",
+			emitRequired: true,
+			handWritten: &handWrittenTypes{
+				typeNames:   map[string]bool{"SharedConfig": true},
+				protoTagged: map[string]bool{fqn: true},
+			},
+			// aiplatform FunctionDeclaration. The generator writes no struct here, so no marker is
+			// emitted and nothing leaks; splitting would name a struct nothing defines.
+			want: false,
+		},
+		{
+			name:         "hand-written ObservedState type claims the message: leave it alone",
+			emitRequired: true,
+			handWritten: &handWrittenTypes{
+				typeNames:   map[string]bool{"SharedConfigObservedState": true},
+				protoTagged: map[string]bool{fqn: true},
+			},
+			// dataplex DataQualityDimensionResult. *XObservedState already resolves to their type.
+			want: false,
+		},
+	}
+
+	for _, tc := range grid {
+		t.Run(tc.name, func(t *testing.T) {
+			g := &TypeGenerator{}
+			g.writeOptions = WriteOptions{EmitRequired: tc.emitRequired}
+			g.handWritten = tc.handWritten
+			if got := g.needsObservedState(shared, make(map[string]bool)); got != tc.want {
+				t.Errorf("needsObservedState() = %v, want %v", got, tc.want)
+			}
+		})
+	}
+}
+
+// TestScanHandWrittenTypes checks the scan records both what a package defines and which proto
+// messages those definitions claim, since the two answer different questions.
+func TestScanHandWrittenTypes(t *testing.T) {
+	dir := t.TempDir()
+
+	// Hand-written: one plain type, one ObservedState type for a different message.
+	handWritten := `package v1alpha1
+
+// +kcc:proto=google.cloud.test.v1.FunctionDeclaration
+type FunctionDeclaration struct {
+	Name *string ` + "`json:\"name,omitempty\"`" + `
+}
+
+// +kcc:observedstate:proto=google.cloud.test.v1.DimensionResult
+type DimensionResultObservedState struct {
+}
+`
+	// Generated files must be ignored: everything in them is ours to reshape.
+	generated := `package v1alpha1
+
+// +kcc:proto=google.cloud.test.v1.PscConfig
+type PSCConfig struct {
+}
+`
+	if err := os.WriteFile(filepath.Join(dir, "thing_types.go"), []byte(handWritten), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "types.generated.go"), []byte(generated), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	g := &generatorBase{}
+	g.init(dir)
+	got, err := g.scanHandWrittenTypes(dir)
+	if err != nil {
+		t.Fatalf("scanHandWrittenTypes: %v", err)
+	}
+
+	for _, name := range []string{"FunctionDeclaration", "DimensionResultObservedState"} {
+		if !got.typeNames[name] {
+			t.Errorf("expected hand-written type %q to be recorded", name)
+		}
+	}
+	if got.typeNames["PSCConfig"] {
+		t.Error("PSCConfig comes from types.generated.go and must not count as hand-written")
+	}
+	if got.protoTagged["google.cloud.test.v1.PscConfig"] {
+		t.Error("a generated file's proto tag must not mark the message as claimed")
+	}
+
+	if got.ownedByGenerator("google.cloud.test.v1.FunctionDeclaration", "FunctionDeclaration", "FunctionDeclarationObservedState") {
+		t.Error("a message with a hand-written plain type is not owned by the generator")
+	}
+	if got.ownedByGenerator("google.cloud.test.v1.DimensionResult", "DimensionResult", "DimensionResultObservedState") {
+		t.Error("a message with a hand-written ObservedState type is not owned by the generator")
+	}
+	if !got.ownedByGenerator("google.cloud.test.v1.PscConfig", "PSCConfig", "PSCConfigObservedState") {
+		t.Error("a message only present in generated output is owned by the generator")
+	}
+
+	// A service generated for the first time has no package directory yet.
+	missing, err := g.scanHandWrittenTypes(filepath.Join(dir, "does-not-exist"))
+	if err != nil {
+		t.Fatalf("missing directory should not be an error: %v", err)
+	}
+	if !missing.ownedByGenerator("google.cloud.test.v1.Anything", "Anything", "AnythingObservedState") {
+		t.Error("everything is generator-owned when the package does not exist yet")
+	}
 }
