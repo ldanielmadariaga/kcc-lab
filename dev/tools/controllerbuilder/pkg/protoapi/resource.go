@@ -60,10 +60,11 @@ type ResourceMetadata struct {
 	// pattern, e.g. "lbTrafficExtensions". This is the value that belongs in a
 	// resource name, preserving the API's own casing.
 	Collection string
-	// ParentSegments are the literal collection segments of the parent, e.g.
-	// ["projects", "locations"].
-	ParentSegments []string
-	// ParentStyle classifies ParentSegments into a shape the templates can render.
+	// ParentPath is the parent's literal collection segments, joined, e.g.
+	// "projects/locations". ParentStyle collapses the uncommon shapes into
+	// "other", so this is what tells a human triaging one what it actually is.
+	ParentPath string
+	// ParentStyle classifies ParentPath into a shape the templates can render.
 	ParentStyle ParentStyle
 }
 
@@ -88,21 +89,22 @@ func GetResourceMetadata(msg protoreflect.MessageDescriptor) *ResourceMetadata {
 		Pattern: patterns[0],
 		Plural:  rd.GetPlural(),
 	}
-	md.Collection, md.ParentSegments = splitPattern(md.Pattern)
+	md.Collection, md.ParentPath = splitPattern(md.Pattern)
 	if md.Collection == "" && md.Plural != "" {
 		md.Collection = md.Plural
 	}
-	md.ParentStyle = classifyParent(md.ParentSegments)
+	md.ParentStyle = classifyParent(md.ParentPath)
 	return md
 }
 
 // splitPattern separates a resource name pattern into the resource's own
-// collection segment and the literal collection segments of its parent.
+// collection segment and its parent's collection segments, joined back into a
+// path.
 //
 // "projects/{project}/locations/{location}/foos/{foo}"
 //
-//	-> collection "foos", parent ["projects", "locations"]
-func splitPattern(pattern string) (collection string, parentSegments []string) {
+//	-> collection "foos", parent "projects/locations"
+func splitPattern(pattern string) (collection string, parentPath string) {
 	segs := strings.Split(pattern, "/")
 
 	// Literal segments alternate with {placeholders}. Anything that is not a
@@ -118,7 +120,7 @@ func splitPattern(pattern string) (collection string, parentSegments []string) {
 		literals = append(literals, s)
 	}
 	if len(literals) == 0 {
-		return "", nil
+		return "", ""
 	}
 
 	// A pattern may end in a literal with no trailing placeholder (e.g.
@@ -126,13 +128,13 @@ func splitPattern(pattern string) (collection string, parentSegments []string) {
 	// collection for the resource itself.
 	last := segs[len(segs)-1]
 	if !strings.HasPrefix(last, "{") {
-		return "", literals
+		return "", strings.Join(literals, "/")
 	}
-	return literals[len(literals)-1], literals[:len(literals)-1]
+	return literals[len(literals)-1], strings.Join(literals[:len(literals)-1], "/")
 }
 
-func classifyParent(segments []string) ParentStyle {
-	switch strings.Join(segments, "/") {
+func classifyParent(parentPath string) ParentStyle {
+	switch parentPath {
 	case "":
 		return ParentUnknown
 	case "projects/locations":

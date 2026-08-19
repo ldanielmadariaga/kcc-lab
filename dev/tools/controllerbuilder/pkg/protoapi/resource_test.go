@@ -15,7 +15,6 @@
 package protoapi
 
 import (
-	"strings"
 	"testing"
 )
 
@@ -79,8 +78,8 @@ func TestSplitPattern(t *testing.T) {
 			if collection != g.wantCollection {
 				t.Errorf("collection = %q, want %q", collection, g.wantCollection)
 			}
-			if got := strings.Join(parent, "/"); got != g.wantParent {
-				t.Errorf("parent = %q, want %q", got, g.wantParent)
+			if parent != g.wantParent {
+				t.Errorf("parent = %q, want %q", parent, g.wantParent)
 			}
 		})
 	}
@@ -88,22 +87,22 @@ func TestSplitPattern(t *testing.T) {
 
 func TestClassifyParent(t *testing.T) {
 	grid := []struct {
-		segments []string
-		want     ParentStyle
+		parentPath string
+		want       ParentStyle
 	}{
-		{[]string{"projects", "locations"}, ParentProjectLocation},
-		{[]string{"projects"}, ParentProject},
-		{[]string{"organizations"}, ParentOrganization},
-		{[]string{"folders"}, ParentFolder},
-		{[]string{"projects", "locations", "clusters"}, ParentOther},
-		{[]string{"properties"}, ParentOther},
-		{nil, ParentUnknown},
+		{"projects/locations", ParentProjectLocation},
+		{"projects", ParentProject},
+		{"organizations", ParentOrganization},
+		{"folders", ParentFolder},
+		{"projects/locations/clusters", ParentOther},
+		{"properties", ParentOther},
+		{"", ParentUnknown},
 	}
 
 	for _, g := range grid {
-		t.Run(strings.Join(g.segments, "/"), func(t *testing.T) {
-			if got := classifyParent(g.segments); got != g.want {
-				t.Errorf("classifyParent(%v) = %q, want %q", g.segments, got, g.want)
+		t.Run(g.parentPath, func(t *testing.T) {
+			if got := classifyParent(g.parentPath); got != g.want {
+				t.Errorf("classifyParent(%q) = %q, want %q", g.parentPath, got, g.want)
 			}
 		})
 	}
