@@ -43,23 +43,25 @@ func (g *generatorBase) init(outputBaseDir string) {
 	g.handWrittenCache = make(map[string]*handWrittenTypes)
 }
 
-// handWrittenTypes is what a package already defines by hand, gathered in one pass.
+// handWrittenTypes records what a package already defines by hand: the type names it declares, and
+// the proto messages those types claim through a +kcc:*proto annotation.
 //
-// The generator never overwrites a hand-written type, so whether a message is "ours" decides both
-// whether we generate a struct for it and how fields referencing it are named. Those two decisions
-// used to be taken from separate filesystem lookups and could disagree, which emitted fields typed
-// *XObservedState with no such struct anywhere. Reading both from this one snapshot is what keeps
-// them consistent.
+// The generator never overwrites a hand-written type. It skips any message such a type claims, and
+// separately it has to decide, earlier in the run, whether that message gets an ObservedState
+// struct of its own. If those two decisions read from different sources they could disagree, and
+// we would emit a field typed *XObservedState with no such struct written anywhere. Both read from
+// this one snapshot instead.
 type handWrittenTypes struct {
-	// typeNames holds every hand-written struct name in the package.
+	// typeNames holds every type name declared in a hand-written file.
 	typeNames map[string]bool
-	// protoTagged holds every proto message claimed by a hand-written type's +kcc:*proto annotation,
-	// whatever the flavour.
+	// protoTagged holds every proto message named by a +kcc:*proto annotation in a hand-written
+	// file, whichever of the four annotations was used.
 	protoTagged map[string]bool
 }
 
-// ownedByGenerator reports whether nothing hand-written claims this proto message, so the generator
-// is free to shape both the spec and the observed-state struct for it.
+// ownedByGenerator reports whether the message is entirely the generator's to shape: no
+// hand-written type claims it by annotation, and none has taken either of the two names we would
+// generate for it.
 func (h *handWrittenTypes) ownedByGenerator(protoFullName string, goName string, observedStateGoName string) bool {
 	if h == nil {
 		return true
@@ -67,8 +69,9 @@ func (h *handWrittenTypes) ownedByGenerator(protoFullName string, goName string,
 	return !h.protoTagged[protoFullName] && !h.typeNames[goName] && !h.typeNames[observedStateGoName]
 }
 
-// scanHandWrittenTypes reads the non-generated Go files of srcDir once and records what they define.
-// A missing directory is not an error: a service being generated for the first time has none.
+// scanHandWrittenTypes reads the non-generated Go files in srcDir and records what they define,
+// caching the result per directory. A missing directory is not an error: a service generated for
+// the first time does not have one yet.
 func (g *generatorBase) scanHandWrittenTypes(srcDir string) (*handWrittenTypes, error) {
 	if cached, ok := g.handWrittenCache[srcDir]; ok {
 		return cached, nil

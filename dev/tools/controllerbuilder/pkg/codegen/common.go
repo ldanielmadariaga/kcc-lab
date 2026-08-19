@@ -40,13 +40,13 @@ func GetProtoMessageFromAnnotation(commentLine string) (string, bool) {
 	return protoMessage, ok
 }
 
-// GetProtoMessageAndKindFromAnnotation is GetProtoMessageFromAnnotation, but it also reports which
-// annotation matched.
+// GetProtoMessageAndKindFromAnnotation does what GetProtoMessageFromAnnotation does, and also
+// reports which of the four annotations matched.
 //
-// Callers deciding whether a hand-written type can stand in for a generated one need the kind: a
-// +kcc:observedstate:proto type is named XObservedState and satisfies a reference to one, while a
-// +kcc:proto type for the same message is named X and does not. Both annotations carry the same
-// proto message name, so the name alone cannot tell them apart.
+// Which one matched tells us what the annotated Go type is called. For a proto message M, a type
+// annotated +kcc:observedstate:proto=M is named MObservedState, while a type annotated
+// +kcc:proto=M is named M. Both annotations name the same message, so callers that need the Go
+// name have to look at the annotation itself.
 func GetProtoMessageAndKindFromAnnotation(commentLine string) (protoMessage string, annotationKind string, ok bool) {
 	trimmed := strings.TrimPrefix(commentLine, "//")
 	trimmed = strings.TrimSpace(trimmed)

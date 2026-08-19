@@ -468,8 +468,8 @@ func TestWriteFieldRequiredMarker(t *testing.T) {
 			wantMarker: true,
 		},
 		{
-			// The gate is the point: existing services must generate byte-identical
-			// output until they opt in.
+			// Services that have not opted in have to keep generating byte-identical
+			// output, which is the whole reason for the flag.
 			name:      "REQUIRED with the flag off emits nothing",
 			behaviors: []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED},
 			opts:      WriteOptions{},
@@ -583,16 +583,17 @@ func typeDescriptor(t descriptorpb.FieldDescriptorProto_Type) *descriptorpb.Fiel
 	return &t
 }
 
-// TestNeedsObservedStateRequired covers the shape that makes the split necessary, and the two
-// hand-written shapes that must be left alone.
+// TestNeedsObservedStateRequired covers the message shape that needs an ObservedState struct of its
+// own, and the two hand-written shapes that have to be left alone.
 //
-// SharedConfig has a REQUIRED field and no OUTPUT_ONLY field anywhere, so today it deduplicates to
-// one struct used by both the spec and the observed state - and WriteMessage stamps "// +required"
-// on it, putting required: into the status schema. redis PscConfig is the real example.
+// SharedConfig has a REQUIRED field and no OUTPUT_ONLY field anywhere. Without the split it
+// deduplicates down to a single struct shared by the spec and the observed state, and WriteMessage
+// stamps "// +required" on it, which lands required: in the status schema. redis PscConfig is a
+// real case of exactly this.
 //
-// It is only safe to split when nothing hand-written claims the message. aiplatform
-// FunctionDeclaration (a hand-written plain type) and dataplex DataQualityDimensionResult (a
-// hand-written ObservedState type) are the two ways that goes wrong.
+// Splitting is safe only when nothing hand-written claims the message. There are two ways that
+// goes wrong: a hand-written plain type (aiplatform FunctionDeclaration) and a hand-written
+// ObservedState type (dataplex DataQualityDimensionResult).
 func TestNeedsObservedStateRequired(t *testing.T) {
 	requiredOptions := &descriptorpb.FieldOptions{}
 	proto.SetExtension(requiredOptions, annotations.E_FieldBehavior,
@@ -657,8 +658,9 @@ func TestNeedsObservedStateRequired(t *testing.T) {
 				typeNames:   map[string]bool{"SharedConfig": true},
 				protoTagged: map[string]bool{fqn: true},
 			},
-			// aiplatform FunctionDeclaration. The generator writes no struct here, so no marker is
-			// emitted and nothing leaks; splitting would name a struct nothing defines.
+			// The aiplatform FunctionDeclaration case. The generator writes no struct here, so no
+			// marker is emitted and nothing reaches status; splitting would only name a struct
+			// that nothing defines.
 			want: false,
 		},
 		{
@@ -668,7 +670,8 @@ func TestNeedsObservedStateRequired(t *testing.T) {
 				typeNames:   map[string]bool{"SharedConfigObservedState": true},
 				protoTagged: map[string]bool{fqn: true},
 			},
-			// dataplex DataQualityDimensionResult. *XObservedState already resolves to their type.
+			// The dataplex DataQualityDimensionResult case, where *SharedConfigObservedState
+			// already resolves to the hand-written type.
 			want: false,
 		},
 	}
@@ -685,8 +688,10 @@ func TestNeedsObservedStateRequired(t *testing.T) {
 	}
 }
 
-// TestScanHandWrittenTypes checks the scan records both what a package defines and which proto
-// messages those definitions claim, since the two answer different questions.
+// TestScanHandWrittenTypes checks that the scan records both halves of what handWrittenTypes is
+// for: the type names a package declares, and the proto messages those declarations claim. A
+// message can be claimed under either of two Go names, so knowing only the names or only the
+// claimed messages is not enough.
 func TestScanHandWrittenTypes(t *testing.T) {
 	dir := t.TempDir()
 
@@ -702,7 +707,7 @@ type FunctionDeclaration struct {
 type DimensionResultObservedState struct {
 }
 `
-	// Generated files must be ignored: everything in them is ours to reshape.
+	// Generated files have to be ignored, because everything in them is ours to reshape.
 	generated := `package v1alpha1
 
 // +kcc:proto=google.cloud.test.v1.PscConfig

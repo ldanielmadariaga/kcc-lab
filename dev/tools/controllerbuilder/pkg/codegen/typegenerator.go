@@ -45,9 +45,9 @@ type TypeGenerator struct {
 	includeSkippedOutput    bool
 	writeOptions            WriteOptions
 
-	// handWritten is what the target package already defines by hand, scanned once. Both the
-	// decision to give a message its own ObservedState struct and the decision to write that
-	// struct read from it, so the two cannot disagree.
+	// handWritten is what the target package already defines by hand, scanned once when we visit
+	// the first message. See handWrittenTypes for why the decision to split a message and the
+	// decision to write it both have to read from here.
 	handWritten *handWrittenTypes
 }
 
@@ -56,17 +56,17 @@ type OutputMessageDetails struct {
 	OutputFields []protoreflect.FieldDescriptor
 }
 
-// WriteOptions gates behaviour that derives KRM markers from proto annotations.
+// WriteOptions turns on KRM markers derived from proto annotations.
 //
-// These are opt-in per service rather than on by default. Nested message types are
-// generated once and shared between the spec and the observed state, so a marker
-// derived from a field's proto annotation lands in every schema position the type
-// occupies. Turning this on for an existing resource can therefore change its CRD in
-// ways that are not obvious from the field alone - including inside status, where a
-// tightened schema can make the API server reject a status that KCC itself writes.
+// These are off by default and opted into one service at a time, because switching one on can
+// change the CRD of a resource people already use. A nested message type is generated once and
+// shared between the spec and the observed state, so a marker taken from one field's annotation
+// appears everywhere that type is used, status included. Status is the case to worry about: the
+// API server validates it like any other part of the object, so a tightened status schema can
+// start rejecting a status that KCC itself wrote.
 //
-// New resources are generated with it on from the start, so the shape is right before
-// anyone depends on it.
+// New resources turn these on from the start, which gets the shape right before anyone depends
+// on it.
 type WriteOptions struct {
 	// EmitRequired writes "// +required" for fields the proto marks REQUIRED.
 	EmitRequired bool
@@ -94,7 +94,7 @@ func (g *TypeGenerator) WithIncludeSkippedOutput(includeSkippedOutput bool) *Typ
 	return g
 }
 
-// WithWriteOptions sets the opt-in proto-derived marker behaviour.
+// WithWriteOptions selects which proto-derived markers to emit.
 func (g *TypeGenerator) WithWriteOptions(opts WriteOptions) *TypeGenerator {
 	g.writeOptions = opts
 	return g
@@ -169,16 +169,18 @@ func (g *TypeGenerator) needsObservedState(msg protoreflect.MessageDescriptor, s
 	}
 	seen[fqn] = false // Assume false for recursion
 
-	// A REQUIRED field also makes the two versions differ, because WriteMessage marks it
-	// "// +required" and WriteObservedStateMessage deliberately does not. Sharing one struct there
-	// puts required: into the status schema, which the API server validates against a body GCP
-	// produces rather than one the user wrote.
+	// The loop below decides whether this message needs an ObservedState struct of its own instead
+	// of sharing one struct between the spec and the observed state. An OUTPUT_ONLY field has
+	// always forced that split, and a REQUIRED field has to force it too: WriteMessage marks such
+	// a field "// +required" and WriteObservedStateMessage deliberately does not, so sharing the
+	// struct would put required: into the status schema. The API server validates status against
+	// what GCP returned, not against anything the user wrote.
 	//
-	// Only for messages the generator owns outright. Where a hand-written type already claims the
-	// message the generator writes no struct for it at all, so no marker is emitted and there is
-	// nothing to leak - and splitting would name a struct that either collides with the
-	// hand-written one or does not exist. Only when the flag is on, so output stays byte-identical
-	// for services that have not opted in.
+	// We split only when the generator owns the message outright. If a hand-written type claims
+	// it, the generator writes no struct for it, so no marker is emitted and nothing can reach
+	// status; splitting would only name a struct that collides with the hand-written one or that
+	// nothing defines. We also split only when the flag is on, so services that have not opted in
+	// keep byte-identical output.
 	splitOnRequired := g.writeOptions.EmitRequired &&
 		g.handWritten.ownedByGenerator(fqn, GoNameForProtoMessage(msg), goNameForOutputProtoMessage(msg))
 
@@ -444,9 +446,9 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 				useObservedState = true
 			}
 		}
-		// Never +required here: an observed-state struct describes what GCP returned,
-		// and the API server validates status too, so requiring a field GCP may omit
-		// would make it reject a status KCC wrote.
+		// Never emit +required from here. An observed-state struct describes what GCP
+		// returned, and the API server validates status, so requiring a field GCP is
+		// free to omit would make it reject a status KCC itself wrote.
 		WriteField(out, field, msg, i, useObservedState, WriteOptions{})
 	}
 	fmt.Fprintf(out, "}\n")
@@ -533,9 +535,10 @@ func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protorefl
 	// what controller-gen reads. We do not emit +optional: omitempty already
 	// implies it, so the marker would be redundant.
 	//
-	// OUTPUT_ONLY wins over REQUIRED. An output field is never user-supplied, so
-	// requiring it would make the CRD reject valid objects. The two behaviors are
-	// not expected to co-occur, but the proto allows repeating field_behavior.
+	// OUTPUT_ONLY takes precedence over REQUIRED. An output field is never supplied
+	// by the user, so requiring it would make the CRD reject valid objects. We do
+	// not expect one field to carry both, but field_behavior can be repeated, so it
+	// is worth handling.
 	if opts.EmitRequired &&
 		IsFieldBehavior(field, annotations.FieldBehavior_REQUIRED) &&
 		!IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
