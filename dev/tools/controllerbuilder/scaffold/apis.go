@@ -196,9 +196,17 @@ func (a *APIScaffolder) PathToTypeFile(resource options.Resource) string {
 	return filepath.Join(a.BaseDir, a.GoPackage, fileName)
 }
 
-func (a *APIScaffolder) AddTypeFile(resource options.Resource) error {
+// AddTypeFile scaffolds <kind>_types.go.
+//
+// When prepopulated is non-nil the Spec is filled in from the proto rather than
+// left as a three-field stub. The descriptor is passed in rather than held on the
+// scaffolder because only the caller knows which proto message a resource maps to.
+func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *PrepopulateResult) error {
 	typeFilePath := a.PathToTypeFile(resource)
 	cArgs := a.buildAPIArgs(&resource)
+	if prepopulated != nil {
+		cArgs.SpecFields = prepopulated.SpecFields
+	}
 	return scaffoldTypeFile(typeFilePath, cArgs)
 }
 
