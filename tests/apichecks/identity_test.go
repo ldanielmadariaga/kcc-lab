@@ -33,9 +33,9 @@ import (
 //
 //	return i.parent.String() + "/managedFolders/" + i.id
 //
-// Anchored on parent.String() deliberately. Without the anchor it also matches
-// the "/locations/" inside the Parent's own String(), which turns 9 real
-// findings into 46 bogus ones.
+// The anchor on parent.String() is deliberate. Without it the expression also
+// matches the "/locations/" inside the Parent's own String(), which turns 9 real
+// findings into 46 bogus ones. TestIdentityCollectionRegex guards it.
 var identityCollectionRe = regexp.MustCompile(`parent\.String\(\)\s*\+\s*"/([a-zA-Z0-9]+)/"`)
 
 // pathSegmentRe finds path segments in recorded traffic, so we can see which
@@ -51,16 +51,17 @@ var pathSegmentRe = regexp.MustCompile(`/([a-zA-Z0-9]+)/`)
 // byte; KRM field naming is a separate namespace handled by GetJSONForKRM and
 // checked by TestCRDsAcronyms.
 //
-// The oracle is pkg/test/resourcefixture/testdata/**/_http.log - the wire format
+// The oracle is the recorded HTTP traffic in
+// pkg/test/resourcefixture/testdata/**/_http.log, which is the wire format
 // actually exchanged with GCP. A casing that never appears there is one GCP has
-// never seen. Caveat: those logs contain KCC's requests as well as GCP's
-// responses, so this catches a wrong casing only when some other part of KCC
-// gets it right. That is exactly the shape of the bug it was written for -
-// StorageManagedFolder calls .../managedFolders/... while its identity writes
-// .../managedfolders/... into externalRef - but it means a resource wrong
-// everywhere would slip through.
+// never seen.
 //
-// Resources with no fixtures are not covered.
+// Those logs hold KCC's own requests alongside GCP's responses, so this catches a
+// wrong casing only when some other part of KCC gets that casing right. That is
+// the exact shape of the bug it was written for: StorageManagedFolder calls
+// .../managedFolders/... while its identity writes .../managedfolders/... into
+// externalRef. It does mean a resource that is wrong everywhere would slip
+// through, and resources with no fixtures are not covered at all.
 func TestIdentityCollectionCasing(t *testing.T) {
 	t.Parallel()
 
@@ -107,10 +108,11 @@ func TestIdentityCollectionCasing(t *testing.T) {
 // TestIdentityCollectionRegex guards the anchor.
 //
 // Without `parent.String() +` in front, the regex matches the "/locations/"
-// inside the Parent's own String() first. That does not produce noise - it
-// produces silence: every resource looks like it uses "locations", which has the
-// right casing everywhere, so TestIdentityCollectionCasing passes while checking
-// nothing. A silent check is worse than no check, hence this test.
+// inside the Parent's own String() first. The result is not noise but silence:
+// every resource then looks like it uses "locations", whose casing is right
+// everywhere, so TestIdentityCollectionCasing passes while checking nothing. A
+// check that verifies nothing is worse than no check, which is why this test
+// exists.
 func TestIdentityCollectionRegex(t *testing.T) {
 	// Shape of a real identity file: the Parent's String() comes first in the
 	// file and mentions /locations/, then the Identity's String().
@@ -128,7 +130,7 @@ func (i *FooIdentity) String() string {
 		t.Fatal("regex matched nothing; identity file layout may have changed")
 	}
 	if got := m[1]; got != "fooBars" {
-		t.Errorf("extracted %q, want %q - the regex is matching the parent's segment", got, "fooBars")
+		t.Errorf("extracted %q, want %q; the regex is matching the parent's segment", got, "fooBars")
 	}
 }
 
