@@ -36,6 +36,18 @@ const (
 
 // GetProtoMessageFromAnnotation will extract a proto message annotation, including the spec and observedstate "subclasses"
 func GetProtoMessageFromAnnotation(commentLine string) (string, bool) {
+	protoMessage, _, ok := GetProtoMessageAndKindFromAnnotation(commentLine)
+	return protoMessage, ok
+}
+
+// GetProtoMessageAndKindFromAnnotation does what GetProtoMessageFromAnnotation does, and also
+// reports which of the four annotations matched.
+//
+// Which one matched tells us what the annotated Go type is called. For a proto message M, a type
+// annotated +kcc:observedstate:proto=M is named MObservedState, while a type annotated
+// +kcc:proto=M is named M. Both annotations name the same message, so callers that need the Go
+// name have to look at the annotation itself.
+func GetProtoMessageAndKindFromAnnotation(commentLine string) (protoMessage string, annotationKind string, ok bool) {
 	trimmed := strings.TrimPrefix(commentLine, "//")
 	trimmed = strings.TrimSpace(trimmed)
 	for _, annotation := range []string{
@@ -45,10 +57,10 @@ func GetProtoMessageFromAnnotation(commentLine string) (string, bool) {
 		KCCProtoMessageAnnotationStatus,
 	} {
 		if strings.HasPrefix(trimmed, annotation+"=") {
-			return strings.TrimSpace(strings.TrimPrefix(trimmed, annotation+"=")), true
+			return strings.TrimSpace(strings.TrimPrefix(trimmed, annotation+"=")), annotation, true
 		}
 	}
-	return "", false
+	return "", "", false
 }
 
 // special-case proto messages that are currently not mapped to KRM Go structs

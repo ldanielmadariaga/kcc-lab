@@ -32,11 +32,101 @@ type generatorBase struct {
 	outputBaseDir  string
 	generatedFiles map[generatedFileKey]*generatedFile
 	errors         []error
+
+	// handWrittenCache memoizes scanHandWrittenTypes per source directory.
+	handWrittenCache map[string]*handWrittenTypes
 }
 
 func (g *generatorBase) init(outputBaseDir string) {
 	g.outputBaseDir = outputBaseDir
 	g.generatedFiles = make(map[generatedFileKey]*generatedFile)
+	g.handWrittenCache = make(map[string]*handWrittenTypes)
+}
+
+// handWrittenTypes records what a package already defines by hand: the type names it declares, and
+// the proto messages those types claim through a +kcc:*proto annotation.
+//
+// The generator never overwrites a hand-written type. It skips any message such a type claims, and
+// separately it has to decide, earlier in the run, whether that message gets an ObservedState
+// struct of its own. If those two decisions read from different sources they could disagree, and
+// we would emit a field typed *XObservedState with no such struct written anywhere. Both read from
+// this one snapshot instead.
+type handWrittenTypes struct {
+	// typeNames holds every type name declared in a hand-written file.
+	typeNames map[string]bool
+	// protoTagged holds every proto message named by a +kcc:*proto annotation in a hand-written
+	// file, whichever of the four annotations was used.
+	protoTagged map[string]bool
+}
+
+// ownedByGenerator reports whether the message is entirely the generator's to shape: no
+// hand-written type claims it by annotation, and none has taken either of the two names we would
+// generate for it.
+func (h *handWrittenTypes) ownedByGenerator(protoFullName string, goName string, observedStateGoName string) bool {
+	if h == nil {
+		return true
+	}
+	return !h.protoTagged[protoFullName] && !h.typeNames[goName] && !h.typeNames[observedStateGoName]
+}
+
+// scanHandWrittenTypes reads the non-generated Go files in srcDir and records what they define,
+// caching the result per directory. A missing directory is not an error: a service generated for
+// the first time does not have one yet.
+func (g *generatorBase) scanHandWrittenTypes(srcDir string) (*handWrittenTypes, error) {
+	if cached, ok := g.handWrittenCache[srcDir]; ok {
+		return cached, nil
+	}
+
+	out := &handWrittenTypes{
+		typeNames:   make(map[string]bool),
+		protoTagged: make(map[string]bool),
+	}
+
+	files, err := os.ReadDir(srcDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			g.handWrittenCache[srcDir] = out
+			return out, nil
+		}
+		return nil, fmt.Errorf("reading directory %q: %w", srcDir, err)
+	}
+
+	for _, f := range files {
+		p := filepath.Join(srcDir, f.Name())
+		if !strings.HasSuffix(p, ".go") || strings.HasSuffix(p, "generated.go") {
+			continue
+		}
+		b, err := os.ReadFile(p)
+		if err != nil {
+			return nil, fmt.Errorf("reading file %q: %w", p, err)
+		}
+		for _, line := range strings.Split(string(b), "\n") {
+			line = strings.TrimSpace(line)
+			if protoMessage, _, ok := GetProtoMessageAndKindFromAnnotation(line); ok {
+				out.protoTagged[protoMessage] = true
+				continue
+			}
+			if name, ok := goTypeNameFromDeclaration(line); ok {
+				out.typeNames[name] = true
+			}
+		}
+	}
+
+	g.handWrittenCache[srcDir] = out
+	return out, nil
+}
+
+// goTypeNameFromDeclaration pulls "Foo" out of a "type Foo struct {" line.
+func goTypeNameFromDeclaration(line string) (string, bool) {
+	rest, ok := strings.CutPrefix(line, "type ")
+	if !ok {
+		return "", false
+	}
+	name, _, ok := strings.Cut(rest, " ")
+	if !ok || name == "" {
+		return "", false
+	}
+	return name, true
 }
 
 func (g *generatorBase) getOutputFile(k generatedFileKey) *generatedFile {
