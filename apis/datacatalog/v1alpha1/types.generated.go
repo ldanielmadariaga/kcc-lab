@@ -129,8 +129,6 @@ type CloudSQLBigQueryConnectionSpec struct {
 	Type *string `json:"type,omitempty"`
 }
 
-/* found existing non-generated go type "ColumnSchema", skipping
-
 // +kcc:proto=google.cloud.datacatalog.v1.ColumnSchema
 type ColumnSchema struct {
 	// Required. Name of the column.
@@ -138,12 +136,14 @@ type ColumnSchema struct {
 	//  Must be a UTF-8 string without dots (.).
 	//  The maximum size is 64 bytes.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.column
+	// +required
 	Column *string `json:"column,omitempty"`
 
 	// Required. Type of the column.
 	//
 	//  Must be a UTF-8 string with the maximum size of 128 bytes.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.type
+	// +required
 	Type *string `json:"type,omitempty"`
 
 	// Optional. Description of the column. Default value is an empty string.
@@ -196,13 +196,13 @@ type ColumnSchema struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.gc_rule
 	GcRule *string `json:"gcRule,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.datacatalog.v1.ColumnSchema.FieldElementType
 type ColumnSchema_FieldElementType struct {
 	// Required. The type of a field element. See
 	//  [ColumnSchema.type][google.cloud.datacatalog.v1.ColumnSchema.type].
 	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.FieldElementType.type
+	// +required
 	Type *string `json:"type,omitempty"`
 }
 
@@ -241,8 +241,7 @@ type Contacts_Person struct {
 	Email *string `json:"email,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.DataSource", skipping
-
+/* unreachable type DataSource
 // +kcc:proto=google.cloud.datacatalog.v1.DataSource
 type DataSource struct {
 	// Service that physically stores the data.
@@ -369,8 +368,7 @@ type DatasetSpec struct {
 	VertexDatasetSpec *VertexDatasetSpec `json:"vertexDatasetSpec,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.Entry", skipping
-
+/* unreachable type Entry
 // +kcc:proto=google.cloud.datacatalog.v1.Entry
 type Entry struct {
 
@@ -542,8 +540,7 @@ type Entry struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.EntryGroup", skipping
-
+/* unreachable type EntryGroup
 // +kcc:proto=google.cloud.datacatalog.v1.EntryGroup
 type EntryGroup struct {
 	// Identifier. The resource name of the entry group in URL format.
@@ -591,6 +588,7 @@ type EntryOverview struct {
 type FeatureOnlineStoreSpec struct {
 }
 
+/* unreachable type FieldType
 // +kcc:proto=google.cloud.datacatalog.v1.FieldType
 type FieldType struct {
 	// Primitive types, such as string, boolean, etc.
@@ -601,7 +599,9 @@ type FieldType struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.FieldType.enum_type
 	EnumType *FieldType_EnumType `json:"enumType,omitempty"`
 }
+*/
 
+/* unreachable type FieldType_EnumType
 // +kcc:proto=google.cloud.datacatalog.v1.FieldType.EnumType
 type FieldType_EnumType struct {
 	// The set of allowed values for this enum.
@@ -616,7 +616,9 @@ type FieldType_EnumType struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.FieldType.EnumType.allowed_values
 	AllowedValues []FieldType_EnumType_EnumValue `json:"allowedValues,omitempty"`
 }
+*/
 
+/* unreachable type FieldType_EnumType_EnumValue
 // +kcc:proto=google.cloud.datacatalog.v1.FieldType.EnumType.EnumValue
 type FieldType_EnumType_EnumValue struct {
 	// Required. The display name of the enum value. Must not be an empty
@@ -626,8 +628,10 @@ type FieldType_EnumType_EnumValue struct {
 	//  (_), dashes (-), spaces ( ), and can't start or end with spaces. The
 	//  maximum length is 200 characters.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.FieldType.EnumType.EnumValue.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.datacatalog.v1.FilesetSpec
 type FilesetSpec struct {
@@ -642,6 +646,7 @@ type FilesetSpec struct {
 type GCSFileSpec struct {
 	// Required. Full file path. Example: `gs://bucket_name/a/b.txt`.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.GcsFileSpec.file_path
+	// +required
 	FilePath *string `json:"filePath,omitempty"`
 }
 */
@@ -678,6 +683,7 @@ type GCSFilesetSpec struct {
 	//
 	//  `gs://bucket_name/[a-m]??.j*g`
 	// +kcc:proto:field=google.cloud.datacatalog.v1.GcsFilesetSpec.file_patterns
+	// +required
 	FilePatterns []string `json:"filePatterns,omitempty"`
 }
 
@@ -937,8 +943,7 @@ type TableSpec struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.Tag", skipping
-
+/* unreachable type Tag
 // +kcc:proto=google.cloud.datacatalog.v1.Tag
 type Tag struct {
 	// Identifier. The resource name of the tag in URL format where tag ID is a
@@ -955,6 +960,7 @@ type Tag struct {
 	//
 	//  This field cannot be modified after creation.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.Tag.template
+	// +required
 	Template *string `json:"template,omitempty"`
 
 	// Resources like entry can have schemas associated with them. This scope
@@ -970,6 +976,7 @@ type Tag struct {
 }
 */
 
+/* unreachable type TagField
 // +kcc:proto=google.cloud.datacatalog.v1.TagField
 type TagField struct {
 
@@ -1005,16 +1012,18 @@ type TagField struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.TagField.richtext_value
 	RichtextValue *string `json:"richtextValue,omitempty"`
 }
+*/
 
+/* unreachable type TagField_EnumValue
 // +kcc:proto=google.cloud.datacatalog.v1.TagField.EnumValue
 type TagField_EnumValue struct {
 	// The display name of the enum value.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.TagField.EnumValue.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 }
+*/
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.TagTemplate", skipping
-
+/* unreachable type TagTemplate
 // +kcc:proto=google.cloud.datacatalog.v1.TagTemplate
 type TagTemplate struct {
 	// Identifier. The resource name of the tag template in URL format.
@@ -1043,13 +1052,13 @@ type TagTemplate struct {
 
 	// TODO: unsupported map type with key string and value message
 
-
 	// Optional. Transfer status of the TagTemplate
 	// +kcc:proto:field=google.cloud.datacatalog.v1.TagTemplate.dataplex_transfer_status
 	DataplexTransferStatus *string `json:"dataplexTransferStatus,omitempty"`
 }
 */
 
+/* unreachable type TagTemplateField
 // +kcc:proto=google.cloud.datacatalog.v1.TagTemplateField
 type TagTemplateField struct {
 	// Identifier. The resource name of the tag template field in URL format.
@@ -1076,6 +1085,7 @@ type TagTemplateField struct {
 
 	// Required. The type of value this tag field can contain.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.TagTemplateField.type
+	// +required
 	Type *FieldType `json:"type,omitempty"`
 
 	// If true, this field is required. Defaults to false.
@@ -1095,6 +1105,7 @@ type TagTemplateField struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.TagTemplateField.order
 	Order *int32 `json:"order,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.datacatalog.v1.UsageSignal
 type UsageSignal struct {
@@ -1229,8 +1240,6 @@ type BigQueryTableSpecObservedState struct {
 	TableSpec *TableSpecObservedState `json:"tableSpec,omitempty"`
 }
 
-/* found existing non-generated go type "DataSourceObservedState", skipping
-
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.DataSource
 type DataSourceObservedState struct {
 	// Service that physically stores the data.
@@ -1251,7 +1260,6 @@ type DataSourceObservedState struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.DataSource.storage_properties
 	StorageProperties *StorageProperties `json:"storageProperties,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.DatabaseTableSpec
 type DatabaseTableSpecObservedState struct {
@@ -1261,8 +1269,7 @@ type DatabaseTableSpecObservedState struct {
 	DataplexTable *DataplexTableSpec `json:"dataplexTable,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.Entry", skipping
-
+/* unreachable type EntryObservedState
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.Entry
 type EntryObservedState struct {
 	// Output only. Identifier. The resource name of an entry in URL format.
@@ -1328,8 +1335,7 @@ type EntryObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.EntryGroup", skipping
-
+/* unreachable type EntryGroupObservedState
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.EntryGroup
 type EntryGroupObservedState struct {
 	// Output only. Timestamps of the entry group. Default value is empty.
@@ -1405,8 +1411,7 @@ type TableSpecObservedState struct {
 	GroupedEntry *string `json:"groupedEntry,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.Tag", skipping
-
+/* unreachable type TagObservedState
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.Tag
 type TagObservedState struct {
 	// Output only. The display name of the tag template.

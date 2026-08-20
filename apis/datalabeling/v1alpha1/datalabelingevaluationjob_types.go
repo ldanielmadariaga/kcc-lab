@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,18 +28,40 @@ type DataLabelingEvaluationJobSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+
 	// The DataLabelingEvaluationJob name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Required. Description of the job. The description can be up to 25,000 characters long.
+	// Required. Description of the job. The description can be up to 25,000
+	//  characters long.
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.description
 	Description *string `json:"description,omitempty"`
 
-	// Required. Describes the interval at which the job runs. This interval must be at least 1 day, and it is rounded to the nearest day.
+	// Output only. Describes the current state of the job.
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.state
+	State *string `json:"state,omitempty"`
+
+	// Required. Describes the interval at which the job runs. This interval must
+	//  be at least 1 day, and it is rounded to the nearest day. For example, if
+	//  you specify a 50-hour interval, the job runs every 2 days.
+	//
+	//  You can provide the schedule in
+	//  [crontab format](/scheduler/docs/configuring/cron-job-schedules) or in an
+	//  [English-like
+	//  format](/appengine/docs/standard/python/config/cronref#schedule_format).
+	//
+	//  Regardless of what you specify, the job will run at 10:00 AM UTC. Only the
+	//  interval from this schedule is used, not the specific time of day.
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.schedule
 	Schedule *string `json:"schedule,omitempty"`
 
-	// Required. The AI Platform Prediction model version to be evaluated.
+	// Required. The [AI Platform Prediction model
+	//  version](/ml-engine/docs/prediction-overview) to be evaluated. Prediction
+	//  input and output is sampled from this model version. When creating an
+	//  evaluation job, specify the model version in the following format:
+	//
+	//  "projects/<var>{project_id}</var>/models/<var>{model_name}</var>/versions/<var>{version_name}</var>"
+	//
+	//  There can only be one evaluation job per model version.
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.model_version
 	ModelVersion *string `json:"modelVersion,omitempty"`
 
@@ -47,13 +69,31 @@ type DataLabelingEvaluationJobSpec struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.evaluation_job_config
 	EvaluationJobConfig *EvaluationJobConfig `json:"evaluationJobConfig,omitempty"`
 
-	// Required. Name of the AnnotationSpecSet describing all the labels that your machine learning model outputs.
+	// Required. Name of the [AnnotationSpecSet][google.cloud.datalabeling.v1beta1.AnnotationSpecSet] describing all the
+	//  labels that your machine learning model outputs. You must create this
+	//  resource before you create an evaluation job and provide its name in the
+	//  following format:
+	//
+	//  "projects/<var>{project_id}</var>/annotationSpecSets/<var>{annotation_spec_set_id}</var>"
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.annotation_spec_set
 	AnnotationSpecSet *string `json:"annotationSpecSet,omitempty"`
 
-	// Required. Whether you want Data Labeling Service to provide ground truth labels for prediction input.
+	// Required. Whether you want Data Labeling Service to provide ground truth
+	//  labels for prediction input. If you want the service to assign human
+	//  labelers to annotate your data, set this to `true`. If you want to provide
+	//  your own ground truth labels in the evaluation job's BigQuery table, set
+	//  this to `false`.
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.label_missing_ground_truth
 	LabelMissingGroundTruth *bool `json:"labelMissingGroundTruth,omitempty"`
+
+	// Output only. Every time the evaluation job runs and an error occurs, the
+	//  failed attempt is appended to this array.
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.attempts
+	Attempts []Attempt `json:"attempts,omitempty"`
+
+	// Output only. Timestamp of when this evaluation job was created.
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.create_time
+	CreateTime *string `json:"createTime,omitempty"`
 }
 
 // DataLabelingEvaluationJobStatus defines the config connector machine state of DataLabelingEvaluationJob
@@ -75,17 +115,6 @@ type DataLabelingEvaluationJobStatus struct {
 // DataLabelingEvaluationJobObservedState is the state of the DataLabelingEvaluationJob resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.datalabeling.v1beta1.EvaluationJob
 type DataLabelingEvaluationJobObservedState struct {
-	// Output only. Describes the current state of the job.
-	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.state
-	State *string `json:"state,omitempty"`
-
-	// Output only. Every time the evaluation job runs and an error occurs, the failed attempt is appended to this array.
-	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.attempts
-	Attempts []Attempt `json:"attempts,omitempty"`
-
-	// Output only. Timestamp of when this evaluation job was created.
-	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.create_time
-	CreateTime *string `json:"createTime,omitempty"`
 }
 
 // +genclient
@@ -94,7 +123,6 @@ type DataLabelingEvaluationJobObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

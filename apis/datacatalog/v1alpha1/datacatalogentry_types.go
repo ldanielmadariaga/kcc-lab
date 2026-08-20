@@ -15,132 +15,50 @@
 package v1alpha1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// +kcc:observedstate:proto=google.cloud.datacatalog.v1.DataSource
-type DataSourceObservedState struct {
-	// Output only. Data Catalog entry name, if applicable.
-	// +kcc:proto:field=google.cloud.datacatalog.v1.DataSource.source_entry
-	SourceEntry *string `json:"sourceEntry,omitempty"`
-
-	// Service that physically stores the data.
-	// +kcc:proto:field=google.cloud.datacatalog.v1.DataSource.service
-	Service *string `json:"service,omitempty"`
-
-	// Full name of a resource as defined by the service. For example:
-	//
-	//  `//bigquery.googleapis.com/projects/{PROJECT_ID}/locations/{LOCATION}/datasets/{DATASET_ID}/tables/{TABLE_ID}`
-	// +kcc:proto:field=google.cloud.datacatalog.v1.DataSource.resource
-	Resource *string `json:"resource,omitempty"`
-
-	// Detailed properties of the underlying storage.
-	// +kcc:proto:field=google.cloud.datacatalog.v1.DataSource.storage_properties
-	StorageProperties *StorageProperties `json:"storageProperties,omitempty"`
-}
-
-// Parent defines the potential parent resources for a DataCatalogEntry.
-type DataCatalogEntryParent struct {
-	// Reference to the entry group that contains the entry.
-	// +required
-	EntryGroupRef *EntryGroupRef `json:"entryGroupRef,omitempty"`
-}
-
 var DataCatalogEntryGVK = GroupVersion.WithKind("DataCatalogEntry")
-
-// Copying over since we are editing the generated types
-
-// +kcc:proto=google.cloud.datacatalog.v1.ColumnSchema
-type ColumnSchema struct {
-	// Required. Name of the column.
-	//
-	//  Must be a UTF-8 string without dots (.).
-	//  The maximum size is 64 bytes.
-	// +required
-	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.column
-	Column *string `json:"column,omitempty"`
-
-	// Required. Type of the column.
-	//
-	//  Must be a UTF-8 string with the maximum size of 128 bytes.
-	// +required
-	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.type
-	Type *string `json:"type,omitempty"`
-
-	// Optional. Description of the column. Default value is an empty string.
-	//
-	//  The description must be a UTF-8 string with the maximum size of 2000
-	//  bytes.
-	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.description
-	Description *string `json:"description,omitempty"`
-
-	// Optional. A column's mode indicates whether values in this column are
-	//  required, nullable, or repeated.
-	//
-	//  Only `NULLABLE`, `REQUIRED`, and `REPEATED` values are supported.
-	//  Default mode is `NULLABLE`.
-	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.mode
-	Mode *string `json:"mode,omitempty"`
-
-	// Optional. Default value for the column.
-	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.default_value
-	DefaultValue *string `json:"defaultValue,omitempty"`
-
-	// Optional. Ordinal position
-	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.ordinal_position
-	OrdinalPosition *int32 `json:"ordinalPosition,omitempty"`
-
-	// Optional. Most important inclusion of this column.
-	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.highest_indexing_type
-	HighestIndexingType *string `json:"highestIndexingType,omitempty"`
-
-	// TODO: Known issue: recursive types are tripping CRD generation
-	//  https://github.com/kubernetes-sigs/controller-tools/issues/489
-	//  https://github.com/kubernetes-sigs/controller-tools/issues/585#issuecomment-968354281
-
-	// Optional. Schema of sub-columns. A column can have zero or more
-	//  sub-columns.
-	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.subcolumns
-	// +kubebuilder:pruning:PreserveUnknownFields
-	// +kubebuilder:validation:Schemaless
-	Subcolumns []ColumnSchema `json:"subcolumns,omitempty"`
-
-	// Looker specific column info of this column.
-	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.looker_column_spec
-	LookerColumnSpec *ColumnSchema_LookerColumnSpec `json:"lookerColumnSpec,omitempty"`
-
-	// Optional. The subtype of the RANGE, if the type of this field is RANGE. If
-	//  the type is RANGE, this field is required. Possible values for the field
-	//  element type of a RANGE include:
-	//  * DATE
-	//  * DATETIME
-	//  * TIMESTAMP
-	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.range_element_type
-	RangeElementType *ColumnSchema_FieldElementType `json:"rangeElementType,omitempty"`
-
-	// Optional. Garbage collection policy for the column or column family.
-	//  Applies to systems like Cloud Bigtable.
-	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.gc_rule
-	GcRule *string `json:"gcRule,omitempty"`
-}
 
 // DataCatalogEntrySpec defines the desired state of DataCatalogEntry
 // +kcc:spec:proto=google.cloud.datacatalog.v1.Entry
 type DataCatalogEntrySpec struct {
-	DataCatalogEntryParent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 
 	// The DataCatalogEntry name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// The resource this metadata entry refers to.
+	//
+	//  For Google Cloud Platform resources, `linked_resource` is the
+	//  [Full Resource Name]
+	//  (https://cloud.google.com/apis/design/resource_names#full_resource_name).
+	//  For example, the `linked_resource` for a table resource from BigQuery is:
+	//
+	//  `//bigquery.googleapis.com/projects/{PROJECT_ID}/datasets/{DATASET_ID}/tables/{TABLE_ID}`
+	//
+	//  Output only when the entry is one of the types in the `EntryType` enum.
+	//
+	//  For entries with a `user_specified_type`, this field is optional and
+	//  defaults to an empty string.
+	//
+	//  The resource string must contain only letters (a-z, A-Z), numbers (0-9),
+	//  underscores (_), periods (.), colons (:), slashes (/), dashes (-),
+	//  and hashes (#).
+	//  The maximum size is 200 bytes when encoded in UTF-8.
+	// +kcc:proto:field=google.cloud.datacatalog.v1.Entry.linked_resource
+	LinkedResource *string `json:"linkedResource,omitempty"`
 
-	// REMOVING this field because this is the same as status.externalRef
 	// [Fully Qualified Name
 	//  (FQN)](https://cloud.google.com//data-catalog/docs/fully-qualified-names)
 	//  of the resource. Set automatically for entries representing resources from
 	//  synced systems. Settable only during creation, and read-only later. Can
 	//  be used for search and lookup of the entries.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.Entry.fully_qualified_name
-	//FullyQualifiedName *string `json:"fullyQualifiedName,omitempty"`
+	FullyQualifiedName *string `json:"fullyQualifiedName,omitempty"`
 
 	// The type of the entry.
 	//
@@ -299,32 +217,6 @@ type DataCatalogEntryStatus struct {
 // DataCatalogEntryObservedState is the state of the DataCatalogEntry resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.Entry
 type DataCatalogEntryObservedState struct {
-	// TODO: Looks like externalRef is the same as name. Remove name?
-	// Output only. Identifier. The resource name of an entry in URL format.
-	//
-	//  Note: The entry itself and its child resources might not be
-	//  stored in the location specified in its name.
-	// +kcc:proto:field=google.cloud.datacatalog.v1.Entry.name
-	// Name *string `json:"name,omitempty"`
-
-	// The resource this metadata entry refers to.
-	//
-	//  For Google Cloud Platform resources, `linked_resource` is the
-	//  [Full Resource Name]
-	//  (https://cloud.google.com/apis/design/resource_names#full_resource_name).
-	//
-	//  Output only when the entry is one of the types in the `EntryType` enum.
-	//
-	//  For entries with a `user_specified_type`, this field is optional and
-	//  defaults to an empty string.
-	//
-	//  The resource string must contain only letters (a-z, A-Z), numbers (0-9),
-	//  underscores (_), periods (.), colons (:), slashes (/), dashes (-),
-	//  and hashes (#).
-	//  The maximum size is 200 bytes when encoded in UTF-8.
-	// +kcc:proto:field=google.cloud.datacatalog.v1.Entry.linked_resource
-	LinkedResource *string `json:"linkedResource,omitempty"`
-
 	// Output only. Indicates the entry's source system that Data Catalog
 	//  integrates with, such as BigQuery, Pub/Sub, or Dataproc Metastore.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.Entry.integrated_system
@@ -357,6 +249,15 @@ type DataCatalogEntryObservedState struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.Entry.feature_online_store_spec
 	FeatureOnlineStoreSpec *FeatureOnlineStoreSpecObservedState `json:"featureOnlineStoreSpec,omitempty"`
 
+	// Timestamps from the underlying resource, not from the Data Catalog
+	//  entry.
+	//
+	//  Output only when the entry has a system listed in the `IntegratedSystem`
+	//  enum. For entries with `user_specified_system`, this field is optional
+	//  and defaults to an empty timestamp.
+	// +kcc:proto:field=google.cloud.datacatalog.v1.Entry.source_system_timestamps
+	SourceSystemTimestamps *SystemTimestampsObservedState `json:"sourceSystemTimestamps,omitempty"`
+
 	// Resource usage statistics.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.Entry.usage_signal
 	UsageSignal *UsageSignalObservedState `json:"usageSignal,omitempty"`
@@ -373,7 +274,7 @@ type DataCatalogEntryObservedState struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpdatacatalogentry;gcpdatacatalogentries
+// +kubebuilder:resource:categories=gcp,shortName=gcpdatacatalogentry;gcpdatacatalogentrys
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"

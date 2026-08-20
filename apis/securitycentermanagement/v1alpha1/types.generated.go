@@ -20,3 +20,62 @@
 // resource: SecurityCenterManagementEventThreatDetectionCustomModule:EventThreatDetectionCustomModule
 
 package v1alpha1
+
+import apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+
+/* unreachable type EventThreatDetectionCustomModule
+// +kcc:proto=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule
+type EventThreatDetectionCustomModule struct {
+	// Identifier. The resource name of the Event Threat Detection custom module,
+	//  in one of the following formats:
+	//
+	//  * `organizations/{organization}/locations/{location}/eventThreatDetectionCustomModules/{custom_module}`
+	//  * `folders/{folder}/locations/{location}/eventThreatDetectionCustomModules/{custom_module}`
+	//  * `projects/{project}/locations/{location}/eventThreatDetectionCustomModules/{custom_module}`
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.name
+	Name *string `json:"name,omitempty"`
+
+	// Optional. Configuration for the module. For the resident module, its
+	//  configuration value is defined at this level. For the inherited module, its
+	//  configuration value is inherited from the ancestor module.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.config
+	Config apiextensionsv1.JSON `json:"config,omitempty"`
+
+	// Optional. The state of enablement for the module at the given level of the
+	//  hierarchy.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.enablement_state
+	EnablementState *string `json:"enablementState,omitempty"`
+
+	// Optional. Type for the module. For example, `CONFIGURABLE_BAD_IP`.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.type
+	Type *string `json:"type,omitempty"`
+
+	// Optional. The human-readable name of the module.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. A description of the module.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.description
+	Description *string `json:"description,omitempty"`
+}
+*/
+
+/* unreachable type EventThreatDetectionCustomModuleObservedState
+// +kcc:observedstate:proto=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule
+type EventThreatDetectionCustomModuleObservedState struct {
+	// Output only. The closest ancestor module that this module inherits the
+	//  enablement state from. If empty, indicates that the custom module was
+	//  created in the requesting parent organization, folder, or project. The
+	//  format is the same as the custom module's resource name.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.ancestor_module
+	AncestorModule *string `json:"ancestorModule,omitempty"`
+
+	// Output only. The time the module was last updated.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The editor the module was last updated by.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.last_editor
+	LastEditor *string `json:"lastEditor,omitempty"`
+}
+*/

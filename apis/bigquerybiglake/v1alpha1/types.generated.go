@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,15 +22,13 @@
 
 package v1alpha1
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.biglake.v1.Catalog", skipping
-
+/* unreachable type Catalog
 // +kcc:proto=google.cloud.bigquery.biglake.v1.Catalog
 type Catalog struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.biglake.v1.Database", skipping
-
+/* unreachable type Database
 // +kcc:proto=google.cloud.bigquery.biglake.v1.Database
 type Database struct {
 	// Options of a Hive database.
@@ -55,8 +53,7 @@ type HiveDatabaseOptions struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.biglake.v1.Catalog", skipping
-
+/* unreachable type CatalogObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.biglake.v1.Catalog
 type CatalogObservedState struct {
 	// Output only. The resource name.
@@ -85,8 +82,7 @@ type CatalogObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.biglake.v1.Database", skipping
-
+/* unreachable type DatabaseObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.biglake.v1.Database
 type DatabaseObservedState struct {
 	// Output only. The resource name.

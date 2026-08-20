@@ -15,44 +15,40 @@
 package v1alpha1
 
 import (
-	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var DatastreamPrivateConnectionGVK = GroupVersion.WithKind("DatastreamPrivateConnection")
 
-type Parent struct {
-	// +required
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
-	// Immutable.
-	// +required
-	Location string `json:"location"`
-}
-
 // DatastreamPrivateConnectionSpec defines the desired state of DatastreamPrivateConnection
 // +kcc:spec:proto=google.cloud.datastream.v1.PrivateConnection
 type DatastreamPrivateConnectionSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	Location string `json:"location"`
+
 	// The DatastreamPrivateConnection name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	Parent `json:",inline"`
-
 	// Labels.
 	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Required. Display name.
 	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// VPC Peering Config.
 	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.vpc_peering_config
-	VPCPeeringConfig *VpcPeeringConfig `json:"vpcPeeringConfig,omitempty"`
+	VPCPeeringConfig *VPCPeeringConfig `json:"vpcPeeringConfig,omitempty"`
+
+	// PSC Interface Config.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.psc_interface_config
+	PSCInterfaceConfig *PSCInterfaceConfig `json:"pscInterfaceConfig,omitempty"`
 }
 
 // DatastreamPrivateConnectionStatus defines the config connector machine state of DatastreamPrivateConnection
@@ -74,11 +70,6 @@ type DatastreamPrivateConnectionStatus struct {
 // DatastreamPrivateConnectionObservedState is the state of the DatastreamPrivateConnection resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.datastream.v1.PrivateConnection
 type DatastreamPrivateConnectionObservedState struct {
-	// Output only. The resource's name.
-	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. The create time of the resource.
 	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -95,6 +86,14 @@ type DatastreamPrivateConnectionObservedState struct {
 	//  format.
 	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.error
 	Error *Error `json:"error,omitempty"`
+
+	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.satisfies_pzs
+	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+
+	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.satisfies_pzi
+	SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
 }
 
 // +genclient
@@ -129,40 +128,4 @@ type DatastreamPrivateConnectionList struct {
 
 func init() {
 	SchemeBuilder.Register(&DatastreamPrivateConnection{}, &DatastreamPrivateConnectionList{})
-}
-
-// +kcc:proto=google.cloud.datastream.v1.Error
-type Error struct {
-	// A title that explains the reason for the error.
-	// +kcc:proto:field=google.cloud.datastream.v1.Error.reason
-	Reason *string `json:"reason,omitempty"`
-
-	// A unique identifier for this specific error,
-	//  allowing it to be traced throughout the system in logs and API responses.
-	// +kcc:proto:field=google.cloud.datastream.v1.Error.error_uuid
-	ErrorUUID *string `json:"errorUUID,omitempty"`
-
-	// A message containing more information about the error that occurred.
-	// +kcc:proto:field=google.cloud.datastream.v1.Error.message
-	Message *string `json:"message,omitempty"`
-
-	// The time when the error occurred.
-	// +kcc:proto:field=google.cloud.datastream.v1.Error.error_time
-	ErrorTime *string `json:"errorTime,omitempty"`
-
-	// Additional information about the error.
-	// +kcc:proto:field=google.cloud.datastream.v1.Error.details
-	Details map[string]string `json:"details,omitempty"`
-}
-
-// +kcc:proto=google.cloud.datastream.v1.VpcPeeringConfig
-type VpcPeeringConfig struct {
-	// Required. Fully qualified name of the VPC that Datastream will peer to.
-	//  Format: `projects/{project}/global/{networks}/{name}`
-	// +kcc:proto:field=google.cloud.datastream.v1.VpcPeeringConfig.vpc
-	NetworkRef *computerefs.ComputeNetworkRef `json:"networkRef,omitempty"`
-
-	// Required. A free subnet for peering. (CIDR of /29)
-	// +kcc:proto:field=google.cloud.datastream.v1.VpcPeeringConfig.subnet
-	Subnet *string `json:"subnet,omitempty"`
 }

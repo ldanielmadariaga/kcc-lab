@@ -15,8 +15,7 @@
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
-	workflow "github.com/GoogleCloudPlatform/k8s-config-connector/apis/workflows/v1alpha1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -26,7 +25,14 @@ var WorkflowsExecutionGVK = GroupVersion.WithKind("WorkflowsExecution")
 // WorkflowsExecutionSpec defines the desired state of WorkflowsExecution
 // +kcc:spec:proto=google.cloud.workflows.executions.v1.Execution
 type WorkflowsExecutionSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	Location string `json:"location"`
+
+	// The WorkflowsExecution name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Input parameters of the execution represented as a JSON string.
 	//  The size limit is 32KB.
 	//
@@ -49,25 +55,6 @@ type WorkflowsExecutionSpec struct {
 	//  any labels associated with the execution.
 	// +kcc:proto:field=google.cloud.workflows.executions.v1.Execution.labels
 	Labels map[string]string `json:"labels,omitempty"`
-
-	// Required. Name of the workflow for which an execution should be created.
-	// Format: projects/{project}/locations/{location}/workflows/{workflow}.
-	// The latest revision of the workflow will be used.
-	*WorkflowExecutionParent `json:",inline"`
-
-	// The WorkflowsExecution name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
-}
-
-type WorkflowExecutionParent struct {
-	// Required. The location of the application.
-	Location string `json:"location,omitempty"`
-
-	// Required. The host project of the application.
-	ProjectRef *v1beta1.ProjectRef `json:"projectRef,omitempty"`
-
-	// Required.
-	WorkflowRef *workflow.WorkflowsWorkflowRef `json:"workflowRef,omitempty"`
 }
 
 // WorkflowsExecutionStatus defines the config connector machine state of WorkflowsExecution
@@ -89,7 +76,6 @@ type WorkflowsExecutionStatus struct {
 // WorkflowsExecutionObservedState is the state of the WorkflowsExecution resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.workflows.executions.v1.Execution
 type WorkflowsExecutionObservedState struct {
-
 	// Output only. Marks the beginning of execution.
 	// +kcc:proto:field=google.cloud.workflows.executions.v1.Execution.start_time
 	StartTime *string `json:"startTime,omitempty"`
@@ -135,7 +121,6 @@ type WorkflowsExecutionObservedState struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// TODO(user): make sure the pluralizaiton below is correct
 // +kubebuilder:resource:categories=gcp,shortName=gcpworkflowsexecution;gcpworkflowsexecutions
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"

@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,6 +26,231 @@
 
 package v1alpha1
 
+/* unreachable type ExternalAccessRule
+// +kcc:proto=google.cloud.vmwareengine.v1.ExternalAccessRule
+type ExternalAccessRule struct {
+
+	// User-provided description for this external access rule.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.description
+	Description *string `json:"description,omitempty"`
+
+	// External access rule priority, which determines the external access rule to
+	//  use when multiple rules apply. If multiple rules have the same priority,
+	//  their ordering is non-deterministic. If specific ordering is required,
+	//  assign unique priorities to enforce such ordering. The external access rule
+	//  priority is an integer from 100 to 4096, both inclusive. Lower integers
+	//  indicate higher precedence. For example, a rule with priority `100` has
+	//  higher precedence than a rule with priority `101`.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.priority
+	Priority *int32 `json:"priority,omitempty"`
+
+	// The action that the external access rule performs.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.action
+	Action *string `json:"action,omitempty"`
+
+	// The IP protocol to which the external access rule applies. This value can
+	//  be one of the following three protocol strings (not case-sensitive):
+	//  `tcp`, `udp`, or `icmp`.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.ip_protocol
+	IPProtocol *string `json:"ipProtocol,omitempty"`
+
+	// If source ranges are specified, the external access rule applies only to
+	//  traffic that has a source IP address in these ranges. These ranges can
+	//  either be expressed in the CIDR format or as an IP address. As only inbound
+	//  rules are supported, `ExternalAddress` resources cannot be the source IP
+	//  addresses of an external access rule. To match all source addresses,
+	//  specify `0.0.0.0/0`.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.source_ip_ranges
+	SourceIPRanges []ExternalAccessRule_IPRange `json:"sourceIPRanges,omitempty"`
+
+	// A list of source ports to which the external access rule applies. This
+	//  field is only applicable for the UDP or TCP protocol.
+	//  Each entry must be either an integer or a range. For example: `["22"]`,
+	//  `["80","443"]`, or `["12345-12349"]`. To match all source ports, specify
+	//  `["0-65535"]`.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.source_ports
+	SourcePorts []string `json:"sourcePorts,omitempty"`
+
+	// If destination ranges are specified, the external access rule applies only
+	//  to the traffic that has a destination IP address in these ranges. The
+	//  specified IP addresses must have reserved external IP addresses in the
+	//  scope of the parent network policy. To match all external IP addresses in
+	//  the scope of the parent network policy, specify `0.0.0.0/0`. To match a
+	//  specific external IP address, specify it using the
+	//  `IpRange.external_address` property.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.destination_ip_ranges
+	DestinationIPRanges []ExternalAccessRule_IPRange `json:"destinationIPRanges,omitempty"`
+
+	// A list of destination ports to which the external access rule applies. This
+	//  field is only applicable for the UDP or TCP protocol.
+	//  Each entry must be either an integer or a range. For example: `["22"]`,
+	//  `["80","443"]`, or `["12345-12349"]`. To match all destination ports,
+	//  specify `["0-65535"]`.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.destination_ports
+	DestinationPorts []string `json:"destinationPorts,omitempty"`
+}
+*/
+
+// +kcc:proto=google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange
+type ExternalAccessRule_IPRange struct {
+	// A single IP address. For example: `10.0.0.5`.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange.ip_address
+	IPAddress *string `json:"ipAddress,omitempty"`
+
+	// An IP address range in the CIDR format. For example: `10.0.0.0/24`.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange.ip_address_range
+	IPAddressRange *string `json:"ipAddressRange,omitempty"`
+
+	// The name of an `ExternalAddress` resource. The external address must
+	//  have been reserved in the scope of this external access rule's parent
+	//  network policy.  Provide the external address name in the form of
+	//  `projects/{project}/locations/{location}/privateClouds/{private_cloud}/externalAddresses/{external_address}`.
+	//  For example:
+	//  `projects/my-project/locations/us-central1-a/privateClouds/my-cloud/externalAddresses/my-address`.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange.external_address
+	ExternalAddress *string `json:"externalAddress,omitempty"`
+}
+
+/* unreachable type Hcx
+// +kcc:proto=google.cloud.vmwareengine.v1.Hcx
+type Hcx struct {
+	// Internal IP address of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Hcx.internal_ip
+	InternalIP *string `json:"internalIP,omitempty"`
+
+	// Version of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Hcx.version
+	Version *string `json:"version,omitempty"`
+
+	// Fully qualified domain name of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Hcx.fqdn
+	FQDN *string `json:"fqdn,omitempty"`
+}
+*/
+
+// +kcc:proto=google.cloud.vmwareengine.v1.NetworkConfig
+type NetworkConfig struct {
+	// Required. Management CIDR used by VMware management appliances.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkConfig.management_cidr
+	// +required
+	ManagementCIDR *string `json:"managementCIDR,omitempty"`
+
+	// Optional. The relative resource name of the VMware Engine network attached
+	//  to the private cloud. Specify the name in the following form:
+	//  `projects/{project}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
+	//  where `{project}` can either be a project number or a project ID.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkConfig.vmware_engine_network
+	VmwareEngineNetwork *string `json:"vmwareEngineNetwork,omitempty"`
+}
+
+/* unreachable type NetworkPeering
+// +kcc:proto=google.cloud.vmwareengine.v1.NetworkPeering
+type NetworkPeering struct {
+
+	// Required. The relative resource name of the network to peer with
+	//  a standard VMware Engine network. The provided network can be a
+	//  consumer VPC network or another standard VMware Engine network. If the
+	//  `peer_network_type` is VMWARE_ENGINE_NETWORK, specify the name in the form:
+	//  `projects/{project}/locations/global/vmwareEngineNetworks/{vmware_engine_network_id}`.
+	//  Otherwise specify the name in the form:
+	//  `projects/{project}/global/networks/{network_id}`, where
+	//  `{project}` can either be a project number or a project ID.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.peer_network
+	// +required
+	PeerNetwork *string `json:"peerNetwork,omitempty"`
+
+	// Optional. True if custom routes are exported to the peered network;
+	//  false otherwise. The default value is true.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.export_custom_routes
+	ExportCustomRoutes *bool `json:"exportCustomRoutes,omitempty"`
+
+	// Optional. True if custom routes are imported from the peered network;
+	//  false otherwise. The default value is true.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.import_custom_routes
+	ImportCustomRoutes *bool `json:"importCustomRoutes,omitempty"`
+
+	// Optional. True if full mesh connectivity is created and managed
+	//  automatically between peered networks; false otherwise. Currently this
+	//  field is always true because Google Compute Engine automatically creates
+	//  and manages subnetwork routes between two VPC networks when peering state
+	//  is 'ACTIVE'.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.exchange_subnet_routes
+	ExchangeSubnetRoutes *bool `json:"exchangeSubnetRoutes,omitempty"`
+
+	// Optional. True if all subnet routes with a public IP address range are
+	//  exported; false otherwise. The default value is true. IPv4 special-use
+	//  ranges (https://en.wikipedia.org/wiki/IPv4#Special_addresses) are always
+	//  exported to peers and are not controlled by this field.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.export_custom_routes_with_public_ip
+	ExportCustomRoutesWithPublicIP *bool `json:"exportCustomRoutesWithPublicIP,omitempty"`
+
+	// Optional. True if all subnet routes with public IP address range are
+	//  imported; false otherwise. The default value is true. IPv4 special-use
+	//  ranges (https://en.wikipedia.org/wiki/IPv4#Special_addresses) are always
+	//  imported to peers and are not controlled by this field.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.import_custom_routes_with_public_ip
+	ImportCustomRoutesWithPublicIP *bool `json:"importCustomRoutesWithPublicIP,omitempty"`
+
+	// Optional. Maximum transmission unit (MTU) in bytes.
+	//  The default value is `1500`. If a value of `0` is provided for this field,
+	//  VMware Engine uses the default value instead.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.peer_mtu
+	PeerMtu *int32 `json:"peerMtu,omitempty"`
+
+	// Required. The type of the network to peer with the VMware Engine network.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.peer_network_type
+	// +required
+	PeerNetworkType *string `json:"peerNetworkType,omitempty"`
+
+	// Required. The relative resource name of the VMware Engine network.
+	//  Specify the name in the following form:
+	//  `projects/{project}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
+	//  where `{project}` can either be a project number or a project ID.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.vmware_engine_network
+	// +required
+	VmwareEngineNetwork *string `json:"vmwareEngineNetwork,omitempty"`
+
+	// Optional. User-provided description for this network peering.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.description
+	Description *string `json:"description,omitempty"`
+}
+*/
+
+/* unreachable type NetworkPolicy
+// +kcc:proto=google.cloud.vmwareengine.v1.NetworkPolicy
+type NetworkPolicy struct {
+
+	// Network service that allows VMware workloads to access the internet.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.internet_access
+	InternetAccess *NetworkPolicy_NetworkService `json:"internetAccess,omitempty"`
+
+	// Network service that allows External IP addresses to be assigned to VMware
+	//  workloads. This service can only be enabled when `internet_access` is also
+	//  enabled.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.external_ip
+	ExternalIP *NetworkPolicy_NetworkService `json:"externalIP,omitempty"`
+
+	// Required. IP address range in CIDR notation used to create internet access
+	//  and external IP access. An RFC 1918 CIDR block, with a "/26" prefix, is
+	//  required. The range cannot overlap with any prefixes either in the consumer
+	//  VPC network or in use by the private clouds attached to that VPC network.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.edge_services_cidr
+	// +required
+	EdgeServicesCIDR *string `json:"edgeServicesCIDR,omitempty"`
+
+	// Optional. The relative resource name of the VMware Engine network.
+	//  Specify the name in the following form:
+	//  `projects/{project}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
+	//  where `{project}` can either be a project number or a project ID.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.vmware_engine_network
+	VmwareEngineNetwork *string `json:"vmwareEngineNetwork,omitempty"`
+
+	// Optional. User-provided description for this network policy.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.description
+	Description *string `json:"description,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.vmwareengine.v1.NetworkPolicy.NetworkService
 type NetworkPolicy_NetworkService struct {
 	// True if the service is enabled; false otherwise.
@@ -33,9 +258,355 @@ type NetworkPolicy_NetworkService struct {
 	Enabled *bool `json:"enabled,omitempty"`
 }
 
+/* unreachable type NodeTypeConfig
+// +kcc:proto=google.cloud.vmwareengine.v1.NodeTypeConfig
+type NodeTypeConfig struct {
+	// Required. The number of nodes of this type in the cluster
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NodeTypeConfig.node_count
+	// +required
+	NodeCount *int32 `json:"nodeCount,omitempty"`
+
+	// Optional. Customized number of cores available to each node of the type.
+	//  This number must always be one of `nodeType.availableCustomCoreCounts`.
+	//  If zero is provided max value from `nodeType.availableCustomCoreCounts`
+	//  will be used.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NodeTypeConfig.custom_core_count
+	CustomCoreCount *int32 `json:"customCoreCount,omitempty"`
+}
+*/
+
+/* unreachable type Nsx
+// +kcc:proto=google.cloud.vmwareengine.v1.Nsx
+type Nsx struct {
+	// Internal IP address of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Nsx.internal_ip
+	InternalIP *string `json:"internalIP,omitempty"`
+
+	// Version of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Nsx.version
+	Version *string `json:"version,omitempty"`
+
+	// Fully qualified domain name of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Nsx.fqdn
+	FQDN *string `json:"fqdn,omitempty"`
+}
+*/
+
+/* unreachable type PrivateCloud
+// +kcc:proto=google.cloud.vmwareengine.v1.PrivateCloud
+type PrivateCloud struct {
+
+	// Required. Network configuration of the private cloud.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.network_config
+	// +required
+	NetworkConfig *NetworkConfig `json:"networkConfig,omitempty"`
+
+	// Required. Input only. The management cluster for this private cloud.
+	//  This field is required during creation of the private cloud to provide
+	//  details for the default cluster.
+	//
+	//  The following fields can't be changed after private cloud creation:
+	//  `ManagementCluster.clusterId`, `ManagementCluster.nodeTypeId`.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.management_cluster
+	// +required
+	ManagementCluster *PrivateCloud_ManagementCluster `json:"managementCluster,omitempty"`
+
+	// User-provided description for this private cloud.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. Type of the private cloud. Defaults to STANDARD.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.type
+	Type *string `json:"type,omitempty"`
+}
+*/
+
+// +kcc:proto=google.cloud.vmwareengine.v1.PrivateCloud.ManagementCluster
+type PrivateCloud_ManagementCluster struct {
+	// Required. The user-provided identifier of the new `Cluster`.
+	//  The identifier must meet the following requirements:
+	//
+	//  * Only contains 1-63 alphanumeric characters and hyphens
+	//  * Begins with an alphabetical character
+	//  * Ends with a non-hyphen character
+	//  * Not formatted as a UUID
+	//  * Complies with [RFC
+	//  1034](https://datatracker.ietf.org/doc/html/rfc1034) (section 3.5)
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.ManagementCluster.cluster_id
+	// +required
+	ClusterID *string `json:"clusterID,omitempty"`
+
+	// TODO: unsupported map type with key string and value message
+
+	// Optional. Configuration of a stretched cluster. Required for STRETCHED
+	//  private clouds.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.ManagementCluster.stretched_cluster_config
+	StretchedClusterConfig *StretchedClusterConfig `json:"stretchedClusterConfig,omitempty"`
+}
+
+/* unreachable type PrivateConnection
+// +kcc:proto=google.cloud.vmwareengine.v1.PrivateConnection
+type PrivateConnection struct {
+
+	// Optional. User-provided description for this private connection.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateConnection.description
+	Description *string `json:"description,omitempty"`
+
+	// Required. The relative resource name of Legacy VMware Engine network.
+	//  Specify the name in the following form:
+	//  `projects/{project}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
+	//  where `{project}`, `{location}` will be same as specified in private
+	//  connection resource name and `{vmware_engine_network_id}` will be in the
+	//  form of `{location}`-default e.g.
+	//  projects/project/locations/us-central1/vmwareEngineNetworks/us-central1-default.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateConnection.vmware_engine_network
+	// +required
+	VmwareEngineNetwork *string `json:"vmwareEngineNetwork,omitempty"`
+
+	// Required. Private connection type.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateConnection.type
+	// +required
+	Type *string `json:"type,omitempty"`
+
+	// Optional. Routing Mode.
+	//  Default value is set to GLOBAL.
+	//  For type = PRIVATE_SERVICE_ACCESS, this field can be set to GLOBAL or
+	//  REGIONAL, for other types only GLOBAL is supported.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateConnection.routing_mode
+	RoutingMode *string `json:"routingMode,omitempty"`
+
+	// Required. Service network to create private connection.
+	//  Specify the name in the following form:
+	//  `projects/{project}/global/networks/{network_id}`
+	//  For type = PRIVATE_SERVICE_ACCESS, this field represents servicenetworking
+	//  VPC, e.g. projects/project-tp/global/networks/servicenetworking.
+	//  For type = NETAPP_CLOUD_VOLUME, this field represents NetApp service VPC,
+	//  e.g. projects/project-tp/global/networks/netapp-tenant-vpc.
+	//  For type = DELL_POWERSCALE, this field represent Dell service VPC, e.g.
+	//  projects/project-tp/global/networks/dell-tenant-vpc.
+	//  For type= THIRD_PARTY_SERVICE, this field could represent a consumer VPC or
+	//  any other producer VPC to which the VMware Engine Network needs to be
+	//  connected, e.g. projects/project/global/networks/vpc.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateConnection.service_network
+	// +required
+	ServiceNetwork *string `json:"serviceNetwork,omitempty"`
+}
+*/
+
+// +kcc:proto=google.cloud.vmwareengine.v1.StretchedClusterConfig
+type StretchedClusterConfig struct {
+	// Required. Zone that will remain operational when connection between the two
+	//  zones is lost. Specify the resource name of a zone that belongs to the
+	//  region of the private cloud. For example:
+	//  `projects/{project}/locations/europe-west3-a` where `{project}` can either
+	//  be a project number or a project ID.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.StretchedClusterConfig.preferred_location
+	// +required
+	PreferredLocation *string `json:"preferredLocation,omitempty"`
+
+	// Required. Additional zone for a higher level of availability and load
+	//  balancing. Specify the resource name of a zone that belongs to the region
+	//  of the private cloud. For example:
+	//  `projects/{project}/locations/europe-west3-b` where `{project}` can either
+	//  be a project number or a project ID.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.StretchedClusterConfig.secondary_location
+	// +required
+	SecondaryLocation *string `json:"secondaryLocation,omitempty"`
+}
+
+/* unreachable type Vcenter
+// +kcc:proto=google.cloud.vmwareengine.v1.Vcenter
+type Vcenter struct {
+	// Internal IP address of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Vcenter.internal_ip
+	InternalIP *string `json:"internalIP,omitempty"`
+
+	// Version of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Vcenter.version
+	Version *string `json:"version,omitempty"`
+
+	// Fully qualified domain name of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Vcenter.fqdn
+	FQDN *string `json:"fqdn,omitempty"`
+}
+*/
+
+/* unreachable type VmwareEngineNetwork
+// +kcc:proto=google.cloud.vmwareengine.v1.VmwareEngineNetwork
+type VmwareEngineNetwork struct {
+
+	// User-provided description for this VMware Engine network.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.description
+	Description *string `json:"description,omitempty"`
+
+	// Required. VMware Engine network type.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.type
+	// +required
+	Type *string `json:"type,omitempty"`
+
+	// Checksum that may be sent on update and delete requests to ensure that the
+	//  user-provided value is up to date before the server processes a request.
+	//  The server computes checksums based on the value of other fields in the
+	//  request.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.etag
+	Etag *string `json:"etag,omitempty"`
+}
+*/
+
 /* unreachable type VmwareEngineNetwork_VPCNetwork
 // +kcc:proto=google.cloud.vmwareengine.v1.VmwareEngineNetwork.VpcNetwork
 type VmwareEngineNetwork_VPCNetwork struct {
+}
+*/
+
+/* unreachable type ExternalAccessRuleObservedState
+// +kcc:observedstate:proto=google.cloud.vmwareengine.v1.ExternalAccessRule
+type ExternalAccessRuleObservedState struct {
+	// Output only. The resource name of this external access rule.
+	//  Resource names are schemeless URIs that follow the conventions in
+	//  https://cloud.google.com/apis/design/resource_names.
+	//  For example:
+	//  `projects/my-project/locations/us-central1/networkPolicies/my-policy/externalAccessRules/my-rule`
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. Creation time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Last update time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The state of the resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. System-generated unique identifier for the resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.uid
+	Uid *string `json:"uid,omitempty"`
+}
+*/
+
+// +kcc:observedstate:proto=google.cloud.vmwareengine.v1.Hcx
+type HcxObservedState struct {
+	// Internal IP address of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Hcx.internal_ip
+	InternalIP *string `json:"internalIP,omitempty"`
+
+	// Version of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Hcx.version
+	Version *string `json:"version,omitempty"`
+
+	// Output only. The state of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Hcx.state
+	State *string `json:"state,omitempty"`
+
+	// Fully qualified domain name of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Hcx.fqdn
+	FQDN *string `json:"fqdn,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.vmwareengine.v1.NetworkConfig
+type NetworkConfigObservedState struct {
+	// Output only. The canonical name of the VMware Engine network in the form:
+	//  `projects/{project_number}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkConfig.vmware_engine_network_canonical
+	VmwareEngineNetworkCanonical *string `json:"vmwareEngineNetworkCanonical,omitempty"`
+
+	// Output only. The IP address layout version of the management IP address
+	//  range. Possible versions include:
+	//  * `managementIpAddressLayoutVersion=1`: Indicates the legacy IP address
+	//  layout used by some existing private clouds. This is no longer supported
+	//  for new private clouds as it does not support all features.
+	//  * `managementIpAddressLayoutVersion=2`: Indicates the latest IP address
+	//  layout used by all newly created private clouds. This version supports all
+	//  current features.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkConfig.management_ip_address_layout_version
+	ManagementIPAddressLayoutVersion *int32 `json:"managementIPAddressLayoutVersion,omitempty"`
+
+	// Output only. DNS Server IP of the Private Cloud.
+	//  All DNS queries can be forwarded to this address for name resolution of
+	//  Private Cloud's management entities like vCenter, NSX-T Manager and
+	//  ESXi hosts.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkConfig.dns_server_ip
+	DNSServerIP *string `json:"dnsServerIP,omitempty"`
+}
+
+/* unreachable type NetworkPeeringObservedState
+// +kcc:observedstate:proto=google.cloud.vmwareengine.v1.NetworkPeering
+type NetworkPeeringObservedState struct {
+	// Output only. The resource name of the network peering. NetworkPeering is a
+	//  global resource and location can only be global. Resource names are
+	//  scheme-less URIs that follow the conventions in
+	//  https://cloud.google.com/apis/design/resource_names.
+	//  For example:
+	//  `projects/my-project/locations/global/networkPeerings/my-peering`
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. Creation time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Last update time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. State of the network peering. This field
+	//  has a value of 'ACTIVE' when there's a matching configuration in the peer
+	//  network. New values may be added to this enum when appropriate.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. Output Only. Details about the current state of the network
+	//  peering.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.state_details
+	StateDetails *string `json:"stateDetails,omitempty"`
+
+	// Output only. System-generated unique identifier for the resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPeering.uid
+	Uid *string `json:"uid,omitempty"`
+}
+*/
+
+/* unreachable type NetworkPolicyObservedState
+// +kcc:observedstate:proto=google.cloud.vmwareengine.v1.NetworkPolicy
+type NetworkPolicyObservedState struct {
+	// Output only. The resource name of this network policy.
+	//  Resource names are schemeless URIs that follow the conventions in
+	//  https://cloud.google.com/apis/design/resource_names.
+	//  For example:
+	//  `projects/my-project/locations/us-central1/networkPolicies/my-network-policy`
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. Creation time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Last update time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Network service that allows VMware workloads to access the internet.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.internet_access
+	InternetAccess *NetworkPolicy_NetworkServiceObservedState `json:"internetAccess,omitempty"`
+
+	// Network service that allows External IP addresses to be assigned to VMware
+	//  workloads. This service can only be enabled when `internet_access` is also
+	//  enabled.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.external_ip
+	ExternalIP *NetworkPolicy_NetworkServiceObservedState `json:"externalIP,omitempty"`
+
+	// Output only. System-generated unique identifier for the resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The canonical name of the VMware Engine network in the form:
+	//  `projects/{project_number}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.vmware_engine_network_canonical
+	VmwareEngineNetworkCanonical *string `json:"vmwareEngineNetworkCanonical,omitempty"`
 }
 */
 
@@ -46,6 +617,177 @@ type NetworkPolicy_NetworkServiceObservedState struct {
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.NetworkService.state
 	State *string `json:"state,omitempty"`
 }
+
+// +kcc:observedstate:proto=google.cloud.vmwareengine.v1.Nsx
+type NsxObservedState struct {
+	// Internal IP address of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Nsx.internal_ip
+	InternalIP *string `json:"internalIP,omitempty"`
+
+	// Version of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Nsx.version
+	Version *string `json:"version,omitempty"`
+
+	// Output only. The state of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Nsx.state
+	State *string `json:"state,omitempty"`
+
+	// Fully qualified domain name of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Nsx.fqdn
+	FQDN *string `json:"fqdn,omitempty"`
+}
+
+/* unreachable type PrivateCloudObservedState
+// +kcc:observedstate:proto=google.cloud.vmwareengine.v1.PrivateCloud
+type PrivateCloudObservedState struct {
+	// Output only. The resource name of this private cloud.
+	//  Resource names are schemeless URIs that follow the conventions in
+	//  https://cloud.google.com/apis/design/resource_names.
+	//  For example:
+	//  `projects/my-project/locations/us-central1-a/privateClouds/my-cloud`
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. Creation time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Last update time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Time when the resource was scheduled for deletion.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.delete_time
+	DeleteTime *string `json:"deleteTime,omitempty"`
+
+	// Output only. Time when the resource will be irreversibly deleted.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.expire_time
+	ExpireTime *string `json:"expireTime,omitempty"`
+
+	// Output only. State of the resource. New values may be added to this enum
+	//  when appropriate.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.state
+	State *string `json:"state,omitempty"`
+
+	// Required. Network configuration of the private cloud.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.network_config
+	NetworkConfig *NetworkConfigObservedState `json:"networkConfig,omitempty"`
+
+	// Output only. HCX appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.hcx
+	Hcx *HcxObservedState `json:"hcx,omitempty"`
+
+	// Output only. NSX appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.nsx
+	Nsx *NsxObservedState `json:"nsx,omitempty"`
+
+	// Output only. Vcenter appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.vcenter
+	Vcenter *VcenterObservedState `json:"vcenter,omitempty"`
+
+	// Output only. System-generated unique identifier for the resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.uid
+	Uid *string `json:"uid,omitempty"`
+}
+*/
+
+/* unreachable type PrivateConnectionObservedState
+// +kcc:observedstate:proto=google.cloud.vmwareengine.v1.PrivateConnection
+type PrivateConnectionObservedState struct {
+	// Output only. The resource name of the private connection.
+	//  Resource names are schemeless URIs that follow the conventions in
+	//  https://cloud.google.com/apis/design/resource_names.
+	//  For example:
+	//  `projects/my-project/locations/us-central1/privateConnections/my-connection`
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateConnection.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. Creation time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateConnection.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Last update time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateConnection.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. State of the private connection.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateConnection.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. The canonical name of the VMware Engine network in the form:
+	//  `projects/{project_number}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateConnection.vmware_engine_network_canonical
+	VmwareEngineNetworkCanonical *string `json:"vmwareEngineNetworkCanonical,omitempty"`
+
+	// Output only. VPC network peering id between given network VPC and
+	//  VMwareEngineNetwork.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateConnection.peering_id
+	PeeringID *string `json:"peeringID,omitempty"`
+
+	// Output only. System-generated unique identifier for the resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateConnection.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. Peering state between service network and VMware Engine
+	//  network.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateConnection.peering_state
+	PeeringState *string `json:"peeringState,omitempty"`
+}
+*/
+
+// +kcc:observedstate:proto=google.cloud.vmwareengine.v1.Vcenter
+type VcenterObservedState struct {
+	// Internal IP address of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Vcenter.internal_ip
+	InternalIP *string `json:"internalIP,omitempty"`
+
+	// Version of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Vcenter.version
+	Version *string `json:"version,omitempty"`
+
+	// Output only. The state of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Vcenter.state
+	State *string `json:"state,omitempty"`
+
+	// Fully qualified domain name of the appliance.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Vcenter.fqdn
+	FQDN *string `json:"fqdn,omitempty"`
+}
+
+/* unreachable type VmwareEngineNetworkObservedState
+// +kcc:observedstate:proto=google.cloud.vmwareengine.v1.VmwareEngineNetwork
+type VmwareEngineNetworkObservedState struct {
+	// Output only. The resource name of the VMware Engine network.
+	//  Resource names are schemeless URIs that follow the conventions in
+	//  https://cloud.google.com/apis/design/resource_names.
+	//  For example:
+	//  `projects/my-project/locations/global/vmwareEngineNetworks/my-network`
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. Creation time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Last update time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. VMware Engine service VPC networks that provide connectivity
+	//  from a private cloud to customer projects, the internet, and other Google
+	//  Cloud services.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.vpc_networks
+	VPCNetworks []VmwareEngineNetwork_VPCNetworkObservedState `json:"vpcNetworks,omitempty"`
+
+	// Output only. State of the VMware Engine network.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. System-generated unique identifier for the resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.uid
+	Uid *string `json:"uid,omitempty"`
+}
+*/
 
 // +kcc:observedstate:proto=google.cloud.vmwareengine.v1.VmwareEngineNetwork.VpcNetwork
 type VmwareEngineNetwork_VPCNetworkObservedState struct {

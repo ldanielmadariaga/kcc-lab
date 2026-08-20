@@ -104,7 +104,7 @@ func GoogleRpcStatus_FromProto(mapCtx *direct.MapContext, in *pb.GoogleRpcStatus
 	}
 	out := &krm.GoogleRpcStatus{}
 	out.Code = direct.LazyPtr(in.GetCode())
-	// MISSING: Details
+	out.Details = direct.Slice_FromProto(mapCtx, in.Details, Any_FromProto)
 	out.Message = direct.LazyPtr(in.GetMessage())
 	return out
 }
@@ -114,7 +114,7 @@ func GoogleRpcStatus_ToProto(mapCtx *direct.MapContext, in *krm.GoogleRpcStatus)
 	}
 	out := &pb.GoogleRpcStatus{}
 	out.Code = direct.ValueOf(in.Code)
-	// MISSING: Details
+	out.Details = direct.Slice_ToProto(mapCtx, in.Details, Any_ToProto)
 	out.Message = direct.ValueOf(in.Message)
 	return out
 }

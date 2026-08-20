@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,6 +29,38 @@
 
 package v1alpha1
 
+/* unreachable type AspectType
+// +kcc:proto=google.cloud.dataplex.v1.AspectType
+type AspectType struct {
+
+	// Optional. Description of the AspectType.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the AspectType.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// The service computes this checksum. The client may send it on update and
+	//  delete requests to ensure it has an up-to-date value before proceeding.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Immutable. Defines the Authorization for this type.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.authorization
+	Authorization *AspectType_Authorization `json:"authorization,omitempty"`
+
+	// Required. MetadataTemplate of the aspect.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.metadata_template
+	// +required
+	MetadataTemplate *AspectType_MetadataTemplate `json:"metadataTemplate,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.dataplex.v1.AspectType.Authorization
 type AspectType_Authorization struct {
 	// Immutable. The IAM permission grantable on the EntryGroup to allow access
@@ -36,6 +68,91 @@ type AspectType_Authorization struct {
 	//  Dataplex owned Types.
 	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.Authorization.alternate_use_permission
 	AlternateUsePermission *string `json:"alternateUsePermission,omitempty"`
+}
+
+// +kcc:proto=google.cloud.dataplex.v1.AspectType.MetadataTemplate
+type AspectType_MetadataTemplate struct {
+	// Optional. Index is used to encode Template messages. The value of index
+	//  can range between 1 and 2,147,483,647. Index must be unique within all
+	//  fields in a Template. (Nested Templates can reuse indexes). Once a
+	//  Template is defined, the index cannot be changed, because it identifies
+	//  the field in the actual storage format. Index is a mandatory field, but
+	//  it is optional for top level fields, and map/array "values" definitions.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.MetadataTemplate.index
+	Index *int32 `json:"index,omitempty"`
+
+	// Required. The name of the field.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.MetadataTemplate.name
+	// +required
+	Name *string `json:"name,omitempty"`
+
+	// Required. The datatype of this field. The following values are supported:
+	//
+	//  Primitive types:
+	//
+	//  * string
+	//  * integer
+	//  * boolean
+	//  * double
+	//  * datetime. Must be of the format RFC3339 UTC "Zulu" (Examples:
+	//  "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z").
+	//
+	//  Complex types:
+	//
+	//  * enum
+	//  * array
+	//  * map
+	//  * record
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.MetadataTemplate.type
+	// +required
+	Type *string `json:"type,omitempty"`
+
+	// Optional. Field definition. You must specify it if the type is record. It
+	//  defines the nested fields.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.MetadataTemplate.record_fields
+	RecordFields []AspectType_MetadataTemplate `json:"recordFields,omitempty"`
+
+	// Optional. The list of values for an enum type. You must define it if the
+	//  type is enum.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.MetadataTemplate.enum_values
+	EnumValues []AspectType_MetadataTemplate_EnumValue `json:"enumValues,omitempty"`
+
+	// Optional. If the type is map, set map_items. map_items can refer to a
+	//  primitive field or a complex (record only) field. To specify a primitive
+	//  field, you only need to set name and type in the nested
+	//  MetadataTemplate. The recommended value for the name field is item, as
+	//  this isn't used in the actual payload.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.MetadataTemplate.map_items
+	MapItems *AspectType_MetadataTemplate `json:"mapItems,omitempty"`
+
+	// Optional. If the type is array, set array_items. array_items can refer
+	//  to a primitive field or a complex (record only) field. To specify a
+	//  primitive field, you only need to set name and type in the nested
+	//  MetadataTemplate. The recommended value for the name field is item, as
+	//  this isn't used in the actual payload.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.MetadataTemplate.array_items
+	ArrayItems *AspectType_MetadataTemplate `json:"arrayItems,omitempty"`
+
+	// Optional. You can use type id if this definition of the field needs to be
+	//  reused later. The type id must be unique across the entire template. You
+	//  can only specify it if the field type is record.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.MetadataTemplate.type_id
+	TypeID *string `json:"typeID,omitempty"`
+
+	// Optional. A reference to another field definition (not an inline
+	//  definition). The value must be equal to the value of an id field defined
+	//  elsewhere in the MetadataTemplate. Only fields with record type can
+	//  refer to other fields.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.MetadataTemplate.type_ref
+	TypeRef *string `json:"typeRef,omitempty"`
+
+	// Optional. Specifies the constraints on this field.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.MetadataTemplate.constraints
+	Constraints *AspectType_MetadataTemplate_Constraints `json:"constraints,omitempty"`
+
+	// Optional. Specifies annotations on this field.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.MetadataTemplate.annotations
+	Annotations *AspectType_MetadataTemplate_Annotations `json:"annotations,omitempty"`
 }
 
 // +kcc:proto=google.cloud.dataplex.v1.AspectType.MetadataTemplate.Annotations
@@ -84,11 +201,13 @@ type AspectType_MetadataTemplate_Constraints struct {
 type AspectType_MetadataTemplate_EnumValue struct {
 	// Required. Index for the enum value. It can't be modified.
 	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.MetadataTemplate.EnumValue.index
+	// +required
 	Index *int32 `json:"index,omitempty"`
 
 	// Required. Name of the enumvalue. This is the actual value that the
 	//  aspect can contain.
 	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.MetadataTemplate.EnumValue.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. You can set this message if you need to deprecate an enum
@@ -116,6 +235,12 @@ type AssetStatus struct {
 /* unreachable type DataDiscoveryResult
 // +kcc:proto=google.cloud.dataplex.v1.DataDiscoveryResult
 type DataDiscoveryResult struct {
+}
+*/
+
+/* unreachable type DataDiscoveryResult_BigQueryPublishing
+// +kcc:proto=google.cloud.dataplex.v1.DataDiscoveryResult.BigQueryPublishing
+type DataDiscoveryResult_BigQueryPublishing struct {
 }
 */
 
@@ -167,6 +292,44 @@ type DataDiscoverySpec struct {
 	// Cloud Storage related configurations.
 	// +kcc:proto:field=google.cloud.dataplex.v1.DataDiscoverySpec.storage_config
 	StorageConfig *DataDiscoverySpec_StorageConfig `json:"storageConfig,omitempty"`
+}
+
+// +kcc:proto=google.cloud.dataplex.v1.DataDiscoverySpec.BigQueryPublishingConfig
+type DataDiscoverySpec_BigQueryPublishingConfig struct {
+	// Optional. Determines whether to  publish discovered tables as BigLake
+	//  external tables or non-BigLake external tables.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataDiscoverySpec.BigQueryPublishingConfig.table_type
+	TableType *string `json:"tableType,omitempty"`
+
+	// Optional. The BigQuery connection used to create BigLake tables.
+	//  Must be in the form
+	//  `projects/{project_id}/locations/{location_id}/connections/{connection_id}`
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataDiscoverySpec.BigQueryPublishingConfig.connection
+	Connection *string `json:"connection,omitempty"`
+
+	// Optional. The location of the BigQuery dataset to publish BigLake
+	//  external or non-BigLake external tables to.
+	//  1. If the Cloud Storage bucket is located in a multi-region bucket, then
+	//  BigQuery dataset can be in the same multi-region bucket or any single
+	//  region that is included in the same multi-region bucket. The datascan can
+	//  be created in any single region that is included in the same multi-region
+	//  bucket
+	//  2. If the Cloud Storage bucket is located in a dual-region bucket, then
+	//  BigQuery dataset can be located in regions that are included in the
+	//  dual-region bucket, or in a multi-region that includes the dual-region.
+	//  The datascan can be created in any single region that is included in the
+	//  same dual-region bucket.
+	//  3. If the Cloud Storage bucket is located in a single region, then
+	//  BigQuery dataset can be in the same single region or any multi-region
+	//  bucket that includes the same single region. The datascan will be created
+	//  in the same single region as the bucket.
+	//  4. If the BigQuery dataset is in single region, it must be in the same
+	//  single region as the datascan.
+	//
+	//  For supported values, refer to
+	//  https://cloud.google.com/bigquery/docs/locations#supported_locations.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataDiscoverySpec.BigQueryPublishingConfig.location
+	Location *string `json:"location,omitempty"`
 }
 
 // +kcc:proto=google.cloud.dataplex.v1.DataDiscoverySpec.StorageConfig
@@ -252,6 +415,12 @@ type DataProfileResult struct {
 	// The data scanned for this result.
 	// +kcc:proto:field=google.cloud.dataplex.v1.DataProfileResult.scanned_data
 	ScannedData *ScannedData `json:"scannedData,omitempty"`
+}
+*/
+
+/* unreachable type DataProfileResult_PostScanActionsResult
+// +kcc:proto=google.cloud.dataplex.v1.DataProfileResult.PostScanActionsResult
+type DataProfileResult_PostScanActionsResult struct {
 }
 */
 
@@ -482,6 +651,17 @@ type DataProfileSpec_PostScanActions struct {
 	BigqueryExport *DataProfileSpec_PostScanActions_BigQueryExport `json:"bigqueryExport,omitempty"`
 }
 
+// +kcc:proto=google.cloud.dataplex.v1.DataProfileSpec.PostScanActions.BigQueryExport
+type DataProfileSpec_PostScanActions_BigQueryExport struct {
+	// Optional. The BigQuery table to export DataProfileScan results to.
+	//  Format:
+	//  //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
+	//  or
+	//  projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataProfileSpec.PostScanActions.BigQueryExport.results_table
+	ResultsTable *string `json:"resultsTable,omitempty"`
+}
+
 // +kcc:proto=google.cloud.dataplex.v1.DataProfileSpec.SelectedFields
 type DataProfileSpec_SelectedFields struct {
 	// Optional. Expected input is a list of fully qualified names of fields as
@@ -495,7 +675,12 @@ type DataProfileSpec_SelectedFields struct {
 	FieldNames []string `json:"fieldNames,omitempty"`
 }
 
-/* unreachable type DataQualityDimension
+/* unreachable type DataQualityColumnResult
+// +kcc:proto=google.cloud.dataplex.v1.DataQualityColumnResult
+type DataQualityColumnResult struct {
+}
+*/
+
 // +kcc:proto=google.cloud.dataplex.v1.DataQualityDimension
 type DataQualityDimension struct {
 	// Optional. The dimension name a rule belongs to. Custom dimension name is
@@ -503,11 +688,22 @@ type DataQualityDimension struct {
 	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityDimension.name
 	Name *string `json:"name,omitempty"`
 }
+
+/* unreachable type DataQualityDimensionResult
+// +kcc:proto=google.cloud.dataplex.v1.DataQualityDimensionResult
+type DataQualityDimensionResult struct {
+}
 */
 
 /* unreachable type DataQualityResult
 // +kcc:proto=google.cloud.dataplex.v1.DataQualityResult
 type DataQualityResult struct {
+}
+*/
+
+/* unreachable type DataQualityResult_PostScanActionsResult
+// +kcc:proto=google.cloud.dataplex.v1.DataQualityResult.PostScanActionsResult
+type DataQualityResult_PostScanActionsResult struct {
 }
 */
 
@@ -584,6 +780,7 @@ type DataQualityRule struct {
 	//  "ACCURACY", "CONSISTENCY", "VALIDITY", "UNIQUENESS", "FRESHNESS",
 	//  "VOLUME"]**
 	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.dimension
+	// +required
 	Dimension *string `json:"dimension,omitempty"`
 
 	// Optional. The minimum ratio of **passing_rows / total_rows** required to
@@ -615,6 +812,10 @@ type DataQualityRule struct {
 	//  Default is false.
 	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.suspended
 	Suspended *bool `json:"suspended,omitempty"`
+}
+
+// +kcc:proto=google.cloud.dataplex.v1.DataQualityRule.NonNullExpectation
+type DataQualityRule_NonNullExpectation struct {
 }
 
 // +kcc:proto=google.cloud.dataplex.v1.DataQualityRule.RangeExpectation
@@ -716,11 +917,22 @@ type DataQualityRule_TableConditionExpectation struct {
 	SQLExpression *string `json:"sqlExpression,omitempty"`
 }
 
+// +kcc:proto=google.cloud.dataplex.v1.DataQualityRule.UniquenessExpectation
+type DataQualityRule_UniquenessExpectation struct {
+}
+
+/* unreachable type DataQualityRuleResult
+// +kcc:proto=google.cloud.dataplex.v1.DataQualityRuleResult
+type DataQualityRuleResult struct {
+}
+*/
+
 // +kcc:proto=google.cloud.dataplex.v1.DataQualitySpec
 type DataQualitySpec struct {
 	// Required. The list of rules to evaluate against a data source. At least one
 	//  rule is required.
 	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualitySpec.rules
+	// +required
 	Rules []DataQualityRule `json:"rules,omitempty"`
 
 	// Optional. The percentage of the records to be selected from the dataset for
@@ -760,10 +972,30 @@ type DataQualitySpec_PostScanActions struct {
 	NotificationReport *DataQualitySpec_PostScanActions_NotificationReport `json:"notificationReport,omitempty"`
 }
 
+// +kcc:proto=google.cloud.dataplex.v1.DataQualitySpec.PostScanActions.BigQueryExport
+type DataQualitySpec_PostScanActions_BigQueryExport struct {
+	// Optional. The BigQuery table to export DataQualityScan results to.
+	//  Format:
+	//  //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
+	//  or
+	//  projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualitySpec.PostScanActions.BigQueryExport.results_table
+	ResultsTable *string `json:"resultsTable,omitempty"`
+}
+
+// +kcc:proto=google.cloud.dataplex.v1.DataQualitySpec.PostScanActions.JobEndTrigger
+type DataQualitySpec_PostScanActions_JobEndTrigger struct {
+}
+
+// +kcc:proto=google.cloud.dataplex.v1.DataQualitySpec.PostScanActions.JobFailureTrigger
+type DataQualitySpec_PostScanActions_JobFailureTrigger struct {
+}
+
 // +kcc:proto=google.cloud.dataplex.v1.DataQualitySpec.PostScanActions.NotificationReport
 type DataQualitySpec_PostScanActions_NotificationReport struct {
 	// Required. The recipients who will receive the notification report.
 	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualitySpec.PostScanActions.NotificationReport.recipients
+	// +required
 	Recipients *DataQualitySpec_PostScanActions_Recipients `json:"recipients,omitempty"`
 
 	// Optional. If set, report will be sent when score threshold is met.
@@ -793,6 +1025,51 @@ type DataQualitySpec_PostScanActions_ScoreThresholdTrigger struct {
 	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualitySpec.PostScanActions.ScoreThresholdTrigger.score_threshold
 	ScoreThreshold *float32 `json:"scoreThreshold,omitempty"`
 }
+
+/* unreachable type DataScan
+// +kcc:proto=google.cloud.dataplex.v1.DataScan
+type DataScan struct {
+
+	// Optional. Description of the scan.
+	//
+	//  * Must be between 1-1024 characters.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User friendly display name.
+	//
+	//  * Must be between 1-256 characters.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. The data source for DataScan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data
+	// +required
+	Data *DataSource `json:"data,omitempty"`
+
+	// Optional. DataScan execution settings.
+	//
+	//  If not specified, the fields in it will use their default values.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.execution_spec
+	ExecutionSpec *DataScan_ExecutionSpec `json:"executionSpec,omitempty"`
+
+	// Settings for a data quality scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_quality_spec
+	DataQualitySpec *DataQualitySpec `json:"dataQualitySpec,omitempty"`
+
+	// Settings for a data profile scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_profile_spec
+	DataProfileSpec *DataProfileSpec `json:"dataProfileSpec,omitempty"`
+
+	// Settings for a data discovery scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_discovery_spec
+	DataDiscoverySpec *DataDiscoverySpec `json:"dataDiscoverySpec,omitempty"`
+}
+*/
 
 // +kcc:proto=google.cloud.dataplex.v1.DataScan.ExecutionSpec
 type DataScan_ExecutionSpec struct {
@@ -826,6 +1103,123 @@ type DataScan_ExecutionStatus struct {
 	LatestJobCreateTime *string `json:"latestJobCreateTime,omitempty"`
 }
 
+// +kcc:proto=google.cloud.dataplex.v1.DataSource
+type DataSource struct {
+	// Immutable. The Dataplex entity that represents the data source (e.g.
+	//  BigQuery table) for DataScan, of the form:
+	//  `projects/{project_number}/locations/{location_id}/lakes/{lake_id}/zones/{zone_id}/entities/{entity_id}`.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataSource.entity
+	Entity *string `json:"entity,omitempty"`
+
+	// Immutable. The service-qualified full resource name of the cloud resource
+	//  for a DataScan job to scan against. The field could be: BigQuery table of
+	//  type "TABLE" for DataProfileScan/DataQualityScan Format:
+	//  //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataSource.resource
+	Resource *string `json:"resource,omitempty"`
+}
+
+/* unreachable type DataTaxonomy
+// +kcc:proto=google.cloud.dataplex.v1.DataTaxonomy
+type DataTaxonomy struct {
+
+	// Optional. Description of the DataTaxonomy.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the DataTaxonomy.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// This checksum is computed by the server based on the value of other
+	//  fields, and may be sent on update and delete requests to ensure the
+	//  client has an up-to-date value before proceeding.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.etag
+	Etag *string `json:"etag,omitempty"`
+}
+*/
+
+/* unreachable type EntryGroup
+// +kcc:proto=google.cloud.dataplex.v1.EntryGroup
+type EntryGroup struct {
+
+	// Optional. Description of the EntryGroup.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the EntryGroup.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// This checksum is computed by the service, and might be sent on update and
+	//  delete requests to ensure the client has an up-to-date value before
+	//  proceeding.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.etag
+	Etag *string `json:"etag,omitempty"`
+}
+*/
+
+/* unreachable type EntryType
+// +kcc:proto=google.cloud.dataplex.v1.EntryType
+type EntryType struct {
+
+	// Optional. Description of the EntryType.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the EntryType.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. This checksum is computed by the service, and might be sent on
+	//  update and delete requests to ensure the client has an up-to-date value
+	//  before proceeding.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Optional. Indicates the classes this Entry Type belongs to, for example,
+	//  TABLE, DATABASE, MODEL.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.type_aliases
+	TypeAliases []string `json:"typeAliases,omitempty"`
+
+	// Optional. The platform that Entries of this type belongs to.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.platform
+	Platform *string `json:"platform,omitempty"`
+
+	// Optional. The system that Entries of this type belongs to. Examples include
+	//  CloudSQL, MariaDB etc
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.system
+	System *string `json:"system,omitempty"`
+
+	// AspectInfo for the entry type.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.required_aspects
+	RequiredAspects []EntryType_AspectInfo `json:"requiredAspects,omitempty"`
+
+	// Immutable. Authorization defined for this type.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.authorization
+	Authorization *EntryType_Authorization `json:"authorization,omitempty"`
+}
+*/
+
+// +kcc:proto=google.cloud.dataplex.v1.EntryType.AspectInfo
+type EntryType_AspectInfo struct {
+	// Required aspect type for the entry type.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.AspectInfo.type
+	Type *string `json:"type,omitempty"`
+}
+
 // +kcc:proto=google.cloud.dataplex.v1.EntryType.Authorization
 type EntryType_Authorization struct {
 	// Immutable. The IAM permission grantable on the Entry Group to allow
@@ -833,6 +1227,45 @@ type EntryType_Authorization struct {
 	//  settable for Dataplex owned Types.
 	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.Authorization.alternate_use_permission
 	AlternateUsePermission *string `json:"alternateUsePermission,omitempty"`
+}
+
+/* unreachable type Job
+// +kcc:proto=google.cloud.dataplex.v1.Job
+type Job struct {
+}
+*/
+
+/* unreachable type Lake
+// +kcc:proto=google.cloud.dataplex.v1.Lake
+type Lake struct {
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the lake.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. Description of the lake.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. Settings to manage lake and Dataproc Metastore service instance
+	//  association.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.metastore
+	Metastore *Lake_Metastore `json:"metastore,omitempty"`
+}
+*/
+
+// +kcc:proto=google.cloud.dataplex.v1.Lake.Metastore
+type Lake_Metastore struct {
+	// Optional. A relative reference to the Dataproc Metastore
+	//  (https://cloud.google.com/dataproc-metastore/docs) service associated
+	//  with the lake:
+	//  `projects/{project_id}/locations/{location_id}/services/{service_id}`
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.Metastore.service
+	Service *string `json:"service,omitempty"`
 }
 
 // +kcc:proto=google.cloud.dataplex.v1.Lake.MetastoreStatus
@@ -853,6 +1286,231 @@ type Lake_MetastoreStatus struct {
 	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.MetastoreStatus.endpoint
 	Endpoint *string `json:"endpoint,omitempty"`
 }
+
+/* unreachable type MetadataJob
+// +kcc:proto=google.cloud.dataplex.v1.MetadataJob
+type MetadataJob struct {
+
+	// Optional. User-defined labels.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. Metadata job type.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.type
+	// +required
+	Type *string `json:"type,omitempty"`
+
+	// Import job specification.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.import_spec
+	ImportSpec *MetadataJob_ImportJobSpec `json:"importSpec,omitempty"`
+
+	// Export job specification.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.export_spec
+	ExportSpec *MetadataJob_ExportJobSpec `json:"exportSpec,omitempty"`
+}
+*/
+
+/* unreachable type MetadataJob_ExportJobResult
+// +kcc:proto=google.cloud.dataplex.v1.MetadataJob.ExportJobResult
+type MetadataJob_ExportJobResult struct {
+}
+*/
+
+// +kcc:proto=google.cloud.dataplex.v1.MetadataJob.ExportJobSpec
+type MetadataJob_ExportJobSpec struct {
+	// Required. The scope of the export job.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.scope
+	// +required
+	Scope *MetadataJob_ExportJobSpec_ExportJobScope `json:"scope,omitempty"`
+
+	// Required. The root path of the Cloud Storage bucket to export the
+	//  metadata to, in the format `gs://{bucket}/`. You can optionally specify a
+	//  custom prefix after the bucket name, in the format
+	//  `gs://{bucket}/{prefix}/`. The maximum length of the custom prefix is 128
+	//  characters. Dataplex constructs the object path for the exported files by
+	//  using the bucket name and prefix that you provide, followed by a
+	//  system-generated path.
+	//
+	//  The bucket must be in the same VPC Service Controls perimeter as the job.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.output_path
+	// +required
+	OutputPath *string `json:"outputPath,omitempty"`
+}
+
+// +kcc:proto=google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.ExportJobScope
+type MetadataJob_ExportJobSpec_ExportJobScope struct {
+	// Whether the metadata export job is an organization-level export job.
+	//
+	//  - If `true`, the job exports the entries from the same organization and
+	//  VPC Service Controls perimeter as the job. The project that the job
+	//  belongs to determines the VPC Service Controls perimeter. If you set
+	//  the job scope to be at the organization level, then don't provide a
+	//  list of projects or entry groups.
+	//  - If `false`, you must specify a list of projects or a list of entry
+	//  groups whose entries you want to export.
+	//
+	//  The default is `false`.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.ExportJobScope.organization_level
+	OrganizationLevel *bool `json:"organizationLevel,omitempty"`
+
+	// The projects whose metadata you want to export, in the format
+	//  `projects/{project_id_or_number}`. Only the entries from
+	//  the specified projects are exported.
+	//
+	//  The projects must be in the same organization and VPC Service Controls
+	//  perimeter as the job.
+	//
+	//  If you set the job scope to be a list of projects, then set the
+	//  organization-level export flag to false and don't provide a list of
+	//  entry groups.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.ExportJobScope.projects
+	Projects []string `json:"projects,omitempty"`
+
+	// The entry groups whose metadata you want to export, in the format
+	//  `projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}`.
+	//  Only the entries in the specified entry groups are exported.
+	//
+	//  The entry groups must be in the same location and the same VPC Service
+	//  Controls perimeter as the job.
+	//
+	//  If you set the job scope to be a list of entry groups, then set the
+	//  organization-level export flag to false and don't provide a list of
+	//  projects.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.ExportJobScope.entry_groups
+	EntryGroups []string `json:"entryGroups,omitempty"`
+
+	// The entry types that are in scope for the export job, specified as
+	//  relative resource names in the format
+	//  `projects/{project_id_or_number}/locations/{location}/entryTypes/{entry_type_id}`.
+	//  Only entries that belong to the specified entry types are affected by
+	//  the job.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.ExportJobScope.entry_types
+	EntryTypes []string `json:"entryTypes,omitempty"`
+
+	// The aspect types that are in scope for the export job, specified as
+	//  relative resource names in the format
+	//  `projects/{project_id_or_number}/locations/{location}/aspectTypes/{aspect_type_id}`.
+	//  Only aspects that belong to the specified aspect types are affected by
+	//  the job.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.ExportJobScope.aspect_types
+	AspectTypes []string `json:"aspectTypes,omitempty"`
+}
+
+/* unreachable type MetadataJob_ImportJobResult
+// +kcc:proto=google.cloud.dataplex.v1.MetadataJob.ImportJobResult
+type MetadataJob_ImportJobResult struct {
+}
+*/
+
+// +kcc:proto=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec
+type MetadataJob_ImportJobSpec struct {
+	// Optional. The URI of a Cloud Storage bucket or folder (beginning with
+	//  `gs://` and ending with `/`) that contains the metadata import files for
+	//  this job.
+	//
+	//  A metadata import file defines the values to set for each of the entries
+	//  and aspects in a metadata import job. For more information about how to
+	//  create a metadata import file and the file requirements, see [Metadata
+	//  import
+	//  file](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file).
+	//
+	//  You can provide multiple metadata import files in the same metadata job.
+	//  The bucket or folder must contain at least one metadata import file, in
+	//  JSON Lines format (either `.json` or `.jsonl` file extension).
+	//
+	//  In `FULL` entry sync mode, don't save the metadata import file in a
+	//  folder named `SOURCE_STORAGE_URI/deletions/`.
+	//
+	//  **Caution**: If the metadata import file contains no data, all entries
+	//  and aspects that belong to the job's scope are deleted.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.source_storage_uri
+	SourceStorageURI *string `json:"sourceStorageURI,omitempty"`
+
+	// Optional. The time when the process that created the metadata import
+	//  files began.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.source_create_time
+	SourceCreateTime *string `json:"sourceCreateTime,omitempty"`
+
+	// Required. A boundary on the scope of impact that the metadata import job
+	//  can have.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.scope
+	// +required
+	Scope *MetadataJob_ImportJobSpec_ImportJobScope `json:"scope,omitempty"`
+
+	// Required. The sync mode for entries.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.entry_sync_mode
+	// +required
+	EntrySyncMode *string `json:"entrySyncMode,omitempty"`
+
+	// Required. The sync mode for aspects.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.aspect_sync_mode
+	// +required
+	AspectSyncMode *string `json:"aspectSyncMode,omitempty"`
+
+	// Optional. The level of logs to write to Cloud Logging for this job.
+	//
+	//  Debug-level logs provide highly-detailed information for
+	//  troubleshooting, but their increased verbosity could incur [additional
+	//  costs](https://cloud.google.com/stackdriver/pricing) that might not be
+	//  merited for all jobs.
+	//
+	//  If unspecified, defaults to `INFO`.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.log_level
+	LogLevel *string `json:"logLevel,omitempty"`
+}
+
+// +kcc:proto=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.ImportJobScope
+type MetadataJob_ImportJobSpec_ImportJobScope struct {
+	// Required. The entry group that is in scope for the import job,
+	//  specified as a relative resource name in the format
+	//  `projects/{project_number_or_id}/locations/{location_id}/entryGroups/{entry_group_id}`.
+	//  Only entries and aspects that belong to the specified entry group are
+	//  affected by the job.
+	//
+	//  Must contain exactly one element. The entry group and the job
+	//  must be in the same location.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.ImportJobScope.entry_groups
+	// +required
+	EntryGroups []string `json:"entryGroups,omitempty"`
+
+	// Required. The entry types that are in scope for the import job,
+	//  specified as relative resource names in the format
+	//  `projects/{project_number_or_id}/locations/{location_id}/entryTypes/{entry_type_id}`.
+	//  The job modifies only the entries and aspects that belong to these
+	//  entry types.
+	//
+	//  If the metadata import file attempts to modify an entry whose type
+	//  isn't included in this list, the import job is halted before modifying
+	//  any entries or aspects.
+	//
+	//  The location of an entry type must either match the location of the
+	//  job, or the entry type must be global.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.ImportJobScope.entry_types
+	// +required
+	EntryTypes []string `json:"entryTypes,omitempty"`
+
+	// Optional. The aspect types that are in scope for the import job,
+	//  specified as relative resource names in the format
+	//  `projects/{project_number_or_id}/locations/{location_id}/aspectTypes/{aspect_type_id}`.
+	//  The job modifies only the aspects that belong to these aspect types.
+	//
+	//  This field is required when creating an aspect-only import job.
+	//
+	//  If the metadata import file attempts to modify an aspect whose type
+	//  isn't included in this list, the import job is halted before modifying
+	//  any entries or aspects.
+	//
+	//  The location of an aspect type must either match the location of the
+	//  job, or the aspect type must be global.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.ImportJobScope.aspect_types
+	AspectTypes []string `json:"aspectTypes,omitempty"`
+}
+
+/* unreachable type MetadataJob_Status
+// +kcc:proto=google.cloud.dataplex.v1.MetadataJob.Status
+type MetadataJob_Status struct {
+}
+*/
 
 // +kcc:proto=google.cloud.dataplex.v1.ScannedData
 type ScannedData struct {
@@ -876,6 +1534,89 @@ type ScannedData_IncrementalField struct {
 	// +kcc:proto:field=google.cloud.dataplex.v1.ScannedData.IncrementalField.end
 	End *string `json:"end,omitempty"`
 }
+
+/* unreachable type Task
+// +kcc:proto=google.cloud.dataplex.v1.Task
+type Task struct {
+
+	// Optional. Description of the task.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the task.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. Spec related to how often and when a task should be triggered.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.trigger_spec
+	// +required
+	TriggerSpec *Task_TriggerSpec `json:"triggerSpec,omitempty"`
+
+	// Required. Spec related to how a task is executed.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.execution_spec
+	// +required
+	ExecutionSpec *Task_ExecutionSpec `json:"executionSpec,omitempty"`
+
+	// Config related to running custom Spark tasks.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.spark
+	Spark *Task_SparkTaskConfig `json:"spark,omitempty"`
+
+	// Config related to running scheduled Notebooks.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.notebook
+	Notebook *Task_NotebookTaskConfig `json:"notebook,omitempty"`
+}
+*/
+
+// +kcc:proto=google.cloud.dataplex.v1.Task.ExecutionSpec
+type Task_ExecutionSpec struct {
+	// Optional. The arguments to pass to the task.
+	//  The args can use placeholders of the format ${placeholder} as
+	//  part of key/value string. These will be interpolated before passing the
+	//  args to the driver. Currently supported placeholders:
+	//  - ${task_id}
+	//  - ${job_time}
+	//  To pass positional args, set the key as TASK_ARGS. The value should be a
+	//  comma-separated string of all the positional arguments. To use a
+	//  delimiter other than comma, refer to
+	//  https://cloud.google.com/sdk/gcloud/reference/topic/escaping. In case of
+	//  other keys being present in the args, then TASK_ARGS will be passed as
+	//  the last argument.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.ExecutionSpec.args
+	Args map[string]string `json:"args,omitempty"`
+
+	// Required. Service account to use to execute a task.
+	//  If not provided, the default Compute service account for the project is
+	//  used.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.ExecutionSpec.service_account
+	// +required
+	ServiceAccount *string `json:"serviceAccount,omitempty"`
+
+	// Optional. The project in which jobs are run. By default, the project
+	//  containing the Lake is used. If a project is provided, the
+	//  [ExecutionSpec.service_account][google.cloud.dataplex.v1.Task.ExecutionSpec.service_account]
+	//  must belong to this project.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.ExecutionSpec.project
+	Project *string `json:"project,omitempty"`
+
+	// Optional. The maximum duration after which the job execution is expired.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.ExecutionSpec.max_job_execution_lifetime
+	MaxJobExecutionLifetime *string `json:"maxJobExecutionLifetime,omitempty"`
+
+	// Optional. The Cloud KMS key to use for encryption, of the form:
+	//  `projects/{project_number}/locations/{location_id}/keyRings/{key-ring-name}/cryptoKeys/{key-name}`.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.ExecutionSpec.kms_key
+	KMSKey *string `json:"kmsKey,omitempty"`
+}
+
+/* unreachable type Task_ExecutionStatus
+// +kcc:proto=google.cloud.dataplex.v1.Task.ExecutionStatus
+type Task_ExecutionStatus struct {
+}
+*/
 
 // +kcc:proto=google.cloud.dataplex.v1.Task.InfrastructureSpec
 type Task_InfrastructureSpec struct {
@@ -949,10 +1690,87 @@ type Task_InfrastructureSpec_VPCNetwork struct {
 	NetworkTags []string `json:"networkTags,omitempty"`
 }
 
+// +kcc:proto=google.cloud.dataplex.v1.Task.NotebookTaskConfig
+type Task_NotebookTaskConfig struct {
+	// Required. Path to input notebook. This can be the Cloud Storage URI of
+	//  the notebook file or the path to a Notebook Content. The execution args
+	//  are accessible as environment variables
+	//  (`TASK_key=value`).
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.NotebookTaskConfig.notebook
+	// +required
+	Notebook *string `json:"notebook,omitempty"`
+
+	// Optional. Infrastructure specification for the execution.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.NotebookTaskConfig.infrastructure_spec
+	InfrastructureSpec *Task_InfrastructureSpec `json:"infrastructureSpec,omitempty"`
+
+	// Optional. Cloud Storage URIs of files to be placed in the working
+	//  directory of each executor.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.NotebookTaskConfig.file_uris
+	FileURIs []string `json:"fileURIs,omitempty"`
+
+	// Optional. Cloud Storage URIs of archives to be extracted into the working
+	//  directory of each executor. Supported file types: .jar, .tar, .tar.gz,
+	//  .tgz, and .zip.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.NotebookTaskConfig.archive_uris
+	ArchiveURIs []string `json:"archiveURIs,omitempty"`
+}
+
+// +kcc:proto=google.cloud.dataplex.v1.Task.SparkTaskConfig
+type Task_SparkTaskConfig struct {
+	// The Cloud Storage URI of the jar file that contains the main class.
+	//  The execution args are passed in as a sequence of named process
+	//  arguments (`--key=value`).
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.SparkTaskConfig.main_jar_file_uri
+	MainJarFileURI *string `json:"mainJarFileURI,omitempty"`
+
+	// The name of the driver's main class. The jar file that contains the
+	//  class must be in the default CLASSPATH or specified in
+	//  `jar_file_uris`.
+	//  The execution args are passed in as a sequence of named process
+	//  arguments (`--key=value`).
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.SparkTaskConfig.main_class
+	MainClass *string `json:"mainClass,omitempty"`
+
+	// The Gcloud Storage URI of the main Python file to use as the driver.
+	//  Must be a .py file. The execution args are passed in as a sequence of
+	//  named process arguments (`--key=value`).
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.SparkTaskConfig.python_script_file
+	PythonScriptFile *string `json:"pythonScriptFile,omitempty"`
+
+	// A reference to a query file. This should be the Cloud Storage URI of
+	//  the query file. The execution args are used to declare a set of script
+	//  variables (`set key="value";`).
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.SparkTaskConfig.sql_script_file
+	SQLScriptFile *string `json:"sqlScriptFile,omitempty"`
+
+	// The query text.
+	//  The execution args are used to declare a set of script variables
+	//  (`set key="value";`).
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.SparkTaskConfig.sql_script
+	SQLScript *string `json:"sqlScript,omitempty"`
+
+	// Optional. Cloud Storage URIs of files to be placed in the working
+	//  directory of each executor.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.SparkTaskConfig.file_uris
+	FileURIs []string `json:"fileURIs,omitempty"`
+
+	// Optional. Cloud Storage URIs of archives to be extracted into the working
+	//  directory of each executor. Supported file types: .jar, .tar, .tar.gz,
+	//  .tgz, and .zip.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.SparkTaskConfig.archive_uris
+	ArchiveURIs []string `json:"archiveURIs,omitempty"`
+
+	// Optional. Infrastructure specification for the execution.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.SparkTaskConfig.infrastructure_spec
+	InfrastructureSpec *Task_InfrastructureSpec `json:"infrastructureSpec,omitempty"`
+}
+
 // +kcc:proto=google.cloud.dataplex.v1.Task.TriggerSpec
 type Task_TriggerSpec struct {
 	// Required. Immutable. Trigger type of the user-specified Task.
 	// +kcc:proto:field=google.cloud.dataplex.v1.Task.TriggerSpec.type
+	// +required
 	Type *string `json:"type,omitempty"`
 
 	// Optional. The first run of the task will be after this time.
@@ -994,6 +1812,10 @@ type Trigger struct {
 	Schedule *Trigger_Schedule `json:"schedule,omitempty"`
 }
 
+// +kcc:proto=google.cloud.dataplex.v1.Trigger.OnDemand
+type Trigger_OnDemand struct {
+}
+
 // +kcc:proto=google.cloud.dataplex.v1.Trigger.Schedule
 type Trigger_Schedule struct {
 	// Required. [Cron](https://en.wikipedia.org/wiki/Cron) schedule for running
@@ -1009,13 +1831,49 @@ type Trigger_Schedule struct {
 	//
 	//  This field is required for Schedule scans.
 	// +kcc:proto:field=google.cloud.dataplex.v1.Trigger.Schedule.cron
+	// +required
 	Cron *string `json:"cron,omitempty"`
 }
+
+/* unreachable type Zone
+// +kcc:proto=google.cloud.dataplex.v1.Zone
+type Zone struct {
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User defined labels for the zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. Description of the zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.description
+	Description *string `json:"description,omitempty"`
+
+	// Required. Immutable. The type of the zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.type
+	// +required
+	Type *string `json:"type,omitempty"`
+
+	// Optional. Specification of the discovery feature applied to data in this
+	//  zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.discovery_spec
+	DiscoverySpec *Zone_DiscoverySpec `json:"discoverySpec,omitempty"`
+
+	// Required. Specification of the resources that are referenced by the assets
+	//  within this zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.resource_spec
+	// +required
+	ResourceSpec *Zone_ResourceSpec `json:"resourceSpec,omitempty"`
+}
+*/
 
 // +kcc:proto=google.cloud.dataplex.v1.Zone.DiscoverySpec
 type Zone_DiscoverySpec struct {
 	// Required. Whether discovery is enabled.
 	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.DiscoverySpec.enabled
+	// +required
 	Enabled *bool `json:"enabled,omitempty"`
 
 	// Optional. The list of patterns to apply for selecting data to include
@@ -1095,8 +1953,38 @@ type Zone_ResourceSpec struct {
 	// Required. Immutable. The location type of the resources that are allowed
 	//  to be attached to the assets within this zone.
 	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.ResourceSpec.location_type
+	// +required
 	LocationType *string `json:"locationType,omitempty"`
 }
+
+/* unreachable type AspectTypeObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.AspectType
+type AspectTypeObservedState struct {
+	// Output only. The relative resource name of the AspectType, of the form:
+	//  projects/{project_number}/locations/{location_id}/aspectTypes/{aspect_type_id}.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the AspectType.
+	//  If you delete and recreate the AspectType with the same name, then this ID
+	//  will be different.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the AspectType was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the AspectType was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Denotes the transfer status of the Aspect Type. It is
+	//  unspecified for Aspect Types created from Dataplex API.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.transfer_status
+	TransferStatus *string `json:"transferStatus,omitempty"`
+}
+*/
 
 // +kcc:observedstate:proto=google.cloud.dataplex.v1.DataDiscoveryResult
 type DataDiscoveryResultObservedState struct {
@@ -1107,6 +1995,17 @@ type DataDiscoveryResultObservedState struct {
 	// Output only. Describes result statistics of a data scan discovery job.
 	// +kcc:proto:field=google.cloud.dataplex.v1.DataDiscoveryResult.scan_statistics
 	ScanStatistics *DataDiscoveryResult_ScanStatistics `json:"scanStatistics,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataDiscoveryResult.BigQueryPublishing
+type DataDiscoveryResult_BigQueryPublishingObservedState struct {
+	// Output only. The BigQuery dataset the discovered tables are published to.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataDiscoveryResult.BigQueryPublishing.dataset
+	Dataset *string `json:"dataset,omitempty"`
+
+	// Output only. The location of the BigQuery publishing dataset.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataDiscoveryResult.BigQueryPublishing.location
+	Location *string `json:"location,omitempty"`
 }
 
 // +kcc:observedstate:proto=google.cloud.dataplex.v1.DataProfileResult
@@ -1128,7 +2027,13 @@ type DataProfileResultObservedState struct {
 	PostScanActionsResult *DataProfileResult_PostScanActionsResultObservedState `json:"postScanActionsResult,omitempty"`
 }
 
-/* unreachable type DataProfileResult_PostScanActionsResult_BigQueryExportResultObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataProfileResult.PostScanActionsResult
+type DataProfileResult_PostScanActionsResultObservedState struct {
+	// Output only. The result of BigQuery export post scan action.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataProfileResult.PostScanActionsResult.bigquery_export_result
+	BigqueryExportResult *DataProfileResult_PostScanActionsResult_BigQueryExportResultObservedState `json:"bigqueryExportResult,omitempty"`
+}
+
 // +kcc:observedstate:proto=google.cloud.dataplex.v1.DataProfileResult.PostScanActionsResult.BigQueryExportResult
 type DataProfileResult_PostScanActionsResult_BigQueryExportResultObservedState struct {
 	// Output only. Execution state for the BigQuery exporting.
@@ -1139,7 +2044,40 @@ type DataProfileResult_PostScanActionsResult_BigQueryExportResultObservedState s
 	// +kcc:proto:field=google.cloud.dataplex.v1.DataProfileResult.PostScanActionsResult.BigQueryExportResult.message
 	Message *string `json:"message,omitempty"`
 }
-*/
+
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataQualityColumnResult
+type DataQualityColumnResultObservedState struct {
+	// Output only. The column specified in the DataQualityRule.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityColumnResult.column
+	Column *string `json:"column,omitempty"`
+
+	// Output only. The column-level data quality score for this data scan job if
+	//  and only if the 'column' field is set.
+	//
+	//  The score ranges between between [0, 100] (up to two decimal
+	//  points).
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityColumnResult.score
+	Score *float32 `json:"score,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataQualityDimensionResult
+type DataQualityDimensionResultObservedState struct {
+	// Output only. The dimension config specified in the DataQualitySpec, as is.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityDimensionResult.dimension
+	Dimension *DataQualityDimension `json:"dimension,omitempty"`
+
+	// Output only. Whether the dimension passed or failed.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityDimensionResult.passed
+	Passed *bool `json:"passed,omitempty"`
+
+	// Output only. The dimension-level data quality score for this data scan job
+	//  if and only if the 'dimension' field is set.
+	//
+	//  The score ranges between [0, 100] (up to two decimal
+	//  points).
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityDimensionResult.score
+	Score *float32 `json:"score,omitempty"`
+}
 
 // +kcc:observedstate:proto=google.cloud.dataplex.v1.DataQualityResult
 type DataQualityResultObservedState struct {
@@ -1184,7 +2122,13 @@ type DataQualityResultObservedState struct {
 	PostScanActionsResult *DataQualityResult_PostScanActionsResultObservedState `json:"postScanActionsResult,omitempty"`
 }
 
-/* unreachable type DataQualityResult_PostScanActionsResult_BigQueryExportResultObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataQualityResult.PostScanActionsResult
+type DataQualityResult_PostScanActionsResultObservedState struct {
+	// Output only. The result of BigQuery export post scan action.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityResult.PostScanActionsResult.bigquery_export_result
+	BigqueryExportResult *DataQualityResult_PostScanActionsResult_BigQueryExportResultObservedState `json:"bigqueryExportResult,omitempty"`
+}
+
 // +kcc:observedstate:proto=google.cloud.dataplex.v1.DataQualityResult.PostScanActionsResult.BigQueryExportResult
 type DataQualityResult_PostScanActionsResult_BigQueryExportResultObservedState struct {
 	// Output only. Execution state for the BigQuery exporting.
@@ -1194,5 +2138,598 @@ type DataQualityResult_PostScanActionsResult_BigQueryExportResultObservedState s
 	// Output only. Additional information about the BigQuery exporting.
 	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityResult.PostScanActionsResult.BigQueryExportResult.message
 	Message *string `json:"message,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataQualityRule
+type DataQualityRuleObservedState struct {
+	// Row-level rule which evaluates whether each column value lies between a
+	//  specified range.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.range_expectation
+	RangeExpectation *DataQualityRule_RangeExpectation `json:"rangeExpectation,omitempty"`
+
+	// Row-level rule which evaluates whether each column value is null.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.non_null_expectation
+	NonNullExpectation *DataQualityRule_NonNullExpectation `json:"nonNullExpectation,omitempty"`
+
+	// Row-level rule which evaluates whether each column value is contained by
+	//  a specified set.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.set_expectation
+	SetExpectation *DataQualityRule_SetExpectation `json:"setExpectation,omitempty"`
+
+	// Row-level rule which evaluates whether each column value matches a
+	//  specified regex.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.regex_expectation
+	RegexExpectation *DataQualityRule_RegexExpectation `json:"regexExpectation,omitempty"`
+
+	// Row-level rule which evaluates whether each column value is unique.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.uniqueness_expectation
+	UniquenessExpectation *DataQualityRule_UniquenessExpectation `json:"uniquenessExpectation,omitempty"`
+
+	// Aggregate rule which evaluates whether the column aggregate
+	//  statistic lies between a specified range.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.statistic_range_expectation
+	StatisticRangeExpectation *DataQualityRule_StatisticRangeExpectation `json:"statisticRangeExpectation,omitempty"`
+
+	// Row-level rule which evaluates whether each row in a table passes the
+	//  specified condition.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.row_condition_expectation
+	RowConditionExpectation *DataQualityRule_RowConditionExpectation `json:"rowConditionExpectation,omitempty"`
+
+	// Aggregate rule which evaluates whether the provided expression is true
+	//  for a table.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.table_condition_expectation
+	TableConditionExpectation *DataQualityRule_TableConditionExpectation `json:"tableConditionExpectation,omitempty"`
+
+	// Aggregate rule which evaluates the number of rows returned for the
+	//  provided statement. If any rows are returned, this rule fails.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.sql_assertion
+	SQLAssertion *DataQualityRule_SQLAssertion `json:"sqlAssertion,omitempty"`
+
+	// Optional. The unnested column which this rule is evaluated against.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.column
+	Column *string `json:"column,omitempty"`
+
+	// Optional. Rows with `null` values will automatically fail a rule, unless
+	//  `ignore_null` is `true`. In that case, such `null` rows are trivially
+	//  considered passing.
+	//
+	//  This field is only valid for the following type of rules:
+	//
+	//  * RangeExpectation
+	//  * RegexExpectation
+	//  * SetExpectation
+	//  * UniquenessExpectation
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.ignore_null
+	IgnoreNull *bool `json:"ignoreNull,omitempty"`
+
+	// Required. The dimension a rule belongs to. Results are also aggregated at
+	//  the dimension level. Supported dimensions are **["COMPLETENESS",
+	//  "ACCURACY", "CONSISTENCY", "VALIDITY", "UNIQUENESS", "FRESHNESS",
+	//  "VOLUME"]**
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.dimension
+	Dimension *string `json:"dimension,omitempty"`
+
+	// Optional. The minimum ratio of **passing_rows / total_rows** required to
+	//  pass this rule, with a range of [0.0, 1.0].
+	//
+	//  0 indicates default value (i.e. 1.0).
+	//
+	//  This field is only valid for row-level type rules.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.threshold
+	Threshold *float64 `json:"threshold,omitempty"`
+
+	// Optional. A mutable name for the rule.
+	//
+	//  * The name must contain only letters (a-z, A-Z), numbers (0-9), or
+	//  hyphens (-).
+	//  * The maximum length is 63 characters.
+	//  * Must start with a letter.
+	//  * Must end with a number or a letter.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.name
+	Name *string `json:"name,omitempty"`
+
+	// Optional. Description of the rule.
+	//
+	//  * The maximum length is 1,024 characters.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. Whether the Rule is active or suspended.
+	//  Default is false.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRule.suspended
+	Suspended *bool `json:"suspended,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataQualityRuleResult
+type DataQualityRuleResultObservedState struct {
+	// Output only. The rule specified in the DataQualitySpec, as is.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRuleResult.rule
+	Rule *DataQualityRuleObservedState `json:"rule,omitempty"`
+
+	// Output only. Whether the rule passed or failed.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRuleResult.passed
+	Passed *bool `json:"passed,omitempty"`
+
+	// Output only. The number of rows a rule was evaluated against.
+	//
+	//  This field is only valid for row-level type rules.
+	//
+	//  Evaluated count can be configured to either
+	//
+	//  * include all rows (default) - with `null` rows automatically failing rule
+	//  evaluation, or
+	//  * exclude `null` rows from the `evaluated_count`, by setting
+	//  `ignore_nulls = true`.
+	//
+	//  This field is not set for rule SqlAssertion.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRuleResult.evaluated_count
+	EvaluatedCount *int64 `json:"evaluatedCount,omitempty"`
+
+	// Output only. The number of rows which passed a rule evaluation.
+	//
+	//  This field is only valid for row-level type rules.
+	//
+	//  This field is not set for rule SqlAssertion.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRuleResult.passed_count
+	PassedCount *int64 `json:"passedCount,omitempty"`
+
+	// Output only. The number of rows with null values in the specified column.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRuleResult.null_count
+	NullCount *int64 `json:"nullCount,omitempty"`
+
+	// Output only. The ratio of **passed_count / evaluated_count**.
+	//
+	//  This field is only valid for row-level type rules.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRuleResult.pass_ratio
+	PassRatio *float64 `json:"passRatio,omitempty"`
+
+	// Output only. The query to find rows that did not pass this rule.
+	//
+	//  This field is only valid for row-level type rules.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRuleResult.failing_rows_query
+	FailingRowsQuery *string `json:"failingRowsQuery,omitempty"`
+
+	// Output only. The number of rows returned by the SQL statement in a SQL
+	//  assertion rule.
+	//
+	//  This field is only valid for SQL assertion rules.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataQualityRuleResult.assertion_row_count
+	AssertionRowCount *int64 `json:"assertionRowCount,omitempty"`
+}
+
+/* unreachable type DataScanObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataScan
+type DataScanObservedState struct {
+	// Output only. Identifier. The relative resource name of the scan, of the
+	//  form: `projects/{project}/locations/{location_id}/dataScans/{datascan_id}`,
+	//  where `project` refers to a *project_id* or *project_number* and
+	//  `location_id` refers to a GCP region.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the scan. This ID will
+	//  be different if the scan is deleted and re-created with the same name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. Current state of the DataScan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. The time when the scan was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the scan was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Status of the data scan execution.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.execution_status
+	ExecutionStatus *DataScan_ExecutionStatus `json:"executionStatus,omitempty"`
+
+	// Output only. The type of DataScan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.type
+	Type *string `json:"type,omitempty"`
+
+	// Output only. The result of a data quality scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_quality_result
+	DataQualityResult *DataQualityResultObservedState `json:"dataQualityResult,omitempty"`
+
+	// Output only. The result of a data profile scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_profile_result
+	DataProfileResult *DataProfileResultObservedState `json:"dataProfileResult,omitempty"`
+
+	// Output only. The result of a data discovery scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_discovery_result
+	DataDiscoveryResult *DataDiscoveryResultObservedState `json:"dataDiscoveryResult,omitempty"`
+}
+*/
+
+/* unreachable type DataTaxonomyObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataTaxonomy
+type DataTaxonomyObservedState struct {
+	// Output only. The relative resource name of the DataTaxonomy, of the form:
+	//  projects/{project_number}/locations/{location_id}/dataTaxonomies/{data_taxonomy_id}.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the dataTaxonomy. This
+	//  ID will be different if the DataTaxonomy is deleted and re-created with the
+	//  same name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the DataTaxonomy was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the DataTaxonomy was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The number of attributes in the DataTaxonomy.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.attribute_count
+	AttributeCount *int32 `json:"attributeCount,omitempty"`
+
+	// Output only. The number of classes in the DataTaxonomy.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.class_count
+	ClassCount *int32 `json:"classCount,omitempty"`
+}
+*/
+
+/* unreachable type EntryGroupObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.EntryGroup
+type EntryGroupObservedState struct {
+	// Output only. The relative resource name of the EntryGroup, in the format
+	//  projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the EntryGroup. If you
+	//  delete and recreate the EntryGroup with the same name, this ID will be
+	//  different.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the EntryGroup was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the EntryGroup was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Denotes the transfer status of the Entry Group. It is
+	//  unspecified for Entry Group created from Dataplex API.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.transfer_status
+	TransferStatus *string `json:"transferStatus,omitempty"`
+}
+*/
+
+/* unreachable type EntryTypeObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.EntryType
+type EntryTypeObservedState struct {
+	// Output only. The relative resource name of the EntryType, of the form:
+	//  projects/{project_number}/locations/{location_id}/entryTypes/{entry_type_id}.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the EntryType. This ID
+	//  will be different if the EntryType is deleted and re-created with the same
+	//  name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the EntryType was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the EntryType was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/
+
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.Job
+type JobObservedState struct {
+	// Output only. The relative resource name of the job, of the form:
+	//  `projects/{project_number}/locations/{location_id}/lakes/{lake_id}/tasks/{task_id}/jobs/{job_id}`.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Job.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the job.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Job.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the job was started.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Job.start_time
+	StartTime *string `json:"startTime,omitempty"`
+
+	// Output only. The time when the job ended.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Job.end_time
+	EndTime *string `json:"endTime,omitempty"`
+
+	// Output only. Execution state for the job.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Job.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. The number of times the job has been retried (excluding the
+	//  initial attempt).
+	// +kcc:proto:field=google.cloud.dataplex.v1.Job.retry_count
+	RetryCount *uint32 `json:"retryCount,omitempty"`
+
+	// Output only. The underlying service running a job.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Job.service
+	Service *string `json:"service,omitempty"`
+
+	// Output only. The full resource name for the job run under a particular
+	//  service.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Job.service_job
+	ServiceJob *string `json:"serviceJob,omitempty"`
+
+	// Output only. Additional information about the current state.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Job.message
+	Message *string `json:"message,omitempty"`
+
+	// Output only. User-defined labels for the task.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Job.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Output only. Job execution trigger.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Job.trigger
+	Trigger *string `json:"trigger,omitempty"`
+
+	// Output only. Spec related to how a task is executed.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Job.execution_spec
+	ExecutionSpec *Task_ExecutionSpecObservedState `json:"executionSpec,omitempty"`
+}
+
+/* unreachable type LakeObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.Lake
+type LakeObservedState struct {
+	// Output only. The relative resource name of the lake, of the form:
+	//  `projects/{project_number}/locations/{location_id}/lakes/{lake_id}`.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the lake. This ID will
+	//  be different if the lake is deleted and re-created with the same name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the lake was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the lake was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Current state of the lake.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. Service account associated with this lake. This service
+	//  account must be authorized to access or operate on resources managed by the
+	//  lake.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.service_account
+	ServiceAccount *string `json:"serviceAccount,omitempty"`
+
+	// Output only. Aggregated status of the underlying assets of the lake.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.asset_status
+	AssetStatus *AssetStatus `json:"assetStatus,omitempty"`
+
+	// Output only. Metastore status of the lake.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.metastore_status
+	MetastoreStatus *Lake_MetastoreStatus `json:"metastoreStatus,omitempty"`
+}
+*/
+
+/* unreachable type MetadataJobObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.MetadataJob
+type MetadataJobObservedState struct {
+	// Output only. Identifier. The name of the resource that the configuration is
+	//  applied to, in the format
+	//  `projects/{project_number}/locations/{location_id}/metadataJobs/{metadata_job_id}`.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. A system-generated, globally unique ID for the metadata job.
+	//  If the metadata job is deleted and then re-created with the same name, this
+	//  ID is different.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the metadata job was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the metadata job was updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Import job result.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.import_result
+	ImportResult *MetadataJob_ImportJobResultObservedState `json:"importResult,omitempty"`
+
+	// Output only. Export job result.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.export_result
+	ExportResult *MetadataJob_ExportJobResultObservedState `json:"exportResult,omitempty"`
+
+	// Output only. Metadata job status.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.status
+	Status *MetadataJob_StatusObservedState `json:"status,omitempty"`
+}
+*/
+
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.MetadataJob.ExportJobResult
+type MetadataJob_ExportJobResultObservedState struct {
+	// Output only. The number of entries that were exported.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ExportJobResult.exported_entries
+	ExportedEntries *int64 `json:"exportedEntries,omitempty"`
+
+	// Output only. The error message if the metadata export job failed.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ExportJobResult.error_message
+	ErrorMessage *string `json:"errorMessage,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.MetadataJob.ImportJobResult
+type MetadataJob_ImportJobResultObservedState struct {
+	// Output only. The total number of entries that were deleted.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobResult.deleted_entries
+	DeletedEntries *int64 `json:"deletedEntries,omitempty"`
+
+	// Output only. The total number of entries that were updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobResult.updated_entries
+	UpdatedEntries *int64 `json:"updatedEntries,omitempty"`
+
+	// Output only. The total number of entries that were created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobResult.created_entries
+	CreatedEntries *int64 `json:"createdEntries,omitempty"`
+
+	// Output only. The total number of entries that were unchanged.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobResult.unchanged_entries
+	UnchangedEntries *int64 `json:"unchangedEntries,omitempty"`
+
+	// Output only. The total number of entries that were recreated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobResult.recreated_entries
+	RecreatedEntries *int64 `json:"recreatedEntries,omitempty"`
+
+	// Output only. The time when the status was updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobResult.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.MetadataJob.Status
+type MetadataJob_StatusObservedState struct {
+	// Output only. State of the metadata job.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.Status.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. Message relating to the progression of a metadata job.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.Status.message
+	Message *string `json:"message,omitempty"`
+
+	// Output only. Progress tracking.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.Status.completion_percent
+	CompletionPercent *int32 `json:"completionPercent,omitempty"`
+
+	// Output only. The time when the status was updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.Status.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+
+/* unreachable type TaskObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.Task
+type TaskObservedState struct {
+	// Output only. The relative resource name of the task, of the form:
+	//  projects/{project_number}/locations/{location_id}/lakes/{lake_id}/
+	//  tasks/{task_id}.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the task. This ID will
+	//  be different if the task is deleted and re-created with the same name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the task was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the task was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Current state of the task.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. Status of the latest task executions.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.execution_status
+	ExecutionStatus *Task_ExecutionStatusObservedState `json:"executionStatus,omitempty"`
+}
+*/
+
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.Task.ExecutionSpec
+type Task_ExecutionSpecObservedState struct {
+	// Optional. The arguments to pass to the task.
+	//  The args can use placeholders of the format ${placeholder} as
+	//  part of key/value string. These will be interpolated before passing the
+	//  args to the driver. Currently supported placeholders:
+	//  - ${task_id}
+	//  - ${job_time}
+	//  To pass positional args, set the key as TASK_ARGS. The value should be a
+	//  comma-separated string of all the positional arguments. To use a
+	//  delimiter other than comma, refer to
+	//  https://cloud.google.com/sdk/gcloud/reference/topic/escaping. In case of
+	//  other keys being present in the args, then TASK_ARGS will be passed as
+	//  the last argument.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.ExecutionSpec.args
+	Args map[string]string `json:"args,omitempty"`
+
+	// Required. Service account to use to execute a task.
+	//  If not provided, the default Compute service account for the project is
+	//  used.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.ExecutionSpec.service_account
+	ServiceAccount *string `json:"serviceAccount,omitempty"`
+
+	// Optional. The project in which jobs are run. By default, the project
+	//  containing the Lake is used. If a project is provided, the
+	//  [ExecutionSpec.service_account][google.cloud.dataplex.v1.Task.ExecutionSpec.service_account]
+	//  must belong to this project.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.ExecutionSpec.project
+	Project *string `json:"project,omitempty"`
+
+	// Optional. The maximum duration after which the job execution is expired.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.ExecutionSpec.max_job_execution_lifetime
+	MaxJobExecutionLifetime *string `json:"maxJobExecutionLifetime,omitempty"`
+
+	// Optional. The Cloud KMS key to use for encryption, of the form:
+	//  `projects/{project_number}/locations/{location_id}/keyRings/{key-ring-name}/cryptoKeys/{key-name}`.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.ExecutionSpec.kms_key
+	KMSKey *string `json:"kmsKey,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.Task.ExecutionStatus
+type Task_ExecutionStatusObservedState struct {
+	// Output only. Last update time of the status.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.ExecutionStatus.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. latest job execution
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.ExecutionStatus.latest_job
+	LatestJob *JobObservedState `json:"latestJob,omitempty"`
+}
+
+/* unreachable type ZoneObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.Zone
+type ZoneObservedState struct {
+	// Output only. The relative resource name of the zone, of the form:
+	//  `projects/{project_number}/locations/{location_id}/lakes/{lake_id}/zones/{zone_id}`.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the zone. This ID will
+	//  be different if the zone is deleted and re-created with the same name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the zone was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the zone was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Current state of the zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. Aggregated status of the underlying assets of the zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.asset_status
+	AssetStatus *AssetStatus `json:"assetStatus,omitempty"`
 }
 */

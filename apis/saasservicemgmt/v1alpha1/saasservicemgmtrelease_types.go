@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,41 +26,46 @@ var SaasServiceMgmtReleaseGVK = GroupVersion.WithKind("SaasServiceMgmtRelease")
 // +kcc:spec:proto=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release
 type SaasServiceMgmtReleaseSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
-	// Immutable. The location of this resource.
-	// +required
+	// The location of this resource.
 	Location *string `json:"location"`
 
 	// The SaasServiceMgmtRelease name. If not given, the metadata.name will be used.
-	// +optional
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="UnitKind field is immutable"
 	// Required. Immutable. Reference to the UnitKind this Release corresponds to
 	//  (required and immutable once created).
-	// +required
 	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release.unit_kind
-	UnitKind *string `json:"unitKind"`
+	// +required
+	UnitKind *string `json:"unitKind,omitempty"`
 
 	// Optional. Blueprints are OCI Images that contain all of the artifacts
 	//  needed to provision a unit.
-	// +optional
 	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release.blueprint
 	Blueprint *Blueprint `json:"blueprint,omitempty"`
 
 	// Optional. Set of requirements to be fulfilled on the Unit when using this
 	//  Release.
-	// +optional
 	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release.release_requirements
 	ReleaseRequirements *Release_ReleaseRequirements `json:"releaseRequirements,omitempty"`
 
 	// Optional. Mapping of input variables to default values. Maximum 100
-	// +optional
 	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release.input_variable_defaults
 	InputVariableDefaults []UnitVariable `json:"inputVariableDefaults,omitempty"`
+
+	// Optional. The labels on the resource, which can be used for categorization.
+	//  similar to Kubernetes resource labels.
+	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. Annotations is an unstructured key-value map stored with a
+	//  resource that may be set by external tools to store and retrieve arbitrary
+	//  metadata. They are not queryable and should be preserved when modifying
+	//  objects.
+	//
+	//  More info: https://kubernetes.io/docs/user-guide/annotations
+	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release.annotations
+	Annotations map[string]string `json:"annotations,omitempty"`
 }
 
 // SaasServiceMgmtReleaseStatus defines the config connector machine state of SaasServiceMgmtRelease
@@ -90,12 +95,12 @@ type SaasServiceMgmtReleaseObservedState struct {
 	// Optional. Output only. List of input variables declared on the blueprint
 	//  and can be present with their values on the unit spec
 	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release.input_variables
-	InputVariables []UnitVariable `json:"inputVariables,omitempty"`
+	InputVariables []UnitVariableObservedState `json:"inputVariables,omitempty"`
 
 	// Optional. Output only. List of output variables declared on the blueprint
 	//  and can be present with their values on the unit status
 	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release.output_variables
-	OutputVariables []UnitVariable `json:"outputVariables,omitempty"`
+	OutputVariables []UnitVariableObservedState `json:"outputVariables,omitempty"`
 
 	// Output only. The unique identifier of the resource. UID is unique in the
 	//  time and space for this resource within the scope of the service. It is
@@ -128,7 +133,6 @@ type SaasServiceMgmtReleaseObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

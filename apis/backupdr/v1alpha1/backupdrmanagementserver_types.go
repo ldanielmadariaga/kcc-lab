@@ -15,68 +15,24 @@
 package v1alpha1
 
 import (
-	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var BackupDRManagementServerGVK = GroupVersion.WithKind("BackupDRManagementServer")
 
-type Parent struct {
-	// +required
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
-	// Immutable.
-	// +required
-	Location string `json:"location"`
-}
-
-// +kcc:proto=google.cloud.backupdr.v1.NetworkConfig
-type NetworkConfig struct {
-	// Optional. The resource name of the Google Compute Engine VPC network to
-	//  which the ManagementServer instance is connected.
-	// +kcc:proto:field=google.cloud.backupdr.v1.NetworkConfig.network
-	NetworkRef *computerefs.ComputeNetworkRef `json:"networkRef,omitempty"`
-
-	// Optional. The network connect mode of the ManagementServer instance. For
-	//  this version, only PRIVATE_SERVICE_ACCESS is supported.
-	// +kcc:proto:field=google.cloud.backupdr.v1.NetworkConfig.peering_mode
-	PeeringMode *string `json:"peeringMode,omitempty"`
-}
-
-// +kcc:observedstate:proto=google.cloud.backupdr.v1.WorkforceIdentityBasedOAuth2ClientID
-type WorkforceIdentityBasedOAuth2ClientIDObservedState struct {
-	// Output only. First party OAuth Client ID for Google Identities.
-	// +kcc:proto:field=google.cloud.backupdr.v1.WorkforceIdentityBasedOAuth2ClientID.first_party_oauth2_client_id
-	FirstPartyOAuth2ClientID *string `json:"firstPartyOAuth2ClientID,omitempty"`
-
-	// Output only. Third party OAuth Client ID for External Identity Providers.
-	// +kcc:proto:field=google.cloud.backupdr.v1.WorkforceIdentityBasedOAuth2ClientID.third_party_oauth2_client_id
-	ThirdPartyOAuth2ClientID *string `json:"thirdPartyOAuth2ClientID,omitempty"`
-}
-
-// +kcc:observedstate:proto=google.cloud.backupdr.v1.ManagementURI
-type ManagementURIObservedState struct {
-	// Output only. The ManagementServer AGM/RD WebUI URL.
-	// +kcc:proto:field=google.cloud.backupdr.v1.ManagementURI.web_ui
-	WebUI *string `json:"webUI,omitempty"`
-
-	// Output only. The ManagementServer AGM/RD API URL.
-	// +kcc:proto:field=google.cloud.backupdr.v1.ManagementURI.api
-	API *string `json:"api,omitempty"`
-}
-
 // BackupDRManagementServerSpec defines the desired state of BackupDRManagementServer
 // +kcc:spec:proto=google.cloud.backupdr.v1.ManagementServer
 type BackupDRManagementServerSpec struct {
-	Parent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	Location string `json:"location"`
 
 	// The BackupDRManagementServer name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. The description of the ManagementServer instance (2048 characters
 	//  or less).
 	// +kcc:proto:field=google.cloud.backupdr.v1.ManagementServer.description
@@ -99,10 +55,10 @@ type BackupDRManagementServerSpec struct {
 	// +kcc:proto:field=google.cloud.backupdr.v1.ManagementServer.networks
 	Networks []NetworkConfig `json:"networks,omitempty"`
 
-	// NOTYET: not supported in Config Connector reconciliation
-	// Optional. Etag for a resource.
+	// Optional. Server specified ETag for the ManagementServer resource to
+	//  prevent simultaneous updates from overwiting each other.
 	// +kcc:proto:field=google.cloud.backupdr.v1.ManagementServer.etag
-	// Etag *string `json:"etag,omitempty"`
+	Etag *string `json:"etag,omitempty"`
 }
 
 // BackupDRManagementServerStatus defines the config connector machine state of BackupDRManagementServer
@@ -124,11 +80,6 @@ type BackupDRManagementServerStatus struct {
 // BackupDRManagementServerObservedState is the state of the BackupDRManagementServer resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.ManagementServer
 type BackupDRManagementServerObservedState struct {
-	// Output only. Identifier. The resource name.
-	// +kcc:proto:field=google.cloud.backupdr.v1.ManagementServer.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. The time when the instance was created.
 	// +kcc:proto:field=google.cloud.backupdr.v1.ManagementServer.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -157,26 +108,24 @@ type BackupDRManagementServerObservedState struct {
 	//  specification
 	//  https://openid.net/specs/openid-connect-core-1_0.html#IDToken).
 	// +kcc:proto:field=google.cloud.backupdr.v1.ManagementServer.oauth2_client_id
-	OAuth2ClientID *string `json:"oauth2ClientID,omitempty"`
+	OAUTH2ClientID *string `json:"oauth2ClientID,omitempty"`
 
 	// Output only. The OAuth client IDs for both types of user i.e. 1p and 3p.
 	// +kcc:proto:field=google.cloud.backupdr.v1.ManagementServer.workforce_identity_based_oauth2_client_id
-	WorkforceIdentityBasedOAuth2ClientID *WorkforceIdentityBasedOAuth2ClientIDObservedState `json:"workforceIdentityBasedOAuth2ClientID,omitempty"`
+	WorkforceIdentityBasedOAUTH2ClientID *WorkforceIdentityBasedOAuth2ClientIDObservedState `json:"workforceIdentityBasedOAUTH2ClientID,omitempty"`
 
 	// Output only. The hostname or ip address of the exposed AGM endpoints, used
 	//  by BAs to connect to BA proxy.
 	// +kcc:proto:field=google.cloud.backupdr.v1.ManagementServer.ba_proxy_uri
-	BAProxyURIs []string `json:"baProxyURIs,omitempty"`
+	BaProxyURI []string `json:"baProxyURI,omitempty"`
 
 	// Output only. Reserved for future use.
 	// +kcc:proto:field=google.cloud.backupdr.v1.ManagementServer.satisfies_pzs
-	// NOTYET
-	// SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
 
 	// Output only. Reserved for future use.
 	// +kcc:proto:field=google.cloud.backupdr.v1.ManagementServer.satisfies_pzi
-	// NOTYET
-	// SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
+	SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
 }
 
 // +genclient

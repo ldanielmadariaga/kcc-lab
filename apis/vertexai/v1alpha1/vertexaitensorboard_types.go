@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,15 +28,13 @@ type VertexAITensorboardSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The region of this resource.
-	Region string `json:"region"`
 
-	// The VertexAITensorboard ID (which is server-generated). If not given, Config Connector will create a new Tensorboard. If given, Config Connector will acquire the existing Tensorboard with this ID.
+	// The VertexAITensorboard name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. User provided name of this Tensorboard.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.display_name
-	DisplayName string `json:"displayName"`
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
 
 	// Description of this Tensorboard.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.description
@@ -47,6 +45,25 @@ type VertexAITensorboardSpec struct {
 	//  this key.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.encryption_spec
 	EncryptionSpec *EncryptionSpec `json:"encryptionSpec,omitempty"`
+
+	// The labels with user-defined metadata to organize your Tensorboards.
+	//
+	//  Label keys and values can be no longer than 64 characters
+	//  (Unicode codepoints), can only contain lowercase letters, numeric
+	//  characters, underscores and dashes. International characters are allowed.
+	//  No more than 64 user labels can be associated with one Tensorboard
+	//  (System labels are excluded).
+	//
+	//  See https://goo.gl/xmQnxf for more information and examples of labels.
+	//  System reserved label keys are prefixed with "aiplatform.googleapis.com/"
+	//  and are immutable.
+	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Used to perform a consistent read-modify-write updates. If not set, a blind
+	//  "overwrite" update happens.
+	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.etag
+	Etag *string `json:"etag,omitempty"`
 
 	// Used to indicate if the TensorBoard instance is the default one.
 	//  Each project & region can have at most one default TensorBoard instance.
@@ -76,12 +93,6 @@ type VertexAITensorboardStatus struct {
 // VertexAITensorboardObservedState is the state of the VertexAITensorboard resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.aiplatform.v1beta1.Tensorboard
 type VertexAITensorboardObservedState struct {
-	// Output only. Name of the Tensorboard.
-	//  Format:
-	//  `projects/{project}/locations/{location}/tensorboards/{tensorboard}`
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.name
-	Name *string `json:"name,omitempty"`
-
 	// Output only. Consumer project Cloud Storage path prefix used to store blob
 	//  data, which can either be a bucket or directory. Does not end with a '/'.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.blob_storage_path_prefix
@@ -114,8 +125,6 @@ type VertexAITensorboardObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/tf2crd=true"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

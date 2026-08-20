@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,70 +22,122 @@ import (
 
 var DialogflowSecuritySettingsGVK = GroupVersion.WithKind("DialogflowSecuritySettings")
 
-type Parent struct {
-	// The project that this resource belongs to.
-	// +required
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-
-	// Immutable. The location of this resource.
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
-	// +required
-	Location *string `json:"location"`
-}
-
 // DialogflowSecuritySettingsSpec defines the desired state of DialogflowSecuritySettings
 // +kcc:spec:proto=google.cloud.dialogflow.cx.v3.SecuritySettings
 type DialogflowSecuritySettingsSpec struct {
-	Parent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	Location *string `json:"location"`
+
+	// The DialogflowSecuritySettings name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. The human-readable name of the security settings, unique within
-	// the location.
+	//  the location.
+	// +kcc:proto:field=google.cloud.dialogflow.cx.v3.SecuritySettings.display_name
 	// +required
-	DisplayName *string `json:"displayName"`
+	DisplayName *string `json:"displayName,omitempty"`
 
 	// Strategy that defines how we do redaction.
-	// +optional
+	// +kcc:proto:field=google.cloud.dialogflow.cx.v3.SecuritySettings.redaction_strategy
 	RedactionStrategy *string `json:"redactionStrategy,omitempty"`
 
 	// Defines the data for which Dialogflow applies redaction. Dialogflow does
-	// not redact data that it does not have access to – for example, Cloud
-	// logging.
-	// +optional
+	//  not redact data that it does not have access to – for example, Cloud
+	//  logging.
+	// +kcc:proto:field=google.cloud.dialogflow.cx.v3.SecuritySettings.redaction_scope
 	RedactionScope *string `json:"redactionScope,omitempty"`
 
 	// [DLP](https://cloud.google.com/dlp/docs) inspect template name. Use this
-	// template to define inspect base settings.
-	// +optional
+	//  template to define inspect base settings.
+	//
+	//  The `DLP Inspect Templates Reader` role is needed on the Dialogflow
+	//  service identity service account (has the form
+	//  `service-PROJECT_NUMBER@gcp-sa-dialogflow.iam.gserviceaccount.com`)
+	//  for your agent's project.
+	//
+	//  If empty, we use the default DLP inspect config.
+	//
+	//  The template name will have one of the following formats:
+	//  `projects/<ProjectID>/locations/<LocationID>/inspectTemplates/<TemplateID>`
+	//  OR
+	//  `organizations/<OrganizationID>/locations/<LocationID>/inspectTemplates/<TemplateID>`
+	//
+	//  Note: `inspect_template` must be located in the same region as the
+	//  `SecuritySettings`.
+	// +kcc:proto:field=google.cloud.dialogflow.cx.v3.SecuritySettings.inspect_template
 	InspectTemplate *string `json:"inspectTemplate,omitempty"`
 
 	// [DLP](https://cloud.google.com/dlp/docs) deidentify template name. Use this
-	// template to define de-identification configuration for the content.
-	// +optional
+	//  template to define de-identification configuration for the content.
+	//
+	//  The `DLP De-identify Templates Reader` role is needed on the Dialogflow
+	//  service identity service account (has the form
+	//  `service-PROJECT_NUMBER@gcp-sa-dialogflow.iam.gserviceaccount.com`)
+	//  for your agent's project.
+	//
+	//  If empty, Dialogflow replaces sensitive info with `[redacted]` text.
+	//
+	//  The template name will have one of the following formats:
+	//  `projects/<ProjectID>/locations/<LocationID>/deidentifyTemplates/<TemplateID>`
+	//  OR
+	//  `organizations/<OrganizationID>/locations/<LocationID>/deidentifyTemplates/<TemplateID>`
+	//
+	//  Note: `deidentify_template` must be located in the same region as the
+	//  `SecuritySettings`.
+	// +kcc:proto:field=google.cloud.dialogflow.cx.v3.SecuritySettings.deidentify_template
 	DeidentifyTemplate *string `json:"deidentifyTemplate,omitempty"`
 
 	// Retains the data for the specified number of days.
-	// +optional
+	//  User must set a value lower than Dialogflow's default 365d TTL (30 days
+	//  for Agent Assist traffic), higher value will be ignored and use default.
+	//  Setting a value higher than that has no effect. A missing value or
+	//  setting to 0 also means we use default TTL.
+	//  When data retention configuration is changed, it only applies to the data
+	//  created after the change; the TTL of existing data created before the
+	//  change stays intact.
+	// +kcc:proto:field=google.cloud.dialogflow.cx.v3.SecuritySettings.retention_window_days
 	RetentionWindowDays *int32 `json:"retentionWindowDays,omitempty"`
 
-	// Specifies the retention behavior defined by SecuritySettings.RetentionStrategy.
-	// +optional
+	// Specifies the retention behavior defined by
+	//  [SecuritySettings.RetentionStrategy][google.cloud.dialogflow.cx.v3.SecuritySettings.RetentionStrategy].
+	// +kcc:proto:field=google.cloud.dialogflow.cx.v3.SecuritySettings.retention_strategy
 	RetentionStrategy *string `json:"retentionStrategy,omitempty"`
 
 	// List of types of data to remove when retention settings triggers purge.
-	// +optional
+	// +kcc:proto:field=google.cloud.dialogflow.cx.v3.SecuritySettings.purge_data_types
 	PurgeDataTypes []string `json:"purgeDataTypes,omitempty"`
 
-	// Controls audio export settings for post-conversation analytics.
-	// +optional
+	// Controls audio export settings for post-conversation analytics when
+	//  ingesting audio to conversations via [Participants.AnalyzeContent][] or
+	//  [Participants.StreamingAnalyzeContent][].
+	//
+	//  If
+	//  [retention_strategy][google.cloud.dialogflow.cx.v3.SecuritySettings.retention_strategy]
+	//  is set to REMOVE_AFTER_CONVERSATION or [audio_export_settings.gcs_bucket][]
+	//  is empty, audio export is disabled.
+	//
+	//  If audio export is enabled, audio is recorded and saved to
+	//  [audio_export_settings.gcs_bucket][], subject to retention policy of
+	//  [audio_export_settings.gcs_bucket][].
+	//
+	//  This setting won't effect audio input for implicit sessions via
+	//  [Sessions.DetectIntent][google.cloud.dialogflow.cx.v3.Sessions.DetectIntent]
+	//  or
+	//  [Sessions.StreamingDetectIntent][google.cloud.dialogflow.cx.v3.Sessions.StreamingDetectIntent].
+	// +kcc:proto:field=google.cloud.dialogflow.cx.v3.SecuritySettings.audio_export_settings
 	AudioExportSettings *SecuritySettings_AudioExportSettings `json:"audioExportSettings,omitempty"`
 
-	// Controls conversation exporting settings to Insights after conversation is completed.
-	// +optional
+	// Controls conversation exporting settings to Insights after conversation is
+	//  completed.
+	//
+	//  If
+	//  [retention_strategy][google.cloud.dialogflow.cx.v3.SecuritySettings.retention_strategy]
+	//  is set to REMOVE_AFTER_CONVERSATION, Insights export is disabled no matter
+	//  what you configure here.
+	// +kcc:proto:field=google.cloud.dialogflow.cx.v3.SecuritySettings.insights_export_settings
 	InsightsExportSettings *SecuritySettings_InsightsExportSettings `json:"insightsExportSettings,omitempty"`
-
-	// The DialogflowSecuritySettings name. If not given, the metadata.name will be used.
-	// +optional
-	ResourceID *string `json:"resourceID,omitempty"`
 }
 
 // DialogflowSecuritySettingsStatus defines the config connector machine state of DialogflowSecuritySettings
@@ -111,11 +163,10 @@ type DialogflowSecuritySettingsObservedState struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpdialogflowsecuritysetting;gcpdialogflowsecuritysettings
+// +kubebuilder:resource:categories=gcp,shortName=gcpdialogflowsecuritysettings;gcpdialogflowsecuritysettingss
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

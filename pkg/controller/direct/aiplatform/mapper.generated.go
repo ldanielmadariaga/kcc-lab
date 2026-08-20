@@ -686,7 +686,7 @@ func ExplanationParameters_FromProto(mapCtx *direct.MapContext, in *pb.Explanati
 	out.XraiAttribution = XraiAttribution_FromProto(mapCtx, in.GetXraiAttribution())
 	out.Examples = Examples_FromProto(mapCtx, in.GetExamples())
 	out.TopK = direct.LazyPtr(in.GetTopK())
-	// MISSING: OutputIndices
+	out.OutputIndices = ListValue_FromProto(mapCtx, in.GetOutputIndices())
 	return out
 }
 func ExplanationParameters_ToProto(mapCtx *direct.MapContext, in *krm.ExplanationParameters) *pb.ExplanationParameters {
@@ -707,7 +707,7 @@ func ExplanationParameters_ToProto(mapCtx *direct.MapContext, in *krm.Explanatio
 		out.Method = &pb.ExplanationParameters_Examples{Examples: oneof}
 	}
 	out.TopK = direct.ValueOf(in.TopK)
-	// MISSING: OutputIndices
+	out.OutputIndices = ListValue_ToProto(mapCtx, in.OutputIndices)
 	return out
 }
 func ExplanationSpec_FromProto(mapCtx *direct.MapContext, in *pb.ExplanationSpec) *krm.ExplanationSpec {
@@ -2635,7 +2635,7 @@ func Schema_FromProto(mapCtx *direct.MapContext, in *aiplatformpb.Schema) *krm.S
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.Nullable = direct.LazyPtr(in.GetNullable())
 	out.Default = Value_FromProto(mapCtx, in.GetDefault())
-	out.Items = apiextensionsv1.JSON_FromProto(mapCtx, in.GetItems())
+	out.Items = Schema_FromProto(mapCtx, in.GetItems())
 	out.MinItems = direct.LazyPtr(in.GetMinItems())
 	out.MaxItems = direct.LazyPtr(in.GetMaxItems())
 	out.Enum = in.Enum
@@ -2650,7 +2650,7 @@ func Schema_FromProto(mapCtx *direct.MapContext, in *aiplatformpb.Schema) *krm.S
 	out.MaxLength = direct.LazyPtr(in.GetMaxLength())
 	out.Pattern = direct.LazyPtr(in.GetPattern())
 	out.Example = Value_FromProto(mapCtx, in.GetExample())
-	out.AnyOf = direct.Slice_FromProto(mapCtx, in.AnyOf, apiextensionsv1.JSON_FromProto)
+	out.AnyOf = direct.Slice_FromProto(mapCtx, in.AnyOf, Schema_FromProto)
 	out.AdditionalProperties = Value_FromProto(mapCtx, in.GetAdditionalProperties())
 	out.Ref = direct.LazyPtr(in.GetRef())
 	// MISSING: Defs
@@ -2672,7 +2672,7 @@ found existing non-generated mapping function "Schema_ToProto", skipping
 		out.Description = direct.ValueOf(in.Description)
 		out.Nullable = direct.ValueOf(in.Nullable)
 		out.Default = Value_ToProto(mapCtx, in.Default)
-		out.Items = apiextensionsv1.JSON_ToProto(mapCtx, in.Items)
+		out.Items = Schema_ToProto(mapCtx, in.Items)
 		out.MinItems = direct.ValueOf(in.MinItems)
 		out.MaxItems = direct.ValueOf(in.MaxItems)
 		out.Enum = in.Enum
@@ -2687,7 +2687,7 @@ found existing non-generated mapping function "Schema_ToProto", skipping
 		out.MaxLength = direct.ValueOf(in.MaxLength)
 		out.Pattern = direct.ValueOf(in.Pattern)
 		out.Example = Value_ToProto(mapCtx, in.Example)
-		out.AnyOf = direct.Slice_ToProto(mapCtx, in.AnyOf, apiextensionsv1.JSON_ToProto)
+		out.AnyOf = direct.Slice_ToProto(mapCtx, in.AnyOf, Schema_ToProto)
 		out.AdditionalProperties = Value_ToProto(mapCtx, in.AdditionalProperties)
 		out.Ref = direct.ValueOf(in.Ref)
 		// MISSING: Defs
@@ -3396,6 +3396,58 @@ func TuningDataStatsObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Tun
 		out.TuningDataStats = &pb.TuningDataStats_SupervisedTuningDataStats{SupervisedTuningDataStats: oneof}
 	}
 	return out
+}
+
+/* found existing non-generated mapping function "Value_FromProto", skipping
+func Value_FromProto(mapCtx *direct.MapContext, in *pb.Value) *krm.Value {
+	if in == nil {
+		return nil
+	}
+	out := &krm.Value{}
+	out.IntValue = direct.LazyPtr(in.GetIntValue())
+	out.DoubleValue = direct.LazyPtr(in.GetDoubleValue())
+	out.StringValue = direct.LazyPtr(in.GetStringValue())
+	return out
+}
+*/
+
+/*
+found existing non-generated mapping function "Value_ToProto", skipping
+
+	func Value_ToProto(mapCtx *direct.MapContext, in *krm.Value) *pb.Value {
+		if in == nil {
+			return nil
+		}
+		out := &pb.Value{}
+		if oneof := Value_IntValue_ToProto(mapCtx, in.IntValue); oneof != nil {
+			out.Value = oneof
+		}
+		if oneof := Value_DoubleValue_ToProto(mapCtx, in.DoubleValue); oneof != nil {
+			out.Value = oneof
+		}
+		if oneof := Value_StringValue_ToProto(mapCtx, in.StringValue); oneof != nil {
+			out.Value = oneof
+		}
+		return out
+	}
+*/
+func Value_IntValue_ToProto(mapCtx *direct.MapContext, in *int64) *pb.Value_IntValue {
+	if in == nil {
+		return nil
+	}
+	return &pb.Value_IntValue{IntValue: *in}
+}
+func Value_DoubleValue_ToProto(mapCtx *direct.MapContext, in *float64) *pb.Value_DoubleValue {
+	if in == nil {
+		return nil
+	}
+	return &pb.Value_DoubleValue{DoubleValue: *in}
+}
+func Value_StringValue_ToProto(mapCtx *direct.MapContext, in *string) *pb.Value_StringValue {
+	if in == nil {
+		return nil
+	}
+	return &pb.Value_StringValue{StringValue: *in}
 }
 func VertexAIFeatureOnlineStoreObservedState_FromProto(mapCtx *direct.MapContext, in *pb.FeatureOnlineStore) *krm.VertexAIFeatureOnlineStoreObservedState {
 	if in == nil {

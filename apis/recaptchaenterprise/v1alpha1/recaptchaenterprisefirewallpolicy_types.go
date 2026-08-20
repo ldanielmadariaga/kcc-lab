@@ -15,22 +15,19 @@
 package v1alpha1
 
 import (
-	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var ReCAPTCHAEnterpriseFirewallPolicyGVK = GroupVersion.WithKind("ReCAPTCHAEnterpriseFirewallPolicy")
 
-type Parent struct {
-	// +required
-	ProjectRef *refv1beta1.ProjectRef `json:"projectRef"`
-}
-
 // ReCAPTCHAEnterpriseFirewallPolicySpec defines the desired state of ReCAPTCHAEnterpriseFirewallPolicy
 // +kcc:spec:proto=google.cloud.recaptchaenterprise.v1.FirewallPolicy
 type ReCAPTCHAEnterpriseFirewallPolicySpec struct {
-	Parent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 
 	// The ReCAPTCHAEnterpriseFirewallPolicy name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
@@ -81,20 +78,18 @@ type ReCAPTCHAEnterpriseFirewallPolicyStatus struct {
 	// A unique specifier for the ReCAPTCHAEnterpriseFirewallPolicy resource in GCP.
 	ExternalRef *string `json:"externalRef,omitempty"`
 
-	/*
-		// ObservedState is the state of the resource as most recently observed in GCP.
-		ObservedState *ReCAPTCHAEnterpriseFirewallPolicyObservedState `json:"observedState,omitempty"`
-	*/
+	// ObservedState is the state of the resource as most recently observed in GCP.
+	ObservedState *ReCAPTCHAEnterpriseFirewallPolicyObservedState `json:"observedState,omitempty"`
 }
 
 // ReCAPTCHAEnterpriseFirewallPolicyObservedState is the state of the ReCAPTCHAEnterpriseFirewallPolicy resource as most recently observed in GCP.
+// +kcc:observedstate:proto=google.cloud.recaptchaenterprise.v1.FirewallPolicy
 type ReCAPTCHAEnterpriseFirewallPolicyObservedState struct {
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// TODO(user): make sure the pluralizaiton below is correct
-// +kubebuilder:resource:categories=gcp,shortName=gcprecaptchaenterprisefirewallpolicy;gcprecaptchaenterprisefirewallpolicies
+// +kubebuilder:resource:categories=gcp,shortName=gcprecaptchaenterprisefirewallpolicy;gcprecaptchaenterprisefirewallpolicys
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"

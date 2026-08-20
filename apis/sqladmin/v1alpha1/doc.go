@@ -12,5 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// +kcc:proto=google.cloud.sqladmin.v1
+// +kcc:proto=google.cloud.sql.v1
 package v1alpha1

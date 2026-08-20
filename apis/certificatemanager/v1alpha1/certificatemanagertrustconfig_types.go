@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,27 +26,35 @@ var CertificateManagerTrustConfigGVK = GroupVersion.WithKind("CertificateManager
 // +kcc:spec:proto=google.cloud.certificatemanager.v1.TrustConfig
 type CertificateManagerTrustConfigSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +required
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location is immutable."
 	Location *string `json:"location"`
 
+	// The CertificateManagerTrustConfig name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
+	// Set of labels associated with a TrustConfig.
+	// +kcc:proto:field=google.cloud.certificatemanager.v1.TrustConfig.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
 	// One or more paragraphs of text description of a TrustConfig.
-	// +optional
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.TrustConfig.description
 	Description *string `json:"description,omitempty"`
 
-	// TrustStores to use for client signature verification.
-	// +optional
+	// This checksum is computed by the server based on the value of other
+	//  fields, and may be sent on update and delete requests to ensure the
+	//  client has an up-to-date value before proceeding.
+	// +kcc:proto:field=google.cloud.certificatemanager.v1.TrustConfig.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Set of trust stores to perform validation against.
+	//
+	//  This field is supported when TrustConfig is configured with Load Balancers,
+	//  currently not supported for SPIFFE certificate validation.
+	//
+	//  Only one TrustStore specified is currently allowed.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.TrustConfig.trust_stores
 	TrustStores []TrustConfig_TrustStore `json:"trustStores,omitempty"`
-
-	// The CertificateManagerTrustConfig name. If not given, the metadata.name will be used.
-	// +optional
-	ResourceID *string `json:"resourceID,omitempty"`
 }
 
 // CertificateManagerTrustConfigStatus defines the config connector machine state of CertificateManagerTrustConfig
@@ -83,7 +91,6 @@ type CertificateManagerTrustConfigObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

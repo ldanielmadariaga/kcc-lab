@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -95,8 +95,7 @@ type AppEngineRouting struct {
 	Host *string `json:"host,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.tasks.v2.Queue", skipping
-
+/* unreachable type Queue
 // +kcc:proto=google.cloud.tasks.v2.Queue
 type Queue struct {
 	// Caller-specified and required in

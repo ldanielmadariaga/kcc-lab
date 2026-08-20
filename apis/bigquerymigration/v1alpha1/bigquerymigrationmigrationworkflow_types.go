@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,17 +33,20 @@ type BigQueryMigrationMigrationWorkflowSpec struct {
 
 	// The BigQueryMigrationMigrationWorkflow name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// The display name of the workflow. This can be set to give a workflow
 	//  a descriptive name. There is no guarantee or enforcement of uniqueness.
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
-	// The tasks in a workflow in a named map. The name (i.e. key) has no
-	//  meaning and is merely a convenient way to address a specific task
-	//  in a workflow.
-	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.tasks
-	Tasks map[string]MigrationTask `json:"tasks,omitempty"`
+	// TODO: unsupported map type with key string and value message
+
+	// Time when the workflow was created.
+	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Time when the workflow was last updated.
+	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.last_update_time
+	LastUpdateTime *string `json:"lastUpdateTime,omitempty"`
 }
 
 // BigQueryMigrationMigrationWorkflowStatus defines the config connector machine state of BigQueryMigrationMigrationWorkflow
@@ -65,24 +68,9 @@ type BigQueryMigrationMigrationWorkflowStatus struct {
 // BigQueryMigrationMigrationWorkflowObservedState is the state of the BigQueryMigrationMigrationWorkflow resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow
 type BigQueryMigrationMigrationWorkflowObservedState struct {
-	// Output only. Immutable. The unique identifier for the migration workflow. The ID is
-	//  server-generated.
-	//
-	//  Example: `projects/123/locations/us/workflows/345`
-	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.name
-	Name *string `json:"name,omitempty"`
-
 	// Output only. That status of the workflow.
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.state
 	State *string `json:"state,omitempty"`
-
-	// Time when the workflow was created.
-	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Time when the workflow was last updated.
-	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.last_update_time
-	LastUpdateTime *string `json:"lastUpdateTime,omitempty"`
 }
 
 // +genclient

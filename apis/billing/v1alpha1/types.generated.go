@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@
 // resource: BillingAccount:BillingAccount
 
 package v1alpha1
-
-/* found existing non-generated go type "BillingAccount", skipping
 
 // +kcc:proto=google.cloud.billing.v1.BillingAccount
 type BillingAccount struct {
@@ -51,9 +49,6 @@ type BillingAccount struct {
 	// +kcc:proto:field=google.cloud.billing.v1.BillingAccount.currency_code
 	CurrencyCode *string `json:"currencyCode,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "BillingAccountObservedState", skipping
 
 // +kcc:observedstate:proto=google.cloud.billing.v1.BillingAccount
 type BillingAccountObservedState struct {
@@ -82,4 +77,3 @@ type BillingAccountObservedState struct {
 	// +kcc:proto:field=google.cloud.billing.v1.BillingAccount.parent
 	Parent *string `json:"parent,omitempty"`
 }
-*/

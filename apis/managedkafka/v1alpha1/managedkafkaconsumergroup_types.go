@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,44 +25,17 @@ var ManagedKafkaConsumerGroupGVK = GroupVersion.WithKind("ManagedKafkaConsumerGr
 // ManagedKafkaConsumerGroupSpec defines the desired state of ManagedKafkaConsumerGroup
 // +kcc:spec:proto=google.cloud.managedkafka.v1.ConsumerGroup
 type ManagedKafkaConsumerGroupSpec struct {
-	*Parent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	Location string `json:"location"`
 
 	// The ManagedKafkaConsumerGroup name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-}
 
-// +kcc:proto=google.cloud.managedkafka.v1.ConsumerPartitionMetadata
-type ConsumerPartitionMetadata struct {
-	// Required. The current offset for this partition, or 0 if no offset has been
-	//  committed.
-	//+required
-	// +kcc:proto:field=google.cloud.managedkafka.v1.ConsumerPartitionMetadata.offset
-	Offset *int64 `json:"offset,omitempty"`
+	// TODO: unsupported map type with key string and value message
 
-	// Optional. The associated metadata for this partition, or empty if it does
-	//  not exist.
-	// +kcc:proto:field=google.cloud.managedkafka.v1.ConsumerPartitionMetadata.metadata
-	Metadata *string `json:"metadata,omitempty"`
-
-	// Required. Key of the partition index for topic metadata in this consumer group.
-	//+required
-	Key *int32 `json:"key,omitempty"`
-}
-
-// +kcc:proto=google.cloud.managedkafka.v1.ConsumerTopicMetadata
-type ConsumerTopicMetadata struct {
-	// Optional. Metadata for this consumer group and topic for all partition
-	// indexes it has metadata for.
-	Partitions []*ConsumerPartitionMetadata `json:"partitions,omitempty"`
-}
-
-type Parent struct {
-	// +required
-	Location string `json:"location"`
-	// +required
-	ClusterRef *ClusterRef `json:"clusterRef"`
-	// +optional
-	ProjectRef *refv1beta1.ProjectRef `json:"projectRef,omitempty"`
 }
 
 // ManagedKafkaConsumerGroupStatus defines the config connector machine state of ManagedKafkaConsumerGroup
@@ -84,14 +57,10 @@ type ManagedKafkaConsumerGroupStatus struct {
 // ManagedKafkaConsumerGroupObservedState is the state of the ManagedKafkaConsumerGroup resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.managedkafka.v1.ConsumerGroup
 type ManagedKafkaConsumerGroupObservedState struct {
-	// Optional. Metadata for this consumer group for all topics it has metadata for.
-	// The key of the map is a topic name, structured like: projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic}
-	Topics map[string]*ConsumerTopicMetadata `json:"topics,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// TODO(user): make sure the pluralizaiton below is correct
 // +kubebuilder:resource:categories=gcp,shortName=gcpmanagedkafkaconsumergroup;gcpmanagedkafkaconsumergroups
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"

@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	v1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/firestore/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,10 +25,12 @@ var FirestoreBackupScheduleGVK = GroupVersion.WithKind("FirestoreBackupSchedule"
 // FirestoreBackupScheduleSpec defines the desired state of FirestoreBackupSchedule
 // +kcc:spec:proto=google.firestore.admin.v1.BackupSchedule
 type FirestoreBackupScheduleSpec struct {
-	/* The database that this resource belongs to. */
-	// +required
-	DatabaseRef v1beta1.FirestoreDatabaseRef `json:"databaseRef"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+
+	// The FirestoreBackupSchedule name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// At what relative time in the future, compared to its creation time,
 	//  the backup should be deleted, e.g. keep backups for 7 days.
 	//
@@ -64,16 +66,6 @@ type FirestoreBackupScheduleStatus struct {
 // FirestoreBackupScheduleObservedState is the state of the FirestoreBackupSchedule resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.firestore.admin.v1.BackupSchedule
 type FirestoreBackupScheduleObservedState struct {
-	// Output only. The unique backup schedule identifier across all locations and
-	//  databases for the given project.
-	//
-	//  This will be auto-assigned.
-	//
-	//  Format is
-	//  `projects/{project}/databases/{database}/backupSchedules/{backup_schedule}`
-	// +kcc:proto:field=google.firestore.admin.v1.BackupSchedule.name
-	Name *string `json:"name,omitempty"`
-
 	// Output only. The timestamp at which this backup schedule was created and
 	//  effective since.
 	//
@@ -93,7 +85,6 @@ type FirestoreBackupScheduleObservedState struct {
 // +kubebuilder:resource:categories=gcp,shortName=gcpfirestorebackupschedule;gcpfirestorebackupschedules
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"

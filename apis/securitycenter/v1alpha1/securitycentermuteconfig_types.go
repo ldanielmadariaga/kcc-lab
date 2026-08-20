@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,34 +25,55 @@ var SecurityCenterMuteConfigGVK = GroupVersion.WithKind("SecurityCenterMuteConfi
 // SecurityCenterMuteConfigSpec defines the desired state of SecurityCenterMuteConfig
 // +kcc:spec:proto=google.cloud.securitycenter.v1.MuteConfig
 type SecurityCenterMuteConfigSpec struct {
-	// The organization that this resource belongs to.
-	// +kubebuilder:validation:Required
-	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 
 	// The SecurityCenterMuteConfig name. If not given, the metadata.name will be used.
-	// +kubebuilder:validation:Optional
 	ResourceID *string `json:"resourceID,omitempty"`
+	// The human readable name to be displayed for the mute config.
+	// +kcc:proto:field=google.cloud.securitycenter.v1.MuteConfig.display_name
+	DisplayName *string `json:"displayName,omitempty"`
 
 	// A description of the mute config.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.securitycenter.v1.MuteConfig.description
 	Description *string `json:"description,omitempty"`
 
-	// Required. An expression that defines the filter to apply across create/update events of findings.
-	// While creating a filter string, be mindful of the scope in which the mute configuration is being created.
-	// E.g., If a filter contains project = X but is created under the project = Y scope, it might not match any findings.
-	// +kubebuilder:validation:Required
-	Filter *string `json:"filter"`
+	// Required. An expression that defines the filter to apply across
+	//  create/update events of findings. While creating a filter string, be
+	//  mindful of the scope in which the mute configuration is being created.
+	//  E.g., If a filter contains project = X but is created under the project = Y
+	//  scope, it might not match any findings.
+	//
+	//  The following field and operator combinations are supported:
+	//
+	//  * severity: `=`, `:`
+	//  * category: `=`, `:`
+	//  * resource.name: `=`, `:`
+	//  * resource.project_name: `=`, `:`
+	//  * resource.project_display_name: `=`, `:`
+	//  * resource.folders.resource_folder: `=`, `:`
+	//  * resource.parent_name: `=`, `:`
+	//  * resource.parent_display_name: `=`, `:`
+	//  * resource.type: `=`, `:`
+	//  * finding_class: `=`, `:`
+	//  * indicator.ip_addresses: `=`, `:`
+	//  * indicator.domains: `=`, `:`
+	// +kcc:proto:field=google.cloud.securitycenter.v1.MuteConfig.filter
+	// +required
+	Filter *string `json:"filter,omitempty"`
 
-	// Optional. The type of the mute config, which determines what type of mute state the config affects.
-	// The static mute state takes precedence over the dynamic mute state.
-	// Immutable after creation. STATIC by default if not set during creation.
-	// +kubebuilder:validation:Optional
-	// +kubebuilder:validation:Enum=MUTE_CONFIG_TYPE_UNSPECIFIED;STATIC;DYNAMIC
+	// Optional. The type of the mute config, which determines what type of mute
+	//  state the config affects. The static mute state takes precedence over the
+	//  dynamic mute state. Immutable after creation. STATIC by default if not set
+	//  during creation.
+	// +kcc:proto:field=google.cloud.securitycenter.v1.MuteConfig.type
 	Type *string `json:"type,omitempty"`
 
-	// Optional. The expiry of the mute config. Only applicable for dynamic configs.
-	// If the expiry is set, when the config expires, it is removed from all findings.
-	// +kubebuilder:validation:Optional
+	// Optional. The expiry of the mute config. Only applicable for dynamic
+	//  configs. If the expiry is set, when the config expires, it is removed from
+	//  all findings.
+	// +kcc:proto:field=google.cloud.securitycenter.v1.MuteConfig.expiry_time
 	ExpiryTime *string `json:"expiryTime,omitempty"`
 }
 
@@ -76,18 +97,21 @@ type SecurityCenterMuteConfigStatus struct {
 // +kcc:observedstate:proto=google.cloud.securitycenter.v1.MuteConfig
 type SecurityCenterMuteConfigObservedState struct {
 	// Output only. The time at which the mute config was created.
-	// This field is set by the server and will be ignored if provided on config creation.
-	// +kubebuilder:validation:Optional
+	//  This field is set by the server and will be ignored if provided on config
+	//  creation.
+	// +kcc:proto:field=google.cloud.securitycenter.v1.MuteConfig.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. The most recent time at which the mute config was updated.
-	// This field is set by the server and will be ignored if provided on config creation or update.
-	// +kubebuilder:validation:Optional
+	//  This field is set by the server and will be ignored if provided on config
+	//  creation or update.
+	// +kcc:proto:field=google.cloud.securitycenter.v1.MuteConfig.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. Email address of the user who last edited the mute config.
-	// This field is set by the server and will be ignored if provided on config creation or update.
-	// +kubebuilder:validation:Optional
+	//  This field is set by the server and will be ignored if provided on config
+	//  creation or update.
+	// +kcc:proto:field=google.cloud.securitycenter.v1.MuteConfig.most_recent_editor
 	MostRecentEditor *string `json:"mostRecentEditor,omitempty"`
 }
 
@@ -95,7 +119,8 @@ type SecurityCenterMuteConfigObservedState struct {
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:resource:categories=gcp,shortName=gcpsecuritycentermuteconfig;gcpsecuritycentermuteconfigs
 // +kubebuilder:subresource:status
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true";"cnrm.cloud.google.com/system=true";"cnrm.cloud.google.com/stability-level=alpha"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -113,7 +138,6 @@ type SecurityCenterMuteConfig struct {
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
 // SecurityCenterMuteConfigList contains a list of SecurityCenterMuteConfig
 type SecurityCenterMuteConfigList struct {
 	metav1.TypeMeta `json:",inline"`

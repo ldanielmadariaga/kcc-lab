@@ -21,8 +21,7 @@
 
 package v1alpha1
 
-/* found existing non-generated go type with proto tag "google.cloud.blockchainnodeengine.v1.BlockchainNode", skipping
-
+/* unreachable type BlockchainNode
 // +kcc:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode
 type BlockchainNode struct {
 	// Ethereum-specific blockchain node details.
@@ -46,21 +45,17 @@ type BlockchainNode struct {
 }
 */
 
-/* found existing non-generated go type "BlockchainNode_ConnectionInfo", skipping
-
+/* unreachable type BlockchainNode_ConnectionInfo
 // +kcc:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode.ConnectionInfo
 type BlockchainNode_ConnectionInfo struct {
 }
 */
 
-/* found existing non-generated go type "BlockchainNode_ConnectionInfo_EndpointInfo", skipping
-
+/* unreachable type BlockchainNode_ConnectionInfo_EndpointInfo
 // +kcc:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode.ConnectionInfo.EndpointInfo
 type BlockchainNode_ConnectionInfo_EndpointInfo struct {
 }
 */
-
-/* found existing non-generated go type "BlockchainNode_EthereumDetails", skipping
 
 // +kcc:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode.EthereumDetails
 type BlockchainNode_EthereumDetails struct {
@@ -99,16 +94,12 @@ type BlockchainNode_EthereumDetails struct {
 	// +kcc:proto:field=google.cloud.blockchainnodeengine.v1.BlockchainNode.EthereumDetails.validator_config
 	ValidatorConfig *BlockchainNode_EthereumDetails_ValidatorConfig `json:"validatorConfig,omitempty"`
 }
-*/
 
-/* found existing non-generated go type "BlockchainNode_EthereumDetails_EthereumEndpoints", skipping
-
+/* unreachable type BlockchainNode_EthereumDetails_EthereumEndpoints
 // +kcc:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode.EthereumDetails.EthereumEndpoints
 type BlockchainNode_EthereumDetails_EthereumEndpoints struct {
 }
 */
-
-/* found existing non-generated go type "BlockchainNode_EthereumDetails_GethDetails", skipping
 
 // +kcc:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode.EthereumDetails.GethDetails
 type BlockchainNode_EthereumDetails_GethDetails struct {
@@ -116,16 +107,13 @@ type BlockchainNode_EthereumDetails_GethDetails struct {
 	// +kcc:proto:field=google.cloud.blockchainnodeengine.v1.BlockchainNode.EthereumDetails.GethDetails.garbage_collection_mode
 	GarbageCollectionMode *string `json:"garbageCollectionMode,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "BlockchainNode_EthereumDetails_ValidatorConfig", skipping
 
 // +kcc:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode.EthereumDetails.ValidatorConfig
 type BlockchainNode_EthereumDetails_ValidatorConfig struct {
 	// URLs for MEV-relay services to use for block building. When set, a
 	//  GCP-managed MEV-boost service is configured on the beacon client.
 	// +kcc:proto:field=google.cloud.blockchainnodeengine.v1.BlockchainNode.EthereumDetails.ValidatorConfig.mev_relay_urls
-	MevRelayUrls []string `json:"mevRelayUrls,omitempty"`
+	MevRelayURLs []string `json:"mevRelayURLs,omitempty"`
 
 	// Immutable. When true, deploys a GCP-managed validator client alongside
 	//  the beacon client.
@@ -145,10 +133,8 @@ type BlockchainNode_EthereumDetails_ValidatorConfig struct {
 	// +kcc:proto:field=google.cloud.blockchainnodeengine.v1.BlockchainNode.EthereumDetails.ValidatorConfig.beacon_fee_recipient
 	BeaconFeeRecipient *string `json:"beaconFeeRecipient,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.blockchainnodeengine.v1.BlockchainNode", skipping
-
+/* unreachable type BlockchainNodeObservedState
 // +kcc:observedstate:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode
 type BlockchainNodeObservedState struct {
 	// Ethereum-specific blockchain node details.
@@ -179,8 +165,6 @@ type BlockchainNodeObservedState struct {
 }
 */
 
-/* found existing non-generated go type "BlockchainNode_ConnectionInfoObservedState", skipping
-
 // +kcc:observedstate:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode.ConnectionInfo
 type BlockchainNode_ConnectionInfoObservedState struct {
 	// Output only. The endpoint information through which to interact with a
@@ -194,9 +178,6 @@ type BlockchainNode_ConnectionInfoObservedState struct {
 	// +kcc:proto:field=google.cloud.blockchainnodeengine.v1.BlockchainNode.ConnectionInfo.service_attachment
 	ServiceAttachment *string `json:"serviceAttachment,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "BlockchainNode_ConnectionInfo_EndpointInfoObservedState", skipping
 
 // +kcc:observedstate:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode.ConnectionInfo.EndpointInfo
 type BlockchainNode_ConnectionInfo_EndpointInfoObservedState struct {
@@ -208,9 +189,6 @@ type BlockchainNode_ConnectionInfo_EndpointInfoObservedState struct {
 	// +kcc:proto:field=google.cloud.blockchainnodeengine.v1.BlockchainNode.ConnectionInfo.EndpointInfo.websockets_api_endpoint
 	WebsocketsAPIEndpoint *string `json:"websocketsAPIEndpoint,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "BlockchainNode_EthereumDetailsObservedState", skipping
 
 // +kcc:observedstate:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode.EthereumDetails
 type BlockchainNode_EthereumDetailsObservedState struct {
@@ -218,9 +196,6 @@ type BlockchainNode_EthereumDetailsObservedState struct {
 	// +kcc:proto:field=google.cloud.blockchainnodeengine.v1.BlockchainNode.EthereumDetails.additional_endpoints
 	AdditionalEndpoints *BlockchainNode_EthereumDetails_EthereumEndpointsObservedState `json:"additionalEndpoints,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "BlockchainNode_EthereumDetails_EthereumEndpointsObservedState", skipping
 
 // +kcc:observedstate:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode.EthereumDetails.EthereumEndpoints
 type BlockchainNode_EthereumDetails_EthereumEndpointsObservedState struct {
@@ -240,4 +215,3 @@ type BlockchainNode_EthereumDetails_EthereumEndpointsObservedState struct {
 	// +kcc:proto:field=google.cloud.blockchainnodeengine.v1.BlockchainNode.EthereumDetails.EthereumEndpoints.execution_client_prometheus_metrics_api_endpoint
 	ExecutionClientPrometheusMetricsAPIEndpoint *string `json:"executionClientPrometheusMetricsAPIEndpoint,omitempty"`
 }
-*/

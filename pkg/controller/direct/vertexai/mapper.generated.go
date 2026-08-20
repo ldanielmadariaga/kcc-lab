@@ -1077,7 +1077,7 @@ func VertexAIMetadataStoreObservedState_v1alpha1_FromProto(mapCtx *direct.MapCon
 		return nil
 	}
 	out := &krmvertexaiv1alpha1.VertexAIMetadataStoreObservedState{}
-	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.State = MetadataStore_MetadataStoreState_v1alpha1_FromProto(mapCtx, in.GetState())
@@ -1088,7 +1088,7 @@ func VertexAIMetadataStoreObservedState_v1alpha1_ToProto(mapCtx *direct.MapConte
 		return nil
 	}
 	out := &pb.MetadataStore{}
-	out.Name = direct.ValueOf(in.Name)
+	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.State = MetadataStore_MetadataStoreState_v1alpha1_ToProto(mapCtx, in.State)
@@ -1121,6 +1121,7 @@ func VertexAIMetadataStoreSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in 
 		return nil
 	}
 	out := &krmvertexaiv1alpha1.VertexAIMetadataStoreSpec{}
+	// MISSING: Name
 	out.EncryptionSpec = EncryptionSpec_v1alpha1_FromProto(mapCtx, in.GetEncryptionSpec())
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.DataplexConfig = MetadataStore_DataplexConfig_v1alpha1_FromProto(mapCtx, in.GetDataplexConfig())
@@ -1131,6 +1132,7 @@ func VertexAIMetadataStoreSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *k
 		return nil
 	}
 	out := &pb.MetadataStore{}
+	// MISSING: Name
 	out.EncryptionSpec = EncryptionSpec_v1alpha1_ToProto(mapCtx, in.EncryptionSpec)
 	out.Description = direct.ValueOf(in.Description)
 	out.DataplexConfig = MetadataStore_DataplexConfig_v1alpha1_ToProto(mapCtx, in.DataplexConfig)
@@ -1141,6 +1143,7 @@ func VertexAIMetadataStoreSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *
 		return nil
 	}
 	out := &krmvertexaiv1beta1.VertexAIMetadataStoreSpec{}
+	// MISSING: Name
 	out.EncryptionSpec = EncryptionSpec_v1beta1_FromProto(mapCtx, in.GetEncryptionSpec())
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.DataplexConfig = MetadataStore_DataplexConfig_v1beta1_FromProto(mapCtx, in.GetDataplexConfig())
@@ -1151,6 +1154,7 @@ func VertexAIMetadataStoreSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *kr
 		return nil
 	}
 	out := &pb.MetadataStore{}
+	// MISSING: Name
 	out.EncryptionSpec = EncryptionSpec_v1beta1_ToProto(mapCtx, in.EncryptionSpec)
 	out.Description = direct.ValueOf(in.Description)
 	out.DataplexConfig = MetadataStore_DataplexConfig_v1beta1_ToProto(mapCtx, in.DataplexConfig)

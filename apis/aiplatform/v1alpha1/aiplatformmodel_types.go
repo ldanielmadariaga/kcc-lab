@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,11 +25,19 @@ var AIPlatformModelGVK = GroupVersion.WithKind("AIPlatformModel")
 // AIPlatformModelSpec defines the desired state of AIPlatformModel
 // +kcc:spec:proto=google.cloud.aiplatform.v1.Model
 type AIPlatformModelSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	Location *string `json:"location"`
+
+	// The AIPlatformModel name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// User provided version aliases so that a model version can be referenced via
 	//  alias (i.e.
-	//  `projects/PROJECT/locations/LOCATION/models/MODEL_ID@VERSION_ALIAS`
+	//  `projects/{project}/locations/{location}/models/{model_id}@{version_alias}`
 	//  instead of auto-generated version id (i.e.
-	//  `projects/PROJECT/locations/LOCATION/models/MODEL_ID@VERSION_ID`).
+	//  `projects/{project}/locations/{location}/models/{model_id}@{version_id})`.
 	//  The format is [a-z][a-zA-Z0-9-]{0,126}[a-z0-9] to distinguish from
 	//  version_id. A default version alias will be created for the first version
 	//  of the model, and there must be exactly one default version alias for a
@@ -41,6 +49,7 @@ type AIPlatformModelSpec struct {
 	//  The name can be up to 128 characters long and can consist of any UTF-8
 	//  characters.
 	// +kcc:proto:field=google.cloud.aiplatform.v1.Model.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// The description of the Model.
@@ -50,6 +59,10 @@ type AIPlatformModelSpec struct {
 	// The description of this version.
 	// +kcc:proto:field=google.cloud.aiplatform.v1.Model.version_description
 	VersionDescription *string `json:"versionDescription,omitempty"`
+
+	// The default checkpoint id of a model version.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.Model.default_checkpoint_id
+	DefaultCheckpointID *string `json:"defaultCheckpointID,omitempty"`
 
 	// The schemata that describe formats of the Model's predictions and
 	//  explanations as given and returned via
@@ -131,10 +144,10 @@ type AIPlatformModelSpec struct {
 	// +kcc:proto:field=google.cloud.aiplatform.v1.Model.explanation_spec
 	ExplanationSpec *ExplanationSpec `json:"explanationSpec,omitempty"`
 
-	// NOTYET: not supported in Config Connector reconciliation
-	// Optional. Used to perform consistent read-modify-write updates. If not set, a blind "overwrite" update happens.
+	// Used to perform consistent read-modify-write updates. If not set, a blind
+	//  "overwrite" update happens.
 	// +kcc:proto:field=google.cloud.aiplatform.v1.Model.etag
-	// Etag *string `json:"etag,omitempty"`
+	Etag *string `json:"etag,omitempty"`
 
 	// The labels with user-defined metadata to organize your Models.
 	//
@@ -159,73 +172,9 @@ type AIPlatformModelSpec struct {
 	EncryptionSpec *EncryptionSpec `json:"encryptionSpec,omitempty"`
 
 	// Optional. User input field to specify the base model source. Currently it
-	//  only supports specifying the Model Garden models and Genie models.
+	//  only supports specifing the Model Garden models and Genie models.
 	// +kcc:proto:field=google.cloud.aiplatform.v1.Model.base_model_source
 	BaseModelSource *Model_BaseModelSource `json:"baseModelSource,omitempty"`
-
-	// Required. The resource name of the Location into which to upload the Model.
-	// Format: projects/{project}/locations/{location}
-	*Parent `json:",inline"`
-
-	// The AIPlatformModel name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
-}
-
-type Parent struct {
-
-	// Immutable. The location where the model should reside.
-	// +required
-	Location *string `json:"location,omitempty"`
-
-	// The project that this resource belongs to.
-	// +required
-	ProjectRef *v1beta1.ProjectRef `json:"projectRef,omitempty"`
-}
-
-// +kcc:proto=google.cloud.aiplatform.v1.ExplanationMetadata
-type ExplanationMetadata struct {
-	// Required. Map from feature names to feature input metadata. Keys are the
-	// name of the features. Values are the specification of the feature.
-	//
-	// An empty InputMetadata is valid. It describes a text feature which has the
-	// name specified as the key in
-	// [ExplanationMetadata.inputs][google.cloud.aiplatform.v1.ExplanationMetadata.inputs].
-	// The baseline of the empty feature is chosen by Vertex AI.
-	//
-	// For Vertex AI-provided Tensorflow images, the key can be any friendly
-	// name of the feature. Once specified,
-	// [featureAttributions][google.cloud.aiplatform.v1.Attribution.feature_attributions]
-	// are keyed by this key (if not grouped with another feature).
-	//
-	// For custom images, the key must match with the key in
-	// [instance][google.cloud.aiplatform.v1.ExplainRequest.instances].
-	Inputs map[string]*ExplanationMetadata_InputMetadata `json:"inputs,omitempty"`
-	// Required. Map from output names to output metadata.
-	//
-	// For Vertex AI-provided Tensorflow images, keys can be any user defined
-	// string that consists of any UTF-8 characters.
-	//
-	// For custom images, keys are the name of the output field in the prediction
-	// to be explained.
-	//
-	// Currently only one key is allowed.
-	Outputs map[string]*ExplanationMetadata_OutputMetadata `json:"outputs,omitempty"`
-
-	// Points to a YAML file stored on Google Cloud Storage describing the format
-	//  of the [feature
-	//  attributions][google.cloud.aiplatform.v1.Attribution.feature_attributions].
-	//  The schema is defined as an OpenAPI 3.0.2 [Schema
-	//  Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject).
-	//  AutoML tabular Models always have this field populated by Vertex AI.
-	//  Note: The URI given on output may be different, including the URI scheme,
-	//  than the one given on input. The output URI will point to a location where
-	//  the user only has a read access.
-	// +kcc:proto:field=google.cloud.aiplatform.v1.ExplanationMetadata.feature_attributions_schema_uri
-	FeatureAttributionsSchemaURI *string `json:"featureAttributionsSchemaURI,omitempty"`
-
-	// Name of the source to generate embeddings for example based explanations.
-	// +kcc:proto:field=google.cloud.aiplatform.v1.ExplanationMetadata.latent_space_source
-	LatentSpaceSource *string `json:"latentSpaceSource,omitempty"`
 }
 
 // AIPlatformModelStatus defines the config connector machine state of AIPlatformModel
@@ -265,7 +214,7 @@ type AIPlatformModelObservedState struct {
 	// Output only. The formats in which this Model may be exported. If empty,
 	//  this Model is not available for export.
 	// +kcc:proto:field=google.cloud.aiplatform.v1.Model.supported_export_formats
-	SupportedExportFormats []Model_ExportFormat `json:"supportedExportFormats,omitempty"`
+	SupportedExportFormats []Model_ExportFormatObservedState `json:"supportedExportFormats,omitempty"`
 
 	// Output only. The resource name of the TrainingPipeline that uploaded this
 	//  Model, if any.
@@ -404,7 +353,7 @@ type AIPlatformModelObservedState struct {
 	// Output only. If this Model is a copy of another Model, this contains info
 	//  about the original.
 	// +kcc:proto:field=google.cloud.aiplatform.v1.Model.original_model_info
-	OriginalModelInfo *Model_OriginalModelInfo `json:"originalModelInfo,omitempty"`
+	OriginalModelInfo *Model_OriginalModelInfoObservedState `json:"originalModelInfo,omitempty"`
 
 	// Output only. The resource name of the Artifact that was created in
 	//  MetadataStore when creating the Model. The Artifact resource name pattern
@@ -420,31 +369,14 @@ type AIPlatformModelObservedState struct {
 	// Output only. Reserved for future use.
 	// +kcc:proto:field=google.cloud.aiplatform.v1.Model.satisfies_pzi
 	SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
-}
 
-/*
-// +kcc:proto=google.protobuf.ListValue
-type ListValue struct {
-	// Repeated field of dynamically typed values.
-	// +kcc:proto:field=google.protobuf.ListValue.values
-	// +kubebuilder:validation:items:Type=object
-	Values []Value `json:"values,omitempty"`
+	// Optional. Output only. The checkpoints of the model.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.Model.checkpoints
+	Checkpoints []Checkpoint `json:"checkpoints,omitempty"`
 }
-*/
-
-const (
-	// Null value.
-	NullValue_NULL_VALUE     int = 0
-	StringValue_STRING_VALUE int = 1
-	NumberValue_NUMBER_VALUE int = 2
-	BoolValue_BOOL_VALUE     int = 3
-	StructValue_STRUCT_VALUE int = 4
-	ListValue_LIST_VALUE     int = 5
-)
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// TODO(user): make sure the pluralizaiton below is correct
 // +kubebuilder:resource:categories=gcp,shortName=gcpaiplatformmodel;gcpaiplatformmodels
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"

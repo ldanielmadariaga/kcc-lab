@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,28 +25,36 @@ var CloudSecurityComplianceFrameworkGVK = GroupVersion.WithKind("CloudSecurityCo
 // CloudSecurityComplianceFrameworkSpec defines the desired state of CloudSecurityComplianceFramework
 // +kcc:spec:proto=google.cloud.cloudsecuritycompliance.v1.Framework
 type CloudSecurityComplianceFrameworkSpec struct {
-	// The organization that this resource belongs to.
-	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
 	Location *string `json:"location"`
 
 	// The CloudSecurityComplianceFramework name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Optional. Display name of the framework. The maximum length is 200 characters.
+	// Optional. Display name of the framework. The maximum length is 200
+	//  characters.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
-	// Optional. The description of the framework. The maximum length is 2000 characters.
+	// Optional. The description of the framework. The maximum length is 2000
+	//  characters.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.description
 	Description *string `json:"description,omitempty"`
 
-	// Optional. The details of the cloud control groups included in the framework.
+	// Optional. The details of the cloud control groups included in the
+	//  framework.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.cloud_control_group_details
 	CloudControlGroupDetails []Framework_CloudControlGroupDetails `json:"cloudControlGroupDetails,omitempty"`
 
-	// Optional. The details of the cloud controls directly added without any grouping in the framework.
+	// Optional. The details of the cloud controls directly added without any
+	//  grouping in the framework.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.cloud_control_details
 	CloudControlDetails []CloudControlDetails `json:"cloudControlDetails,omitempty"`
 
 	// Optional. The category of the framework.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.category
 	Category []string `json:"category,omitempty"`
 }
 
@@ -69,19 +77,26 @@ type CloudSecurityComplianceFrameworkStatus struct {
 // CloudSecurityComplianceFrameworkObservedState is the state of the CloudSecurityComplianceFramework resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.cloudsecuritycompliance.v1.Framework
 type CloudSecurityComplianceFrameworkObservedState struct {
-	// Output only. Major revision of the framework incremented in ascending order.
+	// Output only. Major revision of the framework incremented in ascending
+	//  order.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.major_revision_id
 	MajorRevisionID *int64 `json:"majorRevisionID,omitempty"`
 
 	// Output only. The type of the framework. The default is TYPE_CUSTOM.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.type
 	Type *string `json:"type,omitempty"`
 
-	// Optional. The details of the cloud control groups included in the framework.
+	// Optional. The details of the cloud control groups included in the
+	//  framework.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.cloud_control_group_details
 	CloudControlGroupDetails []Framework_CloudControlGroupDetailsObservedState `json:"cloudControlGroupDetails,omitempty"`
 
-	// Output only. cloud providers supported.
+	// Output only. cloud providers supported
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.supported_cloud_providers
 	SupportedCloudProviders []string `json:"supportedCloudProviders,omitempty"`
 
 	// Output only. target resource types supported by the Framework.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.supported_target_resource_types
 	SupportedTargetResourceTypes []string `json:"supportedTargetResourceTypes,omitempty"`
 }
 
@@ -98,7 +113,6 @@ type CloudSecurityComplianceFrameworkObservedState struct {
 
 // CloudSecurityComplianceFramework is the Schema for the CloudSecurityComplianceFramework API
 // +k8s:openapi-gen=true
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 type CloudSecurityComplianceFramework struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -118,65 +132,4 @@ type CloudSecurityComplianceFrameworkList struct {
 
 func init() {
 	SchemeBuilder.Register(&CloudSecurityComplianceFramework{}, &CloudSecurityComplianceFrameworkList{})
-}
-
-// +kcc:proto=google.cloud.cloudsecuritycompliance.v1.CloudControlDetails
-type CloudControlDetails struct {
-	// Required. The name of the CloudControl in the format:
-	//  “organizations/{organization}/locations/{location}/
-	//  cloudControls/{cloud-control}”
-	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlDetails.name
-	CloudControlRef *CloudSecurityComplianceCloudControlRef `json:"cloudControlRef,omitempty"`
-
-	// Required. Major revision of cloudcontrol
-	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlDetails.major_revision_id
-	MajorRevisionID *int64 `json:"majorRevisionID,omitempty"`
-
-	// Optional. Parameters is a key-value pair that is required by the
-	//  CloudControl. The specification of these parameters will be present in
-	//  cloudcontrol.Eg: { "name": "location","value": "us-west-1"}.
-	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlDetails.parameters
-	Parameters []Parameter `json:"parameters,omitempty"`
-}
-
-// kcc:proto=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup
-type CloudControlGroup struct {
-	// Required. The name of the cloud control group in the format:
-	//  “organizations/{organization}/locations/{location}/
-	//  cloudControlGroups/{cloud-control-group}”
-	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup.name
-	CloudControlGroupRef *CloudSecurityComplianceCloudControlGroupRef `json:"cloudControlGroupRef,omitempty"`
-
-	// Optional. The description of the cloud control group.The maximum length is
-	//  2000 characters.
-	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup.description
-	Description *string `json:"description,omitempty"`
-
-	// Optional. The control identifier used to fetch the findings. This is same
-	//  as the control report name.
-	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup.control_id
-	ControlID *string `json:"controlID,omitempty"`
-
-	// Required. The details of the cloud controls to be referred to in the
-	//  framework.
-	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup.cloud_control_details
-	CloudControlDetails []CloudControlDetails `json:"cloudControlDetails,omitempty"`
-
-	// Optional. Major revision of the cloud control group.
-	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup.major_revision_id
-	MajorRevisionID *int64 `json:"majorRevisionID,omitempty"`
-
-	// Optional. The industry-defined Control assciated with the cloud controls in
-	//  this group.
-	//  organizations/{organization}/locations/{location}/controls/{control_id}
-	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup.control
-	ControlRef *CloudSecurityComplianceControlRef `json:"controlRef,omitempty"`
-}
-
-// kcc:observedstate:proto=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup
-type CloudControlGroupObservedState struct {
-	// Optional. Output only. The type of the cloud control group. Default is
-	//  TYPE_CUSTOM.
-	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup.type
-	Type *string `json:"type,omitempty"`
 }
