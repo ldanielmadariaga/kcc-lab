@@ -26,8 +26,6 @@ package dataplex
 import (
 	pb "cloud.google.com/go/dataplex/apiv1/dataplexpb"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/dataplex/v1alpha1"
-	krmdataprocv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/dataproc/v1alpha1"
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -218,8 +216,8 @@ func DataDiscoveryResult_BigQueryPublishingObservedState_FromProto(mapCtx *direc
 		return nil
 	}
 	out := &krm.DataDiscoveryResult_BigQueryPublishingObservedState{}
-	// MISSING: Dataset
-	// MISSING: Location
+	out.Dataset = direct.LazyPtr(in.GetDataset())
+	out.Location = direct.LazyPtr(in.GetLocation())
 	return out
 }
 func DataDiscoveryResult_BigQueryPublishingObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DataDiscoveryResult_BigQueryPublishingObservedState) *pb.DataDiscoveryResult_BigQueryPublishing {
@@ -227,8 +225,8 @@ func DataDiscoveryResult_BigQueryPublishingObservedState_ToProto(mapCtx *direct.
 		return nil
 	}
 	out := &pb.DataDiscoveryResult_BigQueryPublishing{}
-	// MISSING: Dataset
-	// MISSING: Location
+	out.Dataset = direct.ValueOf(in.Dataset)
+	out.Location = direct.ValueOf(in.Location)
 	return out
 }
 func DataDiscoveryResult_ScanStatistics_FromProto(mapCtx *direct.MapContext, in *pb.DataDiscoveryResult_ScanStatistics) *krm.DataDiscoveryResult_ScanStatistics {
@@ -289,10 +287,8 @@ func DataDiscoverySpec_BigQueryPublishingConfig_FromProto(mapCtx *direct.MapCont
 	}
 	out := &krm.DataDiscoverySpec_BigQueryPublishingConfig{}
 	out.TableType = direct.Enum_FromProto(mapCtx, in.GetTableType())
-	if in.GetConnection() != "" {
-		out.ConnectionRef = &krm.BigQueryConnectionRef{External: in.GetConnection()}
-	}
-	// MISSING: Location
+	out.Connection = direct.LazyPtr(in.GetConnection())
+	out.Location = direct.LazyPtr(in.GetLocation())
 	return out
 }
 func DataDiscoverySpec_BigQueryPublishingConfig_ToProto(mapCtx *direct.MapContext, in *krm.DataDiscoverySpec_BigQueryPublishingConfig) *pb.DataDiscoverySpec_BigQueryPublishingConfig {
@@ -301,10 +297,8 @@ func DataDiscoverySpec_BigQueryPublishingConfig_ToProto(mapCtx *direct.MapContex
 	}
 	out := &pb.DataDiscoverySpec_BigQueryPublishingConfig{}
 	out.TableType = direct.Enum_ToProto[pb.DataDiscoverySpec_BigQueryPublishingConfig_TableType](mapCtx, in.TableType)
-	if in.ConnectionRef != nil {
-		out.Connection = in.ConnectionRef.External
-	}
-	// MISSING: Location
+	out.Connection = direct.ValueOf(in.Connection)
+	out.Location = direct.ValueOf(in.Location)
 	return out
 }
 func DataDiscoverySpec_StorageConfig_FromProto(mapCtx *direct.MapContext, in *pb.DataDiscoverySpec_StorageConfig) *krm.DataDiscoverySpec_StorageConfig {
@@ -398,7 +392,7 @@ func DataProfileResult_PostScanActionsResultObservedState_FromProto(mapCtx *dire
 		return nil
 	}
 	out := &krm.DataProfileResult_PostScanActionsResultObservedState{}
-	// MISSING: BigqueryExportResult
+	out.BigqueryExportResult = DataProfileResult_PostScanActionsResult_BigQueryExportResultObservedState_FromProto(mapCtx, in.GetBigqueryExportResult())
 	return out
 }
 func DataProfileResult_PostScanActionsResultObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DataProfileResult_PostScanActionsResultObservedState) *pb.DataProfileResult_PostScanActionsResult {
@@ -406,7 +400,25 @@ func DataProfileResult_PostScanActionsResultObservedState_ToProto(mapCtx *direct
 		return nil
 	}
 	out := &pb.DataProfileResult_PostScanActionsResult{}
-	// MISSING: BigqueryExportResult
+	out.BigqueryExportResult = DataProfileResult_PostScanActionsResult_BigQueryExportResultObservedState_ToProto(mapCtx, in.BigqueryExportResult)
+	return out
+}
+func DataProfileResult_PostScanActionsResult_BigQueryExportResultObservedState_FromProto(mapCtx *direct.MapContext, in *pb.DataProfileResult_PostScanActionsResult_BigQueryExportResult) *krm.DataProfileResult_PostScanActionsResult_BigQueryExportResultObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.DataProfileResult_PostScanActionsResult_BigQueryExportResultObservedState{}
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.Message = direct.LazyPtr(in.GetMessage())
+	return out
+}
+func DataProfileResult_PostScanActionsResult_BigQueryExportResultObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DataProfileResult_PostScanActionsResult_BigQueryExportResultObservedState) *pb.DataProfileResult_PostScanActionsResult_BigQueryExportResult {
+	if in == nil {
+		return nil
+	}
+	out := &pb.DataProfileResult_PostScanActionsResult_BigQueryExportResult{}
+	out.State = direct.Enum_ToProto[pb.DataProfileResult_PostScanActionsResult_BigQueryExportResult_State](mapCtx, in.State)
+	out.Message = direct.ValueOf(in.Message)
 	return out
 }
 func DataProfileResult_Profile_FromProto(mapCtx *direct.MapContext, in *pb.DataProfileResult_Profile) *krm.DataProfileResult_Profile {
@@ -612,9 +624,7 @@ func DataProfileSpec_PostScanActions_BigQueryExport_FromProto(mapCtx *direct.Map
 		return nil
 	}
 	out := &krm.DataProfileSpec_PostScanActions_BigQueryExport{}
-	if in.GetResultsTable() != "" {
-		out.ResultsTableRef = &krm.BigQueryTableRef{External: in.GetResultsTable()}
-	}
+	out.ResultsTable = direct.LazyPtr(in.GetResultsTable())
 	return out
 }
 func DataProfileSpec_PostScanActions_BigQueryExport_ToProto(mapCtx *direct.MapContext, in *krm.DataProfileSpec_PostScanActions_BigQueryExport) *pb.DataProfileSpec_PostScanActions_BigQueryExport {
@@ -622,9 +632,7 @@ func DataProfileSpec_PostScanActions_BigQueryExport_ToProto(mapCtx *direct.MapCo
 		return nil
 	}
 	out := &pb.DataProfileSpec_PostScanActions_BigQueryExport{}
-	if in.ResultsTableRef != nil {
-		out.ResultsTable = in.ResultsTableRef.External
-	}
+	out.ResultsTable = direct.ValueOf(in.ResultsTable)
 	return out
 }
 func DataProfileSpec_SelectedFields_FromProto(mapCtx *direct.MapContext, in *pb.DataProfileSpec_SelectedFields) *krm.DataProfileSpec_SelectedFields {
@@ -648,8 +656,8 @@ func DataQualityColumnResultObservedState_FromProto(mapCtx *direct.MapContext, i
 		return nil
 	}
 	out := &krm.DataQualityColumnResultObservedState{}
-	// MISSING: Column
-	// MISSING: Score
+	out.Column = direct.LazyPtr(in.GetColumn())
+	out.Score = in.Score
 	return out
 }
 func DataQualityColumnResultObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DataQualityColumnResultObservedState) *pb.DataQualityColumnResult {
@@ -657,8 +665,24 @@ func DataQualityColumnResultObservedState_ToProto(mapCtx *direct.MapContext, in 
 		return nil
 	}
 	out := &pb.DataQualityColumnResult{}
-	// MISSING: Column
-	// MISSING: Score
+	out.Column = direct.ValueOf(in.Column)
+	out.Score = in.Score
+	return out
+}
+func DataQualityDimension_FromProto(mapCtx *direct.MapContext, in *pb.DataQualityDimension) *krm.DataQualityDimension {
+	if in == nil {
+		return nil
+	}
+	out := &krm.DataQualityDimension{}
+	out.Name = direct.LazyPtr(in.GetName())
+	return out
+}
+func DataQualityDimension_ToProto(mapCtx *direct.MapContext, in *krm.DataQualityDimension) *pb.DataQualityDimension {
+	if in == nil {
+		return nil
+	}
+	out := &pb.DataQualityDimension{}
+	out.Name = direct.ValueOf(in.Name)
 	return out
 }
 func DataQualityDimensionResultObservedState_FromProto(mapCtx *direct.MapContext, in *pb.DataQualityDimensionResult) *krm.DataQualityDimensionResultObservedState {
@@ -666,9 +690,9 @@ func DataQualityDimensionResultObservedState_FromProto(mapCtx *direct.MapContext
 		return nil
 	}
 	out := &krm.DataQualityDimensionResultObservedState{}
-	// MISSING: Dimension
-	// MISSING: Passed
-	// MISSING: Score
+	out.Dimension = DataQualityDimension_FromProto(mapCtx, in.GetDimension())
+	out.Passed = direct.LazyPtr(in.GetPassed())
+	out.Score = in.Score
 	return out
 }
 func DataQualityDimensionResultObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DataQualityDimensionResultObservedState) *pb.DataQualityDimensionResult {
@@ -676,9 +700,9 @@ func DataQualityDimensionResultObservedState_ToProto(mapCtx *direct.MapContext, 
 		return nil
 	}
 	out := &pb.DataQualityDimensionResult{}
-	// MISSING: Dimension
-	// MISSING: Passed
-	// MISSING: Score
+	out.Dimension = DataQualityDimension_ToProto(mapCtx, in.Dimension)
+	out.Passed = direct.ValueOf(in.Passed)
+	out.Score = in.Score
 	return out
 }
 func DataQualityResultObservedState_FromProto(mapCtx *direct.MapContext, in *pb.DataQualityResult) *krm.DataQualityResultObservedState {
@@ -716,7 +740,7 @@ func DataQualityResult_PostScanActionsResultObservedState_FromProto(mapCtx *dire
 		return nil
 	}
 	out := &krm.DataQualityResult_PostScanActionsResultObservedState{}
-	// MISSING: BigqueryExportResult
+	out.BigqueryExportResult = DataQualityResult_PostScanActionsResult_BigQueryExportResultObservedState_FromProto(mapCtx, in.GetBigqueryExportResult())
 	return out
 }
 func DataQualityResult_PostScanActionsResultObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DataQualityResult_PostScanActionsResultObservedState) *pb.DataQualityResult_PostScanActionsResult {
@@ -724,7 +748,25 @@ func DataQualityResult_PostScanActionsResultObservedState_ToProto(mapCtx *direct
 		return nil
 	}
 	out := &pb.DataQualityResult_PostScanActionsResult{}
-	// MISSING: BigqueryExportResult
+	out.BigqueryExportResult = DataQualityResult_PostScanActionsResult_BigQueryExportResultObservedState_ToProto(mapCtx, in.BigqueryExportResult)
+	return out
+}
+func DataQualityResult_PostScanActionsResult_BigQueryExportResultObservedState_FromProto(mapCtx *direct.MapContext, in *pb.DataQualityResult_PostScanActionsResult_BigQueryExportResult) *krm.DataQualityResult_PostScanActionsResult_BigQueryExportResultObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.DataQualityResult_PostScanActionsResult_BigQueryExportResultObservedState{}
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.Message = direct.LazyPtr(in.GetMessage())
+	return out
+}
+func DataQualityResult_PostScanActionsResult_BigQueryExportResultObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DataQualityResult_PostScanActionsResult_BigQueryExportResultObservedState) *pb.DataQualityResult_PostScanActionsResult_BigQueryExportResult {
+	if in == nil {
+		return nil
+	}
+	out := &pb.DataQualityResult_PostScanActionsResult_BigQueryExportResult{}
+	out.State = direct.Enum_ToProto[pb.DataQualityResult_PostScanActionsResult_BigQueryExportResult_State](mapCtx, in.State)
+	out.Message = direct.ValueOf(in.Message)
 	return out
 }
 func DataQualityRule_FromProto(mapCtx *direct.MapContext, in *pb.DataQualityRule) *krm.DataQualityRule {
@@ -791,19 +833,83 @@ func DataQualityRule_ToProto(mapCtx *direct.MapContext, in *krm.DataQualityRule)
 	out.Suspended = direct.ValueOf(in.Suspended)
 	return out
 }
+func DataQualityRuleObservedState_FromProto(mapCtx *direct.MapContext, in *pb.DataQualityRule) *krm.DataQualityRuleObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.DataQualityRuleObservedState{}
+	out.RangeExpectation = DataQualityRule_RangeExpectation_FromProto(mapCtx, in.GetRangeExpectation())
+	out.NonNullExpectation = DataQualityRule_NonNullExpectation_FromProto(mapCtx, in.GetNonNullExpectation())
+	out.SetExpectation = DataQualityRule_SetExpectation_FromProto(mapCtx, in.GetSetExpectation())
+	out.RegexExpectation = DataQualityRule_RegexExpectation_FromProto(mapCtx, in.GetRegexExpectation())
+	out.UniquenessExpectation = DataQualityRule_UniquenessExpectation_FromProto(mapCtx, in.GetUniquenessExpectation())
+	out.StatisticRangeExpectation = DataQualityRule_StatisticRangeExpectation_FromProto(mapCtx, in.GetStatisticRangeExpectation())
+	out.RowConditionExpectation = DataQualityRule_RowConditionExpectation_FromProto(mapCtx, in.GetRowConditionExpectation())
+	out.TableConditionExpectation = DataQualityRule_TableConditionExpectation_FromProto(mapCtx, in.GetTableConditionExpectation())
+	out.SQLAssertion = DataQualityRule_SQLAssertion_FromProto(mapCtx, in.GetSqlAssertion())
+	out.Column = direct.LazyPtr(in.GetColumn())
+	out.IgnoreNull = direct.LazyPtr(in.GetIgnoreNull())
+	out.Dimension = direct.LazyPtr(in.GetDimension())
+	out.Threshold = direct.LazyPtr(in.GetThreshold())
+	out.Name = direct.LazyPtr(in.GetName())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.Suspended = direct.LazyPtr(in.GetSuspended())
+	return out
+}
+func DataQualityRuleObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DataQualityRuleObservedState) *pb.DataQualityRule {
+	if in == nil {
+		return nil
+	}
+	out := &pb.DataQualityRule{}
+	if oneof := DataQualityRule_RangeExpectation_ToProto(mapCtx, in.RangeExpectation); oneof != nil {
+		out.RuleType = &pb.DataQualityRule_RangeExpectation_{RangeExpectation: oneof}
+	}
+	if oneof := DataQualityRule_NonNullExpectation_ToProto(mapCtx, in.NonNullExpectation); oneof != nil {
+		out.RuleType = &pb.DataQualityRule_NonNullExpectation_{NonNullExpectation: oneof}
+	}
+	if oneof := DataQualityRule_SetExpectation_ToProto(mapCtx, in.SetExpectation); oneof != nil {
+		out.RuleType = &pb.DataQualityRule_SetExpectation_{SetExpectation: oneof}
+	}
+	if oneof := DataQualityRule_RegexExpectation_ToProto(mapCtx, in.RegexExpectation); oneof != nil {
+		out.RuleType = &pb.DataQualityRule_RegexExpectation_{RegexExpectation: oneof}
+	}
+	if oneof := DataQualityRule_UniquenessExpectation_ToProto(mapCtx, in.UniquenessExpectation); oneof != nil {
+		out.RuleType = &pb.DataQualityRule_UniquenessExpectation_{UniquenessExpectation: oneof}
+	}
+	if oneof := DataQualityRule_StatisticRangeExpectation_ToProto(mapCtx, in.StatisticRangeExpectation); oneof != nil {
+		out.RuleType = &pb.DataQualityRule_StatisticRangeExpectation_{StatisticRangeExpectation: oneof}
+	}
+	if oneof := DataQualityRule_RowConditionExpectation_ToProto(mapCtx, in.RowConditionExpectation); oneof != nil {
+		out.RuleType = &pb.DataQualityRule_RowConditionExpectation_{RowConditionExpectation: oneof}
+	}
+	if oneof := DataQualityRule_TableConditionExpectation_ToProto(mapCtx, in.TableConditionExpectation); oneof != nil {
+		out.RuleType = &pb.DataQualityRule_TableConditionExpectation_{TableConditionExpectation: oneof}
+	}
+	if oneof := DataQualityRule_SQLAssertion_ToProto(mapCtx, in.SQLAssertion); oneof != nil {
+		out.RuleType = &pb.DataQualityRule_SqlAssertion_{SqlAssertion: oneof}
+	}
+	out.Column = direct.ValueOf(in.Column)
+	out.IgnoreNull = direct.ValueOf(in.IgnoreNull)
+	out.Dimension = direct.ValueOf(in.Dimension)
+	out.Threshold = direct.ValueOf(in.Threshold)
+	out.Name = direct.ValueOf(in.Name)
+	out.Description = direct.ValueOf(in.Description)
+	out.Suspended = direct.ValueOf(in.Suspended)
+	return out
+}
 func DataQualityRuleResultObservedState_FromProto(mapCtx *direct.MapContext, in *pb.DataQualityRuleResult) *krm.DataQualityRuleResultObservedState {
 	if in == nil {
 		return nil
 	}
 	out := &krm.DataQualityRuleResultObservedState{}
-	// MISSING: Rule
-	// MISSING: Passed
-	// MISSING: EvaluatedCount
-	// MISSING: PassedCount
-	// MISSING: NullCount
-	// MISSING: PassRatio
-	// MISSING: FailingRowsQuery
-	// MISSING: AssertionRowCount
+	out.Rule = DataQualityRuleObservedState_FromProto(mapCtx, in.GetRule())
+	out.Passed = direct.LazyPtr(in.GetPassed())
+	out.EvaluatedCount = direct.LazyPtr(in.GetEvaluatedCount())
+	out.PassedCount = direct.LazyPtr(in.GetPassedCount())
+	out.NullCount = direct.LazyPtr(in.GetNullCount())
+	out.PassRatio = direct.LazyPtr(in.GetPassRatio())
+	out.FailingRowsQuery = direct.LazyPtr(in.GetFailingRowsQuery())
+	out.AssertionRowCount = direct.LazyPtr(in.GetAssertionRowCount())
 	return out
 }
 func DataQualityRuleResultObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DataQualityRuleResultObservedState) *pb.DataQualityRuleResult {
@@ -811,14 +917,14 @@ func DataQualityRuleResultObservedState_ToProto(mapCtx *direct.MapContext, in *k
 		return nil
 	}
 	out := &pb.DataQualityRuleResult{}
-	// MISSING: Rule
-	// MISSING: Passed
-	// MISSING: EvaluatedCount
-	// MISSING: PassedCount
-	// MISSING: NullCount
-	// MISSING: PassRatio
-	// MISSING: FailingRowsQuery
-	// MISSING: AssertionRowCount
+	out.Rule = DataQualityRuleObservedState_ToProto(mapCtx, in.Rule)
+	out.Passed = direct.ValueOf(in.Passed)
+	out.EvaluatedCount = direct.ValueOf(in.EvaluatedCount)
+	out.PassedCount = direct.ValueOf(in.PassedCount)
+	out.NullCount = direct.ValueOf(in.NullCount)
+	out.PassRatio = direct.ValueOf(in.PassRatio)
+	out.FailingRowsQuery = direct.ValueOf(in.FailingRowsQuery)
+	out.AssertionRowCount = direct.ValueOf(in.AssertionRowCount)
 	return out
 }
 func DataQualityRule_NonNullExpectation_FromProto(mapCtx *direct.MapContext, in *pb.DataQualityRule_NonNullExpectation) *krm.DataQualityRule_NonNullExpectation {
@@ -1020,9 +1126,7 @@ func DataQualitySpec_PostScanActions_BigQueryExport_FromProto(mapCtx *direct.Map
 		return nil
 	}
 	out := &krm.DataQualitySpec_PostScanActions_BigQueryExport{}
-	if in.GetResultsTable() != "" {
-		out.ResultsTableRef = &krm.BigQueryTableRef{External: in.GetResultsTable()}
-	}
+	out.ResultsTable = direct.LazyPtr(in.GetResultsTable())
 	return out
 }
 func DataQualitySpec_PostScanActions_BigQueryExport_ToProto(mapCtx *direct.MapContext, in *krm.DataQualitySpec_PostScanActions_BigQueryExport) *pb.DataQualitySpec_PostScanActions_BigQueryExport {
@@ -1030,9 +1134,7 @@ func DataQualitySpec_PostScanActions_BigQueryExport_ToProto(mapCtx *direct.MapCo
 		return nil
 	}
 	out := &pb.DataQualitySpec_PostScanActions_BigQueryExport{}
-	if in.ResultsTableRef != nil {
-		out.ResultsTable = in.ResultsTableRef.External
-	}
+	out.ResultsTable = direct.ValueOf(in.ResultsTable)
 	return out
 }
 func DataQualitySpec_PostScanActions_JobEndTrigger_FromProto(mapCtx *direct.MapContext, in *pb.DataQualitySpec_PostScanActions_JobEndTrigger) *krm.DataQualitySpec_PostScanActions_JobEndTrigger {
@@ -1163,6 +1265,12 @@ func DataScan_ExecutionStatus_ToProto(mapCtx *direct.MapContext, in *krm.DataSca
 	out.LatestJobCreateTime = direct.StringTimestamp_ToProto(mapCtx, in.LatestJobCreateTime)
 	return out
 }
+func DataSource_Entity_ToProto(mapCtx *direct.MapContext, in *string) *pb.DataSource_Entity {
+	if in == nil {
+		return nil
+	}
+	return &pb.DataSource_Entity{Entity: *in}
+}
 func DataSource_Resource_ToProto(mapCtx *direct.MapContext, in *string) *pb.DataSource_Resource {
 	if in == nil {
 		return nil
@@ -1178,8 +1286,6 @@ func DataplexAspectTypeObservedState_FromProto(mapCtx *direct.MapContext, in *pb
 	out.Uid = direct.LazyPtr(in.GetUid())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Labels
-	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.TransferStatus = direct.Enum_FromProto(mapCtx, in.GetTransferStatus())
 	return out
 }
@@ -1192,8 +1298,6 @@ func DataplexAspectTypeObservedState_ToProto(mapCtx *direct.MapContext, in *krm.
 	out.Uid = direct.ValueOf(in.Uid)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Labels
-	out.Etag = direct.ValueOf(in.Etag)
 	out.TransferStatus = direct.Enum_ToProto[pb.TransferStatus](mapCtx, in.TransferStatus)
 	return out
 }
@@ -1205,7 +1309,8 @@ func DataplexAspectTypeSpec_FromProto(mapCtx *direct.MapContext, in *pb.AspectTy
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: Labels
+	out.Labels = in.Labels
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.Authorization = AspectType_Authorization_FromProto(mapCtx, in.GetAuthorization())
 	out.MetadataTemplate = AspectType_MetadataTemplate_FromProto(mapCtx, in.GetMetadataTemplate())
 	return out
@@ -1218,7 +1323,8 @@ func DataplexAspectTypeSpec_ToProto(mapCtx *direct.MapContext, in *krm.DataplexA
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	// MISSING: Labels
+	out.Labels = in.Labels
+	out.Etag = direct.ValueOf(in.Etag)
 	out.Authorization = AspectType_Authorization_ToProto(mapCtx, in.Authorization)
 	out.MetadataTemplate = AspectType_MetadataTemplate_ToProto(mapCtx, in.MetadataTemplate)
 	return out
@@ -1336,9 +1442,7 @@ func DataplexDataTaxonomyObservedState_FromProto(mapCtx *direct.MapContext, in *
 	out.Uid = direct.LazyPtr(in.GetUid())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Labels
 	out.AttributeCount = direct.LazyPtr(in.GetAttributeCount())
-	// MISSING: Etag
 	out.ClassCount = direct.LazyPtr(in.GetClassCount())
 	return out
 }
@@ -1351,9 +1455,7 @@ func DataplexDataTaxonomyObservedState_ToProto(mapCtx *direct.MapContext, in *kr
 	out.Uid = direct.ValueOf(in.Uid)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Labels
 	out.AttributeCount = direct.ValueOf(in.AttributeCount)
-	// MISSING: Etag
 	out.ClassCount = direct.ValueOf(in.ClassCount)
 	return out
 }
@@ -1365,8 +1467,8 @@ func DataplexDataTaxonomySpec_FromProto(mapCtx *direct.MapContext, in *pb.DataTa
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: Labels
-	// MISSING: Etag
+	out.Labels = in.Labels
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	return out
 }
 func DataplexDataTaxonomySpec_ToProto(mapCtx *direct.MapContext, in *krm.DataplexDataTaxonomySpec) *pb.DataTaxonomy {
@@ -1377,8 +1479,8 @@ func DataplexDataTaxonomySpec_ToProto(mapCtx *direct.MapContext, in *krm.Dataple
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	// MISSING: Labels
-	// MISSING: Etag
+	out.Labels = in.Labels
+	out.Etag = direct.ValueOf(in.Etag)
 	return out
 }
 func DataplexEntryGroupObservedState_FromProto(mapCtx *direct.MapContext, in *pb.EntryGroup) *krm.DataplexEntryGroupObservedState {
@@ -1390,8 +1492,6 @@ func DataplexEntryGroupObservedState_FromProto(mapCtx *direct.MapContext, in *pb
 	out.Uid = direct.LazyPtr(in.GetUid())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Labels
-	// MISSING: Etag
 	out.TransferStatus = direct.Enum_FromProto(mapCtx, in.GetTransferStatus())
 	return out
 }
@@ -1404,8 +1504,6 @@ func DataplexEntryGroupObservedState_ToProto(mapCtx *direct.MapContext, in *krm.
 	out.Uid = direct.ValueOf(in.Uid)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Labels
-	// MISSING: Etag
 	out.TransferStatus = direct.Enum_ToProto[pb.TransferStatus](mapCtx, in.TransferStatus)
 	return out
 }
@@ -1417,8 +1515,8 @@ func DataplexEntryGroupSpec_FromProto(mapCtx *direct.MapContext, in *pb.EntryGro
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: Labels
-	// MISSING: Etag
+	out.Labels = in.Labels
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	return out
 }
 func DataplexEntryGroupSpec_ToProto(mapCtx *direct.MapContext, in *krm.DataplexEntryGroupSpec) *pb.EntryGroup {
@@ -1429,8 +1527,8 @@ func DataplexEntryGroupSpec_ToProto(mapCtx *direct.MapContext, in *krm.DataplexE
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	// MISSING: Labels
-	// MISSING: Etag
+	out.Labels = in.Labels
+	out.Etag = direct.ValueOf(in.Etag)
 	return out
 }
 func DataplexEntryTypeObservedState_FromProto(mapCtx *direct.MapContext, in *pb.EntryType) *krm.DataplexEntryTypeObservedState {
@@ -1442,8 +1540,6 @@ func DataplexEntryTypeObservedState_FromProto(mapCtx *direct.MapContext, in *pb.
 	out.Uid = direct.LazyPtr(in.GetUid())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Labels
-	out.Etag = direct.LazyPtr(in.GetEtag())
 	return out
 }
 func DataplexEntryTypeObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DataplexEntryTypeObservedState) *pb.EntryType {
@@ -1455,8 +1551,6 @@ func DataplexEntryTypeObservedState_ToProto(mapCtx *direct.MapContext, in *krm.D
 	out.Uid = direct.ValueOf(in.Uid)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Labels
-	out.Etag = direct.ValueOf(in.Etag)
 	return out
 }
 func DataplexEntryTypeSpec_FromProto(mapCtx *direct.MapContext, in *pb.EntryType) *krm.DataplexEntryTypeSpec {
@@ -1467,7 +1561,8 @@ func DataplexEntryTypeSpec_FromProto(mapCtx *direct.MapContext, in *pb.EntryType
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: Labels
+	out.Labels = in.Labels
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.TypeAliases = in.TypeAliases
 	out.Platform = direct.LazyPtr(in.GetPlatform())
 	out.System = direct.LazyPtr(in.GetSystem())
@@ -1483,7 +1578,8 @@ func DataplexEntryTypeSpec_ToProto(mapCtx *direct.MapContext, in *krm.DataplexEn
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	// MISSING: Labels
+	out.Labels = in.Labels
+	out.Etag = direct.ValueOf(in.Etag)
 	out.TypeAliases = in.TypeAliases
 	out.Platform = direct.ValueOf(in.Platform)
 	out.System = direct.ValueOf(in.System)
@@ -1500,7 +1596,6 @@ func DataplexLakeObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Lake)
 	out.Uid = direct.LazyPtr(in.GetUid())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Labels
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
 	out.AssetStatus = AssetStatus_FromProto(mapCtx, in.GetAssetStatus())
@@ -1516,7 +1611,6 @@ func DataplexLakeObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Datapl
 	out.Uid = direct.ValueOf(in.Uid)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Labels
 	out.State = direct.Enum_ToProto[pb.State](mapCtx, in.State)
 	out.ServiceAccount = direct.ValueOf(in.ServiceAccount)
 	out.AssetStatus = AssetStatus_ToProto(mapCtx, in.AssetStatus)
@@ -1530,7 +1624,7 @@ func DataplexLakeSpec_FromProto(mapCtx *direct.MapContext, in *pb.Lake) *krm.Dat
 	out := &krm.DataplexLakeSpec{}
 	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.Metastore = Lake_Metastore_FromProto(mapCtx, in.GetMetastore())
 	return out
@@ -1542,7 +1636,7 @@ func DataplexLakeSpec_ToProto(mapCtx *direct.MapContext, in *krm.DataplexLakeSpe
 	out := &pb.Lake{}
 	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.Description = direct.ValueOf(in.Description)
 	out.Metastore = Lake_Metastore_ToProto(mapCtx, in.Metastore)
 	return out
@@ -1556,9 +1650,9 @@ func DataplexMetadataJobObservedState_FromProto(mapCtx *direct.MapContext, in *p
 	out.Uid = direct.LazyPtr(in.GetUid())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.ImportResult = MetadataJobImportJobResultObservedState_FromProto(mapCtx, in.GetImportResult())
-	out.ExportResult = MetadataJobExportJobResultObservedState_FromProto(mapCtx, in.GetExportResult())
-	out.Status = MetadataJobStatusObservedState_FromProto(mapCtx, in.GetStatus())
+	out.ImportResult = MetadataJob_ImportJobResultObservedState_FromProto(mapCtx, in.GetImportResult())
+	out.ExportResult = MetadataJob_ExportJobResultObservedState_FromProto(mapCtx, in.GetExportResult())
+	out.Status = MetadataJob_StatusObservedState_FromProto(mapCtx, in.GetStatus())
 	return out
 }
 func DataplexMetadataJobObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DataplexMetadataJobObservedState) *pb.MetadataJob {
@@ -1570,13 +1664,13 @@ func DataplexMetadataJobObservedState_ToProto(mapCtx *direct.MapContext, in *krm
 	out.Uid = direct.ValueOf(in.Uid)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	if oneof := MetadataJobImportJobResultObservedState_ToProto(mapCtx, in.ImportResult); oneof != nil {
+	if oneof := MetadataJob_ImportJobResultObservedState_ToProto(mapCtx, in.ImportResult); oneof != nil {
 		out.Result = &pb.MetadataJob_ImportResult{ImportResult: oneof}
 	}
-	if oneof := MetadataJobExportJobResultObservedState_ToProto(mapCtx, in.ExportResult); oneof != nil {
+	if oneof := MetadataJob_ExportJobResultObservedState_ToProto(mapCtx, in.ExportResult); oneof != nil {
 		out.Result = &pb.MetadataJob_ExportResult{ExportResult: oneof}
 	}
-	out.Status = MetadataJobStatusObservedState_ToProto(mapCtx, in.Status)
+	out.Status = MetadataJob_StatusObservedState_ToProto(mapCtx, in.Status)
 	return out
 }
 func DataplexMetadataJobSpec_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob) *krm.DataplexMetadataJobSpec {
@@ -1587,8 +1681,8 @@ func DataplexMetadataJobSpec_FromProto(mapCtx *direct.MapContext, in *pb.Metadat
 	// MISSING: Name
 	out.Labels = in.Labels
 	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
-	out.ImportSpec = MetadataJobImportJobSpec_FromProto(mapCtx, in.GetImportSpec())
-	out.ExportSpec = MetadataJobExportJobSpec_FromProto(mapCtx, in.GetExportSpec())
+	out.ImportSpec = MetadataJob_ImportJobSpec_FromProto(mapCtx, in.GetImportSpec())
+	out.ExportSpec = MetadataJob_ExportJobSpec_FromProto(mapCtx, in.GetExportSpec())
 	return out
 }
 func DataplexMetadataJobSpec_ToProto(mapCtx *direct.MapContext, in *krm.DataplexMetadataJobSpec) *pb.MetadataJob {
@@ -1599,10 +1693,10 @@ func DataplexMetadataJobSpec_ToProto(mapCtx *direct.MapContext, in *krm.Dataplex
 	// MISSING: Name
 	out.Labels = in.Labels
 	out.Type = direct.Enum_ToProto[pb.MetadataJob_Type](mapCtx, in.Type)
-	if oneof := MetadataJobImportJobSpec_ToProto(mapCtx, in.ImportSpec); oneof != nil {
+	if oneof := MetadataJob_ImportJobSpec_ToProto(mapCtx, in.ImportSpec); oneof != nil {
 		out.Spec = &pb.MetadataJob_ImportSpec{ImportSpec: oneof}
 	}
-	if oneof := MetadataJobExportJobSpec_ToProto(mapCtx, in.ExportSpec); oneof != nil {
+	if oneof := MetadataJob_ExportJobSpec_ToProto(mapCtx, in.ExportSpec); oneof != nil {
 		out.Spec = &pb.MetadataJob_ExportSpec{ExportSpec: oneof}
 	}
 	return out
@@ -1613,16 +1707,11 @@ func DataplexTaskSpec_FromProto(mapCtx *direct.MapContext, in *pb.Task) *krm.Dat
 	}
 	out := &krm.DataplexTaskSpec{}
 	// MISSING: Name
-	// MISSING: Uid
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: State
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.TriggerSpec = Task_TriggerSpec_FromProto(mapCtx, in.GetTriggerSpec())
 	out.ExecutionSpec = Task_ExecutionSpec_FromProto(mapCtx, in.GetExecutionSpec())
-	// MISSING: ExecutionStatus
 	out.Spark = Task_SparkTaskConfig_FromProto(mapCtx, in.GetSpark())
 	out.Notebook = Task_NotebookTaskConfig_FromProto(mapCtx, in.GetNotebook())
 	return out
@@ -1633,16 +1722,11 @@ func DataplexTaskSpec_ToProto(mapCtx *direct.MapContext, in *krm.DataplexTaskSpe
 	}
 	out := &pb.Task{}
 	// MISSING: Name
-	// MISSING: Uid
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
 	out.Description = direct.ValueOf(in.Description)
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	// MISSING: State
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.TriggerSpec = Task_TriggerSpec_ToProto(mapCtx, in.TriggerSpec)
 	out.ExecutionSpec = Task_ExecutionSpec_ToProto(mapCtx, in.ExecutionSpec)
-	// MISSING: ExecutionStatus
 	if oneof := Task_SparkTaskConfig_ToProto(mapCtx, in.Spark); oneof != nil {
 		out.Config = &pb.Task_Spark{Spark: oneof}
 	}
@@ -1660,7 +1744,6 @@ func DataplexZoneObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Zone)
 	out.Uid = direct.LazyPtr(in.GetUid())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Labels
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.AssetStatus = AssetStatus_FromProto(mapCtx, in.GetAssetStatus())
 	return out
@@ -1674,7 +1757,6 @@ func DataplexZoneObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Datapl
 	out.Uid = direct.ValueOf(in.Uid)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Labels
 	out.State = direct.Enum_ToProto[pb.State](mapCtx, in.State)
 	out.AssetStatus = AssetStatus_ToProto(mapCtx, in.AssetStatus)
 	return out
@@ -1686,7 +1768,7 @@ func DataplexZoneSpec_FromProto(mapCtx *direct.MapContext, in *pb.Zone) *krm.Dat
 	out := &krm.DataplexZoneSpec{}
 	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
 	out.DiscoverySpec = Zone_DiscoverySpec_FromProto(mapCtx, in.GetDiscoverySpec())
@@ -1700,7 +1782,7 @@ func DataplexZoneSpec_ToProto(mapCtx *direct.MapContext, in *krm.DataplexZoneSpe
 	out := &pb.Zone{}
 	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.Description = direct.ValueOf(in.Description)
 	out.Type = direct.Enum_ToProto[pb.Zone_Type](mapCtx, in.Type)
 	out.DiscoverySpec = Zone_DiscoverySpec_ToProto(mapCtx, in.DiscoverySpec)
@@ -1712,9 +1794,7 @@ func EntryType_AspectInfo_FromProto(mapCtx *direct.MapContext, in *pb.EntryType_
 		return nil
 	}
 	out := &krm.EntryType_AspectInfo{}
-	if in.GetType() != "" {
-		out.TypeRef = &krm.AspectTypeRef{External: in.GetType()}
-	}
+	out.Type = direct.LazyPtr(in.GetType())
 	return out
 }
 func EntryType_AspectInfo_ToProto(mapCtx *direct.MapContext, in *krm.EntryType_AspectInfo) *pb.EntryType_AspectInfo {
@@ -1722,9 +1802,7 @@ func EntryType_AspectInfo_ToProto(mapCtx *direct.MapContext, in *krm.EntryType_A
 		return nil
 	}
 	out := &pb.EntryType_AspectInfo{}
-	if in.TypeRef != nil {
-		out.Type = in.TypeRef.External
-	}
+	out.Type = direct.ValueOf(in.Type)
 	return out
 }
 func EntryType_Authorization_FromProto(mapCtx *direct.MapContext, in *pb.EntryType_Authorization) *krm.EntryType_Authorization {
@@ -1786,9 +1864,7 @@ func Lake_Metastore_FromProto(mapCtx *direct.MapContext, in *pb.Lake_Metastore) 
 		return nil
 	}
 	out := &krm.Lake_Metastore{}
-	if in.GetService() != "" {
-		out.ServiceRef = &krmdataprocv1alpha1.ServiceRef{External: in.GetService()}
-	}
+	out.Service = direct.LazyPtr(in.GetService())
 	return out
 }
 func Lake_Metastore_ToProto(mapCtx *direct.MapContext, in *krm.Lake_Metastore) *pb.Lake_Metastore {
@@ -1796,9 +1872,7 @@ func Lake_Metastore_ToProto(mapCtx *direct.MapContext, in *krm.Lake_Metastore) *
 		return nil
 	}
 	out := &pb.Lake_Metastore{}
-	if in.ServiceRef != nil {
-		out.Service = in.ServiceRef.External
-	}
+	out.Service = direct.ValueOf(in.Service)
 	return out
 }
 func Lake_MetastoreStatus_FromProto(mapCtx *direct.MapContext, in *pb.Lake_MetastoreStatus) *krm.Lake_MetastoreStatus {
@@ -1823,16 +1897,16 @@ func Lake_MetastoreStatus_ToProto(mapCtx *direct.MapContext, in *krm.Lake_Metast
 	out.Endpoint = direct.ValueOf(in.Endpoint)
 	return out
 }
-func MetadataJobExportJobResultObservedState_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_ExportJobResult) *krm.MetadataJobExportJobResultObservedState {
+func MetadataJob_ExportJobResultObservedState_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_ExportJobResult) *krm.MetadataJob_ExportJobResultObservedState {
 	if in == nil {
 		return nil
 	}
-	out := &krm.MetadataJobExportJobResultObservedState{}
+	out := &krm.MetadataJob_ExportJobResultObservedState{}
 	out.ExportedEntries = direct.LazyPtr(in.GetExportedEntries())
 	out.ErrorMessage = direct.LazyPtr(in.GetErrorMessage())
 	return out
 }
-func MetadataJobExportJobResultObservedState_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJobExportJobResultObservedState) *pb.MetadataJob_ExportJobResult {
+func MetadataJob_ExportJobResultObservedState_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJob_ExportJobResultObservedState) *pb.MetadataJob_ExportJobResult {
 	if in == nil {
 		return nil
 	}
@@ -1841,95 +1915,53 @@ func MetadataJobExportJobResultObservedState_ToProto(mapCtx *direct.MapContext, 
 	out.ErrorMessage = direct.ValueOf(in.ErrorMessage)
 	return out
 }
-func MetadataJobExportJobSpec_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_ExportJobSpec) *krm.MetadataJobExportJobSpec {
+func MetadataJob_ExportJobSpec_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_ExportJobSpec) *krm.MetadataJob_ExportJobSpec {
 	if in == nil {
 		return nil
 	}
-	out := &krm.MetadataJobExportJobSpec{}
-	out.Scope = MetadataJobExportJobSpecScope_FromProto(mapCtx, in.GetScope())
+	out := &krm.MetadataJob_ExportJobSpec{}
+	out.Scope = MetadataJob_ExportJobSpec_ExportJobScope_FromProto(mapCtx, in.GetScope())
 	out.OutputPath = direct.LazyPtr(in.GetOutputPath())
 	return out
 }
-func MetadataJobExportJobSpec_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJobExportJobSpec) *pb.MetadataJob_ExportJobSpec {
+func MetadataJob_ExportJobSpec_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJob_ExportJobSpec) *pb.MetadataJob_ExportJobSpec {
 	if in == nil {
 		return nil
 	}
 	out := &pb.MetadataJob_ExportJobSpec{}
-	out.Scope = MetadataJobExportJobSpecScope_ToProto(mapCtx, in.Scope)
+	out.Scope = MetadataJob_ExportJobSpec_ExportJobScope_ToProto(mapCtx, in.Scope)
 	out.OutputPath = direct.ValueOf(in.OutputPath)
 	return out
 }
-func MetadataJobExportJobSpecScope_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_ExportJobSpec_ExportJobScope) *krm.MetadataJobExportJobSpecScope {
+func MetadataJob_ExportJobSpec_ExportJobScope_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_ExportJobSpec_ExportJobScope) *krm.MetadataJob_ExportJobSpec_ExportJobScope {
 	if in == nil {
 		return nil
 	}
-	out := &krm.MetadataJobExportJobSpecScope{}
+	out := &krm.MetadataJob_ExportJobSpec_ExportJobScope{}
 	out.OrganizationLevel = direct.LazyPtr(in.GetOrganizationLevel())
-
-	if v := in.GetProjects(); len(v) != 0 {
-		for i := range v {
-			out.ProjectRefs = append(out.ProjectRefs, refsv1beta1.ProjectRef{External: v[i]})
-		}
-	}
-
-	if v := in.GetEntryGroups(); len(v) != 0 {
-		for i := range v {
-			out.EntryGroupRefs = append(out.EntryGroupRefs, krm.EntryGroupRef{External: v[i]})
-		}
-	}
-
-	if v := in.GetEntryTypes(); len(v) != 0 {
-		for i := range v {
-			out.EntryTypeRefs = append(out.EntryTypeRefs, krm.EntryTypeRef{External: v[i]})
-		}
-	}
-
-	if v := in.GetAspectTypes(); len(v) != 0 {
-		for i := range v {
-			out.AspectTypeRefs = append(out.AspectTypeRefs, krm.AspectTypeRef{External: v[i]})
-		}
-	}
-
+	out.Projects = in.Projects
+	out.EntryGroups = in.EntryGroups
+	out.EntryTypes = in.EntryTypes
+	out.AspectTypes = in.AspectTypes
 	return out
 }
-func MetadataJobExportJobSpecScope_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJobExportJobSpecScope) *pb.MetadataJob_ExportJobSpec_ExportJobScope {
+func MetadataJob_ExportJobSpec_ExportJobScope_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJob_ExportJobSpec_ExportJobScope) *pb.MetadataJob_ExportJobSpec_ExportJobScope {
 	if in == nil {
 		return nil
 	}
 	out := &pb.MetadataJob_ExportJobSpec_ExportJobScope{}
 	out.OrganizationLevel = direct.ValueOf(in.OrganizationLevel)
-
-	if v := in.ProjectRefs; len(v) != 0 {
-		for i := range v {
-			out.Projects = append(out.Projects, v[i].External)
-		}
-	}
-
-	if v := in.EntryGroupRefs; len(v) != 0 {
-		for i := range v {
-			out.EntryGroups = append(out.EntryGroups, v[i].External)
-		}
-	}
-
-	if v := in.EntryTypeRefs; len(v) != 0 {
-		for i := range v {
-			out.EntryTypes = append(out.EntryTypes, v[i].External)
-		}
-	}
-
-	if v := in.AspectTypeRefs; len(v) != 0 {
-		for i := range v {
-			out.AspectTypes = append(out.AspectTypes, v[i].External)
-		}
-	}
-
+	out.Projects = in.Projects
+	out.EntryGroups = in.EntryGroups
+	out.EntryTypes = in.EntryTypes
+	out.AspectTypes = in.AspectTypes
 	return out
 }
-func MetadataJobImportJobResultObservedState_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_ImportJobResult) *krm.MetadataJobImportJobResultObservedState {
+func MetadataJob_ImportJobResultObservedState_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_ImportJobResult) *krm.MetadataJob_ImportJobResultObservedState {
 	if in == nil {
 		return nil
 	}
-	out := &krm.MetadataJobImportJobResultObservedState{}
+	out := &krm.MetadataJob_ImportJobResultObservedState{}
 	out.DeletedEntries = direct.LazyPtr(in.GetDeletedEntries())
 	out.UpdatedEntries = direct.LazyPtr(in.GetUpdatedEntries())
 	out.CreatedEntries = direct.LazyPtr(in.GetCreatedEntries())
@@ -1938,7 +1970,7 @@ func MetadataJobImportJobResultObservedState_FromProto(mapCtx *direct.MapContext
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	return out
 }
-func MetadataJobImportJobResultObservedState_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJobImportJobResultObservedState) *pb.MetadataJob_ImportJobResult {
+func MetadataJob_ImportJobResultObservedState_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJob_ImportJobResultObservedState) *pb.MetadataJob_ImportJobResult {
 	if in == nil {
 		return nil
 	}
@@ -1951,96 +1983,64 @@ func MetadataJobImportJobResultObservedState_ToProto(mapCtx *direct.MapContext, 
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	return out
 }
-func MetadataJobImportJobSpec_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_ImportJobSpec) *krm.MetadataJobImportJobSpec {
+func MetadataJob_ImportJobSpec_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_ImportJobSpec) *krm.MetadataJob_ImportJobSpec {
 	if in == nil {
 		return nil
 	}
-	out := &krm.MetadataJobImportJobSpec{}
+	out := &krm.MetadataJob_ImportJobSpec{}
 	out.SourceStorageURI = direct.LazyPtr(in.GetSourceStorageUri())
 	out.SourceCreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetSourceCreateTime())
-	out.Scope = MetadataJobImportJobSpecScope_FromProto(mapCtx, in.GetScope())
+	out.Scope = MetadataJob_ImportJobSpec_ImportJobScope_FromProto(mapCtx, in.GetScope())
 	out.EntrySyncMode = direct.Enum_FromProto(mapCtx, in.GetEntrySyncMode())
 	out.AspectSyncMode = direct.Enum_FromProto(mapCtx, in.GetAspectSyncMode())
 	out.LogLevel = direct.Enum_FromProto(mapCtx, in.GetLogLevel())
 	return out
 }
-func MetadataJobImportJobSpec_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJobImportJobSpec) *pb.MetadataJob_ImportJobSpec {
+func MetadataJob_ImportJobSpec_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJob_ImportJobSpec) *pb.MetadataJob_ImportJobSpec {
 	if in == nil {
 		return nil
 	}
 	out := &pb.MetadataJob_ImportJobSpec{}
 	out.SourceStorageUri = direct.ValueOf(in.SourceStorageURI)
 	out.SourceCreateTime = direct.StringTimestamp_ToProto(mapCtx, in.SourceCreateTime)
-	out.Scope = MetadataJobImportJobSpecScope_ToProto(mapCtx, in.Scope)
+	out.Scope = MetadataJob_ImportJobSpec_ImportJobScope_ToProto(mapCtx, in.Scope)
 	out.EntrySyncMode = direct.Enum_ToProto[pb.MetadataJob_ImportJobSpec_SyncMode](mapCtx, in.EntrySyncMode)
 	out.AspectSyncMode = direct.Enum_ToProto[pb.MetadataJob_ImportJobSpec_SyncMode](mapCtx, in.AspectSyncMode)
 	out.LogLevel = direct.Enum_ToProto[pb.MetadataJob_ImportJobSpec_LogLevel](mapCtx, in.LogLevel)
 	return out
 }
-func MetadataJobImportJobSpecScope_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_ImportJobSpec_ImportJobScope) *krm.MetadataJobImportJobSpecScope {
+func MetadataJob_ImportJobSpec_ImportJobScope_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_ImportJobSpec_ImportJobScope) *krm.MetadataJob_ImportJobSpec_ImportJobScope {
 	if in == nil {
 		return nil
 	}
-	out := &krm.MetadataJobImportJobSpecScope{}
-
-	if v := in.GetEntryGroups(); len(v) != 0 {
-		for i := range v {
-			out.EntryGroupRefs = append(out.EntryGroupRefs, krm.EntryGroupRef{External: v[i]})
-		}
-	}
-
-	if v := in.GetEntryTypes(); len(v) != 0 {
-		for i := range v {
-			out.EntryTypeRefs = append(out.EntryTypeRefs, krm.EntryTypeRef{External: v[i]})
-		}
-	}
-
-	if v := in.GetAspectTypes(); len(v) != 0 {
-		for i := range v {
-			out.AspectTypeRefs = append(out.AspectTypeRefs, krm.AspectTypeRef{External: v[i]})
-		}
-	}
-
+	out := &krm.MetadataJob_ImportJobSpec_ImportJobScope{}
+	out.EntryGroups = in.EntryGroups
+	out.EntryTypes = in.EntryTypes
+	out.AspectTypes = in.AspectTypes
 	return out
 }
-func MetadataJobImportJobSpecScope_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJobImportJobSpecScope) *pb.MetadataJob_ImportJobSpec_ImportJobScope {
+func MetadataJob_ImportJobSpec_ImportJobScope_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJob_ImportJobSpec_ImportJobScope) *pb.MetadataJob_ImportJobSpec_ImportJobScope {
 	if in == nil {
 		return nil
 	}
 	out := &pb.MetadataJob_ImportJobSpec_ImportJobScope{}
-
-	if v := in.EntryGroupRefs; len(v) != 0 {
-		for i := range v {
-			out.EntryGroups = append(out.EntryGroups, v[i].External)
-		}
-	}
-
-	if v := in.EntryTypeRefs; len(v) != 0 {
-		for i := range v {
-			out.EntryTypes = append(out.EntryTypes, v[i].External)
-		}
-	}
-
-	if v := in.AspectTypeRefs; len(v) != 0 {
-		for i := range v {
-			out.AspectTypes = append(out.AspectTypes, v[i].External)
-		}
-	}
-
+	out.EntryGroups = in.EntryGroups
+	out.EntryTypes = in.EntryTypes
+	out.AspectTypes = in.AspectTypes
 	return out
 }
-func MetadataJobStatusObservedState_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_Status) *krm.MetadataJobStatusObservedState {
+func MetadataJob_StatusObservedState_FromProto(mapCtx *direct.MapContext, in *pb.MetadataJob_Status) *krm.MetadataJob_StatusObservedState {
 	if in == nil {
 		return nil
 	}
-	out := &krm.MetadataJobStatusObservedState{}
+	out := &krm.MetadataJob_StatusObservedState{}
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.Message = direct.LazyPtr(in.GetMessage())
 	out.CompletionPercent = direct.LazyPtr(in.GetCompletionPercent())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	return out
 }
-func MetadataJobStatusObservedState_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJobStatusObservedState) *pb.MetadataJob_Status {
+func MetadataJob_StatusObservedState_ToProto(mapCtx *direct.MapContext, in *krm.MetadataJob_StatusObservedState) *pb.MetadataJob_Status {
 	if in == nil {
 		return nil
 	}
@@ -2095,16 +2095,10 @@ func Task_ExecutionSpec_FromProto(mapCtx *direct.MapContext, in *pb.Task_Executi
 	}
 	out := &krm.Task_ExecutionSpec{}
 	out.Args = in.Args
-	if in.GetServiceAccount() != "" {
-		out.ServiceAccountRef = &refsv1beta1.IAMServiceAccountRef{External: in.GetServiceAccount()}
-	}
-	if in.GetProject() != "" {
-		out.ProjectRef = &refsv1beta1.ProjectRef{External: in.GetProject()}
-	}
+	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
+	out.Project = direct.LazyPtr(in.GetProject())
 	out.MaxJobExecutionLifetime = direct.StringDuration_FromProto(mapCtx, in.GetMaxJobExecutionLifetime())
-	if in.GetKmsKey() != "" {
-		out.KMSKeyRef = &refsv1beta1.KMSCryptoKeyRef{External: in.GetKmsKey()}
-	}
+	out.KMSKey = direct.LazyPtr(in.GetKmsKey())
 	return out
 }
 func Task_ExecutionSpec_ToProto(mapCtx *direct.MapContext, in *krm.Task_ExecutionSpec) *pb.Task_ExecutionSpec {
@@ -2113,16 +2107,10 @@ func Task_ExecutionSpec_ToProto(mapCtx *direct.MapContext, in *krm.Task_Executio
 	}
 	out := &pb.Task_ExecutionSpec{}
 	out.Args = in.Args
-	if in.ServiceAccountRef != nil {
-		out.ServiceAccount = in.ServiceAccountRef.External
-	}
-	if in.ProjectRef != nil {
-		out.Project = in.ProjectRef.External
-	}
+	out.ServiceAccount = direct.ValueOf(in.ServiceAccount)
+	out.Project = direct.ValueOf(in.Project)
 	out.MaxJobExecutionLifetime = direct.StringDuration_ToProto(mapCtx, in.MaxJobExecutionLifetime)
-	if in.KMSKeyRef != nil {
-		out.KmsKey = in.KMSKeyRef.External
-	}
+	out.KmsKey = direct.ValueOf(in.KMSKey)
 	return out
 }
 func Task_ExecutionSpecObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Task_ExecutionSpec) *krm.Task_ExecutionSpecObservedState {
@@ -2276,8 +2264,8 @@ func Task_NotebookTaskConfig_FromProto(mapCtx *direct.MapContext, in *pb.Task_No
 	out := &krm.Task_NotebookTaskConfig{}
 	out.Notebook = direct.LazyPtr(in.GetNotebook())
 	out.InfrastructureSpec = Task_InfrastructureSpec_FromProto(mapCtx, in.GetInfrastructureSpec())
-	out.FileUris = in.FileUris
-	out.ArchiveUris = in.ArchiveUris
+	out.FileURIs = in.FileUris
+	out.ArchiveURIs = in.ArchiveUris
 	return out
 }
 func Task_NotebookTaskConfig_ToProto(mapCtx *direct.MapContext, in *krm.Task_NotebookTaskConfig) *pb.Task_NotebookTaskConfig {
@@ -2287,8 +2275,8 @@ func Task_NotebookTaskConfig_ToProto(mapCtx *direct.MapContext, in *krm.Task_Not
 	out := &pb.Task_NotebookTaskConfig{}
 	out.Notebook = direct.ValueOf(in.Notebook)
 	out.InfrastructureSpec = Task_InfrastructureSpec_ToProto(mapCtx, in.InfrastructureSpec)
-	out.FileUris = in.FileUris
-	out.ArchiveUris = in.ArchiveUris
+	out.FileUris = in.FileURIs
+	out.ArchiveUris = in.ArchiveURIs
 	return out
 }
 func Task_SparkTaskConfig_FromProto(mapCtx *direct.MapContext, in *pb.Task_SparkTaskConfig) *krm.Task_SparkTaskConfig {
@@ -2301,8 +2289,8 @@ func Task_SparkTaskConfig_FromProto(mapCtx *direct.MapContext, in *pb.Task_Spark
 	out.PythonScriptFile = direct.LazyPtr(in.GetPythonScriptFile())
 	out.SQLScriptFile = direct.LazyPtr(in.GetSqlScriptFile())
 	out.SQLScript = direct.LazyPtr(in.GetSqlScript())
-	out.FileUris = in.FileUris
-	out.ArchiveUris = in.ArchiveUris
+	out.FileURIs = in.FileUris
+	out.ArchiveURIs = in.ArchiveUris
 	out.InfrastructureSpec = Task_InfrastructureSpec_FromProto(mapCtx, in.GetInfrastructureSpec())
 	return out
 }
@@ -2326,8 +2314,8 @@ func Task_SparkTaskConfig_ToProto(mapCtx *direct.MapContext, in *krm.Task_SparkT
 	if oneof := Task_SparkTaskConfig_SqlScript_ToProto(mapCtx, in.SQLScript); oneof != nil {
 		out.Driver = oneof
 	}
-	out.FileUris = in.FileUris
-	out.ArchiveUris = in.ArchiveUris
+	out.FileUris = in.FileURIs
+	out.ArchiveUris = in.ArchiveURIs
 	out.InfrastructureSpec = Task_InfrastructureSpec_ToProto(mapCtx, in.InfrastructureSpec)
 	return out
 }

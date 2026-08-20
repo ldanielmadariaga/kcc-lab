@@ -303,12 +303,13 @@ func CCInsightsConversationObservedState_FromProto(mapCtx *direct.MapContext, in
 	}
 	out := &krm.CCInsightsConversationObservedState{}
 	// MISSING: Name
+	out.DataSource = ConversationDataSourceObservedState_FromProto(mapCtx, in.GetDataSource())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.Transcript = Conversation_Transcript_FromProto(mapCtx, in.GetTranscript())
 	out.Duration = direct.StringDuration_FromProto(mapCtx, in.GetDuration())
 	out.TurnCount = direct.LazyPtr(in.GetTurnCount())
-	out.LatestAnalysis = Analysis_FromProto(mapCtx, in.GetLatestAnalysis())
+	out.LatestAnalysis = AnalysisObservedState_FromProto(mapCtx, in.GetLatestAnalysis())
 	out.LatestSummary = ConversationSummarizationSuggestionData_FromProto(mapCtx, in.GetLatestSummary())
 	out.RuntimeAnnotations = direct.Slice_FromProto(mapCtx, in.RuntimeAnnotations, RuntimeAnnotation_FromProto)
 	// MISSING: DialogflowIntents
@@ -320,12 +321,13 @@ func CCInsightsConversationObservedState_ToProto(mapCtx *direct.MapContext, in *
 	}
 	out := &pb.Conversation{}
 	// MISSING: Name
+	out.DataSource = ConversationDataSourceObservedState_ToProto(mapCtx, in.DataSource)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.Transcript = Conversation_Transcript_ToProto(mapCtx, in.Transcript)
 	out.Duration = direct.StringDuration_ToProto(mapCtx, in.Duration)
 	out.TurnCount = direct.ValueOf(in.TurnCount)
-	out.LatestAnalysis = Analysis_ToProto(mapCtx, in.LatestAnalysis)
+	out.LatestAnalysis = AnalysisObservedState_ToProto(mapCtx, in.LatestAnalysis)
 	out.LatestSummary = ConversationSummarizationSuggestionData_ToProto(mapCtx, in.LatestSummary)
 	out.RuntimeAnnotations = direct.Slice_ToProto(mapCtx, in.RuntimeAnnotations, RuntimeAnnotation_ToProto)
 	// MISSING: DialogflowIntents
@@ -615,6 +617,70 @@ func CallAnnotation_ToProto(mapCtx *direct.MapContext, in *krm.CallAnnotation) *
 	out.AnnotationEndBoundary = AnnotationBoundary_ToProto(mapCtx, in.AnnotationEndBoundary)
 	return out
 }
+func Conversation_FromProto(mapCtx *direct.MapContext, in *pb.Conversation) *krm.Conversation {
+	if in == nil {
+		return nil
+	}
+	out := &krm.Conversation{}
+	out.CallMetadata = Conversation_CallMetadata_FromProto(mapCtx, in.GetCallMetadata())
+	out.ExpireTime = direct.StringTimestamp_FromProto(mapCtx, in.GetExpireTime())
+	out.TTL = direct.StringDuration_FromProto(mapCtx, in.GetTtl())
+	out.Name = direct.LazyPtr(in.GetName())
+	out.DataSource = ConversationDataSource_FromProto(mapCtx, in.GetDataSource())
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	out.StartTime = direct.StringTimestamp_FromProto(mapCtx, in.GetStartTime())
+	out.LanguageCode = direct.LazyPtr(in.GetLanguageCode())
+	out.AgentID = direct.LazyPtr(in.GetAgentId())
+	out.Labels = in.Labels
+	out.QualityMetadata = Conversation_QualityMetadata_FromProto(mapCtx, in.GetQualityMetadata())
+	out.MetadataJson = direct.LazyPtr(in.GetMetadataJson())
+	// MISSING: Transcript
+	out.Medium = direct.Enum_FromProto(mapCtx, in.GetMedium())
+	// MISSING: Duration
+	// MISSING: TurnCount
+	// MISSING: LatestAnalysis
+	// MISSING: LatestSummary
+	// MISSING: RuntimeAnnotations
+	// MISSING: DialogflowIntents
+	out.ObfuscatedUserID = direct.LazyPtr(in.GetObfuscatedUserId())
+	return out
+}
+func Conversation_ToProto(mapCtx *direct.MapContext, in *krm.Conversation) *pb.Conversation {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Conversation{}
+	if oneof := Conversation_CallMetadata_ToProto(mapCtx, in.CallMetadata); oneof != nil {
+		out.Metadata = &pb.Conversation_CallMetadata_{CallMetadata: oneof}
+	}
+	if oneof := direct.StringTimestamp_ToProto(mapCtx, in.ExpireTime); oneof != nil {
+		out.Expiration = &pb.Conversation_ExpireTime{ExpireTime: oneof}
+	}
+	if oneof := direct.StringDuration_ToProto(mapCtx, in.TTL); oneof != nil {
+		out.Expiration = &pb.Conversation_Ttl{Ttl: oneof}
+	}
+	out.Name = direct.ValueOf(in.Name)
+	out.DataSource = ConversationDataSource_ToProto(mapCtx, in.DataSource)
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	out.StartTime = direct.StringTimestamp_ToProto(mapCtx, in.StartTime)
+	out.LanguageCode = direct.ValueOf(in.LanguageCode)
+	out.AgentId = direct.ValueOf(in.AgentID)
+	out.Labels = in.Labels
+	out.QualityMetadata = Conversation_QualityMetadata_ToProto(mapCtx, in.QualityMetadata)
+	out.MetadataJson = direct.ValueOf(in.MetadataJson)
+	// MISSING: Transcript
+	out.Medium = direct.Enum_ToProto[pb.Conversation_Medium](mapCtx, in.Medium)
+	// MISSING: Duration
+	// MISSING: TurnCount
+	// MISSING: LatestAnalysis
+	// MISSING: LatestSummary
+	// MISSING: RuntimeAnnotations
+	// MISSING: DialogflowIntents
+	out.ObfuscatedUserId = direct.ValueOf(in.ObfuscatedUserID)
+	return out
+}
 func ConversationDataSource_FromProto(mapCtx *direct.MapContext, in *pb.ConversationDataSource) *krm.ConversationDataSource {
 	if in == nil {
 		return nil
@@ -691,6 +757,64 @@ func ConversationLevelSilence_ToProto(mapCtx *direct.MapContext, in *krm.Convers
 	out := &pb.ConversationLevelSilence{}
 	out.SilenceDuration = direct.StringDuration_ToProto(mapCtx, in.SilenceDuration)
 	out.SilencePercentage = direct.ValueOf(in.SilencePercentage)
+	return out
+}
+func ConversationObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Conversation) *krm.ConversationObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ConversationObservedState{}
+	// MISSING: CallMetadata
+	// MISSING: ExpireTime
+	// MISSING: TTL
+	// MISSING: Name
+	out.DataSource = ConversationDataSourceObservedState_FromProto(mapCtx, in.GetDataSource())
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	// MISSING: StartTime
+	// MISSING: LanguageCode
+	// MISSING: AgentID
+	// MISSING: Labels
+	// MISSING: QualityMetadata
+	// MISSING: MetadataJson
+	out.Transcript = Conversation_Transcript_FromProto(mapCtx, in.GetTranscript())
+	// MISSING: Medium
+	out.Duration = direct.StringDuration_FromProto(mapCtx, in.GetDuration())
+	out.TurnCount = direct.LazyPtr(in.GetTurnCount())
+	out.LatestAnalysis = AnalysisObservedState_FromProto(mapCtx, in.GetLatestAnalysis())
+	out.LatestSummary = ConversationSummarizationSuggestionData_FromProto(mapCtx, in.GetLatestSummary())
+	out.RuntimeAnnotations = direct.Slice_FromProto(mapCtx, in.RuntimeAnnotations, RuntimeAnnotation_FromProto)
+	// MISSING: DialogflowIntents
+	// MISSING: ObfuscatedUserID
+	return out
+}
+func ConversationObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ConversationObservedState) *pb.Conversation {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Conversation{}
+	// MISSING: CallMetadata
+	// MISSING: ExpireTime
+	// MISSING: TTL
+	// MISSING: Name
+	out.DataSource = ConversationDataSourceObservedState_ToProto(mapCtx, in.DataSource)
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	// MISSING: StartTime
+	// MISSING: LanguageCode
+	// MISSING: AgentID
+	// MISSING: Labels
+	// MISSING: QualityMetadata
+	// MISSING: MetadataJson
+	out.Transcript = Conversation_Transcript_ToProto(mapCtx, in.Transcript)
+	// MISSING: Medium
+	out.Duration = direct.StringDuration_ToProto(mapCtx, in.Duration)
+	out.TurnCount = direct.ValueOf(in.TurnCount)
+	out.LatestAnalysis = AnalysisObservedState_ToProto(mapCtx, in.LatestAnalysis)
+	out.LatestSummary = ConversationSummarizationSuggestionData_ToProto(mapCtx, in.LatestSummary)
+	out.RuntimeAnnotations = direct.Slice_ToProto(mapCtx, in.RuntimeAnnotations, RuntimeAnnotation_ToProto)
+	// MISSING: DialogflowIntents
+	// MISSING: ObfuscatedUserID
 	return out
 }
 func ConversationParticipant_FromProto(mapCtx *direct.MapContext, in *pb.ConversationParticipant) *krm.ConversationParticipant {
@@ -1101,6 +1225,40 @@ func IssueMatchData_ToProto(mapCtx *direct.MapContext, in *krm.IssueMatchData) *
 	out.IssueAssignment = IssueAssignment_ToProto(mapCtx, in.IssueAssignment)
 	return out
 }
+func IssueModel_FromProto(mapCtx *direct.MapContext, in *pb.IssueModel) *krm.IssueModel {
+	if in == nil {
+		return nil
+	}
+	out := &krm.IssueModel{}
+	out.Name = direct.LazyPtr(in.GetName())
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: IssueCount
+	// MISSING: State
+	out.InputDataConfig = IssueModel_InputDataConfig_FromProto(mapCtx, in.GetInputDataConfig())
+	// MISSING: TrainingStats
+	out.ModelType = direct.Enum_FromProto(mapCtx, in.GetModelType())
+	out.LanguageCode = direct.LazyPtr(in.GetLanguageCode())
+	return out
+}
+func IssueModel_ToProto(mapCtx *direct.MapContext, in *krm.IssueModel) *pb.IssueModel {
+	if in == nil {
+		return nil
+	}
+	out := &pb.IssueModel{}
+	out.Name = direct.ValueOf(in.Name)
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: IssueCount
+	// MISSING: State
+	out.InputDataConfig = IssueModel_InputDataConfig_ToProto(mapCtx, in.InputDataConfig)
+	// MISSING: TrainingStats
+	out.ModelType = direct.Enum_ToProto[pb.IssueModel_ModelType](mapCtx, in.ModelType)
+	out.LanguageCode = direct.ValueOf(in.LanguageCode)
+	return out
+}
 func IssueModelLabelStats_FromProto(mapCtx *direct.MapContext, in *pb.IssueModelLabelStats) *krm.IssueModelLabelStats {
 	if in == nil {
 		return nil
@@ -1139,6 +1297,40 @@ func IssueModelLabelStats_IssueStats_ToProto(mapCtx *direct.MapContext, in *krm.
 	out.Issue = direct.ValueOf(in.Issue)
 	out.LabeledConversationsCount = direct.ValueOf(in.LabeledConversationsCount)
 	out.DisplayName = direct.ValueOf(in.DisplayName)
+	return out
+}
+func IssueModelObservedState_FromProto(mapCtx *direct.MapContext, in *pb.IssueModel) *krm.IssueModelObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.IssueModelObservedState{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.IssueCount = direct.LazyPtr(in.GetIssueCount())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.InputDataConfig = IssueModel_InputDataConfigObservedState_FromProto(mapCtx, in.GetInputDataConfig())
+	out.TrainingStats = IssueModelLabelStats_FromProto(mapCtx, in.GetTrainingStats())
+	// MISSING: ModelType
+	// MISSING: LanguageCode
+	return out
+}
+func IssueModelObservedState_ToProto(mapCtx *direct.MapContext, in *krm.IssueModelObservedState) *pb.IssueModel {
+	if in == nil {
+		return nil
+	}
+	out := &pb.IssueModel{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.IssueCount = direct.ValueOf(in.IssueCount)
+	out.State = direct.Enum_ToProto[pb.IssueModel_State](mapCtx, in.State)
+	out.InputDataConfig = IssueModel_InputDataConfigObservedState_ToProto(mapCtx, in.InputDataConfig)
+	out.TrainingStats = IssueModelLabelStats_ToProto(mapCtx, in.TrainingStats)
+	// MISSING: ModelType
+	// MISSING: LanguageCode
 	return out
 }
 func IssueModelResult_FromProto(mapCtx *direct.MapContext, in *pb.IssueModelResult) *krm.IssueModelResult {
@@ -1271,6 +1463,78 @@ func PhraseMatchRuleGroup_ToProto(mapCtx *direct.MapContext, in *krm.PhraseMatch
 	out := &pb.PhraseMatchRuleGroup{}
 	out.Type = direct.Enum_ToProto[pb.PhraseMatchRuleGroup_PhraseMatchRuleGroupType](mapCtx, in.Type)
 	out.PhraseMatchRules = direct.Slice_ToProto(mapCtx, in.PhraseMatchRules, PhraseMatchRule_ToProto)
+	return out
+}
+func PhraseMatcher_FromProto(mapCtx *direct.MapContext, in *pb.PhraseMatcher) *krm.PhraseMatcher {
+	if in == nil {
+		return nil
+	}
+	out := &krm.PhraseMatcher{}
+	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: RevisionID
+	out.VersionTag = direct.LazyPtr(in.GetVersionTag())
+	// MISSING: RevisionCreateTime
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
+	out.Active = direct.LazyPtr(in.GetActive())
+	out.PhraseMatchRuleGroups = direct.Slice_FromProto(mapCtx, in.PhraseMatchRuleGroups, PhraseMatchRuleGroup_FromProto)
+	// MISSING: ActivationUpdateTime
+	out.RoleMatch = direct.Enum_FromProto(mapCtx, in.GetRoleMatch())
+	// MISSING: UpdateTime
+	return out
+}
+func PhraseMatcher_ToProto(mapCtx *direct.MapContext, in *krm.PhraseMatcher) *pb.PhraseMatcher {
+	if in == nil {
+		return nil
+	}
+	out := &pb.PhraseMatcher{}
+	out.Name = direct.ValueOf(in.Name)
+	// MISSING: RevisionID
+	out.VersionTag = direct.ValueOf(in.VersionTag)
+	// MISSING: RevisionCreateTime
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Type = direct.Enum_ToProto[pb.PhraseMatcher_PhraseMatcherType](mapCtx, in.Type)
+	out.Active = direct.ValueOf(in.Active)
+	out.PhraseMatchRuleGroups = direct.Slice_ToProto(mapCtx, in.PhraseMatchRuleGroups, PhraseMatchRuleGroup_ToProto)
+	// MISSING: ActivationUpdateTime
+	out.RoleMatch = direct.Enum_ToProto[pb.ConversationParticipant_Role](mapCtx, in.RoleMatch)
+	// MISSING: UpdateTime
+	return out
+}
+func PhraseMatcherObservedState_FromProto(mapCtx *direct.MapContext, in *pb.PhraseMatcher) *krm.PhraseMatcherObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.PhraseMatcherObservedState{}
+	// MISSING: Name
+	out.RevisionID = direct.LazyPtr(in.GetRevisionId())
+	// MISSING: VersionTag
+	out.RevisionCreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetRevisionCreateTime())
+	// MISSING: DisplayName
+	// MISSING: Type
+	// MISSING: Active
+	// MISSING: PhraseMatchRuleGroups
+	out.ActivationUpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetActivationUpdateTime())
+	// MISSING: RoleMatch
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	return out
+}
+func PhraseMatcherObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PhraseMatcherObservedState) *pb.PhraseMatcher {
+	if in == nil {
+		return nil
+	}
+	out := &pb.PhraseMatcher{}
+	// MISSING: Name
+	out.RevisionId = direct.ValueOf(in.RevisionID)
+	// MISSING: VersionTag
+	out.RevisionCreateTime = direct.StringTimestamp_ToProto(mapCtx, in.RevisionCreateTime)
+	// MISSING: DisplayName
+	// MISSING: Type
+	// MISSING: Active
+	// MISSING: PhraseMatchRuleGroups
+	out.ActivationUpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.ActivationUpdateTime)
+	// MISSING: RoleMatch
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	return out
 }
 func QaAnswer_FromProto(mapCtx *direct.MapContext, in *pb.QaAnswer) *krm.QaAnswer {
@@ -1484,6 +1748,54 @@ func QaAnswer_AnswerValueObservedState_NaValue_ToProto(mapCtx *direct.MapContext
 		return nil
 	}
 	return &pb.QaAnswer_AnswerValue_NaValue{NaValue: *in}
+}
+func QaScorecard_FromProto(mapCtx *direct.MapContext, in *pb.QaScorecard) *krm.QaScorecard {
+	if in == nil {
+		return nil
+	}
+	out := &krm.QaScorecard{}
+	out.Name = direct.LazyPtr(in.GetName())
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	return out
+}
+func QaScorecard_ToProto(mapCtx *direct.MapContext, in *krm.QaScorecard) *pb.QaScorecard {
+	if in == nil {
+		return nil
+	}
+	out := &pb.QaScorecard{}
+	out.Name = direct.ValueOf(in.Name)
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Description = direct.ValueOf(in.Description)
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	return out
+}
+func QaScorecardObservedState_FromProto(mapCtx *direct.MapContext, in *pb.QaScorecard) *krm.QaScorecardObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.QaScorecardObservedState{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	// MISSING: Description
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	return out
+}
+func QaScorecardObservedState_ToProto(mapCtx *direct.MapContext, in *krm.QaScorecardObservedState) *pb.QaScorecard {
+	if in == nil {
+		return nil
+	}
+	out := &pb.QaScorecard{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	// MISSING: Description
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	return out
 }
 func QaScorecardResult_FromProto(mapCtx *direct.MapContext, in *pb.QaScorecardResult) *krm.QaScorecardResult {
 	if in == nil {
@@ -1747,5 +2059,53 @@ func SmartReplyData_ToProto(mapCtx *direct.MapContext, in *krm.SmartReplyData) *
 	out.ConfidenceScore = direct.ValueOf(in.ConfidenceScore)
 	out.Metadata = in.Metadata
 	out.QueryRecord = direct.ValueOf(in.QueryRecord)
+	return out
+}
+func View_FromProto(mapCtx *direct.MapContext, in *pb.View) *krm.View {
+	if in == nil {
+		return nil
+	}
+	out := &krm.View{}
+	out.Name = direct.LazyPtr(in.GetName())
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	out.Value = direct.LazyPtr(in.GetValue())
+	return out
+}
+func View_ToProto(mapCtx *direct.MapContext, in *krm.View) *pb.View {
+	if in == nil {
+		return nil
+	}
+	out := &pb.View{}
+	out.Name = direct.ValueOf(in.Name)
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	out.Value = direct.ValueOf(in.Value)
+	return out
+}
+func ViewObservedState_FromProto(mapCtx *direct.MapContext, in *pb.View) *krm.ViewObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ViewObservedState{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	// MISSING: Value
+	return out
+}
+func ViewObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ViewObservedState) *pb.View {
+	if in == nil {
+		return nil
+	}
+	out := &pb.View{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	// MISSING: Value
 	return out
 }

@@ -1,0 +1,13 @@
+# Spec fields whose proto comment says "Output only." but which carry no
+# google.api.field_behavior annotation, so the generator could not place them
+# in ObservedState by itself.
+#
+# This file reports; it changes nothing. To act on an entry, move the field
+# out of the Spec struct and into the ObservedState struct in
+# <kind>_types.go by hand.
+
+kind=NetworkConnectivityServiceConnectionPolicy group=networkconnectivity.cnrm.cloud.google.com: field ".spec.autoCreatedSubnetInfo" comment="Output only. Information for the automatically created subnetwork and its associated IR."
+kind=NetworkConnectivityServiceConnectionPolicy group=networkconnectivity.cnrm.cloud.google.com: field ".spec.createTime" comment="Output only. Time when the ServiceConnectionPolicy was created."
+kind=NetworkConnectivityServiceConnectionPolicy group=networkconnectivity.cnrm.cloud.google.com: field ".spec.infrastructure" comment="Output only. The type of underlying resources used to create the connection."
+kind=NetworkConnectivityServiceConnectionPolicy group=networkconnectivity.cnrm.cloud.google.com: field ".spec.pscConnections" comment="Output only. [Output only] Information about each Private Service Connect connection."
+kind=NetworkConnectivityServiceConnectionPolicy group=networkconnectivity.cnrm.cloud.google.com: field ".spec.updateTime" comment="Output only. Time when the ServiceConnectionPolicy was updated."

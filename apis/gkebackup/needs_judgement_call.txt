@@ -1,0 +1,16 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=GKEBackupBackupPlan group=gkebackup.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=GKEBackupBackupPlan group=gkebackup.cnrm.cloud.google.com: field ".spec.cluster" reason=possible-reference (target=container.googleapis.com/Cluster)
+kind=GKEBackupRestorePlan group=gkebackup.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=GKEBackupRestorePlan group=gkebackup.cnrm.cloud.google.com: field ".spec.backupPlan" reason=possible-reference (target=gkebackup.googleapis.com/BackupPlan)
+kind=GKEBackupRestorePlan group=gkebackup.cnrm.cloud.google.com: field ".spec.cluster" reason=possible-reference (target=container.googleapis.com/Cluster)
+kind=GKEBackupBackup group=gkebackup.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=GKEBackupRestore group=gkebackup.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=GKEBackupRestore group=gkebackup.cnrm.cloud.google.com: field ".spec.backup" reason=possible-reference (target=gkebackup.googleapis.com/Backup)
+kind=GKEBackupBackupChannel group=gkebackup.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)

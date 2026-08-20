@@ -232,7 +232,6 @@ type Distribution struct {
 	// The cpe_uri in [CPE format](https://cpe.mitre.org/specification/)
 	//  denoting the package manager version distributing a package.
 	// +kcc:proto:field=grafeas.v1.Distribution.cpe_uri
-	// +required
 	CpeURI *string `json:"cpeURI,omitempty"`
 
 	// The CPU architecture for which packages in this distribution channel were
@@ -404,7 +403,6 @@ type Note struct {
 type PackageNote struct {
 	// The name of the package.
 	// +kcc:proto:field=grafeas.v1.PackageNote.name
-	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Deprecated.
@@ -477,9 +475,11 @@ type SbomReferenceNote struct {
 	Version *string `json:"version,omitempty"`
 }
 
+/* unreachable type SecretNote
 // +kcc:proto=grafeas.v1.SecretNote
 type SecretNote struct {
 }
+*/
 
 // +kcc:proto=grafeas.v1.UpgradeDistribution
 type UpgradeDistribution struct {
@@ -591,6 +591,8 @@ type VulnerabilityAssessmentNote struct {
 	Assessment *VulnerabilityAssessmentNote_Assessment `json:"assessment,omitempty"`
 }
 
+/* found existing non-generated go type "VulnerabilityAssessmentNote_Assessment", skipping
+
 // +kcc:proto=grafeas.v1.VulnerabilityAssessmentNote.Assessment
 type VulnerabilityAssessmentNote_Assessment struct {
 	// Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)
@@ -617,7 +619,7 @@ type VulnerabilityAssessmentNote_Assessment struct {
 	//  vulnerability and the assessment itself. E.g. Link to a document which
 	//  details how this assessment concluded the state of this vulnerability.
 	// +kcc:proto:field=grafeas.v1.VulnerabilityAssessmentNote.Assessment.related_uris
-	RelatedURIs []RelatedURL `json:"relatedURIs,omitempty"`
+	RelatedUris []RelatedURL `json:"relatedUris,omitempty"`
 
 	// Provides the state of this Vulnerability assessment.
 	// +kcc:proto:field=grafeas.v1.VulnerabilityAssessmentNote.Assessment.state
@@ -637,6 +639,7 @@ type VulnerabilityAssessmentNote_Assessment struct {
 	// +kcc:proto:field=grafeas.v1.VulnerabilityAssessmentNote.Assessment.remediations
 	Remediations []VulnerabilityAssessmentNote_Assessment_Remediation `json:"remediations,omitempty"`
 }
+*/
 
 // +kcc:proto=grafeas.v1.VulnerabilityAssessmentNote.Assessment.Justification
 type VulnerabilityAssessmentNote_Assessment_Justification struct {
@@ -861,6 +864,8 @@ type VulnerabilityNote_WindowsDetail_KnowledgeBase struct {
 	URL *string `json:"url,omitempty"`
 }
 
+/* found existing non-generated go type "WindowsUpdate", skipping
+
 // +kcc:proto=grafeas.v1.WindowsUpdate
 type WindowsUpdate struct {
 	// Required - The unique identifier for the update.
@@ -882,7 +887,7 @@ type WindowsUpdate struct {
 	// The Microsoft Knowledge Base article IDs that are associated with the
 	//  update.
 	// +kcc:proto:field=grafeas.v1.WindowsUpdate.kb_article_ids
-	KbArticleIDs []string `json:"kbArticleIDs,omitempty"`
+	KbArticleIds []string `json:"kbArticleIds,omitempty"`
 
 	// The hyperlink to the support information for the update.
 	// +kcc:proto:field=grafeas.v1.WindowsUpdate.support_url
@@ -892,6 +897,7 @@ type WindowsUpdate struct {
 	// +kcc:proto:field=grafeas.v1.WindowsUpdate.last_published_timestamp
 	LastPublishedTimestamp *string `json:"lastPublishedTimestamp,omitempty"`
 }
+*/
 
 // +kcc:proto=grafeas.v1.WindowsUpdate.Category
 type WindowsUpdate_Category struct {

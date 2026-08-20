@@ -48,7 +48,6 @@ type AudioStream struct {
 	// Required. Audio bitrate in bits per second. Must be between 1 and
 	//  10,000,000.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.AudioStream.bitrate_bps
-	// +required
 	BitrateBps *int32 `json:"bitrateBps,omitempty"`
 
 	// Number of audio channels. Must be between 1 and 6. The default is 2.
@@ -101,28 +100,23 @@ type AudioStream_AudioMapping struct {
 	//  references the atom with audio inputs in the
 	//  [JobConfig.edit_list][google.cloud.video.transcoder.v1.JobConfig.edit_list].
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.AudioStream.AudioMapping.atom_key
-	// +required
 	AtomKey *string `json:"atomKey,omitempty"`
 
 	// Required. The [Input.key][google.cloud.video.transcoder.v1.Input.key]
 	//  that identifies the input file.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.AudioStream.AudioMapping.input_key
-	// +required
 	InputKey *string `json:"inputKey,omitempty"`
 
 	// Required. The zero-based index of the track in the input file.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.AudioStream.AudioMapping.input_track
-	// +required
 	InputTrack *int32 `json:"inputTrack,omitempty"`
 
 	// Required. The zero-based index of the channel in the input audio stream.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.AudioStream.AudioMapping.input_channel
-	// +required
 	InputChannel *int32 `json:"inputChannel,omitempty"`
 
 	// Required. The zero-based index of the channel in the output audio stream.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.AudioStream.AudioMapping.output_channel
-	// +required
 	OutputChannel *int32 `json:"outputChannel,omitempty"`
 
 	// Audio volume control in dB. Negative values decrease volume,
@@ -179,7 +173,6 @@ type ElementaryStream struct {
 type Encryption struct {
 	// Required. Identifier for this set of encryption options.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Encryption.id
-	// +required
 	ID *string `json:"id,omitempty"`
 
 	// Configuration for AES-128 encryption.
@@ -201,7 +194,6 @@ type Encryption struct {
 	// Required. DRM system(s) to use; at least one must be specified. If a
 	//  DRM system is omitted, it is considered disabled.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Encryption.drm_systems
-	// +required
 	DrmSystems *Encryption_DrmSystems `json:"drmSystems,omitempty"`
 }
 
@@ -245,7 +237,6 @@ type Encryption_MpegCommonEncryption struct {
 	//  - `cenc`
 	//  - `cbcs`
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption.scheme
-	// +required
 	Scheme *string `json:"scheme,omitempty"`
 }
 
@@ -266,7 +257,6 @@ type Encryption_SecretManagerSource struct {
 	//  Note that only numbered versions are supported. Aliases like "latest" are
 	//  not supported.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Encryption.SecretManagerSource.secret_version
-	// +required
 	SecretVersion *string `json:"secretVersion,omitempty"`
 }
 
@@ -369,7 +359,6 @@ type Manifest struct {
 
 	// Required. Type of the manifest.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Manifest.type
-	// +required
 	Type *string `json:"type,omitempty"`
 
 	// Required. List of user supplied
@@ -381,7 +370,6 @@ type Manifest struct {
 	//  [MuxStream.key][google.cloud.video.transcoder.v1.MuxStream.key] and `.m3u8`
 	//  extension is generated for each element in this list.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Manifest.mux_streams
-	// +required
 	MuxStreams []string `json:"muxStreams,omitempty"`
 
 	// `DASH` manifest configuration.
@@ -515,7 +503,6 @@ type Overlay_AnimationEnd struct {
 type Overlay_AnimationFade struct {
 	// Required. Type of fade animation: `FADE_IN` or `FADE_OUT`.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Overlay.AnimationFade.fade_type
-	// +required
 	FadeType *string `json:"fadeType,omitempty"`
 
 	// Normalized coordinates based on output video resolution. Valid
@@ -556,7 +543,6 @@ type Overlay_Image struct {
 	// Required. URI of the image in Cloud Storage. For example,
 	//  `gs://bucket/inputs/image.png`. Only PNG and JPEG images are supported.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Overlay.Image.uri
-	// +required
 	URI *string `json:"uri,omitempty"`
 
 	// Normalized image resolution, based on output video resolution. Valid
@@ -802,14 +788,6 @@ type PreprocessingConfig_Pad struct {
 	RightPixels *int32 `json:"rightPixels,omitempty"`
 }
 
-// +kcc:proto=google.cloud.video.transcoder.v1.PubsubDestination
-type PubsubDestination struct {
-	// The name of the Pub/Sub topic to publish job completion notification
-	//  to. For example: `projects/{project}/topics/{topic}`.
-	// +kcc:proto:field=google.cloud.video.transcoder.v1.PubsubDestination.topic
-	Topic *string `json:"topic,omitempty"`
-}
-
 // +kcc:proto=google.cloud.video.transcoder.v1.SegmentSettings
 type SegmentSettings struct {
 	// Duration of the segments in seconds. The default is `6.0s`. Note that
@@ -821,7 +799,6 @@ type SegmentSettings struct {
 
 	// Required. Create an individual segment file. The default is `false`.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.SegmentSettings.individual_segments
-	// +required
 	IndividualSegments *bool `json:"individualSegments,omitempty"`
 }
 
@@ -840,7 +817,6 @@ type SpriteSheet struct {
 	//  Each sprite sheet has an incremental 10-digit zero-padded suffix starting
 	//  from 0 before the extension, such as `sprite_sheet0000000123.jpeg`.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.SpriteSheet.file_prefix
-	// +required
 	FilePrefix *string `json:"filePrefix,omitempty"`
 
 	// Required. The width of sprite in pixels. Must be an even integer. To
@@ -856,7 +832,6 @@ type SpriteSheet struct {
 	//  the height per the horizontal ASR. The API detects any rotation metadata
 	//  and swaps the requested height and width for the output.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.SpriteSheet.sprite_width_pixels
-	// +required
 	SpriteWidthPixels *int32 `json:"spriteWidthPixels,omitempty"`
 
 	// Required. The height of sprite in pixels. Must be an even integer. To
@@ -872,7 +847,6 @@ type SpriteSheet struct {
 	//  the width per the horizontal ASR. The API detects any rotation metadata
 	//  and swaps the requested height and width for the output.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.SpriteSheet.sprite_height_pixels
-	// +required
 	SpriteHeightPixels *int32 `json:"spriteHeightPixels,omitempty"`
 
 	// The maximum number of sprites per row in a sprite sheet. The default is 0,
@@ -957,18 +931,15 @@ type TextStream_TextMapping struct {
 	//  references atom with text inputs in the
 	//  [JobConfig.edit_list][google.cloud.video.transcoder.v1.JobConfig.edit_list].
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.TextStream.TextMapping.atom_key
-	// +required
 	AtomKey *string `json:"atomKey,omitempty"`
 
 	// Required. The [Input.key][google.cloud.video.transcoder.v1.Input.key]
 	//  that identifies the input file.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.TextStream.TextMapping.input_key
-	// +required
 	InputKey *string `json:"inputKey,omitempty"`
 
 	// Required. The zero-based index of the track in the input file.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.TextStream.TextMapping.input_track
-	// +required
 	InputTrack *int32 `json:"inputTrack,omitempty"`
 }
 
@@ -1033,7 +1004,6 @@ type VideoStream_H264CodecSettings struct {
 	// Required. The target video frame rate in frames per second (FPS). Must be
 	//  less than or equal to 120.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.VideoStream.H264CodecSettings.frame_rate
-	// +required
 	FrameRate *float64 `json:"frameRate,omitempty"`
 
 	// Optional. Frame rate conversion strategy for desired frame rate. The
@@ -1044,7 +1014,6 @@ type VideoStream_H264CodecSettings struct {
 	// Required. The video bitrate in bits per second. The minimum value is
 	//  1,000. The maximum value is 800,000,000.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.VideoStream.H264CodecSettings.bitrate_bps
-	// +required
 	BitrateBps *int32 `json:"bitrateBps,omitempty"`
 
 	// Pixel format to use. The default is `yuv420p`.
@@ -1216,7 +1185,6 @@ type VideoStream_H265CodecSettings struct {
 	// Required. The target video frame rate in frames per second (FPS). Must be
 	//  less than or equal to 120.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.VideoStream.H265CodecSettings.frame_rate
-	// +required
 	FrameRate *float64 `json:"frameRate,omitempty"`
 
 	// Optional. Frame rate conversion strategy for desired frame rate. The
@@ -1227,7 +1195,6 @@ type VideoStream_H265CodecSettings struct {
 	// Required. The video bitrate in bits per second. The minimum value is
 	//  1,000. The maximum value is 800,000,000.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.VideoStream.H265CodecSettings.bitrate_bps
-	// +required
 	BitrateBps *int32 `json:"bitrateBps,omitempty"`
 
 	// Pixel format to use. The default is `yuv420p`.
@@ -1412,7 +1379,6 @@ type VideoStream_Vp9CodecSettings struct {
 	// Required. The target video frame rate in frames per second (FPS). Must be
 	//  less than or equal to 120.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.VideoStream.Vp9CodecSettings.frame_rate
-	// +required
 	FrameRate *float64 `json:"frameRate,omitempty"`
 
 	// Optional. Frame rate conversion strategy for desired frame rate. The
@@ -1423,7 +1389,6 @@ type VideoStream_Vp9CodecSettings struct {
 	// Required. The video bitrate in bits per second. The minimum value is
 	//  1,000. The maximum value is 480,000,000.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.VideoStream.Vp9CodecSettings.bitrate_bps
-	// +required
 	BitrateBps *int32 `json:"bitrateBps,omitempty"`
 
 	// Pixel format to use. The default is `yuv420p`.

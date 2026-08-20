@@ -43,93 +43,51 @@ func CryptoKeyVersionTemplate_v1beta1_FromProto(mapCtx *direct.MapContext, in *p
 }
 */
 
-/* found existing non-generated mapping function "CryptoKeyVersionTemplate_v1beta1_ToProto", skipping
-func CryptoKeyVersionTemplate_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1beta1.CryptoKeyVersionTemplate) *pb.CryptoKeyVersionTemplate {
-	if in == nil {
-		return nil
-	}
-	out := &pb.CryptoKeyVersionTemplate{}
-	out.ProtectionLevel = direct.Enum_ToProto[pb.ProtectionLevel](mapCtx, in.ProtectionLevel)
-	out.Algorithm = direct.Enum_ToProto[pb.CryptoKeyVersion_CryptoKeyVersionAlgorithm](mapCtx, in.Algorithm)
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "CryptokeyversionAttestationStatus_v1alpha1_FromProto", skipping
-func CryptokeyversionAttestationStatus_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.KeyOperationAttestation) *krmkmsv1alpha1.CryptokeyversionAttestationStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krmkmsv1alpha1.CryptokeyversionAttestationStatus{}
-	out.Format = direct.Enum_FromProto(mapCtx, in.GetFormat())
-	out.Content = direct.LazyPtr(in.GetContent())
-	out.CertChains = CryptokeyversionCertChainsStatus_v1alpha1_FromProto(mapCtx, in.GetCertChains())
-	return out
-}
-*/
-
 /*
-found existing non-generated mapping function "CryptokeyversionAttestationStatus_v1alpha1_ToProto", skipping
+found existing non-generated mapping function "CryptoKeyVersionTemplate_v1beta1_ToProto", skipping
 
-	func CryptokeyversionAttestationStatus_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.CryptokeyversionAttestationStatus) *pb.KeyOperationAttestation {
+	func CryptoKeyVersionTemplate_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1beta1.CryptoKeyVersionTemplate) *pb.CryptoKeyVersionTemplate {
 		if in == nil {
 			return nil
 		}
-		out := &pb.KeyOperationAttestation{}
-		out.Format = direct.Enum_ToProto[pb.KeyOperationAttestation_AttestationFormat](mapCtx, in.Format)
-		out.Content = in.Content
-		out.CertChains = CryptokeyversionCertChainsStatus_v1alpha1_ToProto(mapCtx, in.CertChains)
+		out := &pb.CryptoKeyVersionTemplate{}
+		out.ProtectionLevel = direct.Enum_ToProto[pb.ProtectionLevel](mapCtx, in.ProtectionLevel)
+		out.Algorithm = direct.Enum_ToProto[pb.CryptoKeyVersion_CryptoKeyVersionAlgorithm](mapCtx, in.Algorithm)
 		return out
 	}
 */
-func CryptokeyversionCertChainsStatus_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.KeyOperationAttestation_CertificateChains) *krmkmsv1alpha1.CryptokeyversionCertChainsStatus {
+func ExternalProtectionLevelOptions_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ExternalProtectionLevelOptions) *krmkmsv1alpha1.ExternalProtectionLevelOptions {
 	if in == nil {
 		return nil
 	}
-	out := &krmkmsv1alpha1.CryptokeyversionCertChainsStatus{}
-	if len(in.GetCaviumCerts()) > 0 {
-		out.CaviumCerts = direct.LazyPtr(in.GetCaviumCerts()[0])
-	}
-	if len(in.GetGoogleCardCerts()) > 0 {
-		out.GoogleCardCerts = direct.LazyPtr(in.GetGoogleCardCerts()[0])
-	}
-	if len(in.GetGooglePartitionCerts()) > 0 {
-		out.GooglePartitionCerts = direct.LazyPtr(in.GetGooglePartitionCerts()[0])
-	}
-	return out
-}
-func CryptokeyversionCertChainsStatus_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.CryptokeyversionCertChainsStatus) *pb.KeyOperationAttestation_CertificateChains {
-	if in == nil {
-		return nil
-	}
-	out := &pb.KeyOperationAttestation_CertificateChains{}
-	if v := in.CaviumCerts; v != nil {
-		out.CaviumCerts = []string{direct.ValueOf(in.CaviumCerts)}
-	}
-	if v := in.GoogleCardCerts; v != nil {
-		out.GoogleCardCerts = []string{direct.ValueOf(in.GoogleCardCerts)}
-	}
-	if v := in.GooglePartitionCerts; v != nil {
-		out.GooglePartitionCerts = []string{direct.ValueOf(in.GooglePartitionCerts)}
-	}
-	return out
-}
-func CryptokeyversionExternalProtectionLevelOptionsStatus_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ExternalProtectionLevelOptions) *krmkmsv1alpha1.CryptokeyversionExternalProtectionLevelOptionsStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krmkmsv1alpha1.CryptokeyversionExternalProtectionLevelOptionsStatus{}
+	out := &krmkmsv1alpha1.ExternalProtectionLevelOptions{}
 	out.ExternalKeyURI = direct.LazyPtr(in.GetExternalKeyUri())
 	out.EkmConnectionKeyPath = direct.LazyPtr(in.GetEkmConnectionKeyPath())
 	return out
 }
-func CryptokeyversionExternalProtectionLevelOptionsStatus_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.CryptokeyversionExternalProtectionLevelOptionsStatus) *pb.ExternalProtectionLevelOptions {
+func ExternalProtectionLevelOptions_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.ExternalProtectionLevelOptions) *pb.ExternalProtectionLevelOptions {
 	if in == nil {
 		return nil
 	}
 	out := &pb.ExternalProtectionLevelOptions{}
 	out.ExternalKeyUri = direct.ValueOf(in.ExternalKeyURI)
 	out.EkmConnectionKeyPath = direct.ValueOf(in.EkmConnectionKeyPath)
+	return out
+}
+func ImportJob_WrappingPublicKey_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ImportJob_WrappingPublicKey) *krmkmsv1alpha1.ImportJob_WrappingPublicKey {
+	if in == nil {
+		return nil
+	}
+	out := &krmkmsv1alpha1.ImportJob_WrappingPublicKey{}
+	out.Pem = direct.LazyPtr(in.GetPem())
+	return out
+}
+func ImportJob_WrappingPublicKey_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.ImportJob_WrappingPublicKey) *pb.ImportJob_WrappingPublicKey {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ImportJob_WrappingPublicKey{}
+	out.Pem = direct.ValueOf(in.Pem)
 	return out
 }
 func ImportJob_WrappingPublicKeyObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.ImportJob_WrappingPublicKey) *krmkmsv1beta1.ImportJob_WrappingPublicKeyObservedState {
@@ -270,6 +228,48 @@ func KMSCryptoKeyStatus_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1b
 	// MISSING: KeyAccessJustificationsPolicy
 	return out
 }
+func KMSCryptoKeyVersionObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.CryptoKeyVersion) *krmkmsv1alpha1.KMSCryptoKeyVersionObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmkmsv1alpha1.KMSCryptoKeyVersionObservedState{}
+	// MISSING: Name
+	out.ProtectionLevel = direct.Enum_FromProto(mapCtx, in.GetProtectionLevel())
+	out.Algorithm = direct.Enum_FromProto(mapCtx, in.GetAlgorithm())
+	out.Attestation = KeyOperationAttestationObservedState_v1alpha1_FromProto(mapCtx, in.GetAttestation())
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.GenerateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetGenerateTime())
+	out.DestroyTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDestroyTime())
+	out.DestroyEventTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDestroyEventTime())
+	out.ImportJob = direct.LazyPtr(in.GetImportJob())
+	out.ImportTime = direct.StringTimestamp_FromProto(mapCtx, in.GetImportTime())
+	out.ImportFailureReason = direct.LazyPtr(in.GetImportFailureReason())
+	out.GenerationFailureReason = direct.LazyPtr(in.GetGenerationFailureReason())
+	out.ExternalDestructionFailureReason = direct.LazyPtr(in.GetExternalDestructionFailureReason())
+	out.ReimportEligible = direct.LazyPtr(in.GetReimportEligible())
+	return out
+}
+func KMSCryptoKeyVersionObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.KMSCryptoKeyVersionObservedState) *pb.CryptoKeyVersion {
+	if in == nil {
+		return nil
+	}
+	out := &pb.CryptoKeyVersion{}
+	// MISSING: Name
+	out.ProtectionLevel = direct.Enum_ToProto[pb.ProtectionLevel](mapCtx, in.ProtectionLevel)
+	out.Algorithm = direct.Enum_ToProto[pb.CryptoKeyVersion_CryptoKeyVersionAlgorithm](mapCtx, in.Algorithm)
+	out.Attestation = KeyOperationAttestationObservedState_v1alpha1_ToProto(mapCtx, in.Attestation)
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.GenerateTime = direct.StringTimestamp_ToProto(mapCtx, in.GenerateTime)
+	out.DestroyTime = direct.StringTimestamp_ToProto(mapCtx, in.DestroyTime)
+	out.DestroyEventTime = direct.StringTimestamp_ToProto(mapCtx, in.DestroyEventTime)
+	out.ImportJob = direct.ValueOf(in.ImportJob)
+	out.ImportTime = direct.StringTimestamp_ToProto(mapCtx, in.ImportTime)
+	out.ImportFailureReason = direct.ValueOf(in.ImportFailureReason)
+	out.GenerationFailureReason = direct.ValueOf(in.GenerationFailureReason)
+	out.ExternalDestructionFailureReason = direct.ValueOf(in.ExternalDestructionFailureReason)
+	out.ReimportEligible = direct.ValueOf(in.ReimportEligible)
+	return out
+}
 func KMSCryptoKeyVersionSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.CryptoKeyVersion) *krmkmsv1alpha1.KMSCryptoKeyVersionSpec {
 	if in == nil {
 		return nil
@@ -277,20 +277,7 @@ func KMSCryptoKeyVersionSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *p
 	out := &krmkmsv1alpha1.KMSCryptoKeyVersionSpec{}
 	// MISSING: Name
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	// MISSING: ProtectionLevel
-	// MISSING: Algorithm
-	// MISSING: Attestation
-	// MISSING: CreateTime
-	// MISSING: GenerateTime
-	// MISSING: DestroyTime
-	// MISSING: DestroyEventTime
-	// MISSING: ImportJob
-	// MISSING: ImportTime
-	// MISSING: ImportFailureReason
-	// MISSING: GenerationFailureReason
-	// MISSING: ExternalDestructionFailureReason
-	// MISSING: ExternalProtectionLevelOptions
-	// MISSING: ReimportEligible
+	out.ExternalProtectionLevelOptions = ExternalProtectionLevelOptions_v1alpha1_FromProto(mapCtx, in.GetExternalProtectionLevelOptions())
 	return out
 }
 func KMSCryptoKeyVersionSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.KMSCryptoKeyVersionSpec) *pb.CryptoKeyVersion {
@@ -300,80 +287,9 @@ func KMSCryptoKeyVersionSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krm
 	out := &pb.CryptoKeyVersion{}
 	// MISSING: Name
 	out.State = direct.Enum_ToProto[pb.CryptoKeyVersion_CryptoKeyVersionState](mapCtx, in.State)
-	// MISSING: ProtectionLevel
-	// MISSING: Algorithm
-	// MISSING: Attestation
-	// MISSING: CreateTime
-	// MISSING: GenerateTime
-	// MISSING: DestroyTime
-	// MISSING: DestroyEventTime
-	// MISSING: ImportJob
-	// MISSING: ImportTime
-	// MISSING: ImportFailureReason
-	// MISSING: GenerationFailureReason
-	// MISSING: ExternalDestructionFailureReason
-	// MISSING: ExternalProtectionLevelOptions
-	// MISSING: ReimportEligible
+	out.ExternalProtectionLevelOptions = ExternalProtectionLevelOptions_v1alpha1_ToProto(mapCtx, in.ExternalProtectionLevelOptions)
 	return out
 }
-
-/* found existing non-generated mapping function "KMSCryptoKeyVersionStatus_v1alpha1_FromProto", skipping
-func KMSCryptoKeyVersionStatus_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.CryptoKeyVersion) *krmkmsv1alpha1.KMSCryptoKeyVersionStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krmkmsv1alpha1.KMSCryptoKeyVersionStatus{}
-	out.Name = direct.LazyPtr(in.GetName())
-	// MISSING: State
-	out.ProtectionLevel = direct.Enum_FromProto(mapCtx, in.GetProtectionLevel())
-	out.Algorithm = direct.Enum_FromProto(mapCtx, in.GetAlgorithm())
-	if v := in.GetAttestation(); v != nil {
-		out.Attestation = []krmkmsv1alpha1.CryptokeyversionAttestationStatus{CryptokeyversionAttestationStatus_v1alpha1_FromProto(mapCtx, v)}
-	}
-	// MISSING: CreateTime
-	out.GenerateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetGenerateTime())
-	// MISSING: DestroyTime
-	// MISSING: DestroyEventTime
-	// MISSING: ImportJob
-	// MISSING: ImportTime
-	// MISSING: ImportFailureReason
-	// MISSING: GenerationFailureReason
-	// MISSING: ExternalDestructionFailureReason
-	// MISSING: ExternalProtectionLevelOptions
-	// MISSING: ReimportEligible
-	return out
-}
-*/
-
-/*
-found existing non-generated mapping function "KMSCryptoKeyVersionStatus_v1alpha1_ToProto", skipping
-
-	func KMSCryptoKeyVersionStatus_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.KMSCryptoKeyVersionStatus) *pb.CryptoKeyVersion {
-		if in == nil {
-			return nil
-		}
-		out := &pb.CryptoKeyVersion{}
-		out.Name = direct.ValueOf(in.Name)
-		// MISSING: State
-		out.ProtectionLevel = direct.Enum_ToProto[pb.ProtectionLevel](mapCtx, in.ProtectionLevel)
-		out.Algorithm = direct.Enum_ToProto[pb.CryptoKeyVersion_CryptoKeyVersionAlgorithm](mapCtx, in.Algorithm)
-		if len(in.Attestation) > 0 && in.Attestation[0] != nil {
-			out.Attestation = CryptokeyversionAttestationStatus_v1alpha1_ToProto(mapCtx, in.Attestation[0])
-		}
-		// MISSING: CreateTime
-		out.GenerateTime = direct.StringTimestamp_ToProto(mapCtx, in.GenerateTime)
-		// MISSING: DestroyTime
-		// MISSING: DestroyEventTime
-		// MISSING: ImportJob
-		// MISSING: ImportTime
-		// MISSING: ImportFailureReason
-		// MISSING: GenerationFailureReason
-		// MISSING: ExternalDestructionFailureReason
-		// MISSING: ExternalProtectionLevelOptions
-		// MISSING: ReimportEligible
-		return out
-	}
-*/
 func KMSImportJobObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.ImportJob) *krmkmsv1beta1.KMSImportJobObservedState {
 	if in == nil {
 		return nil
@@ -460,6 +376,36 @@ func KMSKeyHandleSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1bet
 	out.ResourceTypeSelector = direct.ValueOf(in.ResourceTypeSelector)
 	return out
 }
+func KMSKeyRingImportJobObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ImportJob) *krmkmsv1alpha1.KMSKeyRingImportJobObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmkmsv1alpha1.KMSKeyRingImportJobObservedState{}
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.GenerateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetGenerateTime())
+	out.ExpireTime = direct.StringTimestamp_FromProto(mapCtx, in.GetExpireTime())
+	out.ExpireEventTime = direct.StringTimestamp_FromProto(mapCtx, in.GetExpireEventTime())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.PublicKey = ImportJob_WrappingPublicKey_v1alpha1_FromProto(mapCtx, in.GetPublicKey())
+	out.Attestation = KeyOperationAttestationObservedState_v1alpha1_FromProto(mapCtx, in.GetAttestation())
+	return out
+}
+func KMSKeyRingImportJobObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.KMSKeyRingImportJobObservedState) *pb.ImportJob {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ImportJob{}
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.GenerateTime = direct.StringTimestamp_ToProto(mapCtx, in.GenerateTime)
+	out.ExpireTime = direct.StringTimestamp_ToProto(mapCtx, in.ExpireTime)
+	out.ExpireEventTime = direct.StringTimestamp_ToProto(mapCtx, in.ExpireEventTime)
+	out.State = direct.Enum_ToProto[pb.ImportJob_ImportJobState](mapCtx, in.State)
+	out.PublicKey = ImportJob_WrappingPublicKey_v1alpha1_ToProto(mapCtx, in.PublicKey)
+	out.Attestation = KeyOperationAttestationObservedState_v1alpha1_ToProto(mapCtx, in.Attestation)
+	return out
+}
 
 /* found existing non-generated mapping function "KMSKeyRingImportJobSpec_v1alpha1_FromProto", skipping
 func KMSKeyRingImportJobSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ImportJob) *krmkmsv1alpha1.KMSKeyRingImportJobSpec {
@@ -470,83 +416,21 @@ func KMSKeyRingImportJobSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *p
 	// MISSING: Name
 	out.ImportMethod = direct.Enum_FromProto(mapCtx, in.GetImportMethod())
 	out.ProtectionLevel = direct.Enum_FromProto(mapCtx, in.GetProtectionLevel())
-	// MISSING: CreateTime
-	// MISSING: GenerateTime
-	// MISSING: ExpireTime
-	// MISSING: ExpireEventTime
-	// MISSING: State
-	// MISSING: PublicKey
-	// MISSING: Attestation
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "KMSKeyRingImportJobSpec_v1alpha1_ToProto", skipping
-func KMSKeyRingImportJobSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.KMSKeyRingImportJobSpec) *pb.ImportJob {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ImportJob{}
-	// MISSING: Name
-	out.ImportMethod = direct.Enum_ToProto[pb.ImportJob_ImportMethod](mapCtx, in.ImportMethod)
-	out.ProtectionLevel = direct.Enum_ToProto[pb.ProtectionLevel](mapCtx, in.ProtectionLevel)
-	// MISSING: CreateTime
-	// MISSING: GenerateTime
-	// MISSING: ExpireTime
-	// MISSING: ExpireEventTime
-	// MISSING: State
-	// MISSING: PublicKey
-	// MISSING: Attestation
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "KMSKeyRingImportJobStatus_v1alpha1_FromProto", skipping
-func KMSKeyRingImportJobStatus_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ImportJob) *krmkmsv1alpha1.KMSKeyRingImportJobStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krmkmsv1alpha1.KMSKeyRingImportJobStatus{}
-	out.Name = direct.LazyPtr(in.GetName())
-	// MISSING: ImportMethod
-	// MISSING: ProtectionLevel
-	// MISSING: CreateTime
-	// MISSING: GenerateTime
-	out.ExpireTime = direct.StringTimestamp_FromProto(mapCtx, in.GetExpireTime())
-	// MISSING: ExpireEventTime
-	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	if v := in.GetPublicKey(); v != nil {
-		out.PublicKey = []krmkmsv1alpha1.KeyringimportjobPublicKeyStatus{KeyringimportjobPublicKeyStatus_v1alpha1_FromProto(mapCtx, v)}
-	}
-	if v := in.GetAttestation(); v != nil {
-		out.Attestation = []krmkmsv1alpha1.KeyringimportjobAttestationStatus{KeyringimportjobAttestationStatus_v1alpha1_FromProto(mapCtx, v)}
-	}
 	return out
 }
 */
 
 /*
-found existing non-generated mapping function "KMSKeyRingImportJobStatus_v1alpha1_ToProto", skipping
+found existing non-generated mapping function "KMSKeyRingImportJobSpec_v1alpha1_ToProto", skipping
 
-	func KMSKeyRingImportJobStatus_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.KMSKeyRingImportJobStatus) *pb.ImportJob {
+	func KMSKeyRingImportJobSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.KMSKeyRingImportJobSpec) *pb.ImportJob {
 		if in == nil {
 			return nil
 		}
 		out := &pb.ImportJob{}
-		out.Name = direct.ValueOf(in.Name)
-		// MISSING: ImportMethod
-		// MISSING: ProtectionLevel
-		// MISSING: CreateTime
-		// MISSING: GenerateTime
-		out.ExpireTime = direct.StringTimestamp_ToProto(mapCtx, in.ExpireTime)
-		// MISSING: ExpireEventTime
-		out.State = direct.Enum_ToProto[pb.ImportJob_ImportJobState](mapCtx, in.State)
-		if len(in.PublicKey) > 0 && in.PublicKey[0] != nil {
-			out.PublicKey = KeyringimportjobPublicKeyStatus_v1alpha1_ToProto(mapCtx, in.PublicKey[0])
-		}
-		if len(in.Attestation) > 0 && in.Attestation[0] != nil {
-			out.Attestation = KeyringimportjobAttestationStatus_v1alpha1_ToProto(mapCtx, in.Attestation[0])
-		}
+		// MISSING: Name
+		out.ImportMethod = direct.Enum_ToProto[pb.ImportJob_ImportMethod](mapCtx, in.ImportMethod)
+		out.ProtectionLevel = direct.Enum_ToProto[pb.ProtectionLevel](mapCtx, in.ProtectionLevel)
 		return out
 	}
 */
@@ -586,6 +470,26 @@ func KMSKeyRingStatus_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1bet
 	// MISSING: CreateTime
 	return out
 }
+func KeyOperationAttestationObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.KeyOperationAttestation) *krmkmsv1alpha1.KeyOperationAttestationObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmkmsv1alpha1.KeyOperationAttestationObservedState{}
+	out.Format = direct.Enum_FromProto(mapCtx, in.GetFormat())
+	out.Content = in.GetContent()
+	out.CertChains = KeyOperationAttestation_CertificateChains_v1alpha1_FromProto(mapCtx, in.GetCertChains())
+	return out
+}
+func KeyOperationAttestationObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.KeyOperationAttestationObservedState) *pb.KeyOperationAttestation {
+	if in == nil {
+		return nil
+	}
+	out := &pb.KeyOperationAttestation{}
+	out.Format = direct.Enum_ToProto[pb.KeyOperationAttestation_AttestationFormat](mapCtx, in.Format)
+	out.Content = in.Content
+	out.CertChains = KeyOperationAttestation_CertificateChains_v1alpha1_ToProto(mapCtx, in.CertChains)
+	return out
+}
 func KeyOperationAttestationObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.KeyOperationAttestation) *krmkmsv1beta1.KeyOperationAttestationObservedState {
 	if in == nil {
 		return nil
@@ -606,6 +510,26 @@ func KeyOperationAttestationObservedState_v1beta1_ToProto(mapCtx *direct.MapCont
 	out.CertChains = KeyOperationAttestation_CertificateChains_v1beta1_ToProto(mapCtx, in.CertChains)
 	return out
 }
+func KeyOperationAttestation_CertificateChains_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.KeyOperationAttestation_CertificateChains) *krmkmsv1alpha1.KeyOperationAttestation_CertificateChains {
+	if in == nil {
+		return nil
+	}
+	out := &krmkmsv1alpha1.KeyOperationAttestation_CertificateChains{}
+	out.CaviumCerts = in.CaviumCerts
+	out.GoogleCardCerts = in.GoogleCardCerts
+	out.GooglePartitionCerts = in.GooglePartitionCerts
+	return out
+}
+func KeyOperationAttestation_CertificateChains_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.KeyOperationAttestation_CertificateChains) *pb.KeyOperationAttestation_CertificateChains {
+	if in == nil {
+		return nil
+	}
+	out := &pb.KeyOperationAttestation_CertificateChains{}
+	out.CaviumCerts = in.CaviumCerts
+	out.GoogleCardCerts = in.GoogleCardCerts
+	out.GooglePartitionCerts = in.GooglePartitionCerts
+	return out
+}
 func KeyOperationAttestation_CertificateChains_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.KeyOperationAttestation_CertificateChains) *krmkmsv1beta1.KeyOperationAttestation_CertificateChains {
 	if in == nil {
 		return nil
@@ -624,49 +548,5 @@ func KeyOperationAttestation_CertificateChains_v1beta1_ToProto(mapCtx *direct.Ma
 	out.CaviumCerts = in.CaviumCerts
 	out.GoogleCardCerts = in.GoogleCardCerts
 	out.GooglePartitionCerts = in.GooglePartitionCerts
-	return out
-}
-
-/* found existing non-generated mapping function "KeyringimportjobAttestationStatus_v1alpha1_FromProto", skipping
-func KeyringimportjobAttestationStatus_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.KeyOperationAttestation) *krmkmsv1alpha1.KeyringimportjobAttestationStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krmkmsv1alpha1.KeyringimportjobAttestationStatus{}
-	out.Format = direct.Enum_FromProto(mapCtx, in.GetFormat())
-	out.Content = direct.LazyPtr(in.GetContent())
-	// MISSING: CertChains
-	return out
-}
-*/
-
-/*
-found existing non-generated mapping function "KeyringimportjobAttestationStatus_v1alpha1_ToProto", skipping
-
-	func KeyringimportjobAttestationStatus_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.KeyringimportjobAttestationStatus) *pb.KeyOperationAttestation {
-		if in == nil {
-			return nil
-		}
-		out := &pb.KeyOperationAttestation{}
-		out.Format = direct.Enum_ToProto[pb.KeyOperationAttestation_AttestationFormat](mapCtx, in.Format)
-		out.Content = in.Content
-		// MISSING: CertChains
-		return out
-	}
-*/
-func KeyringimportjobPublicKeyStatus_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ImportJob_WrappingPublicKey) *krmkmsv1alpha1.KeyringimportjobPublicKeyStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krmkmsv1alpha1.KeyringimportjobPublicKeyStatus{}
-	out.Pem = direct.LazyPtr(in.GetPem())
-	return out
-}
-func KeyringimportjobPublicKeyStatus_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmkmsv1alpha1.KeyringimportjobPublicKeyStatus) *pb.ImportJob_WrappingPublicKey {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ImportJob_WrappingPublicKey{}
-	out.Pem = direct.ValueOf(in.Pem)
 	return out
 }

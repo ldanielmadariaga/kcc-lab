@@ -1,0 +1,9 @@
+# Spec fields whose proto comment says "Output only." but which carry no
+# google.api.field_behavior annotation, so the generator could not place them
+# in ObservedState by itself.
+#
+# This file reports; it changes nothing. To act on an entry, move the field
+# out of the Spec struct and into the ObservedState struct in
+# <kind>_types.go by hand.
+
+kind=ComputeMachineImage group=compute.cnrm.cloud.google.com: field ".spec.satisfiesPzi" comment="Output only. Reserved for future use."

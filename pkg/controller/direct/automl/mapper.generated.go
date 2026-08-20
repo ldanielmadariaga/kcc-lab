@@ -35,9 +35,6 @@ func AutoMLDatasetObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Data
 	}
 	out := &krm.AutoMLDatasetObservedState{}
 	// MISSING: Name
-	out.ExampleCount = direct.LazyPtr(in.GetExampleCount())
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.Etag = direct.LazyPtr(in.GetEtag())
 	return out
 }
 func AutoMLDatasetObservedState_ToProto(mapCtx *direct.MapContext, in *krm.AutoMLDatasetObservedState) *pb.Dataset {
@@ -46,9 +43,6 @@ func AutoMLDatasetObservedState_ToProto(mapCtx *direct.MapContext, in *krm.AutoM
 	}
 	out := &pb.Dataset{}
 	// MISSING: Name
-	out.ExampleCount = direct.ValueOf(in.ExampleCount)
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.Etag = direct.ValueOf(in.Etag)
 	return out
 }
 func AutoMLDatasetSpec_FromProto(mapCtx *direct.MapContext, in *pb.Dataset) *krm.AutoMLDatasetSpec {
@@ -65,6 +59,9 @@ func AutoMLDatasetSpec_FromProto(mapCtx *direct.MapContext, in *pb.Dataset) *krm
 	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.Description = direct.LazyPtr(in.GetDescription())
+	out.ExampleCount = direct.LazyPtr(in.GetExampleCount())
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.Labels = in.Labels
 	return out
 }
@@ -94,6 +91,9 @@ func AutoMLDatasetSpec_ToProto(mapCtx *direct.MapContext, in *krm.AutoMLDatasetS
 	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
 	out.Description = direct.ValueOf(in.Description)
+	out.ExampleCount = direct.ValueOf(in.ExampleCount)
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.Etag = direct.ValueOf(in.Etag)
 	out.Labels = in.Labels
 	return out
 }

@@ -316,7 +316,7 @@ func DataCatalogEntryGroupObservedState_v1alpha1_FromProto(mapCtx *direct.MapCon
 	}
 	out := &krmdatacatalogv1alpha1.DataCatalogEntryGroupObservedState{}
 	// MISSING: Name
-	out.DataCatalogTimestamps = SystemTimestamps_v1alpha1_FromProto(mapCtx, in.GetDataCatalogTimestamps())
+	out.DataCatalogTimestamps = SystemTimestampsObservedState_v1alpha1_FromProto(mapCtx, in.GetDataCatalogTimestamps())
 	return out
 }
 func DataCatalogEntryGroupObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatacatalogv1alpha1.DataCatalogEntryGroupObservedState) *pb.EntryGroup {
@@ -325,7 +325,7 @@ func DataCatalogEntryGroupObservedState_v1alpha1_ToProto(mapCtx *direct.MapConte
 	}
 	out := &pb.EntryGroup{}
 	// MISSING: Name
-	out.DataCatalogTimestamps = SystemTimestamps_v1alpha1_ToProto(mapCtx, in.DataCatalogTimestamps)
+	out.DataCatalogTimestamps = SystemTimestampsObservedState_v1alpha1_ToProto(mapCtx, in.DataCatalogTimestamps)
 	return out
 }
 func DataCatalogEntryGroupSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.EntryGroup) *krmdatacatalogv1alpha1.DataCatalogEntryGroupSpec {
@@ -356,14 +356,13 @@ func DataCatalogEntryObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext,
 	}
 	out := &krmdatacatalogv1alpha1.DataCatalogEntryObservedState{}
 	// MISSING: Name
-	out.LinkedResource = direct.LazyPtr(in.GetLinkedResource())
-	// MISSING: FullyQualifiedName
 	out.IntegratedSystem = direct.Enum_FromProto(mapCtx, in.GetIntegratedSystem())
 	out.GCSFilesetSpec = GCSFilesetSpecObservedState_v1alpha1_FromProto(mapCtx, in.GetGcsFilesetSpec())
 	out.BigqueryTableSpec = BigQueryTableSpecObservedState_v1alpha1_FromProto(mapCtx, in.GetBigqueryTableSpec())
 	out.BigqueryDateShardedSpec = BigQueryDateShardedSpecObservedState_v1alpha1_FromProto(mapCtx, in.GetBigqueryDateShardedSpec())
 	out.DatabaseTableSpec = DatabaseTableSpecObservedState_v1alpha1_FromProto(mapCtx, in.GetDatabaseTableSpec())
 	out.FeatureOnlineStoreSpec = FeatureOnlineStoreSpecObservedState_v1alpha1_FromProto(mapCtx, in.GetFeatureOnlineStoreSpec())
+	out.SourceSystemTimestamps = SystemTimestampsObservedState_v1alpha1_FromProto(mapCtx, in.GetSourceSystemTimestamps())
 	out.UsageSignal = UsageSignalObservedState_v1alpha1_FromProto(mapCtx, in.GetUsageSignal())
 	out.DataSource = DataSourceObservedState_v1alpha1_FromProto(mapCtx, in.GetDataSource())
 	out.PersonalDetails = PersonalDetails_v1alpha1_FromProto(mapCtx, in.GetPersonalDetails())
@@ -375,8 +374,6 @@ func DataCatalogEntryObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, i
 	}
 	out := &pb.Entry{}
 	// MISSING: Name
-	out.LinkedResource = direct.ValueOf(in.LinkedResource)
-	// MISSING: FullyQualifiedName
 	if oneof := DataCatalogEntryObservedState_IntegratedSystem_ToProto(mapCtx, in.IntegratedSystem); oneof != nil {
 		out.System = oneof
 	}
@@ -395,6 +392,7 @@ func DataCatalogEntryObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, i
 	if oneof := FeatureOnlineStoreSpecObservedState_v1alpha1_ToProto(mapCtx, in.FeatureOnlineStoreSpec); oneof != nil {
 		out.Spec = &pb.Entry_FeatureOnlineStoreSpec{FeatureOnlineStoreSpec: oneof}
 	}
+	out.SourceSystemTimestamps = SystemTimestampsObservedState_v1alpha1_ToProto(mapCtx, in.SourceSystemTimestamps)
 	out.UsageSignal = UsageSignalObservedState_v1alpha1_ToProto(mapCtx, in.UsageSignal)
 	out.DataSource = DataSourceObservedState_v1alpha1_ToProto(mapCtx, in.DataSource)
 	out.PersonalDetails = PersonalDetails_v1alpha1_ToProto(mapCtx, in.PersonalDetails)
@@ -412,7 +410,8 @@ func DataCatalogEntrySpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.E
 	}
 	out := &krmdatacatalogv1alpha1.DataCatalogEntrySpec{}
 	// MISSING: Name
-	// MISSING: FullyQualifiedName
+	out.LinkedResource = direct.LazyPtr(in.GetLinkedResource())
+	out.FullyQualifiedName = direct.LazyPtr(in.GetFullyQualifiedName())
 	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
 	out.UserSpecifiedType = direct.LazyPtr(in.GetUserSpecifiedType())
 	out.UserSpecifiedSystem = direct.LazyPtr(in.GetUserSpecifiedSystem())
@@ -443,7 +442,8 @@ func DataCatalogEntrySpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdat
 	}
 	out := &pb.Entry{}
 	// MISSING: Name
-	// MISSING: FullyQualifiedName
+	out.LinkedResource = direct.ValueOf(in.LinkedResource)
+	out.FullyQualifiedName = direct.ValueOf(in.FullyQualifiedName)
 	if oneof := DataCatalogEntrySpec_Type_ToProto(mapCtx, in.Type); oneof != nil {
 		out.EntryType = oneof
 	}
@@ -569,6 +569,7 @@ func DataCatalogTagObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, i
 	out := &krmdatacatalogv1alpha1.DataCatalogTagObservedState{}
 	// MISSING: Name
 	out.TemplateDisplayName = direct.LazyPtr(in.GetTemplateDisplayName())
+	// MISSING: Fields
 	out.DataplexTransferStatus = direct.Enum_FromProto(mapCtx, in.GetDataplexTransferStatus())
 	return out
 }
@@ -579,6 +580,7 @@ func DataCatalogTagObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in 
 	out := &pb.Tag{}
 	// MISSING: Name
 	out.TemplateDisplayName = direct.ValueOf(in.TemplateDisplayName)
+	// MISSING: Fields
 	out.DataplexTransferStatus = direct.Enum_ToProto[pb.TagTemplate_DataplexTransferStatus](mapCtx, in.DataplexTransferStatus)
 	return out
 }
@@ -590,11 +592,9 @@ func DataCatalogTagSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Tag
 	}
 	out := &krmdatacatalogv1alpha1.DataCatalogTagSpec{}
 	// MISSING: Name
-	if in.GetTemplate() != "" {
-		out.TemplateRef = &krmdatacatalogv1alpha1.TagTemplateRef{External: in.GetTemplate()}
-	}
+	out.Template = direct.LazyPtr(in.GetTemplate())
 	out.Column = direct.LazyPtr(in.GetColumn())
-	out.Fields = Fields_FromProto(mapCtx, in.Fields)
+	// MISSING: Fields
 	return out
 }
 */
@@ -608,13 +608,11 @@ found existing non-generated mapping function "DataCatalogTagSpec_v1alpha1_ToPro
 		}
 		out := &pb.Tag{}
 		// MISSING: Name
-		if in.TemplateRef != nil {
-			out.Template = in.TemplateRef.External
-		}
+		out.Template = direct.ValueOf(in.Template)
 		if oneof := DataCatalogTagSpec_Column_ToProto(mapCtx, in.Column); oneof != nil {
 			out.Scope = oneof
 		}
-		out.Fields = Fields_ToProto(mapCtx, in.Fields)
+		// MISSING: Fields
 		return out
 	}
 */
@@ -623,6 +621,24 @@ func DataCatalogTagSpec_Column_ToProto(mapCtx *direct.MapContext, in *string) *p
 		return nil
 	}
 	return &pb.Tag_Column{Column: *in}
+}
+func DataCatalogTagTemplateObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.TagTemplate) *krmdatacatalogv1alpha1.DataCatalogTagTemplateObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmdatacatalogv1alpha1.DataCatalogTagTemplateObservedState{}
+	// MISSING: Name
+	// MISSING: Fields
+	return out
+}
+func DataCatalogTagTemplateObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatacatalogv1alpha1.DataCatalogTagTemplateObservedState) *pb.TagTemplate {
+	if in == nil {
+		return nil
+	}
+	out := &pb.TagTemplate{}
+	// MISSING: Name
+	// MISSING: Fields
+	return out
 }
 
 /* found existing non-generated mapping function "DataCatalogTagTemplateSpec_v1alpha1_FromProto", skipping
@@ -634,8 +650,8 @@ func DataCatalogTagTemplateSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in
 	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.IsPubliclyReadable = direct.LazyPtr(in.GetIsPubliclyReadable())
-	out.Fields = Fields_FromProto(mapCtx, in.Fields)
-	// MISSING: DataplexTransferStatus
+	// MISSING: Fields
+	out.DataplexTransferStatus = direct.Enum_FromProto(mapCtx, in.GetDataplexTransferStatus())
 	return out
 }
 */
@@ -651,8 +667,8 @@ found existing non-generated mapping function "DataCatalogTagTemplateSpec_v1alph
 		// MISSING: Name
 		out.DisplayName = direct.ValueOf(in.DisplayName)
 		out.IsPubliclyReadable = direct.ValueOf(in.IsPubliclyReadable)
-		out.Fields = Fields_ToProto(mapCtx, in.Fields)
-		// MISSING: DataplexTransferStatus
+		// MISSING: Fields
+		out.DataplexTransferStatus = direct.Enum_ToProto[pb.TagTemplate_DataplexTransferStatus](mapCtx, in.DataplexTransferStatus)
 		return out
 	}
 */
@@ -944,71 +960,6 @@ func FeatureOnlineStoreSpecObservedState_v1alpha1_ToProto(mapCtx *direct.MapCont
 	}
 	out := &pb.FeatureOnlineStoreSpec{}
 	out.StorageType = direct.Enum_ToProto[pb.FeatureOnlineStoreSpec_StorageType](mapCtx, in.StorageType)
-	return out
-}
-func FieldType_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.FieldType) *krmdatacatalogv1alpha1.FieldType {
-	if in == nil {
-		return nil
-	}
-	out := &krmdatacatalogv1alpha1.FieldType{}
-	out.PrimitiveType = direct.Enum_FromProto(mapCtx, in.GetPrimitiveType())
-	out.EnumType = FieldType_EnumType_v1alpha1_FromProto(mapCtx, in.GetEnumType())
-	return out
-}
-func FieldType_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatacatalogv1alpha1.FieldType) *pb.FieldType {
-	if in == nil {
-		return nil
-	}
-	out := &pb.FieldType{}
-	if oneof := FieldType_PrimitiveType_ToProto(mapCtx, in.PrimitiveType); oneof != nil {
-		out.TypeDecl = oneof
-	}
-	if oneof := FieldType_EnumType_v1alpha1_ToProto(mapCtx, in.EnumType); oneof != nil {
-		out.TypeDecl = &pb.FieldType_EnumType_{EnumType: oneof}
-	}
-	return out
-}
-
-/*
-found existing non-generated mapping function "FieldType_PrimitiveType_ToProto", skipping
-
-	func FieldType_PrimitiveType_ToProto(mapCtx *direct.MapContext, in *string) *pb.FieldType_PrimitiveType_ {
-		if in == nil {
-			return nil
-		}
-		return &pb.FieldType_PrimitiveType_{PrimitiveType: direct.Enum_ToProto[pb.FieldType_PrimitiveType](mapCtx, in)}
-	}
-*/
-func FieldType_EnumType_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.FieldType_EnumType) *krmdatacatalogv1alpha1.FieldType_EnumType {
-	if in == nil {
-		return nil
-	}
-	out := &krmdatacatalogv1alpha1.FieldType_EnumType{}
-	out.AllowedValues = direct.Slice_FromProto(mapCtx, in.AllowedValues, FieldType_EnumType_EnumValue_v1alpha1_FromProto)
-	return out
-}
-func FieldType_EnumType_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatacatalogv1alpha1.FieldType_EnumType) *pb.FieldType_EnumType {
-	if in == nil {
-		return nil
-	}
-	out := &pb.FieldType_EnumType{}
-	out.AllowedValues = direct.Slice_ToProto(mapCtx, in.AllowedValues, FieldType_EnumType_EnumValue_v1alpha1_ToProto)
-	return out
-}
-func FieldType_EnumType_EnumValue_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.FieldType_EnumType_EnumValue) *krmdatacatalogv1alpha1.FieldType_EnumType_EnumValue {
-	if in == nil {
-		return nil
-	}
-	out := &krmdatacatalogv1alpha1.FieldType_EnumType_EnumValue{}
-	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	return out
-}
-func FieldType_EnumType_EnumValue_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatacatalogv1alpha1.FieldType_EnumType_EnumValue) *pb.FieldType_EnumType_EnumValue {
-	if in == nil {
-		return nil
-	}
-	out := &pb.FieldType_EnumType_EnumValue{}
-	out.DisplayName = direct.ValueOf(in.DisplayName)
 	return out
 }
 func FilesetSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.FilesetSpec) *krmdatacatalogv1alpha1.FilesetSpec {
@@ -1447,114 +1398,6 @@ func TableSpecObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmd
 	}
 	out := &pb.TableSpec{}
 	out.GroupedEntry = direct.ValueOf(in.GroupedEntry)
-	return out
-}
-func TagField_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.TagField) *krmdatacatalogv1alpha1.TagField {
-	if in == nil {
-		return nil
-	}
-	out := &krmdatacatalogv1alpha1.TagField{}
-	// MISSING: DisplayName
-	out.DoubleValue = direct.LazyPtr(in.GetDoubleValue())
-	out.StringValue = direct.LazyPtr(in.GetStringValue())
-	out.BoolValue = direct.LazyPtr(in.GetBoolValue())
-	out.TimestampValue = direct.StringTimestamp_FromProto(mapCtx, in.GetTimestampValue())
-	out.EnumValue = TagField_EnumValue_v1alpha1_FromProto(mapCtx, in.GetEnumValue())
-	out.RichtextValue = direct.LazyPtr(in.GetRichtextValue())
-	// MISSING: Order
-	return out
-}
-func TagField_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatacatalogv1alpha1.TagField) *pb.TagField {
-	if in == nil {
-		return nil
-	}
-	out := &pb.TagField{}
-	// MISSING: DisplayName
-	if oneof := TagField_DoubleValue_ToProto(mapCtx, in.DoubleValue); oneof != nil {
-		out.Kind = oneof
-	}
-	if oneof := TagField_StringValue_ToProto(mapCtx, in.StringValue); oneof != nil {
-		out.Kind = oneof
-	}
-	if oneof := TagField_BoolValue_ToProto(mapCtx, in.BoolValue); oneof != nil {
-		out.Kind = oneof
-	}
-	if oneof := direct.StringTimestamp_ToProto(mapCtx, in.TimestampValue); oneof != nil {
-		out.Kind = &pb.TagField_TimestampValue{TimestampValue: oneof}
-	}
-	if oneof := TagField_EnumValue_v1alpha1_ToProto(mapCtx, in.EnumValue); oneof != nil {
-		out.Kind = &pb.TagField_EnumValue_{EnumValue: oneof}
-	}
-	if oneof := TagField_RichtextValue_ToProto(mapCtx, in.RichtextValue); oneof != nil {
-		out.Kind = oneof
-	}
-	// MISSING: Order
-	return out
-}
-func TagField_DoubleValue_ToProto(mapCtx *direct.MapContext, in *float64) *pb.TagField_DoubleValue {
-	if in == nil {
-		return nil
-	}
-	return &pb.TagField_DoubleValue{DoubleValue: *in}
-}
-func TagField_StringValue_ToProto(mapCtx *direct.MapContext, in *string) *pb.TagField_StringValue {
-	if in == nil {
-		return nil
-	}
-	return &pb.TagField_StringValue{StringValue: *in}
-}
-func TagField_BoolValue_ToProto(mapCtx *direct.MapContext, in *bool) *pb.TagField_BoolValue {
-	if in == nil {
-		return nil
-	}
-	return &pb.TagField_BoolValue{BoolValue: *in}
-}
-func TagField_RichtextValue_ToProto(mapCtx *direct.MapContext, in *string) *pb.TagField_RichtextValue {
-	if in == nil {
-		return nil
-	}
-	return &pb.TagField_RichtextValue{RichtextValue: *in}
-}
-func TagField_EnumValue_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.TagField_EnumValue) *krmdatacatalogv1alpha1.TagField_EnumValue {
-	if in == nil {
-		return nil
-	}
-	out := &krmdatacatalogv1alpha1.TagField_EnumValue{}
-	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	return out
-}
-func TagField_EnumValue_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatacatalogv1alpha1.TagField_EnumValue) *pb.TagField_EnumValue {
-	if in == nil {
-		return nil
-	}
-	out := &pb.TagField_EnumValue{}
-	out.DisplayName = direct.ValueOf(in.DisplayName)
-	return out
-}
-func TagTemplateField_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.TagTemplateField) *krmdatacatalogv1alpha1.TagTemplateField {
-	if in == nil {
-		return nil
-	}
-	out := &krmdatacatalogv1alpha1.TagTemplateField{}
-	out.Name = direct.LazyPtr(in.GetName())
-	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	out.Type = FieldType_v1alpha1_FromProto(mapCtx, in.GetType())
-	out.IsRequired = direct.LazyPtr(in.GetIsRequired())
-	out.Description = direct.LazyPtr(in.GetDescription())
-	out.Order = direct.LazyPtr(in.GetOrder())
-	return out
-}
-func TagTemplateField_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatacatalogv1alpha1.TagTemplateField) *pb.TagTemplateField {
-	if in == nil {
-		return nil
-	}
-	out := &pb.TagTemplateField{}
-	out.Name = direct.ValueOf(in.Name)
-	out.DisplayName = direct.ValueOf(in.DisplayName)
-	out.Type = FieldType_v1alpha1_ToProto(mapCtx, in.Type)
-	out.IsRequired = direct.ValueOf(in.IsRequired)
-	out.Description = direct.ValueOf(in.Description)
-	out.Order = direct.ValueOf(in.Order)
 	return out
 }
 func TaxonomySystemTimestamps_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.SystemTimestamps) *krmdatacatalogv1beta1.TaxonomySystemTimestamps {

@@ -5,4 +5,9 @@
 # While a resource has entries here, TestMissingRefs suppresses its [refs]
 # findings. Clearing them graduates the resource and the ratchet applies.
 
-kind=NetworkSecurityURLList group=networksecurity.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NetworkSecurityGatewaySecurityPolicy group=networksecurity.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NetworkSecurityGatewaySecurityPolicy group=networksecurity.cnrm.cloud.google.com: field ".spec.tlsInspectionPolicy" reason=possible-reference (target=networksecurity.googleapis.com/TlsInspectionPolicy)
+kind=NetworkSecurityTLSInspectionPolicy group=networksecurity.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NetworkSecurityTLSInspectionPolicy group=networksecurity.cnrm.cloud.google.com: field ".spec.caPool" reason=possible-reference (target=privateca.googleapis.com/CaPool)
+kind=NetworkSecurityTLSInspectionPolicy group=networksecurity.cnrm.cloud.google.com: field ".spec.trustConfig" reason=possible-reference (target=certificatemanager.googleapis.com/TrustConfig)
+kind=NetworkSecurityAuthzPolicy group=networksecurity.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
