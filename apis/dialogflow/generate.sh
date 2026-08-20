@@ -36,6 +36,10 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.dialogflow.v2 \
   --api-version dialogflow.cnrm.cloud.google.com/v1alpha1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
   --resource DialogflowKnowledgeBase:KnowledgeBase \
   --resource DialogflowGenerator:Generator \
   --resource DialogflowConversationDataset:ConversationDataset
@@ -44,6 +48,10 @@ ${CONTROLLERBUILDER} generate-types \
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.dialogflow.cx.v3 \
   --api-version dialogflow.cnrm.cloud.google.com/v1alpha1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
   --include-skipped-output \
   --resource DialogflowSecuritySettings:SecuritySettings
 
@@ -53,6 +61,10 @@ mv ${REPO_ROOT}/apis/dialogflow/v1alpha1/types.generated.go ${REPO_ROOT}/apis/di
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.dialogflow.v2beta1 \
   --api-version dialogflow.cnrm.cloud.google.com/v1alpha1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
   --resource DialogflowSipTrunk:SipTrunk
 
 mv ${REPO_ROOT}/apis/dialogflow/v1alpha1/types.generated.go ${REPO_ROOT}/apis/dialogflow/v1alpha1/siptrunk_types.generated.go
@@ -61,6 +73,10 @@ mv ${REPO_ROOT}/apis/dialogflow/v1alpha1/types.generated.go ${REPO_ROOT}/apis/di
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.dialogflow.v2 \
   --api-version dialogflow.cnrm.cloud.google.com/v1alpha1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
   --resource DialogflowKnowledgeBase:KnowledgeBase \
   --resource DialogflowGenerator:Generator \
   --resource DialogflowConversationDataset:ConversationDataset

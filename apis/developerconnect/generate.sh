@@ -35,6 +35,10 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.developerconnect.v1 \
   --api-version developerconnect.cnrm.cloud.google.com/v1alpha1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
   --resource DevConnectConnection:Connection \
   --resource DevConnectInsightsConfig:InsightsConfig \
   --resource DevConnectAccountConnector:AccountConnector \
