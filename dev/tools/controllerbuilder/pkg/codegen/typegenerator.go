@@ -70,6 +70,10 @@ type OutputMessageDetails struct {
 type WriteOptions struct {
 	// EmitRequired writes "// +required" for fields the proto marks REQUIRED.
 	EmitRequired bool
+	// EmitPluralAcronyms cases a plural acronym as KRM conventions want, so
+	// related_uris becomes RelatedURIs rather than RelatedUris. See AcronymCasing
+	// for why this is opt-in.
+	EmitPluralAcronyms bool
 }
 
 func NewTypeGenerator(goPackage string, outputBaseDir string, api *protoapi.Proto) *TypeGenerator {
@@ -546,8 +550,8 @@ func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool)
 func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protoreflect.MessageDescriptor, fieldIndex int, isTransitiveOutput bool, opts WriteOptions) {
 	sourceLocations := msg.ParentFile().SourceLocations().ByDescriptor(field)
 
-	jsonName := GetJSONForKRM(field)
-	GoFieldName := goFieldName(field)
+	jsonName := getJSONForKRM(field, opts)
+	GoFieldName := goFieldNameOpts(field, opts)
 
 	goType, err := GoTypeForField(field, isTransitiveOutput)
 	if err != nil {
@@ -720,14 +724,18 @@ func goTypeForProtoKind(kind protoreflect.Kind) string {
 // GetJSONForKRM returns the KRM JSON name for the field,
 // honoring KRM conventions
 func GetJSONForKRM(protoField protoreflect.FieldDescriptor) string {
+	return getJSONForKRM(protoField, WriteOptions{})
+}
+
+func getJSONForKRM(protoField protoreflect.FieldDescriptor, opts WriteOptions) string {
 	tokens := strings.Split(string(protoField.Name()), "_")
 	for i, token := range tokens {
 		if i == 0 {
 			// Do not capitalize first token
 			continue
 		}
-		if IsAcronym(token) {
-			token = strings.ToUpper(token)
+		if cased, ok := AcronymCasing(token, opts.EmitPluralAcronyms); ok {
+			token = cased
 		} else {
 			token = strings.Title(token)
 		}
@@ -739,10 +747,14 @@ func GetJSONForKRM(protoField protoreflect.FieldDescriptor) string {
 // goFieldName returns the KRM go name for the field,
 // honoring KRM conventions
 func goFieldName(protoField protoreflect.FieldDescriptor) string {
+	return goFieldNameOpts(protoField, WriteOptions{})
+}
+
+func goFieldNameOpts(protoField protoreflect.FieldDescriptor, opts WriteOptions) string {
 	tokens := strings.Split(string(protoField.Name()), "_")
 	for i, token := range tokens {
-		if IsAcronym(token) {
-			token = strings.ToUpper(token)
+		if cased, ok := AcronymCasing(token, opts.EmitPluralAcronyms); ok {
+			token = cased
 		} else {
 			token = strings.Title(token)
 		}

@@ -283,6 +283,7 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 			protoAccessor := "Get" + protoFieldName + "()"
 
 			krmFieldName := goFieldName(protoField)
+			krmFieldName = resolveKRMFieldName(protoField, krmFieldName, goFields)
 			krmField := goFields[krmFieldName]
 			if krmField == nil {
 				// Support refs
@@ -608,6 +609,7 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 			protoFieldPackage := v.goPackageForProto(protoField.ParentFile())
 
 			krmFieldName := goFieldName(protoField)
+			krmFieldName = resolveKRMFieldName(protoField, krmFieldName, goFields)
 			krmField := goFields[krmFieldName]
 			if krmField == nil {
 				// Support refs
@@ -976,6 +978,7 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 		}
 
 		krmFieldName := goFieldName(protoField)
+		krmFieldName = resolveKRMFieldName(protoField, krmFieldName, goFields)
 		krmField, ok := goFields[krmFieldName]
 		if !ok {
 			// This can happen if the field is not in the KRM struct (e.g. output-only).
@@ -1306,4 +1309,27 @@ func usesPointersInProtoBinding(msg protoreflect.MessageDescriptor) bool {
 	default:
 		return false
 	}
+}
+
+// resolveKRMFieldName reconciles the name the mapper computes for a proto field
+// with the name the KRM struct actually uses.
+//
+// The two can disagree on plural acronyms. A type generated with
+// EmitPluralAcronyms has RelatedURIs where goFieldName produces RelatedUris, and
+// the lookup would miss and report the field as MISSING even though it is mapped
+// perfectly well. Rather than give generate-mapper a matching flag, and rely on
+// every generate.sh keeping the two in step, look for the other spelling.
+//
+// Returns the computed name unchanged when nothing better is found, so the
+// caller's own not-found handling still runs.
+func resolveKRMFieldName(protoField protoreflect.FieldDescriptor, computed string, goFields map[string]*gocode.StructField) string {
+	if _, ok := goFields[computed]; ok {
+		return computed
+	}
+	if alt := goFieldNameOpts(protoField, WriteOptions{EmitPluralAcronyms: true}); alt != computed {
+		if _, ok := goFields[alt]; ok {
+			return alt
+		}
+	}
+	return computed
 }
