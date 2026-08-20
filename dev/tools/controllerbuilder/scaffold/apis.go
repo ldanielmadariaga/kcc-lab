@@ -207,7 +207,9 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 	if prepopulated != nil {
 		cArgs.SpecFields = prepopulated.SpecFields
 		cArgs.ObservedStateFields = prepopulated.ObservedStateFields
-		cArgs.ExtraImports = prepopulated.ExtraImports
+		// Computed from both bodies here rather than taken from the result,
+		// because a special-cased type can appear in either one.
+		cArgs.ExtraImports = ExtraImportsFor(prepopulated.SpecFields, prepopulated.ObservedStateFields)
 	}
 	return scaffoldTypeFile(typeFilePath, cArgs)
 }

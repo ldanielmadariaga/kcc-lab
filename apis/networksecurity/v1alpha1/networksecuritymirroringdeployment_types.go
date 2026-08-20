@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	computev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -26,37 +27,38 @@ var NetworkSecurityMirroringDeploymentGVK = GroupVersion.WithKind("NetworkSecuri
 // +kcc:spec:proto=google.cloud.networksecurity.v1.MirroringDeployment
 type NetworkSecurityMirroringDeploymentSpec struct {
 	// The project that this resource belongs to.
+	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +required
 	Location *string `json:"location"`
 
 	// The NetworkSecurityMirroringDeployment name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Optional. Labels are key/value pairs that help to organize and filter
-	//  resources.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.MirroringDeployment.labels
+	// resources.
+	// +kubebuilder:validation:Optional
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Required. Immutable. The regional forwarding rule that fronts the mirroring
-	//  collectors, for example:
-	//  `projects/123456789/regions/us-central1/forwardingRules/my-rule`. See
-	//  https://google.aip.dev/124.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.MirroringDeployment.forwarding_rule
-	// +required
-	ForwardingRule *string `json:"forwardingRule,omitempty"`
+	// collectors, for example:
+	// `projects/123456789/regions/us-central1/forwardingRules/my-rule`. See
+	// https://google.aip.dev/124.
+	// +kubebuilder:validation:Required
+	ForwardingRuleRef *computev1beta1.ForwardingRuleRef `json:"forwardingRuleRef"`
 
 	// Required. Immutable. The deployment group that this deployment is a part
-	//  of, for example:
-	//  `projects/123456789/locations/global/mirroringDeploymentGroups/my-dg`.
-	//  See https://google.aip.dev/124.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.MirroringDeployment.mirroring_deployment_group
-	// +required
-	MirroringDeploymentGroup *string `json:"mirroringDeploymentGroup,omitempty"`
+	// of, for example:
+	// `projects/123456789/locations/global/mirroringDeploymentGroups/my-dg`.
+	// See https://google.aip.dev/124.
+	// +kubebuilder:validation:Required
+	MirroringDeploymentGroupRef *NetworkSecurityMirroringDeploymentGroupRef `json:"mirroringDeploymentGroupRef"`
 
 	// Optional. User-provided description of the deployment.
-	//  Used as additional context for the deployment.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.MirroringDeployment.description
+	// Used as additional context for the deployment.
+	// +kubebuilder:validation:Optional
 	Description *string `json:"description,omitempty"`
 }
 
@@ -79,27 +81,23 @@ type NetworkSecurityMirroringDeploymentStatus struct {
 // NetworkSecurityMirroringDeploymentObservedState is the state of the NetworkSecurityMirroringDeployment resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.networksecurity.v1.MirroringDeployment
 type NetworkSecurityMirroringDeploymentObservedState struct {
-	// Output only. The timestamp when the resource was created.
-	//  See https://google.aip.dev/148#timestamps.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.MirroringDeployment.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. The timestamp when the resource was most recently updated.
-	//  See https://google.aip.dev/148#timestamps.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.MirroringDeployment.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
 	// Output only. The current state of the deployment.
-	//  See https://google.aip.dev/216.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.MirroringDeployment.state
+	// See https://google.aip.dev/216.
 	State *string `json:"state,omitempty"`
 
 	// Output only. The current state of the resource does not match the user's
-	//  intended state, and the system is working to reconcile them. This part of
-	//  the normal operation (e.g. linking a new association to the parent group).
-	//  See https://google.aip.dev/128.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.MirroringDeployment.reconciling
+	// intended state, and the system is working to reconcile them. This part of
+	// the normal operation (e.g. linking a new association to the parent group).
+	// See https://google.aip.dev/128.
 	Reconciling *bool `json:"reconciling,omitempty"`
+
+	// Output only. The timestamp when the resource was created.
+	// See https://google.aip.dev/148#timestamps.
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The timestamp when the resource was most recently updated.
+	// See https://google.aip.dev/148#timestamps.
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient
@@ -115,6 +113,7 @@ type NetworkSecurityMirroringDeploymentObservedState struct {
 
 // NetworkSecurityMirroringDeployment is the Schema for the NetworkSecurityMirroringDeployment API
 // +k8s:openapi-gen=true
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 type NetworkSecurityMirroringDeployment struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

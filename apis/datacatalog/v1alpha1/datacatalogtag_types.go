@@ -15,30 +15,36 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
-	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 )
 
 var DataCatalogTagGVK = GroupVersion.WithKind("DataCatalogTag")
 
+// Parent defines the parent resource for this DataCatalogTag
+type DataCatalogTagParent struct {
+	// Required. Reference to the DataCatalogEntry that owns this Tag.
+	// The entry must be in the same project and location as the tag.
+	// +required
+	EntryRef *EntryRef `json:"entryRef,omitempty"`
+}
+
 // DataCatalogTagSpec defines the desired state of DataCatalogTag
 // +kcc:spec:proto=google.cloud.datacatalog.v1.Tag
 type DataCatalogTagSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-
+	// Specifies the parent resource where this DataCatalogTag resides.
+	DataCatalogTagParent `json:",inline"`
 
 	// The DataCatalogTag name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-	// Required. The resource name of the tag template this tag uses. Example:
-	//
-	//  `projects/{PROJECT_ID}/locations/{LOCATION}/tagTemplates/{TAG_TEMPLATE_ID}`
+
+	// Required. The resource name of the tag template this tag uses.
 	//
 	//  This field cannot be modified after creation.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.Tag.template
 	// +required
-	Template *string `json:"template,omitempty"`
+	TemplateRef *TagTemplateRef `json:"templateRef,omitempty"`
 
 	// Resources like entry can have schemas associated with them. This scope
 	//  allows you to attach tags to an individual column based on that schema.
@@ -48,8 +54,8 @@ type DataCatalogTagSpec struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.Tag.column
 	Column *string `json:"column,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// +kcc:proto:field=google.cloud.datacatalog.v1.Tag.fields
+	Fields map[string]TagField `json:"fields,omitempty"`
 }
 
 // DataCatalogTagStatus defines the config connector machine state of DataCatalogTag

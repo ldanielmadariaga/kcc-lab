@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,28 +26,29 @@ var DiscoveryEngineIdentityMappingStoreGVK = GroupVersion.WithKind("DiscoveryEng
 // +kcc:spec:proto=google.cloud.discoveryengine.v1.IdentityMappingStore
 type DiscoveryEngineIdentityMappingStoreSpec struct {
 	// The project that this resource belongs to.
+	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +required
 	Location string `json:"location"`
 
 	// The DiscoveryEngineIdentityMappingStore name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Input only. The KMS key to be used to protect this Identity Mapping Store
-	//  at creation time.
+	// at creation time.
 	//
-	//  Must be set for requests that need to comply with CMEK Org Policy
-	//  protections.
+	// Must be set for requests that need to comply with CMEK Org Policy
+	// protections.
 	//
-	//  If this field is set and processed successfully, the Identity Mapping Store
-	//  will be protected by the KMS key, as indicated in the cmek_config field.
-	// +kcc:proto:field=google.cloud.discoveryengine.v1.IdentityMappingStore.kms_key_name
+	// If this field is set and processed successfully, the Identity Mapping Store
+	// will be protected by the KMS key, as indicated in the cmek_config field.
 	KMSKeyName *string `json:"kmsKeyName,omitempty"`
 }
 
 // DiscoveryEngineIdentityMappingStoreStatus defines the config connector machine state of DiscoveryEngineIdentityMappingStore
-type DiscoveryEngineIdentityMappingStoreStatus struct {
-	/* Conditions represent the latest available observations of the
+type DiscoveryEngineIdentityMappingStoreStatus struct { /* Conditions represent the latest available observations of the
 	   object's current state. */
 	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
 
@@ -65,8 +66,7 @@ type DiscoveryEngineIdentityMappingStoreStatus struct {
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1.IdentityMappingStore
 type DiscoveryEngineIdentityMappingStoreObservedState struct {
 	// Output only. CMEK-related information for the Identity Mapping Store.
-	// +kcc:proto:field=google.cloud.discoveryengine.v1.IdentityMappingStore.cmek_config
-	CmekConfig *CmekConfigObservedState `json:"cmekConfig,omitempty"`
+	CmekConfig *CmekConfig `json:"cmekConfig,omitempty"`
 }
 
 // +genclient

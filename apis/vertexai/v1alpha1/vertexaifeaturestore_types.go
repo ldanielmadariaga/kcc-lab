@@ -17,26 +17,42 @@ package v1alpha1
 import (
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var VertexAIFeaturestoreGVK = GroupVersion.WithKind("VertexAIFeaturestore")
 
+// +kcc:spec:proto=google.cloud.aiplatform.v1beta1.EncryptionSpec
+type EncryptionSpec struct {
+	// Required. The Cloud KMS resource identifier of the customer managed
+	//  encryption key used to protect a resource.
+	//  The key needs to be in the same region as where the compute resource is
+	//  created.
+	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.EncryptionSpec.kms_key_name
+	// +required
+	KMSKeyRef *refsv1beta1.KMSCryptoKeyRef `json:"kmsKeyRef,omitempty"`
+}
+
 // VertexAIFeaturestoreSpec defines the desired state of VertexAIFeaturestore
 // +kcc:spec:proto=google.cloud.aiplatform.v1beta1.Featurestore
 type VertexAIFeaturestoreSpec struct {
-	// The project that this resource belongs to.
+	// The Project that this resource belongs to.
+	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The location of this resource.
+	// The location for the resource.
+	// +required
 	Location string `json:"location"`
 
 	// The VertexAIFeaturestore name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
+	// NOTYET: not supported in Config Connector reconciliation
 	// Optional. Used to perform consistent read-modify-write updates. If not set,
 	//  a blind "overwrite" update happens.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Featurestore.etag
-	Etag *string `json:"etag,omitempty"`
+	// Etag *string `json:"etag,omitempty"`
 
 	// Optional. The labels with user-defined metadata to organize your
 	//  Featurestore.
@@ -94,6 +110,12 @@ type VertexAIFeaturestoreStatus struct {
 // VertexAIFeaturestoreObservedState is the state of the VertexAIFeaturestore resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.aiplatform.v1beta1.Featurestore
 type VertexAIFeaturestoreObservedState struct {
+	// Output only. Name of the Featurestore. Format:
+	//  `projects/{project}/locations/{location}/featurestores/{featurestore}`
+	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Featurestore.name
+	// NOTYET
+	// Name *string `json:"name,omitempty"`
+
 	// Output only. Timestamp when this Featurestore was created.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Featurestore.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -108,11 +130,13 @@ type VertexAIFeaturestoreObservedState struct {
 
 	// Output only. Reserved for future use.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Featurestore.satisfies_pzs
-	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+	// NOTYET
+	// SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
 
 	// Output only. Reserved for future use.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Featurestore.satisfies_pzi
-	SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
+	// NOTYET
+	// SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
 }
 
 // +genclient
@@ -147,4 +171,28 @@ type VertexAIFeaturestoreList struct {
 
 func init() {
 	SchemeBuilder.Register(&VertexAIFeaturestore{}, &VertexAIFeaturestoreList{})
+}
+
+type Featurestore struct {
+	// Output only. Timestamp when this Featurestore was created.
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Optional. Used to perform consistent read-modify-write updates.
+	Etag *string `json:"etag,omitempty"`
+
+	// Optional. The labels with user-defined metadata to organize your Featurestore.
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Output only. Name of the Featurestore. Format:
+	// `projects/{project}/locations/{location}/featurestores/{featurestore}`
+	Name *string `json:"name,omitempty"`
+
+	// Optional. Config for online serving resources.
+	OnlineServingConfig *Featurestore_OnlineServingConfig `json:"onlineServingConfig,omitempty"`
+
+	// Output only. State of the featurestore.
+	State *string `json:"state,omitempty"`
+
+	// Output only. Timestamp when this Featurestore was last updated.
+	UpdateTime *string `json:"updateTime,omitempty"`
 }

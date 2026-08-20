@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
 package v1alpha1
 
 import (
+	certificatemanagerv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/certificatemanager/v1alpha1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/privateca/privatecarefs"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -33,117 +35,94 @@ type NetworkSecurityTLSInspectionPolicySpec struct {
 
 	// The NetworkSecurityTLSInspectionPolicy name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Optional. Free-text description of the resource.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.TlsInspectionPolicy.description
 	Description *string `json:"description,omitempty"`
 
 	// Required. A CA pool resource used to issue interception certificates.
-	//  The CA pool string has a relative resource path following the form
-	//  "projects/{project}/locations/{location}/caPools/{ca_pool}".
+	// The CA pool string has a relative resource path following the form
+	// "projects/{project}/locations/{location}/caPools/{ca_pool}".
 	// +kcc:proto:field=google.cloud.networksecurity.v1.TlsInspectionPolicy.ca_pool
-	// +required
-	CAPool *string `json:"caPool,omitempty"`
+	CaPoolRef *privatecarefs.PrivateCACAPoolRef `json:"caPoolRef"`
 
-	// Optional. A TrustConfig resource used when making a connection to the TLS
-	//  server. This is a relative resource path following the form
-	//  "projects/{project}/locations/{location}/trustConfigs/{trust_config}". This
-	//  is necessary to intercept TLS connections to servers with certificates
-	//  signed by a private CA or self-signed certificates.
-	//  Note that Secure Web Proxy does not yet honor this field.
+	// Optional. A TrustConfig resource that contains the trust store for validation of client credentials.
+	// The TrustConfig resource must be in the format "projects/{project}/locations/{location}/trustConfigs/{trustConfig}".
 	// +kcc:proto:field=google.cloud.networksecurity.v1.TlsInspectionPolicy.trust_config
-	TrustConfig *string `json:"trustConfig,omitempty"`
+	TrustConfigRef *certificatemanagerv1alpha1.CertificateManagerTrustConfigRef `json:"trustConfigRef,omitempty"`
 
-	// Optional. If  FALSE (the default), use our default set of public CAs in
-	//  addition to any CAs specified in trust_config. These public CAs are
-	//  currently based on the Mozilla Root Program and are subject to change over
-	//  time. If TRUE, do not accept our default set of public CAs. Only CAs
-	//  specified in trust_config will be accepted. This defaults to FALSE (use
-	//  public CAs in addition to trust_config) for backwards compatibility, but
-	//  trusting public root CAs is *not recommended* unless the traffic in
-	//  question is outbound to public web servers. When possible, prefer setting
-	//  this to "false" and explicitly specifying trusted CAs and certificates in a
-	//  TrustConfig. Note that Secure Web Proxy does not yet honor this field.
+	// Optional. If True, then the TrustConfig will exclude public CA certificates.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.TlsInspectionPolicy.exclude_public_ca_set
 	ExcludePublicCASet *bool `json:"excludePublicCASet,omitempty"`
 
-	// Optional. Minimum TLS version that the firewall should use when negotiating
-	//  connections with both clients and servers. If this is not set, then the
-	//  default value is to allow the broadest set of clients and servers (TLS 1.0
-	//  or higher). Setting this to more restrictive values may improve security,
-	//  but may also prevent the firewall from connecting to some clients or
-	//  servers.
-	//  Note that Secure Web Proxy does not yet honor this field.
+	// Optional. Minimum TLS version that is allowed.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.TlsInspectionPolicy.min_tls_version
+	// +kubebuilder:validation:Enum=TLS_VERSION_UNSPECIFIED;TLS_1_0;TLS_1_1;TLS_1_2;TLS_1_3
 	MinTLSVersion *string `json:"minTLSVersion,omitempty"`
 
-	// Optional. The selected Profile. If this is not set, then the default value
-	//  is to allow the broadest set of clients and servers ("PROFILE_COMPATIBLE").
-	//  Setting this to more restrictive values may improve security, but may also
-	//  prevent the TLS inspection proxy from connecting to some clients or
-	//  servers. Note that Secure Web Proxy does not yet honor this field.
+	// Optional. TLS feature profile that is allowed.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.TlsInspectionPolicy.tls_feature_profile
+	// +kubebuilder:validation:Enum=PROFILE_UNSPECIFIED;PROFILE_COMPATIBLE;PROFILE_MODERN;PROFILE_RESTRICTED;PROFILE_CUSTOM
 	TLSFeatureProfile *string `json:"tlsFeatureProfile,omitempty"`
 
-	// Optional. List of custom TLS cipher suites selected.
-	//  This field is valid only if the selected tls_feature_profile is CUSTOM.
-	//  The [compute.SslPoliciesService.ListAvailableFeatures][] method returns the
-	//  set of features that can be specified in this list.
-	//  Note that Secure Web Proxy does not yet honor this field.
+	// Optional. Custom TLS features that are allowed.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.TlsInspectionPolicy.custom_tls_features
 	CustomTLSFeatures []string `json:"customTLSFeatures,omitempty"`
 }
 
-// NetworkSecurityTLSInspectionPolicyStatus defines the config connector machine state of NetworkSecurityTLSInspectionPolicy
-type NetworkSecurityTLSInspectionPolicyStatus struct {
-	/* Conditions represent the latest available observations of the
-	   object's current state. */
-	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
-
-	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
-	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
-
-	// A unique specifier for the NetworkSecurityTLSInspectionPolicy resource in GCP.
-	ExternalRef *string `json:"externalRef,omitempty"`
-
-	// ObservedState is the state of the resource as most recently observed in GCP.
-	ObservedState *NetworkSecurityTLSInspectionPolicyObservedState `json:"observedState,omitempty"`
-}
-
-// NetworkSecurityTLSInspectionPolicyObservedState is the state of the NetworkSecurityTLSInspectionPolicy resource as most recently observed in GCP.
+// NetworkSecurityTLSInspectionPolicyObservedState defines the observed state of NetworkSecurityTLSInspectionPolicy
 // +kcc:observedstate:proto=google.cloud.networksecurity.v1.TlsInspectionPolicy
 type NetworkSecurityTLSInspectionPolicyObservedState struct {
-	// Output only. The timestamp when the resource was created.
+	// Output only. The time when the TLS inspection policy was created.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.TlsInspectionPolicy.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
-	// Output only. The timestamp when the resource was updated.
+	// Output only. The time when the TLS inspection policy was updated.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.TlsInspectionPolicy.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
+// NetworkSecurityTLSInspectionPolicyStatus defines the observed state of NetworkSecurityTLSInspectionPolicy
+type NetworkSecurityTLSInspectionPolicyStatus struct {
+	/* Conditions represent the latest available observations of the
+	   NetworkSecurityTLSInspectionPolicy's current state. */
+	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
+
+	/* ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource. */
+	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
+
+	/* A unique specifier for the NetworkSecurityTLSInspectionPolicy resource in GCP. */
+	ExternalRef *string `json:"externalRef,omitempty"`
+
+	/* ObservedState contains the state of the resource as most recently observed in GCP. */
+	ObservedState *NetworkSecurityTLSInspectionPolicyObservedState `json:"observedState,omitempty"`
+}
+
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpnetworksecuritytlsinspectionpolicy;gcpnetworksecuritytlsinspectionpolicys
+// +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
+// +kubebuilder:resource:categories=gcp,shortName=gcpnetworksecuritytlsinspectionpolicy;gcpnetworksecuritytlsinspectionpolicies
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
 // +kubebuilder:printcolumn:name="Status Age",JSONPath=".status.conditions[?(@.type=='Ready')].lastTransitionTime",type="date",description="The last transition time for the value in 'Status'"
 
 // NetworkSecurityTLSInspectionPolicy is the Schema for the NetworkSecurityTLSInspectionPolicy API
-// +k8s:openapi-gen=true
 type NetworkSecurityTLSInspectionPolicy struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	// +required
 	Spec   NetworkSecurityTLSInspectionPolicySpec   `json:"spec,omitempty"`
 	Status NetworkSecurityTLSInspectionPolicyStatus `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+
 // NetworkSecurityTLSInspectionPolicyList contains a list of NetworkSecurityTLSInspectionPolicy
 type NetworkSecurityTLSInspectionPolicyList struct {
 	metav1.TypeMeta `json:",inline"`

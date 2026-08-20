@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common/parent"
+	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,15 +26,11 @@ var ParameterManagerParameterGVK = GroupVersion.WithKind("ParameterManagerParame
 // ParameterManagerParameterSpec defines the desired state of ParameterManagerParameter
 // +kcc:spec:proto=google.cloud.parametermanager.v1.Parameter
 type ParameterManagerParameterSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-
+	// Required. Defines the parent path of the resource.
+	*parent.ProjectAndLocationRef `json:",inline"`
 
 	// The ParameterManagerParameter name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-	// Optional. Labels as key value pairs
-	// +kcc:proto:field=google.cloud.parametermanager.v1.Parameter.labels
-	Labels map[string]string `json:"labels,omitempty"`
 
 	// Optional. Specifies the format of a Parameter.
 	// +kcc:proto:field=google.cloud.parametermanager.v1.Parameter.format
@@ -45,7 +42,7 @@ type ParameterManagerParameterSpec struct {
 	//  Parameter. The expected format is
 	//  `projects/*/locations/*/keyRings/*/cryptoKeys/*`.
 	// +kcc:proto:field=google.cloud.parametermanager.v1.Parameter.kms_key
-	KMSKey *string `json:"kmsKey,omitempty"`
+	KMSKeyRef *refs.KMSCryptoKeyRef `json:"kmsKeyRef,omitempty"`
 }
 
 // ParameterManagerParameterStatus defines the config connector machine state of ParameterManagerParameter
@@ -67,6 +64,11 @@ type ParameterManagerParameterStatus struct {
 // ParameterManagerParameterObservedState is the state of the ParameterManagerParameter resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.parametermanager.v1.Parameter
 type ParameterManagerParameterObservedState struct {
+	// Identifier. [Output only] The resource name of the Parameter in the format
+	// `projects/*/locations/*/parameters/*`
+	// +kcc:proto:field=google.cloud.parametermanager.v1.Parameter.name
+	Name *string `json:"name,omitempty"`
+
 	// Output only. [Output only] Create time stamp
 	// +kcc:proto:field=google.cloud.parametermanager.v1.Parameter.create_time
 	CreateTime *string `json:"createTime,omitempty"`

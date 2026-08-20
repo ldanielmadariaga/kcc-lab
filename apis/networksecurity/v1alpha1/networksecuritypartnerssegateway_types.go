@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,6 +22,28 @@ import (
 
 var NetworkSecurityPartnerSSEGatewayGVK = GroupVersion.WithKind("NetworkSecurityPartnerSSEGateway")
 
+// +kcc:proto=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.PartnerSSEGatewaySymantecOptions
+type PartnerSSEGatewaySymantecOptions struct {
+	// Optional. Target for the NCGs to send traffic to on the Symantec side.
+	//  Only supports IP address today.
+	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.PartnerSSEGatewaySymantecOptions.symantec_site_target_host
+	SymantecSiteTargetHost *string `json:"symantecSiteTargetHost,omitempty"`
+}
+
+// +kcc:proto=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.PartnerSSEGatewaySymantecOptions
+type PartnerSSEGatewaySymantecOptionsObservedState struct {
+	// Output only. UUID of the Symantec Location created on the customer's behalf.
+	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.PartnerSSEGatewaySymantecOptions.symantec_location_uuid
+	SymantecLocationUuid *string `json:"symantecLocationUuid,omitempty"`
+
+	// Output only. Symantec data center identifier that this SSEGW will connect to. Filled from the customer SSEGateway, and only for PartnerSSEGateways associated with Symantec today.
+	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.PartnerSSEGatewaySymantecOptions.symantec_site
+	SymantecSite *string `json:"symantecSite,omitempty"`
+}
+
 // NetworkSecurityPartnerSSEGatewaySpec defines the desired state of NetworkSecurityPartnerSSEGateway
 // +kcc:spec:proto=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway
 type NetworkSecurityPartnerSSEGatewaySpec struct {
@@ -32,40 +54,47 @@ type NetworkSecurityPartnerSSEGatewaySpec struct {
 	Location *string `json:"location"`
 
 	// The NetworkSecurityPartnerSSEGateway name. If not given, the metadata.name will be used.
+	// +kubebuilder:validation:Optional
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Optional. Labels as key value pairs
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
-	// Required. ID of the SSEGatewayReference that pairs with this
-	//  PartnerSSEGateway
+	// Required. ID of the SSEGatewayReference that pairs with this PartnerSSEGateway
+	// +kubebuilder:validation:Required
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_gateway_reference_id
-	// +required
 	SseGatewayReferenceID *string `json:"sseGatewayReferenceID,omitempty"`
 
 	// Optional. Subnet range of the partner_vpc
 	//  This field is deprecated. Use partner_subnet_range instead.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.partner_vpc_subnet_range
 	PartnerVPCSubnetRange *string `json:"partnerVPCSubnetRange,omitempty"`
 
 	// Optional. Subnet range where SSE GW instances are deployed.
 	//  Default value is set to "100.88.255.0/24".
 	//  The CIDR suffix should be less than or equal to 25.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_subnet_range
 	SseSubnetRange *string `json:"sseSubnetRange,omitempty"`
 
 	// Optional. Subnet range of the partner-owned subnet.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.partner_subnet_range
 	PartnerSubnetRange *string `json:"partnerSubnetRange,omitempty"`
 
 	// Optional. Virtual Network Identifier to use in NCG.
 	//  Today the only partner that depends on it is Symantec.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.vni
 	Vni *int32 `json:"vni,omitempty"`
 
 	// Optional. Required iff Partner is Symantec.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.symantec_options
-	SymantecOptions *PartnerSseGateway_PartnerSseGatewaySymantecOptions `json:"symantecOptions,omitempty"`
+	SymantecOptions *PartnerSSEGatewaySymantecOptions `json:"symantecOptions,omitempty"`
 }
 
 // NetworkSecurityPartnerSSEGatewayStatus defines the config connector machine state of NetworkSecurityPartnerSSEGateway
@@ -88,84 +117,101 @@ type NetworkSecurityPartnerSSEGatewayStatus struct {
 // +kcc:observedstate:proto=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway
 type NetworkSecurityPartnerSSEGatewayObservedState struct {
 	// Output only. Create time stamp
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. Update time stamp
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. Subnet range of the subnet where partner traffic is routed.
 	//  This field is deprecated. Use sse_subnet_range instead.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_vpc_subnet_range
 	SseVPCSubnetRange *string `json:"sseVPCSubnetRange,omitempty"`
 
 	// Output only. This is the IP where the partner traffic should be routed to.
 	//  This field is deprecated. Use sse_target_ip instead.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_vpc_target_ip
 	SseVPCTargetIP *string `json:"sseVPCTargetIP,omitempty"`
 
 	// Output only. IP of SSE BGP
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_bgp_ips
-	SseBGPIps []string `json:"sseBGPIps,omitempty"`
+	SseBGPIPs []string `json:"sseBGPIPs,omitempty"`
 
 	// Output only. ASN of SSE BGP
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_bgp_asn
 	SseBGPAsn *int32 `json:"sseBGPAsn,omitempty"`
 
 	// Output only. name of PartnerSSERealm owning the PartnerSSEGateway
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.partner_sse_realm
-	PartnerSseRealm *string `json:"partnerSseRealm,omitempty"`
+	PartnerSSERealm *string `json:"partnerSSERealm,omitempty"`
 
 	// Output only. Target IP that belongs to sse_subnet_range where partner
 	//  should send the traffic to reach the customer networks.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_target_ip
 	SseTargetIP *string `json:"sseTargetIP,omitempty"`
 
 	// Optional. Required iff Partner is Symantec.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.symantec_options
-	SymantecOptions *PartnerSseGateway_PartnerSseGatewaySymantecOptionsObservedState `json:"symantecOptions,omitempty"`
+	SymantecOptions *PartnerSSEGatewaySymantecOptionsObservedState `json:"symantecOptions,omitempty"`
 
 	// Output only. The project owning partner_facing_network. Only filled for
 	//  PartnerSSEGateways associated with Symantec today.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_project
 	SseProject *string `json:"sseProject,omitempty"`
 
 	// Output only. The ID of the network in sse_project containing
 	//  sse_subnet_range. This is also known as the partnerFacingNetwork. Only
 	//  filled for PartnerSSEGateways associated with Symantec today.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_network
 	SseNetwork *string `json:"sseNetwork,omitempty"`
 
 	// Output only. Full URI of the partner environment this PartnerSSEGateway is
 	//  connected to. Filled from the customer SSEGateway, and only for
 	//  PartnerSSEGateways associated with Symantec today.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.partner_sse_environment
-	PartnerSseEnvironment *string `json:"partnerSseEnvironment,omitempty"`
+	PartnerSSEEnvironment *string `json:"partnerSSEEnvironment,omitempty"`
 
 	// Output only. ISO-3166 alpha 2 country code used for localization.
 	//  Filled from the customer SSEGateway, and only for PartnerSSEGateways
 	//  associated with Symantec today.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.country
 	Country *string `json:"country,omitempty"`
 
 	// Output only. tzinfo identifier used for localization.
 	//  Filled from the customer SSEGateway, and only for PartnerSSEGateways
 	//  associated with Symantec today.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.timezone
 	Timezone *string `json:"timezone,omitempty"`
 
 	// Output only. Copied from the associated NCC resource in Symantec NCCGW
 	//  flows. Used by Symantec API.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.capacity_bps
 	CapacityBps *int64 `json:"capacityBps,omitempty"`
 
 	// Output only. State of the gateway.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.state
 	State *string `json:"state,omitempty"`
 
 	// Output only. Subnet ranges for Google-issued probe packets.
 	//  It's populated only for Prisma Access partners.
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.prober_subnet_ranges
 	ProberSubnetRanges []string `json:"proberSubnetRanges,omitempty"`
 }
@@ -176,6 +222,7 @@ type NetworkSecurityPartnerSSEGatewayObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

@@ -15,8 +15,9 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	v1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/firestore/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -25,30 +26,23 @@ var FirestoreDocumentGVK = GroupVersion.WithKind("FirestoreDocument")
 // FirestoreDocumentSpec defines the desired state of FirestoreDocument
 // +kcc:spec:proto=google.firestore.v1.Document
 type FirestoreDocumentSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	// DatabaseRef references the FirestoreDatabase in which to create the document.
+	// +required
+	DatabaseRef v1beta1.FirestoreDatabaseRef `json:"databaseRef"`
 
+	// Collection is the identity of the firestore collection in which to create the document.
+	Collection *string `json:"collection,omitempty"`
 
 	// The FirestoreDocument name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// // The resource name of the document, for example
+	// //  `projects/{project_id}/databases/{database_id}/documents/{document_path}`.
+	// // +kcc:proto:field=google.firestore.v1.Document.name
+	// Name *string `json:"name,omitempty"`
 
-	// Output only. The time at which the document was created.
-	//
-	//  This value increases monotonically when a document is deleted then
-	//  recreated. It can also be compared to values from other documents and
-	//  the `read_time` of a query.
-	// +kcc:proto:field=google.firestore.v1.Document.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. The time at which the document was last changed.
-	//
-	//  This value is initially set to the `create_time` then increases
-	//  monotonically with each change to the document. It can also be
-	//  compared to values from other documents and the `read_time` of a query.
-	// +kcc:proto:field=google.firestore.v1.Document.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
+	// Fields holds the field values; values follow JSON typing conventions.
+	Fields map[string]apiextensionsv1.JSON `json:"fields,omitempty"`
 }
 
 // FirestoreDocumentStatus defines the config connector machine state of FirestoreDocument
@@ -70,6 +64,21 @@ type FirestoreDocumentStatus struct {
 // FirestoreDocumentObservedState is the state of the FirestoreDocument resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.firestore.v1.Document
 type FirestoreDocumentObservedState struct {
+	// Output only. The time at which the document was created.
+	//
+	//  This value increases monotonically when a document is deleted then
+	//  recreated. It can also be compared to values from other documents and
+	//  the `read_time` of a query.
+	// +kcc:proto:field=google.firestore.v1.Document.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time at which the document was last changed.
+	//
+	//  This value is initially set to the `create_time` then increases
+	//  monotonically with each change to the document. It can also be
+	//  compared to values from other documents and the `read_time` of a query.
+	// +kcc:proto:field=google.firestore.v1.Document.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient

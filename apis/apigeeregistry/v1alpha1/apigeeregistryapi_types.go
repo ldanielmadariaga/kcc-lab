@@ -33,6 +33,7 @@ type ApigeeRegistryAPISpec struct {
 
 	// The ApigeeRegistryAPI name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Human-meaningful name.
 	// +kcc:proto:field=google.cloud.apigeeregistry.v1.Api.display_name
 	DisplayName *string `json:"displayName,omitempty"`

@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	computev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -33,31 +34,23 @@ type NetworkSecurityInterceptDeploymentSpec struct {
 
 	// The NetworkSecurityInterceptDeployment name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-	// Optional. Labels are key/value pairs that help to organize and filter
-	//  resources.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.InterceptDeployment.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// Required. Immutable. The regional forwarding rule that fronts the
-	//  interceptors, for example:
-	//  `projects/123456789/regions/us-central1/forwardingRules/my-rule`.
-	//  See https://google.aip.dev/124.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.InterceptDeployment.forwarding_rule
-	// +required
-	ForwardingRule *string `json:"forwardingRule,omitempty"`
-
-	// Required. Immutable. The deployment group that this deployment is a part
-	//  of, for example:
-	//  `projects/123456789/locations/global/interceptDeploymentGroups/my-dg`.
-	//  See https://google.aip.dev/124.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.InterceptDeployment.intercept_deployment_group
-	// +required
-	InterceptDeploymentGroup *string `json:"interceptDeploymentGroup,omitempty"`
 
 	// Optional. User-provided description of the deployment.
-	//  Used as additional context for the deployment.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.InterceptDeployment.description
+	// Used as additional context for the deployment.
+	// +kubebuilder:validation:Optional
 	Description *string `json:"description,omitempty"`
+
+	// Required. Immutable. The regional forwarding rule that fronts the interceptors, for example: `projects/123456789/regions/us-central1/forwardingRules/my-rule`.
+	// +kubebuilder:validation:Required
+	ForwardingRuleRef *computev1beta1.ForwardingRuleRef `json:"forwardingRuleRef"`
+
+	// Required. Immutable. The deployment group that this deployment is a part of, for example: `projects/123456789/locations/global/interceptDeploymentGroups/my-dg`.
+	// +kubebuilder:validation:Required
+	InterceptDeploymentGroupRef *NetworkSecurityInterceptDeploymentGroupRef `json:"interceptDeploymentGroupRef"`
+
+	// Optional. Labels are key/value pairs that help to organize and filter resources.
+	// +kubebuilder:validation:Optional
+	Labels map[string]string `json:"labels,omitempty"`
 }
 
 // NetworkSecurityInterceptDeploymentStatus defines the config connector machine state of NetworkSecurityInterceptDeployment
@@ -80,25 +73,18 @@ type NetworkSecurityInterceptDeploymentStatus struct {
 // +kcc:observedstate:proto=google.cloud.networksecurity.v1.InterceptDeployment
 type NetworkSecurityInterceptDeploymentObservedState struct {
 	// Output only. The timestamp when the resource was created.
-	//  See https://google.aip.dev/148#timestamps.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.InterceptDeployment.create_time
+	// See https://google.aip.dev/148#timestamps.
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. The timestamp when the resource was most recently updated.
-	//  See https://google.aip.dev/148#timestamps.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.InterceptDeployment.update_time
+	// See https://google.aip.dev/148#timestamps.
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. The current state of the deployment.
-	//  See https://google.aip.dev/216.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.InterceptDeployment.state
+	// See https://google.aip.dev/216.
 	State *string `json:"state,omitempty"`
 
-	// Output only. The current state of the resource does not match the user's
-	//  intended state, and the system is working to reconcile them. This part of
-	//  the normal operation (e.g. linking a new association to the parent group).
-	//  See https://google.aip.dev/128.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.InterceptDeployment.reconciling
+	// Output only. The current state of the resource does not match the user's intended state, and the system is working to reconcile them.
 	Reconciling *bool `json:"reconciling,omitempty"`
 }
 

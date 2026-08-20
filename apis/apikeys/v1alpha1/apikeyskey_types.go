@@ -28,7 +28,6 @@ type APIKeysKeySpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-
 	// The APIKeysKey name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Human-readable display name of this key that you can modify.

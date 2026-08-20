@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ package v1alpha1
 
 import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
+	pubsubv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/pubsub/v1beta1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -34,27 +35,28 @@ type TranscoderJobSpec struct {
 
 	// The TranscoderJob name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Input only. Specify the `input_uri` to populate empty `uri` fields in each
-	//  element of `Job.config.inputs` or `JobTemplate.config.inputs` when using
-	//  template. URI of the media. Input files must be at least 5 seconds in
-	//  duration and stored in Cloud Storage (for example,
-	//  `gs://bucket/inputs/file.mp4`). See [Supported input and output
-	//  formats](https://cloud.google.com/transcoder/docs/concepts/supported-input-and-output-formats).
+	// element of `Job.config.inputs` or `JobTemplate.config.inputs` when using
+	// template. URI of the media. Input files must be at least 5 seconds in
+	// duration and stored in Cloud Storage (for example,
+	// `gs://bucket/inputs/file.mp4`). See [Supported input and output
+	// formats](https://cloud.google.com/transcoder/docs/concepts/supported-input-and-output-formats).
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Job.input_uri
 	InputURI *string `json:"inputURI,omitempty"`
 
 	// Input only. Specify the `output_uri` to populate an empty
-	//  `Job.config.output.uri` or `JobTemplate.config.output.uri` when using
-	//  template. URI for the output file(s). For example,
-	//  `gs://my-bucket/outputs/`. See [Supported input and output
-	//  formats](https://cloud.google.com/transcoder/docs/concepts/supported-input-and-output-formats).
+	// `Job.config.output.uri` or `JobTemplate.config.output.uri` when using
+	// template. URI for the output file(s). For example,
+	// `gs://my-bucket/outputs/`. See [Supported input and output
+	// formats](https://cloud.google.com/transcoder/docs/concepts/supported-input-and-output-formats).
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Job.output_uri
 	OutputURI *string `json:"outputURI,omitempty"`
 
 	// Input only. Specify the `template_id` to use for populating `Job.config`.
-	//  The default is `preset/web-hd`, which is the only supported preset.
+	// The default is `preset/web-hd`, which is the only supported preset.
 	//
-	//  User defined JobTemplate: `{job_template_id}`
+	// User defined JobTemplate: `{job_template_id}`
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Job.template_id
 	TemplateID *string `json:"templateID,omitempty"`
 
@@ -63,35 +65,30 @@ type TranscoderJobSpec struct {
 	Config *JobConfig `json:"config,omitempty"`
 
 	// Job time to live value in days, which will be effective after job
-	//  completion. Job should be deleted automatically after the given TTL. Enter
-	//  a value between 1 and 90. The default is 30.
+	// completion. Job should be deleted automatically after the given TTL. Enter
+	// a value between 1 and 90. The default is 30.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Job.ttl_after_completion_days
 	TTLAfterCompletionDays *int32 `json:"ttlAfterCompletionDays,omitempty"`
 
-	// The labels associated with this job. You can use these to organize and
-	//  group your jobs.
-	// +kcc:proto:field=google.cloud.video.transcoder.v1.Job.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
 	// The processing mode of the job.
-	//  The default is `PROCESSING_MODE_INTERACTIVE`.
+	// The default is `PROCESSING_MODE_INTERACTIVE`.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Job.mode
 	Mode *string `json:"mode,omitempty"`
 
 	// The processing priority of a batch job.
-	//  This field can only be set for batch mode jobs. The default value is 0.
-	//  This value cannot be negative. Higher values correspond to higher
-	//  priorities for the job.
+	// This field can only be set for batch mode jobs. The default value is 0.
+	// This value cannot be negative. Higher values correspond to higher
+	// priorities for the job.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Job.batch_mode_priority
 	BatchModePriority *int32 `json:"batchModePriority,omitempty"`
 
 	// Optional. The optimization strategy of the job. The default is
-	//  `AUTODETECT`.
+	// `AUTODETECT`.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Job.optimization
 	Optimization *string `json:"optimization,omitempty"`
 
 	// Optional. Insert silence and duplicate frames when timestamp gaps are
-	//  detected in a given stream.
+	// detected in a given stream.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Job.fill_content_gaps
 	FillContentGaps *bool `json:"fillContentGaps,omitempty"`
 }
@@ -136,11 +133,18 @@ type TranscoderJobObservedState struct {
 	EndTime *string `json:"endTime,omitempty"`
 
 	// Output only. An error object that describes the reason for the failure.
-	//  This property is always present when
-	//  [ProcessingState][google.cloud.video.transcoder.v1.Job.ProcessingState] is
-	//  `FAILED`.
+	// This property is always present when
+	// [ProcessingState][google.cloud.video.transcoder.v1.Job.ProcessingState] is
+	// `FAILED`.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Job.error
 	Error *common.Status `json:"error,omitempty"`
+}
+
+// +kcc:proto=google.cloud.video.transcoder.v1.PubsubDestination
+type PubsubDestination struct {
+	// TopicRef is a reference to a PubSubTopic.
+	// +kcc:proto:field=google.cloud.video.transcoder.v1.PubsubDestination.topic
+	TopicRef *pubsubv1beta1.PubSubTopicRef `json:"topicRef,omitempty"`
 }
 
 // +genclient
@@ -149,6 +153,7 @@ type TranscoderJobObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

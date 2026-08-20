@@ -21,7 +21,8 @@
 
 package v1alpha1
 
-/* unreachable type CapacityCommitment
+/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.CapacityCommitment", skipping
+
 // +kcc:proto=google.cloud.bigquery.reservation.v1.CapacityCommitment
 type CapacityCommitment struct {
 
@@ -57,7 +58,8 @@ type CapacityCommitment struct {
 }
 */
 
-/* unreachable type CapacityCommitmentObservedState
+/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.CapacityCommitment", skipping
+
 // +kcc:observedstate:proto=google.cloud.bigquery.reservation.v1.CapacityCommitment
 type CapacityCommitmentObservedState struct {
 	// Output only. The resource name of the capacity commitment, e.g.,

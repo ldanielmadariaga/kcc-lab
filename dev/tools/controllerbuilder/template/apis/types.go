@@ -44,8 +44,10 @@ type APIArgs struct {
 	// ObservedStateFields is the same for the ObservedState struct. Empty leaves
 	// it empty, which is what a proto with no OUTPUT_ONLY field should produce.
 	ObservedStateFields string
-	// ExtraImports are import paths the rendered fields need beyond the three
-	// below, e.g. apis/common when an observed field is a google.rpc.Status.
+	// ExtraImports are complete aliased import lines the rendered fields need
+	// beyond the three below, e.g. common "github.com/.../apis/common" when a
+	// field is a google.rpc.Status. Aliased because the qualifier a field uses
+	// is often not the import path's last segment.
 	ExtraImports []string
 }
 
@@ -71,7 +73,7 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 {{- range .ExtraImports }}
-	"{{ . }}"
+	{{ . }}
 {{- end }}
 )
 

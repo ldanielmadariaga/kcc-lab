@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,41 +26,56 @@ var NetworkSecuritySecurityProfileGroupGVK = GroupVersion.WithKind("NetworkSecur
 // +kcc:spec:proto=google.cloud.networksecurity.v1.SecurityProfileGroup
 type NetworkSecuritySecurityProfileGroupSpec struct {
 	// The project that this resource belongs to.
+	// +required
+	// +kubebuilder:validation:Required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +required
+	// +kubebuilder:validation:Required
 	Location *string `json:"location"`
 
 	// The NetworkSecuritySecurityProfileGroup name. If not given, the metadata.name will be used.
+	// +optional
+	// +kubebuilder:validation:Optional
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Optional. An optional description of the profile group. Max length 2048
 	//  characters.
+	// +optional
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1.SecurityProfileGroup.description
 	Description *string `json:"description,omitempty"`
 
 	// Optional. Labels as key value pairs.
+	// +optional
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1.SecurityProfileGroup.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
-	// Optional. Reference to a SecurityProfile with the ThreatPrevention
-	//  configuration.
+	// Optional. Reference to a SecurityProfile with the ThreatPrevention configuration.
+	// +optional
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1.SecurityProfileGroup.threat_prevention_profile
-	ThreatPreventionProfile *string `json:"threatPreventionProfile,omitempty"`
+	ThreatPreventionProfileRef *NetworkSecuritySecurityProfileRef `json:"threatPreventionProfileRef,omitempty"`
 
-	// Optional. Reference to a SecurityProfile with the CustomMirroring
-	//  configuration.
+	// Optional. Reference to a SecurityProfile with the CustomMirroring configuration.
+	// +optional
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1.SecurityProfileGroup.custom_mirroring_profile
-	CustomMirroringProfile *string `json:"customMirroringProfile,omitempty"`
+	CustomMirroringProfileRef *NetworkSecuritySecurityProfileRef `json:"customMirroringProfileRef,omitempty"`
 
-	// Optional. Reference to a SecurityProfile with the CustomIntercept
-	//  configuration.
+	// Optional. Reference to a SecurityProfile with the CustomIntercept configuration.
+	// +optional
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1.SecurityProfileGroup.custom_intercept_profile
-	CustomInterceptProfile *string `json:"customInterceptProfile,omitempty"`
+	CustomInterceptProfileRef *NetworkSecuritySecurityProfileRef `json:"customInterceptProfileRef,omitempty"`
 
-	// Optional. Reference to a SecurityProfile with the UrlFiltering
-	//  configuration.
+	// Optional. Reference to a SecurityProfile with the UrlFiltering configuration.
+	// +optional
+	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1.SecurityProfileGroup.url_filtering_profile
-	URLFilteringProfile *string `json:"urlFilteringProfile,omitempty"`
+	URLFilteringProfileRef *NetworkSecuritySecurityProfileRef `json:"urlFilteringProfileRef,omitempty"`
 }
 
 // NetworkSecuritySecurityProfileGroupStatus defines the config connector machine state of NetworkSecuritySecurityProfileGroup
@@ -96,8 +111,7 @@ type NetworkSecuritySecurityProfileGroupObservedState struct {
 	// +kcc:proto:field=google.cloud.networksecurity.v1.SecurityProfileGroup.etag
 	Etag *string `json:"etag,omitempty"`
 
-	// Output only. Identifier used by the data-path. Unique within {container,
-	//  location}.
+	// Output only. Identifier used by the data-path. Unique within {container, location}.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.SecurityProfileGroup.data_path_id
 	DataPathID *uint64 `json:"dataPathID,omitempty"`
 }
@@ -108,6 +122,7 @@ type NetworkSecuritySecurityProfileGroupObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

@@ -17,6 +17,7 @@ package scaffold
 import (
 	"bytes"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/pkg/codegen"
@@ -144,12 +145,7 @@ func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedSta
 	codegen.WriteObservedStateFields(&buf, details, observedStateMessages, identityFields)
 	fields = buf.String()
 
-	// google.rpc.Status maps to apis/common, which the types template does not
-	// import. Without this the scaffolded file does not compile.
-	if strings.Contains(fields, "*common.Status") || strings.Contains(fields, "[]common.Status") {
-		extraImports = append(extraImports, "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common")
-	}
-	return fields, extraImports
+	return fields, ExtraImportsFor(fields)
 }
 
 // judgementFor reports whether a field needs a human decision that the generator
@@ -263,4 +259,32 @@ func FormatOutputOnlyCandidates(kind, group string, items []OutputOnlyCandidate)
 			kind, group, it.FieldPath, it.Comment))
 	}
 	return sb.String()
+}
+
+// ExtraImportsFor reports the imports a rendered field body needs beyond the
+// three the types template always writes.
+//
+// A handful of proto types map to Go types from other packages -- google.rpc.Status
+// to common.Status, google.protobuf.Struct to apiextensionsv1.JSON. The template
+// imports none of them, so anything the rendered Spec or ObservedState references
+// has to be declared or the scaffolded file does not compile. Both bodies are
+// scanned, because either can contain such a field: securitycentermanagement puts
+// an apiextensionsv1.JSON in the Spec, transcoder a common.Status in the
+// ObservedState.
+func ExtraImportsFor(bodies ...string) []string {
+	var out []string
+	for qualifier, importPath := range codegen.QualifierImports {
+		for _, body := range bodies {
+			if strings.Contains(body, qualifier+".") {
+				// Emit the alias, always. The path's last segment is often not the
+				// qualifier the field uses -- apiextensions-apiserver/.../v1 provides
+				// package "v1", while the field says apiextensionsv1.JSON -- and
+				// goimports then removes the import as unused rather than fixing it.
+				out = append(out, fmt.Sprintf("%s %q", qualifier, importPath))
+				break
+			}
+		}
+	}
+	sort.Strings(out)
+	return out
 }

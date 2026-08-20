@@ -25,10 +25,13 @@ var BigLakeCatalogGVK = GroupVersion.WithKind("BigLakeCatalog")
 // BigLakeCatalogSpec defines the desired state of BigLakeCatalog
 // +kcc:spec:proto=google.cloud.bigquery.biglake.v1.Catalog
 type BigLakeCatalogSpec struct {
-	// The project that this resource belongs to.
+	// The Project that this resource belongs to.
+	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The location of this resource.
+	// The location that this resource belongs to.
+	// +required
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location is immutable."
 	Location string `json:"location"`
 
 	// The BigLakeCatalog name. If not given, the metadata.name will be used.
@@ -61,16 +64,6 @@ type BigLakeCatalogObservedState struct {
 	// Output only. The last modification time of the catalog.
 	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Catalog.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. The deletion time of the catalog. Only set after the catalog
-	//  is deleted.
-	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Catalog.delete_time
-	DeleteTime *string `json:"deleteTime,omitempty"`
-
-	// Output only. The time when this catalog is considered expired. Only set
-	//  after the catalog is deleted.
-	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Catalog.expire_time
-	ExpireTime *string `json:"expireTime,omitempty"`
 }
 
 // +genclient

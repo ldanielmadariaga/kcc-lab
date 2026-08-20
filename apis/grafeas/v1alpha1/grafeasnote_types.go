@@ -28,7 +28,6 @@ type GrafeasNoteSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-
 	// The GrafeasNote name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// A one sentence description of this note.

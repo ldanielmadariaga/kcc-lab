@@ -29,33 +29,6 @@ import (
 	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
 )
 
-/* unreachable type AuthorizedView
-// +kcc:proto=google.bigtable.admin.v2.AuthorizedView
-type AuthorizedView struct {
-	// Identifier. The name of this AuthorizedView.
-	//  Values are of the form
-	//  `projects/{project}/instances/{instance}/tables/{table}/authorizedViews/{authorized_view}`
-	// +kcc:proto:field=google.bigtable.admin.v2.AuthorizedView.name
-	Name *string `json:"name,omitempty"`
-
-	// An AuthorizedView permitting access to an explicit subset of a Table.
-	// +kcc:proto:field=google.bigtable.admin.v2.AuthorizedView.subset_view
-	SubsetView *AuthorizedView_SubsetView `json:"subsetView,omitempty"`
-
-	// The etag for this AuthorizedView.
-	//  If this is provided on update, it must match the server's etag. The server
-	//  returns ABORTED error on a mismatched etag.
-	// +kcc:proto:field=google.bigtable.admin.v2.AuthorizedView.etag
-	Etag *string `json:"etag,omitempty"`
-
-	// Set to true to make the AuthorizedView protected against deletion.
-	//  The parent Table and containing Instance cannot be deleted if an
-	//  AuthorizedView has this bit set.
-	// +kcc:proto:field=google.bigtable.admin.v2.AuthorizedView.deletion_protection
-	DeletionProtection *bool `json:"deletionProtection,omitempty"`
-}
-*/
-
 /* unreachable type AuthorizedView_FamilySubsets
 // +kcc:proto=google.bigtable.admin.v2.AuthorizedView.FamilySubsets
 type AuthorizedView_FamilySubsets struct {
@@ -88,135 +61,21 @@ type AuthorizedView_SubsetView struct {
 type AutoscalingLimits struct {
 	// Required. Minimum number of nodes to scale down to.
 	// +kcc:proto:field=google.bigtable.admin.v2.AutoscalingLimits.min_serve_nodes
-	// +required
 	MinServeNodes *int32 `json:"minServeNodes,omitempty"`
 
 	// Required. Maximum number of nodes to scale up to.
 	// +kcc:proto:field=google.bigtable.admin.v2.AutoscalingLimits.max_serve_nodes
-	// +required
 	MaxServeNodes *int32 `json:"maxServeNodes,omitempty"`
 }
-
-// +kcc:proto=google.bigtable.admin.v2.AutoscalingTargets
-type AutoscalingTargets struct {
-	// The cpu utilization that the Autoscaler should be trying to achieve.
-	//  This number is on a scale from 0 (no utilization) to
-	//  100 (total utilization), and is limited between 10 and 80, otherwise it
-	//  will return INVALID_ARGUMENT error.
-	// +kcc:proto:field=google.bigtable.admin.v2.AutoscalingTargets.cpu_utilization_percent
-	CPUUtilizationPercent *int32 `json:"cpuUtilizationPercent,omitempty"`
-
-	// The storage utilization that the Autoscaler should be trying to achieve.
-	//  This number is limited between 2560 (2.5TiB) and 5120 (5TiB) for a SSD
-	//  cluster and between 8192 (8TiB) and 16384 (16TiB) for an HDD cluster,
-	//  otherwise it will return INVALID_ARGUMENT error. If this value is set to 0,
-	//  it will be treated as if it were set to the default value: 2560 for SSD,
-	//  8192 for HDD.
-	// +kcc:proto:field=google.bigtable.admin.v2.AutoscalingTargets.storage_utilization_gib_per_node
-	StorageUtilizationGibPerNode *int32 `json:"storageUtilizationGibPerNode,omitempty"`
-}
-
-/* unreachable type Backup
-// +kcc:proto=google.bigtable.admin.v2.Backup
-type Backup struct {
-	// A globally unique identifier for the backup which cannot be
-	//  changed. Values are of the form
-	//  `projects/{project}/instances/{instance}/clusters/{cluster}/
-	//     backups/[_a-zA-Z0-9][-_.a-zA-Z0-9]*`
-	//  The final segment of the name must be between 1 and 50 characters
-	//  in length.
-	//
-	//  The backup is stored in the cluster identified by the prefix of the backup
-	//  name of the form
-	//  `projects/{project}/instances/{instance}/clusters/{cluster}`.
-	// +kcc:proto:field=google.bigtable.admin.v2.Backup.name
-	Name *string `json:"name,omitempty"`
-
-	// Required. Immutable. Name of the table from which this backup was created.
-	//  This needs to be in the same instance as the backup. Values are of the form
-	//  `projects/{project}/instances/{instance}/tables/{source_table}`.
-	// +kcc:proto:field=google.bigtable.admin.v2.Backup.source_table
-	// +required
-	SourceTable *string `json:"sourceTable,omitempty"`
-
-	// Required. The expiration time of the backup.
-	//  When creating a backup or updating its `expire_time`, the value must be
-	//  greater than the backup creation time by:
-	//  - At least 6 hours
-	//  - At most 90 days
-	//
-	//  Once the `expire_time` has passed, Cloud Bigtable will delete the backup.
-	// +kcc:proto:field=google.bigtable.admin.v2.Backup.expire_time
-	// +required
-	ExpireTime *string `json:"expireTime,omitempty"`
-
-	// Indicates the backup type of the backup.
-	// +kcc:proto:field=google.bigtable.admin.v2.Backup.backup_type
-	BackupType *string `json:"backupType,omitempty"`
-
-	// The time at which the hot backup will be converted to a standard backup.
-	//  Once the `hot_to_standard_time` has passed, Cloud Bigtable will convert the
-	//  hot backup to a standard backup. This value must be greater than the backup
-	//  creation time by:
-	//  - At least 24 hours
-	//
-	//  This field only applies for hot backups. When creating or updating a
-	//  standard backup, attempting to set this field will fail the request.
-	// +kcc:proto:field=google.bigtable.admin.v2.Backup.hot_to_standard_time
-	HotToStandardTime *string `json:"hotToStandardTime,omitempty"`
-}
-*/
-
-/* unreachable type Cluster
-// +kcc:proto=google.bigtable.admin.v2.Cluster
-type Cluster struct {
-	// The unique name of the cluster. Values are of the form
-	//  `projects/{project}/instances/{instance}/clusters/[a-z][-a-z0-9]*`.
-	// +kcc:proto:field=google.bigtable.admin.v2.Cluster.name
-	Name *string `json:"name,omitempty"`
-
-	// Immutable. The location where this cluster's nodes and storage reside. For
-	//  best performance, clients should be located as close as possible to this
-	//  cluster. Currently only zones are supported, so values should be of the
-	//  form `projects/{project}/locations/{zone}`.
-	// +kcc:proto:field=google.bigtable.admin.v2.Cluster.location
-	Location *string `json:"location,omitempty"`
-
-	// The number of nodes in the cluster. If no value is set,
-	//  Cloud Bigtable automatically allocates nodes based on your data footprint
-	//  and optimized for 50% storage utilization.
-	// +kcc:proto:field=google.bigtable.admin.v2.Cluster.serve_nodes
-	ServeNodes *int32 `json:"serveNodes,omitempty"`
-
-	// Immutable. The node scaling factor of this cluster.
-	// +kcc:proto:field=google.bigtable.admin.v2.Cluster.node_scaling_factor
-	NodeScalingFactor *string `json:"nodeScalingFactor,omitempty"`
-
-	// Configuration for this cluster.
-	// +kcc:proto:field=google.bigtable.admin.v2.Cluster.cluster_config
-	ClusterConfig *Cluster_ClusterConfig `json:"clusterConfig,omitempty"`
-
-	// Immutable. The type of storage used by this cluster to serve its
-	//  parent instance's tables, unless explicitly overridden.
-	// +kcc:proto:field=google.bigtable.admin.v2.Cluster.default_storage_type
-	DefaultStorageType *string `json:"defaultStorageType,omitempty"`
-
-	// Immutable. The encryption configuration for CMEK-protected clusters.
-	// +kcc:proto:field=google.bigtable.admin.v2.Cluster.encryption_config
-	EncryptionConfig *Cluster_EncryptionConfig `json:"encryptionConfig,omitempty"`
-}
-*/
 
 // +kcc:proto=google.bigtable.admin.v2.Cluster.ClusterAutoscalingConfig
 type Cluster_ClusterAutoscalingConfig struct {
 	// Required. Autoscaling limits for this cluster.
 	// +kcc:proto:field=google.bigtable.admin.v2.Cluster.ClusterAutoscalingConfig.autoscaling_limits
-	// +required
 	AutoscalingLimits *AutoscalingLimits `json:"autoscalingLimits,omitempty"`
 
 	// Required. Autoscaling targets for this cluster.
 	// +kcc:proto:field=google.bigtable.admin.v2.Cluster.ClusterAutoscalingConfig.autoscaling_targets
-	// +required
 	AutoscalingTargets *AutoscalingTargets `json:"autoscalingTargets,omitempty"`
 }
 
@@ -227,124 +86,9 @@ type Cluster_ClusterConfig struct {
 	ClusterAutoscalingConfig *Cluster_ClusterAutoscalingConfig `json:"clusterAutoscalingConfig,omitempty"`
 }
 
-// +kcc:proto=google.bigtable.admin.v2.Cluster.EncryptionConfig
-type Cluster_EncryptionConfig struct {
-	// Describes the Cloud KMS encryption key that will be used to protect the
-	//  destination Bigtable cluster. The requirements for this key are:
-	//   1) The Cloud Bigtable service account associated with the project that
-	//   contains this cluster must be granted the
-	//   `cloudkms.cryptoKeyEncrypterDecrypter` role on the CMEK key.
-	//   2) Only regional keys can be used and the region of the CMEK key must
-	//   match the region of the cluster.
-	//  Values are of the form
-	//  `projects/{project}/locations/{location}/keyRings/{keyring}/cryptoKeys/{key}`
-	// +kcc:proto:field=google.bigtable.admin.v2.Cluster.EncryptionConfig.kms_key_name
-	KMSKeyName *string `json:"kmsKeyName,omitempty"`
-}
-
 /* unreachable type EncryptionInfo
 // +kcc:proto=google.bigtable.admin.v2.EncryptionInfo
 type EncryptionInfo struct {
-}
-*/
-
-/* unreachable type LogicalView
-// +kcc:proto=google.bigtable.admin.v2.LogicalView
-type LogicalView struct {
-	// Identifier. The unique name of the logical view.
-	//  Format:
-	//  `projects/{project}/instances/{instance}/logicalViews/{logical_view}`
-	// +kcc:proto:field=google.bigtable.admin.v2.LogicalView.name
-	Name *string `json:"name,omitempty"`
-
-	// Required. The logical view's select query.
-	// +kcc:proto:field=google.bigtable.admin.v2.LogicalView.query
-	// +required
-	Query *string `json:"query,omitempty"`
-
-	// Optional. The etag for this logical view.
-	//  This may be sent on update requests to ensure that the client has an
-	//  up-to-date value before proceeding. The server returns an ABORTED error on
-	//  a mismatched etag.
-	// +kcc:proto:field=google.bigtable.admin.v2.LogicalView.etag
-	Etag *string `json:"etag,omitempty"`
-
-	// Optional. Set to true to make the LogicalView protected against deletion.
-	// +kcc:proto:field=google.bigtable.admin.v2.LogicalView.deletion_protection
-	DeletionProtection *bool `json:"deletionProtection,omitempty"`
-}
-*/
-
-/* unreachable type MaterializedView
-// +kcc:proto=google.bigtable.admin.v2.MaterializedView
-type MaterializedView struct {
-	// Identifier. The unique name of the materialized view.
-	//  Format:
-	//  `projects/{project}/instances/{instance}/materializedViews/{materialized_view}`
-	// +kcc:proto:field=google.bigtable.admin.v2.MaterializedView.name
-	Name *string `json:"name,omitempty"`
-
-	// Required. Immutable. The materialized view's select query.
-	// +kcc:proto:field=google.bigtable.admin.v2.MaterializedView.query
-	// +required
-	Query *string `json:"query,omitempty"`
-
-	// Optional. The etag for this materialized view.
-	//  This may be sent on update requests to ensure that the client has an
-	//  up-to-date value before proceeding. The server returns an ABORTED error on
-	//  a mismatched etag.
-	// +kcc:proto:field=google.bigtable.admin.v2.MaterializedView.etag
-	Etag *string `json:"etag,omitempty"`
-
-	// Set to true to make the MaterializedView protected against deletion.
-	// +kcc:proto:field=google.bigtable.admin.v2.MaterializedView.deletion_protection
-	DeletionProtection *bool `json:"deletionProtection,omitempty"`
-}
-*/
-
-/* unreachable type BackupObservedState
-// +kcc:observedstate:proto=google.bigtable.admin.v2.Backup
-type BackupObservedState struct {
-	// Output only. Name of the backup from which this backup was copied. If a
-	//  backup is not created by copying a backup, this field will be empty. Values
-	//  are of the form:
-	//  projects/<project>/instances/<instance>/clusters/<cluster>/backups/<backup>
-	// +kcc:proto:field=google.bigtable.admin.v2.Backup.source_backup
-	SourceBackup *string `json:"sourceBackup,omitempty"`
-
-	// Output only. `start_time` is the time that the backup was started
-	//  (i.e. approximately the time the
-	//  [CreateBackup][google.bigtable.admin.v2.BigtableTableAdmin.CreateBackup]
-	//  request is received).  The row data in this backup will be no older than
-	//  this timestamp.
-	// +kcc:proto:field=google.bigtable.admin.v2.Backup.start_time
-	StartTime *string `json:"startTime,omitempty"`
-
-	// Output only. `end_time` is the time that the backup was finished. The row
-	//  data in the backup will be no newer than this timestamp.
-	// +kcc:proto:field=google.bigtable.admin.v2.Backup.end_time
-	EndTime *string `json:"endTime,omitempty"`
-
-	// Output only. Size of the backup in bytes.
-	// +kcc:proto:field=google.bigtable.admin.v2.Backup.size_bytes
-	SizeBytes *int64 `json:"sizeBytes,omitempty"`
-
-	// Output only. The current state of the backup.
-	// +kcc:proto:field=google.bigtable.admin.v2.Backup.state
-	State *string `json:"state,omitempty"`
-
-	// Output only. The encryption information for the backup.
-	// +kcc:proto:field=google.bigtable.admin.v2.Backup.encryption_info
-	EncryptionInfo *EncryptionInfoObservedState `json:"encryptionInfo,omitempty"`
-}
-*/
-
-/* unreachable type ClusterObservedState
-// +kcc:observedstate:proto=google.bigtable.admin.v2.Cluster
-type ClusterObservedState struct {
-	// Output only. The current state of the cluster.
-	// +kcc:proto:field=google.bigtable.admin.v2.Cluster.state
-	State *string `json:"state,omitempty"`
 }
 */
 

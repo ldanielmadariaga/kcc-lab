@@ -15,24 +15,28 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var DataCatalogTagTemplateGVK = GroupVersion.WithKind("DataCatalogTagTemplate")
 
+// Parent defines the parent resource hierarchy for a DataCatalogTagTemplate.
+type Parent struct {
+	// +required
+	Location string `json:"location"`
+	// +required
+	ProjectRef *v1beta1.ProjectRef `json:"projectRef"`
+}
+
 // DataCatalogTagTemplateSpec defines the desired state of DataCatalogTagTemplate
 // +kcc:spec:proto=google.cloud.datacatalog.v1.TagTemplate
 type DataCatalogTagTemplateSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-
-	// The location of this resource.
-	Location string `json:"location"`
-
+	Parent `json:",inline"`
 	// The DataCatalogTagTemplate name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Display name for this template. Defaults to an empty string.
 	//
 	//  The name must contain only Unicode letters, numbers (0-9), underscores (_),
@@ -50,11 +54,9 @@ type DataCatalogTagTemplateSpec struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.TagTemplate.is_publicly_readable
 	IsPubliclyReadable *bool `json:"isPubliclyReadable,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
-	// Optional. Transfer status of the TagTemplate
-	// +kcc:proto:field=google.cloud.datacatalog.v1.TagTemplate.dataplex_transfer_status
-	DataplexTransferStatus *string `json:"dataplexTransferStatus,omitempty"`
+	// Fields used to create a Tag
+	// +kcc:proto:field=google.cloud.datacatalog.v1.TagTemplate.fields
+	Fields map[string]TagTemplateField `json:"fields,omitempty"`
 }
 
 // DataCatalogTagTemplateStatus defines the config connector machine state of DataCatalogTagTemplate
@@ -73,9 +75,10 @@ type DataCatalogTagTemplateStatus struct {
 	ObservedState *DataCatalogTagTemplateObservedState `json:"observedState,omitempty"`
 }
 
-// DataCatalogTagTemplateObservedState is the state of the DataCatalogTagTemplate resource as most recently observed in GCP.
-// +kcc:observedstate:proto=google.cloud.datacatalog.v1.TagTemplate
 type DataCatalogTagTemplateObservedState struct {
+	// Optional. Transfer status of the TagTemplate
+	// +kcc:proto:field=google.cloud.datacatalog.v1.TagTemplate.dataplex_transfer_status
+	DataplexTransferStatus *string `json:"dataplexTransferStatus,omitempty"`
 }
 
 // +genclient

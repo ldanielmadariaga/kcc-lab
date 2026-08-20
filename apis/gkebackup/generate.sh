@@ -35,10 +35,6 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
     --service google.cloud.gkebackup.v1  \
     --api-version gkebackup.cnrm.cloud.google.com/v1alpha1 \
-    --prepopulate-spec \
-    --emit-required-from-proto \
-    --emit-plural-acronyms \
-    --detect-output-only-in-comments \
     --resource GKEBackupBackupPlan:BackupPlan \
     --resource GKEBackupRestorePlan:RestorePlan \
     --resource GKEBackupBackup:Backup \

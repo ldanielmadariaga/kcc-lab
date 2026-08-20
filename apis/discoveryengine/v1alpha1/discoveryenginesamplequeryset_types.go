@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,17 +33,13 @@ type DiscoveryEngineSampleQuerySetSpec struct {
 
 	// The DiscoveryEngineSampleQuerySet name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-	// Required. The sample query set display name.
-	//
-	//  This field must be a UTF-8 encoded string with a length limit of 128
-	//  characters.
-	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.SampleQuerySet.display_name
-	// +required
-	DisplayName *string `json:"displayName,omitempty"`
 
-	// The description of the
-	//  [SampleQuerySet][google.cloud.discoveryengine.v1beta.SampleQuerySet].
-	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.SampleQuerySet.description
+	// +required
+	// Required. The sample query set display name.
+	// This field must be a UTF-8 encoded string with a length limit of 128 characters.
+	DisplayName *string `json:"displayName"`
+
+	// The description of the SampleQuerySet.
 	Description *string `json:"description,omitempty"`
 }
 
@@ -66,10 +62,7 @@ type DiscoveryEngineSampleQuerySetStatus struct {
 // DiscoveryEngineSampleQuerySetObservedState is the state of the DiscoveryEngineSampleQuerySet resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1beta.SampleQuerySet
 type DiscoveryEngineSampleQuerySetObservedState struct {
-	// Output only. Timestamp the
-	//  [SampleQuerySet][google.cloud.discoveryengine.v1beta.SampleQuerySet] was
-	//  created at.
-	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.SampleQuerySet.create_time
+	// Output only. Timestamp the SampleQuerySet was created at.
 	CreateTime *string `json:"createTime,omitempty"`
 }
 

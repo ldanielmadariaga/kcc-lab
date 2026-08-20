@@ -35,10 +35,6 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
   --service google.devtools.testing.v1 \
   --api-version testing.cnrm.cloud.google.com/v1alpha1 \
-  --prepopulate-spec \
-  --emit-required-from-proto \
-  --emit-plural-acronyms \
-  --detect-output-only-in-comments \
   --resource TestingDeviceSession:DeviceSession
 
 cd ${REPO_ROOT}

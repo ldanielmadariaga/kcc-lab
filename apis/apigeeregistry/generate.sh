@@ -34,10 +34,6 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.apigeeregistry.v1 \
   --api-version apigeeregistry.cnrm.cloud.google.com/v1alpha1 \
-  --prepopulate-spec \
-  --emit-required-from-proto \
-  --emit-plural-acronyms \
-  --detect-output-only-in-comments \
   --resource ApigeeRegistryInstance:Instance \
   --resource ApigeeRegistryAPI:Api
 

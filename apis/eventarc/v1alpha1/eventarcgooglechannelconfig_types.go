@@ -28,7 +28,6 @@ type EventarcGoogleChannelConfigSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-
 	// The EventarcGoogleChannelConfig name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. Resource name of a KMS crypto key (managed by the user) used to

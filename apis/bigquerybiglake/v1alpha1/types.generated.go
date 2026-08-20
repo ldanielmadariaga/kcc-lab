@@ -22,13 +22,15 @@
 
 package v1alpha1
 
-/* unreachable type Catalog
+/* found existing non-generated go type with proto tag "google.cloud.bigquery.biglake.v1.Catalog", skipping
+
 // +kcc:proto=google.cloud.bigquery.biglake.v1.Catalog
 type Catalog struct {
 }
 */
 
-/* unreachable type Database
+/* found existing non-generated go type with proto tag "google.cloud.bigquery.biglake.v1.Database", skipping
+
 // +kcc:proto=google.cloud.bigquery.biglake.v1.Database
 type Database struct {
 	// Options of a Hive database.
@@ -53,7 +55,8 @@ type HiveDatabaseOptions struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 }
 
-/* unreachable type CatalogObservedState
+/* found existing non-generated go type with proto tag "google.cloud.bigquery.biglake.v1.Catalog", skipping
+
 // +kcc:observedstate:proto=google.cloud.bigquery.biglake.v1.Catalog
 type CatalogObservedState struct {
 	// Output only. The resource name.
@@ -82,7 +85,8 @@ type CatalogObservedState struct {
 }
 */
 
-/* unreachable type DatabaseObservedState
+/* found existing non-generated go type with proto tag "google.cloud.bigquery.biglake.v1.Database", skipping
+
 // +kcc:observedstate:proto=google.cloud.bigquery.biglake.v1.Database
 type DatabaseObservedState struct {
 	// Output only. The resource name.

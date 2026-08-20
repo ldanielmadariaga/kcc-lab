@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,12 +25,11 @@ var AppHubDiscoveredWorkloadGVK = GroupVersion.WithKind("AppHubDiscoveredWorkloa
 // AppHubDiscoveredWorkloadSpec defines the desired state of AppHubDiscoveredWorkload
 // +kcc:spec:proto=google.cloud.apphub.v1.DiscoveredWorkload
 type AppHubDiscoveredWorkloadSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	// Required. The location of the resource.
+	Location string `json:"location,omitempty"`
 
-	// The location of this resource.
-	Location string `json:"location"`
-
+	// Required. The host project of the resource.
+	ProjectRef *v1beta1.ProjectRef `json:"projectRef,omitempty"`
 	// The AppHubDiscoveredWorkload name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 }

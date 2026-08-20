@@ -28,7 +28,6 @@ type ComputeMachineImageSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-
 	// The ComputeMachineImage name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// [Output Only] The creation timestamp for this machine image in RFC3339 text format.

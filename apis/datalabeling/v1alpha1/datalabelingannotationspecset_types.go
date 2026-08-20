@@ -28,7 +28,6 @@ type DataLabelingAnnotationSpecSetSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-
 	// The DataLabelingAnnotationSpecSet name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. The display name for AnnotationSpecSet that you define when you

@@ -21,7 +21,8 @@
 
 package v1alpha1
 
-/* unreachable type ManagementServer
+/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.ManagementServer", skipping
+
 // +kcc:proto=google.cloud.backupdr.v1.ManagementServer
 type ManagementServer struct {
 
@@ -54,11 +55,14 @@ type ManagementServer struct {
 }
 */
 
-/* unreachable type ManagementURI
+/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.ManagementURI", skipping
+
 // +kcc:proto=google.cloud.backupdr.v1.ManagementURI
 type ManagementURI struct {
 }
 */
+
+/* found existing non-generated go type "NetworkConfig", skipping
 
 // +kcc:proto=google.cloud.backupdr.v1.NetworkConfig
 type NetworkConfig struct {
@@ -72,6 +76,7 @@ type NetworkConfig struct {
 	// +kcc:proto:field=google.cloud.backupdr.v1.NetworkConfig.peering_mode
 	PeeringMode *string `json:"peeringMode,omitempty"`
 }
+*/
 
 /* unreachable type WorkforceIdentityBasedManagementURI
 // +kcc:proto=google.cloud.backupdr.v1.WorkforceIdentityBasedManagementURI
@@ -79,13 +84,15 @@ type WorkforceIdentityBasedManagementURI struct {
 }
 */
 
-/* unreachable type WorkforceIdentityBasedOAuth2ClientID
+/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.WorkforceIdentityBasedOAuth2ClientID", skipping
+
 // +kcc:proto=google.cloud.backupdr.v1.WorkforceIdentityBasedOAuth2ClientID
 type WorkforceIdentityBasedOAuth2ClientID struct {
 }
 */
 
-/* unreachable type ManagementServerObservedState
+/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.ManagementServer", skipping
+
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.ManagementServer
 type ManagementServerObservedState struct {
 	// Output only. Identifier. The resource name.
@@ -141,6 +148,8 @@ type ManagementServerObservedState struct {
 }
 */
 
+/* found existing non-generated go type "ManagementURIObservedState", skipping
+
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.ManagementURI
 type ManagementURIObservedState struct {
 	// Output only. The ManagementServer AGM/RD WebUI URL.
@@ -151,6 +160,7 @@ type ManagementURIObservedState struct {
 	// +kcc:proto:field=google.cloud.backupdr.v1.ManagementURI.api
 	API *string `json:"api,omitempty"`
 }
+*/
 
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.WorkforceIdentityBasedManagementURI
 type WorkforceIdentityBasedManagementURIObservedState struct {
@@ -163,6 +173,8 @@ type WorkforceIdentityBasedManagementURIObservedState struct {
 	ThirdPartyManagementURI *string `json:"thirdPartyManagementURI,omitempty"`
 }
 
+/* found existing non-generated go type "WorkforceIdentityBasedOAuth2ClientIDObservedState", skipping
+
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.WorkforceIdentityBasedOAuth2ClientID
 type WorkforceIdentityBasedOAuth2ClientIDObservedState struct {
 	// Output only. First party OAuth Client ID for Google Identities.
@@ -173,3 +185,4 @@ type WorkforceIdentityBasedOAuth2ClientIDObservedState struct {
 	// +kcc:proto:field=google.cloud.backupdr.v1.WorkforceIdentityBasedOAuth2ClientID.third_party_oauth2_client_id
 	ThirdPartyOAUTH2ClientID *string `json:"thirdPartyOAUTH2ClientID,omitempty"`
 }
+*/
