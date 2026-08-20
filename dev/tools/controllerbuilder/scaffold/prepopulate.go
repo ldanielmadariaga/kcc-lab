@@ -62,9 +62,11 @@ type PrepopulateResult struct {
 // every other check: a field absent from the CRD cannot be reported as missing
 // from it.
 //
-// ObservedState is not pre-populated. Output fields reached through nested
-// messages need the generated <Proto>ObservedState variants rather than the
-// plain structs, and picking the right one per field is its own problem.
+// ObservedState is not pre-populated, and the reason is scope rather than
+// difficulty. The type generator already picks <Proto>ObservedState over the
+// plain struct per field, from observedStateMessages, so the resource-level
+// struct could be filled the same way the Spec is. See phase 5 in
+// docs/ai/greenfield-generator-mechanics.md.
 func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptions) (*PrepopulateResult, error) {
 	if msg == nil {
 		return nil, fmt.Errorf("no message descriptor")

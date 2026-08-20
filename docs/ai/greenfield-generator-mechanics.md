@@ -9,8 +9,8 @@ measurements behind each decision, and the approaches that were tried and abando
 
 ## Status
 
-All four phases are implemented and merged, in PRs #14-#17. This covers the experimental sandbox
-(`kcc-lab`), not upstream policy.
+Phases 1-4 are implemented and merged, in PRs #14-#17. Phase 5 is designed and not built. This
+covers the experimental sandbox (`kcc-lab`), not upstream policy.
 
 | Phase | Change | PR | Gated? |
 |---|---|---|---|
@@ -18,6 +18,7 @@ All four phases are implemented and merged, in PRs #14-#17. This covers the expe
 | 2 | `google.api.resource` into the scaffolder | #15 | no — only writes new files |
 | 3 | pre-populate the Spec | #17 | `--prepopulate-spec` |
 | 4 | judgement queue + `[refs]` suppression | #16 | n/a |
+| 5 | prepopulate ObservedState | — | not built |
 
 Companion to [`greenfield-bulk-generation.md`](greenfield-bulk-generation.md). That document is the
 *procedure* an agent follows per resource; this one is about changing the generator so the procedure
@@ -80,7 +81,8 @@ behaviour mechanically and route references to a human.
 | Element | Source | Status before this work |
 |---|---|---|
 | Field list, Go types, pointer rules | typegenerator | computed |
-| Spec vs ObservedState split | `OUTPUT_ONLY` | computed |
+| Spec vs ObservedState split, nested types | `OUTPUT_ONLY` | computed |
+| Resource-level `<Kind>ObservedState` body | `OUTPUT_ONLY`, ~84% | **available, unused** |
 | `+required` | `field_behavior` | **parsed, then unused** |
 | Parent shape (project / location / org / folder) | `google.api.resource.pattern` | **available, unused** |
 | Collection segment and plural | `google.api.resource.plural` | **available, unused** |
@@ -215,9 +217,9 @@ Undecided fields get emitted, not omitted. A field that ships with an open quest
 is visible to everyone. A field left out is invisible to every other check, because nothing can
 report a field missing from a CRD it was never in.
 
-ObservedState is left alone. Output fields reached through nested messages need the generated
-`<Proto>ObservedState` variants rather than the plain structs, and deciding that per field is a
-problem of its own.
+ObservedState is left alone, and the phase 5 section below explains why that is a smaller problem
+than it looks. Nothing here changes the nested `<Proto>ObservedState` structs, which
+`identifyOutputs` and `needsObservedState` already produce without help.
 
 Gated behind `--prepopulate-spec` on `generate-types`, alongside the existing
 `--skip-scaffold-files`, and set per service in `apis/<service>/generate.sh`. The bulk manifest
@@ -231,6 +233,67 @@ dependency backwards.
 Add `apis/<service>/needs_judgement_call.txt`, **per service** so parallel generation of different
 services never conflicts, and a compile script can glob `apis/*/needs_judgement_call.txt` to pick
 the next resource to refine.
+
+### Phase 5 — prepopulate ObservedState (not built)
+
+The scaffolder fills the Spec and leaves `<Kind>ObservedState` empty. That was justified above by
+saying the plain-versus-`ObservedState` type choice is a problem of its own, which is not true: the
+generator already makes exactly that choice at `pkg/codegen/typegenerator.go:445`, looking each
+field's message up in `observedStateMessages`. The information was always there; the scaffolder
+never asked for it.
+
+The cost of leaving it is not obvious either, because nothing catches it.
+`TestOutputOnlyFieldsAreUnderObservedState` checks only the *shape* of `status` — that output fields
+sit under `observedState` rather than loose — and is driven by the TF/DCL resource config, so it
+says nothing about completeness against the proto. Twenty-three alpha resources ship with an empty
+ObservedState and no check complains.
+
+**The flag.** `--prepopulate-observed-state`, a sibling to `--prepopulate-spec`, opt-in per service.
+The wiring already favours it. The scaffold loop in
+`pkg/commands/generatetypes/generatetypescommand.go:183` runs *after* `WriteVisitedMessages()` and
+`WriteOutputMessages()`, so both `observedStateMessages` and the root message's
+`OutputMessageDetails` are computed by the time the scaffolder is called, and the template at
+`template/apis/types.go:106` already emits the empty struct. It is an `ObservedStateFields` rendered
+the way `SpecFields` is. Reuse `identifyOutputs` rather than re-walking the proto: its transitive
+rule — a field is output-only if reached through an `OUTPUT_ONLY` parent — is subtle, and a second
+implementation would drift from the first.
+
+**The allowlist.** `OUTPUT_ONLY` covers 84.3% of the 1,449 fields in the tree's 359 resource-level
+ObservedState structs. Much of the residue is server-computed fields whose proto simply forgot to
+say so, and those are recoverable from a name allowlist applied only where the proto gives **no**
+`field_behavior` at all. A field the proto marks `REQUIRED`, `INPUT_ONLY` or `IMMUTABLE` is spec by
+declaration and the allowlist must never override it.
+
+Split the allowlist by family rather than by risk, because the two families deserve different
+treatment:
+
+| Family | Names | Queue entry? |
+|---|---|---|
+| Timestamps | `create_time`, `update_time`, `delete_time`, `creation_timestamp` | no |
+| Identifiers | `id`, `uid`, `self_link`, `self_link_with_id`, `name`, `etag` | one per resource |
+
+Timestamps are 26 of the 40 fields the safe half of the allowlist recovers, and there is genuinely
+nothing about them for a person to decide, so queueing them is noise. Identifiers are the opposite.
+Twenty resources carry more than one — compute has `id`, `selfLink` and `selfLinkWithID` together,
+and elsewhere it is `uid` and `etag` — and choosing which one is the resource's identity is the
+substantive call, the same one Step 2 has to make. One entry per resource, not one per field.
+
+`type` is excluded outright: it appears in 36 resource-level Spec structs. Below that the residue is
+a 153-name tail with no signal in it.
+
+**What stays judgement.** Forty-two fields are deliberate spec mirrors, where GCP normalizes a value
+and KCC echoes it back into status. No annotation can tell you that. Services whose protos come from
+a discovery document carry no `field_behavior` at all: `apis/compute/v1alpha1/types.generated.go`
+holds a single `Output only.` in the whole file, and at least ten other services hold none. There
+the honest output is a resource-level queue entry saying nothing could be derived, rather than an
+empty struct that looks finished.
+
+**A fifth ratchet.** Nine of the 2,045 message-typed fields in hand-written ObservedState structs
+point at a plain type where an `XObservedState` variant exists in the same package. That is the
+`CmekConfig` bug class the findings doc describes, and it is mechanically detectable. A check
+following `tests/apichecks/identity_test.go:105`, seeded with the nine current cases, stops the
+tenth. Fixing the nine is a separate conversation: two are in `v1beta1`, so it would change served
+CRD schemas.
 
 ## Where a decision gets recorded
 
