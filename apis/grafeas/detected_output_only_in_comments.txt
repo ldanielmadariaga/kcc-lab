@@ -1,0 +1,11 @@
+# Spec fields whose proto comment says "Output only." but which carry no
+# google.api.field_behavior annotation, so the generator could not place them
+# in ObservedState by itself.
+#
+# This file reports; it changes nothing. To act on an entry, move the field
+# out of the Spec struct and into the ObservedState struct in
+# <kind>_types.go by hand.
+
+kind=GrafeasNote group=grafeas.cnrm.cloud.google.com: field ".spec.kind" comment="Output only. The type of analysis. This field can be used as a filter in list requests."
+kind=GrafeasNote group=grafeas.cnrm.cloud.google.com: field ".spec.createTime" comment="Output only. The time this note was created. This field can be used as a filter in list requests."
+kind=GrafeasNote group=grafeas.cnrm.cloud.google.com: field ".spec.updateTime" comment="Output only. The time this note was last updated. This field can be used as a filter in list requests."

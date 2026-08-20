@@ -37,6 +37,8 @@ ${CONTROLLERBUILDER} generate-types \
   --include-skipped-output \
   --prepopulate-spec \
   --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
   --resource GrafeasNote:Note
 
 ${CONTROLLERBUILDER} generate-mapper \

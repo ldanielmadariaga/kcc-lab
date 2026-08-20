@@ -802,6 +802,14 @@ type PreprocessingConfig_Pad struct {
 	RightPixels *int32 `json:"rightPixels,omitempty"`
 }
 
+// +kcc:proto=google.cloud.video.transcoder.v1.PubsubDestination
+type PubsubDestination struct {
+	// The name of the Pub/Sub topic to publish job completion notification
+	//  to. For example: `projects/{project}/topics/{topic}`.
+	// +kcc:proto:field=google.cloud.video.transcoder.v1.PubsubDestination.topic
+	Topic *string `json:"topic,omitempty"`
+}
+
 // +kcc:proto=google.cloud.video.transcoder.v1.SegmentSettings
 type SegmentSettings struct {
 	// Duration of the segments in seconds. The default is `6.0s`. Note that

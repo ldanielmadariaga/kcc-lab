@@ -45,6 +45,8 @@ ${CONTROLLERBUILDER} generate-types \
   --api-version networksecurity.cnrm.cloud.google.com/v1alpha1 \
   --prepopulate-spec \
   --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
   --resource NetworkSecurityBackendAuthenticationConfig:BackendAuthenticationConfig \
   --resource NetworkSecurityInterceptDeployment:InterceptDeployment \
   --resource NetworkSecurityAddressGroup:AddressGroup \

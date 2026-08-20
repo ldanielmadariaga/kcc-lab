@@ -16,7 +16,6 @@ package v1alpha1
 
 import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
-	pubsubv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/pubsub/v1beta1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -137,15 +136,11 @@ type TranscoderJobObservedState struct {
 	EndTime *string `json:"endTime,omitempty"`
 
 	// Output only. An error object that describes the reason for the failure.
+	//  This property is always present when
+	//  [ProcessingState][google.cloud.video.transcoder.v1.Job.ProcessingState] is
+	//  `FAILED`.
 	// +kcc:proto:field=google.cloud.video.transcoder.v1.Job.error
 	Error *common.Status `json:"error,omitempty"`
-}
-
-// +kcc:proto=google.cloud.video.transcoder.v1.PubsubDestination
-type PubsubDestination struct {
-	// The Pub/Sub topic to publish job completion notification to.
-	// +kcc:proto:field=google.cloud.video.transcoder.v1.PubsubDestination.topic
-	TopicRef *pubsubv1beta1.PubSubTopicRef `json:"topicRef,omitempty"`
 }
 
 // +genclient
