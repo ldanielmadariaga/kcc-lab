@@ -37,6 +37,10 @@ type APIArgs struct {
 	// ResourcePattern is the declared pattern, carried through verbatim so the
 	// generated file can show a human what the real name looks like.
 	ResourcePattern string
+	// SpecFields is pre-rendered Go source for the body of the Spec struct, one
+	// field per proto field. Empty means the old three-field stub, which is what
+	// every service gets until it opts in.
+	SpecFields string
 }
 
 const TypesTemplate = `
@@ -77,7 +81,7 @@ type {{ .Kind }}Spec struct {
 
 	// The {{ .Kind }} name. If not given, the metadata.name will be used.
 	ResourceID *string ` + "`" + `json:"resourceID,omitempty"` + "`" + `
-}
+{{ .SpecFields }}}
 
 // {{ .Kind }}Status defines the config connector machine state of {{ .Kind }}
 type {{ .Kind }}Status struct {
