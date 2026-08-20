@@ -35,6 +35,8 @@ ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.grafeas.v1,grafeas.v1 \
   --api-version grafeas.cnrm.cloud.google.com/v1alpha1 \
   --include-skipped-output \
+  --prepopulate-spec \
+  --emit-required-from-proto \
   --resource GrafeasNote:Note
 
 ${CONTROLLERBUILDER} generate-mapper \

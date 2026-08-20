@@ -293,6 +293,8 @@ spec:
                           description: The distribution channel-specific homepage
                             for this package.
                           type: string
+                      required:
+                      - cpeURI
                       type: object
                     type: array
                   license:
@@ -359,6 +361,8 @@ spec:
                           version.
                         type: string
                     type: object
+                required:
+                - name
                 type: object
               projectRef:
                 description: The project that this resource belongs to.

@@ -203,6 +203,12 @@ spec:
                                       the channel in the output audio stream.
                                     format: int32
                                     type: integer
+                                required:
+                                - atomKey
+                                - inputChannel
+                                - inputKey
+                                - inputTrack
+                                - outputChannel
                                 type: object
                               type: array
                             sampleRateHertz:
@@ -210,6 +216,8 @@ spec:
                                 is 48000 Hertz.
                               format: int32
                               type: integer
+                          required:
+                          - bitrateBps
                           type: object
                         key:
                           description: A unique key for this elementary stream.
@@ -259,6 +267,10 @@ spec:
                                       the track in the input file.
                                     format: int32
                                     type: integer
+                                required:
+                                - atomKey
+                                - inputKey
+                                - inputTrack
                                 type: object
                               type: array
                           type: object
@@ -439,6 +451,9 @@ spec:
                                      and swaps the requested height and width for the output.
                                   format: int32
                                   type: integer
+                              required:
+                              - bitrateBps
+                              - frameRate
                               type: object
                             h265:
                               description: H265 codec settings.
@@ -624,6 +639,9 @@ spec:
                                      and swaps the requested height and width for the output.
                                   format: int32
                                   type: integer
+                              required:
+                              - bitrateBps
+                              - frameRate
                               type: object
                             vp9:
                               description: VP9 codec settings.
@@ -735,6 +753,9 @@ spec:
                                      and swaps the requested height and width for the output.
                                   format: int32
                                   type: integer
+                              required:
+                              - bitrateBps
+                              - frameRate
                               type: object
                           type: object
                       type: object
@@ -783,6 +804,8 @@ spec:
                                  - `cenc`
                                  - `cbcs`
                               type: string
+                          required:
+                          - scheme
                           type: object
                         sampleAes:
                           description: Configuration for SAMPLE-AES encryption.
@@ -799,7 +822,12 @@ spec:
                                  Note that only numbered versions are supported. Aliases like "latest" are
                                  not supported.
                               type: string
+                          required:
+                          - secretVersion
                           type: object
+                      required:
+                      - drmSystems
+                      - id
                       type: object
                     type: array
                   inputs:
@@ -1084,6 +1112,9 @@ spec:
                         type:
                           description: Required. Type of the manifest.
                           type: string
+                      required:
+                      - muxStreams
+                      - type
                       type: object
                     type: array
                   muxStreams:
@@ -1160,6 +1191,8 @@ spec:
                                 be greater than or equal to [`gopDuration`](#videostream),
                                 and `segmentDuration` must be divisible by [`gopDuration`](#videostream).
                               type: string
+                          required:
+                          - individualSegments
                           type: object
                       type: object
                     type: array
@@ -1222,6 +1255,8 @@ spec:
                                         description: Normalized y coordinate.
                                         type: number
                                     type: object
+                                required:
+                                - fadeType
                                 type: object
                               animationStatic:
                                 description: Display static overlay object.
@@ -1276,6 +1311,8 @@ spec:
                                 For example, `gs://bucket/inputs/image.png`. Only
                                 PNG and JPEG images are supported.
                               type: string
+                          required:
+                          - uri
                           type: object
                       type: object
                     type: array
@@ -1404,6 +1441,10 @@ spec:
                             of the output media. The default is 100.
                           format: int32
                           type: integer
+                      required:
+                      - filePrefix
+                      - spriteHeightPixels
+                      - spriteWidthPixels
                       type: object
                     type: array
                 type: object

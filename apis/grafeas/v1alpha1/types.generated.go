@@ -232,6 +232,7 @@ type Distribution struct {
 	// The cpe_uri in [CPE format](https://cpe.mitre.org/specification/)
 	//  denoting the package manager version distributing a package.
 	// +kcc:proto:field=grafeas.v1.Distribution.cpe_uri
+	// +required
 	CpeURI *string `json:"cpeURI,omitempty"`
 
 	// The CPU architecture for which packages in this distribution channel were
@@ -403,6 +404,7 @@ type Note struct {
 type PackageNote struct {
 	// The name of the package.
 	// +kcc:proto:field=grafeas.v1.PackageNote.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Deprecated.
