@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -24,18 +25,23 @@ var EventarcChannelConnectionGVK = GroupVersion.WithKind("EventarcChannelConnect
 // EventarcChannelConnectionSpec defines the desired state of EventarcChannelConnection
 // +kcc:spec:proto=google.cloud.eventarc.v1.ChannelConnection
 type EventarcChannelConnectionSpec struct {
-	Parent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 
 	// The EventarcChannelConnection name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Required. Reference to the connected subscriber Channel.
+	// Required. The name of the connected subscriber Channel.
+	//  This is a weak reference to avoid cross project and cross accounts
+	//  references. This must be in
+	//  `projects/{project}/location/{location}/channels/{channel_id}` format.
 	// +kcc:proto:field=google.cloud.eventarc.v1.ChannelConnection.channel
-	ChannelRef *ChannelRef `json:"channelRef"`
+	// +required
+	Channel *string `json:"channel,omitempty"`
 
 	// Input only. Activation token for the channel. The token will be used
-	// during the creation of ChannelConnection to bind the channel with the
-	// provider project. This field will not be stored in the provider resource.
+	//  during the creation of ChannelConnection to bind the channel with the
+	//  provider project. This field will not be stored in the provider resource.
 	// +kcc:proto:field=google.cloud.eventarc.v1.ChannelConnection.activation_token
 	ActivationToken *string `json:"activationToken,omitempty"`
 }
@@ -60,7 +66,7 @@ type EventarcChannelConnectionStatus struct {
 // +kcc:observedstate:proto=google.cloud.eventarc.v1.ChannelConnection
 type EventarcChannelConnectionObservedState struct {
 	// Output only. Server assigned ID of the resource.
-	// The server guarantees uniqueness and immutability until deleted.
+	//  The server guarantees uniqueness and immutability until deleted.
 	// +kcc:proto:field=google.cloud.eventarc.v1.ChannelConnection.uid
 	Uid *string `json:"uid,omitempty"`
 
@@ -79,7 +85,6 @@ type EventarcChannelConnectionObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

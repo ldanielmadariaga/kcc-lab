@@ -5,5 +5,13 @@
 # While a resource has entries here, TestMissingRefs suppresses its [refs]
 # findings. Clearing them graduates the resource and the ratchet applies.
 
+kind=VMwareEngineNetwork group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VMwareEngineNetworkPeering group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VMwareEngineNetworkPeering group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference (target=vmwareengine.googleapis.com/VmwareEngineNetwork)
 kind=VMwareEngineNetworkPolicy group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=VMwareEngineNetworkPolicy group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference (target=vmwareengine.googleapis.com/VmwareEngineNetwork)
+kind=VMwareEngineExternalAccessRule group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VMwareEnginePrivateCloud group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference (target=vmwareengine.googleapis.com/VmwareEngineNetwork)
+kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".spec.serviceNetwork" reason=possible-reference (target=compute.googleapis.com/Network)

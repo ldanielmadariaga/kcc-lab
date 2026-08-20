@@ -22,6 +22,10 @@
 
 package v1alpha1
 
+import (
+	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
+)
+
 // +kcc:proto=google.privacy.dlp.v2.AllOtherDatabaseResources
 type AllOtherDatabaseResources struct {
 }
@@ -38,6 +42,7 @@ type AmazonS3Bucket struct {
 
 	// Required. The bucket name.
 	// +kcc:proto:field=google.privacy.dlp.v2.AmazonS3Bucket.bucket_name
+	// +required
 	BucketName *string `json:"bucketName,omitempty"`
 }
 
@@ -70,6 +75,7 @@ type AmazonS3BucketRegex struct {
 type AwsAccount struct {
 	// Required. AWS account ID.
 	// +kcc:proto:field=google.privacy.dlp.v2.AwsAccount.account_id
+	// +required
 	AccountID *string `json:"accountID,omitempty"`
 }
 
@@ -86,6 +92,7 @@ type BigQueryDiscoveryTarget struct {
 	// Required. The tables the discovery cadence applies to. The first target
 	//  with a matching filter will be the one to apply to a table.
 	// +kcc:proto:field=google.privacy.dlp.v2.BigQueryDiscoveryTarget.filter
+	// +required
 	Filter *DiscoveryBigQueryFilter `json:"filter,omitempty"`
 
 	// In addition to matching the filter, these conditions must be true
@@ -163,6 +170,7 @@ type CloudSQLDiscoveryTarget struct {
 	// Required. The tables the discovery cadence applies to. The first target
 	//  with a matching filter will be the one to apply to a table.
 	// +kcc:proto:field=google.privacy.dlp.v2.CloudSqlDiscoveryTarget.filter
+	// +required
 	Filter *DiscoveryCloudSQLFilter `json:"filter,omitempty"`
 
 	// In addition to matching the filter, these conditions must be true
@@ -181,14 +189,9 @@ type CloudSQLDiscoveryTarget struct {
 	Disabled *Disabled `json:"disabled,omitempty"`
 }
 
-/* found existing non-generated go type "CloudSQLIAMCredential", skipping
-
 // +kcc:proto=google.privacy.dlp.v2.CloudSqlIamCredential
 type CloudSQLIAMCredential struct {
 }
-*/
-
-/* found existing non-generated go type "CloudSQLProperties", skipping
 
 // +kcc:proto=google.privacy.dlp.v2.CloudSqlProperties
 type CloudSQLProperties struct {
@@ -216,20 +219,22 @@ type CloudSQLProperties struct {
 	// Required. The DLP API will limit its connections to max_connections.
 	//  Must be 2 or greater.
 	// +kcc:proto:field=google.privacy.dlp.v2.CloudSqlProperties.max_connections
+	// +required
 	MaxConnections *int32 `json:"maxConnections,omitempty"`
 
 	// Required. The database engine used by the Cloud SQL instance that this
 	//  connection configures.
 	// +kcc:proto:field=google.privacy.dlp.v2.CloudSqlProperties.database_engine
+	// +required
 	DatabaseEngine *string `json:"databaseEngine,omitempty"`
 }
-*/
 
 // +kcc:proto=google.privacy.dlp.v2.CloudStorageDiscoveryTarget
 type CloudStorageDiscoveryTarget struct {
 	// Required. The buckets the generation_cadence applies to. The first target
 	//  with a matching filter will be the one to apply to a bucket.
 	// +kcc:proto:field=google.privacy.dlp.v2.CloudStorageDiscoveryTarget.filter
+	// +required
 	Filter *DiscoveryCloudStorageFilter `json:"filter,omitempty"`
 
 	// Optional. In addition to matching the filter, these conditions must be true
@@ -265,21 +270,23 @@ type CloudStorageRegex struct {
 type CloudStorageResourceReference struct {
 	// Required. The bucket to scan.
 	// +kcc:proto:field=google.privacy.dlp.v2.CloudStorageResourceReference.bucket_name
+	// +required
 	BucketName *string `json:"bucketName,omitempty"`
 
 	// Required. If within a project-level config, then this must match the
 	//  config's project id.
 	// +kcc:proto:field=google.privacy.dlp.v2.CloudStorageResourceReference.project_id
+	// +required
 	ProjectID *string `json:"projectID,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.privacy.dlp.v2.Connection", skipping
-
+/* unreachable type Connection
 // +kcc:proto=google.privacy.dlp.v2.Connection
 type Connection struct {
 
 	// Required. The connection's state in its lifecycle.
 	// +kcc:proto:field=google.privacy.dlp.v2.Connection.state
+	// +required
 	State *string `json:"state,omitempty"`
 
 	// Connect to a Cloud SQL instance.
@@ -361,8 +368,6 @@ type DataProfileAction_Export struct {
 	SampleFindingsTable *BigQueryTable `json:"sampleFindingsTable,omitempty"`
 }
 
-/* found existing non-generated go type "DataProfileAction_PubSubNotification", skipping
-
 // +kcc:proto=google.privacy.dlp.v2.DataProfileAction.PubSubNotification
 type DataProfileAction_PubSubNotification struct {
 	// Cloud Pub/Sub topic to send notifications to.
@@ -386,7 +391,6 @@ type DataProfileAction_PubSubNotification struct {
 	// +kcc:proto:field=google.privacy.dlp.v2.DataProfileAction.PubSubNotification.detail_of_message
 	DetailOfMessage *string `json:"detailOfMessage,omitempty"`
 }
-*/
 
 // +kcc:proto=google.privacy.dlp.v2.DataProfileAction.PublishToChronicle
 type DataProfileAction_PublishToChronicle struct {
@@ -500,20 +504,24 @@ type DatabaseResourceReference struct {
 	// Required. If within a project-level config, then this must match the
 	//  config's project ID.
 	// +kcc:proto:field=google.privacy.dlp.v2.DatabaseResourceReference.project_id
+	// +required
 	ProjectID *string `json:"projectID,omitempty"`
 
 	// Required. The instance where this resource is located. For example: Cloud
 	//  SQL instance ID.
 	// +kcc:proto:field=google.privacy.dlp.v2.DatabaseResourceReference.instance
+	// +required
 	Instance *string `json:"instance,omitempty"`
 
 	// Required. Name of a database within the instance.
 	// +kcc:proto:field=google.privacy.dlp.v2.DatabaseResourceReference.database
+	// +required
 	Database *string `json:"database,omitempty"`
 
 	// Required. Name of a database resource, for example, a table within the
 	//  database.
 	// +kcc:proto:field=google.privacy.dlp.v2.DatabaseResourceReference.database_resource
+	// +required
 	DatabaseResource *string `json:"databaseResource,omitempty"`
 }
 
@@ -688,11 +696,13 @@ type DiscoveryCloudStorageConditions struct {
 	//  profile will be created even if no objects match the
 	//  included_object_attributes.
 	// +kcc:proto:field=google.privacy.dlp.v2.DiscoveryCloudStorageConditions.included_object_attributes
+	// +required
 	IncludedObjectAttributes []string `json:"includedObjectAttributes,omitempty"`
 
 	// Required. Only objects with the specified attributes will be scanned.
 	//  Defaults to [ALL_SUPPORTED_BUCKETS] if unset.
 	// +kcc:proto:field=google.privacy.dlp.v2.DiscoveryCloudStorageConditions.included_bucket_attributes
+	// +required
 	IncludedBucketAttributes []string `json:"includedBucketAttributes,omitempty"`
 }
 
@@ -732,8 +742,7 @@ type DiscoveryCloudStorageGenerationCadence struct {
 	InspectTemplateModifiedCadence *DiscoveryInspectTemplateModifiedCadence `json:"inspectTemplateModifiedCadence,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.privacy.dlp.v2.DiscoveryConfig", skipping
-
+/* unreachable type DiscoveryConfig
 // +kcc:proto=google.privacy.dlp.v2.DiscoveryConfig
 type DiscoveryConfig struct {
 	// Unique resource name for the DiscoveryConfig, assigned by the service when
@@ -783,6 +792,7 @@ type DiscoveryConfig struct {
 
 	// Required. A status for this configuration.
 	// +kcc:proto:field=google.privacy.dlp.v2.DiscoveryConfig.status
+	// +required
 	Status *string `json:"status,omitempty"`
 
 	// Optional. Processing location configuration. Vertex AI dataset scanning
@@ -1025,8 +1035,6 @@ type DiscoveryVertexDatasetGenerationCadence struct {
 	InspectTemplateModifiedCadence *DiscoveryInspectTemplateModifiedCadence `json:"inspectTemplateModifiedCadence,omitempty"`
 }
 
-/* found existing non-generated go type "Error", skipping
-
 // +kcc:proto=google.privacy.dlp.v2.Error
 type Error struct {
 	// Detailed error codes and messages.
@@ -1042,7 +1050,6 @@ type Error struct {
 	// +kcc:proto:field=google.privacy.dlp.v2.Error.extra_info
 	ExtraInfo *string `json:"extraInfo,omitempty"`
 }
-*/
 
 // +kcc:proto=google.privacy.dlp.v2.FileStoreCollection
 type FileStoreCollection struct {
@@ -1065,6 +1072,7 @@ type FileStoreRegexes struct {
 	//  more file stores. Maximum of 100 entries. The sum of all regular
 	//  expression's length can't exceed 10 KiB.
 	// +kcc:proto:field=google.privacy.dlp.v2.FileStoreRegexes.patterns
+	// +required
 	Patterns []FileStoreRegex `json:"patterns,omitempty"`
 }
 
@@ -1096,11 +1104,13 @@ type OtherCloudDiscoveryTarget struct {
 	//  Supported values are:
 	//  * aws/s3/bucket
 	// +kcc:proto:field=google.privacy.dlp.v2.OtherCloudDiscoveryTarget.data_source_type
+	// +required
 	DataSourceType *DataSourceType `json:"dataSourceType,omitempty"`
 
 	// Required. The resources that the discovery cadence applies to. The
 	//  first target with a matching filter will be the one to apply to a resource.
 	// +kcc:proto:field=google.privacy.dlp.v2.OtherCloudDiscoveryTarget.filter
+	// +required
 	Filter *DiscoveryOtherCloudFilter `json:"filter,omitempty"`
 
 	// Optional. In addition to matching the filter, these conditions must be true
@@ -1177,20 +1187,19 @@ type ProcessingLocation_ImageFallbackLocation struct {
 type ProcessingLocation_MultiRegionProcessing struct {
 }
 
-/* found existing non-generated go type "SecretManagerCredential", skipping
-
 // +kcc:proto=google.privacy.dlp.v2.SecretManagerCredential
 type SecretManagerCredential struct {
 	// Required. The username.
 	// +kcc:proto:field=google.privacy.dlp.v2.SecretManagerCredential.username
+	// +required
 	Username *string `json:"username,omitempty"`
 
 	// Required. The name of the Secret Manager resource that stores the password,
 	//  in the form `projects/project-id/secrets/secret-name/versions/version`.
 	// +kcc:proto:field=google.privacy.dlp.v2.SecretManagerCredential.password_secret_version_name
+	// +required
 	PasswordSecretVersionName *string `json:"passwordSecretVersionName,omitempty"`
 }
-*/
 
 // +kcc:proto=google.privacy.dlp.v2.SecretsDiscoveryTarget
 type SecretsDiscoveryTarget struct {
@@ -1232,6 +1241,7 @@ type VertexDatasetDiscoveryTarget struct {
 	// Required. The datasets the discovery cadence applies to. The first target
 	//  with a matching filter will be the one to apply to a dataset.
 	// +kcc:proto:field=google.privacy.dlp.v2.VertexDatasetDiscoveryTarget.filter
+	// +required
 	Filter *DiscoveryVertexDatasetFilter `json:"filter,omitempty"`
 
 	// In addition to matching the filter, these conditions must be true
@@ -1264,6 +1274,7 @@ type VertexDatasetRegexes struct {
 	//  more datasets. Maximum of 100 entries. The sum of the lengths of all
 	//  regular expressions can't exceed 10 KiB.
 	// +kcc:proto:field=google.privacy.dlp.v2.VertexDatasetRegexes.patterns
+	// +required
 	Patterns []VertexDatasetRegex `json:"patterns,omitempty"`
 }
 
@@ -1272,11 +1283,11 @@ type VertexDatasetResourceReference struct {
 	// Required. The name of the dataset resource. If set within a project-level
 	//  configuration, the specified resource must be within the project.
 	// +kcc:proto:field=google.privacy.dlp.v2.VertexDatasetResourceReference.dataset_resource_name
+	// +required
 	DatasetResourceName *string `json:"datasetResourceName,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.privacy.dlp.v2.Connection", skipping
-
+/* unreachable type ConnectionObservedState
 // +kcc:observedstate:proto=google.privacy.dlp.v2.Connection
 type ConnectionObservedState struct {
 	// Output only. Name of the connection:
@@ -1304,8 +1315,7 @@ type DataSourceTypeObservedState struct {
 	DataSource *string `json:"dataSource,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.privacy.dlp.v2.DiscoveryConfig", skipping
-
+/* unreachable type DiscoveryConfigObservedState
 // +kcc:observedstate:proto=google.privacy.dlp.v2.DiscoveryConfig
 type DiscoveryConfigObservedState struct {
 	// Target to match against for determining what to scan and how frequently.

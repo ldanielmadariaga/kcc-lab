@@ -20,3 +20,50 @@
 // resource: GeminiDataAnalyticsConversation:Conversation
 
 package v1alpha1
+
+/* unreachable type Conversation
+// +kcc:proto=google.cloud.geminidataanalytics.v1beta.Conversation
+type Conversation struct {
+	// Optional. Identifier. The unique resource name of a conversation. Format:
+	//  `projects/{project}/locations/{location}/conversations/{conversation_id}`
+	//  `{conversation_id}` is the resource id and should be 63 characters or less
+	//  and must match the format described in
+	//  https://google.aip.dev/122#resource-id-segments
+	//
+	//  Example:
+	//  `projects/1234567890/locations/us-central1/conversations/my-conversation`.
+	//
+	//  It is recommended to skip setting this field during conversation creation
+	//  as it will be inferred automatically and overwritten with the
+	//  {parent}/conversations/{conversation_id}.
+	// +kcc:proto:field=google.cloud.geminidataanalytics.v1beta.Conversation.name
+	Name *string `json:"name,omitempty"`
+
+	// Required. Agent(s) in the conversation.
+	//  Currently, only one agent is supported. This field is repeated to allow
+	//  for future support of multiple agents in a conversation.
+	//  Format: `projects/{project}/locations/{location}/dataAgents/{agent}`
+	// +kcc:proto:field=google.cloud.geminidataanalytics.v1beta.Conversation.agents
+	// +required
+	Agents []string `json:"agents,omitempty"`
+
+	// Optional. Open-ended and user-defined labels that can be set by the client
+	//  to tag a conversation (e.g. to filter conversations for specific
+	//  surfaces/products).
+	// +kcc:proto:field=google.cloud.geminidataanalytics.v1beta.Conversation.labels
+	Labels map[string]string `json:"labels,omitempty"`
+}
+*/
+
+/* unreachable type ConversationObservedState
+// +kcc:observedstate:proto=google.cloud.geminidataanalytics.v1beta.Conversation
+type ConversationObservedState struct {
+	// Output only. Creation timestamp.
+	// +kcc:proto:field=google.cloud.geminidataanalytics.v1beta.Conversation.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Timestamp of the last used conversation.
+	// +kcc:proto:field=google.cloud.geminidataanalytics.v1beta.Conversation.last_used_time
+	LastUsedTime *string `json:"lastUsedTime,omitempty"`
+}
+*/

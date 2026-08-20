@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,15 +33,12 @@ type CCInsightsViewSpec struct {
 
 	// The CCInsightsView name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// The human-readable display name of the view.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.View.display_name
-	// +kubebuilder:validation:Optional
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// String with specific view properties, must be non-empty.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.View.value
-	// +kubebuilder:validation:Optional
 	Value *string `json:"value,omitempty"`
 }
 
@@ -79,7 +76,6 @@ type CCInsightsViewObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

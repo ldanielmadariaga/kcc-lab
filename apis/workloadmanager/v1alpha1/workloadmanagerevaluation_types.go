@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,52 +22,6 @@ import (
 
 var WorkloadManagerEvaluationGVK = GroupVersion.WithKind("WorkloadManagerEvaluation")
 
-type BigQueryDestination struct {
-	// Optional. Destination dataset to save evaluation results.
-	DestinationDataset *string `json:"destinationDataset,omitempty"`
-
-	// Optional. Determines if a new results table will be created when an Execution is created.
-	CreateNewResultsTable *bool `json:"createNewResultsTable,omitempty"`
-}
-
-type GCEInstanceFilter struct {
-	// If non-empty, only Compute Engine instances associated with at least one of
-	// the provided service accounts will be included in the evaluation.
-	ServiceAccounts []string `json:"serviceAccounts,omitempty"`
-}
-
-type Scope struct {
-	// A project to scope the evaluation to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef,omitempty"`
-
-	// A folder to scope the evaluation to.
-	FolderRef *refsv1beta1.FolderRef `json:"folderRef,omitempty"`
-
-	// An organization to scope the evaluation to.
-	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef,omitempty"`
-}
-
-type ResourceFilter struct {
-	// The scopes of evaluation resource.
-	// +kcc:proto:field=google.cloud.workloadmanager.v1.ResourceFilter.scopes
-	ScopeRefs []Scope `json:"scopeRefs,omitempty"`
-
-	// Pattern to filter resources by their id.
-	ResourceIDPatterns []string `json:"resourceIDPatterns,omitempty"`
-
-	// Labels to filter resources by. Each key-value pair in the map must exist
-	// on the resource for it to be included.
-	InclusionLabels map[string]string `json:"inclusionLabels,omitempty"`
-
-	// Filter compute engine resources.
-	GceInstanceFilter *GCEInstanceFilter `json:"gceInstanceFilter,omitempty"`
-}
-
-type ResourceStatus struct {
-	// State of the Evaluation resource.
-	State *string `json:"state,omitempty"`
-}
-
 // WorkloadManagerEvaluationSpec defines the desired state of WorkloadManagerEvaluation
 // +kcc:spec:proto=google.cloud.workloadmanager.v1.Evaluation
 type WorkloadManagerEvaluationSpec struct {
@@ -79,44 +33,54 @@ type WorkloadManagerEvaluationSpec struct {
 
 	// The WorkloadManagerEvaluation name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Description of the Evaluation.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.description
 	Description *string `json:"description,omitempty"`
 
 	// Resource filter for an evaluation defining the scope of resources to be
-	// evaluated.
+	//  evaluated.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.resource_filter
 	ResourceFilter *ResourceFilter `json:"resourceFilter,omitempty"`
 
 	// The names of the rules used for this evaluation.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.rule_names
 	RuleNames []string `json:"ruleNames,omitempty"`
 
 	// Labels as key value pairs.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Crontab format schedule for scheduled evaluation, currently only supports
-	// the following fixed schedules:
-	// * `0 */1 * * *` # Hourly
-	// * `0 */6 * * *` # Every 6 hours
-	// * `0 */12 * * *` # Every 12 hours
-	// * `0 0 */1 * *` # Daily
-	// * `0 0 */7 * *` # Weekly
-	// * `0 0 */14 * *` # Every 14 days
-	// * `0 0 1 */1 *` # Monthly
+	//  the following fixed schedules:
+	//  * `0 */1 * * *` # Hourly
+	//  * `0 */6 * * *` # Every 6 hours
+	//  * `0 */12 * * *` # Every 12 hours
+	//  * `0 0 */1 * *` # Daily
+	//  * `0 0 */7 * *` # Weekly
+	//  * `0 0 */14 * *` # Every 14 days
+	//  * `0 0 1 */1 *` # Monthly
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.schedule
 	Schedule *string `json:"schedule,omitempty"`
 
 	// The Cloud Storage bucket name for custom rules.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.custom_rules_bucket
 	CustomRulesBucket *string `json:"customRulesBucket,omitempty"`
 
 	// Evaluation type.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.evaluation_type
 	EvaluationType *string `json:"evaluationType,omitempty"`
 
 	// Optional. The BigQuery destination for detailed evaluation results.
-	// If this field is specified, the results of each evaluation execution are
-	// exported to BigQuery.
+	//  If this field is specified, the results of each evaluation execution are
+	//  exported to BigQuery.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.big_query_destination
 	BigQueryDestination *BigQueryDestination `json:"bigQueryDestination,omitempty"`
 
-	// Optional. Immutable. Customer-managed encryption key name.
-	KmsKeyRef *refsv1beta1.KMSCryptoKeyRef `json:"kmsKeyRef,omitempty"`
+	// Optional. Immutable. Customer-managed encryption key name, in the format
+	//  projects/*/locations/*/keyRings/*/cryptoKeys/*.
+	//  The key will be used for CMEK encryption of the evaluation resource.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.kms_key
+	KMSKey *string `json:"kmsKey,omitempty"`
 }
 
 // WorkloadManagerEvaluationStatus defines the config connector machine state of WorkloadManagerEvaluation
@@ -139,13 +103,16 @@ type WorkloadManagerEvaluationStatus struct {
 // +kcc:observedstate:proto=google.cloud.workloadmanager.v1.Evaluation
 type WorkloadManagerEvaluationObservedState struct {
 	// Output only. [Output only] The current lifecycle state of the evaluation
-	// resource.
+	//  resource.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.resource_status
 	ResourceStatus *ResourceStatus `json:"resourceStatus,omitempty"`
 
 	// Output only. [Output only] Create time stamp.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. [Output only] Update time stamp.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
@@ -155,7 +122,6 @@ type WorkloadManagerEvaluationObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

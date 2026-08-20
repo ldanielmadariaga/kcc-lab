@@ -15,31 +15,28 @@
 package v1alpha1
 
 import (
-	bigtablev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/bigtable/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var BigtableBackupGVK = GroupVersion.WithKind("BigtableBackup")
 
-type BigtableBackupParent struct {
-	// + required
-	ClusterRef ClusterRef `json:"clusterRef"`
-}
-
 // BigtableBackupSpec defines the desired state of BigtableBackup
 // +kcc:spec:proto=google.bigtable.admin.v2.Backup
 type BigtableBackupSpec struct {
-	BigtableBackupParent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 
 	// The BigtableBackup name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. Immutable. Name of the table from which this backup was created.
 	//  This needs to be in the same instance as the backup. Values are of the form
 	//  `projects/{project}/instances/{instance}/tables/{source_table}`.
 	// +kcc:proto:field=google.bigtable.admin.v2.Backup.source_table
-	SourceTableRef *bigtablev1beta1.TableRef `json:"sourceTableRef,omitempty"`
+	// +required
+	SourceTable *string `json:"sourceTable,omitempty"`
 
 	// Required. The expiration time of the backup.
 	//  When creating a backup or updating its `expire_time`, the value must be
@@ -49,6 +46,7 @@ type BigtableBackupSpec struct {
 	//
 	//  Once the `expire_time` has passed, Cloud Bigtable will delete the backup.
 	// +kcc:proto:field=google.bigtable.admin.v2.Backup.expire_time
+	// +required
 	ExpireTime *string `json:"expireTime,omitempty"`
 
 	// Indicates the backup type of the backup.
@@ -125,7 +123,6 @@ type BigtableBackupObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

@@ -6,3 +6,6 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=DataCatalogEntry group=datacatalog.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataCatalogEntryGroup group=datacatalog.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataCatalogTag group=datacatalog.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataCatalogTagTemplate group=datacatalog.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)

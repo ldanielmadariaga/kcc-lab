@@ -15,43 +15,38 @@
 package v1alpha1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var DataplexZoneGVK = GroupVersion.WithKind("DataplexZone")
 
-// Parent defines the parent resource for the DataplexZone.
-type DataplexZoneParent struct {
-	// Reference to the parent DataplexLake that owns this Zone.
-	// +required
-	LakeRef *LakeRef `json:"lakeRef"`
-}
-
 // DataplexZoneSpec defines the desired state of DataplexZone
 // +kcc:spec:proto=google.cloud.dataplex.v1.Zone
 type DataplexZoneSpec struct {
-	DataplexZoneParent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 
 	// The DataplexZone name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. User friendly display name.
 	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Optional. User defined labels for the zone.
 	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.labels
-	// Labels map[string]string `json:"labels,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// Optional. Description of the zone.
 	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.description
 	Description *string `json:"description,omitempty"`
 
 	// Required. Immutable. The type of the zone.
-	// +required
 	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.type
-	Type *string `json:"type"`
+	// +required
+	Type *string `json:"type,omitempty"`
 
 	// Optional. Specification of the discovery feature applied to data in this
 	//  zone.
@@ -60,9 +55,9 @@ type DataplexZoneSpec struct {
 
 	// Required. Specification of the resources that are referenced by the assets
 	//  within this zone.
-	// +required
 	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.resource_spec
-	ResourceSpec *Zone_ResourceSpec `json:"resourceSpec"`
+	// +required
+	ResourceSpec *Zone_ResourceSpec `json:"resourceSpec,omitempty"`
 }
 
 // DataplexZoneStatus defines the config connector machine state of DataplexZone

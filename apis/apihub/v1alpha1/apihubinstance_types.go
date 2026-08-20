@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,54 +26,27 @@ var APIHubInstanceGVK = GroupVersion.WithKind("APIHubInstance")
 // +kcc:spec:proto=google.cloud.apihub.v1.ApiHubInstance
 type APIHubInstanceSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +kubebuilder:validation:Required
 	Location *string `json:"location"`
 
 	// The APIHubInstance name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. Config of the ApiHub instance.
-	// +kubebuilder:validation:Required
 	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.config
-	Config *APIHubInstance_Config `json:"config"`
+	// +required
+	Config *APIHubInstance_Config `json:"config,omitempty"`
 
 	// Optional. Instance labels to represent user-provided metadata.
 	//  Refer to cloud documentation on labels for more details.
 	//  https://cloud.google.com/compute/docs/labeling-resources
-	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Optional. Description of the ApiHub instance.
-	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.description
 	Description *string `json:"description,omitempty"`
-}
-
-// +kcc:proto=google.cloud.apihub.v1.ApiHubInstance.Config
-type APIHubInstance_Config struct {
-	// Required. The Customer Managed Encryption Key (CMEK) used for data
-	//  encryption. The CMEK name should follow the format of
-	//  `projects/([^/]+)/locations/([^/]+)/keyRings/([^/]+)/cryptoKeys/([^/]+)`,
-	//  where the location must match the instance location.
-	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.Config.cmek_key_name
-	CmekKeyRef *refsv1beta1.KMSCryptoKeyRef `json:"cmekKeyRef,omitempty"`
-
-	// Optional. Disable ApiHub router.
-	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.Config.disable_search
-	DisableSearch *bool `json:"disableSearch,omitempty"`
-
-	// Optional. The Vertex AI location.
-	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.Config.vertex_location
-	VertexLocation *string `json:"vertexLocation,omitempty"`
-
-	// Optional. Encryption type for the region.
-	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.Config.encryption_type
-	EncryptionType *string `json:"encryptionType,omitempty"`
 }
 
 // APIHubInstanceStatus defines the config connector machine state of APIHubInstance
@@ -118,7 +91,6 @@ type APIHubInstanceObservedState struct {
 // +kubebuilder:resource:categories=gcp,shortName=gcpapihubinstance;gcpapihubinstances
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"

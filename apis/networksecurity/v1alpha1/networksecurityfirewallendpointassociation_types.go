@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,57 +26,35 @@ var NetworkSecurityFirewallEndpointAssociationGVK = GroupVersion.WithKind("Netwo
 // +kcc:spec:proto=google.cloud.networksecurity.v1.FirewallEndpointAssociation
 type NetworkSecurityFirewallEndpointAssociationSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +required
 	Location *string `json:"location"`
 
 	// The NetworkSecurityFirewallEndpointAssociation name. If not given, the metadata.name will be used.
-	// +optional
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. Labels as key value pairs
-	// +optional
+	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpointAssociation.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Required. The URL of the network that is being associated.
+	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpointAssociation.network
 	// +required
-	NetworkRef *NetworkRef `json:"networkRef"`
+	Network *string `json:"network,omitempty"`
 
 	// Required. The URL of the FirewallEndpoint that is being associated.
+	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpointAssociation.firewall_endpoint
 	// +required
-	FirewallEndpointRef *FirewallEndpointRef `json:"firewallEndpointRef"`
+	FirewallEndpoint *string `json:"firewallEndpoint,omitempty"`
 
 	// Optional. The URL of the TlsInspectionPolicy that is being associated.
-	// +optional
-	TLSInspectionPolicyRef *TLSInspectionPolicyRef `json:"tlsInspectionPolicyRef,omitempty"`
+	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpointAssociation.tls_inspection_policy
+	TLSInspectionPolicy *string `json:"tlsInspectionPolicy,omitempty"`
 
 	// Optional. Whether the association is disabled.
-	// True indicates that traffic won't be intercepted
-	// +optional
+	//  True indicates that traffic won't be intercepted
+	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpointAssociation.disabled
 	Disabled *bool `json:"disabled,omitempty"`
-}
-
-type NetworkRef struct {
-	/* The network selflink of form "projects/{{project}}/global/networks/{{name}}", when not managed by Config Connector. */
-	External string `json:"external,omitempty"`
-	/* The `name` field of a `ComputeNetwork` resource. */
-	Name string `json:"name,omitempty"`
-	/* The `namespace` field of a `ComputeNetwork` resource. */
-	Namespace string `json:"namespace,omitempty"`
-}
-
-// FirewallEndpointRef is moved to networksecurityfirewallendpoint_reference.go
-
-type TLSInspectionPolicyRef struct {
-	/* The TLS inspection policy selflink, when not managed by Config Connector. */
-	External string `json:"external,omitempty"`
-	/* The `name` field of a `NetworkSecurityTLSInspectionPolicy` resource. */
-	Name string `json:"name,omitempty"`
-	/* The `namespace` field of a `NetworkSecurityTLSInspectionPolicy` resource. */
-	Namespace string `json:"namespace,omitempty"`
 }
 
 // NetworkSecurityFirewallEndpointAssociationStatus defines the config connector machine state of NetworkSecurityFirewallEndpointAssociation
@@ -99,16 +77,20 @@ type NetworkSecurityFirewallEndpointAssociationStatus struct {
 // +kcc:observedstate:proto=google.cloud.networksecurity.v1.FirewallEndpointAssociation
 type NetworkSecurityFirewallEndpointAssociationObservedState struct {
 	// Output only. Create time stamp
+	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpointAssociation.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. Update time stamp
+	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpointAssociation.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. Current state of the association.
+	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpointAssociation.state
 	State *string `json:"state,omitempty"`
 
 	// Output only. Whether reconciling is in progress, recommended per
-	// https://google.aip.dev/128.
+	//  https://google.aip.dev/128.
+	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpointAssociation.reconciling
 	Reconciling *bool `json:"reconciling,omitempty"`
 }
 

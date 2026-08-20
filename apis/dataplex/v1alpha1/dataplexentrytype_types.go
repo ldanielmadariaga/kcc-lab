@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common/parent"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,11 +25,12 @@ var DataplexEntryTypeGVK = GroupVersion.WithKind("DataplexEntryType")
 // DataplexEntryTypeSpec defines the desired state of DataplexEntryType
 // +kcc:spec:proto=google.cloud.dataplex.v1.EntryType
 type DataplexEntryTypeSpec struct {
-	ParentRef *parent.ProjectAndLocationRef `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 
 	// The DataplexEntryType name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. Description of the EntryType.
 	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.description
 	Description *string `json:"description,omitempty"`
@@ -40,7 +41,13 @@ type DataplexEntryTypeSpec struct {
 
 	// Optional. User-defined labels for the EntryType.
 	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.labels
-	// Labels map[string]string `json:"labels,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. This checksum is computed by the service, and might be sent on
+	//  update and delete requests to ensure the client has an up-to-date value
+	//  before proceeding.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.etag
+	Etag *string `json:"etag,omitempty"`
 
 	// Optional. Indicates the classes this Entry Type belongs to, for example,
 	//  TABLE, DATABASE, MODEL.
@@ -56,12 +63,12 @@ type DataplexEntryTypeSpec struct {
 	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.system
 	System *string `json:"system,omitempty"`
 
-	// AspectInfo contains overriding configuration for aspects.
-	// +kcc:proto=required_aspects
+	// AspectInfo for the entry type.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.required_aspects
 	RequiredAspects []EntryType_AspectInfo `json:"requiredAspects,omitempty"`
 
-	// Authorization contains constraints on the visibility of Entries that conform
-	//  to the EntryType.
+	// Immutable. Authorization defined for this type.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.authorization
 	Authorization *EntryType_Authorization `json:"authorization,omitempty"`
 }
 
@@ -97,12 +104,6 @@ type DataplexEntryTypeObservedState struct {
 	// Output only. The time when the EntryType was last updated.
 	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Optional. This checksum is computed by the service, and might be sent on
-	//  update and delete requests to ensure the client has an up-to-date value
-	//  before proceeding.
-	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.etag
-	Etag *string `json:"etag,omitempty"`
 }
 
 // +genclient
@@ -137,14 +138,4 @@ type DataplexEntryTypeList struct {
 
 func init() {
 	SchemeBuilder.Register(&DataplexEntryType{}, &DataplexEntryTypeList{})
-}
-
-// +kcc:proto=google.cloud.dataplex.v1.EntryType.AspectInfo
-type EntryType_AspectInfo struct {
-
-	// +required
-	//  A reference to an externally managed DataplexAspectType resource.
-	// Should be in the format "projects/{{projectID}}/locations/{{location}}/aspectTypes/{{aspecttypeID}}".
-	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.AspectInfo.type
-	TypeRef *AspectTypeRef `json:"typeRef,omitempty"`
 }

@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -27,16 +27,13 @@ var VertexAITuningJobGVK = GroupVersion.WithKind("VertexAITuningJob")
 // +kcc:spec:proto=google.cloud.aiplatform.v1.TuningJob
 type VertexAITuningJobSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +required
 	Location *string `json:"location"`
 
 	// The VertexAITuningJob name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// The base model that is being tuned. See [Supported
 	//  models](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/tuning#supported_models).
 	// +kcc:proto:field=google.cloud.aiplatform.v1.TuningJob.base_model
@@ -84,7 +81,7 @@ type VertexAITuningJobSpec struct {
 	//  Users starting the pipeline must have the `iam.serviceAccounts.actAs`
 	//  permission on this service account.
 	// +kcc:proto:field=google.cloud.aiplatform.v1.TuningJob.service_account
-	ServiceAccountRef *refsv1beta1.IAMServiceAccountRef `json:"serviceAccountRef,omitempty"`
+	ServiceAccount *string `json:"serviceAccount,omitempty"`
 }
 
 // VertexAITuningJobStatus defines the config connector machine state of VertexAITuningJob
@@ -106,11 +103,6 @@ type VertexAITuningJobStatus struct {
 // VertexAITuningJobObservedState is the state of the VertexAITuningJob resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.aiplatform.v1.TuningJob
 type VertexAITuningJobObservedState struct {
-	// Output only. Identifier. Resource name of a TuningJob. Format:
-	//  `projects/{project}/locations/{location}/tuningJobs/{tuning_job}`
-	// +kcc:proto:field=google.cloud.aiplatform.v1.TuningJob.name
-	Name *string `json:"name,omitempty"`
-
 	// Output only. The detailed state of the job.
 	// +kcc:proto:field=google.cloud.aiplatform.v1.TuningJob.state
 	State *string `json:"state,omitempty"`
@@ -148,7 +140,8 @@ type VertexAITuningJobObservedState struct {
 	// +kcc:proto:field=google.cloud.aiplatform.v1.TuningJob.experiment
 	Experiment *string `json:"experiment,omitempty"`
 
-	// Output only. The tuned model that is created as a result of this job.
+	// Output only. The tuned model resources associated with this
+	//  [TuningJob][google.cloud.aiplatform.v1.TuningJob].
 	// +kcc:proto:field=google.cloud.aiplatform.v1.TuningJob.tuned_model
 	TunedModel *TunedModelObservedState `json:"tunedModel,omitempty"`
 
@@ -164,7 +157,6 @@ type VertexAITuningJobObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

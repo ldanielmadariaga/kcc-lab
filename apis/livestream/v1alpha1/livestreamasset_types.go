@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -34,18 +34,17 @@ type LiveStreamAssetSpec struct {
 
 	// The LiveStreamAsset name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// User-defined key/value metadata.
 	// +kcc:proto:field=google.cloud.video.livestream.v1.Asset.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// VideoAsset represents a video.
 	// +kcc:proto:field=google.cloud.video.livestream.v1.Asset.video
-	Video *AssetVideoAsset `json:"video,omitempty"`
+	Video *Asset_VideoAsset `json:"video,omitempty"`
 
 	// ImageAsset represents an image.
 	// +kcc:proto:field=google.cloud.video.livestream.v1.Asset.image
-	Image *AssetImageAsset `json:"image,omitempty"`
+	Image *Asset_ImageAsset `json:"image,omitempty"`
 
 	// Based64-encoded CRC32c checksum of the asset file. For more information,
 	//  see the crc32c checksum of the [Cloud Storage Objects
@@ -105,7 +104,6 @@ type LiveStreamAssetObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -132,18 +130,4 @@ type LiveStreamAssetList struct {
 
 func init() {
 	SchemeBuilder.Register(&LiveStreamAsset{}, &LiveStreamAssetList{})
-}
-
-// +kcc:proto=google.cloud.video.livestream.v1.Asset.ImageAsset
-type AssetImageAsset struct {
-	// Cloud Storage URI of the image. The format is `gs://my-bucket/my-object`.
-	// +kcc:proto:field=google.cloud.video.livestream.v1.Asset.ImageAsset.uri
-	URI *string `json:"uri,omitempty"`
-}
-
-// +kcc:proto=google.cloud.video.livestream.v1.Asset.VideoAsset
-type AssetVideoAsset struct {
-	// Cloud Storage URI of the video. The format is `gs://my-bucket/my-object`.
-	// +kcc:proto:field=google.cloud.video.livestream.v1.Asset.VideoAsset.uri
-	URI *string `json:"uri,omitempty"`
 }

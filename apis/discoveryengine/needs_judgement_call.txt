@@ -5,4 +5,9 @@
 # While a resource has entries here, TestMissingRefs suppresses its [refs]
 # findings. Clearing them graduates the resource and the ratchet applies.
 
+kind=DiscoveryEngineSampleQuerySet group=discoveryengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DiscoveryEngineSampleQuery group=discoveryengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DiscoveryEngineLicenseConfig group=discoveryengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DiscoveryEngineServingConfig group=discoveryengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DiscoveryEngineUserStore group=discoveryengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DiscoveryEngineUserStore group=discoveryengine.cnrm.cloud.google.com: field ".spec.defaultLicenseConfig" reason=possible-reference (target=discoveryengine.googleapis.com/LicenseConfig)

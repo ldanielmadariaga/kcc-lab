@@ -16,9 +16,7 @@ package v1alpha1
 
 import (
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
-	refsv1beta1secret "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1/secret"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -27,11 +25,12 @@ var DatastreamConnectionProfileGVK = GroupVersion.WithKind("DatastreamConnection
 // DatastreamConnectionProfileSpec defines the desired state of DatastreamConnectionProfile
 // +kcc:spec:proto=google.cloud.datastream.v1.ConnectionProfile
 type DatastreamConnectionProfileSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+
 	// The DatastreamConnectionProfile name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	Parent `json:",inline"`
-
 	// Labels.
 	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.labels
 	Labels map[string]string `json:"labels,omitempty"`
@@ -51,20 +50,27 @@ type DatastreamConnectionProfileSpec struct {
 
 	// MySQL ConnectionProfile configuration.
 	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.mysql_profile
-	MySQLProfile *MysqlProfile `json:"mySQLProfile,omitempty"`
+	MysqlProfile *MysqlProfile `json:"mysqlProfile,omitempty"`
 
 	// BigQuery Connection Profile configuration.
 	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.bigquery_profile
-	BigQueryProfile *BigQueryProfile `json:"bigQueryProfile,omitempty"`
+	BigqueryProfile *BigQueryProfile `json:"bigqueryProfile,omitempty"`
 
 	// PostgreSQL Connection Profile configuration.
 	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.postgresql_profile
-	// NOTYET: this field is not implemented
-	// PostgreSQLProfile *PostgresqlProfile `json:"postgreSQLProfile,omitempty"`
+	PostgresqlProfile *PostgresqlProfile `json:"postgresqlProfile,omitempty"`
 
 	// SQLServer Connection Profile configuration.
 	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.sql_server_profile
 	SQLServerProfile *SQLServerProfile `json:"sqlServerProfile,omitempty"`
+
+	// Salesforce Connection Profile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.salesforce_profile
+	SalesforceProfile *SalesforceProfile `json:"salesforceProfile,omitempty"`
+
+	// MongoDB Connection Profile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.mongodb_profile
+	MongodbProfile *MongodbProfile `json:"mongodbProfile,omitempty"`
 
 	// Static Service IP connectivity.
 	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.static_service_ip_connectivity
@@ -98,11 +104,6 @@ type DatastreamConnectionProfileStatus struct {
 // DatastreamConnectionProfileObservedState is the state of the DatastreamConnectionProfile resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.datastream.v1.ConnectionProfile
 type DatastreamConnectionProfileObservedState struct {
-	// Output only. The resource's name.
-	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. The create time of the resource.
 	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -111,13 +112,25 @@ type DatastreamConnectionProfileObservedState struct {
 	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
+	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.satisfies_pzs
+	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+
+	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.satisfies_pzi
+	SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
+
 	// Oracle ConnectionProfile configuration.
 	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.oracle_profile
 	OracleProfile *OracleProfileObservedState `json:"oracleProfile,omitempty"`
 
 	// MySQL ConnectionProfile configuration.
 	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.mysql_profile
-	MySQLProfile *MysqlProfileObservedState `json:"mySQLProfile,omitempty"`
+	MysqlProfile *MysqlProfileObservedState `json:"mysqlProfile,omitempty"`
+
+	// MongoDB Connection Profile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.mongodb_profile
+	MongodbProfile *MongodbProfileObservedState `json:"mongodbProfile,omitempty"`
 }
 
 // +genclient
@@ -152,267 +165,4 @@ type DatastreamConnectionProfileList struct {
 
 func init() {
 	SchemeBuilder.Register(&DatastreamConnectionProfile{}, &DatastreamConnectionProfileList{})
-}
-
-// +kcc:proto=google.cloud.datastream.v1.OracleAsmConfig
-type OracleAsmConfig struct {
-	// Required. Hostname for the Oracle ASM connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.hostname
-	// +required
-	Hostname *string `json:"hostname,omitempty"`
-
-	// Required. Port for the Oracle ASM connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.port
-	// +required
-	Port *int32 `json:"port,omitempty"`
-
-	// Required. Username for the Oracle ASM connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.username
-	// +required
-	// NOTYET: this field is replaced by the secretRef field
-	// Username *string `json:"username,omitempty"`
-
-	// Required. Password for the Oracle ASM connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.password
-	// +required
-	// NOTYET: this field is replaced by the secretRef field
-	// Password *string `json:"password,omitempty"`
-
-	// The Kubernetes Secret object that stores the "username" and "password" information for the Oracle ASM connection.
-	// The Secret type has to be `kubernetes.io/basic-auth`.
-	// +required
-	SecretRef *refsv1beta1secret.BasicAuthSecretRef `json:"secretRef,omitempty"`
-
-	// Required. ASM service name for the Oracle ASM connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.asm_service
-	// +required
-	ASMService *string `json:"asmService,omitempty"`
-
-	// Optional. Connection string attributes
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.connection_attributes
-	ConnectionAttributes map[string]string `json:"connectionAttributes,omitempty"`
-
-	// Optional. SSL configuration for the Oracle connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.oracle_ssl_config
-	OracleSSLConfig *OracleSSLConfig `json:"oracleSSLConfig,omitempty"`
-}
-
-// +kcc:proto=google.cloud.datastream.v1.ForwardSshTunnelConnectivity
-type ForwardSSHTunnelConnectivity struct {
-	// Required. Hostname for the SSH tunnel.
-	// +kcc:proto:field=google.cloud.datastream.v1.ForwardSshTunnelConnectivity.hostname
-	// +required
-	Hostname *string `json:"hostname,omitempty"`
-
-	// Port for the SSH tunnel, default value is 22.
-	// +kcc:proto:field=google.cloud.datastream.v1.ForwardSshTunnelConnectivity.port
-	Port *int32 `json:"port,omitempty"`
-
-	// Required. Username for the SSH tunnel.
-	// +kcc:proto:field=google.cloud.datastream.v1.ForwardSshTunnelConnectivity.username
-	// +required
-	// NOTYET: this field is replaced by the secretRef field
-	// Username *string `json:"username,omitempty"`
-
-	// Input only. SSH password.
-	// +kcc:proto:field=google.cloud.datastream.v1.ForwardSshTunnelConnectivity.password
-	// NOTYET: this field is replaced by the secretRef field
-	// Password *string `json:"password,omitempty"`
-
-	// The Kubernetes Secret object that stores the "username" and "password" information for the SSH tunnel.
-	// The Secret type has to be `kubernetes.io/basic-auth`.
-	// +required
-	SecretRef *refsv1beta1secret.BasicAuthSecretRef `json:"secretRef,omitempty"`
-
-	// Input only. SSH private key.
-	// +kcc:proto:field=google.cloud.datastream.v1.ForwardSshTunnelConnectivity.private_key
-	PrivateKey *string `json:"privateKey,omitempty"`
-}
-
-// +kcc:proto=google.cloud.datastream.v1.GcsProfile
-type GCSProfile struct {
-	// Required. The Cloud Storage bucket name.
-	// +kcc:proto:field=google.cloud.datastream.v1.GcsProfile.bucket
-	// +required
-	Bucket *string `json:"bucket,omitempty"`
-
-	// The root path inside the Cloud Storage bucket.
-	// +kcc:proto:field=google.cloud.datastream.v1.GcsProfile.root_path
-	RootPath *string `json:"rootPath,omitempty"`
-}
-
-// +kcc:proto=google.cloud.datastream.v1.MysqlProfile
-type MysqlProfile struct {
-	// Required. Hostname for the MySQL connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.MysqlProfile.hostname
-	// +required
-	Hostname *string `json:"hostname,omitempty"`
-
-	// Port for the MySQL connection, default value is 3306.
-	// +kcc:proto:field=google.cloud.datastream.v1.MysqlProfile.port
-	Port *int32 `json:"port,omitempty"`
-
-	// Required. Username for the MySQL connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.MysqlProfile.username
-	// +required
-	// NOTYET: this field is replaced by the secretRef field
-	// Username *string `json:"username,omitempty"`
-
-	// Optional. Input only. Password for the MySQL connection. Mutually exclusive
-	//  with the `secret_manager_stored_password` field.
-	// +kcc:proto:field=google.cloud.datastream.v1.MysqlProfile.password
-	// NOTYET: this field is replaced by the secretRef field
-	// Password *string `json:"password,omitempty"`
-
-	// The Kubernetes Secret object that stores the "username" and "password" information for the MySQL connection.
-	// The Secret type has to be `kubernetes.io/basic-auth`.
-	// +required
-	SecretRef *refsv1beta1secret.BasicAuthSecretRef `json:"secretRef,omitempty"`
-
-	// SSL configuration for the MySQL connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.MysqlProfile.ssl_config
-	SSLConfig *MysqlSSLConfig `json:"sslConfig,omitempty"`
-}
-
-// +kcc:proto=google.cloud.datastream.v1.OracleProfile
-type OracleProfile struct {
-	// Required. Hostname for the Oracle connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.hostname
-	// +required
-	Hostname *string `json:"hostname,omitempty"`
-
-	// Port for the Oracle connection, default value is 1521.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.port
-	Port *int32 `json:"port,omitempty"`
-
-	// Required. Username for the Oracle connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.username
-	// +required
-	// NOTYET: this field is replaced by the secretRef field
-	// Username *string `json:"username,omitempty"`
-
-	// Optional. Password for the Oracle connection. Mutually exclusive with the
-	//  `secret_manager_stored_password` field.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.password
-	// NOTYET: this field is replaced by the secretRef field
-	// Password *string `json:"password,omitempty"`
-
-	// The Kubernetes Secret object that stores the "username" and "password" information for the Oracle connection.
-	// The Secret type has to be `kubernetes.io/basic-auth`.
-	// +required
-	SecretRef *refsv1beta1secret.BasicAuthSecretRef `json:"secretRef,omitempty"`
-
-	// Required. Database for the Oracle connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.database_service
-	// +required
-	DatabaseService *string `json:"databaseService,omitempty"`
-
-	// Connection string attributes
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.connection_attributes
-	ConnectionAttributes map[string]string `json:"connectionAttributes,omitempty"`
-
-	// Optional. SSL configuration for the Oracle connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.oracle_ssl_config
-	OracleSSLConfig *OracleSSLConfig `json:"oracleSSLConfig,omitempty"`
-
-	// Optional. Configuration for Oracle ASM connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.oracle_asm_config
-	OracleASMConfig *OracleAsmConfig `json:"oracleASMConfig,omitempty"`
-
-	// Optional. A reference to a Secret Manager resource name storing the Oracle
-	//  connection password. Mutually exclusive with the `secretRef` field.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.secret_manager_stored_password
-	SecreteManagerSecretRef *refsv1beta1.SecretManagerSecretRef `json:"secretManagerSecretRef,omitempty"`
-}
-
-// +kcc:proto=google.cloud.datastream.v1.PostgresqlProfile
-type PostgresqlProfile struct {
-	// Required. Hostname for the PostgreSQL connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlProfile.hostname
-	// +required
-	Hostname *string `json:"hostname,omitempty"`
-
-	// Port for the PostgreSQL connection, default value is 5432.
-	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlProfile.port
-	Port *int32 `json:"port,omitempty"`
-
-	// Required. Username for the PostgreSQL connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlProfile.username
-	// +required
-	// NOTYET: this field is replaced by the secretRef field
-	// Username *string `json:"username,omitempty"`
-
-	// Optional. Password for the PostgreSQL connection. Mutually exclusive with
-	//  the `secret_manager_stored_password` field.
-	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlProfile.password
-	// NOTYET: this field is replaced by the secretRef field
-	// Password *string `json:"password,omitempty"`
-
-	// The Kubernetes Secret object that stores the "username" and "password" information for the PostgreSQL connection.
-	// The Secret type has to be `kubernetes.io/basic-auth`.
-	// +required
-	SecretRef *refsv1beta1secret.BasicAuthSecretRef `json:"secretRef,omitempty"`
-
-	// Required. Database for the PostgreSQL connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlProfile.database
-	// +required
-	Database *string `json:"database,omitempty"`
-
-	// TODO: ssl_config proto field is not generated
-}
-
-// +kcc:proto=google.cloud.datastream.v1.SqlServerProfile
-type SQLServerProfile struct {
-	// Required. Hostname for the SQLServer connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.SqlServerProfile.hostname
-	// +required
-	Hostname *string `json:"hostname,omitempty"`
-
-	// Port for the SQLServer connection, default value is 1433.
-	// +kcc:proto:field=google.cloud.datastream.v1.SqlServerProfile.port
-	Port *int32 `json:"port,omitempty"`
-
-	// Required. Username for the SQLServer connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.SqlServerProfile.username
-	// +required
-	// NOTYET: this field is replaced by the secretRef field
-	// Username *string `json:"username,omitempty"`
-
-	// Optional. Password for the SQLServer connection. Mutually exclusive with
-	//  the `secret_manager_stored_password` field.
-	// +kcc:proto:field=google.cloud.datastream.v1.SqlServerProfile.password
-	// NOTYET: this field is replaced by the secretRef field
-	// Password *string `json:"password,omitempty"`
-
-	// The Kubernetes Secret object that stores the "username" and "password" information for the SQLServer connection.
-	// The Secret type has to be `kubernetes.io/basic-auth`.
-	// +required
-	SecretRef *refsv1beta1secret.BasicAuthSecretRef `json:"secretRef,omitempty"`
-
-	// Required. Database for the SQLServer connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.SqlServerProfile.database
-	// +required
-	Database *string `json:"database,omitempty"`
-}
-
-// +kcc:proto=google.cloud.datastream.v1.PrivateConnectivity
-type PrivateConnectivity struct {
-	// Required. A reference to a private connection resource.
-	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnectivity.private_connection
-	// +required
-	PrivateConnectionRef *PrivateConnectionRef `json:"privateConnectionRef,omitempty"`
-}
-
-// +kcc:observedstate:proto=google.cloud.datastream.v1.MysqlProfile
-type MysqlProfileObservedState struct {
-	// SSL configuration for the MySQL connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.MysqlProfile.ssl_config
-	SSLConfig *MysqlSSLConfigObservedState `json:"sslConfig,omitempty"`
-}
-
-// +kcc:observedstate:proto=google.cloud.datastream.v1.OracleProfile
-type OracleProfileObservedState struct {
-	// Optional. SSL configuration for the Oracle connection.
-	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.oracle_ssl_config
-	OracleSSLConfig *OracleSSLConfigObservedState `json:"oracleSSLConfig,omitempty"`
 }

@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,69 +15,67 @@
 package v1alpha1
 
 import (
-	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
-	computev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-var (
-	NetworkConnectivityServiceConnectionPolicyGVK = schema.GroupVersionKind{
-		Group:   GroupVersion.Group,
-		Version: GroupVersion.Version,
-		Kind:    "NetworkConnectivityServiceConnectionPolicy",
-	}
-)
+var NetworkConnectivityServiceConnectionPolicyGVK = GroupVersion.WithKind("NetworkConnectivityServiceConnectionPolicy")
 
 // NetworkConnectivityServiceConnectionPolicySpec defines the desired state of NetworkConnectivityServiceConnectionPolicy
 // +kcc:spec:proto=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy
 type NetworkConnectivityServiceConnectionPolicySpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	/* Immutable. The Project that this resource belongs to. */
-	ProjectRef refs.ProjectRef `json:"projectRef"`
-
-	/* Immutable. Location of the resource. */
+	// The location of this resource.
 	Location *string `json:"location"`
 
 	// The NetworkConnectivityServiceConnectionPolicy name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Output only. Information for the automatically created subnetwork and its associated IR.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.auto_created_subnet_info
+	AutoCreatedSubnetInfo *AutoCreatedSubnetworkInfo `json:"autoCreatedSubnetInfo,omitempty"`
+
+	// Output only. Time when the ServiceConnectionPolicy was created.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.create_time
+	CreateTime *string `json:"createTime,omitempty"`
 
 	// A description of this resource.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.description
 	Description *string `json:"description,omitempty"`
 
-	// // User-defined labels.
-	// Labels map[string]string `json:"labels,omitempty"`
+	// Optional. The etag is computed by the server, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.etag
+	Etag *string `json:"etag,omitempty"`
 
-	// // Immutable. The name of a ServiceConnectionPolicy. Format: projects/{project}/locations/{location}/serviceConnectionPolicies/{service_connection_policy} See: https://google.aip.dev/122#fields-representing-resource-names
-	// Name *string `json:"name,omitempty"`
+	// Output only. The type of underlying resources used to create the connection.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.infrastructure
+	Infrastructure *string `json:"infrastructure,omitempty"`
+
+	// User-defined labels.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.labels
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// The resource path of the consumer network. Example: - projects/{projectNumOrId}/global/networks/{resourceId}.
-	Network *computerefs.ComputeNetworkRef `json:"networkRef,omitempty"`
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.network
+	Network *string `json:"network,omitempty"`
 
 	// Configuration used for Private Service Connect connections. Used when Infrastructure is PSC.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.psc_config
 	PSCConfig *PSCConfig `json:"pscConfig,omitempty"`
 
-	// The service class identifier for which this ServiceConnectionPolicy is for. The service class identifier is a unique, symbolic representation of a ServiceClass. It is provided by the Service Producer. Google services have a prefix of gcp. For example, gcp-cloud-sql. 3rd party services do not. For example, test-service-a3dfcx.
+	// Output only. [Output only] Information about each Private Service Connect connection.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.psc_connections
+	PSCConnections []PSCConnection `json:"pscConnections,omitempty"`
+
+	// The service class identifier for which this ServiceConnectionPolicy is for. The service class identifier is a unique, symbolic representation of a ServiceClass. It is provided by the Service Producer. Google services have a prefix of gcp or google-cloud. For example, gcp-memorystore-redis or google-cloud-sql. 3rd party services do not. For example, test-service-a3dfcx.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.service_class
 	ServiceClass *string `json:"serviceClass,omitempty"`
-}
 
-// +kcc:proto=mockgcp.cloud.networkconnectivity.v1.PscConfig
-type PSCConfig struct {
-	/* TODO:AFTER-MAPPINGS
-	// Optional. List of Projects, Folders, or Organizations from where the Producer instance can be within. For example, a network administrator can provide both 'organizations/foo' and 'projects/bar' as allowed_google_producers_resource_hierarchy_levels. This allowlists this network to connect with any Producer instance within the 'foo' organization or the 'bar' project. By default, allowed_google_producers_resource_hierarchy_level is empty. The format for each allowed_google_producers_resource_hierarchy_level is / where is one of 'projects', 'folders', or 'organizations' and is either the ID or the number of the resource type. Format for each allowed_google_producers_resource_hierarchy_level value: 'projects/' or 'folders/' or 'organizations/' Eg. [projects/my-project-id, projects/567, folders/891, organizations/123]
-	AllowedGoogleProducersResourceHierarchyLevel []string `json:"allowedGoogleProducersResourceHierarchyLevel,omitempty"`
-	*/
-
-	// Optional. Max number of PSC connections for this policy.
-	Limit *int64 `json:"limit,omitempty"`
-
-	// Required. ProducerInstanceLocation is used to specify which authorization mechanism to use to determine which projects the Producer instance can be within.
-	ProducerInstanceLocation *string `json:"producerInstanceLocation,omitempty"`
-
-	// The resource paths of subnetworks to use for IP address management. Example: projects/{projectNumOrId}/regions/{region}/subnetworks/{resourceId}.
-	Subnetworks []computev1beta1.ComputeSubnetworkRef `json:"subnetworkRefs,omitempty"`
+	// Output only. Time when the ServiceConnectionPolicy was updated.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // NetworkConnectivityServiceConnectionPolicyStatus defines the config connector machine state of NetworkConnectivityServiceConnectionPolicy
@@ -86,44 +84,28 @@ type NetworkConnectivityServiceConnectionPolicyStatus struct {
 	   object's current state. */
 	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
 
-	/* ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource. */
-	// +optional
+	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
 	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
 
-	/* A unique specifier for the NetworkConnectivityServiceConnectionPolicy resource in GCP.*/
-	// +optional
+	// A unique specifier for the NetworkConnectivityServiceConnectionPolicy resource in GCP.
 	ExternalRef *string `json:"externalRef,omitempty"`
 
-	/* ObservedState is the state of the resource as most recently observed in GCP. */
-	// +optional
+	// ObservedState is the state of the resource as most recently observed in GCP.
 	ObservedState *NetworkConnectivityServiceConnectionPolicyObservedState `json:"observedState,omitempty"`
 }
 
-// NetworkConnectivityServiceConnectionPolicySpec defines the desired state of NetworkConnectivityServiceConnectionPolicy
+// NetworkConnectivityServiceConnectionPolicyObservedState is the state of the NetworkConnectivityServiceConnectionPolicy resource as most recently observed in GCP.
 // +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy
 type NetworkConnectivityServiceConnectionPolicyObservedState struct {
-	// Output only. Time when the ServiceConnectionMap was created.
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Optional. The etag is computed by the server, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.
-	Etag *string `json:"etag,omitempty"`
-
-	// Output only. The type of underlying resources used to create the connection.
-	Infrastructure *string `json:"infrastructure,omitempty"`
-
-	// Output only. [Output only] Information about each Private Service Connect connection.
-	PSCConnections []PSCConnection `json:"pscConnections,omitempty"`
-
-	// Output only. Time when the ServiceConnectionMap was updated.
-	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpnetworkconnectivityserviceconnectionpolicy;gcpnetworkconnectivityserviceconnectionpolicies
+// +kubebuilder:resource:categories=gcp,shortName=gcpnetworkconnectivityserviceconnectionpolicy;gcpnetworkconnectivityserviceconnectionpolicys
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
 // +kubebuilder:printcolumn:name="Status Age",JSONPath=".status.conditions[?(@.type=='Ready')].lastTransitionTime",type="date",description="The last transition time for the value in 'Status'"
@@ -134,6 +116,7 @@ type NetworkConnectivityServiceConnectionPolicy struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
+	// +required
 	Spec   NetworkConnectivityServiceConnectionPolicySpec   `json:"spec,omitempty"`
 	Status NetworkConnectivityServiceConnectionPolicyStatus `json:"status,omitempty"`
 }
@@ -148,51 +131,4 @@ type NetworkConnectivityServiceConnectionPolicyList struct {
 
 func init() {
 	SchemeBuilder.Register(&NetworkConnectivityServiceConnectionPolicy{}, &NetworkConnectivityServiceConnectionPolicyList{})
-}
-
-// +kcc:proto=mockgcp.cloud.networkconnectivity.v1.PscConnection
-type PSCConnection struct {
-	// The resource reference of the consumer address.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConnection.consumer_address
-	ConsumerAddress *string `json:"consumerAddress,omitempty"`
-
-	// The resource reference of the PSC Forwarding Rule within the consumer VPC.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConnection.consumer_forwarding_rule
-	ConsumerForwardingRule *string `json:"consumerForwardingRule,omitempty"`
-
-	// The project where the PSC connection is created.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConnection.consumer_target_project
-	ConsumerTargetProject *string `json:"consumerTargetProject,omitempty"`
-
-	// The most recent error during operating this connection. Deprecated, please use error_info instead.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConnection.error
-	Error *GoogleRpcStatus `json:"error,omitempty"`
-
-	// Output only. The error info for the latest error during operating this connection.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConnection.error_info
-	ErrorInfo *GoogleRpcErrorInfo `json:"errorInfo,omitempty"`
-
-	// The error type indicates whether the error is consumer facing, producer facing or system internal.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConnection.error_type
-	ErrorType *string `json:"errorType,omitempty"`
-
-	// The last Compute Engine operation to setup PSC connection.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConnection.gce_operation
-	GCEOperation *string `json:"gceOperation,omitempty"`
-
-	// Immutable. Deprecated. Use producer_instance_metadata instead. An immutable identifier for the producer instance.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConnection.producer_instance_id
-	ProducerInstanceID *string `json:"producerInstanceID,omitempty"`
-
-	// The PSC connection id of the PSC forwarding rule.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConnection.psc_connection_id
-	PSCConnectionID *string `json:"pscConnectionID,omitempty"`
-
-	// Output only. The URI of the subnetwork selected to allocate IP address for this connection.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConnection.selected_subnetwork
-	SelectedSubnetwork *string `json:"selectedSubnetwork,omitempty"`
-
-	// State of the PSC Connection
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConnection.state
-	State *string `json:"state,omitempty"`
 }

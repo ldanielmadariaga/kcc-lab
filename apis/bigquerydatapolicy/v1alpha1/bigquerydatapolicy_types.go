@@ -15,7 +15,6 @@
 package v1alpha1
 
 import (
-	datacalog "github.com/GoogleCloudPlatform/k8s-config-connector/apis/datacatalog/v1beta1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -23,49 +22,17 @@ import (
 
 var BigQueryDataPolicyGVK = GroupVersion.WithKind("BigQueryDataPolicy")
 
-// +kcc:proto=google.cloud.bigquery.datapolicies.v1beta1.DataMaskingPolicy
-type DataMaskingPolicy struct {
-	// A predefined masking expression.
-	// +kcc:proto:field=google.cloud.bigquery.datapolicies.v1beta1.DataMaskingPolicy.predefined_expression
-	PredefinedExpression *string `json:"predefinedExpression,omitempty"`
-}
-
-type Parent struct {
-	// Required. The location of the application.
-	// +required
-	Location string `json:"location,omitempty"`
-
-	// Required. The host project of the application.
-	// +required
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef,omitempty"`
-}
-
 // BigQueryDataPolicySpec defines the desired state of BigQueryDataPolicy
 // +kcc:spec:proto=google.cloud.bigquery.datapolicies.v1beta1.DataPolicy
 type BigQueryDataPolicySpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	Location string `json:"location"`
+
 	// The BigQueryDataPolicy name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Required. Defines the parent path of the resource.
-	*Parent `json:",inline"`
-
-	// Reference to a Data Catalog Policy Tag resource.
-	// +kcc:proto:field=google.cloud.bigquery.datapolicies.v1beta1.DataPolicy.policy_tag
-	PolicyTagRef *datacalog.PolicyTagRef `json:"policyTagRef,omitempty"`
-
-	// The data masking policy that specifies the data masking rule to use.
-	// +kcc:proto:field=google.cloud.bigquery.datapolicies.v1beta1.DataPolicy.data_masking_policy
-	DataMaskingPolicy *DataMaskingPolicy `json:"dataMaskingPolicy,omitempty"`
-
-	// Type of data policy.
-	// +kcc:proto:field=google.cloud.bigquery.datapolicies.v1beta1.DataPolicy.data_policy_type
-	DataPolicyType *string `json:"dataPolicyType,omitempty"`
-
-	// User-assigned (human readable) ID of the data policy that needs to be
-	//  unique within a project. Used as {data_policy_id} in part of the resource
-	//  name.
-	// +kcc:proto:field=google.cloud.bigquery.datapolicies.v1beta1.DataPolicy.data_policy_id
-	DataPolicyID *string `json:"dataPolicyID,omitempty"`
 }
 
 // BigQueryDataPolicyStatus defines the config connector machine state of BigQueryDataPolicy
@@ -91,7 +58,7 @@ type BigQueryDataPolicyObservedState struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpbigquerydatapolicy;gcpbigquerydatapolicies
+// +kubebuilder:resource:categories=gcp,shortName=gcpbigquerydatapolicy;gcpbigquerydatapolicys
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"

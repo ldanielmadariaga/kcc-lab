@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -24,8 +25,15 @@ var DataprocNodeGroupGVK = GroupVersion.WithKind("DataprocNodeGroup")
 // DataprocNodeGroupSpec defines the desired state of DataprocNodeGroup
 // +kcc:spec:proto=google.cloud.dataproc.v1.NodeGroup
 type DataprocNodeGroupSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+
+	// The DataprocNodeGroup name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. Node group roles.
 	// +kcc:proto:field=google.cloud.dataproc.v1.NodeGroup.roles
+	// +required
 	Roles []string `json:"roles,omitempty"`
 
 	// Optional. The node group instance group configuration.
@@ -42,59 +50,6 @@ type DataprocNodeGroupSpec struct {
 	//  * The node group must have no more than 32 labels.
 	// +kcc:proto:field=google.cloud.dataproc.v1.NodeGroup.labels
 	Labels map[string]string `json:"labels,omitempty"`
-
-	*Parent `json:",inline"`
-
-	// The DataprocNodeGroup name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
-}
-
-// +kcc:proto=google.cloud.dataproc.v1.DiskConfig
-type DiskConfig struct {
-	// Optional. Type of the boot disk (default is "pd-standard").
-	//  Valid values: "pd-balanced" (Persistent Disk Balanced Solid State Drive),
-	//  "pd-ssd" (Persistent Disk Solid State Drive),
-	//  or "pd-standard" (Persistent Disk Hard Disk Drive).
-	//  See [Disk types](https://cloud.google.com/compute/docs/disks#disk-types).
-	// +kcc:proto:field=google.cloud.dataproc.v1.DiskConfig.boot_disk_type
-	BootDiskType *string `json:"bootDiskType,omitempty"`
-
-	// Optional. Size in GB of the boot disk (default is 500GB).
-	// +kcc:proto:field=google.cloud.dataproc.v1.DiskConfig.boot_disk_size_gb
-	BootDiskSizeGB *int32 `json:"bootDiskSizeGB,omitempty"`
-
-	// Optional. Number of attached SSDs, from 0 to 8 (default is 0).
-	//  If SSDs are not attached, the boot disk is used to store runtime logs and
-	//  [HDFS](https://hadoop.apache.org/docs/r1.2.1/hdfs_user_guide.html) data.
-	//  If one or more SSDs are attached, this runtime bulk
-	//  data is spread across them, and the boot disk contains only basic
-	//  config and installed binaries.
-	//
-	//  Note: Local SSD options may vary by machine type and number of vCPUs
-	//  selected.
-	// +kcc:proto:field=google.cloud.dataproc.v1.DiskConfig.num_local_ssds
-	NumLocalSSDs *int32 `json:"numLocalSSDs,omitempty"`
-
-	// Optional. Interface type of local SSDs (default is "scsi").
-	//  Valid values: "scsi" (Small Computer System Interface),
-	//  "nvme" (Non-Volatile Memory Express).
-	//  See [local SSD
-	//  performance](https://cloud.google.com/compute/docs/disks/local-ssd#performance).
-	// +kcc:proto:field=google.cloud.dataproc.v1.DiskConfig.local_ssd_interface
-	LocalSSDInterface *string `json:"localSSDInterface,omitempty"`
-
-	// Optional. Indicates how many IOPS to provision for the disk. This sets the
-	//  number of I/O operations per second that the disk can handle. Note: This
-	//  field is only supported if boot_disk_type is hyperdisk-balanced.
-	// +kcc:proto:field=google.cloud.dataproc.v1.DiskConfig.boot_disk_provisioned_iops
-	BootDiskProvisionedIOPs *int64 `json:"bootDiskProvisionedIOPs,omitempty"`
-
-	// Optional. Indicates how much throughput to provision for the disk. This
-	//  sets the number of throughput mb per second that the disk can handle.
-	//  Values must be greater than or equal to 1. Note: This field is only
-	//  supported if boot_disk_type is hyperdisk-balanced.
-	// +kcc:proto:field=google.cloud.dataproc.v1.DiskConfig.boot_disk_provisioned_throughput
-	BootDiskProvisionedThroughput *int64 `json:"bootDiskProvisionedThroughput,omitempty"`
 }
 
 // DataprocNodeGroupStatus defines the config connector machine state of DataprocNodeGroup
@@ -123,7 +78,6 @@ type DataprocNodeGroupObservedState struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// TODO(user): make sure the pluralizaiton below is correct
 // +kubebuilder:resource:categories=gcp,shortName=gcpdataprocnodegroup;gcpdataprocnodegroups
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"

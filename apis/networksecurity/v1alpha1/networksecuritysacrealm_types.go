@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,23 +26,19 @@ var NetworkSecuritySACRealmGVK = GroupVersion.WithKind("NetworkSecuritySACRealm"
 // +kcc:spec:proto=google.cloud.networksecurity.v1.SACRealm
 type NetworkSecuritySACRealmSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +required
 	Location *string `json:"location"`
 
 	// The NetworkSecuritySACRealm name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. Optional list of labels applied to the resource.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.SACRealm.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Immutable. SSE service provider associated with the realm.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.SACRealm.security_service
-	// +kubebuilder:validation:Enum=SECURITY_SERVICE_UNSPECIFIED;PALO_ALTO_PRISMA_ACCESS
 	SecurityService *string `json:"securityService,omitempty"`
 }
 
@@ -75,23 +71,11 @@ type NetworkSecuritySACRealmObservedState struct {
 
 	// Output only. Key to be shared with SSE service provider during pairing.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.SACRealm.pairing_key
-	PairingKey *SACRealm_PairingKeyObservedState `json:"pairingKey,omitempty"`
+	PairingKey *SacRealm_PairingKeyObservedState `json:"pairingKey,omitempty"`
 
 	// Output only. State of the realm.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.SACRealm.state
 	State *string `json:"state,omitempty"`
-}
-
-// +kcc:observedstate:proto=google.cloud.networksecurity.v1.SACRealm.PairingKey
-type SACRealm_PairingKeyObservedState struct {
-	// Output only. Key value.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.SACRealm.PairingKey.key
-	Key *string `json:"key,omitempty"`
-
-	// Output only. Timestamp in UTC of when this resource is considered
-	//  expired. It expires 7 days after creation.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.SACRealm.PairingKey.expire_time
-	ExpireTime *string `json:"expireTime,omitempty"`
 }
 
 // +genclient

@@ -23,18 +23,17 @@
 
 package bigquerydatapolicy
 
-import (
-	pb "cloud.google.com/go/bigquery/datapolicies/apiv1beta1/datapoliciespb"
-	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
-)
-
 /* found existing non-generated mapping function "BigQueryDataPolicyObservedState_FromProto", skipping
 func BigQueryDataPolicyObservedState_FromProto(mapCtx *direct.MapContext, in *pb.DataPolicy) *krm.BigQueryDataPolicyObservedState {
 	if in == nil {
 		return nil
 	}
 	out := &krm.BigQueryDataPolicyObservedState{}
+	// MISSING: PolicyTag
+	// MISSING: DataMaskingPolicy
 	// MISSING: Name
+	// MISSING: DataPolicyType
+	// MISSING: DataPolicyID
 	return out
 }
 */
@@ -45,7 +44,11 @@ func BigQueryDataPolicyObservedState_ToProto(mapCtx *direct.MapContext, in *krm.
 		return nil
 	}
 	out := &pb.DataPolicy{}
+	// MISSING: PolicyTag
+	// MISSING: DataMaskingPolicy
 	// MISSING: Name
+	// MISSING: DataPolicyType
+	// MISSING: DataPolicyID
 	return out
 }
 */
@@ -56,71 +59,26 @@ func BigQueryDataPolicySpec_FromProto(mapCtx *direct.MapContext, in *pb.DataPoli
 		return nil
 	}
 	out := &krm.BigQueryDataPolicySpec{}
-	out.PolicyTag = direct.LazyPtr(in.GetPolicyTag())
-	out.DataMaskingPolicy = DataMaskingPolicy_FromProto(mapCtx, in.GetDataMaskingPolicy())
+	// MISSING: PolicyTag
+	// MISSING: DataMaskingPolicy
 	// MISSING: Name
-	out.DataPolicyType = direct.Enum_FromProto(mapCtx, in.GetDataPolicyType())
-	out.DataPolicyID = direct.LazyPtr(in.GetDataPolicyId())
+	// MISSING: DataPolicyType
+	// MISSING: DataPolicyID
 	return out
 }
 */
 
-/*
-found existing non-generated mapping function "BigQueryDataPolicySpec_ToProto", skipping
-
-	func BigQueryDataPolicySpec_ToProto(mapCtx *direct.MapContext, in *krm.BigQueryDataPolicySpec) *pb.DataPolicy {
-		if in == nil {
-			return nil
-		}
-		out := &pb.DataPolicy{}
-		if oneof := BigQueryDataPolicySpec_PolicyTag_ToProto(mapCtx, in.PolicyTag); oneof != nil {
-			out.MatchingLabel = oneof
-		}
-		if oneof := DataMaskingPolicy_ToProto(mapCtx, in.DataMaskingPolicy); oneof != nil {
-			out.Policy = &pb.DataPolicy_DataMaskingPolicy{DataMaskingPolicy: oneof}
-		}
-		// MISSING: Name
-		out.DataPolicyType = direct.Enum_ToProto[pb.DataPolicy_DataPolicyType](mapCtx, in.DataPolicyType)
-		out.DataPolicyId = direct.ValueOf(in.DataPolicyID)
-		return out
-	}
-*/
-func BigQueryDataPolicySpec_PolicyTag_ToProto(mapCtx *direct.MapContext, in *string) *pb.DataPolicy_PolicyTag {
+/* found existing non-generated mapping function "BigQueryDataPolicySpec_ToProto", skipping
+func BigQueryDataPolicySpec_ToProto(mapCtx *direct.MapContext, in *krm.BigQueryDataPolicySpec) *pb.DataPolicy {
 	if in == nil {
 		return nil
 	}
-	return &pb.DataPolicy_PolicyTag{PolicyTag: *in}
-}
-
-/* found existing non-generated mapping function "DataMaskingPolicy_FromProto", skipping
-func DataMaskingPolicy_FromProto(mapCtx *direct.MapContext, in *pb.DataMaskingPolicy) *krm.DataMaskingPolicy {
-	if in == nil {
-		return nil
-	}
-	out := &krm.DataMaskingPolicy{}
-	out.PredefinedExpression = direct.Enum_FromProto(mapCtx, in.GetPredefinedExpression())
+	out := &pb.DataPolicy{}
+	// MISSING: PolicyTag
+	// MISSING: DataMaskingPolicy
+	// MISSING: Name
+	// MISSING: DataPolicyType
+	// MISSING: DataPolicyID
 	return out
-}
-*/
-
-/* found existing non-generated mapping function "DataMaskingPolicy_ToProto", skipping
-func DataMaskingPolicy_ToProto(mapCtx *direct.MapContext, in *krm.DataMaskingPolicy) *pb.DataMaskingPolicy {
-	if in == nil {
-		return nil
-	}
-	out := &pb.DataMaskingPolicy{}
-	if oneof := DataMaskingPolicy_PredefinedExpression_ToProto(mapCtx, in.PredefinedExpression); oneof != nil {
-		out.MaskingExpression = oneof
-	}
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "DataMaskingPolicy_PredefinedExpression_ToProto", skipping
-func DataMaskingPolicy_PredefinedExpression_ToProto(mapCtx *direct.MapContext, in *string) *pb.DataMaskingPolicy_PredefinedExpression_ {
-	if in == nil {
-		return nil
-	}
-	return &pb.DataMaskingPolicy_PredefinedExpression_{PredefinedExpression: direct.Enum_ToProto[pb.DataMaskingPolicy_PredefinedExpression](mapCtx, in)}
 }
 */

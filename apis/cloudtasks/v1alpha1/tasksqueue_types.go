@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,7 +25,14 @@ var TasksQueueGVK = GroupVersion.WithKind("TasksQueue")
 // TasksQueueSpec defines the desired state of TasksQueue
 // +kcc:spec:proto=google.cloud.tasks.v2.Queue
 type TasksQueueSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	Location *string `json:"location"`
+
+	// The TasksQueue name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Overrides for
 	//  [task-level
 	//  app_engine_routing][google.cloud.tasks.v2.AppEngineHttpRequest.app_engine_routing].
@@ -84,24 +91,37 @@ type TasksQueueSpec struct {
 	// +kcc:proto:field=google.cloud.tasks.v2.Queue.retry_config
 	RetryConfig *RetryConfig `json:"retryConfig,omitempty"`
 
+	// Output only. The state of the queue.
+	//
+	//  `state` can only be changed by calling
+	//  [PauseQueue][google.cloud.tasks.v2.CloudTasks.PauseQueue],
+	//  [ResumeQueue][google.cloud.tasks.v2.CloudTasks.ResumeQueue], or uploading
+	//  [queue.yaml/xml](https://cloud.google.com/appengine/docs/python/config/queueref).
+	//  [UpdateQueue][google.cloud.tasks.v2.CloudTasks.UpdateQueue] cannot be used
+	//  to change `state`.
+	// +kcc:proto:field=google.cloud.tasks.v2.Queue.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. The last time this queue was purged.
+	//
+	//  All tasks that were [created][google.cloud.tasks.v2.Task.create_time]
+	//  before this time were purged.
+	//
+	//  A queue can be purged using
+	//  [PurgeQueue][google.cloud.tasks.v2.CloudTasks.PurgeQueue], the [App Engine
+	//  Task Queue SDK, or the Cloud
+	//  Console](https://cloud.google.com/appengine/docs/standard/python/taskqueue/push/deleting-tasks-and-queues#purging_all_tasks_from_a_queue).
+	//
+	//  Purge time will be truncated to the nearest microsecond. Purge
+	//  time will be unset if the queue has never been purged.
+	// +kcc:proto:field=google.cloud.tasks.v2.Queue.purge_time
+	PurgeTime *string `json:"purgeTime,omitempty"`
+
 	// Configuration options for writing logs to
 	//  [Stackdriver Logging](https://cloud.google.com/logging/docs/). If this
 	//  field is unset, then no logs are written.
 	// +kcc:proto:field=google.cloud.tasks.v2.Queue.stackdriver_logging_config
 	StackdriverLoggingConfig *StackdriverLoggingConfig `json:"stackdriverLoggingConfig,omitempty"`
-
-	*Parent `json:",inline"`
-
-	// The TasksQueue name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
-}
-
-type Parent struct {
-	// Required. The host project of the queue.
-	ProjectRef *v1beta1.ProjectRef `json:"projectRef,omitempty"`
-
-	// Required. The location of the queue.
-	Location *string `json:"location,omitempty"`
 }
 
 // TasksQueueStatus defines the config connector machine state of TasksQueue
@@ -123,32 +143,6 @@ type TasksQueueStatus struct {
 // TasksQueueObservedState is the state of the TasksQueue resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.tasks.v2.Queue
 type TasksQueueObservedState struct {
-
-	// Output only. The last time this queue was purged.
-	//
-	//  All tasks that were [created][google.cloud.tasks.v2.Task.create_time]
-	//  before this time were purged.
-	//
-	//  A queue can be purged using
-	//  [PurgeQueue][google.cloud.tasks.v2.CloudTasks.PurgeQueue], the [App Engine
-	//  Task Queue SDK, or the Cloud
-	//  Console](https://cloud.google.com/appengine/docs/standard/python/taskqueue/push/deleting-tasks-and-queues#purging_all_tasks_from_a_queue).
-	//
-	//  Purge time will be truncated to the nearest microsecond. Purge
-	//  time will be unset if the queue has never been purged.
-	// +kcc:proto:field=google.cloud.tasks.v2.Queue.purge_time
-	PurgeTime *string `json:"purgeTime,omitempty"`
-
-	// Output only. The state of the queue.
-	//
-	//  `state` can only be changed by calling
-	//  [PauseQueue][google.cloud.tasks.v2.CloudTasks.PauseQueue],
-	//  [ResumeQueue][google.cloud.tasks.v2.CloudTasks.ResumeQueue], or uploading
-	//  [queue.yaml/xml](https://cloud.google.com/appengine/docs/python/config/queueref).
-	//  [UpdateQueue][google.cloud.tasks.v2.CloudTasks.UpdateQueue] cannot be used
-	//  to change `state`.
-	// +kcc:proto:field=google.cloud.tasks.v2.Queue.state
-	State *string `json:"state,omitempty"`
 }
 
 // +genclient
@@ -157,7 +151,6 @@ type TasksQueueObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

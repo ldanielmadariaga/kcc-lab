@@ -6,3 +6,8 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataprocJob group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataprocNodeGroup group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.sessionTemplate" reason=possible-reference (target=dataproc.googleapis.com/SessionTemplate)
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)

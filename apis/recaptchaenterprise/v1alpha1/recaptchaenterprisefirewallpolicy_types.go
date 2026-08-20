@@ -15,58 +15,22 @@
 package v1alpha1
 
 import (
-	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var ReCAPTCHAEnterpriseFirewallPolicyGVK = GroupVersion.WithKind("ReCAPTCHAEnterpriseFirewallPolicy")
 
-type Parent struct {
-	// +required
-	ProjectRef *refv1beta1.ProjectRef `json:"projectRef"`
-}
-
 // ReCAPTCHAEnterpriseFirewallPolicySpec defines the desired state of ReCAPTCHAEnterpriseFirewallPolicy
 // +kcc:spec:proto=google.cloud.recaptchaenterprise.v1.FirewallPolicy
 type ReCAPTCHAEnterpriseFirewallPolicySpec struct {
-	Parent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 
 	// The ReCAPTCHAEnterpriseFirewallPolicy name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-	// Optional. A description of what this policy aims to achieve, for
-	//  convenience purposes. The description can at most include 256 UTF-8
-	//  characters.
-	// +kcc:proto:field=google.cloud.recaptchaenterprise.v1.FirewallPolicy.description
-	Description *string `json:"description,omitempty"`
-
-	// Optional. The path for which this policy applies, specified as a glob
-	//  pattern. For more information on glob, see the [manual
-	//  page](https://man7.org/linux/man-pages/man7/glob.7.html).
-	//  A path has a max length of 200 characters.
-	// +kcc:proto:field=google.cloud.recaptchaenterprise.v1.FirewallPolicy.path
-	Path *string `json:"path,omitempty"`
-
-	// Optional. A CEL (Common Expression Language) conditional expression that
-	//  specifies if this policy applies to an incoming user request. If this
-	//  condition evaluates to true and the requested path matched the path
-	//  pattern, the associated actions should be executed by the caller. The
-	//  condition string is checked for CEL syntax correctness on creation. For
-	//  more information, see the [CEL spec](https://github.com/google/cel-spec)
-	//  and its [language
-	//  definition](https://github.com/google/cel-spec/blob/master/doc/langdef.md).
-	//  A condition has a max length of 500 characters.
-	// +kcc:proto:field=google.cloud.recaptchaenterprise.v1.FirewallPolicy.condition
-	Condition *string `json:"condition,omitempty"`
-
-	// Optional. The actions that the caller should take regarding user access.
-	//  There should be at most one terminal action. A terminal action is any
-	//  action that forces a response, such as `AllowAction`,
-	//  `BlockAction` or `SubstituteAction`.
-	//  Zero or more non-terminal actions such as `SetHeader` might be
-	//  specified. A single policy can contain up to 16 actions.
-	// +kcc:proto:field=google.cloud.recaptchaenterprise.v1.FirewallPolicy.actions
-	Actions []FirewallAction `json:"actions,omitempty"`
 }
 
 // ReCAPTCHAEnterpriseFirewallPolicyStatus defines the config connector machine state of ReCAPTCHAEnterpriseFirewallPolicy
@@ -81,20 +45,18 @@ type ReCAPTCHAEnterpriseFirewallPolicyStatus struct {
 	// A unique specifier for the ReCAPTCHAEnterpriseFirewallPolicy resource in GCP.
 	ExternalRef *string `json:"externalRef,omitempty"`
 
-	/*
-		// ObservedState is the state of the resource as most recently observed in GCP.
-		ObservedState *ReCAPTCHAEnterpriseFirewallPolicyObservedState `json:"observedState,omitempty"`
-	*/
+	// ObservedState is the state of the resource as most recently observed in GCP.
+	ObservedState *ReCAPTCHAEnterpriseFirewallPolicyObservedState `json:"observedState,omitempty"`
 }
 
 // ReCAPTCHAEnterpriseFirewallPolicyObservedState is the state of the ReCAPTCHAEnterpriseFirewallPolicy resource as most recently observed in GCP.
+// +kcc:observedstate:proto=google.cloud.recaptchaenterprise.v1.FirewallPolicy
 type ReCAPTCHAEnterpriseFirewallPolicyObservedState struct {
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// TODO(user): make sure the pluralizaiton below is correct
-// +kubebuilder:resource:categories=gcp,shortName=gcprecaptchaenterprisefirewallpolicy;gcprecaptchaenterprisefirewallpolicies
+// +kubebuilder:resource:categories=gcp,shortName=gcprecaptchaenterprisefirewallpolicy;gcprecaptchaenterprisefirewallpolicys
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"

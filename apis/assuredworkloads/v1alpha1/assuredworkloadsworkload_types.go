@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	billingv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/billing/v1alpha1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,9 +25,12 @@ var AssuredWorkloadsWorkloadGVK = GroupVersion.WithKind("AssuredWorkloadsWorkloa
 // AssuredWorkloadsWorkloadSpec defines the desired state of AssuredWorkloadsWorkload
 // +kcc:spec:proto=google.cloud.assuredworkloads.v1.Workload
 type AssuredWorkloadsWorkloadSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+
 	// The AssuredWorkloadsWorkload name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. The user-assigned display name of the Workload.
 	//  When present it must be between 4 to 30 characters.
 	//  Allowed characters are: lowercase and uppercase letters, numbers,
@@ -35,10 +38,12 @@ type AssuredWorkloadsWorkloadSpec struct {
 	//
 	//  Example: My Workload
 	// +kcc:proto:field=google.cloud.assuredworkloads.v1.Workload.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Required. Immutable. Compliance Regime associated with this workload.
 	// +kcc:proto:field=google.cloud.assuredworkloads.v1.Workload.compliance_regime
+	// +required
 	ComplianceRegime *string `json:"complianceRegime,omitempty"`
 
 	// Optional. The billing account used for the resources which are
@@ -50,16 +55,16 @@ type AssuredWorkloadsWorkloadSpec struct {
 	//  `billingAccounts/{billing_account_id}`. For example,
 	//  `billingAccounts/012345-567890-ABCDEF`.
 	// +kcc:proto:field=google.cloud.assuredworkloads.v1.Workload.billing_account
-	BillingAccountRef *billingv1alpha1.BillingAccountRef `json:"billingAccountRef,omitempty"`
+	BillingAccount *string `json:"billingAccount,omitempty"`
 
 	// Optional. ETag of the workload, it is calculated on the basis
 	//  of the Workload contents. It will be used in Update & Delete operations.
 	// +kcc:proto:field=google.cloud.assuredworkloads.v1.Workload.etag
-	// Etag *string `json:"etag,omitempty"`
+	Etag *string `json:"etag,omitempty"`
 
 	// Optional. Labels applied to the workload.
 	// +kcc:proto:field=google.cloud.assuredworkloads.v1.Workload.labels
-	// Labels map[string]string `json:"labels,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// Input only. The parent resource for the resources managed by this Assured Workload. May
 	//  be either empty or a folder resource which is a child of the
@@ -68,16 +73,15 @@ type AssuredWorkloadsWorkloadSpec struct {
 	//  Format:
 	//  folders/{folder_id}
 	// +kcc:proto:field=google.cloud.assuredworkloads.v1.Workload.provisioned_resources_parent
-	// ProvisionedResourcesParent *string `json:"provisionedResourcesParent,omitempty"`
+	ProvisionedResourcesParent *string `json:"provisionedResourcesParent,omitempty"`
 
-	// DEPRECATED
 	// Input only. Settings used to create a CMEK crypto key. When set, a project with a KMS
 	//  CMEK key is provisioned.
 	//  This field is deprecated as of Feb 28, 2022.
 	//  In order to create a Keyring, callers should specify,
 	//  ENCRYPTION_KEYS_PROJECT or KEYRING in ResourceSettings.resource_type field.
 	// +kcc:proto:field=google.cloud.assuredworkloads.v1.Workload.kms_settings
-	// KMSSettings *Workload_KMSSettings `json:"kmsSettings,omitempty"`
+	KMSSettings *Workload_KMSSettings `json:"kmsSettings,omitempty"`
 
 	// Input only. Resource properties that are used to customize workload resources.
 	//  These properties (such as custom project id) will be used to create
@@ -149,7 +153,6 @@ type AssuredWorkloadsWorkloadObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

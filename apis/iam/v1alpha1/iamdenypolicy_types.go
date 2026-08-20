@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -26,55 +26,11 @@ var IAMDenyPolicyGVK = GroupVersion.WithKind("IAMDenyPolicy")
 // +kcc:spec:proto=google.iam.v2.Policy
 type IAMDenyPolicySpec struct {
 	// The project that this resource belongs to.
-	// +optional
-	ProjectRef *refs.ProjectRef `json:"projectRef,omitempty"`
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The folder that this resource belongs to.
-	// +optional
-	FolderRef *refs.FolderRef `json:"folderRef,omitempty"`
 
-	// The organization that this resource belongs to.
-	// +optional
-	OrganizationRef *refs.OrganizationRef `json:"organizationRef,omitempty"`
 	// The IAMDenyPolicy name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// // Immutable. The resource name of the `Policy`, which must be unique. Format:
-	// //  `policies/{attachment_point}/denypolicies/{policy_id}`
-	// //
-	// //
-	// //  The attachment point is identified by its URL-encoded full resource name,
-	// //  which means that the forward-slash character, `/`, must be written as
-	// //  `%2F`. For example,
-	// //  `policies/cloudresourcemanager.googleapis.com%2Fprojects%2Fmy-project/denypolicies/my-deny-policy`.
-	// //
-	// //  For organizations and folders, use the numeric ID in the full resource
-	// //  name. For projects, requests can use the alphanumeric or the numeric ID.
-	// //  Responses always contain the numeric ID.
-	// // +kcc:proto:field=google.iam.v2.Policy.name
-	// Name *string `json:"name,omitempty"`
-
-	// A user-specified description of the `Policy`. This value can be up to 63
-	//  characters.
-	// +kcc:proto:field=google.iam.v2.Policy.display_name
-	DisplayName *string `json:"displayName,omitempty"`
-
-	// // NOTYET: not yet supporting annotations
-	// // A key-value map to store arbitrary metadata for the `Policy`. Keys
-	// //  can be up to 63 characters. Values can be up to 255 characters.
-	// // +kcc:proto:field=google.iam.v2.Policy.annotations
-	// Annotations map[string]string `json:"annotations,omitempty"`
-
-	// A list of rules that specify the behavior of the `Policy`. All of the rules
-	//  should be of the `kind` specified in the `Policy`.
-	// +kcc:proto:field=google.iam.v2.Policy.rules
-	Rules []PolicyRule `json:"rules,omitempty"`
-
-	// NOTYET: not really documented?
-	// // Immutable. Specifies that this policy is managed by an authority and can only be
-	// //  modified by that authority. Usage is restricted.
-	// // +kcc:proto:field=google.iam.v2.Policy.managing_authority
-	// ManagingAuthority *string `json:"managingAuthority,omitempty"`
 }
 
 // IAMDenyPolicyStatus defines the config connector machine state of IAMDenyPolicy
@@ -96,26 +52,11 @@ type IAMDenyPolicyStatus struct {
 // IAMDenyPolicyObservedState is the state of the IAMDenyPolicy resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.iam.v2.Policy
 type IAMDenyPolicyObservedState struct {
-	// NOTYET: no clear use case?
-	// // Immutable. The globally unique ID of the `Policy`. Assigned automatically when the
-	// //  `Policy` is created.
-	// // +kcc:proto:field=google.iam.v2.Policy.uid
-	// Uid *string `json:"uid,omitempty"`
-
-	// NOTYET: no clear use case?
-	// 	// An opaque tag that identifies the current version of the `Policy`. IAM uses
-	// //  this value to help manage concurrent updates, so they do not cause one
-	// //  update to be overwritten by another.
-	// //
-	// //  If this field is present in a [CreatePolicy][] request, the value is
-	// //  ignored.
-	// // +kcc:proto:field=google.iam.v2.Policy.etag
-	// Etag *string `json:"etag,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpiamdenypolicy;gcpiamdenypolicies
+// +kubebuilder:resource:categories=gcp,shortName=gcpiamdenypolicy;gcpiamdenypolicys
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"

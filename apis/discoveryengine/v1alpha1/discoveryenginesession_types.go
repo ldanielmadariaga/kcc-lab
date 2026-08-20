@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,38 +26,40 @@ var DiscoveryEngineSessionGVK = GroupVersion.WithKind("DiscoveryEngineSession")
 // +kcc:spec:proto=google.cloud.discoveryengine.v1.Session
 type DiscoveryEngineSessionSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// Immutable. The location of this resource.
-	// +required
+	// The location of this resource.
 	Location *string `json:"location"`
-
-	// Immutable. The DataStore this session belongs to.
-	// +required
-	DataStoreRef *DiscoveryEngineDataStoreRef `json:"dataStoreRef"`
 
 	// The DiscoveryEngineSession name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. The display name of the session.
 	//
-	// This field is used to identify the session in the UI.
-	// By default, the display name is the first turn query text in the session.
+	//  This field is used to identify the session in the UI.
+	//  By default, the display name is the first turn query text in the session.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// The state of the session.
-	// +kubebuilder:validation:Enum=STATE_UNSPECIFIED;IN_PROGRESS
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.state
 	State *string `json:"state,omitempty"`
 
 	// A unique identifier for tracking users.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.user_pseudo_id
 	UserPseudoID *string `json:"userPseudoID,omitempty"`
 
 	// Turns.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.turns
 	Turns []Session_Turn `json:"turns,omitempty"`
 
+	// Optional. The labels for the session.
+	//  Can be set as filter in ListSessionsRequest.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.labels
+	Labels []string `json:"labels,omitempty"`
+
 	// Optional. Whether the session is pinned, pinned session will be displayed
-	// on the top of the session list.
+	//  on the top of the session list.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.is_pinned
 	IsPinned *bool `json:"isPinned,omitempty"`
 }
 
@@ -81,12 +83,15 @@ type DiscoveryEngineSessionStatus struct {
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1.Session
 type DiscoveryEngineSessionObservedState struct {
 	// Turns.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.turns
 	Turns []Session_TurnObservedState `json:"turns,omitempty"`
 
 	// Output only. The time the session started.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.start_time
 	StartTime *string `json:"startTime,omitempty"`
 
 	// Output only. The time the session finished.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.end_time
 	EndTime *string `json:"endTime,omitempty"`
 }
 
@@ -96,7 +101,6 @@ type DiscoveryEngineSessionObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

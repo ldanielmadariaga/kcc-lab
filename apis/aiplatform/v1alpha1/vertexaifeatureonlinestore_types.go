@@ -15,7 +15,6 @@
 package v1alpha1
 
 import (
-	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -34,34 +33,47 @@ type VertexAIFeatureOnlineStoreSpec struct {
 
 	// The VertexAIFeatureOnlineStore name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Contains settings for the Cloud Bigtable instance that will be created
-	// to serve featureValues for all FeatureViews under this
-	// FeatureOnlineStore.
-	// +kubebuilder:validation:Optional
+	//  to serve featureValues for all FeatureViews under this
+	//  FeatureOnlineStore.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.bigtable
 	Bigtable *FeatureOnlineStore_Bigtable `json:"bigtable,omitempty"`
 
 	// Contains settings for the Optimized store that will be created
-	// to serve featureValues for all FeatureViews under this
-	// FeatureOnlineStore. When choose Optimized storage type, need to set
-	// [PrivateServiceConnectConfig.enable_private_service_connect][google.cloud.aiplatform.v1.PrivateServiceConnectConfig.enable_private_service_connect]
-	// to use private endpoint. Otherwise will use public endpoint by default.
-	// +kubebuilder:validation:Optional
+	//  to serve featureValues for all FeatureViews under this
+	//  FeatureOnlineStore. When choose Optimized storage type, need to set
+	//  [PrivateServiceConnectConfig.enable_private_service_connect][google.cloud.aiplatform.v1.PrivateServiceConnectConfig.enable_private_service_connect]
+	//  to use private endpoint. Otherwise will use public endpoint by default.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.optimized
 	Optimized *FeatureOnlineStore_Optimized `json:"optimized,omitempty"`
 
+	// Optional. Used to perform consistent read-modify-write updates. If not set,
+	//  a blind "overwrite" update happens.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.etag
+	Etag *string `json:"etag,omitempty"`
+
 	// Optional. The labels with user-defined metadata to organize your
-	// FeatureOnlineStore.
-	// +kubebuilder:validation:Optional
+	//  FeatureOnlineStore.
+	//
+	//  Label keys and values can be no longer than 64 characters
+	//  (Unicode codepoints), can only contain lowercase letters, numeric
+	//  characters, underscores and dashes. International characters are allowed.
+	//
+	//  See https://goo.gl/xmQnxf for more information on and examples of labels.
+	//  No more than 64 user labels can be associated with one
+	//  FeatureOnlineStore(System labels are excluded)." System reserved label keys
+	//  are prefixed with "aiplatform.googleapis.com/" and are immutable.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Optional. The dedicated serving endpoint for this FeatureOnlineStore, which
-	// is different from common Vertex service endpoint.
-	// +kubebuilder:validation:Optional
+	//  is different from common Vertex service endpoint.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.dedicated_serving_endpoint
 	DedicatedServingEndpoint *FeatureOnlineStore_DedicatedServingEndpoint `json:"dedicatedServingEndpoint,omitempty"`
 
 	// Optional. Customer-managed encryption key spec for data storage. If set,
-	// online store will be secured by this key.
-	// +kubebuilder:validation:Optional
+	//  online store will be secured by this key.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.encryption_spec
 	EncryptionSpec *EncryptionSpec `json:"encryptionSpec,omitempty"`
 }
 
@@ -84,24 +96,29 @@ type VertexAIFeatureOnlineStoreStatus struct {
 // VertexAIFeatureOnlineStoreObservedState is the state of the VertexAIFeatureOnlineStore resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.aiplatform.v1.FeatureOnlineStore
 type VertexAIFeatureOnlineStoreObservedState struct {
-
 	// Output only. Timestamp when this FeatureOnlineStore was created.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. Timestamp when this FeatureOnlineStore was last updated.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
-	// Optional. Used to perform consistent read-modify-write updates. If not set,
-	// a blind "overwrite" update happens.
-	Etag *string `json:"etag,omitempty"`
-
 	// Output only. State of the featureOnlineStore.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.state
 	State *string `json:"state,omitempty"`
 
+	// Optional. The dedicated serving endpoint for this FeatureOnlineStore, which
+	//  is different from common Vertex service endpoint.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.dedicated_serving_endpoint
+	DedicatedServingEndpoint *FeatureOnlineStore_DedicatedServingEndpointObservedState `json:"dedicatedServingEndpoint,omitempty"`
+
 	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.satisfies_pzs
 	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
 
 	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.satisfies_pzi
 	SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
 }
 
@@ -137,81 +154,4 @@ type VertexAIFeatureOnlineStoreList struct {
 
 func init() {
 	SchemeBuilder.Register(&VertexAIFeatureOnlineStore{}, &VertexAIFeatureOnlineStoreList{})
-}
-
-// +kcc:proto=google.cloud.aiplatform.v1.FeatureOnlineStore.Bigtable
-type FeatureOnlineStore_Bigtable struct {
-	// Required. Autoscaling config applied to Bigtable Instance.
-	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.Bigtable.auto_scaling
-	AutoScaling *FeatureOnlineStore_Bigtable_AutoScaling `json:"autoScaling,omitempty"`
-}
-
-// +kcc:proto=google.cloud.aiplatform.v1.FeatureOnlineStore.Bigtable.AutoScaling
-type FeatureOnlineStore_Bigtable_AutoScaling struct {
-	// Required. The minimum number of nodes to scale down to. Must be greater
-	//  than or equal to 1.
-	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.Bigtable.AutoScaling.min_node_count
-	MinNodeCount *int32 `json:"minNodeCount,omitempty"`
-
-	// Required. The maximum number of nodes to scale up to. Must be greater
-	//  than or equal to min_node_count, and less than or equal to 10 times of
-	//  'min_node_count'.
-	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.Bigtable.AutoScaling.max_node_count
-	MaxNodeCount *int32 `json:"maxNodeCount,omitempty"`
-
-	// Optional. A percentage of the cluster's CPU capacity. Can be from 10%
-	//  to 80%. When a cluster's CPU utilization exceeds the target that you
-	//  have set, Bigtable immediately adds nodes to the cluster. When CPU
-	//  utilization is substantially lower than the target, Bigtable removes
-	//  nodes. If not set will default to 50%.
-	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.Bigtable.AutoScaling.cpu_utilization_target
-	CPUUtilizationTarget *int32 `json:"cpuUtilizationTarget,omitempty"`
-}
-
-// +kcc:proto=google.cloud.aiplatform.v1.FeatureOnlineStore.Optimized
-// +kubebuilder:validation:XPreserveUnknownFields
-type FeatureOnlineStore_Optimized struct {
-}
-
-// +kcc:proto=google.cloud.aiplatform.v1.FeatureOnlineStore.DedicatedServingEndpoint
-type FeatureOnlineStore_DedicatedServingEndpoint struct {
-	// Optional. Private service connect config. The private service connection
-	//  is available only for Optimized storage type, not for embedding
-	//  management now. If
-	//  [PrivateServiceConnectConfig.enable_private_service_connect][google.cloud.aiplatform.v1.PrivateServiceConnectConfig.enable_private_service_connect]
-	//  set to true, customers will use private service connection to send
-	//  request. Otherwise, the connection will set to public endpoint.
-	// +kcc:proto:field=google.cloud.aiplatform.v1.FeatureOnlineStore.DedicatedServingEndpoint.private_service_connect_config
-	PrivateServiceConnectConfig *PrivateServiceConnectConfig `json:"privateServiceConnectConfig,omitempty"`
-}
-
-// +kcc:proto=google.cloud.aiplatform.v1.PrivateServiceConnectConfig
-type PrivateServiceConnectConfig struct {
-	// Required. If true, expose the IndexEndpoint via private service connect.
-	// +kcc:proto:field=google.cloud.aiplatform.v1.PrivateServiceConnectConfig.enable_private_service_connect
-	EnablePrivateServiceConnect *bool `json:"enablePrivateServiceConnect,omitempty"`
-
-	// A list of Projects from which the forwarding rule will target the service
-	//  attachment.
-	// +kcc:proto:field=google.cloud.aiplatform.v1.PrivateServiceConnectConfig.project_allowlist
-	ProjectAllowlist []string `json:"projectAllowlist,omitempty"`
-
-	// Optional. List of projects and networks where the PSC endpoints will be
-	//  created. This field is used by Online Inference(Prediction) only.
-	// +kcc:proto:field=google.cloud.aiplatform.v1.PrivateServiceConnectConfig.psc_automation_configs
-	PSCAutomationConfigs []PSCAutomationConfig `json:"pscAutomationConfigs,omitempty"`
-}
-
-// +kcc:proto=google.cloud.aiplatform.v1.PSCAutomationConfig
-type PSCAutomationConfig struct {
-	// Required. Project id used to create forwarding rule.
-	// +kcc:proto:field=google.cloud.aiplatform.v1.PSCAutomationConfig.project_id
-	ProjectID *string `json:"projectID,omitempty"`
-
-	// Required. The full name of the Google Compute Engine
-	//  [network](https://cloud.google.com/compute/docs/networks-and-firewalls#networks).
-	//  [Format](https://cloud.google.com/compute/docs/reference/rest/v1/networks/get):
-	//  `projects/{project}/global/networks/{network}`.
-	// +kcc:proto:field=google.cloud.aiplatform.v1.PSCAutomationConfig.network
-	NetworkRef *computerefs.ComputeNetworkRef `json:"networkRef,omitempty"`
 }

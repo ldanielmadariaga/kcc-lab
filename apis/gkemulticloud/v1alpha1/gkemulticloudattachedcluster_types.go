@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,39 +26,54 @@ var GKEMulticloudAttachedClusterGVK = GroupVersion.WithKind("GKEMulticloudAttach
 // +kcc:spec:proto=google.cloud.gkemulticloud.v1.AttachedCluster
 type GKEMulticloudAttachedClusterSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
-	// Immutable. The location of this resource.
-	// +required
+	// The location of this resource.
 	Location *string `json:"location"`
 
+	// The GKEMulticloudAttachedCluster name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. A human readable description of this cluster.
 	//  Cannot be longer than 255 UTF-8 encoded bytes.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.description
 	Description *string `json:"description,omitempty"`
 
 	// Required. OpenID Connect (OIDC) configuration for the cluster.
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.oidc_config
 	// +required
 	OIDCConfig *AttachedOIDCConfig `json:"oidcConfig,omitempty"`
 
 	// Required. The platform version for the cluster (e.g. `1.19.0-gke.1000`).
+	//
 	//  You can list all supported versions on a given Google Cloud region by
-	//  calling GetAttachedServerConfig.
+	//  calling
+	//  [GetAttachedServerConfig][google.cloud.gkemulticloud.v1.AttachedClusters.GetAttachedServerConfig].
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.platform_version
 	// +required
 	PlatformVersion *string `json:"platformVersion,omitempty"`
 
 	// Required. The Kubernetes distribution of the underlying attached cluster.
+	//
 	//  Supported values: ["eks", "aks", "generic"].
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.distribution
 	// +required
 	Distribution *string `json:"distribution,omitempty"`
 
 	// Required. Fleet configuration.
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.fleet
 	// +required
 	Fleet *Fleet `json:"fleet,omitempty"`
 
+	// Allows clients to perform consistent read-modify-writes
+	//  through optimistic concurrency control.
+	//
+	//  Can be sent on update and delete requests to ensure the
+	//  client has an up-to-date value before proceeding.
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.etag
+	Etag *string `json:"etag,omitempty"`
+
 	// Optional. Annotations on the cluster.
+	//
 	//  This field has the same restrictions as Kubernetes annotations.
 	//  The total size of all keys and values combined is limited to 256k.
 	//  Key can have 2 segments: prefix (optional) and name (required),
@@ -66,55 +81,48 @@ type GKEMulticloudAttachedClusterSpec struct {
 	//  Prefix must be a DNS subdomain.
 	//  Name must be 63 characters or less, begin and end with alphanumerics,
 	//  with dashes (-), underscores (_), dots (.), and alphanumerics between.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.annotations
 	Annotations map[string]string `json:"annotations,omitempty"`
 
 	// Optional. Logging configuration for this cluster.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.logging_config
 	LoggingConfig *LoggingConfig `json:"loggingConfig,omitempty"`
 
 	// Optional. Configuration related to the cluster RBAC settings.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.authorization
 	Authorization *AttachedClustersAuthorization `json:"authorization,omitempty"`
 
 	// Optional. Monitoring configuration for this cluster.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.monitoring_config
 	MonitoringConfig *MonitoringConfig `json:"monitoringConfig,omitempty"`
 
 	// Optional. Proxy configuration for outbound HTTP(S) traffic.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.proxy_config
 	ProxyConfig *AttachedProxyConfig `json:"proxyConfig,omitempty"`
 
 	// Optional. Binary Authorization configuration for this cluster.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.binary_authorization
 	BinaryAuthorization *BinaryAuthorization `json:"binaryAuthorization,omitempty"`
 
 	// Optional. Security Posture configuration for this cluster.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.security_posture_config
 	SecurityPostureConfig *SecurityPostureConfig `json:"securityPostureConfig,omitempty"`
 
 	// Optional. Input only. Tag keys/values directly bound to this resource.
-	//  See Tags overview for more details on Google Cloud Platform tags.
-	// +optional
+	//
+	//  Tag key must be specified in the format <tag namespace>/<tag key name>
+	//  where the tag namespace is the ID of the organization or name of the
+	//  project that the tag key is defined in.
+	//  The short name of a tag key or value can have a maximum length of 256
+	//  characters. The permitted character set for the short name includes UTF-8
+	//  encoded Unicode characters except single quotes ('), double quotes ("),
+	//  backslashes (\), and forward slashes (/).
+	//
+	//  See
+	//  [Tags](https://cloud.google.com/resource-manager/docs/tags/tags-overview)
+	//  for more details on Google Cloud Platform tags.
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.tags
 	Tags map[string]string `json:"tags,omitempty"`
-
-	// The GKEMulticloudAttachedCluster name. If not given, the metadata.name will be used.
-	// +optional
-	ResourceID *string `json:"resourceID,omitempty"`
-}
-
-// +kcc:proto=google.cloud.gkemulticloud.v1.Fleet
-type Fleet struct {
-	// The host project of the fleet.
-	// +required
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-}
-
-// +kcc:observedstate:proto=google.cloud.gkemulticloud.v1.Fleet
-type FleetObservedState struct {
-	// Output only. The name of the managed Hub Membership resource associated to this cluster.
-	// +optional
-	Membership *string `json:"membership,omitempty"`
 }
 
 // GKEMulticloudAttachedClusterStatus defines the config connector machine state of GKEMulticloudAttachedCluster
@@ -137,45 +145,46 @@ type GKEMulticloudAttachedClusterStatus struct {
 // +kcc:observedstate:proto=google.cloud.gkemulticloud.v1.AttachedCluster
 type GKEMulticloudAttachedClusterObservedState struct {
 	// Output only. The region where this cluster runs.
-	//  For EKS clusters, this is an AWS region. For AKS clusters,
+	//
+	//  For EKS clusters, this is a AWS region. For AKS clusters,
 	//  this is an Azure region.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.cluster_region
 	ClusterRegion *string `json:"clusterRegion,omitempty"`
 
 	// Required. Fleet configuration.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.fleet
 	Fleet *FleetObservedState `json:"fleet,omitempty"`
 
 	// Output only. The current state of the cluster.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.state
 	State *string `json:"state,omitempty"`
 
 	// Output only. A globally unique identifier for the cluster.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.uid
 	Uid *string `json:"uid,omitempty"`
 
 	// Output only. If set, there are currently changes in flight to the cluster.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.reconciling
 	Reconciling *bool `json:"reconciling,omitempty"`
 
 	// Output only. The time at which this cluster was registered.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. The time at which this cluster was last updated.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. The Kubernetes version of the cluster.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.kubernetes_version
 	KubernetesVersion *string `json:"kubernetesVersion,omitempty"`
 
 	// Output only. Workload Identity settings.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.workload_identity_config
 	WorkloadIdentityConfig *WorkloadIdentityConfig `json:"workloadIdentityConfig,omitempty"`
 
 	// Output only. A set of errors found in the cluster.
-	// +optional
+	// +kcc:proto:field=google.cloud.gkemulticloud.v1.AttachedCluster.errors
 	Errors []AttachedClusterError `json:"errors,omitempty"`
 }
 
@@ -185,7 +194,6 @@ type GKEMulticloudAttachedClusterObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

@@ -5,6 +5,4 @@
 # While a resource has entries here, TestMissingRefs suppresses its [refs]
 # findings. Clearing them graduates the resource and the ratchet applies.
 
-kind=DialogflowSecuritySettings group=dialogflow.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=DialogflowSecuritySettings group=dialogflow.cnrm.cloud.google.com: field ".spec.inspectTemplate" reason=possible-reference (target=dlp.googleapis.com/InspectTemplate)
-kind=DialogflowSecuritySettings group=dialogflow.cnrm.cloud.google.com: field ".spec.deidentifyTemplate" reason=possible-reference (target=dlp.googleapis.com/DeidentifyTemplate)
+kind=DialogflowSipTrunk group=dialogflow.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
