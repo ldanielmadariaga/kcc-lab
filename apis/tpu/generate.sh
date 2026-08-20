@@ -33,6 +33,10 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 
 
 ${CONTROLLERBUILDER} generate-types     --service google.cloud.tpu.v2     --api-version tpu.cnrm.cloud.google.com/v1alpha1     --resource TPUVirtualMachine:Node
+--prepopulate-spec \
+--emit-required-from-proto \
+--emit-plural-acronyms \
+--detect-output-only-in-comments \
 
 ${CONTROLLERBUILDER} generate-mapper     --service google.cloud.tpu.v2     --api-version tpu.cnrm.cloud.google.com/v1alpha1
 

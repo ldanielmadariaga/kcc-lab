@@ -34,6 +34,10 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.bigquery.migration.v2alpha \
   --api-version bigquerymigration.cnrm.cloud.google.com/v1alpha1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
   --resource BigQueryMigrationMigrationWorkflow:MigrationWorkflow
 
 cd ${REPO_ROOT}

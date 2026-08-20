@@ -35,6 +35,10 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
     --service google.cloud.datastream.v1 \
     --api-version datastream.cnrm.cloud.google.com/v1alpha1 \
+    --prepopulate-spec \
+    --emit-required-from-proto \
+    --emit-plural-acronyms \
+    --detect-output-only-in-comments \
     --resource DatastreamPrivateConnection:PrivateConnection \
     --resource DatastreamConnectionProfile:ConnectionProfile \
     --resource DatastreamRoute:Route

@@ -36,6 +36,10 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
     --service google.cloud.batch.v1alpha \
     --api-version "batch.cnrm.cloud.google.com/v1alpha1" \
+    --prepopulate-spec \
+    --emit-required-from-proto \
+    --emit-plural-acronyms \
+    --detect-output-only-in-comments \
     --overlay ${REPO_ROOT}/apis/batch/v1alpha1/overlay.proto \
     --resource CloudBatchResourceAllowance:ResourceAllowance
 
@@ -45,6 +49,10 @@ mv ${REPO_ROOT}/apis/batch/v1alpha1/types.generated.go ${REPO_ROOT}/apis/batch/v
 ${CONTROLLERBUILDER} generate-types \
     --service google.cloud.batch.v1 \
     --api-version "batch.cnrm.cloud.google.com/v1alpha1" \
+    --prepopulate-spec \
+    --emit-required-from-proto \
+    --emit-plural-acronyms \
+    --detect-output-only-in-comments \
     --overlay ${REPO_ROOT}/apis/batch/v1alpha1/overlay.proto \
     --include-skipped-output \
     --resource BatchJob:Job \

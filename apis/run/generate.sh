@@ -35,6 +35,10 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
     --service google.cloud.run.v2 \
     --api-version "run.cnrm.cloud.google.com/v1alpha1" \
+    --prepopulate-spec \
+    --emit-required-from-proto \
+    --emit-plural-acronyms \
+    --detect-output-only-in-comments \
     --resource RunWorkerPool:WorkerPool
 
 
