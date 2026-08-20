@@ -62,6 +62,13 @@ type NetworkSecurityURLListStatus struct {
 // NetworkSecurityURLListObservedState is the state of the NetworkSecurityURLList resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.networksecurity.v1.UrlList
 type NetworkSecurityURLListObservedState struct {
+	// Output only. Time when the security policy was created.
+	// +kcc:proto:field=google.cloud.networksecurity.v1.UrlList.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Time when the security policy was updated.
+	// +kcc:proto:field=google.cloud.networksecurity.v1.UrlList.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient

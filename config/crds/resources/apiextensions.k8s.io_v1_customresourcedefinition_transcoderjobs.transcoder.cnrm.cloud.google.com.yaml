@@ -1318,10 +1318,35 @@ spec:
                   pubsubDestination:
                     description: Destination on Pub/Sub.
                     properties:
-                      topic:
-                        description: 'The name of the Pub/Sub topic to publish job
-                          completion notification to. For example: `projects/{project}/topics/{topic}`.'
-                        type: string
+                      topicRef:
+                        description: The Pub/Sub topic to publish job completion notification
+                          to.
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
+                        properties:
+                          external:
+                            description: A reference to an externally managed PubSubTopic
+                              resource. Should be in the format "projects/{{projectID}}/topics/{{topicID}}".
+                            type: string
+                          name:
+                            description: The name of a PubSubTopic resource.
+                            type: string
+                          namespace:
+                            description: The namespace of a PubSubTopic resource.
+                            type: string
+                        type: object
                     type: object
                   spriteSheets:
                     description: List of output sprite sheets. Spritesheets require
@@ -1555,6 +1580,67 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  config:
+                    description: The configuration for this job.
+                    properties:
+                      inputs:
+                        description: List of input assets stored in Cloud Storage.
+                        items:
+                          properties:
+                            attributes:
+                              description: Optional. Input Attributes.
+                              properties:
+                                trackDefinitions:
+                                  description: Optional. A list of track definitions
+                                    for the input asset.
+                                  items:
+                                    properties:
+                                      detectedLanguages:
+                                        description: Output only. A list of languages
+                                          detected in the input asset, represented
+                                          by a BCP 47 language code, such as "en-US"
+                                          or "sr-Latn". For more information, see
+                                          https://www.unicode.org/reports/tr35/#Unicode_locale_identifier.
+                                          This field is only populated if the detect_languages
+                                          field is set to true.
+                                        items:
+                                          type: string
+                                        type: array
+                                    type: object
+                                  type: array
+                              type: object
+                          type: object
+                        type: array
+                    type: object
+                  createTime:
+                    description: Output only. The time the job was created.
+                    type: string
+                  endTime:
+                    description: Output only. The time the transcoding finished.
+                    type: string
+                  error:
+                    description: Output only. An error object that describes the reason
+                      for the failure.
+                    properties:
+                      code:
+                        description: The status code, which should be an enum value
+                          of [google.rpc.Code][google.rpc.Code].
+                        format: int32
+                        type: integer
+                      message:
+                        description: A developer-facing error message, which should
+                          be in English. Any user-facing error message should be localized
+                          and sent in the [google.rpc.Status.details][google.rpc.Status.details]
+                          field, or localized by the client.
+                        type: string
+                    type: object
+                  startTime:
+                    description: Output only. The time the transcoding started.
+                    type: string
+                  state:
+                    description: Output only. The current state of the job.
+                    type: string
                 type: object
             type: object
         required:

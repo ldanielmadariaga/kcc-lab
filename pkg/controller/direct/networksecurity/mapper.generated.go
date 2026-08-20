@@ -1564,8 +1564,8 @@ func NetworkSecurityURLListObservedState_v1alpha1_FromProto(mapCtx *direct.MapCo
 	}
 	out := &krmnetworksecurityv1alpha1.NetworkSecurityURLListObservedState{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	return out
 }
 func NetworkSecurityURLListObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnetworksecurityv1alpha1.NetworkSecurityURLListObservedState) *pb.UrlList {
@@ -1574,8 +1574,8 @@ func NetworkSecurityURLListObservedState_v1alpha1_ToProto(mapCtx *direct.MapCont
 	}
 	out := &pb.UrlList{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	return out
 }
 func NetworkSecurityURLListSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.UrlList) *krmnetworksecurityv1alpha1.NetworkSecurityURLListSpec {
@@ -1584,8 +1584,6 @@ func NetworkSecurityURLListSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in
 	}
 	out := &krmnetworksecurityv1alpha1.NetworkSecurityURLListSpec{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.Values = in.Values
 	return out
@@ -1596,8 +1594,6 @@ func NetworkSecurityURLListSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *
 	}
 	out := &pb.UrlList{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
 	out.Description = direct.ValueOf(in.Description)
 	out.Values = in.Values
 	return out

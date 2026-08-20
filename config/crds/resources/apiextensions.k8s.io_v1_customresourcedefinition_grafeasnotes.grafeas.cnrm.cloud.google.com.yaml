@@ -133,10 +133,6 @@ spec:
                       type: object
                     type: array
                 type: object
-              createTime:
-                description: Output only. The time this note was created. This field
-                  can be used as a filter in list requests.
-                type: string
               deployment:
                 description: A note describing something that can be deployed.
                 properties:
@@ -200,10 +196,6 @@ spec:
                       representing the basis of associated occurrence images.
                     type: string
                 type: object
-              kind:
-                description: Output only. The type of analysis. This field can be
-                  used as a filter in list requests.
-                type: string
               location:
                 description: The location of this resource.
                 type: string
@@ -445,10 +437,6 @@ spec:
               shortDescription:
                 description: A one sentence description of this note.
                 type: string
-              updateTime:
-                description: Output only. The time this note was last updated. This
-                  field can be used as a filter in list requests.
-                type: string
               upgrade:
                 description: A note describing available package upgrades.
                 properties:
@@ -550,7 +538,7 @@ spec:
                               update.
                             type: string
                         type: object
-                      kbArticleIds:
+                      kbArticleIDs:
                         description: The Microsoft Knowledge Base article IDs that
                           are associated with the update.
                         items:
@@ -896,7 +884,7 @@ spec:
                       longDescription:
                         description: A detailed description of this Vex.
                         type: string
-                      relatedUris:
+                      relatedURIs:
                         description: Holds a list of references associated with this
                           vulnerability item and assessment. These uris have additional
                           information about the vulnerability and the assessment itself.
@@ -1045,6 +1033,19 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. The time this note was created. This
+                      field can be used as a filter in list requests.
+                    type: string
+                  kind:
+                    description: Output only. The type of analysis. This field can
+                      be used as a filter in list requests.
+                    type: string
+                  updateTime:
+                    description: Output only. The time this note was last updated.
+                      This field can be used as a filter in list requests.
+                    type: string
                 type: object
             type: object
         required:
