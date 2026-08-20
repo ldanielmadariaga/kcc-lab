@@ -1,0 +1,13 @@
+# Spec fields whose proto comment says "Output only." but which carry no
+# google.api.field_behavior annotation, so the generator could not place them
+# in ObservedState by itself.
+#
+# This file reports; it changes nothing. To act on an entry, move the field
+# out of the Spec struct and into the ObservedState struct in
+# <kind>_types.go by hand.
+
+kind=NetworkConnectivityMulticloudDataTransferConfig group=networkconnectivity.cnrm.cloud.google.com: field ".spec.createTime" comment="Output only. Time when the `MulticloudDataTransferConfig` resource was created."
+kind=NetworkConnectivityMulticloudDataTransferConfig group=networkconnectivity.cnrm.cloud.google.com: field ".spec.destinationsActiveCount" comment="Output only. The number of `Destination` resources in use with the `MulticloudDataTransferConfig` resource."
+kind=NetworkConnectivityMulticloudDataTransferConfig group=networkconnectivity.cnrm.cloud.google.com: field ".spec.destinationsCount" comment="Output only. The number of `Destination` resources configured for the `MulticloudDataTransferConfig` resource."
+kind=NetworkConnectivityMulticloudDataTransferConfig group=networkconnectivity.cnrm.cloud.google.com: field ".spec.uid" comment="Output only. The Google-generated unique ID for the `MulticloudDataTransferConfig` resource. This value is unique across all `MulticloudDataTransferConfig` resources. If a resource is deleted and another with the same name is created, the new resource is assigned a different and unique ID."
+kind=NetworkConnectivityMulticloudDataTransferConfig group=networkconnectivity.cnrm.cloud.google.com: field ".spec.updateTime" comment="Output only. Time when the `MulticloudDataTransferConfig` resource was updated."

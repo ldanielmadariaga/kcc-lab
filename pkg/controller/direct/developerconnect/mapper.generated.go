@@ -26,7 +26,6 @@ package developerconnect
 import (
 	pb "cloud.google.com/go/developerconnect/apiv1/developerconnectpb"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/developerconnect/v1alpha1"
-	krmservicedirectoryv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/servicedirectory/v1alpha1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -194,6 +193,134 @@ func BitbucketDataCenterConfigObservedState_ToProto(mapCtx *direct.MapContext, i
 	out.ServerVersion = direct.ValueOf(in.ServerVersion)
 	return out
 }
+func Connection_FromProto(mapCtx *direct.MapContext, in *pb.Connection) *krm.Connection {
+	if in == nil {
+		return nil
+	}
+	out := &krm.Connection{}
+	out.GithubConfig = GitHubConfig_FromProto(mapCtx, in.GetGithubConfig())
+	out.GithubEnterpriseConfig = GitHubEnterpriseConfig_FromProto(mapCtx, in.GetGithubEnterpriseConfig())
+	out.GitlabConfig = GitLabConfig_FromProto(mapCtx, in.GetGitlabConfig())
+	out.GitlabEnterpriseConfig = GitLabEnterpriseConfig_FromProto(mapCtx, in.GetGitlabEnterpriseConfig())
+	out.BitbucketDataCenterConfig = BitbucketDataCenterConfig_FromProto(mapCtx, in.GetBitbucketDataCenterConfig())
+	out.BitbucketCloudConfig = BitbucketCloudConfig_FromProto(mapCtx, in.GetBitbucketCloudConfig())
+	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	out.Labels = in.Labels
+	// MISSING: InstallationState
+	out.Disabled = direct.LazyPtr(in.GetDisabled())
+	// MISSING: Reconciling
+	out.Annotations = in.Annotations
+	out.Etag = direct.LazyPtr(in.GetEtag())
+	// MISSING: Uid
+	out.CryptoKeyConfig = CryptoKeyConfig_FromProto(mapCtx, in.GetCryptoKeyConfig())
+	out.GitProxyConfig = GitProxyConfig_FromProto(mapCtx, in.GetGitProxyConfig())
+	return out
+}
+func Connection_ToProto(mapCtx *direct.MapContext, in *krm.Connection) *pb.Connection {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Connection{}
+	if oneof := GitHubConfig_ToProto(mapCtx, in.GithubConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GithubConfig{GithubConfig: oneof}
+	}
+	if oneof := GitHubEnterpriseConfig_ToProto(mapCtx, in.GithubEnterpriseConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GithubEnterpriseConfig{GithubEnterpriseConfig: oneof}
+	}
+	if oneof := GitLabConfig_ToProto(mapCtx, in.GitlabConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GitlabConfig{GitlabConfig: oneof}
+	}
+	if oneof := GitLabEnterpriseConfig_ToProto(mapCtx, in.GitlabEnterpriseConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GitlabEnterpriseConfig{GitlabEnterpriseConfig: oneof}
+	}
+	if oneof := BitbucketDataCenterConfig_ToProto(mapCtx, in.BitbucketDataCenterConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_BitbucketDataCenterConfig{BitbucketDataCenterConfig: oneof}
+	}
+	if oneof := BitbucketCloudConfig_ToProto(mapCtx, in.BitbucketCloudConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_BitbucketCloudConfig{BitbucketCloudConfig: oneof}
+	}
+	out.Name = direct.ValueOf(in.Name)
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	out.Labels = in.Labels
+	// MISSING: InstallationState
+	out.Disabled = direct.ValueOf(in.Disabled)
+	// MISSING: Reconciling
+	out.Annotations = in.Annotations
+	out.Etag = direct.ValueOf(in.Etag)
+	// MISSING: Uid
+	out.CryptoKeyConfig = CryptoKeyConfig_ToProto(mapCtx, in.CryptoKeyConfig)
+	out.GitProxyConfig = GitProxyConfig_ToProto(mapCtx, in.GitProxyConfig)
+	return out
+}
+func ConnectionObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Connection) *krm.ConnectionObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ConnectionObservedState{}
+	out.GithubConfig = GitHubConfigObservedState_FromProto(mapCtx, in.GetGithubConfig())
+	out.GithubEnterpriseConfig = GitHubEnterpriseConfigObservedState_FromProto(mapCtx, in.GetGithubEnterpriseConfig())
+	out.GitlabConfig = GitLabConfigObservedState_FromProto(mapCtx, in.GetGitlabConfig())
+	out.GitlabEnterpriseConfig = GitLabEnterpriseConfigObservedState_FromProto(mapCtx, in.GetGitlabEnterpriseConfig())
+	out.BitbucketDataCenterConfig = BitbucketDataCenterConfigObservedState_FromProto(mapCtx, in.GetBitbucketDataCenterConfig())
+	out.BitbucketCloudConfig = BitbucketCloudConfigObservedState_FromProto(mapCtx, in.GetBitbucketCloudConfig())
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
+	// MISSING: Labels
+	out.InstallationState = InstallationStateObservedState_FromProto(mapCtx, in.GetInstallationState())
+	// MISSING: Disabled
+	out.Reconciling = direct.LazyPtr(in.GetReconciling())
+	// MISSING: Annotations
+	// MISSING: Etag
+	out.Uid = direct.LazyPtr(in.GetUid())
+	// MISSING: CryptoKeyConfig
+	// MISSING: GitProxyConfig
+	return out
+}
+func ConnectionObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ConnectionObservedState) *pb.Connection {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Connection{}
+	if oneof := GitHubConfigObservedState_ToProto(mapCtx, in.GithubConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GithubConfig{GithubConfig: oneof}
+	}
+	if oneof := GitHubEnterpriseConfigObservedState_ToProto(mapCtx, in.GithubEnterpriseConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GithubEnterpriseConfig{GithubEnterpriseConfig: oneof}
+	}
+	if oneof := GitLabConfigObservedState_ToProto(mapCtx, in.GitlabConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GitlabConfig{GitlabConfig: oneof}
+	}
+	if oneof := GitLabEnterpriseConfigObservedState_ToProto(mapCtx, in.GitlabEnterpriseConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GitlabEnterpriseConfig{GitlabEnterpriseConfig: oneof}
+	}
+	if oneof := BitbucketDataCenterConfigObservedState_ToProto(mapCtx, in.BitbucketDataCenterConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_BitbucketDataCenterConfig{BitbucketDataCenterConfig: oneof}
+	}
+	if oneof := BitbucketCloudConfigObservedState_ToProto(mapCtx, in.BitbucketCloudConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_BitbucketCloudConfig{BitbucketCloudConfig: oneof}
+	}
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
+	// MISSING: Labels
+	out.InstallationState = InstallationStateObservedState_ToProto(mapCtx, in.InstallationState)
+	// MISSING: Disabled
+	out.Reconciling = direct.ValueOf(in.Reconciling)
+	// MISSING: Annotations
+	// MISSING: Etag
+	out.Uid = direct.ValueOf(in.Uid)
+	// MISSING: CryptoKeyConfig
+	// MISSING: GitProxyConfig
+	return out
+}
 func CryptoKeyConfig_FromProto(mapCtx *direct.MapContext, in *pb.CryptoKeyConfig) *krm.CryptoKeyConfig {
 	if in == nil {
 		return nil
@@ -265,14 +392,18 @@ func DevConnectConnectionObservedState_FromProto(mapCtx *direct.MapContext, in *
 		return nil
 	}
 	out := &krm.DevConnectConnectionObservedState{}
+	out.GithubConfig = GitHubConfigObservedState_FromProto(mapCtx, in.GetGithubConfig())
+	out.GithubEnterpriseConfig = GitHubEnterpriseConfigObservedState_FromProto(mapCtx, in.GetGithubEnterpriseConfig())
+	out.GitlabConfig = GitLabConfigObservedState_FromProto(mapCtx, in.GetGitlabConfig())
+	out.GitlabEnterpriseConfig = GitLabEnterpriseConfigObservedState_FromProto(mapCtx, in.GetGitlabEnterpriseConfig())
+	out.BitbucketDataCenterConfig = BitbucketDataCenterConfigObservedState_FromProto(mapCtx, in.GetBitbucketDataCenterConfig())
+	out.BitbucketCloudConfig = BitbucketCloudConfigObservedState_FromProto(mapCtx, in.GetBitbucketCloudConfig())
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
-	// MISSING: Labels
 	out.InstallationState = InstallationStateObservedState_FromProto(mapCtx, in.GetInstallationState())
 	out.Reconciling = direct.LazyPtr(in.GetReconciling())
-	// MISSING: Etag
 	out.Uid = direct.LazyPtr(in.GetUid())
 	return out
 }
@@ -281,14 +412,30 @@ func DevConnectConnectionObservedState_ToProto(mapCtx *direct.MapContext, in *kr
 		return nil
 	}
 	out := &pb.Connection{}
+	if oneof := GitHubConfigObservedState_ToProto(mapCtx, in.GithubConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GithubConfig{GithubConfig: oneof}
+	}
+	if oneof := GitHubEnterpriseConfigObservedState_ToProto(mapCtx, in.GithubEnterpriseConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GithubEnterpriseConfig{GithubEnterpriseConfig: oneof}
+	}
+	if oneof := GitLabConfigObservedState_ToProto(mapCtx, in.GitlabConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GitlabConfig{GitlabConfig: oneof}
+	}
+	if oneof := GitLabEnterpriseConfigObservedState_ToProto(mapCtx, in.GitlabEnterpriseConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GitlabEnterpriseConfig{GitlabEnterpriseConfig: oneof}
+	}
+	if oneof := BitbucketDataCenterConfigObservedState_ToProto(mapCtx, in.BitbucketDataCenterConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_BitbucketDataCenterConfig{BitbucketDataCenterConfig: oneof}
+	}
+	if oneof := BitbucketCloudConfigObservedState_ToProto(mapCtx, in.BitbucketCloudConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_BitbucketCloudConfig{BitbucketCloudConfig: oneof}
+	}
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
-	// MISSING: Labels
 	out.InstallationState = InstallationStateObservedState_ToProto(mapCtx, in.InstallationState)
 	out.Reconciling = direct.ValueOf(in.Reconciling)
-	// MISSING: Etag
 	out.Uid = direct.ValueOf(in.Uid)
 	return out
 }
@@ -304,10 +451,10 @@ func DevConnectConnectionSpec_FromProto(mapCtx *direct.MapContext, in *pb.Connec
 	out.BitbucketDataCenterConfig = BitbucketDataCenterConfig_FromProto(mapCtx, in.GetBitbucketDataCenterConfig())
 	out.BitbucketCloudConfig = BitbucketCloudConfig_FromProto(mapCtx, in.GetBitbucketCloudConfig())
 	// MISSING: Name
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.Disabled = direct.LazyPtr(in.GetDisabled())
 	out.Annotations = in.Annotations
-	// MISSING: Etag
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.CryptoKeyConfig = CryptoKeyConfig_FromProto(mapCtx, in.GetCryptoKeyConfig())
 	out.GitProxyConfig = GitProxyConfig_FromProto(mapCtx, in.GetGitProxyConfig())
 	return out
@@ -336,10 +483,10 @@ func DevConnectConnectionSpec_ToProto(mapCtx *direct.MapContext, in *krm.DevConn
 		out.ConnectionConfig = &pb.Connection_BitbucketCloudConfig{BitbucketCloudConfig: oneof}
 	}
 	// MISSING: Name
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.Disabled = direct.ValueOf(in.Disabled)
 	out.Annotations = in.Annotations
-	// MISSING: Etag
+	out.Etag = direct.ValueOf(in.Etag)
 	out.CryptoKeyConfig = CryptoKeyConfig_ToProto(mapCtx, in.CryptoKeyConfig)
 	out.GitProxyConfig = GitProxyConfig_ToProto(mapCtx, in.GitProxyConfig)
 	return out
@@ -793,9 +940,7 @@ func ServiceDirectoryConfig_FromProto(mapCtx *direct.MapContext, in *pb.ServiceD
 		return nil
 	}
 	out := &krm.ServiceDirectoryConfig{}
-	if in.GetService() != "" {
-		out.ServiceRef = &krmservicedirectoryv1alpha1.ServiceDirectoryServiceRef{External: in.GetService()}
-	}
+	out.Service = direct.LazyPtr(in.GetService())
 	return out
 }
 func ServiceDirectoryConfig_ToProto(mapCtx *direct.MapContext, in *krm.ServiceDirectoryConfig) *pb.ServiceDirectoryConfig {
@@ -803,9 +948,7 @@ func ServiceDirectoryConfig_ToProto(mapCtx *direct.MapContext, in *krm.ServiceDi
 		return nil
 	}
 	out := &pb.ServiceDirectoryConfig{}
-	if in.ServiceRef != nil {
-		out.Service = in.ServiceRef.External
-	}
+	out.Service = direct.ValueOf(in.Service)
 	return out
 }
 func UserCredential_FromProto(mapCtx *direct.MapContext, in *pb.UserCredential) *krm.UserCredential {

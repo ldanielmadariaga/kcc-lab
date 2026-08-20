@@ -34,10 +34,12 @@ type ConversionWorkspace struct {
 
 	// Required. The source engine details.
 	// +kcc:proto:field=google.cloud.clouddms.v1.ConversionWorkspace.source
+	// +required
 	Source *DatabaseEngineInfo `json:"source,omitempty"`
 
 	// Required. The destination engine details.
 	// +kcc:proto:field=google.cloud.clouddms.v1.ConversionWorkspace.destination
+	// +required
 	Destination *DatabaseEngineInfo `json:"destination,omitempty"`
 
 	// Optional. A generic list of settings for the workspace.
@@ -69,10 +71,12 @@ type ConversionWorkspaceInfo struct {
 type DatabaseEngineInfo struct {
 	// Required. Engine type.
 	// +kcc:proto:field=google.cloud.clouddms.v1.DatabaseEngineInfo.engine
+	// +required
 	Engine *string `json:"engine,omitempty"`
 
 	// Required. Engine named version, for example 12.c.1.
 	// +kcc:proto:field=google.cloud.clouddms.v1.DatabaseEngineInfo.version
+	// +required
 	Version *string `json:"version,omitempty"`
 }
 
@@ -114,6 +118,7 @@ type MigrationJob struct {
 
 	// Required. The migration job type.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.type
+	// +required
 	Type *string `json:"type,omitempty"`
 
 	// The path to the dump file in Google Cloud Storage,
@@ -129,10 +134,12 @@ type MigrationJob struct {
 
 	// Required. The resource name (URI) of the source connection profile.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.source
+	// +required
 	Source *string `json:"source,omitempty"`
 
 	// Required. The resource name (URI) of the destination connection profile.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.destination
+	// +required
 	Destination *string `json:"destination,omitempty"`
 
 	// The details needed to communicate to the source over Reverse SSH
@@ -214,8 +221,7 @@ type MigrationJob_PerformanceConfig struct {
 	DumpParallelLevel *string `json:"dumpParallelLevel,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.clouddms.v1.PrivateConnection", skipping
-
+/* unreachable type PrivateConnection
 // +kcc:proto=google.cloud.clouddms.v1.PrivateConnection
 type PrivateConnection struct {
 	// The name of the resource.
@@ -247,11 +253,13 @@ type ReverseSSHConnectivity struct {
 	// Required. The IP of the virtual machine (Compute Engine) used as the
 	//  bastion server for the SSH tunnel.
 	// +kcc:proto:field=google.cloud.clouddms.v1.ReverseSshConnectivity.vm_ip
+	// +required
 	VMIP *string `json:"vmIP,omitempty"`
 
 	// Required. The forwarding port of the virtual machine (Compute Engine) used
 	//  as the bastion server for the SSH tunnel.
 	// +kcc:proto:field=google.cloud.clouddms.v1.ReverseSshConnectivity.vm_port
+	// +required
 	VMPort *int32 `json:"vmPort,omitempty"`
 
 	// The name of the virtual machine (Compute Engine) used as the bastion server
@@ -272,20 +280,19 @@ type StaticIPConnectivity struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.clouddms.v1.VpcPeeringConfig", skipping
-
 // +kcc:proto=google.cloud.clouddms.v1.VpcPeeringConfig
 type VPCPeeringConfig struct {
 	// Required. Fully qualified name of the VPC that Database Migration Service
 	//  will peer to.
 	// +kcc:proto:field=google.cloud.clouddms.v1.VpcPeeringConfig.vpc_name
+	// +required
 	VPCName *string `json:"vpcName,omitempty"`
 
 	// Required. A free subnet for peering. (CIDR of /29)
 	// +kcc:proto:field=google.cloud.clouddms.v1.VpcPeeringConfig.subnet
+	// +required
 	Subnet *string `json:"subnet,omitempty"`
 }
-*/
 
 /* found existing non-generated go type "VPCPeeringConnectivity", skipping
 
@@ -361,8 +368,7 @@ type MigrationJobObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.clouddms.v1.PrivateConnection", skipping
-
+/* unreachable type PrivateConnectionObservedState
 // +kcc:observedstate:proto=google.cloud.clouddms.v1.PrivateConnection
 type PrivateConnectionObservedState struct {
 	// Output only. The create time of the resource.

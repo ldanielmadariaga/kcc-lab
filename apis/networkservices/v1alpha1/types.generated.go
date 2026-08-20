@@ -24,3 +24,116 @@
 // resource: NetworkServicesAuthzExtension:AuthzExtension
 
 package v1alpha1
+
+/* unreachable type AuthzExtension
+// +kcc:proto=google.cloud.networkservices.v1.AuthzExtension
+type AuthzExtension struct {
+	// Required. Identifier. Name of the `AuthzExtension` resource in the
+	//  following format:
+	//  `projects/{project}/locations/{location}/authzExtensions/{authz_extension}`.
+	// +kcc:proto:field=google.cloud.networkservices.v1.AuthzExtension.name
+	// +required
+	Name *string `json:"name,omitempty"`
+
+	// Optional. A human-readable description of the resource.
+	// +kcc:proto:field=google.cloud.networkservices.v1.AuthzExtension.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. Set of labels associated with the `AuthzExtension`
+	//  resource.
+	//
+	//  The format must comply with [the requirements for
+	//  labels](/compute/docs/labeling-resources#requirements) for Google Cloud
+	//  resources.
+	// +kcc:proto:field=google.cloud.networkservices.v1.AuthzExtension.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. All backend services and forwarding rules referenced by this
+	//  extension must share the same load balancing scheme. Supported values:
+	//  `INTERNAL_MANAGED`, `EXTERNAL_MANAGED`. For more information, refer to
+	//  [Backend services
+	//  overview](https://cloud.google.com/load-balancing/docs/backend-service).
+	// +kcc:proto:field=google.cloud.networkservices.v1.AuthzExtension.load_balancing_scheme
+	// +required
+	LoadBalancingScheme *string `json:"loadBalancingScheme,omitempty"`
+
+	// Required. The `:authority` header in the gRPC request sent from Envoy
+	//  to the extension service.
+	// +kcc:proto:field=google.cloud.networkservices.v1.AuthzExtension.authority
+	// +required
+	Authority *string `json:"authority,omitempty"`
+
+	// Required. The reference to the service that runs the extension.
+	//
+	//  To configure a callout extension, `service` must be a fully-qualified
+	//  reference
+	//  to a [backend
+	//  service](https://cloud.google.com/compute/docs/reference/rest/v1/backendServices)
+	//  in the format:
+	//  `https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/backendServices/{backendService}`
+	//  or
+	//  `https://www.googleapis.com/compute/v1/projects/{project}/global/backendServices/{backendService}`.
+	// +kcc:proto:field=google.cloud.networkservices.v1.AuthzExtension.service
+	// +required
+	Service *string `json:"service,omitempty"`
+
+	// Required. Specifies the timeout for each individual message on the stream.
+	//  The timeout must be between 10-10000 milliseconds.
+	// +kcc:proto:field=google.cloud.networkservices.v1.AuthzExtension.timeout
+	// +required
+	Timeout *string `json:"timeout,omitempty"`
+
+	// Optional. Determines how the proxy behaves if the call to the extension
+	//  fails or times out.
+	//
+	//  When set to `TRUE`, request or response processing continues without
+	//  error. Any subsequent extensions in the extension chain are also
+	//  executed. When set to `FALSE` or the default setting of `FALSE` is used,
+	//  one of the following happens:
+	//
+	//  * If response headers have not been delivered to the downstream client,
+	//  a generic 500 error is returned to the client. The error response can be
+	//  tailored by configuring a custom error response in the load balancer.
+	//
+	//  * If response headers have been delivered, then the HTTP stream to the
+	//  downstream client is reset.
+	// +kcc:proto:field=google.cloud.networkservices.v1.AuthzExtension.fail_open
+	FailOpen *bool `json:"failOpen,omitempty"`
+
+	// Optional. The metadata provided here is included as part of the
+	//  `metadata_context` (of type `google.protobuf.Struct`) in the
+	//  `ProcessingRequest` message sent to the extension
+	//  server. The metadata is available under the namespace
+	//  `com.google.authz_extension.<resource_name>`.
+	//  The following variables are supported in the metadata Struct:
+	//
+	//  `{forwarding_rule_id}` - substituted with the forwarding rule's fully
+	//    qualified resource name.
+	// +kcc:proto:field=google.cloud.networkservices.v1.AuthzExtension.metadata
+	Metadata apiextensionsv1.JSON `json:"metadata,omitempty"`
+
+	// Optional. List of the HTTP headers to forward to the extension
+	//  (from the client). If omitted, all headers are sent.
+	//  Each element is a string indicating the header name.
+	// +kcc:proto:field=google.cloud.networkservices.v1.AuthzExtension.forward_headers
+	ForwardHeaders []string `json:"forwardHeaders,omitempty"`
+
+	// Optional. The format of communication supported by the callout extension.
+	//  If not specified, the default value `EXT_PROC_GRPC` is used.
+	// +kcc:proto:field=google.cloud.networkservices.v1.AuthzExtension.wire_format
+	WireFormat *string `json:"wireFormat,omitempty"`
+}
+*/
+
+/* unreachable type AuthzExtensionObservedState
+// +kcc:observedstate:proto=google.cloud.networkservices.v1.AuthzExtension
+type AuthzExtensionObservedState struct {
+	// Output only. The timestamp when the resource was created.
+	// +kcc:proto:field=google.cloud.networkservices.v1.AuthzExtension.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The timestamp when the resource was updated.
+	// +kcc:proto:field=google.cloud.networkservices.v1.AuthzExtension.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/

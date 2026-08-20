@@ -221,11 +221,6 @@ func (in *VideoStitcherCDNKeySpec) DeepCopyInto(out *VideoStitcherCDNKeySpec) {
 		*out = new(string)
 		**out = **in
 	}
-	if in.Hostname != nil {
-		in, out := &in.Hostname, &out.Hostname
-		*out = new(string)
-		**out = **in
-	}
 	if in.GoogleCDNKey != nil {
 		in, out := &in.GoogleCDNKey, &out.GoogleCDNKey
 		*out = new(GoogleCDNKey)
@@ -240,6 +235,11 @@ func (in *VideoStitcherCDNKeySpec) DeepCopyInto(out *VideoStitcherCDNKeySpec) {
 		in, out := &in.MediaCDNKey, &out.MediaCDNKey
 		*out = new(MediaCDNKey)
 		(*in).DeepCopyInto(*out)
+	}
+	if in.Hostname != nil {
+		in, out := &in.Hostname, &out.Hostname
+		*out = new(string)
+		**out = **in
 	}
 }
 

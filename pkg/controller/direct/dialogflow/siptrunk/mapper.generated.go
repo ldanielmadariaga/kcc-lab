@@ -29,6 +29,48 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
+func ConnectionObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Connection) *krm.ConnectionObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ConnectionObservedState{}
+	out.ConnectionID = direct.LazyPtr(in.GetConnectionId())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.ErrorDetails = Connection_ErrorDetailsObservedState_FromProto(mapCtx, in.GetErrorDetails())
+	return out
+}
+func ConnectionObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ConnectionObservedState) *pb.Connection {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Connection{}
+	out.ConnectionId = direct.ValueOf(in.ConnectionID)
+	out.State = direct.Enum_ToProto[pb.Connection_State](mapCtx, in.State)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.ErrorDetails = Connection_ErrorDetailsObservedState_ToProto(mapCtx, in.ErrorDetails)
+	return out
+}
+func Connection_ErrorDetailsObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Connection_ErrorDetails) *krm.Connection_ErrorDetailsObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.Connection_ErrorDetailsObservedState{}
+	out.CertificateState = direct.Enum_FromProto(mapCtx, in.GetCertificateState())
+	out.ErrorMessage = in.ErrorMessage
+	return out
+}
+func Connection_ErrorDetailsObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Connection_ErrorDetailsObservedState) *pb.Connection_ErrorDetails {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Connection_ErrorDetails{}
+	if oneof := Connection_ErrorDetailsObservedState_CertificateState_ToProto(mapCtx, in.CertificateState); oneof != nil {
+		out.CertificateState = oneof
+	}
+	out.ErrorMessage = in.ErrorMessage
+	return out
+}
 func DialogflowSipTrunkObservedState_FromProto(mapCtx *direct.MapContext, in *pb.SipTrunk) *krm.DialogflowSipTrunkObservedState {
 	if in == nil {
 		return nil

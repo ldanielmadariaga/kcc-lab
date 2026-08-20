@@ -26,7 +26,6 @@ package gkebackup
 import (
 	pb "cloud.google.com/go/gkebackup/apiv1/gkebackuppb"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/gkebackup/v1alpha1"
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -136,10 +135,7 @@ func GKEBackupBackupChannelSpec_FromProto(mapCtx *direct.MapContext, in *pb.Back
 	}
 	out := &krm.GKEBackupBackupChannelSpec{}
 	// MISSING: Name
-	if in.GetDestinationProject() != "" {
-		out.DestinationProjectRef = &refsv1beta1.ProjectRef{External: in.GetDestinationProject()}
-	}
-	// MISSING: Uid
+	out.DestinationProject = direct.LazyPtr(in.GetDestinationProject())
 	out.Labels = in.Labels
 	out.Description = direct.LazyPtr(in.GetDescription())
 	return out
@@ -150,10 +146,7 @@ func GKEBackupBackupChannelSpec_ToProto(mapCtx *direct.MapContext, in *krm.GKEBa
 	}
 	out := &pb.BackupChannel{}
 	// MISSING: Name
-	if in.DestinationProjectRef != nil {
-		out.DestinationProject = in.DestinationProjectRef.External
-	}
-	// MISSING: Uid
+	out.DestinationProject = direct.ValueOf(in.DestinationProject)
 	out.Labels = in.Labels
 	out.Description = direct.ValueOf(in.Description)
 	return out

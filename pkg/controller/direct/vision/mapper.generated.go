@@ -29,16 +29,16 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
-func ProductKeyValue_FromProto(mapCtx *direct.MapContext, in *pb.Product_KeyValue) *krm.ProductKeyValue {
+func Product_KeyValue_FromProto(mapCtx *direct.MapContext, in *pb.Product_KeyValue) *krm.Product_KeyValue {
 	if in == nil {
 		return nil
 	}
-	out := &krm.ProductKeyValue{}
+	out := &krm.Product_KeyValue{}
 	out.Key = direct.LazyPtr(in.GetKey())
 	out.Value = direct.LazyPtr(in.GetValue())
 	return out
 }
-func ProductKeyValue_ToProto(mapCtx *direct.MapContext, in *krm.ProductKeyValue) *pb.Product_KeyValue {
+func Product_KeyValue_ToProto(mapCtx *direct.MapContext, in *krm.Product_KeyValue) *pb.Product_KeyValue {
 	if in == nil {
 		return nil
 	}
@@ -72,7 +72,7 @@ func VisionProductSpec_FromProto(mapCtx *direct.MapContext, in *pb.Product) *krm
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.ProductCategory = direct.LazyPtr(in.GetProductCategory())
-	out.ProductLabels = direct.Slice_FromProto(mapCtx, in.ProductLabels, ProductKeyValue_FromProto)
+	out.ProductLabels = direct.Slice_FromProto(mapCtx, in.ProductLabels, Product_KeyValue_FromProto)
 	return out
 }
 func VisionProductSpec_ToProto(mapCtx *direct.MapContext, in *krm.VisionProductSpec) *pb.Product {
@@ -84,6 +84,6 @@ func VisionProductSpec_ToProto(mapCtx *direct.MapContext, in *krm.VisionProductS
 	out.DisplayName = direct.ValueOf(in.DisplayName)
 	out.Description = direct.ValueOf(in.Description)
 	out.ProductCategory = direct.ValueOf(in.ProductCategory)
-	out.ProductLabels = direct.Slice_ToProto(mapCtx, in.ProductLabels, ProductKeyValue_ToProto)
+	out.ProductLabels = direct.Slice_ToProto(mapCtx, in.ProductLabels, Product_KeyValue_ToProto)
 	return out
 }

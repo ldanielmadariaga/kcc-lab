@@ -20,3 +20,23 @@
 // resource: ArtifactRegistryVPCSCConfig:VPCSCConfig
 
 package v1alpha1
+
+/* unreachable type VpcscConfig
+// +kcc:proto=google.devtools.artifactregistry.v1.VPCSCConfig
+type VpcscConfig struct {
+	// The name of the project's VPC SC Config.
+	//
+	//  Always of the form:
+	//  projects/{projectID}/locations/{location}/vpcscConfig
+	//
+	//  In update request: never set
+	//  In response: always set
+	// +kcc:proto:field=google.devtools.artifactregistry.v1.VPCSCConfig.name
+	Name *string `json:"name,omitempty"`
+
+	// The project per location VPC SC policy that defines the VPC SC behavior for
+	//  the Remote Repository (Allow/Deny).
+	// +kcc:proto:field=google.devtools.artifactregistry.v1.VPCSCConfig.vpcsc_policy
+	VpcscPolicy *string `json:"vpcscPolicy,omitempty"`
+}
+*/

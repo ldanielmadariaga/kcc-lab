@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: vertexaitensorboardexperiments.vertexai.cnrm.cloud.google.com
 spec:
@@ -70,11 +69,31 @@ spec:
               displayName:
                 description: User provided name of this TensorboardExperiment.
                 type: string
+              etag:
+                description: Used to perform consistent read-modify-write updates.
+                  If not set, a blind "overwrite" update happens.
+                type: string
               labels:
                 additionalProperties:
                   type: string
-                description: The labels with user-defined metadata to organize your
-                  TensorboardExperiment.
+                description: |-
+                  The labels with user-defined metadata to organize your
+                   TensorboardExperiment.
+
+                   Label keys and values cannot be longer than 64 characters
+                   (Unicode codepoints), can only contain lowercase letters, numeric
+                   characters, underscores and dashes. International characters are allowed.
+                   No more than 64 user labels can be associated with one Dataset (System
+                   labels are excluded).
+
+                   See https://goo.gl/xmQnxf for more information and examples of labels.
+                   System reserved label keys are prefixed with `aiplatform.googleapis.com/`
+                   and are immutable. The following system labels exist for each Dataset:
+
+                   * `aiplatform.googleapis.com/dataset_metadata_schema`: output only. Its
+                      value is the
+                      [metadata_schema's][google.cloud.aiplatform.v1beta1.Dataset.metadata_schema_uri]
+                      title.
                 type: object
               location:
                 description: The location of this resource.
@@ -119,38 +138,9 @@ spec:
                 description: 'Immutable. Source of the TensorboardExperiment. Example:
                   a custom training job.'
                 type: string
-              tensorboardRef:
-                description: The VertexAITensorboard that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed VertexAITensorboard
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/tensorboards/{{tensorboardID}}".
-                    type: string
-                  name:
-                    description: The name of a VertexAITensorboard resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a VertexAITensorboard resource.
-                    type: string
-                type: object
             required:
             - location
             - projectRef
-            - tensorboardRef
             type: object
           status:
             description: VertexAITensorboardExperimentStatus defines the config connector
@@ -201,10 +191,6 @@ spec:
                   createTime:
                     description: Output only. Timestamp when this TensorboardExperiment
                       was created.
-                    type: string
-                  name:
-                    description: 'Output only. Name of the TensorboardExperiment.
-                      Format: `projects/{project}/locations/{location}/tensorboards/{tensorboard}/experiments/{experiment}`'
                     type: string
                   updateTime:
                     description: Output only. Timestamp when this TensorboardExperiment

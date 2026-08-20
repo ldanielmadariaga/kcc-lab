@@ -663,6 +663,18 @@ func NetworkManagementConnectivityTestSpec_ToProto(mapCtx *direct.MapContext, in
 	out.BypassFirewallChecks = direct.ValueOf(in.BypassFirewallChecks)
 	return out
 }
+func NetworkManagementVPCFlowLogsConfigSpec_InterconnectAttachment_ToProto(mapCtx *direct.MapContext, in *string) *pb.VpcFlowLogsConfig_InterconnectAttachment {
+	if in == nil {
+		return nil
+	}
+	return &pb.VpcFlowLogsConfig_InterconnectAttachment{InterconnectAttachment: *in}
+}
+func NetworkManagementVPCFlowLogsConfigSpec_VpnTunnel_ToProto(mapCtx *direct.MapContext, in *string) *pb.VpcFlowLogsConfig_VpnTunnel {
+	if in == nil {
+		return nil
+	}
+	return &pb.VpcFlowLogsConfig_VpnTunnel{VpnTunnel: *in}
+}
 func ProbingDetailsObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ProbingDetails) *krm.ProbingDetailsObservedState {
 	if in == nil {
 		return nil

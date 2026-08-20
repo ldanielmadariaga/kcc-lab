@@ -220,8 +220,7 @@ type Migration struct {
 	Target *string `json:"target,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig", skipping
-
+/* unreachable type MulticloudDataTransferConfig
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig
 type MulticloudDataTransferConfig struct {
 	// Output only. Time when the `MulticloudDataTransferConfig` resource was created.
@@ -253,7 +252,6 @@ type MulticloudDataTransferConfig struct {
 	Name *string `json:"name,omitempty"`
 
 	// TODO: unsupported map type with key string and value message
-
 
 	// Output only. The Google-generated unique ID for the `MulticloudDataTransferConfig` resource. This value is unique across all `MulticloudDataTransferConfig` resources. If a resource is deleted and another with the same name is created, the new resource is assigned a different and unique ID.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.uid
@@ -457,8 +455,7 @@ type ServiceConnectionPolicy struct {
 }
 */
 
-/* found existing non-generated go type "StateMetadata", skipping
-
+/* unreachable type StateMetadata
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.StateMetadata
 type StateMetadata struct {
 	// Output only. Accompanies only the transient states, which include `ADDING`, `DELETING`, and `SUSPENDING`, to denote the time until which the transient state of the resource will be effective. For instance, if the state is `ADDING`, this field shows the time when the resource state transitions to `ACTIVE`.
@@ -471,8 +468,7 @@ type StateMetadata struct {
 }
 */
 
-/* found existing non-generated go type "StateTimeline", skipping
-
+/* unreachable type StateTimeline
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.StateTimeline
 type StateTimeline struct {
 	// Output only. The state and activation time details of the resource state.

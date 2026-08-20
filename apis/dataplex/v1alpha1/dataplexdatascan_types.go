@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,41 +29,47 @@ type DataplexDataScanSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +kubebuilder:validation:Required
-	Location *string `json:"location"`
+	Location string `json:"location"`
 
 	// The DataplexDataScan name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. Description of the scan.
 	//
-	// * Must be between 1-1024 characters.
+	//  * Must be between 1-1024 characters.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.description
 	Description *string `json:"description,omitempty"`
 
 	// Optional. User friendly display name.
 	//
-	// * Must be between 1-256 characters.
+	//  * Must be between 1-256 characters.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Optional. User-defined labels for the scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Required. The data source for DataScan.
-	// +kubebuilder:validation:Required
-	Data *DataSource `json:"data"`
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data
+	// +required
+	Data *DataSource `json:"data,omitempty"`
 
 	// Optional. DataScan execution settings.
 	//
-	// If not specified, the fields in it will use their default values.
+	//  If not specified, the fields in it will use their default values.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.execution_spec
 	ExecutionSpec *DataScan_ExecutionSpec `json:"executionSpec,omitempty"`
 
 	// Settings for a data quality scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_quality_spec
 	DataQualitySpec *DataQualitySpec `json:"dataQualitySpec,omitempty"`
 
 	// Settings for a data profile scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_profile_spec
 	DataProfileSpec *DataProfileSpec `json:"dataProfileSpec,omitempty"`
 
 	// Settings for a data discovery scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_discovery_spec
 	DataDiscoverySpec *DataDiscoverySpec `json:"dataDiscoverySpec,omitempty"`
 }
 
@@ -87,31 +93,40 @@ type DataplexDataScanStatus struct {
 // +kcc:observedstate:proto=google.cloud.dataplex.v1.DataScan
 type DataplexDataScanObservedState struct {
 	// Output only. System generated globally unique ID for the scan. This ID will
-	// be different if the scan is deleted and re-created with the same name.
+	//  be different if the scan is deleted and re-created with the same name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.uid
 	Uid *string `json:"uid,omitempty"`
 
 	// Output only. Current state of the DataScan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.state
 	State *string `json:"state,omitempty"`
 
 	// Output only. The time when the scan was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. The time when the scan was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. Status of the data scan execution.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.execution_status
 	ExecutionStatus *DataScan_ExecutionStatus `json:"executionStatus,omitempty"`
 
 	// Output only. The type of DataScan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.type
 	Type *string `json:"type,omitempty"`
 
 	// Output only. The result of a data quality scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_quality_result
 	DataQualityResult *DataQualityResultObservedState `json:"dataQualityResult,omitempty"`
 
 	// Output only. The result of a data profile scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_profile_result
 	DataProfileResult *DataProfileResultObservedState `json:"dataProfileResult,omitempty"`
 
 	// Output only. The result of a data discovery scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_discovery_result
 	DataDiscoveryResult *DataDiscoveryResultObservedState `json:"dataDiscoveryResult,omitempty"`
 }
 
@@ -147,131 +162,4 @@ type DataplexDataScanList struct {
 
 func init() {
 	SchemeBuilder.Register(&DataplexDataScan{}, &DataplexDataScanList{})
-}
-
-// +kcc:proto=google.cloud.dataplex.v1.DataQualitySpec.PostScanActions.JobEndTrigger
-// +kubebuilder:validation:XPreserveUnknownFields
-type DataQualitySpec_PostScanActions_JobEndTrigger struct {
-}
-
-// +kcc:proto=google.cloud.dataplex.v1.DataQualitySpec.PostScanActions.JobFailureTrigger
-// +kubebuilder:validation:XPreserveUnknownFields
-type DataQualitySpec_PostScanActions_JobFailureTrigger struct {
-}
-
-// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataProfileResult.PostScanActionsResult
-// +kubebuilder:validation:XPreserveUnknownFields
-type DataProfileResult_PostScanActionsResultObservedState struct {
-}
-
-// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataQualityResult.PostScanActionsResult
-// +kubebuilder:validation:XPreserveUnknownFields
-type DataQualityResult_PostScanActionsResultObservedState struct {
-}
-
-// +kcc:proto=google.cloud.dataplex.v1.DataQualityRule.NonNullExpectation
-// +kubebuilder:validation:XPreserveUnknownFields
-type DataQualityRule_NonNullExpectation struct {
-}
-
-// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataDiscoveryResult.BigQueryPublishing
-// +kubebuilder:validation:XPreserveUnknownFields
-type DataDiscoveryResult_BigQueryPublishingObservedState struct {
-}
-
-// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataQualityRuleResult
-// +kubebuilder:validation:XPreserveUnknownFields
-type DataQualityRuleResultObservedState struct {
-}
-
-// +kcc:proto=google.cloud.dataplex.v1.Trigger.OnDemand
-// +kubebuilder:validation:XPreserveUnknownFields
-type Trigger_OnDemand struct {
-}
-
-// +kcc:proto=google.cloud.dataplex.v1.DataQualityRule.UniquenessExpectation
-// +kubebuilder:validation:XPreserveUnknownFields
-type DataQualityRule_UniquenessExpectation struct {
-}
-
-// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataQualityColumnResult
-// +kubebuilder:validation:XPreserveUnknownFields
-type DataQualityColumnResultObservedState struct {
-}
-
-// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataQualityDimensionResult
-// +kubebuilder:validation:XPreserveUnknownFields
-type DataQualityDimensionResultObservedState struct {
-}
-
-type DataplexEntityRef struct {
-	/* A reference to an externally managed Dataplex Entity.
-	   Should be of the format `projects/{projectID}/locations/{location}/lakes/{lakeID}/zones/{zoneID}/entities/{entityID}`. */
-	External string `json:"external,omitempty"`
-}
-
-type BigQueryConnectionRef struct {
-	/* The `name` of a `BigQueryConnectionConnection` resource. */
-	Name string `json:"name,omitempty"`
-	/* The `namespace` of a `BigQueryConnectionConnection` resource. */
-	Namespace string `json:"namespace,omitempty"`
-	/* A reference to an externally managed BigQuery Connection.
-	   Should be of the format `projects/{projectID}/locations/{location}/connections/{connectionID}`. */
-	External string `json:"external,omitempty"`
-}
-
-type BigQueryTableRef struct {
-	/* The `name` of a `BigQueryTable` resource. */
-	Name string `json:"name,omitempty"`
-	/* The `namespace` of a `BigQueryTable` resource. */
-	Namespace string `json:"namespace,omitempty"`
-	/* A reference to an externally managed BigQuery Table.
-	   Should be of the format `//bigquery.googleapis.com/projects/{projectID}/datasets/{datasetID}/tables/{tableID}` or `projects/{projectID}/datasets/{datasetID}/tables/{tableID}`. */
-	External string `json:"external,omitempty"`
-}
-
-// +kcc:proto=google.cloud.dataplex.v1.DataSource
-type DataSource struct {
-	// Immutable. The Dataplex entity that represents the data source (e.g.
-	//  BigQuery table) for DataScan, of the form:
-	//  `projects/{project_number}/locations/{location_id}/lakes/{lake_id}/zones/{zone_id}/entities/{entity_id}`.
-	EntityRef *DataplexEntityRef `json:"entityRef,omitempty"`
-
-	// Immutable. The service-qualified full resource name of the cloud resource
-	//  for a DataScan job to scan against. The field could be: BigQuery table of
-	//  type "TABLE" for DataProfileScan/DataQualityScan Format:
-	//  //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
-	Resource *string `json:"resource,omitempty"`
-}
-
-// +kcc:proto=google.cloud.dataplex.v1.DataDiscoverySpec.BigQueryPublishingConfig
-type DataDiscoverySpec_BigQueryPublishingConfig struct {
-	// Optional. Determines whether to  publish discovered tables as BigLake
-	//  external tables or non-BigLake external tables.
-	TableType *string `json:"tableType,omitempty"`
-
-	// Optional. The BigQuery connection used to create BigLake tables.
-	//  Must be in the form
-	//  `projects/{project_id}/locations/{location_id}/connections/{connection_id}`
-	ConnectionRef *BigQueryConnectionRef `json:"connectionRef,omitempty"`
-}
-
-// +kcc:proto=google.cloud.dataplex.v1.DataProfileSpec.PostScanActions.BigQueryExport
-type DataProfileSpec_PostScanActions_BigQueryExport struct {
-	// Optional. The BigQuery table to export DataProfileScan results to.
-	//  Format:
-	//  //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
-	//  or
-	//  projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
-	ResultsTableRef *BigQueryTableRef `json:"resultsTableRef,omitempty"`
-}
-
-// +kcc:proto=google.cloud.dataplex.v1.DataQualitySpec.PostScanActions.BigQueryExport
-type DataQualitySpec_PostScanActions_BigQueryExport struct {
-	// Optional. The BigQuery table to export DataQualityScan results to.
-	//  Format:
-	//  //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
-	//  or
-	//  projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
-	ResultsTableRef *BigQueryTableRef `json:"resultsTableRef,omitempty"`
 }

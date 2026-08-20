@@ -211,14 +211,8 @@ func NetworkConnectivityMulticloudDataTransferConfigObservedState_FromProto(mapC
 		return nil
 	}
 	out := &krm.NetworkConnectivityMulticloudDataTransferConfigObservedState{}
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.DestinationsActiveCount = direct.LazyPtr(in.GetDestinationsActiveCount())
-	out.DestinationsCount = direct.LazyPtr(in.GetDestinationsCount())
-	// MISSING: Etag
 	// MISSING: Name
-	out.Services = Services_FromProto(mapCtx, in.Services)
-	out.Uid = direct.LazyPtr(in.GetUid())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	// MISSING: Services
 	return out
 }
 func NetworkConnectivityMulticloudDataTransferConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.NetworkConnectivityMulticloudDataTransferConfigObservedState) *pb.MulticloudDataTransferConfig {
@@ -226,14 +220,8 @@ func NetworkConnectivityMulticloudDataTransferConfigObservedState_ToProto(mapCtx
 		return nil
 	}
 	out := &pb.MulticloudDataTransferConfig{}
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.DestinationsActiveCount = direct.ValueOf(in.DestinationsActiveCount)
-	out.DestinationsCount = direct.ValueOf(in.DestinationsCount)
-	// MISSING: Etag
 	// MISSING: Name
-	out.Services = Services_ToProto(mapCtx, in.Services)
-	out.Uid = direct.ValueOf(in.Uid)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	// MISSING: Services
 	return out
 }
 func NetworkConnectivityMulticloudDataTransferConfigSpec_FromProto(mapCtx *direct.MapContext, in *pb.MulticloudDataTransferConfig) *krm.NetworkConnectivityMulticloudDataTransferConfigSpec {
@@ -241,10 +229,16 @@ func NetworkConnectivityMulticloudDataTransferConfigSpec_FromProto(mapCtx *direc
 		return nil
 	}
 	out := &krm.NetworkConnectivityMulticloudDataTransferConfigSpec{}
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.Description = direct.LazyPtr(in.GetDescription())
-	// MISSING: Etag
+	out.DestinationsActiveCount = direct.LazyPtr(in.GetDestinationsActiveCount())
+	out.DestinationsCount = direct.LazyPtr(in.GetDestinationsCount())
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.Labels = in.Labels
 	// MISSING: Name
+	// MISSING: Services
+	out.Uid = direct.LazyPtr(in.GetUid())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	return out
 }
 func NetworkConnectivityMulticloudDataTransferConfigSpec_ToProto(mapCtx *direct.MapContext, in *krm.NetworkConnectivityMulticloudDataTransferConfigSpec) *pb.MulticloudDataTransferConfig {
@@ -252,10 +246,16 @@ func NetworkConnectivityMulticloudDataTransferConfigSpec_ToProto(mapCtx *direct.
 		return nil
 	}
 	out := &pb.MulticloudDataTransferConfig{}
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.Description = direct.ValueOf(in.Description)
-	// MISSING: Etag
+	out.DestinationsActiveCount = direct.ValueOf(in.DestinationsActiveCount)
+	out.DestinationsCount = direct.ValueOf(in.DestinationsCount)
+	out.Etag = direct.ValueOf(in.Etag)
 	out.Labels = in.Labels
 	// MISSING: Name
+	// MISSING: Services
+	out.Uid = direct.ValueOf(in.Uid)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	return out
 }
 func NetworkConnectivityRegionalEndpointObservedState_FromProto(mapCtx *direct.MapContext, in *pb.RegionalEndpoint) *krm.NetworkConnectivityRegionalEndpointObservedState {
@@ -451,21 +451,5 @@ func PSCConnection_ToProto(mapCtx *direct.MapContext, in *krm.PSCConnection) *pb
 	out.SelectedSubnetwork = direct.ValueOf(in.SelectedSubnetwork)
 	// MISSING: ServiceClass
 	out.State = direct.ValueOf(in.State)
-	return out
-}
-func StateTimeline_FromProto(mapCtx *direct.MapContext, in *pb.StateTimeline) *krm.StateTimeline {
-	if in == nil {
-		return nil
-	}
-	out := &krm.StateTimeline{}
-	out.States = direct.Slice_FromProto(mapCtx, in.States, StateMetadata_FromProto)
-	return out
-}
-func StateTimeline_ToProto(mapCtx *direct.MapContext, in *krm.StateTimeline) *pb.StateTimeline {
-	if in == nil {
-		return nil
-	}
-	out := &pb.StateTimeline{}
-	out.States = direct.Slice_ToProto(mapCtx, in.States, StateMetadata_ToProto)
 	return out
 }

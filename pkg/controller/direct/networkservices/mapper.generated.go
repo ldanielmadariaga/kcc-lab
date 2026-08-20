@@ -652,7 +652,6 @@ func NetworkServicesAuthzExtensionObservedState_v1alpha1_FromProto(mapCtx *direc
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Service
 	return out
 }
 func NetworkServicesAuthzExtensionObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnetworkservicesv1alpha1.NetworkServicesAuthzExtensionObservedState) *pb.AuthzExtension {
@@ -663,7 +662,6 @@ func NetworkServicesAuthzExtensionObservedState_v1alpha1_ToProto(mapCtx *direct.
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Service
 	return out
 }
 func NetworkServicesAuthzExtensionSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AuthzExtension) *krmnetworkservicesv1alpha1.NetworkServicesAuthzExtensionSpec {
@@ -676,10 +674,12 @@ func NetworkServicesAuthzExtensionSpec_v1alpha1_FromProto(mapCtx *direct.MapCont
 	out.Labels = in.Labels
 	out.LoadBalancingScheme = direct.Enum_FromProto(mapCtx, in.GetLoadBalancingScheme())
 	out.Authority = direct.LazyPtr(in.GetAuthority())
-	// MISSING: Service
+	out.Service = direct.LazyPtr(in.GetService())
 	out.Timeout = direct.StringDuration_FromProto(mapCtx, in.GetTimeout())
 	out.FailOpen = direct.LazyPtr(in.GetFailOpen())
-	out.Metadata = direct.Struct_FromProto(mapCtx, in.GetMetadata())
+	if v := direct.Struct_FromProto(mapCtx, in.GetMetadata()); v != nil {
+		out.Metadata = *v
+	}
 	out.ForwardHeaders = in.ForwardHeaders
 	out.WireFormat = direct.Enum_FromProto(mapCtx, in.GetWireFormat())
 	return out
@@ -694,10 +694,10 @@ func NetworkServicesAuthzExtensionSpec_v1alpha1_ToProto(mapCtx *direct.MapContex
 	out.Labels = in.Labels
 	out.LoadBalancingScheme = direct.Enum_ToProto[pb.LoadBalancingScheme](mapCtx, in.LoadBalancingScheme)
 	out.Authority = direct.ValueOf(in.Authority)
-	// MISSING: Service
+	out.Service = direct.ValueOf(in.Service)
 	out.Timeout = direct.StringDuration_ToProto(mapCtx, in.Timeout)
 	out.FailOpen = direct.ValueOf(in.FailOpen)
-	out.Metadata = direct.Struct_ToProto(mapCtx, in.Metadata)
+	out.Metadata = direct.Struct_ToProto(mapCtx, &in.Metadata)
 	out.ForwardHeaders = in.ForwardHeaders
 	out.WireFormat = direct.Enum_ToProto[pb.WireFormat](mapCtx, in.WireFormat)
 	return out

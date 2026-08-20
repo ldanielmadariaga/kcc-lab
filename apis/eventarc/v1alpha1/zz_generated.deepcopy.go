@@ -700,11 +700,6 @@ func (in *EventarcGoogleAPISourceSpec) DeepCopyInto(out *EventarcGoogleAPISource
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
-	if in.Location != nil {
-		in, out := &in.Location, &out.Location
-		*out = new(string)
-		**out = **in
-	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -729,14 +724,14 @@ func (in *EventarcGoogleAPISourceSpec) DeepCopyInto(out *EventarcGoogleAPISource
 		*out = new(string)
 		**out = **in
 	}
-	if in.MessageBusRef != nil {
-		in, out := &in.MessageBusRef, &out.MessageBusRef
-		*out = new(EventarcMessageBusRef)
+	if in.Destination != nil {
+		in, out := &in.Destination, &out.Destination
+		*out = new(string)
 		**out = **in
 	}
-	if in.CryptoKeyRef != nil {
-		in, out := &in.CryptoKeyRef, &out.CryptoKeyRef
-		*out = new(v1beta1.KMSCryptoKeyRef)
+	if in.CryptoKeyName != nil {
+		in, out := &in.CryptoKeyName, &out.CryptoKeyName
+		*out = new(string)
 		**out = **in
 	}
 	if in.LoggingConfig != nil {

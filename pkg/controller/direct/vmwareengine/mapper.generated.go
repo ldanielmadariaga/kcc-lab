@@ -25,7 +25,6 @@ package vmwareengine
 
 import (
 	pb "cloud.google.com/go/vmwareengine/apiv1/vmwareenginepb"
-	krmcomputerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
 	krmvmwareenginev1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/vmwareengine/v1alpha1"
 	krmvmwareenginev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/vmwareengine/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
@@ -458,7 +457,6 @@ func VMwareEnginePrivateConnectionObservedState_v1alpha1_FromProto(mapCtx *direc
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	// MISSING: VmwareEngineNetwork
 	out.VmwareEngineNetworkCanonical = direct.LazyPtr(in.GetVmwareEngineNetworkCanonical())
 	out.PeeringID = direct.LazyPtr(in.GetPeeringId())
 	out.Uid = direct.LazyPtr(in.GetUid())
@@ -474,7 +472,6 @@ func VMwareEnginePrivateConnectionObservedState_v1alpha1_ToProto(mapCtx *direct.
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.State = direct.Enum_ToProto[pb.PrivateConnection_State](mapCtx, in.State)
-	// MISSING: VmwareEngineNetwork
 	out.VmwareEngineNetworkCanonical = direct.ValueOf(in.VmwareEngineNetworkCanonical)
 	out.PeeringId = direct.ValueOf(in.PeeringID)
 	out.Uid = direct.ValueOf(in.Uid)
@@ -488,12 +485,10 @@ func VMwareEnginePrivateConnectionSpec_v1alpha1_FromProto(mapCtx *direct.MapCont
 	out := &krmvmwareenginev1alpha1.VMwareEnginePrivateConnectionSpec{}
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
-	// MISSING: VmwareEngineNetwork
+	out.VmwareEngineNetwork = direct.LazyPtr(in.GetVmwareEngineNetwork())
 	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
 	out.RoutingMode = direct.Enum_FromProto(mapCtx, in.GetRoutingMode())
-	if in.GetServiceNetwork() != "" {
-		out.ServiceNetworkRef = &krmcomputerefs.ComputeNetworkRef{External: in.GetServiceNetwork()}
-	}
+	out.ServiceNetwork = direct.LazyPtr(in.GetServiceNetwork())
 	return out
 }
 func VMwareEnginePrivateConnectionSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmvmwareenginev1alpha1.VMwareEnginePrivateConnectionSpec) *pb.PrivateConnection {
@@ -503,12 +498,10 @@ func VMwareEnginePrivateConnectionSpec_v1alpha1_ToProto(mapCtx *direct.MapContex
 	out := &pb.PrivateConnection{}
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
-	// MISSING: VmwareEngineNetwork
+	out.VmwareEngineNetwork = direct.ValueOf(in.VmwareEngineNetwork)
 	out.Type = direct.Enum_ToProto[pb.PrivateConnection_Type](mapCtx, in.Type)
 	out.RoutingMode = direct.Enum_ToProto[pb.PrivateConnection_RoutingMode](mapCtx, in.RoutingMode)
-	if in.ServiceNetworkRef != nil {
-		out.ServiceNetwork = in.ServiceNetworkRef.External
-	}
+	out.ServiceNetwork = direct.ValueOf(in.ServiceNetwork)
 	return out
 }
 func Vcenter_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Vcenter) *krmvmwareenginev1alpha1.Vcenter {
