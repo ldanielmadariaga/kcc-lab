@@ -29,7 +29,6 @@ type ContainerImage struct {
 	// Required. The path to the container image repository. For example:
 	//  `gcr.io/{project_id}/{image_name}`
 	// +kcc:proto:field=google.cloud.notebooks.v1.ContainerImage.repository
-	// +required
 	Repository *string `json:"repository,omitempty"`
 
 	// The tag of the container image. If not specified, this defaults
@@ -38,7 +37,8 @@ type ContainerImage struct {
 	Tag *string `json:"tag,omitempty"`
 }
 
-/* unreachable type Environment
+/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Environment", skipping
+
 // +kcc:proto=google.cloud.notebooks.v1.Environment
 type Environment struct {
 
@@ -66,7 +66,8 @@ type Environment struct {
 }
 */
 
-/* unreachable type Execution
+/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Execution", skipping
+
 // +kcc:proto=google.cloud.notebooks.v1.Execution
 type Execution struct {
 	// execute metadata including name, hardware spec, region, labels, etc.
@@ -83,12 +84,13 @@ type Execution struct {
 }
 */
 
+/* found existing non-generated go type "ExecutionTemplate", skipping
+
 // +kcc:proto=google.cloud.notebooks.v1.ExecutionTemplate
 type ExecutionTemplate struct {
 	// Required. Scale tier of the hardware used for notebook execution.
 	//  DEPRECATED Will be discontinued. As right now only CUSTOM is supported.
 	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.scale_tier
-	// +required
 	ScaleTier *string `json:"scaleTier,omitempty"`
 
 	// Specifies the type of virtual machine to use for your training
@@ -219,6 +221,9 @@ type ExecutionTemplate struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.tensorboard
 	Tensorboard *string `json:"tensorboard,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "ExecutionTemplate_DataprocParameters", skipping
 
 // +kcc:proto=google.cloud.notebooks.v1.ExecutionTemplate.DataprocParameters
 type ExecutionTemplate_DataprocParameters struct {
@@ -227,6 +232,7 @@ type ExecutionTemplate_DataprocParameters struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.DataprocParameters.cluster
 	Cluster *string `json:"cluster,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.notebooks.v1.ExecutionTemplate.SchedulerAcceleratorConfig
 type ExecutionTemplate_SchedulerAcceleratorConfig struct {
@@ -238,6 +244,8 @@ type ExecutionTemplate_SchedulerAcceleratorConfig struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.SchedulerAcceleratorConfig.core_count
 	CoreCount *int64 `json:"coreCount,omitempty"`
 }
+
+/* found existing non-generated go type "ExecutionTemplate_VertexAiParameters", skipping
 
 // +kcc:proto=google.cloud.notebooks.v1.ExecutionTemplate.VertexAIParameters
 type ExecutionTemplate_VertexAiParameters struct {
@@ -261,6 +269,7 @@ type ExecutionTemplate_VertexAiParameters struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.VertexAIParameters.env
 	Env map[string]string `json:"env,omitempty"`
 }
+*/
 
 /* unreachable type Instance
 // +kcc:proto=google.cloud.notebooks.v1.Instance
@@ -316,7 +325,6 @@ type Instance struct {
 	//  type](https://cloud.google.com/compute/docs/machine-types) of this
 	//  instance.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.machine_type
-	// +required
 	MachineType *string `json:"machineType,omitempty"`
 
 	// The hardware accelerator used on this instance. If you use
@@ -440,6 +448,7 @@ type Instance struct {
 }
 */
 
+/* unreachable type Instance_AcceleratorConfig
 // +kcc:proto=google.cloud.notebooks.v1.Instance.AcceleratorConfig
 type Instance_AcceleratorConfig struct {
 	// Type of this accelerator.
@@ -450,7 +459,9 @@ type Instance_AcceleratorConfig struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.AcceleratorConfig.core_count
 	CoreCount *int64 `json:"coreCount,omitempty"`
 }
+*/
 
+/* unreachable type Instance_Disk
 // +kcc:proto=google.cloud.notebooks.v1.Instance.Disk
 type Instance_Disk struct {
 	// Indicates whether the disk will be auto-deleted when the instance is
@@ -536,7 +547,9 @@ type Instance_Disk struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.Disk.type
 	Type *string `json:"type,omitempty"`
 }
+*/
 
+/* unreachable type Instance_Disk_GuestOSFeature
 // +kcc:proto=google.cloud.notebooks.v1.Instance.Disk.GuestOsFeature
 type Instance_Disk_GuestOSFeature struct {
 	// The ID of a supported feature. Read  Enabling guest operating system
@@ -552,7 +565,9 @@ type Instance_Disk_GuestOSFeature struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.Disk.GuestOsFeature.type
 	Type *string `json:"type,omitempty"`
 }
+*/
 
+/* unreachable type Instance_ShieldedInstanceConfig
 // +kcc:proto=google.cloud.notebooks.v1.Instance.ShieldedInstanceConfig
 type Instance_ShieldedInstanceConfig struct {
 	// Defines whether the instance has Secure Boot enabled.
@@ -576,7 +591,9 @@ type Instance_ShieldedInstanceConfig struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.ShieldedInstanceConfig.enable_integrity_monitoring
 	EnableIntegrityMonitoring *bool `json:"enableIntegrityMonitoring,omitempty"`
 }
+*/
 
+/* unreachable type Instance_UpgradeHistoryEntry
 // +kcc:proto=google.cloud.notebooks.v1.Instance.UpgradeHistoryEntry
 type Instance_UpgradeHistoryEntry struct {
 	// The snapshot of the boot disk of this notebook instance before upgrade.
@@ -619,7 +636,9 @@ type Instance_UpgradeHistoryEntry struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.UpgradeHistoryEntry.target_version
 	TargetVersion *string `json:"targetVersion,omitempty"`
 }
+*/
 
+/* unreachable type ReservationAffinity
 // +kcc:proto=google.cloud.notebooks.v1.ReservationAffinity
 type ReservationAffinity struct {
 	// Optional. Type of reservation to consume
@@ -634,8 +653,10 @@ type ReservationAffinity struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.ReservationAffinity.values
 	Values []string `json:"values,omitempty"`
 }
+*/
 
-/* unreachable type Schedule
+/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Schedule", skipping
+
 // +kcc:proto=google.cloud.notebooks.v1.Schedule
 type Schedule struct {
 
@@ -675,7 +696,6 @@ type VMImage struct {
 	// Required. The name of the Google Cloud project that this VM image belongs to.
 	//  Format: `{project_id}`
 	// +kcc:proto:field=google.cloud.notebooks.v1.VmImage.project
-	// +required
 	Project *string `json:"project,omitempty"`
 
 	// Use VM image name to find the image.
@@ -688,7 +708,8 @@ type VMImage struct {
 	ImageFamily *string `json:"imageFamily,omitempty"`
 }
 
-/* unreachable type EnvironmentObservedState
+/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Environment", skipping
+
 // +kcc:observedstate:proto=google.cloud.notebooks.v1.Environment
 type EnvironmentObservedState struct {
 	// Output only. Name of this environment.
@@ -703,11 +724,13 @@ type EnvironmentObservedState struct {
 }
 */
 
+/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Execution", skipping
+
 // +kcc:observedstate:proto=google.cloud.notebooks.v1.Execution
 type ExecutionObservedState struct {
 	// execute metadata including name, hardware spec, region, labels, etc.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Execution.execution_template
-	ExecutionTemplate *ExecutionTemplateObservedState `json:"executionTemplate,omitempty"`
+	ExecutionTemplate *ExecutionTemplate `json:"executionTemplate,omitempty"`
 
 	// Output only. The resource name of the execute. Format:
 	//  `projects/{project_id}/locations/{location}/executions/{execution_id}`
@@ -743,142 +766,7 @@ type ExecutionObservedState struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.Execution.job_uri
 	JobURI *string `json:"jobURI,omitempty"`
 }
-
-// +kcc:observedstate:proto=google.cloud.notebooks.v1.ExecutionTemplate
-type ExecutionTemplateObservedState struct {
-	// Required. Scale tier of the hardware used for notebook execution.
-	//  DEPRECATED Will be discontinued. As right now only CUSTOM is supported.
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.scale_tier
-	ScaleTier *string `json:"scaleTier,omitempty"`
-
-	// Specifies the type of virtual machine to use for your training
-	//  job's master worker. You must specify this field when `scaleTier` is set to
-	//  `CUSTOM`.
-	//
-	//  You can use certain Compute Engine machine types directly in this field.
-	//  The following types are supported:
-	//
-	//  - `n1-standard-4`
-	//  - `n1-standard-8`
-	//  - `n1-standard-16`
-	//  - `n1-standard-32`
-	//  - `n1-standard-64`
-	//  - `n1-standard-96`
-	//  - `n1-highmem-2`
-	//  - `n1-highmem-4`
-	//  - `n1-highmem-8`
-	//  - `n1-highmem-16`
-	//  - `n1-highmem-32`
-	//  - `n1-highmem-64`
-	//  - `n1-highmem-96`
-	//  - `n1-highcpu-16`
-	//  - `n1-highcpu-32`
-	//  - `n1-highcpu-64`
-	//  - `n1-highcpu-96`
-	//
-	//
-	//  Alternatively, you can use the following legacy machine types:
-	//
-	//  - `standard`
-	//  - `large_model`
-	//  - `complex_model_s`
-	//  - `complex_model_m`
-	//  - `complex_model_l`
-	//  - `standard_gpu`
-	//  - `complex_model_m_gpu`
-	//  - `complex_model_l_gpu`
-	//  - `standard_p100`
-	//  - `complex_model_m_p100`
-	//  - `standard_v100`
-	//  - `large_model_v100`
-	//  - `complex_model_m_v100`
-	//  - `complex_model_l_v100`
-	//
-	//
-	//  Finally, if you want to use a TPU for training, specify `cloud_tpu` in this
-	//  field. Learn more about the [special configuration options for training
-	//  with
-	//  TPU](https://cloud.google.com/ai-platform/training/docs/using-tpus#configuring_a_custom_tpu_machine).
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.master_type
-	MasterType *string `json:"masterType,omitempty"`
-
-	// Configuration (count and accelerator type) for hardware running notebook
-	//  execution.
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.accelerator_config
-	AcceleratorConfig *ExecutionTemplate_SchedulerAcceleratorConfig `json:"acceleratorConfig,omitempty"`
-
-	// Labels for execution.
-	//  If execution is scheduled, a field included will be 'nbs-scheduled'.
-	//  Otherwise, it is an immediate execution, and an included field will be
-	//  'nbs-immediate'. Use fields to efficiently index between various types of
-	//  executions.
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// Path to the notebook file to execute.
-	//  Must be in a Google Cloud Storage bucket.
-	//  Format: `gs://{bucket_name}/{folder}/{notebook_file_name}`
-	//  Ex: `gs://notebook_user/scheduled_notebooks/sentiment_notebook.ipynb`
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.input_notebook_file
-	InputNotebookFile *string `json:"inputNotebookFile,omitempty"`
-
-	// Container Image URI to a DLVM
-	//  Example: 'gcr.io/deeplearning-platform-release/base-cu100'
-	//  More examples can be found at:
-	//  https://cloud.google.com/ai-platform/deep-learning-containers/docs/choosing-container
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.container_image_uri
-	ContainerImageURI *string `json:"containerImageURI,omitempty"`
-
-	// Path to the notebook folder to write to.
-	//  Must be in a Google Cloud Storage bucket path.
-	//  Format: `gs://{bucket_name}/{folder}`
-	//  Ex: `gs://notebook_user/scheduled_notebooks`
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.output_notebook_folder
-	OutputNotebookFolder *string `json:"outputNotebookFolder,omitempty"`
-
-	// Parameters to be overridden in the notebook during execution.
-	//  Ref https://papermill.readthedocs.io/en/latest/usage-parameterize.html on
-	//  how to specifying parameters in the input notebook and pass them here
-	//  in an YAML file.
-	//  Ex: `gs://notebook_user/scheduled_notebooks/sentiment_notebook_params.yaml`
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.params_yaml_file
-	ParamsYamlFile *string `json:"paramsYamlFile,omitempty"`
-
-	// Parameters used within the 'input_notebook_file' notebook.
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.parameters
-	Parameters *string `json:"parameters,omitempty"`
-
-	// The email address of a service account to use when running the execution.
-	//  You must have the `iam.serviceAccounts.actAs` permission for the specified
-	//  service account.
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.service_account
-	ServiceAccount *string `json:"serviceAccount,omitempty"`
-
-	// The type of Job to be used on this execution.
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.job_type
-	JobType *string `json:"jobType,omitempty"`
-
-	// Parameters used in Dataproc JobType executions.
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.dataproc_parameters
-	DataprocParameters *ExecutionTemplate_DataprocParameters `json:"dataprocParameters,omitempty"`
-
-	// Parameters used in Vertex AI JobType executions.
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.vertex_ai_parameters
-	VertexAiParameters *ExecutionTemplate_VertexAiParameters `json:"vertexAiParameters,omitempty"`
-
-	// Name of the kernel spec to use. This must be specified if the
-	//  kernel spec name on the execution target does not match the name in the
-	//  input notebook file.
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.kernel_spec
-	KernelSpec *string `json:"kernelSpec,omitempty"`
-
-	// The name of a Vertex AI [Tensorboard] resource to which this execution
-	//  will upload Tensorboard logs.
-	//  Format:
-	//  `projects/{project}/locations/{location}/tensorboards/{tensorboard}`
-	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.tensorboard
-	Tensorboard *string `json:"tensorboard,omitempty"`
-}
+*/
 
 /* unreachable type InstanceObservedState
 // +kcc:observedstate:proto=google.cloud.notebooks.v1.Instance
@@ -914,7 +802,8 @@ type InstanceObservedState struct {
 }
 */
 
-/* unreachable type ScheduleObservedState
+/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Schedule", skipping
+
 // +kcc:observedstate:proto=google.cloud.notebooks.v1.Schedule
 type ScheduleObservedState struct {
 	// Output only. The name of this schedule. Format:

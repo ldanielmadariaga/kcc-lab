@@ -64,18 +64,9 @@ spec:
               annotations:
                 additionalProperties:
                   type: string
-                description: |-
-                  Optional. Unstructured key value map that may be set by external tools to
-                   store and arbitrary metadata. They are not queryable and should be
-                   preserved when modifying objects.
-
-                   Cloud Run API v2 does not support annotations with `run.googleapis.com`,
-                   `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev`
-                   namespaces, and they will be rejected in new resources. All system
-                   annotations in v1 now have a corresponding field in v2 WorkerPool.
-
-                   <p>This field follows Kubernetes
-                   annotations' namespacing, limits, and rules.
+                description: Optional. Unstructured key value map that may be set
+                  by external tools to store and arbitrary metadata. They are not
+                  queryable and should be preserved when modifying objects.
                 type: object
               binaryAuthorization:
                 description: Optional. Settings for the Binary Authorization feature.
@@ -84,10 +75,6 @@ spec:
                     description: Optional. If present, indicates to use Breakglass
                       using this justification. If use_default is False, then it must
                       be empty. For more information on breakglass, see https://cloud.google.com/binary-authorization/docs/using-breakglass
-                    type: string
-                  policy:
-                    description: 'Optional. The path to a binary authorization policy.
-                      Format: `projects/{project}/platforms/cloudRun/{policy-name}`'
                     type: string
                   useDefault:
                     description: Optional. If True, indicates to use the default project's
@@ -102,10 +89,9 @@ spec:
                 description: Arbitrary version identifier for the API client.
                 type: string
               customAudiences:
-                description: One or more custom audiences that you want this worker
-                  pool to support. Specify each custom audience as the full URL in
-                  a string. The custom audiences are encoded in the token and used
-                  to authenticate requests. For more information, see https://cloud.google.com/run/docs/configuring/custom-audiences.
+                description: Optional. One or more custom audiences that you want
+                  this worker pool to support. Specify each custom audience as the
+                  full URL in a string.
                 items:
                   type: string
                 type: array
@@ -134,34 +120,9 @@ spec:
                       type: string
                   type: object
                 type: array
-              labels:
-                additionalProperties:
-                  type: string
-                description: |-
-                  Optional. Unstructured key value map that can be used to organize and
-                   categorize objects. User-provided labels are shared with Google's billing
-                   system, so they can be used to filter, or break down billing charges by
-                   team, component, environment, state, etc. For more information, visit
-                   https://cloud.google.com/resource-manager/docs/creating-managing-labels or
-                   https://cloud.google.com/run/docs/configuring/labels.
-
-                   Cloud Run API v2 does not support labels with  `run.googleapis.com`,
-                   `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev`
-                   namespaces, and they will be rejected. All system labels in v1 now have a
-                   corresponding field in v2 WorkerPool.
-                type: object
               launchStage:
-                description: |-
-                  Optional. The launch stage as defined by [Google Cloud Platform
-                    Launch Stages](https://cloud.google.com/terms/launch-stages).
-                    Cloud Run supports `ALPHA`, `BETA`, and `GA`. If no value is specified, GA
-                    is assumed.
-                    Set the launch stage to a preview stage on input to allow use of preview
-                    features in that stage. On read (or output), describes whether the
-                    resource uses preview features.
-
-                    For example, if ALPHA is provided as input, but only BETA and GA-level
-                    features are used, this field will be BETA on output.
+                description: Optional. The launch stage as defined by [Google Cloud
+                  Platform Launch Stages](https://cloud.google.com/terms/launch-stages).
                 type: string
               location:
                 description: The location of this resource.
@@ -218,18 +179,8 @@ spec:
                   annotations:
                     additionalProperties:
                       type: string
-                    description: |-
-                      Optional. Unstructured key value map that may be set by external tools to
-                       store and arbitrary metadata. They are not queryable and should be
-                       preserved when modifying objects.
-
-                       Cloud Run API v2 does not support annotations with `run.googleapis.com`,
-                       `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev`
-                       namespaces, and they will be rejected. All system annotations in v1 now
-                       have a corresponding field in v2 WorkerPoolRevisionTemplate.
-
-                       This field follows Kubernetes annotations' namespacing, limits, and
-                       rules.
+                    description: Optional. Unstructured key value map that may be
+                      set by external tools to store and arbitrary metadata.
                     type: object
                   containers:
                     description: Holds list of the containers that defines the unit
@@ -237,19 +188,16 @@ spec:
                     items:
                       properties:
                         args:
-                          description: Arguments to the entrypoint. The docker image's
-                            CMD is used if this is not provided.
+                          description: Arguments to the entrypoint.
                           items:
                             type: string
                           type: array
                         baseImageURI:
                           description: Base image for this container. Only supported
-                            for services. If set, it indicates that the service is
-                            enrolled into automatic base image update.
+                            for services.
                           type: string
                         command:
                           description: Entrypoint array. Not executed within a shell.
-                            The docker image's ENTRYPOINT is used if this is not provided.
                           items:
                             type: string
                           type: array
@@ -270,9 +218,6 @@ spec:
                                 type: string
                               value:
                                 description: Literal value of the environment variable.
-                                  Defaults to "", and the maximum length is 32768
-                                  bytes. Variable references are not supported in
-                                  Cloud Run.
                                 type: string
                               valueSource:
                                 description: Source for the environment variable's
@@ -282,34 +227,80 @@ spec:
                                     description: Selects a secret and a specific version
                                       from Cloud Secret Manager.
                                     properties:
-                                      secret:
-                                        description: 'Required. The name of the secret
-                                          in Cloud Secret Manager. Format: {secret_name}
-                                          if the secret is in the same project. projects/{project}/secrets/{secret_name}
-                                          if the secret is in a different project.'
-                                        type: string
-                                      version:
+                                      secretRef:
+                                        description: Required. The name of the secret
+                                          in Cloud Secret Manager.
+                                        oneOf:
+                                        - not:
+                                            required:
+                                            - external
+                                          required:
+                                          - name
+                                        - not:
+                                            anyOf:
+                                            - required:
+                                              - name
+                                            - required:
+                                              - namespace
+                                          required:
+                                          - external
+                                        properties:
+                                          external:
+                                            description: A reference to an externally
+                                              managed SecretManagerSecret resource.
+                                              Should be in the format "projects/{{projectID}}/locations/{{location}}/secrets/{{secretID}}".
+                                            type: string
+                                          name:
+                                            description: The name of a SecretManagerSecret
+                                              resource.
+                                            type: string
+                                          namespace:
+                                            description: The namespace of a SecretManagerSecret
+                                              resource.
+                                            type: string
+                                        type: object
+                                      versionRef:
                                         description: The Cloud Secret Manager secret
-                                          version. Can be 'latest' for the latest
-                                          version, an integer for a specific version,
-                                          or a version alias.
-                                        type: string
-                                    required:
-                                    - secret
+                                          version.
+                                        oneOf:
+                                        - not:
+                                            required:
+                                            - external
+                                          required:
+                                          - name
+                                        - not:
+                                            anyOf:
+                                            - required:
+                                              - name
+                                            - required:
+                                              - namespace
+                                          required:
+                                          - external
+                                        properties:
+                                          external:
+                                            description: A reference to an externally
+                                              managed SecretManagerSecretVersion resource.
+                                              Should be in the format "projects/{{projectID}}/locations/{{location}}/secretversions/{{secretversionID}}".
+                                            type: string
+                                          name:
+                                            description: The name of a SecretManagerSecretVersion
+                                              resource.
+                                            type: string
+                                          namespace:
+                                            description: The namespace of a SecretManagerSecretVersion
+                                              resource.
+                                            type: string
+                                        type: object
                                     type: object
                                 type: object
-                            required:
-                            - name
                             type: object
                           type: array
                         image:
                           description: Required. Name of the container image in Dockerhub,
                             Google Artifact Registry, or Google Container Registry.
-                            If the host is not provided, Dockerhub is assumed.
                           type: string
                         livenessProbe:
-                          description: Periodic probe of container liveness. Container
-                            will be restarted if the probe fails.
+                          description: Periodic probe of container liveness.
                           properties:
                             failureThreshold:
                               description: Optional. Minimum consecutive failures
@@ -353,8 +344,6 @@ spec:
                                       value:
                                         description: Optional. The header field value
                                         type: string
-                                    required:
-                                    - name
                                     type: object
                                   type: array
                                 path:
@@ -411,13 +400,7 @@ spec:
                             (RFC 1123).
                           type: string
                         ports:
-                          description: |-
-                            List of ports to expose from the container. Only a single port can be
-                             specified. The specified ports must be listening on all interfaces
-                             (0.0.0.0) within the container to be accessible.
-
-                             If omitted, a port number will be chosen and passed to the container
-                             through the PORT environment variable for the container to listen on.
+                          description: List of ports to expose from the container.
                           items:
                             properties:
                               containerPort:
@@ -462,9 +445,6 @@ spec:
                           type: object
                         startupProbe:
                           description: Startup probe of application within the container.
-                            All other probes are disabled if a startup probe is provided,
-                            until it succeeds. Container will not be added to service
-                            endpoints if the probe fails.
                           properties:
                             failureThreshold:
                               description: Optional. Minimum consecutive failures
@@ -508,8 +488,6 @@ spec:
                                       value:
                                         description: Optional. The header field value
                                         type: string
-                                    required:
-                                    - name
                                     type: object
                                   type: array
                                 path:
@@ -578,50 +556,50 @@ spec:
                                 description: Required. This must match the Name of
                                   a Volume.
                                 type: string
-                            required:
-                            - mountPath
-                            - name
                             type: object
                           type: array
                         workingDir:
-                          description: Container's working directory. If not specified,
-                            the container runtime's default will be used, which might
-                            be configured in the container image.
+                          description: Container's working directory.
                           type: string
-                      required:
-                      - image
                       type: object
                     type: array
-                  encryptionKey:
+                  encryptionKeyRef:
                     description: A reference to a customer managed encryption key
-                      (CMEK) to use to encrypt this container image. For more information,
-                      go to https://cloud.google.com/run/docs/securing/using-cmek
-                    type: string
+                      (CMEK) to use to encrypt this container image.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
+                    properties:
+                      external:
+                        description: A reference to an externally managed KMSCryptoKey.
+                          Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
+                        type: string
+                      name:
+                        description: The `name` of a `KMSCryptoKey` resource.
+                        type: string
+                      namespace:
+                        description: The `namespace` of a `KMSCryptoKey` resource.
+                        type: string
+                    type: object
                   encryptionKeyRevocationAction:
                     description: Optional. The action to take if the encryption key
                       is revoked.
                     type: string
                   encryptionKeyShutdownDuration:
                     description: Optional. If encryption_key_revocation_action is
-                      SHUTDOWN, the duration before shutting down all instances. The
-                      minimum increment is 1 hour.
+                      SHUTDOWN, the duration before shutting down all instances.
                     type: string
-                  labels:
-                    additionalProperties:
-                      type: string
-                    description: |-
-                      Optional. Unstructured key value map that can be used to organize and
-                       categorize objects. User-provided labels are shared with Google's billing
-                       system, so they can be used to filter, or break down billing charges by
-                       team, component, environment, state, etc. For more information, visit
-                       https://cloud.google.com/resource-manager/docs/creating-managing-labels or
-                       https://cloud.google.com/run/docs/configuring/labels.
-
-                       Cloud Run API v2 does not support labels with `run.googleapis.com`,
-                       `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev`
-                       namespaces, and they will be rejected. All system labels in v1 now have a
-                       corresponding field in v2 WorkerPoolRevisionTemplate.
-                    type: object
                   nodeSelector:
                     description: Optional. The node selector for the revision template.
                     properties:
@@ -629,28 +607,71 @@ spec:
                         description: Required. GPU accelerator type to attach to an
                           instance.
                         type: string
-                    required:
-                    - accelerator
                     type: object
                   revision:
                     description: Optional. The unique name for the revision. If this
                       field is omitted, it will be automatically generated based on
                       the WorkerPool name.
                     type: string
-                  serviceAccount:
+                  serviceAccountRef:
                     description: Optional. Email address of the IAM service account
-                      associated with the revision of the service. The service account
-                      represents the identity of the running revision, and determines
-                      what permissions the revision has. If not provided, the revision
-                      will use the project's default service account.
-                    type: string
+                      associated with the revision of the service.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
+                    properties:
+                      external:
+                        description: The `email` field of an `IAMServiceAccount` resource.
+                        type: string
+                      name:
+                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                        type: string
+                      namespace:
+                        description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                        type: string
+                    type: object
                   serviceMesh:
                     description: Optional. Enables service mesh connectivity.
                     properties:
-                      mesh:
-                        description: 'The Mesh resource name. Format: `projects/{project}/locations/global/meshes/{mesh}`,
-                          where `{project}` can be project id or number.'
-                        type: string
+                      meshRef:
+                        description: The Mesh resource name.
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
+                        properties:
+                          external:
+                            description: A reference to an externally managed NetworkServicesMesh
+                              resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/meshes/{{meshID}}".
+                            type: string
+                          name:
+                            description: The name of a NetworkServicesMesh resource.
+                            type: string
+                          namespace:
+                            description: The namespace of a NetworkServicesMesh resource.
+                            type: string
+                        type: object
                     type: object
                   volumes:
                     description: Optional. A list of Volumes to make available to
@@ -659,18 +680,39 @@ spec:
                       properties:
                         cloudSQLInstance:
                           description: For Cloud SQL volumes, contains the specific
-                            instances that should be mounted. Visit https://cloud.google.com/sql/docs/mysql/connect-run
-                            for more information on how to connect Cloud SQL and Cloud
-                            Run.
+                            instances that should be mounted.
                           properties:
-                            instances:
-                              description: 'The Cloud SQL instance connection names,
-                                as can be found in https://console.cloud.google.com/sql/instances.
-                                Visit https://cloud.google.com/sql/docs/mysql/connect-run
-                                for more information on how to connect Cloud SQL and
-                                Cloud Run. Format: {project}:{location}:{instance}'
+                            instanceRefs:
+                              description: The Cloud SQL instance connection names.
                               items:
-                                type: string
+                                oneOf:
+                                - not:
+                                    required:
+                                    - external
+                                  required:
+                                  - name
+                                - not:
+                                    anyOf:
+                                    - required:
+                                      - name
+                                    - required:
+                                      - namespace
+                                  required:
+                                  - external
+                                properties:
+                                  external:
+                                    description: The SQLInstance selfLink, when not
+                                      managed by Config Connector.
+                                    type: string
+                                  name:
+                                    description: The `name` field of a `SQLInstance`
+                                      resource.
+                                    type: string
+                                  namespace:
+                                    description: The `namespace` field of a `SQLInstance`
+                                      resource.
+                                    type: string
+                                type: object
                               type: array
                           type: object
                         emptyDir:
@@ -697,13 +739,38 @@ spec:
                           description: Persistent storage backed by a Google Cloud
                             Storage bucket.
                           properties:
-                            bucket:
+                            bucketRef:
                               description: Cloud Storage Bucket name.
-                              type: string
+                              oneOf:
+                              - not:
+                                  required:
+                                  - external
+                                required:
+                                - name
+                              - not:
+                                  anyOf:
+                                  - required:
+                                    - name
+                                  - required:
+                                    - namespace
+                                required:
+                                - external
+                              properties:
+                                external:
+                                  description: A reference to an externally managed
+                                    StorageBucket resource. Should be in the format
+                                    "projects/{{projectID}}/buckets/{{bucketID}}".
+                                  type: string
+                                name:
+                                  description: The name of a StorageBucket resource.
+                                  type: string
+                                namespace:
+                                  description: The namespace of a StorageBucket resource.
+                                  type: string
+                              type: object
                             mountOptions:
                               description: A list of additional flags to pass to the
-                                gcsfuse CLI. Options should be specified without the
-                                leading "--".
+                                gcsfuse CLI.
                               items:
                                 type: string
                               type: array
@@ -735,117 +802,196 @@ spec:
                             this volume.
                           properties:
                             defaultMode:
-                              description: |-
-                                Integer representation of mode bits to use on created files by default.
-                                 Must be a value between 0000 and 0777 (octal), defaulting to 0444.
-                                 Directories within the path are not affected by  this setting.
-
-                                 Notes
-
-                                 * Internally, a umask of 0222 will be applied to any non-zero value.
-                                 * This is an integer representation of the mode bits. So, the octal
-                                 integer value should look exactly as the chmod numeric notation with a
-                                 leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal)
-                                 or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or
-                                 493 (base-10).
-                                 * This might be in conflict with other options that affect the
-                                 file mode, like fsGroup, and the result can be other mode bits set.
-
-                                 This might be in conflict with other options that affect the
-                                 file mode, like fsGroup, and as a result, other mode bits could be set.
+                              description: Integer representation of mode bits to
+                                use on created files by default.
                               format: int32
                               type: integer
                             items:
                               description: If unspecified, the volume will expose
                                 a file whose name is the secret, relative to VolumeMount.mount_path.
-                                If specified, the key will be used as the version
-                                to fetch from Cloud Secret Manager and the path will
-                                be the name of the file exposed in the volume. When
-                                items are defined, they must specify a path and a
-                                version.
                               items:
                                 properties:
                                   mode:
-                                    description: |-
-                                      Integer octal mode bits to use on this file, must be a value between
-                                       01 and 0777 (octal). If 0 or not set, the Volume's default mode will be
-                                       used.
-
-                                       Notes
-
-                                       * Internally, a umask of 0222 will be applied to any non-zero value.
-                                       * This is an integer representation of the mode bits. So, the octal
-                                       integer value should look exactly as the chmod numeric notation with a
-                                       leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal)
-                                       or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or
-                                       493 (base-10).
-                                       * This might be in conflict with other options that affect the
-                                       file mode, like fsGroup, and the result can be other mode bits set.
+                                    description: Integer octal mode bits to use on
+                                      this file, must be a value between 01 and 0777
+                                      (octal). If 0 or not set, the Volume's default
+                                      mode will be used.
                                     format: int32
                                     type: integer
                                   path:
                                     description: Required. The relative path of the
                                       secret in the container.
                                     type: string
-                                  version:
+                                  versionRef:
                                     description: The Cloud Secret Manager secret version.
                                       Can be 'latest' for the latest value, or an
                                       integer or a secret alias for a specific version.
-                                    type: string
-                                required:
-                                - path
+                                    oneOf:
+                                    - not:
+                                        required:
+                                        - external
+                                      required:
+                                      - name
+                                    - not:
+                                        anyOf:
+                                        - required:
+                                          - name
+                                        - required:
+                                          - namespace
+                                      required:
+                                      - external
+                                    properties:
+                                      external:
+                                        description: A reference to an externally
+                                          managed SecretManagerSecretVersion resource.
+                                          Should be in the format "projects/{{projectID}}/locations/{{location}}/secretversions/{{secretversionID}}".
+                                        type: string
+                                      name:
+                                        description: The name of a SecretManagerSecretVersion
+                                          resource.
+                                        type: string
+                                      namespace:
+                                        description: The namespace of a SecretManagerSecretVersion
+                                          resource.
+                                        type: string
+                                    type: object
                                 type: object
                               type: array
-                            secret:
-                              description: 'Required. The name of the secret in Cloud
-                                Secret Manager. Format: {secret} if the secret is
-                                in the same project. projects/{project}/secrets/{secret}
-                                if the secret is in a different project.'
-                              type: string
-                          required:
-                          - secret
+                            secretRef:
+                              description: Required. The name of the secret in Cloud
+                                Secret Manager.
+                              oneOf:
+                              - not:
+                                  required:
+                                  - external
+                                required:
+                                - name
+                              - not:
+                                  anyOf:
+                                  - required:
+                                    - name
+                                  - required:
+                                    - namespace
+                                required:
+                                - external
+                              properties:
+                                external:
+                                  description: A reference to an externally managed
+                                    SecretManagerSecret resource. Should be in the
+                                    format "projects/{{projectID}}/locations/{{location}}/secrets/{{secretID}}".
+                                  type: string
+                                name:
+                                  description: The name of a SecretManagerSecret resource.
+                                  type: string
+                                namespace:
+                                  description: The namespace of a SecretManagerSecret
+                                    resource.
+                                  type: string
+                              type: object
                           type: object
-                      required:
-                      - name
                       type: object
                     type: array
                   vpcAccess:
                     description: Optional. VPC Access configuration to use for this
-                      Revision. For more information, visit https://cloud.google.com/run/docs/configuring/connecting-vpc.
+                      Revision.
                     properties:
-                      connector:
-                        description: 'VPC Access connector name. Format: `projects/{project}/locations/{location}/connectors/{connector}`,
-                          where `{project}` can be project id or number. For more
-                          information on sending traffic to a VPC network via a connector,
-                          visit https://cloud.google.com/run/docs/configuring/vpc-connectors.'
-                        type: string
+                      connectorRef:
+                        description: VPC Access connector name.
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
+                        properties:
+                          external:
+                            description: A reference to an externally managed VPCAccessConnector
+                              resource. Should be in the format `projects/{project_id}/locations/{location}/connectors/{connector_id}`
+                            type: string
+                          name:
+                            description: The name of a VPCAccessConnector resource.
+                            type: string
+                          namespace:
+                            description: The namespace of a VPCAccessConnector resource.
+                            type: string
+                        type: object
                       egress:
-                        description: Optional. Traffic VPC egress settings. If not
-                          provided, it defaults to PRIVATE_RANGES_ONLY.
+                        description: Optional. Traffic VPC egress settings.
                         type: string
                       networkInterfaces:
                         description: Optional. Direct VPC egress settings. Currently
                           only single network interface is supported.
                         items:
                           properties:
-                            network:
+                            networkRef:
                               description: Optional. The VPC network that the Cloud
-                                Run resource will be able to send traffic to. At least
-                                one of network or subnetwork must be specified. If
-                                both network and subnetwork are specified, the given
-                                VPC subnetwork must belong to the given VPC network.
-                                If network is not specified, it will be looked up
-                                from the subnetwork.
-                              type: string
-                            subnetwork:
+                                Run resource will be able to send traffic to.
+                              oneOf:
+                              - not:
+                                  required:
+                                  - external
+                                required:
+                                - name
+                              - not:
+                                  anyOf:
+                                  - required:
+                                    - name
+                                  - required:
+                                    - namespace
+                                required:
+                                - external
+                              properties:
+                                external:
+                                  description: A reference to an externally managed
+                                    ComputeNetwork resource. Should be in the format
+                                    "projects/{{projectID}}/global/networks/{{networkID}}".
+                                  type: string
+                                name:
+                                  description: The name of a ComputeNetwork resource.
+                                  type: string
+                                namespace:
+                                  description: The namespace of a ComputeNetwork resource.
+                                  type: string
+                              type: object
+                            subnetworkRef:
                               description: Optional. The VPC subnetwork that the Cloud
-                                Run resource will get IPs from. At least one of network
-                                or subnetwork must be specified. If both network and
-                                subnetwork are specified, the given VPC subnetwork
-                                must belong to the given VPC network. If subnetwork
-                                is not specified, the subnetwork with the same name
-                                with the network will be used.
-                              type: string
+                                Run resource will get IPs from.
+                              oneOf:
+                              - not:
+                                  required:
+                                  - external
+                                required:
+                                - name
+                              - not:
+                                  anyOf:
+                                  - required:
+                                    - name
+                                  - required:
+                                    - namespace
+                                required:
+                                - external
+                              properties:
+                                external:
+                                  description: A reference to an externally managed
+                                    ComputeSubnetwork resource. Should be in the format
+                                    "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
+                                  type: string
+                                name:
+                                  description: The name of a ComputeSubnetwork resource.
+                                  type: string
+                                namespace:
+                                  description: The namespace of a ComputeSubnetwork
+                                    resource.
+                                  type: string
+                              type: object
                             tags:
                               description: Optional. Network tags applied to this
                                 Cloud Run resource.
@@ -859,7 +1005,6 @@ spec:
             required:
             - location
             - projectRef
-            - template
             type: object
           status:
             description: RunWorkerPoolStatus defines the config connector machine
@@ -907,53 +1052,18 @@ spec:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
                 properties:
-                  conditions:
-                    description: Output only. The Conditions of all other associated
-                      sub-resources. They contain additional diagnostics information
-                      in case the WorkerPool does not reach its Serving state. See
-                      comments in `reconciling` for additional information on reconciliation
-                      process in Cloud Run.
-                    items:
-                      properties:
-                        executionReason:
-                          description: Output only. A reason for the execution condition.
-                          type: string
-                        lastTransitionTime:
-                          description: Last time the condition transitioned from one
-                            status to another.
-                          type: string
-                        message:
-                          description: Human readable message indicating details about
-                            the current status.
-                          type: string
-                        reason:
-                          description: Output only. A common (service-level) reason
-                            for this condition.
-                          type: string
-                        revisionReason:
-                          description: Output only. A reason for the revision condition.
-                          type: string
-                        severity:
-                          description: How to interpret failures of this condition,
-                            one of Error, Warning, Info
-                          type: string
-                        state:
-                          description: State of the condition.
-                          type: string
-                        type:
-                          description: 'type is used to communicate the status of
-                            the reconciliation process. See also: https://github.com/knative/serving/blob/main/docs/spec/errors.md#error-conditions-and-reporting
-                            Types common to all resources include: * "Ready": True
-                            when the Resource is ready.'
-                          type: string
-                      type: object
-                    type: array
                   createTime:
                     description: Output only. The creation time.
                     type: string
                   creator:
                     description: Output only. Email address of the authenticated creator.
                     type: string
+                  customAudiences:
+                    description: Output only. One or more custom audiences that you
+                      want this worker pool to support.
+                    items:
+                      type: string
+                    type: array
                   deleteTime:
                     description: Output only. The deletion time. It is only populated
                       as a response to a Delete request.
@@ -965,20 +1075,16 @@ spec:
                     type: string
                   expireTime:
                     description: Output only. For a deleted resource, the time after
-                      which it will be permamently deleted.
+                      which it will be permanently deleted.
                     type: string
                   generation:
                     description: Output only. A number that monotonically increases
-                      every time the user modifies the desired state. Please note
-                      that unlike v1, this is an int64 value. As with most Google
-                      APIs, its JSON representation will be a `string` instead of
-                      an `integer`.
+                      every time the user modifies the desired state.
                     format: int64
                     type: integer
                   instanceSplitStatuses:
                     description: Output only. Detailed status information for corresponding
-                      instance splits. See comments in `reconciling` for additional
-                      information on reconciliation process in Cloud Run.
+                      instance splits.
                     items:
                       properties:
                         percent:
@@ -999,48 +1105,59 @@ spec:
                       modifier.
                     type: string
                   latestCreatedRevision:
-                    description: Output only. Name of the last created revision. See
-                      comments in `reconciling` for additional information on reconciliation
-                      process in Cloud Run.
+                    description: Output only. Name of the last created revision.
                     type: string
                   latestReadyRevision:
                     description: Output only. Name of the latest revision that is
-                      serving traffic. See comments in `reconciling` for additional
-                      information on reconciliation process in Cloud Run.
+                      serving traffic.
                     type: string
+                  observedConditions:
+                    description: Output only. The Conditions of all other associated
+                      sub-resources. They contain additional diagnostics information
+                      in case the WorkerPool does not reach its Serving state.
+                    items:
+                      properties:
+                        executionReason:
+                          description: A reason for the execution condition.
+                          type: string
+                        lastTransitionTime:
+                          description: Last time the condition transitioned from one
+                            status to another.
+                          type: string
+                        message:
+                          description: Human readable message indicating details about
+                            the current status.
+                          type: string
+                        reason:
+                          description: A common (service-level) reason for this condition.
+                          type: string
+                        revisionReason:
+                          description: A reason for the revision condition.
+                          type: string
+                        severity:
+                          description: How to interpret failures of this condition,
+                            one of Error, Warning, Info
+                          type: string
+                        state:
+                          description: State of the condition.
+                          type: string
+                        type:
+                          description: 'type is used to communicate the status of
+                            the reconciliation process. See also: https://github.com/knative/serving/blob/main/docs/spec/errors.md#error-conditions-and-reporting
+                            Types common to all resources include: * "Ready": True
+                            when the Resource is ready.'
+                          type: string
+                      type: object
+                    type: array
                   observedGeneration:
                     description: Output only. The generation of this WorkerPool currently
-                      serving traffic. See comments in `reconciling` for additional
-                      information on reconciliation process in Cloud Run. Please note
-                      that unlike v1, this is an int64 value. As with most Google
-                      APIs, its JSON representation will be a `string` instead of
-                      an `integer`.
+                      serving traffic.
                     format: int64
                     type: integer
                   reconciling:
-                    description: |-
-                      Output only. Returns true if the WorkerPool is currently being acted upon
-                       by the system to bring it into the desired state.
-
-                       When a new WorkerPool is created, or an existing one is updated, Cloud Run
-                       will asynchronously perform all necessary steps to bring the WorkerPool to
-                       the desired serving state. This process is called reconciliation. While
-                       reconciliation is in process, `observed_generation`,
-                       `latest_ready_revison`, `traffic_statuses`, and `uri` will have transient
-                       values that might mismatch the intended state: Once reconciliation is over
-                       (and this field is false), there are two possible outcomes: reconciliation
-                       succeeded and the serving state matches the WorkerPool, or there was an
-                       error, and reconciliation failed. This state can be found in
-                       `terminal_condition.state`.
-
-                       If reconciliation succeeded, the following fields will match: `traffic` and
-                       `traffic_statuses`, `observed_generation` and `generation`,
-                       `latest_ready_revision` and `latest_created_revision`.
-
-                       If reconciliation failed, `traffic_statuses`, `observed_generation`, and
-                       `latest_ready_revision` will have the state of the last serving revision,
-                       or empty for newly created WorkerPools. Additional information on the
-                       failure can be found in `terminal_condition` and `conditions`.
+                    description: Output only. Returns true if the WorkerPool is currently
+                      being acted upon by the system to bring it into the desired
+                      state.
                     type: boolean
                   satisfiesPzs:
                     description: Output only. Reserved for future use.
@@ -1069,16 +1186,17 @@ spec:
                               type: object
                           type: object
                         type: array
+                      revision:
+                        description: Output only. The unique name for the revision.
+                        type: string
                     type: object
                   terminalCondition:
                     description: Output only. The Condition of this WorkerPool, containing
                       its readiness status, and detailed error information in case
-                      it did not reach a serving state. See comments in `reconciling`
-                      for additional information on reconciliation process in Cloud
-                      Run.
+                      it did not reach a serving state.
                     properties:
                       executionReason:
-                        description: Output only. A reason for the execution condition.
+                        description: A reason for the execution condition.
                         type: string
                       lastTransitionTime:
                         description: Last time the condition transitioned from one
@@ -1089,11 +1207,10 @@ spec:
                           the current status.
                         type: string
                       reason:
-                        description: Output only. A common (service-level) reason
-                          for this condition.
+                        description: A common (service-level) reason for this condition.
                         type: string
                       revisionReason:
-                        description: Output only. A reason for the revision condition.
+                        description: A reason for the revision condition.
                         type: string
                       severity:
                         description: How to interpret failures of this condition,

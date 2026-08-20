@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: eventarcgoogleapisources.eventarc.cnrm.cloud.google.com
 spec:
@@ -68,19 +69,39 @@ spec:
                   type: string
                 description: Optional. Resource annotations.
                 type: object
-              cryptoKeyName:
+              cryptoKeyRef:
                 description: |-
                   Optional. Resource name of a KMS crypto key (managed by the user) used to
-                   encrypt/decrypt their event data.
+                  encrypt/decrypt their event data.
 
-                   It must match the pattern
-                   `projects/*/locations/*/keyRings/*/cryptoKeys/*`.
-                type: string
-              destination:
-                description: 'Required. Destination is the message bus that the GoogleApiSource
-                  is delivering to. It must be point to the full resource name of
-                  a MessageBus. Format: "projects/{PROJECT_ID}/locations/{region}/messagesBuses/{MESSAGE_BUS_ID)'
-                type: string
+                  It must match the pattern
+                  `projects/-*-/locations/-*-/keyRings/-*-/cryptoKeys/-*`.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed KMSCryptoKey.
+                      Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
+                    type: string
+                  name:
+                    description: The `name` of a `KMSCryptoKey` resource.
+                    type: string
+                  namespace:
+                    description: The `namespace` of a `KMSCryptoKey` resource.
+                    type: string
+                type: object
               displayName:
                 description: Optional. Resource display name.
                 type: string
@@ -98,8 +119,48 @@ spec:
                 properties:
                   logSeverity:
                     description: Optional. The minimum severity of logs that will
-                      be sent to Stackdriver/Platform Telemetry. Logs at severitiy
-                      ≥ this value will be sent, unless it is NONE.
+                      be sent to Stackdriver/Platform Telemetry. Logs at severity
+                      >= this value will be sent, unless it is NONE.
+                    enum:
+                    - NONE
+                    - DEBUG
+                    - INFO
+                    - NOTICE
+                    - WARNING
+                    - ERROR
+                    - CRITICAL
+                    - ALERT
+                    - EMERGENCY
+                    type: string
+                type: object
+              messageBusRef:
+                description: 'Required. Destination is the message bus that the GoogleApiSource
+                  is delivering to. It must be point to the full resource name of
+                  a MessageBus. Format: "projects/{PROJECT_ID}/locations/{region}/messagesBuses/{MESSAGE_BUS_ID)'
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed EventarcMessageBus
+                      resource. Should be in the format `projects/{{projectID}}/locations/{{location}}/messageBuses/{{messageBusID}}`.
+                    type: string
+                  name:
+                    description: The `name` field of a `EventarcMessageBus` resource.
+                    type: string
+                  namespace:
+                    description: The `namespace` field of a `EventarcMessageBus` resource.
                     type: string
                 type: object
               projectRef:
@@ -139,8 +200,8 @@ spec:
                   will be used.
                 type: string
             required:
-            - destination
             - location
+            - messageBusRef
             - projectRef
             type: object
           status:

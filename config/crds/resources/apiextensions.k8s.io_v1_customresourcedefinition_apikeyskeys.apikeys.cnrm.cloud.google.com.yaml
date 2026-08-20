@@ -8,7 +8,9 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
+    cnrm.cloud.google.com/tf2crd: "true"
   name: apikeyskeys.apikeys.cnrm.cloud.google.com
 spec:
   group: apikeys.cnrm.cloud.google.com
@@ -61,20 +63,12 @@ spec:
           spec:
             description: APIKeysKeySpec defines the desired state of APIKeysKey
             properties:
-              annotations:
-                additionalProperties:
-                  type: string
-                description: Annotations is an unstructured key-value map stored with
-                  a policy that may be set by external tools to store and retrieve
-                  arbitrary metadata. They are not queryable and should be preserved
-                  when modifying objects.
-                type: object
               displayName:
                 description: Human-readable display name of this key that you can
                   modify. The maximum length is 63 characters.
                 type: string
               projectRef:
-                description: The project that this resource belongs to.
+                description: Immutable. The Project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -106,8 +100,9 @@ spec:
                     type: string
                 type: object
               resourceID:
-                description: The APIKeysKey name. If not given, the metadata.name
-                  will be used.
+                description: Immutable. Optional. The name of the resource. Used for
+                  creation and acquisition. When unset, the value of `metadata.name`
+                  is used as the default.
                 type: string
               restrictions:
                 description: Key restrictions.
@@ -170,7 +165,7 @@ spec:
                   iosKeyRestrictions:
                     description: The iOS apps that are allowed to use the key.
                     properties:
-                      allowedBundleIDs:
+                      allowedBundleIds:
                         description: A list of bundle IDs that are allowed when making
                           API calls with this key.
                         items:
@@ -181,7 +176,7 @@ spec:
                     description: The IP addresses of callers that are allowed to use
                       the key.
                     properties:
-                      allowedIPs:
+                      allowedIps:
                         description: A list of the caller IP addresses that are allowed
                           to make API calls with this key.
                         items:
@@ -237,31 +232,8 @@ spec:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
                 properties:
-                  createTime:
-                    description: Output only. A timestamp identifying the time this
-                      key was originally created.
-                    type: string
-                  deleteTime:
-                    description: Output only. A timestamp when this key was deleted.
-                      If the resource is not deleted, this must be empty.
-                    type: string
-                  etag:
-                    description: Output only. A checksum computed by the server based
-                      on the current value of the Key resource. This may be sent on
-                      update and delete requests to ensure the client has an up-to-date
-                      value before proceeding. See https://google.aip.dev/154.
-                    type: string
-                  keyString:
-                    description: Output only. An encrypted and signed value held by
-                      this key. This field can be accessed only through the `GetKeyString`
-                      method.
-                    type: string
                   uid:
                     description: Output only. Unique id in UUID4 format.
-                    type: string
-                  updateTime:
-                    description: Output only. A timestamp identifying the time this
-                      key was last updated.
                     type: string
                 type: object
             type: object

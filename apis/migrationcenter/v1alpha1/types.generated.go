@@ -21,7 +21,8 @@
 
 package v1alpha1
 
-/* unreachable type Group
+/* found existing non-generated go type with proto tag "google.cloud.migrationcenter.v1.Group", skipping
+
 // +kcc:proto=google.cloud.migrationcenter.v1.Group
 type Group struct {
 
@@ -39,7 +40,8 @@ type Group struct {
 }
 */
 
-/* unreachable type GroupObservedState
+/* found existing non-generated go type with proto tag "google.cloud.migrationcenter.v1.Group", skipping
+
 // +kcc:observedstate:proto=google.cloud.migrationcenter.v1.Group
 type GroupObservedState struct {
 	// Output only. The name of the group.

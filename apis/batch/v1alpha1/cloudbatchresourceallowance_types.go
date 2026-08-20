@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	pubsubv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/pubsub/v1beta1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -26,34 +27,29 @@ var CloudBatchResourceAllowanceGVK = GroupVersion.WithKind("CloudBatchResourceAl
 // +kcc:spec:proto=google.cloud.batch.v1alpha.ResourceAllowance
 type CloudBatchResourceAllowanceSpec struct {
 	// The project that this resource belongs to.
+	// +kubebuilder:validation:Required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kubebuilder:validation:Required
 	Location *string `json:"location"`
 
 	// The CloudBatchResourceAllowance name. If not given, the metadata.name will be used.
+	// +kubebuilder:validation:Optional
 	ResourceID *string `json:"resourceID,omitempty"`
-	// The detail of usage resource allowance.
-	// +kcc:proto:field=google.cloud.batch.v1alpha.ResourceAllowance.usage_resource_allowance
-	UsageResourceAllowance *UsageResourceAllowance `json:"usageResourceAllowance,omitempty"`
 
 	// Optional. Labels are attributes that can be set and used by both the
-	//  user and by Batch. Labels must meet the following constraints:
-	//
-	//  * Keys and values can contain only lowercase letters, numeric characters,
-	//  underscores, and dashes.
-	//  * All characters must use UTF-8 encoding, and international characters are
-	//  allowed.
-	//  * Keys must start with a lowercase letter or international character.
-	//  * Each resource is limited to a maximum of 64 labels.
-	//
-	//  Both keys and values are additionally constrained to be <= 128 bytes.
-	// +kcc:proto:field=google.cloud.batch.v1alpha.ResourceAllowance.labels
+	// user and by Batch.
+	// +kubebuilder:validation:Optional
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Optional. Notification configurations.
-	// +kcc:proto:field=google.cloud.batch.v1alpha.ResourceAllowance.notifications
+	// +kubebuilder:validation:Optional
 	Notifications []Notification `json:"notifications,omitempty"`
+
+	// The detail of usage resource allowance.
+	// +kubebuilder:validation:Optional
+	UsageResourceAllowance *UsageResourceAllowance `json:"usageResourceAllowance,omitempty"`
 }
 
 // CloudBatchResourceAllowanceStatus defines the config connector machine state of CloudBatchResourceAllowance
@@ -75,18 +71,15 @@ type CloudBatchResourceAllowanceStatus struct {
 // CloudBatchResourceAllowanceObservedState is the state of the CloudBatchResourceAllowance resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.batch.v1alpha.ResourceAllowance
 type CloudBatchResourceAllowanceObservedState struct {
-	// The detail of usage resource allowance.
-	// +kcc:proto:field=google.cloud.batch.v1alpha.ResourceAllowance.usage_resource_allowance
-	UsageResourceAllowance *UsageResourceAllowanceObservedState `json:"usageResourceAllowance,omitempty"`
-
 	// Output only. A system generated unique ID (in UUID4 format) for the
-	//  ResourceAllowance.
-	// +kcc:proto:field=google.cloud.batch.v1alpha.ResourceAllowance.uid
+	// ResourceAllowance.
 	Uid *string `json:"uid,omitempty"`
 
 	// Output only. Time when the ResourceAllowance was created.
-	// +kcc:proto:field=google.cloud.batch.v1alpha.ResourceAllowance.create_time
 	CreateTime *string `json:"createTime,omitempty"`
+
+	// The detail of usage resource allowance.
+	UsageResourceAllowance *UsageResourceAllowanceObservedState `json:"usageResourceAllowance,omitempty"`
 }
 
 // +genclient
@@ -102,6 +95,7 @@ type CloudBatchResourceAllowanceObservedState struct {
 
 // CloudBatchResourceAllowance is the Schema for the CloudBatchResourceAllowance API
 // +k8s:openapi-gen=true
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 type CloudBatchResourceAllowance struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -121,4 +115,111 @@ type CloudBatchResourceAllowanceList struct {
 
 func init() {
 	SchemeBuilder.Register(&CloudBatchResourceAllowance{}, &CloudBatchResourceAllowanceList{})
+}
+
+// +kcc:observedstate:proto=google.cloud.batch.v1alpha.UsageResourceAllowance
+type UsageResourceAllowanceObservedState struct {
+	// Output only. Status of a usage ResourceAllowance.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowance.status
+	Status *UsageResourceAllowanceStatusObservedState `json:"status,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.batch.v1alpha.UsageResourceAllowanceStatus
+type UsageResourceAllowanceStatusObservedState struct {
+	// Output only. ResourceAllowance state.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. ResourceAllowance consumption status for usage resources.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.limit_status
+	LimitStatus *UsageResourceAllowanceStatus_LimitStatusObservedState `json:"limitStatus,omitempty"`
+
+	// Output only. The report of ResourceAllowance consumptions in a time period.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.report
+	Report *UsageResourceAllowanceStatus_ConsumptionReportObservedState `json:"report,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.LimitStatus
+type UsageResourceAllowanceStatus_LimitStatusObservedState struct {
+	// Output only. The consumption interval.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.LimitStatus.consumption_interval
+	ConsumptionInterval *Interval `json:"consumptionInterval,omitempty"`
+
+	// Output only. Limit value of a UsageResourceAllowance within its one
+	//  duration.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.LimitStatus.limit
+	Limit *float64 `json:"limit,omitempty"`
+
+	// Output only. Accumulated consumption during `consumption_interval`.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.LimitStatus.consumed
+	Consumed *float64 `json:"consumed,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ConsumptionReport
+type UsageResourceAllowanceStatus_ConsumptionReportObservedState struct {
+	// Output only. ResourceAllowance consumptions in the latest calendar
+	// period. Key is the calendar period in string format. Batch currently
+	// supports HOUR, DAY, MONTH and YEAR.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ConsumptionReport.latest_period_consumptions
+	LatestPeriodConsumptions map[string]UsageResourceAllowanceStatus_PeriodConsumptionObservedState `json:"latestPeriodConsumptions,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.PeriodConsumption
+type UsageResourceAllowanceStatus_PeriodConsumptionObservedState struct {
+	// Output only. The consumption interval.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.PeriodConsumption.consumption_interval
+	ConsumptionInterval *Interval `json:"consumptionInterval,omitempty"`
+
+	// Output only. Accumulated consumption during `consumption_interval`.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.PeriodConsumption.consumed
+	Consumed *float64 `json:"consumed,omitempty"`
+}
+
+// +kcc:proto=google.type.Interval
+type Interval struct {
+	// Optional. Inclusive start of the interval.
+	// +kcc:proto:field=google.type.Interval.start_time
+	StartTime *string `json:"startTime,omitempty"`
+
+	// Optional. Exclusive end of the interval.
+	// +kcc:proto:field=google.type.Interval.end_time
+	EndTime *string `json:"endTime,omitempty"`
+}
+
+// +kcc:proto=google.cloud.batch.v1alpha.UsageResourceAllowance
+type UsageResourceAllowance struct {
+	// Required. Spec of a usage ResourceAllowance.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowance.spec
+	Spec *UsageResourceAllowanceSpec `json:"spec,omitempty"`
+}
+
+// +kcc:proto=google.cloud.batch.v1alpha.UsageResourceAllowanceSpec
+type UsageResourceAllowanceSpec struct {
+	// Required. Spec type is unique for each usage ResourceAllowance.
+	// Batch now only supports type as "cpu-core-hours" for CPU usage consumption tracking.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.type
+	Type *string `json:"type,omitempty"`
+
+	// Required. Threshold of a UsageResourceAllowance limiting how many resources can be consumed for each type.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.limit
+	Limit *UsageResourceAllowanceSpec_Limit `json:"limit,omitempty"`
+}
+
+// +kcc:proto=google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.Limit
+type UsageResourceAllowanceSpec_Limit struct {
+	// Optional. A CalendarPeriod represents the abstract concept of a time period that has a canonical start.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.Limit.calendar_period
+	CalendarPeriod *string `json:"calendarPeriod,omitempty"`
+
+	// Required. Limit value of a UsageResourceAllowance within its one duration.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.Limit.limit
+	Limit *float64 `json:"limit,omitempty"`
+}
+
+// +kcc:proto=google.cloud.batch.v1alpha.Notification
+type Notification struct {
+	// Required. The Pub/Sub topic where notifications like the resource allowance
+	// state changes will be published.
+	// +kcc:proto:field=google.cloud.batch.v1alpha.Notification.pubsub_topic
+	PubsubTopicRef *pubsubv1beta1.PubSubTopicRef `json:"pubsubTopicRef,omitempty"`
 }

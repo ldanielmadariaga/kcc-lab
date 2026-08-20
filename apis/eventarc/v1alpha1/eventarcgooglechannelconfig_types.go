@@ -12,10 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// +generated:types
+// krm.group: eventarc.cnrm.cloud.google.com
+// krm.version: v1alpha1
+// proto.service: google.cloud.eventarc.v1
+// resource: EventarcGoogleChannelConfig:GoogleChannelConfig
+
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,18 +31,16 @@ var EventarcGoogleChannelConfigGVK = GroupVersion.WithKind("EventarcGoogleChanne
 // EventarcGoogleChannelConfigSpec defines the desired state of EventarcGoogleChannelConfig
 // +kcc:spec:proto=google.cloud.eventarc.v1.GoogleChannelConfig
 type EventarcGoogleChannelConfigSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	Parent `json:",inline"`
 
-	// The EventarcGoogleChannelConfig name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. Resource name of a KMS crypto key (managed by the user) used to
 	//  encrypt/decrypt their event data.
 	//
-	//  It must match the pattern
-	//  `projects/*/locations/*/keyRings/*/cryptoKeys/*`.
 	// +kcc:proto:field=google.cloud.eventarc.v1.GoogleChannelConfig.crypto_key_name
-	CryptoKeyName *string `json:"cryptoKeyName,omitempty"`
+	CryptoKeyRef *refv1beta1.KMSCryptoKeyRef `json:"cryptoKeyRef,omitempty"`
+
+	// The user-provided name of the EventarcGoogleChannelConfig. If not specified, the name of the KRM resource will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 }
 
 // EventarcGoogleChannelConfigStatus defines the config connector machine state of EventarcGoogleChannelConfig

@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: databasemigrationprivateconnections.datamigration.cnrm.cloud.google.com
 spec:
@@ -121,13 +122,35 @@ spec:
                   subnet:
                     description: Required. A free subnet for peering. (CIDR of /29)
                     type: string
-                  vpcName:
+                  vpcNameRef:
                     description: Required. Fully qualified name of the VPC that Database
                       Migration Service will peer to.
-                    type: string
-                required:
-                - subnet
-                - vpcName
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
+                    properties:
+                      external:
+                        description: A reference to an externally managed ComputeNetwork
+                          resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                        type: string
+                      name:
+                        description: The name of a ComputeNetwork resource.
+                        type: string
+                      namespace:
+                        description: The namespace of a ComputeNetwork resource.
+                        type: string
+                    type: object
                 type: object
             required:
             - location

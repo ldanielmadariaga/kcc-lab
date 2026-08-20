@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,10 @@
 package v1alpha1
 
 import (
+	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
+	dataprocv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/dataproc/v1beta1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	vertexaiv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/vertexai/v1alpha1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,15 +28,19 @@ var NotebooksExecutionGVK = GroupVersion.WithKind("NotebooksExecution")
 // NotebooksExecutionSpec defines the desired state of NotebooksExecution
 // +kcc:spec:proto=google.cloud.notebooks.v1.Execution
 type NotebooksExecutionSpec struct {
-	// The project that this resource belongs to.
+	// The Project that this resource belongs to.
+	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The location of this resource.
+	// The location for the resource.
+	// +required
 	Location *string `json:"location"`
 
 	// The NotebooksExecution name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// execute metadata including name, hardware spec, region, labels, etc.
+	// +required
 	// +kcc:proto:field=google.cloud.notebooks.v1.Execution.execution_template
 	ExecutionTemplate *ExecutionTemplate `json:"executionTemplate,omitempty"`
 
@@ -65,6 +72,13 @@ type NotebooksExecutionStatus struct {
 // NotebooksExecutionObservedState is the state of the NotebooksExecution resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.notebooks.v1.Execution
 type NotebooksExecutionObservedState struct {
+	// Output only. Name of this execution.
+	//  Format:
+	//  `projects/{project_id}/locations/{location}/executions/{execution_id}`
+	// +kcc:proto:field=google.cloud.notebooks.v1.Execution.name
+	// NOTYET: same as externalRef
+	// Name *string `json:"name,omitempty"`
+
 	// Output only. Name used for UI purposes.
 	//  Name can only contain alphanumeric characters and underscores '_'.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Execution.display_name
@@ -93,6 +107,7 @@ type NotebooksExecutionObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -119,4 +134,85 @@ type NotebooksExecutionList struct {
 
 func init() {
 	SchemeBuilder.Register(&NotebooksExecution{}, &NotebooksExecutionList{})
+}
+
+// +kcc:proto=google.cloud.notebooks.v1.ExecutionTemplate
+type ExecutionTemplate struct {
+	// Required. Scale tier of the hardware used for notebook execution.
+	//  DEPRECATED Will be discontinued. As right now only CUSTOM is supported.
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.scale_tier
+	ScaleTier *string `json:"scaleTier,omitempty"`
+
+	// Specifies the type of virtual machine to use for your training
+	//  job's master worker. You must specify this field when `scaleTier` is set to
+	//  `CUSTOM`.
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.master_type
+	MasterType *string `json:"masterType,omitempty"`
+
+	// Configuration (count and accelerator type) for hardware running notebook
+	//  execution.
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.accelerator_config
+	AcceleratorConfig *ExecutionTemplate_SchedulerAcceleratorConfig `json:"acceleratorConfig,omitempty"`
+
+	// Labels for execution.
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Path to the notebook file to execute.
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.input_notebook_file
+	InputNotebookFile *string `json:"inputNotebookFile,omitempty"`
+
+	// Container Image URI to a DLVM
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.container_image_uri
+	ContainerImageURI *string `json:"containerImageURI,omitempty"`
+
+	// Path to the notebook folder to write to.
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.output_notebook_folder
+	OutputNotebookFolder *string `json:"outputNotebookFolder,omitempty"`
+
+	// Parameters to be overridden in the notebook during execution.
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.params_yaml_file
+	ParamsYamlFile *string `json:"paramsYamlFile,omitempty"`
+
+	// Parameters used within the 'input_notebook_file' notebook.
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.parameters
+	Parameters *string `json:"parameters,omitempty"`
+
+	// The service account to use when running the execution.
+	ServiceAccountRef *refsv1beta1.IAMServiceAccountRef `json:"serviceAccountRef,omitempty"`
+
+	// The type of Job to be used on this execution.
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.job_type
+	JobType *string `json:"jobType,omitempty"`
+
+	// Parameters used in Dataproc JobType executions.
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.dataproc_parameters
+	DataprocParameters *ExecutionTemplate_DataprocParameters `json:"dataprocParameters,omitempty"`
+
+	// Parameters used in Vertex AI JobType executions.
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.vertex_ai_parameters
+	VertexAiParameters *ExecutionTemplate_VertexAiParameters `json:"vertexAiParameters,omitempty"`
+
+	// Name of the kernel spec to use.
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.kernel_spec
+	KernelSpec *string `json:"kernelSpec,omitempty"`
+
+	// The Vertex AI [Tensorboard] resource to which this execution will upload Tensorboard logs.
+	TensorboardRef *vertexaiv1alpha1.VertexAITensorboardRef `json:"tensorboardRef,omitempty"`
+}
+
+// +kcc:proto=google.cloud.notebooks.v1.ExecutionTemplate.DataprocParameters
+type ExecutionTemplate_DataprocParameters struct {
+	// The Dataproc cluster used to run Dataproc execution.
+	ClusterRef *dataprocv1beta1.DataprocClusterRef `json:"clusterRef,omitempty"`
+}
+
+// +kcc:proto=google.cloud.notebooks.v1.ExecutionTemplate.VertexAIParameters
+type ExecutionTemplate_VertexAiParameters struct {
+	// The Compute Engine network to which the Job should be peered.
+	NetworkRef *computerefs.ComputeNetworkRef `json:"networkRef,omitempty"`
+
+	// Environment variables.
+	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.VertexAIParameters.env
+	Env map[string]string `json:"env,omitempty"`
 }

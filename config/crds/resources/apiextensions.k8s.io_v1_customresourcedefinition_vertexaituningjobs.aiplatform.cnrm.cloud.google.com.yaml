@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: vertexaituningjobs.aiplatform.cnrm.cloud.google.com
 spec:
@@ -72,15 +73,38 @@ spec:
                   If this is set, then all resources created by the TuningJob will
                   be encrypted with the provided encryption key.
                 properties:
-                  kmsKeyName:
+                  kmsKeyRef:
                     description: 'Required. The Cloud KMS resource identifier of the
                       customer managed encryption key used to protect a resource.
                       Has the form: `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
                       The key needs to be in the same region as where the compute
                       resource is created.'
-                    type: string
-                required:
-                - kmsKeyName
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
+                    properties:
+                      external:
+                        description: A reference to an externally managed KMSCryptoKey
+                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
+                        type: string
+                      name:
+                        description: The name of a KMSCryptoKey resource.
+                        type: string
+                      namespace:
+                        description: The namespace of a KMSCryptoKey resource.
+                        type: string
+                    type: object
                 type: object
               labels:
                 additionalProperties:
@@ -136,7 +160,7 @@ spec:
                 description: The VertexAITuningJob name. If not given, the metadata.name
                   will be used.
                 type: string
-              serviceAccount:
+              serviceAccountRef:
                 description: |-
                   The service account that the tuningJob workload runs as.
                    If not specified, the Vertex AI Secure Fine-Tuned Service Agent in the
@@ -145,7 +169,31 @@ spec:
 
                    Users starting the pipeline must have the `iam.serviceAccounts.actAs`
                    permission on this service account.
-                type: string
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: The `email` field of an `IAMServiceAccount` resource.
+                    type: string
+                  name:
+                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                    type: string
+                  namespace:
+                    description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                    type: string
+                type: object
               supervisedTuningSpec:
                 description: Tuning Spec for Supervised Fine Tuning.
                 properties:
@@ -180,8 +228,6 @@ spec:
                       dataset for tuning. The dataset must be formatted as a JSONL
                       file.
                     type: string
-                required:
-                - trainingDatasetURI
                 type: object
               tunedModelDisplayName:
                 description: Optional. The display name of the [TunedModel][google.cloud.aiplatform.v1.Model].
@@ -268,6 +314,10 @@ spec:
                     description: Output only. The Experiment associated with this
                       [TuningJob][google.cloud.aiplatform.v1.TuningJob].
                     type: string
+                  name:
+                    description: 'Output only. Identifier. Resource name of a TuningJob.
+                      Format: `projects/{project}/locations/{location}/tuningJobs/{tuning_job}`'
+                    type: string
                   startTime:
                     description: Output only. Time when the [TuningJob][google.cloud.aiplatform.v1.TuningJob]
                       for the first time entered the `JOB_STATE_RUNNING` state.
@@ -276,8 +326,8 @@ spec:
                     description: Output only. The detailed state of the job.
                     type: string
                   tunedModel:
-                    description: Output only. The tuned model resources associated
-                      with this [TuningJob][google.cloud.aiplatform.v1.TuningJob].
+                    description: Output only. The tuned model that is created as a
+                      result of this job.
                     properties:
                       checkpoints:
                         description: Output only. The checkpoints associated with

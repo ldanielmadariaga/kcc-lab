@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: vertexaischedules.aiplatform.cnrm.cloud.google.com
 spec:
@@ -127,8 +128,6 @@ spec:
                                     items:
                                       type: string
                                     type: array
-                                required:
-                                - reservationAffinityType
                                 type: object
                               tpuTopology:
                                 description: 'Immutable. The topology of the TPUs.
@@ -144,14 +143,68 @@ spec:
                                 description: Whether to enable public internet access.
                                   Default false.
                                 type: boolean
-                              network:
+                              networkRef:
                                 description: The full name of the Google Compute Engine
                                   [network](https://cloud.google.com//compute/docs/networks-and-firewalls#networks)
-                                type: string
-                              subnetwork:
+                                oneOf:
+                                - not:
+                                    required:
+                                    - external
+                                  required:
+                                  - name
+                                - not:
+                                    anyOf:
+                                    - required:
+                                      - name
+                                    - required:
+                                      - namespace
+                                  required:
+                                  - external
+                                properties:
+                                  external:
+                                    description: A reference to an externally managed
+                                      ComputeNetwork resource. Should be in the format
+                                      "projects/{{projectID}}/global/networks/{{networkID}}".
+                                    type: string
+                                  name:
+                                    description: The name of a ComputeNetwork resource.
+                                    type: string
+                                  namespace:
+                                    description: The namespace of a ComputeNetwork
+                                      resource.
+                                    type: string
+                                type: object
+                              subnetworkRef:
                                 description: 'The name of the subnet that this instance
-                                  is in. Format: `projects/{project_id_or_number}/regions/{region}/subnetworks/{subnetwork_id}`'
-                                type: string
+                                  is in. Format: projects/PROJECT_ID/regions/REGION/subnetworks/SUBNETWORK_ID'
+                                oneOf:
+                                - not:
+                                    required:
+                                    - external
+                                  required:
+                                  - name
+                                - not:
+                                    anyOf:
+                                    - required:
+                                      - name
+                                    - required:
+                                      - namespace
+                                  required:
+                                  - external
+                                properties:
+                                  external:
+                                    description: A reference to an externally managed
+                                      ComputeSubnetwork resource. Should be in the
+                                      format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
+                                    type: string
+                                  name:
+                                    description: The name of a ComputeSubnetwork resource.
+                                    type: string
+                                  namespace:
+                                    description: The namespace of a ComputeSubnetwork
+                                      resource.
+                                    type: string
+                                type: object
                             type: object
                           persistentDiskSpec:
                             description: The specification of a persistent disk to
@@ -178,10 +231,37 @@ spec:
                             description: The commit SHA to read repository with. If
                               unset, the file will be read at HEAD.
                             type: string
-                          dataformRepositoryResourceName:
+                          dataformRepositoryRef:
                             description: 'The resource name of the Dataform Repository.
-                              Format: `projects/{project_id}/locations/{location}/repositories/{repository_id}`'
-                            type: string
+                              Format: projects/PROJECT_ID/locations/LOCATION_ID/repositories/REPOSITORY_ID'
+                            oneOf:
+                            - not:
+                                required:
+                                - external
+                              required:
+                              - name
+                            - not:
+                                anyOf:
+                                - required:
+                                  - name
+                                - required:
+                                  - namespace
+                              required:
+                              - external
+                            properties:
+                              external:
+                                description: A reference to an externally managed
+                                  DataformRepository resource. Should be in the format
+                                  "projects/{{projectID}}/locations/{{location}}/repositories/{{repositoryID}}".
+                                type: string
+                              name:
+                                description: The name of a DataformRepository resource.
+                                type: string
+                              namespace:
+                                description: The namespace of a DataformRepository
+                                  resource.
+                                type: string
+                            type: object
                         type: object
                       directNotebookSource:
                         description: The contents of an input notebook file.
@@ -203,15 +283,38 @@ spec:
                           the [NotebookRuntimeTemplate][google.cloud.aiplatform.v1.NotebookRuntimeTemplate]
                           has an encryption spec.
                         properties:
-                          kmsKeyName:
+                          kmsKeyRef:
                             description: 'Required. The Cloud KMS resource identifier
                               of the customer managed encryption key used to protect
                               a resource. Has the form: `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
                               The key needs to be in the same region as where the
                               compute resource is created.'
-                            type: string
-                        required:
-                        - kmsKeyName
+                            oneOf:
+                            - not:
+                                required:
+                                - external
+                              required:
+                              - name
+                            - not:
+                                anyOf:
+                                - required:
+                                  - name
+                                - required:
+                                  - namespace
+                              required:
+                              - external
+                            properties:
+                              external:
+                                description: A reference to an externally managed
+                                  KMSCryptoKey resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
+                                type: string
+                              name:
+                                description: The name of a KMSCryptoKey resource.
+                                type: string
+                              namespace:
+                                description: The namespace of a KMSCryptoKey resource.
+                                type: string
+                            type: object
                         type: object
                       executionTimeout:
                         description: Max running time of the execution job in seconds
@@ -231,14 +334,39 @@ spec:
                               read. See https://cloud.google.com/storage/docs/metadata#generation-number.
                             type: string
                           uri:
-                            description: 'The Cloud Storage uri pointing to the ipynb
+                            description: 'The Cloud Storage url pointing to the ipynb
                               file. Format: `gs://bucket/notebook_file.ipynb`'
                             type: string
                         type: object
-                      gcsOutputURI:
+                      gcsOutputURIRef:
                         description: 'The Cloud Storage location to upload the result
                           to. Format: `gs://bucket-name`'
-                        type: string
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
+                        properties:
+                          external:
+                            description: A reference to an externally managed StorageBucket
+                              resource. Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
+                            type: string
+                          name:
+                            description: The name of a StorageBucket resource.
+                            type: string
+                          namespace:
+                            description: The namespace of a StorageBucket resource.
+                            type: string
+                        type: object
                       kernelName:
                         description: The name of the kernel to use during notebook
                           execution. If unset, the default kernel is used.
@@ -261,13 +389,63 @@ spec:
                         description: The NotebookRuntimeTemplate to source compute
                           configuration from.
                         type: string
-                      scheduleResourceName:
+                      scheduleRef:
                         description: 'The Schedule resource name if this job is triggered
                           by one. Format: `projects/{project_id}/locations/{location}/schedules/{schedule_id}`'
-                        type: string
-                      serviceAccount:
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
+                        properties:
+                          external:
+                            description: A reference to an externally managed VertexAISchedule
+                              resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/schedules/{{scheduleID}}".
+                            type: string
+                          name:
+                            description: The name of a VertexAISchedule resource.
+                            type: string
+                          namespace:
+                            description: The namespace of a VertexAISchedule resource.
+                            type: string
+                        type: object
+                      serviceAccountRef:
                         description: The service account to run the execution as.
-                        type: string
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
+                        properties:
+                          external:
+                            description: The `email` field of an `IAMServiceAccount`
+                              resource.
+                            type: string
+                          name:
+                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                            type: string
+                          namespace:
+                            description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                            type: string
+                        type: object
                       workbenchRuntime:
                         description: The Workbench runtime configuration to use for
                           the notebook execution.
@@ -277,20 +455,18 @@ spec:
                     description: Optional. User specified ID for the NotebookExecutionJob.
                     type: string
                   parent:
-                    description: 'Required. The resource name of the Location to create
-                      the NotebookExecutionJob. Format: `projects/{project}/locations/{location}`'
+                    description: 'Required. Location resource name to create the NotebookExecutionJob.
+                      Format: projects-id/locations-id'
                     type: string
-                required:
-                - notebookExecutionJob
-                - parent
                 type: object
               createPipelineJobRequest:
                 description: 'Request for [PipelineService.CreatePipelineJob][google.cloud.aiplatform.v1.PipelineService.CreatePipelineJob].
-                  CreatePipelineJobRequest.parent field is required (format: projects/{project}/locations/{location}).'
+                  The parent field of CreatePipelineJobRequest is required (format:
+                  projects-id/locations-id).'
                 properties:
                   parent:
-                    description: 'Required. The resource name of the Location to create
-                      the PipelineJob in. Format: `projects/{project}/locations/{location}`'
+                    description: 'Required. Location resource name to create the PipelineJob
+                      in. Format: projects-id/locations-id'
                     type: string
                   pipelineJob:
                     description: Required. The PipelineJob to create.
@@ -305,48 +481,76 @@ spec:
                           If set, this PipelineJob and all of its sub-resources will
                           be secured by this key.
                         properties:
-                          kmsKeyName:
+                          kmsKeyRef:
                             description: 'Required. The Cloud KMS resource identifier
                               of the customer managed encryption key used to protect
                               a resource. Has the form: `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
                               The key needs to be in the same region as where the
                               compute resource is created.'
-                            type: string
-                        required:
-                        - kmsKeyName
+                            oneOf:
+                            - not:
+                                required:
+                                - external
+                              required:
+                              - name
+                            - not:
+                                anyOf:
+                                - required:
+                                  - name
+                                - required:
+                                  - namespace
+                              required:
+                              - external
+                            properties:
+                              external:
+                                description: A reference to an externally managed
+                                  KMSCryptoKey resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
+                                type: string
+                              name:
+                                description: The name of a KMSCryptoKey resource.
+                                type: string
+                              namespace:
+                                description: The namespace of a KMSCryptoKey resource.
+                                type: string
+                            type: object
                         type: object
                       labels:
                         additionalProperties:
                           type: string
-                        description: |-
-                          The labels with user-defined metadata to organize PipelineJob.
-
-                           Label keys and values can be no longer than 64 characters
-                           (Unicode codepoints), can only contain lowercase letters, numeric
-                           characters, underscores and dashes. International characters are allowed.
-
-                           See https://goo.gl/xmQnxf for more information and examples of labels.
-
-                           Note there is some reserved label key for Vertex AI Pipelines.
-                           - `vertex-ai-pipelines-run-billing-id`, user set value will get overrided.
+                        description: The labels with user-defined metadata to organize
+                          PipelineJob.
                         type: object
-                      network:
-                        description: |-
-                          The full name of the Compute Engine
-                           [network](/compute/docs/networks-and-firewalls#networks) to which the
-                           Pipeline Job's workload should be peered. For example,
-                           `projects/12345/global/networks/myVPC`.
-                           [Format](/compute/docs/reference/rest/v1/networks/insert)
-                           is of the form `projects/{project}/global/networks/{network}`.
-                           Where {project} is a project number, as in `12345`, and {network} is a
-                           network name.
-
-                           Private services access must already be configured for the network.
-                           Pipeline job will apply the network configuration to the Google Cloud
-                           resources being launched, if applied, such as Vertex AI
-                           Training or Dataflow job. If left unspecified, the workload is not peered
-                           with any network.
+                      location:
+                        description: The location of this resource.
                         type: string
+                      networkRef:
+                        description: Reference to a ComputeNetwork.
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
+                        properties:
+                          external:
+                            description: A reference to an externally managed ComputeNetwork
+                              resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                            type: string
+                          name:
+                            description: The name of a ComputeNetwork resource.
+                            type: string
+                          namespace:
+                            description: The namespace of a ComputeNetwork resource.
+                            type: string
+                        type: object
                       pipelineSpec:
                         description: The spec of the pipeline.
                         x-kubernetes-preserve-unknown-fields: true
@@ -354,16 +558,43 @@ spec:
                         description: Optional. Whether to do component level validations
                           before job creation.
                         type: boolean
+                      projectRef:
+                        description: The project that this resource belongs to.
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
+                        properties:
+                          external:
+                            description: The `projectID` field of a project, when
+                              not managed by Config Connector.
+                            type: string
+                          kind:
+                            description: The kind of the Project resource; optional
+                              but must be `Project` if provided.
+                            type: string
+                          name:
+                            description: The `name` field of a `Project` resource.
+                            type: string
+                          namespace:
+                            description: The `namespace` field of a `Project` resource.
+                            type: string
+                        type: object
                       pscInterfaceConfig:
                         description: Optional. Configuration for PSC-I for PipelineJob.
                         properties:
                           dnsPeeringConfigs:
-                            description: Optional. DNS peering configurations. When
-                              specified, Vertex AI will attempt to configure DNS peering
-                              zones in the tenant project VPC to resolve the specified
-                              domains using the target network's Cloud DNS. The user
-                              must grant the dns.peer role to the Vertex AI Service
-                              Agent on the target project.
+                            description: Optional. DNS peering configurations.
                             items:
                               properties:
                                 domain:
@@ -371,86 +602,137 @@ spec:
                                     zone being peered to, e.g., "my-internal-domain.corp.".
                                     Must end with a dot.
                                   type: string
-                                targetNetwork:
+                                targetNetworkRef:
                                   description: Required. The VPC network name in the
                                     target_project where the DNS zone specified by
                                     'domain' is visible.
-                                  type: string
+                                  oneOf:
+                                  - not:
+                                      required:
+                                      - external
+                                    required:
+                                    - name
+                                  - not:
+                                      anyOf:
+                                      - required:
+                                        - name
+                                      - required:
+                                        - namespace
+                                    required:
+                                    - external
+                                  properties:
+                                    external:
+                                      description: A reference to an externally managed
+                                        ComputeNetwork resource. Should be in the
+                                        format "projects/{{projectID}}/global/networks/{{networkID}}".
+                                      type: string
+                                    name:
+                                      description: The name of a ComputeNetwork resource.
+                                      type: string
+                                    namespace:
+                                      description: The namespace of a ComputeNetwork
+                                        resource.
+                                      type: string
+                                  type: object
                                 targetProject:
                                   description: Required. The project ID hosting the
                                     Cloud DNS managed zone that contains the 'domain'.
-                                    The Vertex AI Service Agent requires the dns.peer
-                                    role on this project.
                                   type: string
-                              required:
-                              - domain
-                              - targetNetwork
-                              - targetProject
                               type: object
                             type: array
-                          networkAttachment:
+                          networkAttachmentRef:
                             description: Optional. The name of the Compute Engine
-                              [network attachment](https://cloud.google.com/vpc/docs/about-network-attachments)
-                              to attach to the resource within the region and user
-                              project. To specify this field, you must have already
-                              [created a network attachment] (https://cloud.google.com/vpc/docs/create-manage-network-attachments#create-network-attachments).
-                              This field is only used for resources using PSC-I.
-                            type: string
+                              network attachment to attach to the resource within
+                              the region and user project.
+                            oneOf:
+                            - not:
+                                required:
+                                - external
+                              required:
+                              - name
+                            - not:
+                                anyOf:
+                                - required:
+                                  - name
+                                - required:
+                                  - namespace
+                              required:
+                              - external
+                            properties:
+                              external:
+                                description: A reference to an externally managed
+                                  ComputeNetworkAttachment resource. Should be in
+                                  the format "projects/{{projectID}}/regions/{{region}}/networkAttachments/{{networkattachmentID}}".
+                                type: string
+                              name:
+                                description: The name of a ComputeNetworkAttachment
+                                  resource.
+                                type: string
+                              namespace:
+                                description: The namespace of a ComputeNetworkAttachment
+                                  resource.
+                                type: string
+                            type: object
                         type: object
                       reservedIPRanges:
-                        description: |-
-                          A list of names for the reserved ip ranges under the VPC network
-                           that can be used for this Pipeline Job's workload.
-
-                           If set, we will deploy the Pipeline Job's workload within the provided ip
-                           ranges. Otherwise, the job will be deployed to any ip ranges under the
-                           provided VPC network.
-
-                           Example: ['vertex-ai-ip-range'].
+                        description: A list of names for the reserved ip ranges under
+                          the VPC network that can be used for this Pipeline Job's
+                          workload.
                         items:
                           type: string
                         type: array
+                      resourceID:
+                        description: The VertexAIPipelineJob name. If not given, the
+                          metadata.name will be used.
+                        type: string
                       runtimeConfig:
                         description: Runtime config of the pipeline.
                         properties:
                           failurePolicy:
                             description: Represents the failure policy of a pipeline.
-                              Currently, the default of a pipeline is that the pipeline
-                              will continue to run until no more tasks can be executed,
-                              also known as PIPELINE_FAILURE_POLICY_FAIL_SLOW. However,
-                              if a pipeline is set to PIPELINE_FAILURE_POLICY_FAIL_FAST,
-                              it will stop scheduling any new tasks when a task has
-                              failed. Any scheduled tasks will continue to completion.
                             type: string
                           gcsOutputDirectory:
                             description: Required. A path in a Cloud Storage bucket,
                               which will be treated as the root output directory of
-                              the pipeline. It is used by the system to generate the
-                              paths of output artifacts. The artifact paths are generated
-                              with a sub-path pattern `{job_id}/{task_id}/{output_key}`
-                              under the specified output directory. The service account
-                              specified in this pipeline must have the `storage.objects.get`
-                              and `storage.objects.create` permissions for this bucket.
+                              the pipeline.
                             type: string
-                        required:
-                        - gcsOutputDirectory
                         type: object
-                      serviceAccount:
-                        description: |-
-                          The service account that the pipeline workload runs as.
-                           If not specified, the Compute Engine default service account in the project
-                           will be used.
-                           See
-                           https://cloud.google.com/compute/docs/access/service-accounts#default_service_account
-
-                           Users starting the pipeline must have the `iam.serviceAccounts.actAs`
-                           permission on this service account.
-                        type: string
+                      serviceAccountRef:
+                        description: The service account that the pipeline workload
+                          runs as.
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
+                        properties:
+                          external:
+                            description: The `email` field of an `IAMServiceAccount`
+                              resource.
+                            type: string
+                          name:
+                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                            type: string
+                          namespace:
+                            description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                            type: string
+                        type: object
                       templateURI:
-                        description: A template uri from where the [PipelineJob.pipeline_spec][google.cloud.aiplatform.v1.PipelineJob.pipeline_spec],
-                          if empty, will be downloaded. Currently, only uri from Vertex
-                          Template Registry & Gallery is supported. Reference to https://cloud.google.com/vertex-ai/docs/pipelines/create-pipeline-template.
+                        description: A template uri from where the PipelineJob.pipeline_spec,
+                          if empty, will be downloaded.
                         type: string
+                    required:
+                    - location
+                    - projectRef
                     type: object
                   pipelineJobID:
                     description: |-
@@ -461,9 +743,6 @@ spec:
                        This value should be less than 128 characters, and valid characters
                        are `/[a-z][0-9]-/`.
                     type: string
-                required:
-                - parent
-                - pipelineJob
                 type: object
               cron:
                 description: 'Cron schedule (https://en.wikipedia.org/wiki/Cron) to
@@ -698,20 +977,11 @@ spec:
                                   labels:
                                     additionalProperties:
                                       type: string
-                                    description: |-
-                                      The labels with user-defined metadata to organize your Contexts.
-
-                                       Label keys and values can be no longer than 64 characters
-                                       (Unicode codepoints), can only contain lowercase letters, numeric
-                                       characters, underscores and dashes. International characters are allowed.
-                                       No more than 64 user labels can be associated with one Context (System
-                                       labels are excluded).
+                                    description: The labels with user-defined metadata
+                                      to organize your Contexts.
                                     type: object
                                   metadata:
-                                    description: Properties of the Context. Top level
-                                      metadata keys' heading and trailing spaces will
-                                      be trimmed. The size of this field should not
-                                      exceed 200KB.
+                                    description: Properties of the Context.
                                     x-kubernetes-preserve-unknown-fields: true
                                   name:
                                     description: Immutable. The resource name of the
@@ -720,25 +990,16 @@ spec:
                                   parentContexts:
                                     description: Output only. A list of resource names
                                       of Contexts that are parents of this Context.
-                                      A Context may have at most 10 parent_contexts.
                                     items:
                                       type: string
                                     type: array
                                   schemaTitle:
-                                    description: |-
-                                      The title of the schema describing the metadata.
-
-                                       Schema title and version is expected to be registered in earlier Create
-                                       Schema calls. And both are used together as unique identifiers to identify
-                                       schemas within the local metadata store.
+                                    description: The title of the schema describing
+                                      the metadata.
                                     type: string
                                   schemaVersion:
-                                    description: |-
-                                      The version of the schema in schema_name to use.
-
-                                       Schema title and version is expected to be registered in earlier Create
-                                       Schema calls. And both are used together as unique identifiers to identify
-                                       schemas within the local metadata store.
+                                    description: The version of the schema in schema_name
+                                      to use.
                                     type: string
                                   updateTime:
                                     description: Output only. Timestamp when this
@@ -768,20 +1029,11 @@ spec:
                                   labels:
                                     additionalProperties:
                                       type: string
-                                    description: |-
-                                      The labels with user-defined metadata to organize your Contexts.
-
-                                       Label keys and values can be no longer than 64 characters
-                                       (Unicode codepoints), can only contain lowercase letters, numeric
-                                       characters, underscores and dashes. International characters are allowed.
-                                       No more than 64 user labels can be associated with one Context (System
-                                       labels are excluded).
+                                    description: The labels with user-defined metadata
+                                      to organize your Contexts.
                                     type: object
                                   metadata:
-                                    description: Properties of the Context. Top level
-                                      metadata keys' heading and trailing spaces will
-                                      be trimmed. The size of this field should not
-                                      exceed 200KB.
+                                    description: Properties of the Context.
                                     x-kubernetes-preserve-unknown-fields: true
                                   name:
                                     description: Immutable. The resource name of the
@@ -790,25 +1042,16 @@ spec:
                                   parentContexts:
                                     description: Output only. A list of resource names
                                       of Contexts that are parents of this Context.
-                                      A Context may have at most 10 parent_contexts.
                                     items:
                                       type: string
                                     type: array
                                   schemaTitle:
-                                    description: |-
-                                      The title of the schema describing the metadata.
-
-                                       Schema title and version is expected to be registered in earlier Create
-                                       Schema calls. And both are used together as unique identifiers to identify
-                                       schemas within the local metadata store.
+                                    description: The title of the schema describing
+                                      the metadata.
                                     type: string
                                   schemaVersion:
-                                    description: |-
-                                      The version of the schema in schema_name to use.
-
-                                       Schema title and version is expected to be registered in earlier Create
-                                       Schema calls. And both are used together as unique identifiers to identify
-                                       schemas within the local metadata store.
+                                    description: The version of the schema in schema_name
+                                      to use.
                                     type: string
                                   updateTime:
                                     description: Output only. Timestamp when this
@@ -828,8 +1071,7 @@ spec:
                                       type: string
                                     error:
                                       description: Output only. The error that occurred
-                                        during task execution. Only populated when
-                                        the task's state is FAILED or CANCELLED.
+                                        during task execution.
                                       properties:
                                         code:
                                           description: The status code, which should
@@ -857,60 +1099,35 @@ spec:
                                           type: string
                                         displayName:
                                           description: User provided display name
-                                            of the Execution. May be up to 128 Unicode
-                                            characters.
+                                            of the Execution.
                                           type: string
                                         etag:
                                           description: An eTag used to perform consistent
-                                            read-modify-write updates. If not set,
-                                            a blind "overwrite" update happens.
+                                            read-modify-write updates.
                                           type: string
                                         labels:
                                           additionalProperties:
                                             type: string
-                                          description: |-
-                                            The labels with user-defined metadata to organize your Executions.
-
-                                             Label keys and values can be no longer than 64 characters
-                                             (Unicode codepoints), can only contain lowercase letters, numeric
-                                             characters, underscores and dashes. International characters are allowed.
-                                             No more than 64 user labels can be associated with one Execution (System
-                                             labels are excluded).
+                                          description: The labels with user-defined
+                                            metadata to organize your Executions.
                                           type: object
                                         metadata:
                                           description: Properties of the Execution.
-                                            Top level metadata keys' heading and trailing
-                                            spaces will be trimmed. The size of this
-                                            field should not exceed 200KB.
                                           x-kubernetes-preserve-unknown-fields: true
                                         name:
                                           description: Output only. The resource name
                                             of the Execution.
                                           type: string
                                         schemaTitle:
-                                          description: |-
-                                            The title of the schema describing the metadata.
-
-                                             Schema title and version is expected to be registered in earlier Create
-                                             Schema calls. And both are used together as unique identifiers to identify
-                                             schemas within the local metadata store.
+                                          description: The title of the schema describing
+                                            the metadata.
                                           type: string
                                         schemaVersion:
-                                          description: |-
-                                            The version of the schema in `schema_title` to use.
-
-                                             Schema title and version is expected to be registered in earlier Create
-                                             Schema calls. And both are used together as unique identifiers to identify
-                                             schemas within the local metadata store.
+                                          description: The version of the schema in
+                                            `schema_title` to use.
                                           type: string
                                         state:
                                           description: The state of this Execution.
-                                            This is a property of the Execution, and
-                                            does not imply or capture any ongoing
-                                            process. This property is managed by clients
-                                            (such as Vertex AI Pipelines) and the
-                                            system does not prescribe or check the
-                                            validity of state transitions.
                                           type: string
                                         updateTime:
                                           description: Output only. Timestamp when
@@ -927,39 +1144,28 @@ spec:
                                           properties:
                                             failedMainJobs:
                                               description: Output only. The names
-                                                of the previously failed [CustomJob][google.cloud.aiplatform.v1.CustomJob]
+                                                of the previously failed CustomJob
                                                 for the main container executions.
-                                                The list includes the all attempts
-                                                in chronological order.
                                               items:
                                                 type: string
                                               type: array
                                             failedPreCachingCheckJobs:
                                               description: Output only. The names
-                                                of the previously failed [CustomJob][google.cloud.aiplatform.v1.CustomJob]
+                                                of the previously failed CustomJob
                                                 for the pre-caching-check container
-                                                executions. This job will be available
-                                                if the [PipelineJob.pipeline_spec][google.cloud.aiplatform.v1.PipelineJob.pipeline_spec]
-                                                specifies the `pre_caching_check`
-                                                hook in the lifecycle events. The
-                                                list includes the all attempts in
-                                                chronological order.
+                                                executions.
                                               items:
                                                 type: string
                                               type: array
                                             mainJob:
                                               description: Output only. The name of
-                                                the [CustomJob][google.cloud.aiplatform.v1.CustomJob]
-                                                for the main container execution.
+                                                the CustomJob for the main container
+                                                execution.
                                               type: string
                                             preCachingCheckJob:
                                               description: Output only. The name of
-                                                the [CustomJob][google.cloud.aiplatform.v1.CustomJob]
-                                                for the pre-caching-check container
-                                                execution. This job will be available
-                                                if the [PipelineJob.pipeline_spec][google.cloud.aiplatform.v1.PipelineJob.pipeline_spec]
-                                                specifies the `pre_caching_check`
-                                                hook in the lifecycle events.
+                                                the CustomJob for the pre-caching-check
+                                                container execution.
                                               type: string
                                           type: object
                                         customJobDetail:
@@ -968,40 +1174,28 @@ spec:
                                           properties:
                                             failedJobs:
                                               description: Output only. The names
-                                                of the previously failed [CustomJob][google.cloud.aiplatform.v1.CustomJob].
-                                                The list includes the all attempts
-                                                in chronological order.
+                                                of the previously failed CustomJob.
                                               items:
                                                 type: string
                                               type: array
                                             job:
                                               description: Output only. The name of
-                                                the [CustomJob][google.cloud.aiplatform.v1.CustomJob].
+                                                the CustomJob.
                                               type: string
                                           type: object
                                       type: object
                                     parentTaskID:
                                       description: Output only. The id of the parent
                                         task if the task is within a component scope.
-                                        Empty if the task is at the root level.
                                       format: int64
                                       type: integer
                                     pipelineTaskStatus:
                                       description: Output only. A list of task status.
-                                        This field keeps a record of task status evolving
-                                        over time.
                                       items:
                                         properties:
                                           error:
                                             description: Output only. The error that
-                                              occurred during the state. May be set
-                                              when the state is any of the non-final
-                                              state (PENDING/RUNNING/CANCELLING) or
-                                              FAILED state. If the state is FAILED,
-                                              the error here is final and not going
-                                              to be retried. If the state is a non-final
-                                              state, the error indicates a system-error
-                                              being retried.
+                                              occurred during the state.
                                             properties:
                                               code:
                                                 description: The status code, which
@@ -1039,19 +1233,11 @@ spec:
                                       type: integer
                                     taskName:
                                       description: Output only. The user specified
-                                        name of the task that is defined in [pipeline_spec][google.cloud.aiplatform.v1.PipelineJob.pipeline_spec].
+                                        name of the task.
                                       type: string
                                     taskUniqueName:
                                       description: Output only. The unique name of
-                                        a task. This field is used by rerun pipeline
-                                        job. Console UI and Vertex AI SDK will support
-                                        triggering pipeline job reruns. The name is
-                                        constructed by concatenating all the parent
-                                        tasks name with the task name. For example,
-                                        if a task named "child_task" has a parent
-                                        task named "parent_task_1" and parent task
-                                        1 has a parent task named "parent_task_2",
-                                        the task unique name will be "parent_task_2.parent_task_1.child_task".
+                                        a task.
                                       type: string
                                   type: object
                                 type: array
@@ -1076,14 +1262,7 @@ spec:
                               is from supported template registry.
                             properties:
                               version:
-                                description: |-
-                                  The version_name in artifact registry.
-
-                                   Will always be presented in output if the
-                                   [PipelineJob.template_uri][google.cloud.aiplatform.v1.PipelineJob.template_uri]
-                                   is from supported template registry.
-
-                                   Format is "sha256:abcdef123456...".
+                                description: The version_name in artifact registry.
                                 type: string
                             type: object
                           updateTime:
@@ -1117,6 +1296,9 @@ spec:
                           schedule.
                         type: string
                     type: object
+                  name:
+                    description: Immutable. The resource name of the Schedule.
+                    type: string
                   nextRunTime:
                     description: Output only. Timestamp when this Schedule should
                       schedule the next run. Having a next_run_time in the past means

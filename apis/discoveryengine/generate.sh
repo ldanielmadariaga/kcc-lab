@@ -33,6 +33,10 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 
 
 ${CONTROLLERBUILDER} generate-types --service google.cloud.discoveryengine.v1 --api-version discoveryengine.cnrm.cloud.google.com/v1alpha1 \
+--prepopulate-spec \
+--emit-required-from-proto \
+--emit-plural-acronyms \
+--detect-output-only-in-comments \
   --resource DiscoveryEngineControl:Control \
   --resource DiscoveryEngineDataStore:DataStore \
   --resource DiscoveryEngineEngine:Engine \
@@ -44,6 +48,10 @@ ${CONTROLLERBUILDER} generate-types --service google.cloud.discoveryengine.v1 --
 mv ../../../apis/discoveryengine/v1alpha1/types.generated.go ../../../apis/discoveryengine/v1alpha1/v1_types.generated.go
 
 ${CONTROLLERBUILDER} generate-types --service google.cloud.discoveryengine.v1beta --api-version discoveryengine.cnrm.cloud.google.com/v1alpha1 \
+--prepopulate-spec \
+--emit-required-from-proto \
+--emit-plural-acronyms \
+--detect-output-only-in-comments \
   --resource DiscoveryEngineSampleQuerySet:SampleQuerySet \
   --resource DiscoveryEngineSampleQuery:SampleQuery \
   --resource DiscoveryEngineLicenseConfig:LicenseConfig \

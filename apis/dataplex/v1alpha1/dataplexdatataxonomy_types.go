@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common/parent"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,28 +25,22 @@ var DataplexDataTaxonomyGVK = GroupVersion.WithKind("DataplexDataTaxonomy")
 // DataplexDataTaxonomySpec defines the desired state of DataplexDataTaxonomy
 // +kcc:spec:proto=google.cloud.dataplex.v1.DataTaxonomy
 type DataplexDataTaxonomySpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	ParentRef *parent.ProjectAndLocationRef `json:",inline"`
 
 	// The DataplexDataTaxonomy name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-	// Optional. Description of the DataTaxonomy.
-	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.description
-	Description *string `json:"description,omitempty"`
 
 	// Optional. User friendly display name.
 	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
+	// Optional. Description of the DataTaxonomy.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.description
+	Description *string `json:"description,omitempty"`
+
 	// Optional. User-defined labels for the DataTaxonomy.
 	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// This checksum is computed by the server based on the value of other
-	//  fields, and may be sent on update and delete requests to ensure the
-	//  client has an up-to-date value before proceeding.
-	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.etag
-	Etag *string `json:"etag,omitempty"`
+	// Labels map[string]string `json:"labels,omitempty"`
 }
 
 // DataplexDataTaxonomyStatus defines the config connector machine state of DataplexDataTaxonomy
@@ -93,10 +87,11 @@ type DataplexDataTaxonomyObservedState struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpdataplexdatataxonomy;gcpdataplexdatataxonomys
+// +kubebuilder:resource:categories=gcp,shortName=gcpdataplexdatataxonomy;gcpdataplexdatataxonomies
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

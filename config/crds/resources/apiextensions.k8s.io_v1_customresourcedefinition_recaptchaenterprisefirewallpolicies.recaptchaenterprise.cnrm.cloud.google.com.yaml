@@ -20,7 +20,7 @@ spec:
     plural: recaptchaenterprisefirewallpolicies
     shortNames:
     - gcprecaptchaenterprisefirewallpolicy
-    - gcprecaptchaenterprisefirewallpolicys
+    - gcprecaptchaenterprisefirewallpolicies
     singular: recaptchaenterprisefirewallpolicy
   preserveUnknownFields: false
   scope: Namespaced
@@ -63,8 +63,79 @@ spec:
             description: ReCAPTCHAEnterpriseFirewallPolicySpec defines the desired
               state of ReCAPTCHAEnterpriseFirewallPolicy
             properties:
+              actions:
+                description: Optional. The actions that the caller should take regarding
+                  user access. There should be at most one terminal action. A terminal
+                  action is any action that forces a response, such as `AllowAction`,
+                  `BlockAction` or `SubstituteAction`. Zero or more non-terminal actions
+                  such as `SetHeader` might be specified. A single policy can contain
+                  up to 16 actions.
+                items:
+                  properties:
+                    allow:
+                      description: The user request did not match any policy and should
+                        be allowed access to the requested resource.
+                      type: object
+                    block:
+                      description: This action denies access to a given page. The
+                        user gets an HTTP error code.
+                      type: object
+                    includeRecaptchaScript:
+                      description: This action injects reCAPTCHA JavaScript code into
+                        the HTML page returned by the site backend.
+                      type: object
+                    redirect:
+                      description: This action redirects the request to a reCAPTCHA
+                        interstitial to attach a token.
+                      type: object
+                    setHeader:
+                      description: This action sets a custom header but allow the
+                        request to continue to the customer backend.
+                      properties:
+                        key:
+                          description: Optional. The header key to set in the request
+                            to the backend server.
+                          type: string
+                        value:
+                          description: Optional. The header value to set in the request
+                            to the backend server.
+                          type: string
+                      type: object
+                    substitute:
+                      description: This action transparently serves a different page
+                        to an offending user.
+                      properties:
+                        path:
+                          description: 'Optional. The address to redirect to. The
+                            target is a relative path in the current host. Example:
+                            "/blog/404.html".'
+                          type: string
+                      type: object
+                  type: object
+                type: array
+              condition:
+                description: Optional. A CEL (Common Expression Language) conditional
+                  expression that specifies if this policy applies to an incoming
+                  user request. If this condition evaluates to true and the requested
+                  path matched the path pattern, the associated actions should be
+                  executed by the caller. The condition string is checked for CEL
+                  syntax correctness on creation. For more information, see the [CEL
+                  spec](https://github.com/google/cel-spec) and its [language definition](https://github.com/google/cel-spec/blob/master/doc/langdef.md).
+                  A condition has a max length of 500 characters.
+                type: string
+              description:
+                description: Optional. A description of what this policy aims to achieve,
+                  for convenience purposes. The description can at most include 256
+                  UTF-8 characters.
+                type: string
+              path:
+                description: Optional. The path for which this policy applies, specified
+                  as a glob pattern. For more information on glob, see the [manual
+                  page](https://man7.org/linux/man-pages/man7/glob.7.html). A path
+                  has a max length of 200 characters.
+                type: string
               projectRef:
-                description: The project that this resource belongs to.
+                description: The Project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -144,10 +215,6 @@ spec:
                   the resource.
                 format: int64
                 type: integer
-              observedState:
-                description: ObservedState is the state of the resource as most recently
-                  observed in GCP.
-                type: object
             type: object
         required:
         - spec

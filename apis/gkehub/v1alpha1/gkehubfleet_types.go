@@ -15,12 +15,24 @@
 package v1alpha1
 
 import (
+	binaryauthorizationv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/binaryauthorization/v1alpha1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var GKEHubFleetGVK = GroupVersion.WithKind("GKEHubFleet")
+
+// +kcc:proto=google.cloud.gkehub.v1.BinaryAuthorizationConfig
+type BinaryAuthorizationConfig struct {
+	// Optional. Mode of operation for binauthz policy evaluation.
+	// +kcc:proto:field=google.cloud.gkehub.v1.BinaryAuthorizationConfig.evaluation_mode
+	EvaluationMode *string `json:"evaluationMode,omitempty"`
+
+	// Optional. Binauthz policies that apply to this cluster.
+	// +kcc:proto:field=google.cloud.gkehub.v1.BinaryAuthorizationConfig.policy_bindings
+	PolicyBindingsRefs []binaryauthorizationv1alpha1.BinaryAuthorizationPlatformPolicyRef `json:"policyBindingsRefs,omitempty"`
+}
 
 // GKEHubFleetSpec defines the desired state of GKEHubFleet
 // +kcc:spec:proto=google.cloud.gkehub.v1.Fleet
@@ -33,21 +45,22 @@ type GKEHubFleetSpec struct {
 
 	// The GKEHubFleet name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Optional. A user-assigned display name of the Fleet.
-	//  When present, it must be between 4 to 30 characters.
-	//  Allowed characters are: lowercase and uppercase letters, numbers,
-	//  hyphen, single-quote, double-quote, space, and exclamation point.
+	// When present, it must be between 4 to 30 characters.
+	// Allowed characters are: lowercase and uppercase letters, numbers,
+	// hyphen, single-quote, double-quote, space, and exclamation point.
 	//
-	//  Example: `Production Fleet`
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.display_name
+	// Example: `Production Fleet`
+	// +kubebuilder:validation:Optional
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Optional. The default cluster configurations to apply across the fleet.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.default_cluster_config
+	// +kubebuilder:validation:Optional
 	DefaultClusterConfig *DefaultClusterConfig `json:"defaultClusterConfig,omitempty"`
 
 	// Optional. Labels for this Fleet.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.labels
+	// +kubebuilder:validation:Optional
 	Labels map[string]string `json:"labels,omitempty"`
 }
 
@@ -71,25 +84,20 @@ type GKEHubFleetStatus struct {
 // +kcc:observedstate:proto=google.cloud.gkehub.v1.Fleet
 type GKEHubFleetObservedState struct {
 	// Output only. When the Fleet was created.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. When the Fleet was last updated.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. When the Fleet was deleted.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.delete_time
 	DeleteTime *string `json:"deleteTime,omitempty"`
 
 	// Output only. Google-generated UUID for this resource. This is unique across
-	//  all Fleet resources. If a Fleet resource is deleted and another resource
-	//  with the same name is created, it gets a different uid.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.uid
+	// all Fleet resources. If a Fleet resource is deleted and another resource
+	// with the same name is created, it gets a different uid.
 	Uid *string `json:"uid,omitempty"`
 
 	// Output only. State of the namespace resource.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.state
 	State *FleetLifecycleStateObservedState `json:"state,omitempty"`
 }
 
@@ -99,6 +107,7 @@ type GKEHubFleetObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

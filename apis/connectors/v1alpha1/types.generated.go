@@ -21,10 +21,6 @@
 
 package v1alpha1
 
-import (
-	secretmanagerv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/secretmanager/v1beta1"
-)
-
 // +kcc:proto=google.cloud.connectors.v1.AuthConfig
 type AuthConfig struct {
 	// The type of authentication configured.
@@ -52,31 +48,6 @@ type AuthConfig struct {
 	AdditionalVariables []ConfigVariable `json:"additionalVariables,omitempty"`
 }
 
-// +kcc:proto=google.cloud.connectors.v1.AuthConfig.Oauth2ClientCredentials
-type AuthConfig_OAUTH2ClientCredentials struct {
-	// The client identifier.
-	// +kcc:proto:field=google.cloud.connectors.v1.AuthConfig.Oauth2ClientCredentials.client_id
-	ClientID *string `json:"clientID,omitempty"`
-
-	// Secret version reference containing the client secret.
-	// +kcc:proto:field=google.cloud.connectors.v1.AuthConfig.Oauth2ClientCredentials.client_secret
-	ClientSecret *secretmanagerv1beta1.SecretRef `json:"clientSecret,omitempty"`
-}
-
-// +kcc:proto=google.cloud.connectors.v1.AuthConfig.Oauth2JwtBearer
-type AuthConfig_OAUTH2JwtBearer struct {
-	// Secret version reference containing a PKCS#8 PEM-encoded private
-	//  key associated with the Client Certificate. This private key will be
-	//  used to sign JWTs used for the jwt-bearer authorization grant.
-	//  Specified in the form as: `projects/*/secrets/*/versions/*`.
-	// +kcc:proto:field=google.cloud.connectors.v1.AuthConfig.Oauth2JwtBearer.client_key
-	ClientKey *secretmanagerv1beta1.SecretRef `json:"clientKey,omitempty"`
-
-	// JwtClaims providers fields to generate the token.
-	// +kcc:proto:field=google.cloud.connectors.v1.AuthConfig.Oauth2JwtBearer.jwt_claims
-	JwtClaims *AuthConfig_OAUTH2JwtBearer_JwtClaims `json:"jwtClaims,omitempty"`
-}
-
 // +kcc:proto=google.cloud.connectors.v1.AuthConfig.Oauth2JwtBearer.JwtClaims
 type AuthConfig_OAUTH2JwtBearer_JwtClaims struct {
 	// Value for the "iss" claim.
@@ -92,119 +63,6 @@ type AuthConfig_OAUTH2JwtBearer_JwtClaims struct {
 	Audience *string `json:"audience,omitempty"`
 }
 
-// +kcc:proto=google.cloud.connectors.v1.AuthConfig.SshPublicKey
-type AuthConfig_SSHPublicKey struct {
-	// The user account used to authenticate.
-	// +kcc:proto:field=google.cloud.connectors.v1.AuthConfig.SshPublicKey.username
-	Username *string `json:"username,omitempty"`
-
-	// SSH Client Cert. It should contain both public and private key.
-	// +kcc:proto:field=google.cloud.connectors.v1.AuthConfig.SshPublicKey.ssh_client_cert
-	SSHClientCert *secretmanagerv1beta1.SecretRef `json:"sshClientCert,omitempty"`
-
-	// Format of SSH Client cert.
-	// +kcc:proto:field=google.cloud.connectors.v1.AuthConfig.SshPublicKey.cert_type
-	CertType *string `json:"certType,omitempty"`
-
-	// Password (passphrase) for ssh client certificate if it has one.
-	// +kcc:proto:field=google.cloud.connectors.v1.AuthConfig.SshPublicKey.ssh_client_cert_pass
-	SSHClientCertPass *secretmanagerv1beta1.SecretRef `json:"sshClientCertPass,omitempty"`
-}
-
-// +kcc:proto=google.cloud.connectors.v1.AuthConfig.UserPassword
-type AuthConfig_UserPassword struct {
-	// Username.
-	// +kcc:proto:field=google.cloud.connectors.v1.AuthConfig.UserPassword.username
-	Username *string `json:"username,omitempty"`
-
-	// Secret version reference containing the password.
-	// +kcc:proto:field=google.cloud.connectors.v1.AuthConfig.UserPassword.password
-	Password *secretmanagerv1beta1.SecretRef `json:"password,omitempty"`
-}
-
-// +kcc:proto=google.cloud.connectors.v1.ConfigVariable
-type ConfigVariable struct {
-	// Key of the config variable.
-	// +kcc:proto:field=google.cloud.connectors.v1.ConfigVariable.key
-	Key *string `json:"key,omitempty"`
-
-	// Value is an integer
-	// +kcc:proto:field=google.cloud.connectors.v1.ConfigVariable.int_value
-	IntValue *int64 `json:"intValue,omitempty"`
-
-	// Value is a bool.
-	// +kcc:proto:field=google.cloud.connectors.v1.ConfigVariable.bool_value
-	BoolValue *bool `json:"boolValue,omitempty"`
-
-	// Value is a string.
-	// +kcc:proto:field=google.cloud.connectors.v1.ConfigVariable.string_value
-	StringValue *string `json:"stringValue,omitempty"`
-
-	// Value is a secret.
-	// +kcc:proto:field=google.cloud.connectors.v1.ConfigVariable.secret_value
-	SecretValue *secretmanagerv1beta1.SecretRef `json:"secretValue,omitempty"`
-}
-
-/* unreachable type Connection
-// +kcc:proto=google.cloud.connectors.v1.Connection
-type Connection struct {
-
-	// Optional. Resource labels to represent user-provided metadata.
-	//  Refer to cloud documentation on labels for more details.
-	//  https://cloud.google.com/compute/docs/labeling-resources
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// Optional. Description of the resource.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.description
-	Description *string `json:"description,omitempty"`
-
-	// Required. Connector version on which the connection is created.
-	//  The format is:
-	//  projects/-*-/locations/-*-/providers/-*-/connectors/-*-/versions/-*
-	//  Only global location is supported for ConnectorVersion resource.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.connector_version
-	// +required
-	ConnectorVersion *string `json:"connectorVersion,omitempty"`
-
-	// Optional. Configuration for configuring the connection with an external
-	//  system.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.config_variables
-	ConfigVariables []ConfigVariable `json:"configVariables,omitempty"`
-
-	// Optional. Configuration for establishing the connection's authentication
-	//  with an external system.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.auth_config
-	AuthConfig *AuthConfig `json:"authConfig,omitempty"`
-
-	// Optional. Configuration that indicates whether or not the Connection can be
-	//  edited.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.lock_config
-	LockConfig *LockConfig `json:"lockConfig,omitempty"`
-
-	// Optional. Configuration of the Connector's destination. Only accepted for
-	//  Connectors that accepts user defined destination(s).
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.destination_configs
-	DestinationConfigs []DestinationConfig `json:"destinationConfigs,omitempty"`
-
-	// Optional. Service account needed for runtime plane to access GCP resources.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.service_account
-	ServiceAccount *string `json:"serviceAccount,omitempty"`
-
-	// Optional. Suspended indicates if a user has suspended a connection or not.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.suspended
-	Suspended *bool `json:"suspended,omitempty"`
-
-	// Optional. Node configuration for the connection.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.node_config
-	NodeConfig *NodeConfig `json:"nodeConfig,omitempty"`
-
-	// Optional. Ssl config of a connection
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.ssl_config
-	SSLConfig *SSLConfig `json:"sslConfig,omitempty"`
-}
-*/
-
 // +kcc:proto=google.cloud.connectors.v1.ConnectionStatus
 type ConnectionStatus struct {
 	// State.
@@ -218,22 +76,6 @@ type ConnectionStatus struct {
 	// Status provides detailed information for the state.
 	// +kcc:proto:field=google.cloud.connectors.v1.ConnectionStatus.status
 	Status *string `json:"status,omitempty"`
-}
-
-// +kcc:proto=google.cloud.connectors.v1.Destination
-type Destination struct {
-	// PSC service attachments.
-	//  Format: projects/*/regions/*/serviceAttachments/*
-	// +kcc:proto:field=google.cloud.connectors.v1.Destination.service_attachment
-	ServiceAttachment *string `json:"serviceAttachment,omitempty"`
-
-	// For publicly routable host.
-	// +kcc:proto:field=google.cloud.connectors.v1.Destination.host
-	Host *string `json:"host,omitempty"`
-
-	// The port is the target port number that is accepted by the destination.
-	// +kcc:proto:field=google.cloud.connectors.v1.Destination.port
-	Port *int32 `json:"port,omitempty"`
 }
 
 // +kcc:proto=google.cloud.connectors.v1.DestinationConfig
@@ -268,86 +110,3 @@ type NodeConfig struct {
 	// +kcc:proto:field=google.cloud.connectors.v1.NodeConfig.max_node_count
 	MaxNodeCount *int32 `json:"maxNodeCount,omitempty"`
 }
-
-// +kcc:proto=google.cloud.connectors.v1.SslConfig
-type SSLConfig struct {
-	// Controls the ssl type for the given connector version.
-	// +kcc:proto:field=google.cloud.connectors.v1.SslConfig.type
-	Type *string `json:"type,omitempty"`
-
-	// Trust Model of the SSL connection
-	// +kcc:proto:field=google.cloud.connectors.v1.SslConfig.trust_model
-	TrustModel *string `json:"trustModel,omitempty"`
-
-	// Private Server Certificate. Needs to be specified if trust model is
-	//  `PRIVATE`.
-	// +kcc:proto:field=google.cloud.connectors.v1.SslConfig.private_server_certificate
-	PrivateServerCertificate *secretmanagerv1beta1.SecretRef `json:"privateServerCertificate,omitempty"`
-
-	// Client Certificate
-	// +kcc:proto:field=google.cloud.connectors.v1.SslConfig.client_certificate
-	ClientCertificate *secretmanagerv1beta1.SecretRef `json:"clientCertificate,omitempty"`
-
-	// Client Private Key
-	// +kcc:proto:field=google.cloud.connectors.v1.SslConfig.client_private_key
-	ClientPrivateKey *secretmanagerv1beta1.SecretRef `json:"clientPrivateKey,omitempty"`
-
-	// Secret containing the passphrase protecting the Client Private Key
-	// +kcc:proto:field=google.cloud.connectors.v1.SslConfig.client_private_key_pass
-	ClientPrivateKeyPass *secretmanagerv1beta1.SecretRef `json:"clientPrivateKeyPass,omitempty"`
-
-	// Type of Server Cert (PEM/JKS/.. etc.)
-	// +kcc:proto:field=google.cloud.connectors.v1.SslConfig.server_cert_type
-	ServerCertType *string `json:"serverCertType,omitempty"`
-
-	// Type of Client Cert (PEM/JKS/.. etc.)
-	// +kcc:proto:field=google.cloud.connectors.v1.SslConfig.client_cert_type
-	ClientCertType *string `json:"clientCertType,omitempty"`
-
-	// Bool for enabling SSL
-	// +kcc:proto:field=google.cloud.connectors.v1.SslConfig.use_ssl
-	UseSSL *bool `json:"useSSL,omitempty"`
-
-	// Additional SSL related field values
-	// +kcc:proto:field=google.cloud.connectors.v1.SslConfig.additional_variables
-	AdditionalVariables []ConfigVariable `json:"additionalVariables,omitempty"`
-}
-
-/* unreachable type ConnectionObservedState
-// +kcc:observedstate:proto=google.cloud.connectors.v1.Connection
-type ConnectionObservedState struct {
-	// Output only. Resource name of the Connection.
-	//  Format: projects/{project}/locations/{location}/connections/{connection}
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.name
-	Name *string `json:"name,omitempty"`
-
-	// Output only. Created time.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. Updated time.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. Current status of the connection.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.status
-	Status *ConnectionStatus `json:"status,omitempty"`
-
-	// Output only. GCR location where the runtime image is stored.
-	//  formatted like: gcr.io/{bucketName}/{imageName}
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.image_location
-	ImageLocation *string `json:"imageLocation,omitempty"`
-
-	// Output only. The name of the Service Directory service name. Used for
-	//  Private Harpoon to resolve the ILB address.
-	//  e.g.
-	//  "projects/cloud-connectors-e2e-testing/locations/us-central1/namespaces/istio-system/services/istio-ingressgateway-connectors"
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.service_directory
-	ServiceDirectory *string `json:"serviceDirectory,omitempty"`
-
-	// Output only. GCR location where the envoy image is stored.
-	//  formatted like: gcr.io/{bucketName}/{imageName}
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.envoy_image_location
-	EnvoyImageLocation *string `json:"envoyImageLocation,omitempty"`
-}
-*/

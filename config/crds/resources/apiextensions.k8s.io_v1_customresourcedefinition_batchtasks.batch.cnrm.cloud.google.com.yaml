@@ -62,7 +62,8 @@ spec:
             description: BatchTaskSpec defines the desired state of BatchTask
             properties:
               location:
-                description: The location of this resource.
+                description: Immutable. The location where the alloydb cluster should
+                  reside.
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
@@ -137,6 +138,10 @@ spec:
               externalRef:
                 description: A unique specifier for the BatchTask resource in GCP.
                 type: string
+              name:
+                description: 'Task name. The name is generated from the parent TaskGroup
+                  name and ''id'' field. For example: "projects/123456/locations/us-west1/jobs/job01/taskGroups/group01/tasks/task01".'
+                type: string
               observedGeneration:
                 description: ObservedGeneration is the generation of the resource
                   that was most recently observed by the Config Connector controller.
@@ -146,8 +151,8 @@ spec:
                 format: int64
                 type: integer
               observedState:
-                description: ObservedState is the state of the resource as most recently
-                  observed in GCP.
+                description: BatchTaskObservedState is the state of the BatchTask
+                  resource as most recently observed in GCP.
                 properties:
                   status:
                     description: Task Status.

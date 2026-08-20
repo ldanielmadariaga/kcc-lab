@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,13 +15,26 @@
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
+	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
+	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var DatabaseMigrationPrivateConnectionGVK = GroupVersion.WithKind("DatabaseMigrationPrivateConnection")
+
+// +kcc:proto=google.cloud.clouddms.v1.VpcPeeringConfig
+type VpcPeeringConfig struct {
+	// Required. Fully qualified name of the VPC that Database Migration Service
+	//  will peer to.
+	// +kcc:proto:field=google.cloud.clouddms.v1.VpcPeeringConfig.vpc_name
+	VpcNameRef *computerefs.ComputeNetworkRef `json:"vpcNameRef,omitempty"`
+
+	// Required. A free subnet for peering. (CIDR of /29)
+	// +kcc:proto:field=google.cloud.clouddms.v1.VpcPeeringConfig.subnet
+	Subnet *string `json:"subnet,omitempty"`
+}
 
 // DatabaseMigrationPrivateConnectionSpec defines the desired state of DatabaseMigrationPrivateConnection
 // +kcc:spec:proto=google.cloud.clouddms.v1.PrivateConnection
@@ -34,6 +47,7 @@ type DatabaseMigrationPrivateConnectionSpec struct {
 
 	// The DatabaseMigrationPrivateConnection name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// The resource labels for private connections to use to annotate any related
 	//  underlying resources such as Compute Engine VMs. An object containing a
 	//  list of "key": "value" pairs.
@@ -48,7 +62,7 @@ type DatabaseMigrationPrivateConnectionSpec struct {
 
 	// VPC peering configuration.
 	// +kcc:proto:field=google.cloud.clouddms.v1.PrivateConnection.vpc_peering_config
-	VPCPeeringConfig *VPCPeeringConfig `json:"vpcPeeringConfig,omitempty"`
+	VpcPeeringConfig *VpcPeeringConfig `json:"vpcPeeringConfig,omitempty"`
 }
 
 // DatabaseMigrationPrivateConnectionStatus defines the config connector machine state of DatabaseMigrationPrivateConnection
@@ -93,6 +107,7 @@ type DatabaseMigrationPrivateConnectionObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

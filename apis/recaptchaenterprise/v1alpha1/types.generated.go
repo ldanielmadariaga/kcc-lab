@@ -21,7 +21,6 @@
 
 package v1alpha1
 
-/* unreachable type FirewallAction
 // +kcc:proto=google.cloud.recaptchaenterprise.v1.FirewallAction
 type FirewallAction struct {
 	// The user request did not match any policy and should be allowed
@@ -54,33 +53,23 @@ type FirewallAction struct {
 	// +kcc:proto:field=google.cloud.recaptchaenterprise.v1.FirewallAction.set_header
 	SetHeader *FirewallAction_SetHeaderAction `json:"setHeader,omitempty"`
 }
-*/
 
-/* unreachable type FirewallAction_AllowAction
 // +kcc:proto=google.cloud.recaptchaenterprise.v1.FirewallAction.AllowAction
 type FirewallAction_AllowAction struct {
 }
-*/
 
-/* unreachable type FirewallAction_BlockAction
 // +kcc:proto=google.cloud.recaptchaenterprise.v1.FirewallAction.BlockAction
 type FirewallAction_BlockAction struct {
 }
-*/
 
-/* unreachable type FirewallAction_IncludeRecaptchaScriptAction
 // +kcc:proto=google.cloud.recaptchaenterprise.v1.FirewallAction.IncludeRecaptchaScriptAction
 type FirewallAction_IncludeRecaptchaScriptAction struct {
 }
-*/
 
-/* unreachable type FirewallAction_RedirectAction
 // +kcc:proto=google.cloud.recaptchaenterprise.v1.FirewallAction.RedirectAction
 type FirewallAction_RedirectAction struct {
 }
-*/
 
-/* unreachable type FirewallAction_SetHeaderAction
 // +kcc:proto=google.cloud.recaptchaenterprise.v1.FirewallAction.SetHeaderAction
 type FirewallAction_SetHeaderAction struct {
 	// Optional. The header key to set in the request to the backend server.
@@ -91,9 +80,7 @@ type FirewallAction_SetHeaderAction struct {
 	// +kcc:proto:field=google.cloud.recaptchaenterprise.v1.FirewallAction.SetHeaderAction.value
 	Value *string `json:"value,omitempty"`
 }
-*/
 
-/* unreachable type FirewallAction_SubstituteAction
 // +kcc:proto=google.cloud.recaptchaenterprise.v1.FirewallAction.SubstituteAction
 type FirewallAction_SubstituteAction struct {
 	// Optional. The address to redirect to. The target is a relative path in
@@ -101,9 +88,9 @@ type FirewallAction_SubstituteAction struct {
 	// +kcc:proto:field=google.cloud.recaptchaenterprise.v1.FirewallAction.SubstituteAction.path
 	Path *string `json:"path,omitempty"`
 }
-*/
 
-/* unreachable type FirewallPolicy
+/* found existing non-generated go type with proto tag "google.cloud.recaptchaenterprise.v1.FirewallPolicy", skipping
+
 // +kcc:proto=google.cloud.recaptchaenterprise.v1.FirewallPolicy
 type FirewallPolicy struct {
 	// Identifier. The resource name for the FirewallPolicy in the format

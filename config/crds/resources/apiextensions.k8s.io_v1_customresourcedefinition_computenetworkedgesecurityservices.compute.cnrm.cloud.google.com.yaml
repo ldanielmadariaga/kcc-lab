@@ -63,9 +63,6 @@ spec:
             description: ComputeNetworkEdgeSecurityServiceSpec defines the desired
               state of ComputeNetworkEdgeSecurityService
             properties:
-              creationTimestamp:
-                description: '[Output Only] Creation timestamp in RFC3339 text format.'
-                type: string
               description:
                 description: An optional description of this resource. Provide this
                   property when you create the resource.
@@ -79,20 +76,10 @@ spec:
                   error 412 conditionNotMet. To see the latest fingerprint, make a
                   get() request to retrieve a NetworkEdgeSecurityService.
                 type: string
-              id:
-                description: '[Output Only] The unique identifier for the resource.
-                  This identifier is defined by the server.'
-                format: int64
-                type: integer
-              kind:
-                description: '[Output only] Type of the resource. Always compute#networkEdgeSecurityService
-                  for NetworkEdgeSecurityServices'
-                type: string
               location:
-                description: The location of this resource.
                 type: string
               projectRef:
-                description: The project that this resource belongs to.
+                description: The Project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -123,26 +110,39 @@ spec:
                     description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
-              region:
-                description: '[Output Only] URL of the region where the resource resides.
-                  You must specify this field as part of the HTTP request URL. It
-                  is not settable as a field in the request body.'
-                type: string
               resourceID:
                 description: The ComputeNetworkEdgeSecurityService name. If not given,
                   the metadata.name will be used.
                 type: string
-              securityPolicy:
+              securityPolicyRef:
                 description: The resource URL for the network edge security service
                   associated with this network edge security service.
-                type: string
-              selfLink:
-                description: '[Output Only] Server-defined URL for the resource.'
-                type: string
-              selfLinkWithID:
-                description: '[Output Only] Server-defined URL for this resource with
-                  the resource id.'
-                type: string
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed ComputeSecurityPolicy
+                      resource. Should be in the format "projects/{{projectID}}/global/securityPolicies/{{name}}".
+                    type: string
+                  name:
+                    description: The name of a ComputeSecurityPolicy resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a ComputeSecurityPolicy resource.
+                    type: string
+                type: object
             required:
             - location
             - projectRef
@@ -192,6 +192,32 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  creationTimestamp:
+                    description: '[Output Only] Creation timestamp in RFC3339 text
+                      format.'
+                    type: string
+                  id:
+                    description: '[Output Only] The unique identifier for the resource.
+                      This identifier is defined by the server.'
+                    format: int64
+                    type: integer
+                  kind:
+                    description: '[Output only] Type of the resource. Always compute#networkEdgeSecurityService
+                      for NetworkEdgeSecurityServices'
+                    type: string
+                  region:
+                    description: '[Output Only] URL of the region where the resource
+                      resides. You must specify this field as part of the HTTP request
+                      URL. It is not settable as a field in the request body.'
+                    type: string
+                  selfLink:
+                    description: '[Output Only] Server-defined URL for the resource.'
+                    type: string
+                  selfLinkWithID:
+                    description: '[Output Only] Server-defined URL for this resource
+                      with the resource id.'
+                    type: string
                 type: object
             type: object
         required:

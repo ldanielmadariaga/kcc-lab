@@ -8,7 +8,9 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
+    cnrm.cloud.google.com/tf2crd: "true"
   name: computebackendservicesignedurlkeys.compute.cnrm.cloud.google.com
 spec:
   group: compute.cnrm.cloud.google.com
@@ -63,18 +65,74 @@ spec:
             description: ComputeBackendServiceSignedURLKeySpec defines the desired
               state of ComputeBackendServiceSignedURLKey
             properties:
-              keyName:
-                description: Name of the key. The name must be 1-63 characters long,
-                  and comply with RFC1035. Specifically, the name must be 1-63 characters
-                  long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
-                  which means the first character must be a lowercase letter, and
-                  all following characters must be a dash, lowercase letter, or digit,
-                  except the last character, which cannot be a dash.
-                type: string
+              backendServiceRef:
+                description: ComputeBackendServiceRef is a reference to a ComputeBackendService.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: The value of an externally managed ComputeBackendService
+                      resource.
+                    type: string
+                  name:
+                    description: The name of a ComputeBackendService resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a ComputeBackendService resource.
+                    type: string
+                type: object
               keyValue:
-                description: 128-bit key value used for signing the URL. The key value
-                  must be a valid RFC 4648 Section 5 base64url encoded string.
-                type: string
+                description: Immutable. 128-bit key value used for signing the URL.
+                  The key value must be a valid RFC 4648 Section 5 base64url encoded
+                  string.
+                oneOf:
+                - not:
+                    required:
+                    - valueFrom
+                  required:
+                  - value
+                - not:
+                    required:
+                    - value
+                  required:
+                  - valueFrom
+                properties:
+                  value:
+                    description: Value of the field. Cannot be used if 'valueFrom'
+                      is specified.
+                    type: string
+                  valueFrom:
+                    description: Source for the field's value. Cannot be used if 'value'
+                      is specified.
+                    properties:
+                      secretKeyRef:
+                        description: Reference to a value with the given key in the
+                          given Secret in the resource's namespace.
+                        properties:
+                          key:
+                            description: Key that identifies the value to be extracted.
+                            type: string
+                          name:
+                            description: Name of the Secret to extract a value from.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                    type: object
+                type: object
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -96,10 +154,6 @@ spec:
                     description: The `projectID` field of a project, when not managed
                       by Config Connector.
                     type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
                   name:
                     description: The `name` field of a `Project` resource.
                     type: string
@@ -108,10 +162,13 @@ spec:
                     type: string
                 type: object
               resourceID:
-                description: The ComputeBackendServiceSignedURLKey name. If not given,
-                  the metadata.name will be used.
+                description: Immutable. Optional. The name of the resource. Used for
+                  creation and acquisition. When unset, the value of `metadata.name`
+                  is used as the default.
                 type: string
             required:
+            - backendServiceRef
+            - keyValue
             - projectRef
             type: object
           status:
@@ -120,7 +177,7 @@ spec:
             properties:
               conditions:
                 description: Conditions represent the latest available observations
-                  of the object's current state.
+                  of the ComputeBackendServiceSignedURLKey's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -144,10 +201,6 @@ spec:
                       type: string
                   type: object
                 type: array
-              externalRef:
-                description: A unique specifier for the ComputeBackendServiceSignedURLKey
-                  resource in GCP.
-                type: string
               observedGeneration:
                 description: ObservedGeneration is the generation of the resource
                   that was most recently observed by the Config Connector controller.
@@ -156,10 +209,6 @@ spec:
                   the resource.
                 format: int64
                 type: integer
-              observedState:
-                description: ObservedState is the state of the resource as most recently
-                  observed in GCP.
-                type: object
             type: object
         required:
         - spec

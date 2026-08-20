@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: eventarcchannelconnections.eventarc.cnrm.cloud.google.com
 spec:
@@ -69,14 +70,38 @@ spec:
                   channel with the provider project. This field will not be stored
                   in the provider resource.
                 type: string
-              channel:
-                description: Required. The name of the connected subscriber Channel.
-                  This is a weak reference to avoid cross project and cross accounts
-                  references. This must be in `projects/{project}/location/{location}/channels/{channel_id}`
-                  format.
+              channelRef:
+                description: Required. Reference to the connected subscriber Channel.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed EventarcChannel
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/channels/{{channelID}}".
+                    type: string
+                  name:
+                    description: The name of an EventarcChannel resource.
+                    type: string
+                  namespace:
+                    description: The namespace of an EventarcChannel resource.
+                    type: string
+                type: object
+              location:
                 type: string
               projectRef:
-                description: The project that this resource belongs to.
+                description: The Project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -112,7 +137,8 @@ spec:
                   metadata.name will be used.
                 type: string
             required:
-            - channel
+            - channelRef
+            - location
             - projectRef
             type: object
           status:

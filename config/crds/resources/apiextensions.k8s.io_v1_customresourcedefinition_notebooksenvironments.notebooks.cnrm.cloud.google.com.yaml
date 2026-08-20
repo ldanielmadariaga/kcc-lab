@@ -73,8 +73,6 @@ spec:
                     description: The tag of the container image. If not specified,
                       this defaults to the latest tag.
                     type: string
-                required:
-                - repository
                 type: object
               description:
                 description: A brief description of this environment.
@@ -83,7 +81,7 @@ spec:
                 description: Display name of this environment for the UI.
                 type: string
               location:
-                description: The location of this resource.
+                description: The location for the resource.
                 type: string
               postStartupScript:
                 description: 'Path to a Bash script that automatically runs after
@@ -91,7 +89,7 @@ spec:
                   Storage path. Example: `"gs://path-to-file/file-name"`'
                 type: string
               projectRef:
-                description: The project that this resource belongs to.
+                description: The Project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -140,8 +138,6 @@ spec:
                     description: 'Required. The name of the Google Cloud project that
                       this VM image belongs to. Format: `{project_id}`'
                     type: string
-                required:
-                - project
                 type: object
             required:
             - location

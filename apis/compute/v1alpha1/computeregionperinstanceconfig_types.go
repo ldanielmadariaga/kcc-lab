@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,54 +15,149 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var ComputeRegionPerInstanceConfigGVK = GroupVersion.WithKind("ComputeRegionPerInstanceConfig")
 
+type RegionperinstanceconfigDisk struct {
+	/* A value that prescribes what should happen to the stateful disk when the VM instance is deleted.
+	The available options are 'NEVER' and 'ON_PERMANENT_INSTANCE_DELETION'.
+	'NEVER' - detach the disk when the VM is deleted, but do not delete the disk.
+	'ON_PERMANENT_INSTANCE_DELETION' will delete the stateful disk when the VM is permanently
+	deleted from the instance group. Default value: "NEVER" Possible values: ["NEVER", "ON_PERMANENT_INSTANCE_DELETION"]. */
+	// +optional
+	DeleteRule *string `json:"deleteRule,omitempty"`
+
+	/* A unique device name that is reflected into the /dev/ tree of a Linux operating system running within the instance. */
+	DeviceName string `json:"deviceName"`
+
+	/* The mode of the disk. Default value: "READ_WRITE" Possible values: ["READ_ONLY", "READ_WRITE"]. */
+	// +optional
+	Mode *string `json:"mode,omitempty"`
+
+	/* The URI of an existing persistent disk to attach under the specified device-name in the format
+	'projects/project-id/zones/zone/disks/disk-name'. */
+	Source string `json:"source"`
+}
+
+type RegionperinstanceconfigExternalIp struct {
+	/* These stateful IPs will never be released during autohealing, update or VM instance recreate operations. This flag is used to configure if the IP reservation should be deleted after it is no longer used by the group, e.g. when the given instance or the whole group is deleted. Default value: "NEVER" Possible values: ["NEVER", "ON_PERMANENT_INSTANCE_DELETION"]. */
+	// +optional
+	AutoDelete *string `json:"autoDelete,omitempty"`
+
+	InterfaceName string `json:"interfaceName"`
+
+	/* Ip address representation. */
+	// +optional
+	IpAddress *RegionperinstanceconfigIpAddress `json:"ipAddress,omitempty"`
+}
+
+type RegionperinstanceconfigInternalIp struct {
+	/* These stateful IPs will never be released during autohealing, update or VM instance recreate operations. This flag is used to configure if the IP reservation should be deleted after it is no longer used by the group, e.g. when the given instance or the whole group is deleted. Default value: "NEVER" Possible values: ["NEVER", "ON_PERMANENT_INSTANCE_DELETION"]. */
+	// +optional
+	AutoDelete *string `json:"autoDelete,omitempty"`
+
+	InterfaceName string `json:"interfaceName"`
+
+	/* Ip address representation. */
+	// +optional
+	IpAddress *RegionperinstanceconfigIpAddress `json:"ipAddress,omitempty"`
+}
+
+type RegionperinstanceconfigIpAddress struct {
+	/* The URL of the reservation for this IP address. */
+	// +optional
+	Address *string `json:"address,omitempty"`
+}
+
+type RegionperinstanceconfigPreservedState struct {
+	/* Stateful disks for the instance. */
+	// +optional
+	Disk []RegionperinstanceconfigDisk `json:"disk,omitempty"`
+
+	/* Preserved external IPs defined for this instance. This map is keyed with the name of the network interface. */
+	// +optional
+	ExternalIp []RegionperinstanceconfigExternalIp `json:"externalIp,omitempty"`
+
+	/* Preserved internal IPs defined for this instance. This map is keyed with the name of the network interface. */
+	// +optional
+	InternalIp []RegionperinstanceconfigInternalIp `json:"internalIp,omitempty"`
+
+	/* Preserved metadata defined for this instance. This is a list of key->value pairs. */
+	// +optional
+	Metadata map[string]string `json:"metadata,omitempty"`
+}
+
+type ComputeRegionInstanceGroupManagerRef struct {
+	/* The name of the referent. */
+	// +optional
+	Name string `json:"name,omitempty"`
+
+	/* The namespace of the referent. */
+	// +optional
+	Namespace string `json:"namespace,omitempty"`
+
+	/* The external representation of the referent. */
+	// +optional
+	External string `json:"external,omitempty"`
+}
+
 // ComputeRegionPerInstanceConfigSpec defines the desired state of ComputeRegionPerInstanceConfig
 // +kcc:spec:proto=google.cloud.compute.v1.PerInstanceConfig
 type ComputeRegionPerInstanceConfigSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	/* The minimal action to perform on the instance during an update.
+	Default is 'NONE'. Possible values are:
+	* REPLACE
+	* RESTART
+	* REFRESH
+	* NONE. */
+	// +optional
+	MinimalAction *string `json:"minimalAction,omitempty"`
 
-	// The ComputeRegionPerInstanceConfig name. If not given, the metadata.name will be used.
+	/* The most disruptive action to perform on the instance during an update.
+	Default is 'REPLACE'. Possible values are:
+	* REPLACE
+	* RESTART
+	* REFRESH
+	* NONE. */
+	// +optional
+	MostDisruptiveAllowedAction *string `json:"mostDisruptiveAllowedAction,omitempty"`
+
+	/* The preserved state for this instance. */
+	// +optional
+	PreservedState *RegionperinstanceconfigPreservedState `json:"preservedState,omitempty"`
+
+	/* The project that this resource belongs to. */
+	ProjectRef refs.ProjectRef `json:"projectRef"`
+
+	/* Immutable. Region where the containing instance group manager is located. */
+	Region string `json:"region"`
+
+	RegionInstanceGroupManagerRef ComputeRegionInstanceGroupManagerRef `json:"regionInstanceGroupManagerRef"`
+
+	/* When true, deleting this config will immediately remove any specified state from the underlying instance.
+	When false, deleting this config will *not* immediately remove any state from the underlying instance.
+	State will be removed on the next instance recreation or update. */
+	// +optional
+	RemoveInstanceStateOnDestroy *bool `json:"removeInstanceStateOnDestroy,omitempty"`
+
+	/* Immutable. Optional. The name of the resource. Used for creation and acquisition. When unset, the value of `metadata.name` is used as the default. */
+	// +optional
 	ResourceID *string `json:"resourceID,omitempty"`
-	// Fingerprint of this per-instance config. This field can be used in optimistic locking. It is ignored when inserting a per-instance config. An up-to-date fingerprint must be provided in order to update an existing per-instance configuration or the field needs to be unset.
-	// +kcc:proto:field=google.cloud.compute.v1.PerInstanceConfig.fingerprint
-	Fingerprint *string `json:"fingerprint,omitempty"`
-
-	// The intended preserved state for the given instance. Does not contain preserved state generated from a stateful policy.
-	// +kcc:proto:field=google.cloud.compute.v1.PerInstanceConfig.preserved_state
-	PreservedState *PreservedState `json:"preservedState,omitempty"`
-
-	// The status of applying this per-instance configuration on the corresponding managed instance.
-	//  Check the Status enum for the list of possible values.
-	// +kcc:proto:field=google.cloud.compute.v1.PerInstanceConfig.status
-	Status *string `json:"status,omitempty"`
 }
 
 // ComputeRegionPerInstanceConfigStatus defines the config connector machine state of ComputeRegionPerInstanceConfig
 type ComputeRegionPerInstanceConfigStatus struct {
 	/* Conditions represent the latest available observations of the
-	   object's current state. */
+	   ComputeRegionPerInstanceConfig's current state. */
 	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
 
 	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
+	// +optional
 	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
-
-	// A unique specifier for the ComputeRegionPerInstanceConfig resource in GCP.
-	ExternalRef *string `json:"externalRef,omitempty"`
-
-	// ObservedState is the state of the resource as most recently observed in GCP.
-	ObservedState *ComputeRegionPerInstanceConfigObservedState `json:"observedState,omitempty"`
-}
-
-// ComputeRegionPerInstanceConfigObservedState is the state of the ComputeRegionPerInstanceConfig resource as most recently observed in GCP.
-// +kcc:observedstate:proto=google.cloud.compute.v1.PerInstanceConfig
-type ComputeRegionPerInstanceConfigObservedState struct {
 }
 
 // +genclient
@@ -70,7 +165,9 @@ type ComputeRegionPerInstanceConfigObservedState struct {
 // +kubebuilder:resource:categories=gcp,shortName=gcpcomputeregionperinstanceconfig;gcpcomputeregionperinstanceconfigs
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/tf2crd=true"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

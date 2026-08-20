@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: datalabelingannotationspecsets.datalabeling.cnrm.cloud.google.com
 spec:
@@ -80,12 +81,6 @@ spec:
                       type: string
                   type: object
                 type: array
-              blockingResources:
-                description: Output only. The names of any related resources that
-                  are blocking changes to the annotation spec set.
-                items:
-                  type: string
-                type: array
               description:
                 description: Optional. User-provided description of the annotation
                   specification set. The description can be up to 10,000 characters
@@ -132,6 +127,8 @@ spec:
                   the metadata.name will be used.
                 type: string
             required:
+            - annotationSpecs
+            - displayName
             - projectRef
             type: object
           status:
@@ -179,6 +176,13 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  blockingResources:
+                    description: Output only. The names of any related resources that
+                      are blocking changes to the annotation spec set.
+                    items:
+                      type: string
+                    type: array
                 type: object
             type: object
         required:

@@ -21,13 +21,13 @@
 
 package v1alpha1
 
-/* unreachable type AdaptiveMtDataset
+/* found existing non-generated go type with proto tag "google.cloud.translation.v3.AdaptiveMtDataset", skipping
+
 // +kcc:proto=google.cloud.translation.v3.AdaptiveMtDataset
 type AdaptiveMtDataset struct {
 	// Required. The resource name of the dataset, in form of
 	//  `projects/{project-number-or-id}/locations/{location_id}/adaptiveMtDatasets/{dataset_id}`
 	// +kcc:proto:field=google.cloud.translation.v3.AdaptiveMtDataset.name
-	// +required
 	Name *string `json:"name,omitempty"`
 
 	// The name of the dataset to show in the interface. The name can be
@@ -50,7 +50,8 @@ type AdaptiveMtDataset struct {
 }
 */
 
-/* unreachable type AdaptiveMtDatasetObservedState
+/* found existing non-generated go type with proto tag "google.cloud.translation.v3.AdaptiveMtDataset", skipping
+
 // +kcc:observedstate:proto=google.cloud.translation.v3.AdaptiveMtDataset
 type AdaptiveMtDatasetObservedState struct {
 	// Output only. Timestamp when this dataset was created.

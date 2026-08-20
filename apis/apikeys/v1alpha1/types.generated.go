@@ -76,10 +76,11 @@ type BrowserKeyRestrictions struct {
 type IosKeyRestrictions struct {
 	// A list of bundle IDs that are allowed when making API calls with this key.
 	// +kcc:proto:field=google.api.apikeys.v2.IosKeyRestrictions.allowed_bundle_ids
-	AllowedBundleIDs []string `json:"allowedBundleIDs,omitempty"`
+	AllowedBundleIds []string `json:"allowedBundleIds,omitempty"`
 }
 
-/* unreachable type Key
+/* found existing non-generated go type with proto tag "google.api.apikeys.v2.Key", skipping
+
 // +kcc:proto=google.api.apikeys.v2.Key
 type Key struct {
 
@@ -131,10 +132,11 @@ type ServerKeyRestrictions struct {
 	// A list of the caller IP addresses that are allowed to make API calls
 	//  with this key.
 	// +kcc:proto:field=google.api.apikeys.v2.ServerKeyRestrictions.allowed_ips
-	AllowedIPs []string `json:"allowedIPs,omitempty"`
+	AllowedIps []string `json:"allowedIps,omitempty"`
 }
 
-/* unreachable type KeyObservedState
+/* found existing non-generated go type with proto tag "google.api.apikeys.v2.Key", skipping
+
 // +kcc:observedstate:proto=google.api.apikeys.v2.Key
 type KeyObservedState struct {
 	// Output only. The resource name of the key.

@@ -77,10 +77,10 @@ spec:
                    Example: `{ "name": "wrench", "mass": "1.3kg", "count": "3" }`.
                 type: object
               location:
-                description: The location of this resource.
+                description: Required. The location of the application.
                 type: string
               projectRef:
-                description: The project that this resource belongs to.
+                description: Required. The host project of the application.
                 oneOf:
                 - not:
                     required:
@@ -121,17 +121,36 @@ spec:
                   subnet:
                     description: Required. A free subnet for peering. (CIDR of /29)
                     type: string
-                  vpcName:
+                  vpcNameRef:
                     description: Required. Fully qualified name of the VPC that Database
                       Migration Service will peer to.
-                    type: string
-                required:
-                - subnet
-                - vpcName
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
+                    properties:
+                      external:
+                        description: A reference to an externally managed ComputeNetwork
+                          resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                        type: string
+                      name:
+                        description: The name of a ComputeNetwork resource.
+                        type: string
+                      namespace:
+                        description: The namespace of a ComputeNetwork resource.
+                        type: string
+                    type: object
                 type: object
-            required:
-            - location
-            - projectRef
             type: object
           status:
             description: CloudDMSPrivateConnectionStatus defines the config connector

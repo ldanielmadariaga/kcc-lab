@@ -29,7 +29,8 @@ type Blueprint struct {
 	Package *string `json:"package,omitempty"`
 }
 
-/* unreachable type Release
+/* found existing non-generated go type with proto tag "google.cloud.saasplatform.saasservicemgmt.v1beta1.Release", skipping
+
 // +kcc:proto=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release
 type Release struct {
 	// Identifier. The resource name (full URI of the resource) following the
@@ -42,7 +43,6 @@ type Release struct {
 	// Required. Immutable. Reference to the UnitKind this Release corresponds to
 	//  (required and immutable once created).
 	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release.unit_kind
-	// +required
 	UnitKind *string `json:"unitKind,omitempty"`
 
 	// Optional. Blueprints are OCI Images that contain all of the artifacts
@@ -89,7 +89,6 @@ type Release_ReleaseRequirements struct {
 type UnitVariable struct {
 	// Required. Immutable. Name of the variable from actuation configs.
 	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.UnitVariable.variable
-	// +required
 	Variable *string `json:"variable,omitempty"`
 
 	// Optional. Immutable. Name of a supported variable type. Supported types are
@@ -114,7 +113,8 @@ type BlueprintObservedState struct {
 	Version *string `json:"version,omitempty"`
 }
 
-/* unreachable type ReleaseObservedState
+/* found existing non-generated go type with proto tag "google.cloud.saasplatform.saasservicemgmt.v1beta1.Release", skipping
+
 // +kcc:observedstate:proto=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release
 type ReleaseObservedState struct {
 	// Optional. Blueprints are OCI Images that contain all of the artifacts
@@ -125,12 +125,12 @@ type ReleaseObservedState struct {
 	// Optional. Output only. List of input variables declared on the blueprint
 	//  and can be present with their values on the unit spec
 	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release.input_variables
-	InputVariables []UnitVariableObservedState `json:"inputVariables,omitempty"`
+	InputVariables []UnitVariable `json:"inputVariables,omitempty"`
 
 	// Optional. Output only. List of output variables declared on the blueprint
 	//  and can be present with their values on the unit status
 	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release.output_variables
-	OutputVariables []UnitVariableObservedState `json:"outputVariables,omitempty"`
+	OutputVariables []UnitVariable `json:"outputVariables,omitempty"`
 
 	// Output only. The unique identifier of the resource. UID is unique in the
 	//  time and space for this resource within the scope of the service. It is
@@ -157,19 +157,3 @@ type ReleaseObservedState struct {
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
 */
-
-// +kcc:observedstate:proto=google.cloud.saasplatform.saasservicemgmt.v1beta1.UnitVariable
-type UnitVariableObservedState struct {
-	// Required. Immutable. Name of the variable from actuation configs.
-	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.UnitVariable.variable
-	Variable *string `json:"variable,omitempty"`
-
-	// Optional. Immutable. Name of a supported variable type. Supported types are
-	//  string, int, bool.
-	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.UnitVariable.type
-	Type *string `json:"type,omitempty"`
-
-	// Optional. String encoded value for the variable.
-	// +kcc:proto:field=google.cloud.saasplatform.saasservicemgmt.v1beta1.UnitVariable.value
-	Value *string `json:"value,omitempty"`
-}

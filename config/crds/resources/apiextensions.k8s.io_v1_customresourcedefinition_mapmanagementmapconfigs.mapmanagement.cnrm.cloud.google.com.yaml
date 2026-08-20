@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: mapmanagementmapconfigs.mapmanagement.cnrm.cloud.google.com
 spec:
@@ -82,6 +83,8 @@ spec:
                       will be used if it exists. Otherwise, no POI density will be
                       applied.
                     format: int32
+                    maximum: 2
+                    minimum: -2
                     type: integer
                   simpleFeatures:
                     description: Optional. The visual feature to use for this map.
@@ -92,6 +95,9 @@ spec:
               mapType:
                 description: Optional. Represents the Map Type of the MapConfig. If
                   this is unset, the default behavior is to use the raster map type.
+                enum:
+                - RASTER
+                - VECTOR
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
@@ -168,10 +174,9 @@ spec:
                 type: string
               observedGeneration:
                 description: ObservedGeneration is the generation of the resource
-                  that was most recently observed by the Config Connector controller.
-                  If this is equal to metadata.generation, then that means that the
-                  current reported status reflects the most recent desired state of
-                  the resource.
+                  that was most recently observed by Config Connector. If this is
+                  equal to metadata.generation, then that means that the current reported
+                  status reflects the most recent desired state of the resource.
                 format: int64
                 type: integer
               observedState:

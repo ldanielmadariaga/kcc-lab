@@ -22,7 +22,8 @@
 
 package v1alpha1
 
-/* unreachable type BackupPolicy
+/* found existing non-generated go type with proto tag "google.cloud.netapp.v1.BackupPolicy", skipping
+
 // +kcc:proto=google.cloud.netapp.v1.BackupPolicy
 type BackupPolicy struct {
 	// Identifier. The resource name of the backup policy.
@@ -62,7 +63,8 @@ type BackupPolicy struct {
 }
 */
 
-/* unreachable type BackupVault
+/* found existing non-generated go type with proto tag "google.cloud.netapp.v1.BackupVault", skipping
+
 // +kcc:proto=google.cloud.netapp.v1.BackupVault
 type BackupVault struct {
 	// Identifier. The resource name of the backup vault.
@@ -95,12 +97,12 @@ type BackupVault struct {
 }
 */
 
+/* unreachable type BackupVault_BackupRetentionPolicy
 // +kcc:proto=google.cloud.netapp.v1.BackupVault.BackupRetentionPolicy
 type BackupVault_BackupRetentionPolicy struct {
 	// Required. Minimum retention duration in days for backups in the backup
 	//  vault.
 	// +kcc:proto:field=google.cloud.netapp.v1.BackupVault.BackupRetentionPolicy.backup_minimum_enforced_retention_days
-	// +required
 	BackupMinimumEnforcedRetentionDays *int32 `json:"backupMinimumEnforcedRetentionDays,omitempty"`
 
 	// Optional. Indicates if the daily backups are immutable.
@@ -127,8 +129,10 @@ type BackupVault_BackupRetentionPolicy struct {
 	// +kcc:proto:field=google.cloud.netapp.v1.BackupVault.BackupRetentionPolicy.manual_backup_immutable
 	ManualBackupImmutable *bool `json:"manualBackupImmutable,omitempty"`
 }
+*/
 
-/* unreachable type BackupPolicyObservedState
+/* found existing non-generated go type with proto tag "google.cloud.netapp.v1.BackupPolicy", skipping
+
 // +kcc:observedstate:proto=google.cloud.netapp.v1.BackupPolicy
 type BackupPolicyObservedState struct {
 	// Output only. The total number of volumes assigned by this backup policy.
@@ -145,7 +149,8 @@ type BackupPolicyObservedState struct {
 }
 */
 
-/* unreachable type BackupVaultObservedState
+/* found existing non-generated go type "BackupVaultObservedState", skipping
+
 // +kcc:observedstate:proto=google.cloud.netapp.v1.BackupVault
 type BackupVaultObservedState struct {
 	// Output only. The backup vault state.

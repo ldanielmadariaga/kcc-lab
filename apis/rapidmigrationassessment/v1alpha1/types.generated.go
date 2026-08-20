@@ -21,7 +21,8 @@
 
 package v1alpha1
 
-/* unreachable type Collector
+/* found existing non-generated go type with proto tag "google.cloud.rapidmigrationassessment.v1.Collector", skipping
+
 // +kcc:proto=google.cloud.rapidmigrationassessment.v1.Collector
 type Collector struct {
 	// name of resource.
@@ -58,12 +59,17 @@ type Collector struct {
 }
 */
 
+/* found existing non-generated go type "GuestOSScan", skipping
+
 // +kcc:proto=google.cloud.rapidmigrationassessment.v1.GuestOsScan
 type GuestOSScan struct {
 	// reference to the corresponding Guest OS Scan in MC Source.
 	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.GuestOsScan.core_source
 	CoreSource *string `json:"coreSource,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "VSphereScan", skipping
 
 // +kcc:proto=google.cloud.rapidmigrationassessment.v1.VSphereScan
 type VSphereScan struct {
@@ -71,8 +77,10 @@ type VSphereScan struct {
 	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.VSphereScan.core_source
 	CoreSource *string `json:"coreSource,omitempty"`
 }
+*/
 
-/* unreachable type CollectorObservedState
+/* found existing non-generated go type with proto tag "google.cloud.rapidmigrationassessment.v1.Collector", skipping
+
 // +kcc:observedstate:proto=google.cloud.rapidmigrationassessment.v1.Collector
 type CollectorObservedState struct {
 	// Output only. Create time stamp.

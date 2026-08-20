@@ -21,7 +21,8 @@
 
 package v1alpha1
 
-/* unreachable type MapConfig
+/* found existing non-generated go type with proto tag "google.maps.mapmanagement.v2beta.MapConfig", skipping
+
 // +kcc:proto=google.maps.mapmanagement.v2beta.MapConfig
 type MapConfig struct {
 
@@ -44,6 +45,8 @@ type MapConfig struct {
 }
 */
 
+/* found existing non-generated go type "MapFeatures", skipping
+
 // +kcc:proto=google.maps.mapmanagement.v2beta.MapFeatures
 type MapFeatures struct {
 	// Optional. The visual feature to use for this map.
@@ -59,8 +62,10 @@ type MapFeatures struct {
 	// +kcc:proto:field=google.maps.mapmanagement.v2beta.MapFeatures.poi_boost_level
 	PoiBoostLevel *int32 `json:"poiBoostLevel,omitempty"`
 }
+*/
 
-/* unreachable type MapConfigObservedState
+/* found existing non-generated go type with proto tag "google.maps.mapmanagement.v2beta.MapConfig", skipping
+
 // +kcc:observedstate:proto=google.maps.mapmanagement.v2beta.MapConfig
 type MapConfigObservedState struct {
 	// Output only. Identifier. Resource name of this MapConfig.

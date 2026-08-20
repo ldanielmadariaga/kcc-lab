@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: translateadaptivemtdatasets.translate.cnrm.cloud.google.com
 spec:
@@ -120,6 +121,8 @@ spec:
             required:
             - location
             - projectRef
+            - sourceLanguageCode
+            - targetLanguageCode
             type: object
           status:
             description: TranslateAdaptiveMtDatasetStatus defines the config connector

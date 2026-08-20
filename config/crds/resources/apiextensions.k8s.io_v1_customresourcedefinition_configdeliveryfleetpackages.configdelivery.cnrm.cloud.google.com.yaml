@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: configdeliveryfleetpackages.configdelivery.cnrm.cloud.google.com
 spec:
@@ -67,24 +68,14 @@ spec:
                 description: Optional. Information around how to handle kubernetes
                   resources at the target clusters when the `FleetPackage` is deleted.
                 type: string
-              labels:
-                additionalProperties:
-                  type: string
-                description: |-
-                  Optional. Labels are attributes that can be set and used by both the
-                   user and by Config Delivery. Labels must meet the following constraints:
-
-                   * Keys and values can contain only lowercase letters, numeric characters,
-                   underscores, and dashes.
-                   * All characters must use UTF-8 encoding, and international characters are
-                   allowed.
-                   * Keys must start with a lowercase letter or international character.
-                   * Each resource is limited to a maximum of 64 labels.
-
-                   Both keys and values are additionally constrained to be <= 128 bytes.
-                type: object
+              location:
+                description: The location that this resource belongs to.
+                type: string
+                x-kubernetes-validations:
+                - message: Location is immutable.
+                  rule: self == oldSelf
               projectRef:
-                description: The project that this resource belongs to.
+                description: The Project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -122,20 +113,70 @@ spec:
                   cloudBuildRepository:
                     description: Information specifying `CloudBuildRepository`.
                     properties:
-                      name:
-                        description: Required. Name of the cloud build repository.
-                          Format is projects/{p}/locations/{l}/connections/{c}/repositories/{r}.
-                        type: string
                       path:
                         description: Optional. path to the directory or file within
                           the repository that contains the kubernetes configuration.
                           If unspecified, path is assumed to the top level root directory
                           of the repository.
                         type: string
-                      serviceAccount:
+                      repositoryRef:
+                        description: Required. Name of the cloud build repository.
+                          Format is projects/{p}/locations/{l}/connections/{c}/repositories/{r}.
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
+                        properties:
+                          external:
+                            description: A reference to an externally managed CloudBuildRepository
+                              resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/connections/{{connectionID}}/repositories/{{RepositoryID}}".
+                            type: string
+                          name:
+                            description: The name of a CloudBuildRepository resource.
+                            type: string
+                          namespace:
+                            description: The namespace of a CloudBuildRepository resource.
+                            type: string
+                        type: object
+                      serviceAccountRef:
                         description: Required. Google service account to use in CloudBuild
                           triggers to fetch and store kubernetes configuration.
-                        type: string
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
+                        properties:
+                          external:
+                            description: The `email` field of an `IAMServiceAccount`
+                              resource.
+                            type: string
+                          name:
+                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                            type: string
+                          namespace:
+                            description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                            type: string
+                        type: object
                       tag:
                         description: Required. git tag of the underlying git repository.
                           The git tag must be in the semantic version format `vX.Y.Z`.
@@ -145,26 +186,46 @@ spec:
                           that will be used to find variants in the repository. Examples:
                           `variants/*.yaml`, `us-*`'
                         type: string
-                    required:
-                    - name
-                    - serviceAccount
-                    - tag
                     type: object
                   resourceBundle:
                     description: Information specifying `ResourceBundle`.
                     properties:
-                      name:
+                      resourceBundleRef:
                         description: Required. Name of the `ResourceBundle`. Format
                           is projects/{p}/locations/{l}/resourceBundles/{r}.
-                        type: string
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
+                        properties:
+                          external:
+                            description: A reference to an externally managed ConfigDeliveryResourceBundle
+                              resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/resourceBundles/{{resourceBundleID}}".
+                            type: string
+                          name:
+                            description: The name of a ConfigDeliveryResourceBundle
+                              resource.
+                            type: string
+                          namespace:
+                            description: The namespace of a ConfigDeliveryResourceBundle
+                              resource.
+                            type: string
+                        type: object
                       tag:
                         description: Required. Tag refers to a version of the release
                           in a `ResourceBundle`. This is a Git tag in the semantic
                           version format `vX.Y.Z`.
                         type: string
-                    required:
-                    - name
-                    - tag
                     type: object
                 type: object
               resourceID:
@@ -200,10 +261,39 @@ spec:
                   fleet:
                     description: The GKE fleet information.
                     properties:
-                      project:
+                      projectRef:
                         description: Required. The host project for the GKE fleet.
                           Format is `projects/{project}`.
-                        type: string
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
+                        properties:
+                          external:
+                            description: The `projectID` field of a project, when
+                              not managed by Config Connector.
+                            type: string
+                          kind:
+                            description: The kind of the Project resource; optional
+                              but must be `Project` if provided.
+                            type: string
+                          name:
+                            description: The `name` field of a `Project` resource.
+                            type: string
+                          namespace:
+                            description: The `namespace` field of a `Project` resource.
+                            type: string
+                        type: object
                       selector:
                         description: Optional. selector allows targeting a subset
                           of fleet members using their labels.
@@ -217,8 +307,6 @@ spec:
                               match.
                             type: object
                         type: object
-                    required:
-                    - project
                     type: object
                 type: object
               variantSelector:
@@ -239,13 +327,10 @@ spec:
                        clusters, you can use "default" (string without any variables) as
                        the variant_name_template.
                     type: string
-                required:
-                - variantNameTemplate
                 type: object
             required:
+            - location
             - projectRef
-            - resourceBundleSelector
-            - variantSelector
             type: object
           status:
             description: ConfigDeliveryFleetPackageStatus defines the config connector

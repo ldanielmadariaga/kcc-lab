@@ -20,7 +20,7 @@ spec:
     plural: bigquerydatapolicies
     shortNames:
     - gcpbigquerydatapolicy
-    - gcpbigquerydatapolicys
+    - gcpbigquerydatapolicies
     singular: bigquerydatapolicy
   preserveUnknownFields: false
   scope: Namespaced
@@ -61,11 +61,55 @@ spec:
           spec:
             description: BigQueryDataPolicySpec defines the desired state of BigQueryDataPolicy
             properties:
-              location:
-                description: The location of this resource.
+              dataMaskingPolicy:
+                description: The data masking policy that specifies the data masking
+                  rule to use.
+                properties:
+                  predefinedExpression:
+                    description: A predefined masking expression.
+                    type: string
+                type: object
+              dataPolicyID:
+                description: User-assigned (human readable) ID of the data policy
+                  that needs to be unique within a project. Used as {data_policy_id}
+                  in part of the resource name.
                 type: string
+              dataPolicyType:
+                description: Type of data policy.
+                type: string
+              location:
+                description: Required. The location of the application.
+                type: string
+              policyTagRef:
+                description: Reference to a Data Catalog Policy Tag resource.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed DataCatalogPolicyTag
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/taxonomies/{{taxonomyID}}/policyTags/{{policytagID}}".
+                    type: string
+                  name:
+                    description: The name of a DataCatalogPolicyTag resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a DataCatalogPolicyTag resource.
+                    type: string
+                type: object
               projectRef:
-                description: The project that this resource belongs to.
+                description: Required. The host project of the application.
                 oneOf:
                 - not:
                     required:

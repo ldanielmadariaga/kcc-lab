@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: dataplexaspecttypes.dataplex.cnrm.cloud.google.com
 spec:
@@ -76,16 +77,12 @@ spec:
               displayName:
                 description: Optional. User friendly display name.
                 type: string
-              etag:
-                description: The service computes this checksum. The client may send
-                  it on update and delete requests to ensure it has an up-to-date
-                  value before proceeding.
+              location:
+                description: The location that this resource belongs to.
                 type: string
-              labels:
-                additionalProperties:
-                  type: string
-                description: Optional. User-defined labels for the AspectType.
-                type: object
+                x-kubernetes-validations:
+                - message: Location is immutable.
+                  rule: self == oldSelf
               metadataTemplate:
                 description: Required. MetadataTemplate of the aspect.
                 properties:
@@ -130,6 +127,8 @@ spec:
                       set name and type in the nested MetadataTemplate. The recommended
                       value for the name field is item, as this isn't used in the
                       actual payload.
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
                   constraints:
                     description: Optional. Specifies the constraints on this field.
                     properties:
@@ -155,9 +154,6 @@ spec:
                           description: Required. Name of the enumvalue. This is the
                             actual value that the aspect can contain.
                           type: string
-                      required:
-                      - index
-                      - name
                       type: object
                     type: array
                   index:
@@ -176,13 +172,17 @@ spec:
                       To specify a primitive field, you only need to set name and
                       type in the nested MetadataTemplate. The recommended value for
                       the name field is item, as this isn't used in the actual payload.
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
                   name:
                     description: Required. The name of the field.
                     type: string
                   recordFields:
                     description: Optional. Field definition. You must specify it if
                       the type is record. It defines the nested fields.
-                    items: {}
+                    items:
+                      type: object
+                      x-kubernetes-preserve-unknown-fields: true
                     type: array
                   type:
                     description: |-
@@ -216,12 +216,9 @@ spec:
                       of an id field defined elsewhere in the MetadataTemplate. Only
                       fields with record type can refer to other fields.
                     type: string
-                required:
-                - name
-                - type
                 type: object
               projectRef:
-                description: The project that this resource belongs to.
+                description: The Project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -257,7 +254,7 @@ spec:
                   will be used.
                 type: string
             required:
-            - metadataTemplate
+            - location
             - projectRef
             type: object
           status:
@@ -308,6 +305,11 @@ spec:
                 properties:
                   createTime:
                     description: Output only. The time when the AspectType was created.
+                    type: string
+                  etag:
+                    description: Optional. This checksum is computed by the service,
+                      and might be sent on update and delete requests to ensure the
+                      client has an up-to-date value before proceeding.
                     type: string
                   transferStatus:
                     description: Output only. Denotes the transfer status of the Aspect

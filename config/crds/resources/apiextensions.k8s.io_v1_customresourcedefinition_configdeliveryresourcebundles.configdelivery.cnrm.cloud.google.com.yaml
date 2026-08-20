@@ -66,13 +66,14 @@ spec:
               description:
                 description: Optional. Human readable description of the `ResourceBundle`.
                 type: string
-              labels:
-                additionalProperties:
-                  type: string
-                description: Optional. Labels as key value pairs.
-                type: object
+              location:
+                description: The location that this resource belongs to.
+                type: string
+                x-kubernetes-validations:
+                - message: Location is immutable.
+                  rule: self == oldSelf
               projectRef:
-                description: The project that this resource belongs to.
+                description: The Project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -108,6 +109,7 @@ spec:
                   the metadata.name will be used.
                 type: string
             required:
+            - location
             - projectRef
             type: object
           status:

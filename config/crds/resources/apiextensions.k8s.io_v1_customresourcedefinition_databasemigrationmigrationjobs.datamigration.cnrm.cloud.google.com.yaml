@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: databasemigrationmigrationjobs.datamigration.cnrm.cloud.google.com
 spec:
@@ -63,7 +64,7 @@ spec:
             description: DatabaseMigrationMigrationJobSpec defines the desired state
               of DatabaseMigrationMigrationJob
             properties:
-              cmekKeyName:
+              cmekKeyNameRef:
                 description: 'The CMEK (customer-managed encryption key) fully qualified
                   key name used for the migration job. This field supports all migration
                   jobs types except for: * Mysql to Mysql (use the cmek field in the
@@ -72,7 +73,32 @@ spec:
                   * PostgreSQL to AlloyDB (use the kms_key_name field in the alloydb
                   connection profile instead). Each Cloud CMEK key has the following
                   format: projects/[PROJECT]/locations/[REGION]/keyRings/[RING]/cryptoKeys/[KEY_NAME]'
-                type: string
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed KMSCryptoKey.
+                      Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
+                    type: string
+                  name:
+                    description: The `name` of a `KMSCryptoKey` resource.
+                    type: string
+                  namespace:
+                    description: The `namespace` of a `KMSCryptoKey` resource.
+                    type: string
+                type: object
               conversionWorkspace:
                 description: The conversion workspace used by the migration.
                 properties:
@@ -83,10 +109,6 @@ spec:
                     description: The resource name (URI) of the conversion workspace.
                     type: string
                 type: object
-              destination:
-                description: Required. The resource name (URI) of the destination
-                  connection profile.
-                type: string
               destinationDatabase:
                 description: The database engine type and provider of the destination.
                 properties:
@@ -95,6 +117,37 @@ spec:
                     type: string
                   provider:
                     description: The database provider.
+                    type: string
+                type: object
+              destinationRef:
+                description: Required. The Connection Profile of the destination connection
+                  profile.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed DatabaseMigrationConnectionProfile
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/connectionProfiles/{{connectionProfileID}}".
+                    type: string
+                  name:
+                    description: The name of a DatabaseMigrationConnectionProfile
+                      resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a DatabaseMigrationConnectionProfile
+                      resource.
                     type: string
                 type: object
               displayName:
@@ -191,10 +244,6 @@ spec:
                 description: The details needed to communicate to the source over
                   Reverse SSH tunnel connectivity.
                 properties:
-                  vm:
-                    description: The name of the virtual machine (Compute Engine)
-                      used as the bastion server for the SSH tunnel.
-                    type: string
                   vmIP:
                     description: Required. The IP of the virtual machine (Compute
                       Engine) used as the bastion server for the SSH tunnel.
@@ -204,18 +253,65 @@ spec:
                       (Compute Engine) used as the bastion server for the SSH tunnel.
                     format: int32
                     type: integer
-                  vpc:
+                  vmRef:
+                    description: The name of the virtual machine (Compute Engine)
+                      used as the bastion server for the SSH tunnel.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
+                    properties:
+                      external:
+                        description: A reference to an externally managed ComputeInstance
+                          resource. Should be in the format "projects/{{projectID}}/zones/{{zone}}/instances/{{instanceID}}".
+                        type: string
+                      name:
+                        description: The name of a ComputeInstance resource.
+                        type: string
+                      namespace:
+                        description: The namespace of a ComputeInstance resource.
+                        type: string
+                    type: object
+                  vpcRef:
                     description: The name of the VPC to peer with the Cloud SQL private
                       network.
-                    type: string
-                required:
-                - vmIP
-                - vmPort
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
+                    properties:
+                      external:
+                        description: A reference to an externally managed ComputeNetwork
+                          resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                        type: string
+                      name:
+                        description: The name of a ComputeNetwork resource.
+                        type: string
+                      namespace:
+                        description: The namespace of a ComputeNetwork resource.
+                        type: string
+                    type: object
                 type: object
-              source:
-                description: Required. The resource name (URI) of the source connection
-                  profile.
-                type: string
               sourceDatabase:
                 description: The database engine type and provider of the source.
                 properties:
@@ -226,13 +322,42 @@ spec:
                     description: The database provider.
                     type: string
                 type: object
-              state:
-                description: The current migration job state.
-                type: string
+              sourceRef:
+                description: Required. The Connection Profile resource of the source
+                  connection profile.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed DatabaseMigrationConnectionProfile
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/connectionProfiles/{{connectionProfileID}}".
+                    type: string
+                  name:
+                    description: The name of a DatabaseMigrationConnectionProfile
+                      resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a DatabaseMigrationConnectionProfile
+                      resource.
+                    type: string
+                type: object
               staticIPConnectivity:
                 description: static ip connectivity data (default, no additional details
                   needed).
                 type: object
+                x-kubernetes-preserve-unknown-fields: true
               type:
                 description: Required. The migration job type.
                 type: string
@@ -240,17 +365,39 @@ spec:
                 description: The details of the VPC network that the source database
                   is located in.
                 properties:
-                  vpc:
+                  vpcRef:
                     description: The name of the VPC network to peer with the Cloud
                       SQL private network.
-                    type: string
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
+                    properties:
+                      external:
+                        description: A reference to an externally managed ComputeNetwork
+                          resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                        type: string
+                      name:
+                        description: The name of a ComputeNetwork resource.
+                        type: string
+                      namespace:
+                        description: The namespace of a ComputeNetwork resource.
+                        type: string
+                    type: object
                 type: object
             required:
-            - destination
             - location
             - projectRef
-            - source
-            - type
             type: object
           status:
             description: DatabaseMigrationMigrationJobStatus defines the config connector
@@ -329,6 +476,9 @@ spec:
                     type: object
                   phase:
                     description: Output only. The current migration job phase.
+                    type: string
+                  state:
+                    description: Output only. The current migration job state.
                     type: string
                   updateTime:
                     description: 'Output only. The timestamp when the migration job

@@ -63,16 +63,39 @@ spec:
             description: EventarcGoogleChannelConfigSpec defines the desired state
               of EventarcGoogleChannelConfig
             properties:
-              cryptoKeyName:
-                description: |-
-                  Optional. Resource name of a KMS crypto key (managed by the user) used to
-                   encrypt/decrypt their event data.
-
-                   It must match the pattern
-                   `projects/*/locations/*/keyRings/*/cryptoKeys/*`.
+              cryptoKeyRef:
+                description: Optional. Resource name of a KMS crypto key (managed
+                  by the user) used to encrypt/decrypt their event data.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed KMSCryptoKey.
+                      Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
+                    type: string
+                  name:
+                    description: The `name` of a `KMSCryptoKey` resource.
+                    type: string
+                  namespace:
+                    description: The `namespace` of a `KMSCryptoKey` resource.
+                    type: string
+                type: object
+              location:
                 type: string
               projectRef:
-                description: The project that this resource belongs to.
+                description: The Project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -104,10 +127,11 @@ spec:
                     type: string
                 type: object
               resourceID:
-                description: The EventarcGoogleChannelConfig name. If not given, the
-                  metadata.name will be used.
+                description: The user-provided name of the EventarcGoogleChannelConfig.
+                  If not specified, the name of the KRM resource will be used.
                 type: string
             required:
+            - location
             - projectRef
             type: object
           status:

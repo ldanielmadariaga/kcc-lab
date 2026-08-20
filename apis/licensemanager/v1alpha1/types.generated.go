@@ -21,16 +21,19 @@
 
 package v1alpha1
 
+/* found existing non-generated go type "BillingInfo", skipping
+
 // +kcc:proto=google.cloud.licensemanager.v1.BillingInfo
 type BillingInfo struct {
 	// Required. This type of billing uses user count for computing total
 	//  charge.
 	// +kcc:proto:field=google.cloud.licensemanager.v1.BillingInfo.user_count_billing
-	// +required
 	UserCountBilling *UserCountBillingInfo `json:"userCountBilling,omitempty"`
 }
+*/
 
-/* unreachable type Configuration
+/* found existing non-generated go type with proto tag "google.cloud.licensemanager.v1.Configuration", skipping
+
 // +kcc:proto=google.cloud.licensemanager.v1.Configuration
 type Configuration struct {
 	// Identifier. name of resource
@@ -39,27 +42,22 @@ type Configuration struct {
 
 	// Required. User given name.
 	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.display_name
-	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Required. Name field (with URL) of the Product offered for SPLA.
 	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.product
-	// +required
 	Product *string `json:"product,omitempty"`
 
 	// Required. LicenseType to be applied for billing
 	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.license_type
-	// +required
 	LicenseType *string `json:"licenseType,omitempty"`
 
 	// Required. Billing information applicable till end of the current month.
 	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.current_billing_info
-	// +required
 	CurrentBillingInfo *BillingInfo `json:"currentBillingInfo,omitempty"`
 
 	// Required. Billing information applicable for next month.
 	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.next_billing_info
-	// +required
 	NextBillingInfo *BillingInfo `json:"nextBillingInfo,omitempty"`
 
 	// Optional. Labels as key value pairs
@@ -68,13 +66,17 @@ type Configuration struct {
 }
 */
 
+/* found existing non-generated go type "UserCountBillingInfo", skipping
+
 // +kcc:proto=google.cloud.licensemanager.v1.UserCountBillingInfo
 type UserCountBillingInfo struct {
 	// Required. Number of users to bill for.
 	// +kcc:proto:field=google.cloud.licensemanager.v1.UserCountBillingInfo.user_count
-	// +required
 	UserCount *int32 `json:"userCount,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "BillingInfoObservedState", skipping
 
 // +kcc:observedstate:proto=google.cloud.licensemanager.v1.BillingInfo
 type BillingInfoObservedState struct {
@@ -86,8 +88,10 @@ type BillingInfoObservedState struct {
 	// +kcc:proto:field=google.cloud.licensemanager.v1.BillingInfo.end_time
 	EndTime *string `json:"endTime,omitempty"`
 }
+*/
 
-/* unreachable type ConfigurationObservedState
+/* found existing non-generated go type with proto tag "google.cloud.licensemanager.v1.Configuration", skipping
+
 // +kcc:observedstate:proto=google.cloud.licensemanager.v1.Configuration
 type ConfigurationObservedState struct {
 	// Required. Billing information applicable till end of the current month.

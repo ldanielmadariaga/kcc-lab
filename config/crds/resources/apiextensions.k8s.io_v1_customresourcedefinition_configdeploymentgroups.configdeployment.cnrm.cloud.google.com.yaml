@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: configdeploymentgroups.configdeployment.cnrm.cloud.google.com
 spec:
@@ -83,16 +84,38 @@ spec:
                       items:
                         type: string
                       type: array
-                    deployment:
-                      description: 'Optional. The name of the deployment to be provisioned.
-                        Format: ''projects/{project_id}/locations/{location}/deployments/{deployment}''.'
-                      type: string
+                    deploymentRef:
+                      description: Optional. The name of the deployment to be provisioned.
+                      oneOf:
+                      - not:
+                          required:
+                          - external
+                        required:
+                        - name
+                      - not:
+                          anyOf:
+                          - required:
+                            - name
+                          - required:
+                            - namespace
+                        required:
+                        - external
+                      properties:
+                        external:
+                          description: A reference to an externally managed ConfigDeployment
+                            resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/deployments/{{deploymentID}}".
+                          type: string
+                        name:
+                          description: The name of a ConfigDeployment resource.
+                          type: string
+                        namespace:
+                          description: The namespace of a ConfigDeployment resource.
+                          type: string
+                      type: object
                     id:
                       description: The id of the deployment unit. Must be unique within
                         the deployment group.
                       type: string
-                  required:
-                  - dependencies
                   type: object
                 type: array
               labels:

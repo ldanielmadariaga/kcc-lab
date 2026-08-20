@@ -61,19 +61,43 @@ spec:
           spec:
             description: EventarcChannelSpec defines the desired state of EventarcChannel
             properties:
-              cryptoKeyName:
+              kmsKeyRef:
                 description: |-
                   Resource name of a KMS crypto key (managed by the user) used to
-                   encrypt/decrypt their event data.
+                  encrypt/decrypt their event data.
 
-                   It must match the pattern
-                   `projects/*/locations/*/keyRings/*/cryptoKeys/*`.
-                type: string
+                  It must match the pattern
+                  `projects/*/locations/*/keyRings/*/cryptoKeys/*`.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed KMSCryptoKey.
+                      Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
+                    type: string
+                  name:
+                    description: The `name` of a `KMSCryptoKey` resource.
+                    type: string
+                  namespace:
+                    description: The `namespace` of a `KMSCryptoKey` resource.
+                    type: string
+                type: object
               location:
-                description: The location of this resource.
                 type: string
               projectRef:
-                description: The project that this resource belongs to.
+                description: The Project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -104,11 +128,36 @@ spec:
                     description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
-              provider:
-                description: 'The name of the event provider (e.g. Eventarc SaaS partner)
+              providerRef:
+                description: The name of the event provider (e.g. Eventarc SaaS partner)
                   associated with the channel. This provider will be granted permissions
-                  to publish events to the channel. Format: `projects/{project}/locations/{location}/providers/{provider_id}`.'
-                type: string
+                  to publish events to the channel.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed EventarcChannel
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/channels/{{channelID}}".
+                    type: string
+                  name:
+                    description: The name of a Provider resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a Provider resource.
+                    type: string
+                type: object
               resourceID:
                 description: The EventarcChannel name. If not given, the metadata.name
                   will be used.

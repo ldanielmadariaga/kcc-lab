@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: dataplexmetadatajobs.dataplex.cnrm.cloud.google.com
 spec:
@@ -66,81 +67,147 @@ spec:
                 description: Export job specification.
                 properties:
                   outputPath:
-                    description: |-
-                      Required. The root path of the Cloud Storage bucket to export the
-                       metadata to, in the format `gs://{bucket}/`. You can optionally specify a
-                       custom prefix after the bucket name, in the format
-                       `gs://{bucket}/{prefix}/`. The maximum length of the custom prefix is 128
-                       characters. Dataplex constructs the object path for the exported files by
-                       using the bucket name and prefix that you provide, followed by a
-                       system-generated path.
-
-                       The bucket must be in the same VPC Service Controls perimeter as the job.
+                    description: Required. The root path of the Cloud Storage bucket
+                      to export the metadata to, in the format `gs://{bucket}/`.
                     type: string
                   scope:
                     description: Required. The scope of the export job.
                     properties:
-                      aspectTypes:
-                        description: The aspect types that are in scope for the export
-                          job, specified as relative resource names in the format
-                          `projects/{project_id_or_number}/locations/{location}/aspectTypes/{aspect_type_id}`.
-                          Only aspects that belong to the specified aspect types are
-                          affected by the job.
+                      aspectTypeRefs:
+                        description: Optional. The aspect types that are in scope
+                          for the export job.
                         items:
-                          type: string
+                          description: AspectTypeRef is a reference to a DataplexAspectType.
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
+                          properties:
+                            external:
+                              description: A reference to an externally managed DataplexAspectType
+                                resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/aspectTypes/{{aspecttypeID}}".
+                              type: string
+                            name:
+                              description: The name of a DataplexAspectType resource.
+                              type: string
+                            namespace:
+                              description: The namespace of a DataplexAspectType resource.
+                              type: string
+                          type: object
                         type: array
-                      entryGroups:
-                        description: |-
-                          The entry groups whose metadata you want to export, in the format
-                           `projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}`.
-                           Only the entries in the specified entry groups are exported.
-
-                           The entry groups must be in the same location and the same VPC Service
-                           Controls perimeter as the job.
-
-                           If you set the job scope to be a list of entry groups, then set the
-                           organization-level export flag to false and don't provide a list of
-                           projects.
+                      entryGroupRefs:
+                        description: Optional. The entry groups whose metadata you
+                          want to export.
                         items:
-                          type: string
+                          description: EntryGroupRef is a reference to a DataplexEntryGroup.
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
+                          properties:
+                            external:
+                              description: A reference to an externally managed DataplexEntryGroup
+                                resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/entryGroups/{{entrygroupID}}".
+                              type: string
+                            name:
+                              description: The name of a DataplexEntryGroup resource.
+                              type: string
+                            namespace:
+                              description: The namespace of a DataplexEntryGroup resource.
+                              type: string
+                          type: object
                         type: array
-                      entryTypes:
-                        description: The entry types that are in scope for the export
-                          job, specified as relative resource names in the format
-                          `projects/{project_id_or_number}/locations/{location}/entryTypes/{entry_type_id}`.
-                          Only entries that belong to the specified entry types are
-                          affected by the job.
+                      entryTypeRefs:
+                        description: Optional. The entry types that are in scope for
+                          the export job.
                         items:
-                          type: string
+                          description: EntryTypeRef is a reference to a DataplexEntryType.
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
+                          properties:
+                            external:
+                              description: A reference to an externally managed DataplexEntryType
+                                resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/entryTypes/{{entrytypeID}}".
+                              type: string
+                            name:
+                              description: The name of a DataplexEntryType resource.
+                              type: string
+                            namespace:
+                              description: The namespace of a DataplexEntryType resource.
+                              type: string
+                          type: object
                         type: array
                       organizationLevel:
-                        description: |-
-                          Whether the metadata export job is an organization-level export job.
-
-                           - If `true`, the job exports the entries from the same organization and
-                           VPC Service Controls perimeter as the job. The project that the job
-                           belongs to determines the VPC Service Controls perimeter. If you set
-                           the job scope to be at the organization level, then don't provide a
-                           list of projects or entry groups.
-                           - If `false`, you must specify a list of projects or a list of entry
-                           groups whose entries you want to export.
-
-                           The default is `false`.
+                        description: Optional. Whether the metadata export job is
+                          an organization-level export job.
                         type: boolean
-                      projects:
-                        description: |-
-                          The projects whose metadata you want to export, in the format
-                           `projects/{project_id_or_number}`. Only the entries from
-                           the specified projects are exported.
-
-                           The projects must be in the same organization and VPC Service Controls
-                           perimeter as the job.
-
-                           If you set the job scope to be a list of projects, then set the
-                           organization-level export flag to false and don't provide a list of
-                           entry groups.
+                      projectRefs:
+                        description: Optional. The projects whose metadata you want
+                          to export.
                         items:
-                          type: string
+                          description: The Project that this resource belongs to.
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
+                          properties:
+                            external:
+                              description: The `projectID` field of a project, when
+                                not managed by Config Connector.
+                              type: string
+                            kind:
+                              description: The kind of the Project resource; optional
+                                but must be `Project` if provided.
+                              type: string
+                            name:
+                              description: The `name` field of a `Project` resource.
+                              type: string
+                            namespace:
+                              description: The `namespace` field of a `Project` resource.
+                              type: string
+                          type: object
                         type: array
                     type: object
                 required:
@@ -157,97 +224,124 @@ spec:
                     description: Required. The sync mode for entries.
                     type: string
                   logLevel:
-                    description: |-
-                      Optional. The level of logs to write to Cloud Logging for this job.
-
-                       Debug-level logs provide highly-detailed information for
-                       troubleshooting, but their increased verbosity could incur [additional
-                       costs](https://cloud.google.com/stackdriver/pricing) that might not be
-                       merited for all jobs.
-
-                       If unspecified, defaults to `INFO`.
+                    description: Optional. The level of logs to write to Cloud Logging
+                      for this job.
                     type: string
                   scope:
                     description: Required. A boundary on the scope of impact that
                       the metadata import job can have.
                     properties:
-                      aspectTypes:
-                        description: |-
-                          Optional. The aspect types that are in scope for the import job,
-                           specified as relative resource names in the format
-                           `projects/{project_number_or_id}/locations/{location_id}/aspectTypes/{aspect_type_id}`.
-                           The job modifies only the aspects that belong to these aspect types.
-
-                           This field is required when creating an aspect-only import job.
-
-                           If the metadata import file attempts to modify an aspect whose type
-                           isn't included in this list, the import job is halted before modifying
-                           any entries or aspects.
-
-                           The location of an aspect type must either match the location of the
-                           job, or the aspect type must be global.
+                      aspectTypeRefs:
+                        description: Optional. The aspect types that are in scope
+                          for the import job. The job modifies only the aspects that
+                          belong to these aspect types.
                         items:
-                          type: string
+                          description: AspectTypeRef is a reference to a DataplexAspectType.
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
+                          properties:
+                            external:
+                              description: A reference to an externally managed DataplexAspectType
+                                resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/aspectTypes/{{aspecttypeID}}".
+                              type: string
+                            name:
+                              description: The name of a DataplexAspectType resource.
+                              type: string
+                            namespace:
+                              description: The namespace of a DataplexAspectType resource.
+                              type: string
+                          type: object
                         type: array
-                      entryGroups:
-                        description: |-
-                          Required. The entry group that is in scope for the import job,
-                           specified as a relative resource name in the format
-                           `projects/{project_number_or_id}/locations/{location_id}/entryGroups/{entry_group_id}`.
-                           Only entries and aspects that belong to the specified entry group are
-                           affected by the job.
-
-                           Must contain exactly one element. The entry group and the job
-                           must be in the same location.
+                      entryGroupRefs:
+                        description: Required. The entry group that is in scope for
+                          the import job. Must contain exactly one element. The entry
+                          group and the job must be in the same location.
                         items:
-                          type: string
+                          description: EntryGroupRef is a reference to a DataplexEntryGroup.
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
+                          properties:
+                            external:
+                              description: A reference to an externally managed DataplexEntryGroup
+                                resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/entryGroups/{{entrygroupID}}".
+                              type: string
+                            name:
+                              description: The name of a DataplexEntryGroup resource.
+                              type: string
+                            namespace:
+                              description: The namespace of a DataplexEntryGroup resource.
+                              type: string
+                          type: object
                         type: array
-                      entryTypes:
-                        description: |-
-                          Required. The entry types that are in scope for the import job,
-                           specified as relative resource names in the format
-                           `projects/{project_number_or_id}/locations/{location_id}/entryTypes/{entry_type_id}`.
-                           The job modifies only the entries and aspects that belong to these
-                           entry types.
-
-                           If the metadata import file attempts to modify an entry whose type
-                           isn't included in this list, the import job is halted before modifying
-                           any entries or aspects.
-
-                           The location of an entry type must either match the location of the
-                           job, or the entry type must be global.
+                      entryTypeRefs:
+                        description: Required. The entry types that are in scope for
+                          the import job. The job modifies only the entries and aspects
+                          that belong to these entry types.
                         items:
-                          type: string
+                          description: EntryTypeRef is a reference to a DataplexEntryType.
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
+                          properties:
+                            external:
+                              description: A reference to an externally managed DataplexEntryType
+                                resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/entryTypes/{{entrytypeID}}".
+                              type: string
+                            name:
+                              description: The name of a DataplexEntryType resource.
+                              type: string
+                            namespace:
+                              description: The namespace of a DataplexEntryType resource.
+                              type: string
+                          type: object
                         type: array
                     required:
-                    - entryGroups
-                    - entryTypes
+                    - entryGroupRefs
+                    - entryTypeRefs
                     type: object
                   sourceCreateTime:
                     description: Optional. The time when the process that created
                       the metadata import files began.
                     type: string
                   sourceStorageURI:
-                    description: |-
-                      Optional. The URI of a Cloud Storage bucket or folder (beginning with
-                       `gs://` and ending with `/`) that contains the metadata import files for
-                       this job.
-
-                       A metadata import file defines the values to set for each of the entries
-                       and aspects in a metadata import job. For more information about how to
-                       create a metadata import file and the file requirements, see [Metadata
-                       import
-                       file](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file).
-
-                       You can provide multiple metadata import files in the same metadata job.
-                       The bucket or folder must contain at least one metadata import file, in
-                       JSON Lines format (either `.json` or `.jsonl` file extension).
-
-                       In `FULL` entry sync mode, don't save the metadata import file in a
-                       folder named `SOURCE_STORAGE_URI/deletions/`.
-
-                       **Caution**: If the metadata import file contains no data, all entries
-                       and aspects that belong to the job's scope are deleted.
+                    description: Optional. The URI of a Cloud Storage bucket or folder
+                      (beginning with `gs://` and ending with `/`) that contains the
+                      metadata import files for this job.
                     type: string
                 required:
                 - aspectSyncMode
@@ -353,10 +447,10 @@ spec:
                   observed in GCP.
                 properties:
                   createTime:
-                    description: Output only. The time when the metadata job was created.
+                    description: Output only. The time when the job was created.
                     type: string
                   exportResult:
-                    description: Output only. Export job result.
+                    description: Output only. Results from the export job.
                     properties:
                       errorMessage:
                         description: Output only. The error message if the metadata
@@ -369,7 +463,7 @@ spec:
                         type: integer
                     type: object
                   importResult:
-                    description: Output only. Import job result.
+                    description: Output only. Results from the import job.
                     properties:
                       createdEntries:
                         description: Output only. The total number of entries that
@@ -401,7 +495,7 @@ spec:
                         type: integer
                     type: object
                   status:
-                    description: Output only. Metadata job status.
+                    description: Output only. Status of the job.
                     properties:
                       completionPercent:
                         description: Output only. Progress tracking.
@@ -419,12 +513,11 @@ spec:
                         type: string
                     type: object
                   uid:
-                    description: Output only. A system-generated, globally unique
-                      ID for the metadata job. If the metadata job is deleted and
-                      then re-created with the same name, this ID is different.
+                    description: Output only. System generated globally unique ID
+                      for the job.
                     type: string
                   updateTime:
-                    description: Output only. The time when the metadata job was updated.
+                    description: Output only. The time when the job was last updated.
                     type: string
                 type: object
             type: object

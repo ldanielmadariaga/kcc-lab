@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,6 +22,23 @@ import (
 
 var MapManagementMapConfigGVK = GroupVersion.WithKind("MapManagementMapConfig")
 
+type MapFeatures struct {
+	// Optional. The visual feature to use for this map.
+	// +kubebuilder:validation:Optional
+	SimpleFeatures []string `json:"simpleFeatures,omitempty"`
+
+	// Optional. POI Boost level, where 0 denotes no boostings and negative values
+	// denotes de-boosting. Boosted POIs are shown at lower zoom than default and
+	// vice versa de-boosted. Currently supports 2 levels of boosting, so the
+	// level is clamped to [-2, 2]. If not specified, the POI density defined in
+	// the style sheet will be used if it exists. Otherwise, no POI density will
+	// be applied.
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:validation:Minimum=-2
+	// +kubebuilder:validation:Maximum=2
+	PoiBoostLevel *int32 `json:"poiBoostLevel,omitempty"`
+}
+
 // MapManagementMapConfigSpec defines the desired state of MapManagementMapConfig
 // +kcc:spec:proto=google.maps.mapmanagement.v2beta.MapConfig
 type MapManagementMapConfigSpec struct {
@@ -30,21 +47,23 @@ type MapManagementMapConfigSpec struct {
 
 	// The MapManagementMapConfig name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Optional. The display name of this MapConfig, as specified by the user.
-	// +kcc:proto:field=google.maps.mapmanagement.v2beta.MapConfig.display_name
+	// +kubebuilder:validation:Optional
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Optional. The description of this MapConfig, as specified by the user.
-	// +kcc:proto:field=google.maps.mapmanagement.v2beta.MapConfig.description
+	// +kubebuilder:validation:Optional
 	Description *string `json:"description,omitempty"`
 
 	// Optional. The Map Features that apply to this Map Config.
-	// +kcc:proto:field=google.maps.mapmanagement.v2beta.MapConfig.map_features
+	// +kubebuilder:validation:Optional
 	MapFeatures *MapFeatures `json:"mapFeatures,omitempty"`
 
 	// Optional. Represents the Map Type of the MapConfig. If this is unset, the
-	//  default behavior is to use the raster map type.
-	// +kcc:proto:field=google.maps.mapmanagement.v2beta.MapConfig.map_type
+	// default behavior is to use the raster map type.
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:validation:Enum=RASTER;VECTOR
 	MapType *string `json:"mapType,omitempty"`
 }
 
@@ -54,7 +73,7 @@ type MapManagementMapConfigStatus struct {
 	   object's current state. */
 	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
 
-	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
+	// ObservedGeneration is the generation of the resource that was most recently observed by Config Connector. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
 	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
 
 	// A unique specifier for the MapManagementMapConfig resource in GCP.
@@ -68,17 +87,14 @@ type MapManagementMapConfigStatus struct {
 // +kcc:observedstate:proto=google.maps.mapmanagement.v2beta.MapConfig
 type MapManagementMapConfigObservedState struct {
 	// Output only. The Map ID of this MapConfig, used to identify the map in
-	//  client applications. This read-only field is generated when the MapConfig
-	//  is created. Output only.
-	// +kcc:proto:field=google.maps.mapmanagement.v2beta.MapConfig.map_id
+	// client applications. This read-only field is generated when the MapConfig
+	// is created. Output only.
 	MapID *string `json:"mapID,omitempty"`
 
 	// Output only. Denotes the creation time of the Map Config. Output only.
-	// +kcc:proto:field=google.maps.mapmanagement.v2beta.MapConfig.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. Denotes the last update time of the Map Config. Output only.
-	// +kcc:proto:field=google.maps.mapmanagement.v2beta.MapConfig.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
@@ -88,6 +104,7 @@ type MapManagementMapConfigObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

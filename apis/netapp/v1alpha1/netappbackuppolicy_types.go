@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	commonv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/common/v1alpha1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,14 +25,11 @@ var NetAppBackupPolicyGVK = GroupVersion.WithKind("NetAppBackupPolicy")
 // NetAppBackupPolicySpec defines the desired state of NetAppBackupPolicy
 // +kcc:spec:proto=google.cloud.netapp.v1.BackupPolicy
 type NetAppBackupPolicySpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	commonv1alpha1.CommonSpec `json:",inline"`
 
-	// The location of this resource.
+	// +required
 	Location string `json:"location"`
 
-	// The NetAppBackupPolicy name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
 	// Number of daily backups to keep. Note that the minimum daily backup limit
 	//  is 2.
 	// +kcc:proto:field=google.cloud.netapp.v1.BackupPolicy.daily_backup_limit
@@ -58,9 +55,10 @@ type NetAppBackupPolicySpec struct {
 	// +kcc:proto:field=google.cloud.netapp.v1.BackupPolicy.enabled
 	Enabled *bool `json:"enabled,omitempty"`
 
-	// Resource labels to represent user provided metadata.
-	// +kcc:proto:field=google.cloud.netapp.v1.BackupPolicy.labels
-	Labels map[string]string `json:"labels,omitempty"`
+	// NOT YET
+	// // Resource labels to represent user provided metadata.
+	// // +kcc:proto:field=google.cloud.netapp.v1.BackupPolicy.labels
+	// Labels map[string]string `json:"labels,omitempty"`
 }
 
 // NetAppBackupPolicyStatus defines the config connector machine state of NetAppBackupPolicy
@@ -97,7 +95,7 @@ type NetAppBackupPolicyObservedState struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpnetappbackuppolicy;gcpnetappbackuppolicys
+// +kubebuilder:resource:categories=gcp,shortName=gcpnetappbackuppolicy;gcpnetappbackuppolicies
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"

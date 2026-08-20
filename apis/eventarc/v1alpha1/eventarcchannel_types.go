@@ -15,38 +15,41 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	connectorsv1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/connector/v1"
+	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var EventarcChannelGVK = GroupVersion.WithKind("EventarcChannel")
 
+type Parent struct {
+	// +required
+	Location string `json:"location"`
+	// +required
+	ProjectRef *refv1beta1.ProjectRef `json:"projectRef,omitempty"`
+}
+
 // EventarcChannelSpec defines the desired state of EventarcChannel
 // +kcc:spec:proto=google.cloud.eventarc.v1.Channel
 type EventarcChannelSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-
-	// The location of this resource.
-	Location string `json:"location"`
-
+	Parent `json:",inline"`
 	// The EventarcChannel name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// The name of the event provider (e.g. Eventarc SaaS partner) associated
-	//  with the channel. This provider will be granted permissions to publish
-	//  events to the channel. Format:
-	//  `projects/{project}/locations/{location}/providers/{provider_id}`.
+	// with the channel. This provider will be granted permissions to publish
+	// events to the channel.
 	// +kcc:proto:field=google.cloud.eventarc.v1.Channel.provider
-	Provider *string `json:"provider,omitempty"`
+	ProviderRef *connectorsv1.ProviderRef `json:"providerRef,omitempty"`
 
 	// Resource name of a KMS crypto key (managed by the user) used to
-	//  encrypt/decrypt their event data.
+	// encrypt/decrypt their event data.
 	//
-	//  It must match the pattern
-	//  `projects/*/locations/*/keyRings/*/cryptoKeys/*`.
+	// It must match the pattern
+	// `projects/*/locations/*/keyRings/*/cryptoKeys/*`.
 	// +kcc:proto:field=google.cloud.eventarc.v1.Channel.crypto_key_name
-	CryptoKeyName *string `json:"cryptoKeyName,omitempty"`
+	KmsKeyRef *refv1beta1.KMSCryptoKeyRef `json:"kmsKeyRef,omitempty"`
 }
 
 // EventarcChannelStatus defines the config connector machine state of EventarcChannel
@@ -69,8 +72,8 @@ type EventarcChannelStatus struct {
 // +kcc:observedstate:proto=google.cloud.eventarc.v1.Channel
 type EventarcChannelObservedState struct {
 	// Output only. Server assigned unique identifier for the channel. The value
-	//  is a UUID4 string and guaranteed to remain unchanged until the resource is
-	//  deleted.
+	// is a UUID4 string and guaranteed to remain unchanged until the resource is
+	// deleted.
 	// +kcc:proto:field=google.cloud.eventarc.v1.Channel.uid
 	Uid *string `json:"uid,omitempty"`
 
@@ -83,8 +86,8 @@ type EventarcChannelObservedState struct {
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. The name of the Pub/Sub topic created and managed by
-	//  Eventarc system as a transport for the event delivery. Format:
-	//  `projects/{project}/topics/{topic_id}`.
+	// Eventarc system as a transport for the event delivery. Format:
+	// `projects/{project}/topics/{topic_id}`.
 	// +kcc:proto:field=google.cloud.eventarc.v1.Channel.pubsub_topic
 	PubsubTopic *string `json:"pubsubTopic,omitempty"`
 
@@ -93,18 +96,19 @@ type EventarcChannelObservedState struct {
 	State *string `json:"state,omitempty"`
 
 	// Output only. The activation token for the channel. The token must be used
-	//  by the provider to register the channel for publishing.
+	// by the provider to register the channel for publishing.
 	// +kcc:proto:field=google.cloud.eventarc.v1.Channel.activation_token
 	ActivationToken *string `json:"activationToken,omitempty"`
 
 	// Output only. Whether or not this Channel satisfies the requirements of
-	//  physical zone separation
+	// physical zone separation
 	// +kcc:proto:field=google.cloud.eventarc.v1.Channel.satisfies_pzs
 	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// TODO(user): make sure the pluralizaiton below is correct
 // +kubebuilder:resource:categories=gcp,shortName=gcpeventarcchannel;gcpeventarcchannels
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"

@@ -8,7 +8,9 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
+    cnrm.cloud.google.com/tf2crd: "true"
   name: computeregionperinstanceconfigs.compute.cnrm.cloud.google.com
 spec:
   group: compute.cnrm.cloud.google.com
@@ -63,21 +65,110 @@ spec:
             description: ComputeRegionPerInstanceConfigSpec defines the desired state
               of ComputeRegionPerInstanceConfig
             properties:
-              fingerprint:
-                description: Fingerprint of this per-instance config. This field can
-                  be used in optimistic locking. It is ignored when inserting a per-instance
-                  config. An up-to-date fingerprint must be provided in order to update
-                  an existing per-instance configuration or the field needs to be
-                  unset.
+              minimalAction:
+                description: 'The minimal action to perform on the instance during
+                  an update. Default is ''NONE''. Possible values are: * REPLACE *
+                  RESTART * REFRESH * NONE.'
+                type: string
+              mostDisruptiveAllowedAction:
+                description: 'The most disruptive action to perform on the instance
+                  during an update. Default is ''REPLACE''. Possible values are: *
+                  REPLACE * RESTART * REFRESH * NONE.'
                 type: string
               preservedState:
-                description: The intended preserved state for the given instance.
-                  Does not contain preserved state generated from a stateful policy.
+                description: The preserved state for this instance.
                 properties:
+                  disk:
+                    description: Stateful disks for the instance.
+                    items:
+                      properties:
+                        deleteRule:
+                          description: 'A value that prescribes what should happen
+                            to the stateful disk when the VM instance is deleted.
+                            The available options are ''NEVER'' and ''ON_PERMANENT_INSTANCE_DELETION''.
+                            ''NEVER'' - detach the disk when the VM is deleted, but
+                            do not delete the disk. ''ON_PERMANENT_INSTANCE_DELETION''
+                            will delete the stateful disk when the VM is permanently
+                            deleted from the instance group. Default value: "NEVER"
+                            Possible values: ["NEVER", "ON_PERMANENT_INSTANCE_DELETION"].'
+                          type: string
+                        deviceName:
+                          description: A unique device name that is reflected into
+                            the /dev/ tree of a Linux operating system running within
+                            the instance.
+                          type: string
+                        mode:
+                          description: 'The mode of the disk. Default value: "READ_WRITE"
+                            Possible values: ["READ_ONLY", "READ_WRITE"].'
+                          type: string
+                        source:
+                          description: The URI of an existing persistent disk to attach
+                            under the specified device-name in the format 'projects/project-id/zones/zone/disks/disk-name'.
+                          type: string
+                      required:
+                      - deviceName
+                      - source
+                      type: object
+                    type: array
+                  externalIp:
+                    description: Preserved external IPs defined for this instance.
+                      This map is keyed with the name of the network interface.
+                    items:
+                      properties:
+                        autoDelete:
+                          description: 'These stateful IPs will never be released
+                            during autohealing, update or VM instance recreate operations.
+                            This flag is used to configure if the IP reservation should
+                            be deleted after it is no longer used by the group, e.g.
+                            when the given instance or the whole group is deleted.
+                            Default value: "NEVER" Possible values: ["NEVER", "ON_PERMANENT_INSTANCE_DELETION"].'
+                          type: string
+                        interfaceName:
+                          type: string
+                        ipAddress:
+                          description: Ip address representation.
+                          properties:
+                            address:
+                              description: The URL of the reservation for this IP
+                                address.
+                              type: string
+                          type: object
+                      required:
+                      - interfaceName
+                      type: object
+                    type: array
+                  internalIp:
+                    description: Preserved internal IPs defined for this instance.
+                      This map is keyed with the name of the network interface.
+                    items:
+                      properties:
+                        autoDelete:
+                          description: 'These stateful IPs will never be released
+                            during autohealing, update or VM instance recreate operations.
+                            This flag is used to configure if the IP reservation should
+                            be deleted after it is no longer used by the group, e.g.
+                            when the given instance or the whole group is deleted.
+                            Default value: "NEVER" Possible values: ["NEVER", "ON_PERMANENT_INSTANCE_DELETION"].'
+                          type: string
+                        interfaceName:
+                          type: string
+                        ipAddress:
+                          description: Ip address representation.
+                          properties:
+                            address:
+                              description: The URL of the reservation for this IP
+                                address.
+                              type: string
+                          type: object
+                      required:
+                      - interfaceName
+                      type: object
+                    type: array
                   metadata:
                     additionalProperties:
                       type: string
-                    description: Preserved metadata defined for this instance.
+                    description: Preserved metadata defined for this instance. This
+                      is a list of key->value pairs.
                     type: object
                 type: object
               projectRef:
@@ -101,10 +192,6 @@ spec:
                     description: The `projectID` field of a project, when not managed
                       by Config Connector.
                     type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
                   name:
                     description: The `name` field of a `Project` resource.
                     type: string
@@ -112,17 +199,52 @@ spec:
                     description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
-              resourceID:
-                description: The ComputeRegionPerInstanceConfig name. If not given,
-                  the metadata.name will be used.
+              region:
+                description: Immutable. Region where the containing instance group
+                  manager is located.
                 type: string
-              status:
-                description: The status of applying this per-instance configuration
-                  on the corresponding managed instance. Check the Status enum for
-                  the list of possible values.
+              regionInstanceGroupManagerRef:
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: The external representation of the referent.
+                    type: string
+                  name:
+                    description: The name of the referent.
+                    type: string
+                  namespace:
+                    description: The namespace of the referent.
+                    type: string
+                type: object
+              removeInstanceStateOnDestroy:
+                description: When true, deleting this config will immediately remove
+                  any specified state from the underlying instance. When false, deleting
+                  this config will *not* immediately remove any state from the underlying
+                  instance. State will be removed on the next instance recreation
+                  or update.
+                type: boolean
+              resourceID:
+                description: Immutable. Optional. The name of the resource. Used for
+                  creation and acquisition. When unset, the value of `metadata.name`
+                  is used as the default.
                 type: string
             required:
             - projectRef
+            - region
+            - regionInstanceGroupManagerRef
             type: object
           status:
             description: ComputeRegionPerInstanceConfigStatus defines the config connector
@@ -130,7 +252,7 @@ spec:
             properties:
               conditions:
                 description: Conditions represent the latest available observations
-                  of the object's current state.
+                  of the ComputeRegionPerInstanceConfig's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -154,10 +276,6 @@ spec:
                       type: string
                   type: object
                 type: array
-              externalRef:
-                description: A unique specifier for the ComputeRegionPerInstanceConfig
-                  resource in GCP.
-                type: string
               observedGeneration:
                 description: ObservedGeneration is the generation of the resource
                   that was most recently observed by the Config Connector controller.
@@ -166,10 +284,6 @@ spec:
                   the resource.
                 format: int64
                 type: integer
-              observedState:
-                description: ObservedState is the state of the resource as most recently
-                  observed in GCP.
-                type: object
             type: object
         required:
         - spec

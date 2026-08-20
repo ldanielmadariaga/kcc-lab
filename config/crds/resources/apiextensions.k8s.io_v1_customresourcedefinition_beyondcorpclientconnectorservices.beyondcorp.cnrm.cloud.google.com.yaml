@@ -79,8 +79,6 @@ spec:
                         description: Required. The name of the peered VPC owned by
                           the consumer project.
                         type: string
-                    required:
-                    - networkVPC
                     type: object
                 type: object
               ingress:
@@ -102,18 +100,12 @@ spec:
                               description: Required. The network mask of the subnet
                                 for which the packet is routed to the ClientGateway.
                               type: string
-                          required:
-                          - address
-                          - netmask
                           type: object
                         type: array
                       transportProtocol:
                         description: Required. Immutable. The transport protocol used
                           between the client and the server.
                         type: string
-                    required:
-                    - destinationRoutes
-                    - transportProtocol
                     type: object
                 type: object
               location:

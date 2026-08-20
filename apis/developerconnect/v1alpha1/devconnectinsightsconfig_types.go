@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	apphubv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/apphub/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
@@ -27,36 +28,25 @@ var DevConnectInsightsConfigGVK = GroupVersion.WithKind("DevConnectInsightsConfi
 // +kcc:spec:proto=google.cloud.developerconnect.v1.InsightsConfig
 type DevConnectInsightsConfigSpec struct {
 	// The project that this resource belongs to.
+	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The location of this resource.
+	// Immutable. The location of this resource.
+	// +required
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
 	Location *string `json:"location"`
 
 	// The DevConnectInsightsConfig name. If not given, the metadata.name will be used.
+	// +optional
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Optional. The name of the App Hub Application.
-	//  Format:
-	//  projects/{project}/locations/{location}/applications/{application}
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.app_hub_application
-	AppHubApplication *string `json:"appHubApplication,omitempty"`
+	// +optional
+	AppHubApplicationRef *apphubv1beta1.ApplicationRef `json:"appHubApplicationRef,omitempty"`
 
 	// Optional. The artifact configurations of the artifacts that are deployed.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.artifact_configs
+	// +optional
 	ArtifactConfigs []ArtifactConfig `json:"artifactConfigs,omitempty"`
-
-	// Optional. Output only. The state of the InsightsConfig.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.state
-	State *string `json:"state,omitempty"`
-
-	// Optional. User specified annotations. See
-	//  https://google.aip.dev/148#annotations for more details such as format and
-	//  size limitations.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.annotations
-	Annotations map[string]string `json:"annotations,omitempty"`
-
-	// Optional. Set of labels associated with an InsightsConfig.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.labels
-	Labels map[string]string `json:"labels,omitempty"`
 }
 
 // DevConnectInsightsConfigStatus defines the config connector machine state of DevConnectInsightsConfig
@@ -79,30 +69,34 @@ type DevConnectInsightsConfigStatus struct {
 // +kcc:observedstate:proto=google.cloud.developerconnect.v1.InsightsConfig
 type DevConnectInsightsConfigObservedState struct {
 	// Output only. [Output only] Create timestamp
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.create_time
+	// +optional
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. [Output only] Update timestamp
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.update_time
+	// +optional
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. The runtime configurations where the application is deployed.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.runtime_configs
+	// +optional
 	RuntimeConfigs []RuntimeConfigObservedState `json:"runtimeConfigs,omitempty"`
+
+	// Output only. The state of the InsightsConfig.
+	// +optional
+	State *string `json:"state,omitempty"`
 
 	// Output only. Reconciling (https://google.aip.dev/128#reconciliation).
 	//  Set to true if the current state of InsightsConfig does not match the
 	//  user's intended state, and the service is actively updating the resource to
 	//  reconcile them. This can happen due to user-triggered updates or
 	//  system actions like failover or maintenance.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.reconciling
+	// +optional
 	Reconciling *bool `json:"reconciling,omitempty"`
 
 	// Output only. Any errors that occurred while setting up the InsightsConfig.
 	//  Each error will be in the format: `field_name: error_message`, e.g.
 	//  GetAppHubApplication: Permission denied while getting App Hub
 	//  application. Please grant permissions to the P4SA.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.errors
+	// +optional
 	Errors []common.Status `json:"errors,omitempty"`
 }
 
@@ -112,6 +106,7 @@ type DevConnectInsightsConfigObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

@@ -72,9 +72,6 @@ spec:
                   version:
                     description: Required. Engine named version, for example 12.c.1.
                     type: string
-                required:
-                - engine
-                - version
                 type: object
               displayName:
                 description: Optional. The display name for the workspace.
@@ -89,7 +86,8 @@ spec:
                   skip_triggers=false, ignore_non_table_synonyms=true'
                 type: object
               location:
-                description: The location of this resource.
+                description: Immutable. The location where the alloydb cluster should
+                  reside.
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
@@ -136,15 +134,10 @@ spec:
                   version:
                     description: Required. Engine named version, for example 12.c.1.
                     type: string
-                required:
-                - engine
-                - version
                 type: object
             required:
-            - destination
             - location
             - projectRef
-            - source
             type: object
           status:
             description: CloudDMSConversionWorkspaceStatus defines the config connector

@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: saasservicemgmtreleases.saasservicemgmt.cnrm.cloud.google.com
 spec:
@@ -62,17 +63,6 @@ spec:
           spec:
             description: SaasServiceMgmtReleaseSpec defines the desired state of SaasServiceMgmtRelease
             properties:
-              annotations:
-                additionalProperties:
-                  type: string
-                description: |-
-                  Optional. Annotations is an unstructured key-value map stored with a
-                   resource that may be set by external tools to store and retrieve arbitrary
-                   metadata. They are not queryable and should be preserved when modifying
-                   objects.
-
-                   More info: https://kubernetes.io/docs/user-guide/annotations
-                type: object
               blueprint:
                 description: Optional. Blueprints are OCI Images that contain all
                   of the artifacts needed to provision a unit.
@@ -98,19 +88,14 @@ spec:
                       description: Required. Immutable. Name of the variable from
                         actuation configs.
                       type: string
-                  required:
-                  - variable
                   type: object
                 type: array
-              labels:
-                additionalProperties:
-                  type: string
-                description: Optional. The labels on the resource, which can be used
-                  for categorization. similar to Kubernetes resource labels.
-                type: object
               location:
-                description: The location of this resource.
+                description: Immutable. The location of this resource.
                 type: string
+                x-kubernetes-validations:
+                - message: Location field is immutable
+                  rule: self == oldSelf
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -164,6 +149,9 @@ spec:
                 description: Required. Immutable. Reference to the UnitKind this Release
                   corresponds to (required and immutable once created).
                 type: string
+                x-kubernetes-validations:
+                - message: UnitKind field is immutable
+                  rule: self == oldSelf
             required:
             - location
             - projectRef

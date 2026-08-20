@@ -17,6 +17,7 @@ package v1alpha1
 import (
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -25,14 +26,17 @@ var NotebooksEnvironmentGVK = GroupVersion.WithKind("NotebooksEnvironment")
 // NotebooksEnvironmentSpec defines the desired state of NotebooksEnvironment
 // +kcc:spec:proto=google.cloud.notebooks.v1.Environment
 type NotebooksEnvironmentSpec struct {
-	// The project that this resource belongs to.
+	// The Project that this resource belongs to.
+	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The location of this resource.
+	// The location for the resource.
+	// +required
 	Location string `json:"location"`
 
 	// The NotebooksEnvironment name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Display name of this environment for the UI.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Environment.display_name
 	DisplayName *string `json:"displayName,omitempty"`
@@ -43,7 +47,7 @@ type NotebooksEnvironmentSpec struct {
 
 	// Use a Compute Engine VM image to start the notebook instance.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Environment.vm_image
-	VMImage *VMImage `json:"vmImage,omitempty"`
+	VmImage *VMImage `json:"vmImage,omitempty"`
 
 	// Use a container image to start the notebook instance.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Environment.container_image
@@ -75,6 +79,13 @@ type NotebooksEnvironmentStatus struct {
 // NotebooksEnvironmentObservedState is the state of the NotebooksEnvironment resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.notebooks.v1.Environment
 type NotebooksEnvironmentObservedState struct {
+	// Output only. Name of this environment.
+	//  Format:
+	//  `projects/{project_id}/locations/{location}/environments/{environment_id}`
+	// +kcc:proto:field=google.cloud.notebooks.v1.Environment.name
+	// NOTYET: same as externalRef
+	// Name *string `json:"name,omitempty"`
+
 	// Output only. The time at which this environment was created.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Environment.create_time
 	CreateTime *string `json:"createTime,omitempty"`

@@ -20,7 +20,7 @@ spec:
     plural: netappbackuppolicies
     shortNames:
     - gcpnetappbackuppolicy
-    - gcpnetappbackuppolicys
+    - gcpnetappbackuppolicies
     singular: netappbackuppolicy
   preserveUnknownFields: false
   scope: Namespaced
@@ -75,13 +75,7 @@ spec:
                   attached and enforced on volume level. If not specified, default
                   is true.
                 type: boolean
-              labels:
-                additionalProperties:
-                  type: string
-                description: Resource labels to represent user provided metadata.
-                type: object
               location:
-                description: The location of this resource.
                 type: string
               monthlyBackupLimit:
                 description: Number of monthly backups to keep. Note that the sum
@@ -89,7 +83,7 @@ spec:
                 format: int32
                 type: integer
               projectRef:
-                description: The project that this resource belongs to.
+                description: The Project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -121,7 +115,7 @@ spec:
                     type: string
                 type: object
               resourceID:
-                description: The NetAppBackupPolicy name. If not given, the metadata.name
+                description: The GCP resource identifier. If not given, the metadata.name
                   will be used.
                 type: string
               weeklyBackupLimit:

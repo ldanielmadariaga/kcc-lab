@@ -61,9 +61,6 @@ spec:
           spec:
             description: AutoMLDatasetSpec defines the desired state of AutoMLDataset
             properties:
-              createTime:
-                description: Output only. Timestamp when this dataset was created.
-                type: string
               description:
                 description: User-provided description of the dataset. The description
                   can be up to 25000 characters long.
@@ -74,14 +71,6 @@ spec:
                   ASCII Latin letters A-Z and a-z, underscores (_), and ASCII digits
                   0-9.
                 type: string
-              etag:
-                description: Used to perform consistent read-modify-write updates.
-                  If not set, a blind "overwrite" update happens.
-                type: string
-              exampleCount:
-                description: Output only. The number of examples in the dataset.
-                format: int32
-                type: integer
               imageClassificationDatasetMetadata:
                 description: Metadata for a dataset used for image classification.
                 properties:
@@ -94,6 +83,7 @@ spec:
               imageObjectDetectionDatasetMetadata:
                 description: Metadata for a dataset used for image object detection.
                 type: object
+                x-kubernetes-preserve-unknown-fields: true
               labels:
                 additionalProperties:
                   type: string
@@ -152,10 +142,13 @@ spec:
                   classificationType:
                     description: Required. Type of the classification problem.
                     type: string
+                required:
+                - classificationType
                 type: object
               textExtractionDatasetMetadata:
                 description: Metadata for a dataset used for text extraction.
                 type: object
+                x-kubernetes-preserve-unknown-fields: true
               textSentimentDatasetMetadata:
                 description: Metadata for a dataset used for text sentiment.
                 properties:
@@ -168,6 +161,8 @@ spec:
                       sentiment_max value must be between 1 and 10 (inclusive).
                     format: int32
                     type: integer
+                required:
+                - sentimentMax
                 type: object
               translationDatasetMetadata:
                 description: Metadata for a dataset used for translation.
@@ -185,6 +180,7 @@ spec:
                 - targetLanguageCode
                 type: object
             required:
+            - displayName
             - location
             - projectRef
             type: object
@@ -233,6 +229,17 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. Timestamp when this dataset was created.
+                    type: string
+                  etag:
+                    description: Used to perform consistent read-modify-write updates.
+                    type: string
+                  exampleCount:
+                    description: Output only. The number of examples in the dataset.
+                    format: int32
+                    type: integer
                 type: object
             type: object
         required:

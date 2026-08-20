@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: dlpdiscoveryconfigs.dlp.cnrm.cloud.google.com
 spec:
@@ -170,10 +171,34 @@ spec:
                                   type: string
                               type: object
                           type: object
-                        topic:
+                        topicRef:
                           description: Cloud Pub/Sub topic to send notifications to.
-                            Format is projects/{project}/topics/{topic}.
-                          type: string
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
+                          properties:
+                            external:
+                              description: A reference to an externally managed PubSubTopic
+                                resource. Should be in the format "projects/{{projectID}}/topics/{{topicID}}".
+                              type: string
+                            name:
+                              description: The name of a PubSubTopic resource.
+                              type: string
+                            namespace:
+                              description: The namespace of a PubSubTopic resource.
+                              type: string
+                          type: object
                       type: object
                     publishToChronicle:
                       description: Publishes generated data profiles to Google Security
@@ -255,23 +280,7 @@ spec:
                 description: Display name (max 100 chars)
                 type: string
               inspectTemplates:
-                description: |-
-                  Detection logic for profile generation.
-
-                   Not all template features are used by Discovery. FindingLimits,
-                   include_quote and exclude_info_types have no impact on
-                   Discovery.
-
-                   Multiple templates may be provided if there is data in multiple regions.
-                   At most one template must be specified per-region (including "global").
-                   Each region is scanned using the applicable template. If no region-specific
-                   template is specified, but a "global" template is specified, it will be
-                   copied to that region and used instead. If no global or region-specific
-                   template is provided for a region with data, that region's data will not be
-                   scanned.
-
-                   For more information, see
-                   https://cloud.google.com/sensitive-data-protection/docs/data-profiles#data-residency.
+                description: Detection logic for profile generation.
                 items:
                   type: string
                 type: array
@@ -548,8 +557,6 @@ spec:
                                   type: object
                               type: object
                           type: object
-                      required:
-                      - filter
                       type: object
                     cloudSQLTarget:
                       description: Cloud SQL target for Discovery. The first target
@@ -650,11 +657,6 @@ spec:
                                     config, then this must match the config's project
                                     ID.
                                   type: string
-                              required:
-                              - database
-                              - databaseResource
-                              - instance
-                              - projectID
                               type: object
                             others:
                               description: Catch-all. This should always be the last
@@ -703,8 +705,6 @@ spec:
                                   type: array
                               type: object
                           type: object
-                      required:
-                      - filter
                       type: object
                     cloudStorageTarget:
                       description: Cloud Storage target for Discovery. The first target
@@ -734,9 +734,6 @@ spec:
                                   items:
                                     type: string
                                   type: array
-                              required:
-                              - includedBucketAttributes
-                              - includedObjectAttributes
                               type: object
                             createdAfter:
                               description: Optional. File store must have been created
@@ -772,9 +769,6 @@ spec:
                                     config, then this must match the config's project
                                     id.
                                   type: string
-                              required:
-                              - bucketName
-                              - projectID
                               type: object
                             collection:
                               description: Optional. A specific set of buckets for
@@ -810,8 +804,6 @@ spec:
                                             type: object
                                         type: object
                                       type: array
-                                  required:
-                                  - patterns
                                   type: object
                               type: object
                             others:
@@ -848,8 +840,6 @@ spec:
                                 to never.
                               type: string
                           type: object
-                      required:
-                      - filter
                       type: object
                     otherCloudTarget:
                       description: Other clouds target for discovery. The first target
@@ -953,14 +943,10 @@ spec:
                                         accountID:
                                           description: Required. AWS account ID.
                                           type: string
-                                      required:
-                                      - accountID
                                       type: object
                                     bucketName:
                                       description: Required. The bucket name.
                                       type: string
-                                  required:
-                                  - bucketName
                                   type: object
                               type: object
                           type: object
@@ -988,9 +974,6 @@ spec:
                                 changes. Defaults to never.
                               type: string
                           type: object
-                      required:
-                      - dataSourceType
-                      - filter
                       type: object
                     secretsTarget:
                       description: Discovery target that looks for credentials and
@@ -1053,8 +1036,6 @@ spec:
                                             type: string
                                         type: object
                                       type: array
-                                  required:
-                                  - patterns
                                   type: object
                               type: object
                             others:
@@ -1074,8 +1055,6 @@ spec:
                                     If set within a project-level configuration, the
                                     specified resource must be within the project.
                                   type: string
-                              required:
-                              - datasetResourceName
                               type: object
                           type: object
                         generationCadence:
@@ -1101,8 +1080,6 @@ spec:
                                 datasets have changed. Defaults to never.
                               type: string
                           type: object
-                      required:
-                      - filter
                       type: object
                   type: object
                 type: array

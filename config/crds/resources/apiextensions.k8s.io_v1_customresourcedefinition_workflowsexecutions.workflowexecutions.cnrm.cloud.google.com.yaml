@@ -84,10 +84,10 @@ spec:
                   but are overridden by any labels associated with the execution.
                 type: object
               location:
-                description: The location of this resource.
+                description: Required. The location of the application.
                 type: string
               projectRef:
-                description: The project that this resource belongs to.
+                description: Required. The host project of the application.
                 oneOf:
                 - not:
                     required:
@@ -122,9 +122,34 @@ spec:
                 description: The WorkflowsExecution name. If not given, the metadata.name
                   will be used.
                 type: string
-            required:
-            - location
-            - projectRef
+              workflowRef:
+                description: Required.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed WorkflowsWorkflow
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/workflows/{{workflowID}}".
+                    type: string
+                  name:
+                    description: The name of a WorkflowsWorkflow resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a WorkflowsWorkflow resource.
+                    type: string
+                type: object
             type: object
           status:
             description: WorkflowsExecutionStatus defines the config connector machine

@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,14 +25,17 @@ var NotebooksScheduleGVK = GroupVersion.WithKind("NotebooksSchedule")
 // NotebooksScheduleSpec defines the desired state of NotebooksSchedule
 // +kcc:spec:proto=google.cloud.notebooks.v1.Schedule
 type NotebooksScheduleSpec struct {
-	// The project that this resource belongs to.
+	// The Project that this resource belongs to.
+	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +required
 	Location *string `json:"location"`
 
 	// The NotebooksSchedule name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// A brief description of this environment.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Schedule.description
 	Description *string `json:"description,omitempty"`
@@ -99,7 +102,7 @@ type NotebooksScheduleObservedState struct {
 	// Output only. The most recent execution names triggered from this schedule and their
 	//  corresponding states.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Schedule.recent_executions
-	RecentExecutions []ExecutionObservedState `json:"recentExecutions,omitempty"`
+	RecentExecutions []NotebooksExecutionObservedState `json:"recentExecutions,omitempty"`
 }
 
 // +genclient
@@ -108,6 +111,7 @@ type NotebooksScheduleObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

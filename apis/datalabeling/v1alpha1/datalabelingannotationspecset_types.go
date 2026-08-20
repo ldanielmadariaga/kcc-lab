@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,25 +30,21 @@ type DataLabelingAnnotationSpecSetSpec struct {
 
 	// The DataLabelingAnnotationSpecSet name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Required. The display name for AnnotationSpecSet that you define when you
 	//  create it. Maximum of 64 characters.
-	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.AnnotationSpecSet.display_name
+	// +kubebuilder:validation:Required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Optional. User-provided description of the annotation specification set.
 	//  The description can be up to 10,000 characters long.
-	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.AnnotationSpecSet.description
+	// +kubebuilder:validation:Optional
 	Description *string `json:"description,omitempty"`
 
 	// Required. The array of AnnotationSpecs that you define when you create the
 	//  AnnotationSpecSet. These are the possible labels for the labeling task.
-	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.AnnotationSpecSet.annotation_specs
+	// +kubebuilder:validation:Required
 	AnnotationSpecs []AnnotationSpec `json:"annotationSpecs,omitempty"`
-
-	// Output only. The names of any related resources that are blocking changes
-	//  to the annotation spec set.
-	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.AnnotationSpecSet.blocking_resources
-	BlockingResources []string `json:"blockingResources,omitempty"`
 }
 
 // DataLabelingAnnotationSpecSetStatus defines the config connector machine state of DataLabelingAnnotationSpecSet
@@ -70,6 +66,9 @@ type DataLabelingAnnotationSpecSetStatus struct {
 // DataLabelingAnnotationSpecSetObservedState is the state of the DataLabelingAnnotationSpecSet resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.datalabeling.v1beta1.AnnotationSpecSet
 type DataLabelingAnnotationSpecSetObservedState struct {
+	// Output only. The names of any related resources that are blocking changes
+	//  to the annotation spec set.
+	BlockingResources []string `json:"blockingResources,omitempty"`
 }
 
 // +genclient
@@ -78,6 +77,7 @@ type DataLabelingAnnotationSpecSetObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

@@ -67,18 +67,14 @@ spec:
               displayName:
                 description: Optional. User friendly display name.
                 type: string
-              etag:
-                description: This checksum is computed by the service, and might be
-                  sent on update and delete requests to ensure the client has an up-to-date
-                  value before proceeding.
+              location:
+                description: The location that this resource belongs to.
                 type: string
-              labels:
-                additionalProperties:
-                  type: string
-                description: Optional. User-defined labels for the EntryGroup.
-                type: object
+                x-kubernetes-validations:
+                - message: Location is immutable.
+                  rule: self == oldSelf
               projectRef:
-                description: The project that this resource belongs to.
+                description: The Project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -114,6 +110,7 @@ spec:
                   will be used.
                 type: string
             required:
+            - location
             - projectRef
             type: object
           status:

@@ -22,12 +22,13 @@
 
 package v1alpha1
 
-/* unreachable type CertificateIssuanceConfig
+/* found existing non-generated go type with proto tag "google.cloud.certificatemanager.v1.CertificateIssuanceConfig", skipping
+
 // +kcc:proto=google.cloud.certificatemanager.v1.CertificateIssuanceConfig
 type CertificateIssuanceConfig struct {
 	// A user-defined name of the certificate issuance config.
 	//  CertificateIssuanceConfig names must be unique globally and match pattern
-	//  `projects/-*-/locations/-*-/certificateIssuanceConfigs/-*`.
+	//  `projects/* /locations/* /certificateIssuanceConfigs/*`.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.name
 	Name *string `json:"name,omitempty"`
 
@@ -42,24 +43,20 @@ type CertificateIssuanceConfig struct {
 	// Required. The CA that issues the workload certificate. It includes the CA
 	//  address, type, authentication to CA service, etc.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.certificate_authority_config
-	// +required
 	CertificateAuthorityConfig *CertificateIssuanceConfig_CertificateAuthorityConfig `json:"certificateAuthorityConfig,omitempty"`
 
 	// Required. Workload certificate lifetime requested.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.lifetime
-	// +required
 	Lifetime *string `json:"lifetime,omitempty"`
 
 	// Required. Specifies the percentage of elapsed time of the certificate
 	//  lifetime to wait before renewing the certificate. Must be a number between
 	//  1-99, inclusive.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.rotation_window_percentage
-	// +required
 	RotationWindowPercentage *int32 `json:"rotationWindowPercentage,omitempty"`
 
 	// Required. The key algorithm to use when generating the private key.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.key_algorithm
-	// +required
 	KeyAlgorithm *string `json:"keyAlgorithm,omitempty"`
 }
 */
@@ -71,22 +68,25 @@ type CertificateIssuanceConfig_CertificateAuthorityConfig struct {
 	CertificateAuthorityServiceConfig *CertificateIssuanceConfig_CertificateAuthorityConfig_CertificateAuthorityServiceConfig `json:"certificateAuthorityServiceConfig,omitempty"`
 }
 
+/* found existing non-generated go type "CertificateIssuanceConfig_CertificateAuthorityConfig_CertificateAuthorityServiceConfig", skipping
+
 // +kcc:proto=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.CertificateAuthorityConfig.CertificateAuthorityServiceConfig
 type CertificateIssuanceConfig_CertificateAuthorityConfig_CertificateAuthorityServiceConfig struct {
 	// Required. A CA pool resource used to issue a certificate.
 	//  The CA pool string has a relative resource path following the form
 	//  "projects/{project}/locations/{location}/caPools/{ca_pool}".
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.CertificateAuthorityConfig.CertificateAuthorityServiceConfig.ca_pool
-	// +required
 	CAPool *string `json:"caPool,omitempty"`
 }
+*/
 
-/* unreachable type TrustConfig
+/* found existing non-generated go type with proto tag "google.cloud.certificatemanager.v1.TrustConfig", skipping
+
 // +kcc:proto=google.cloud.certificatemanager.v1.TrustConfig
 type TrustConfig struct {
 	// A user-defined name of the trust config. TrustConfig names must be
 	//  unique globally and match pattern
-	//  `projects/-*-/locations/-*-/trustConfigs/-*`.
+	//  `projects/* /locations/* /trustConfigs/*`.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.TrustConfig.name
 	Name *string `json:"name,omitempty"`
 
@@ -150,7 +150,8 @@ type TrustConfig_TrustStore struct {
 	IntermediateCAs []TrustConfig_IntermediateCA `json:"intermediateCAs,omitempty"`
 }
 
-/* unreachable type CertificateIssuanceConfigObservedState
+/* found existing non-generated go type with proto tag "google.cloud.certificatemanager.v1.CertificateIssuanceConfig", skipping
+
 // +kcc:observedstate:proto=google.cloud.certificatemanager.v1.CertificateIssuanceConfig
 type CertificateIssuanceConfigObservedState struct {
 	// Output only. The creation timestamp of a CertificateIssuanceConfig.
@@ -163,7 +164,8 @@ type CertificateIssuanceConfigObservedState struct {
 }
 */
 
-/* unreachable type TrustConfigObservedState
+/* found existing non-generated go type with proto tag "google.cloud.certificatemanager.v1.TrustConfig", skipping
+
 // +kcc:observedstate:proto=google.cloud.certificatemanager.v1.TrustConfig
 type TrustConfigObservedState struct {
 	// Output only. The creation timestamp of a TrustConfig.
