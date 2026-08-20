@@ -9,8 +9,8 @@ Step 1 produces `<kind>_types.go` and the CRD. It does **not** produce `<kind>_i
 This document describes the procedure against the generator **as it exists today**. A design for
 mechanising most of the hand-fixing below — so that only genuine judgement is left to an AI agent or
 a human — is in [`greenfield-generator-mechanics.md`](greenfield-generator-mechanics.md). It is
-implemented in PRs #14–#17, none merged yet, and two of the four are opt-in per service even once
-they land — so follow this document unless your service has enabled them.
+implemented in PRs #14–#17, all merged, though two of the four are opt-in per service — so follow
+this document unless your service has enabled them.
 
 ---
 
@@ -33,7 +33,7 @@ This is the per-resource manual cost. Everything else is mechanical.
 
 ## Procedure
 
-**1. Add the resource to the service's `generate.sh`.** 129 services already have one. Append one
+**1. Add the resource to the service's `generate.sh`.** 131 services already have one. Append one
 line to the `v1alpha1` block:
 
 ```bash
