@@ -196,9 +196,6 @@ spec:
                       representing the basis of associated occurrence images.
                     type: string
                 type: object
-              location:
-                description: The location of this resource.
-                type: string
               longDescription:
                 description: A detailed description of this note.
                 type: string
@@ -430,9 +427,6 @@ spec:
                     description: The version of the format that the SBOM takes. E.g.
                       if the format is spdx, the version may be 2.3.
                     type: string
-                type: object
-              secret:
-                description: A note describing a secret.
                 type: object
               shortDescription:
                 description: A one sentence description of this note.
@@ -986,7 +980,6 @@ spec:
                     type: string
                 type: object
             required:
-            - location
             - projectRef
             type: object
           status:

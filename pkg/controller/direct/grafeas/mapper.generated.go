@@ -465,20 +465,6 @@ func SbomReferenceNote_ToProto(mapCtx *direct.MapContext, in *krm.SbomReferenceN
 	out.Version = direct.ValueOf(in.Version)
 	return out
 }
-func SecretNote_FromProto(mapCtx *direct.MapContext, in *pb.SecretNote) *krm.SecretNote {
-	if in == nil {
-		return nil
-	}
-	out := &krm.SecretNote{}
-	return out
-}
-func SecretNote_ToProto(mapCtx *direct.MapContext, in *krm.SecretNote) *pb.SecretNote {
-	if in == nil {
-		return nil
-	}
-	out := &pb.SecretNote{}
-	return out
-}
 func UpgradeDistribution_FromProto(mapCtx *direct.MapContext, in *pb.UpgradeDistribution) *krm.UpgradeDistribution {
 	if in == nil {
 		return nil

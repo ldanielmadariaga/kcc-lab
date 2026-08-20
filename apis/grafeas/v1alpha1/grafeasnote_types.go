@@ -28,9 +28,6 @@ type GrafeasNoteSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The location of this resource.
-	Location string `json:"location"`
-
 	// The GrafeasNote name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// A one sentence description of this note.
@@ -100,10 +97,6 @@ type GrafeasNoteSpec struct {
 	// A note describing an SBOM reference.
 	// +kcc:proto:field=grafeas.v1.Note.sbom_reference
 	SbomReference *SbomReferenceNote `json:"sbomReference,omitempty"`
-
-	// A note describing a secret.
-	// +kcc:proto:field=grafeas.v1.Note.secret
-	Secret *SecretNote `json:"secret,omitempty"`
 }
 
 // GrafeasNoteStatus defines the config connector machine state of GrafeasNote

@@ -3860,6 +3860,7 @@
 [missing_field] crd=transcoderjobs.transcoder.cnrm.cloud.google.com version=v1alpha1: field ".spec.config.spriteSheets[].totalCount" is not set in unstructured objects
 [missing_field] crd=transcoderjobs.transcoder.cnrm.cloud.google.com version=v1alpha1: field ".spec.fillContentGaps" is not set in unstructured objects
 [missing_field] crd=transcoderjobs.transcoder.cnrm.cloud.google.com version=v1alpha1: field ".spec.inputURI" is not set in unstructured objects
+[missing_field] crd=transcoderjobs.transcoder.cnrm.cloud.google.com version=v1alpha1: field ".spec.labels" is not set in unstructured objects
 [missing_field] crd=transcoderjobs.transcoder.cnrm.cloud.google.com version=v1alpha1: field ".spec.location" is not set in unstructured objects
 [missing_field] crd=transcoderjobs.transcoder.cnrm.cloud.google.com version=v1alpha1: field ".spec.mode" is not set in unstructured objects
 [missing_field] crd=transcoderjobs.transcoder.cnrm.cloud.google.com version=v1alpha1: field ".spec.optimization" is not set in unstructured objects

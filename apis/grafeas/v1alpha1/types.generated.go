@@ -477,9 +477,11 @@ type SbomReferenceNote struct {
 	Version *string `json:"version,omitempty"`
 }
 
+/* unreachable type SecretNote
 // +kcc:proto=grafeas.v1.SecretNote
 type SecretNote struct {
 }
+*/
 
 // +kcc:proto=grafeas.v1.UpgradeDistribution
 type UpgradeDistribution struct {
