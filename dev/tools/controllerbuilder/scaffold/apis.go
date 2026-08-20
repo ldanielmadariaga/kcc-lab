@@ -206,6 +206,8 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 	cArgs := a.buildAPIArgs(&resource)
 	if prepopulated != nil {
 		cArgs.SpecFields = prepopulated.SpecFields
+		cArgs.ObservedStateFields = prepopulated.ObservedStateFields
+		cArgs.ExtraImports = prepopulated.ExtraImports
 	}
 	return scaffoldTypeFile(typeFilePath, cArgs)
 }

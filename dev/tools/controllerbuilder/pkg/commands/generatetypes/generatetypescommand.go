@@ -198,6 +198,14 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 					if err != nil {
 						return fmt.Errorf("prepopulating spec for %s: %w", resource.Kind, err)
 					}
+					// The observed-state body needs what the type generator worked
+					// out during the visit above, so it is filled here rather than
+					// inside PrepopulateSpec. No entry means the proto marks nothing
+					// OUTPUT_ONLY, and the struct is left empty.
+					if details, ok := typeGenerator.OutputFieldsFor(string(msg.FullName())); ok {
+						prepopulated.ObservedStateFields, prepopulated.ExtraImports =
+							scaffold.PrepopulateObservedState(details, typeGenerator.ObservedStateMessages())
+					}
 					judgement = append(judgement, scaffold.FormatJudgementEntries(resource.Kind, gv.Group, prepopulated.Judgement))
 				}
 				if err := scaffolder.AddTypeFile(resource, prepopulated); err != nil {
