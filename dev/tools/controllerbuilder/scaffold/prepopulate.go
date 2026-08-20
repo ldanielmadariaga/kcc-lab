@@ -208,3 +208,59 @@ func FormatJudgementEntries(kind, group string, items []JudgementItem) string {
 	}
 	return sb.String()
 }
+
+// OutputOnlyCandidate is a field the proto documents as output-only in prose
+// while carrying no google.api.field_behavior annotation to say so.
+type OutputOnlyCandidate struct {
+	// FieldPath is the KRM path the field was emitted at, e.g. ".spec.createTime".
+	FieldPath string
+	// Comment is the proto's leading comment, so a reviewer can decide without
+	// opening the proto.
+	Comment string
+}
+
+// DetectOutputOnlyInComments finds spec fields whose proto comment opens with
+// "Output only." but whose field_behavior does not say OUTPUT_ONLY.
+//
+// It reports rather than acts. Applying the inference directly would move 90
+// fields across 13 services, 29 of them in v1beta1, where relocating a field
+// from spec to status breaks a schema people already depend on. The reported
+// fields are moved by hand, in <kind>_types.go, once someone has agreed.
+//
+// The signal itself is trustworthy: across 3780 fields in hand-written Spec
+// structs, not one carries "Output only." in its comment, so there are no
+// measured false positives. What is missing is the review, not the accuracy.
+func DetectOutputOnlyInComments(msg protoreflect.MessageDescriptor) []OutputOnlyCandidate {
+	if msg == nil {
+		return nil
+	}
+	var out []OutputOnlyCandidate
+	for i := 0; i < msg.Fields().Len(); i++ {
+		field := msg.Fields().Get(i)
+		if codegen.IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
+			continue
+		}
+		if identityFields[string(field.Name())] {
+			continue
+		}
+		comment := strings.TrimSpace(msg.ParentFile().SourceLocations().ByDescriptor(field).LeadingComments)
+		if !strings.HasPrefix(comment, "Output only.") {
+			continue
+		}
+		out = append(out, OutputOnlyCandidate{
+			FieldPath: ".spec." + codegen.GetJSONForKRM(field),
+			Comment:   strings.Join(strings.Fields(comment), " "),
+		})
+	}
+	return out
+}
+
+// FormatOutputOnlyCandidates renders detector output for the report file.
+func FormatOutputOnlyCandidates(kind, group string, items []OutputOnlyCandidate) string {
+	var sb strings.Builder
+	for _, it := range items {
+		sb.WriteString(fmt.Sprintf("kind=%s group=%s: field %q comment=%q\n",
+			kind, group, it.FieldPath, it.Comment))
+	}
+	return sb.String()
+}
