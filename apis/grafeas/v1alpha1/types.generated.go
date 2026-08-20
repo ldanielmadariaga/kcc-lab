@@ -477,11 +477,9 @@ type SbomReferenceNote struct {
 	Version *string `json:"version,omitempty"`
 }
 
-/* unreachable type SecretNote
 // +kcc:proto=grafeas.v1.SecretNote
 type SecretNote struct {
 }
-*/
 
 // +kcc:proto=grafeas.v1.UpgradeDistribution
 type UpgradeDistribution struct {
@@ -593,8 +591,6 @@ type VulnerabilityAssessmentNote struct {
 	Assessment *VulnerabilityAssessmentNote_Assessment `json:"assessment,omitempty"`
 }
 
-/* found existing non-generated go type "VulnerabilityAssessmentNote_Assessment", skipping
-
 // +kcc:proto=grafeas.v1.VulnerabilityAssessmentNote.Assessment
 type VulnerabilityAssessmentNote_Assessment struct {
 	// Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)
@@ -641,7 +637,6 @@ type VulnerabilityAssessmentNote_Assessment struct {
 	// +kcc:proto:field=grafeas.v1.VulnerabilityAssessmentNote.Assessment.remediations
 	Remediations []VulnerabilityAssessmentNote_Assessment_Remediation `json:"remediations,omitempty"`
 }
-*/
 
 // +kcc:proto=grafeas.v1.VulnerabilityAssessmentNote.Assessment.Justification
 type VulnerabilityAssessmentNote_Assessment_Justification struct {
@@ -866,8 +861,6 @@ type VulnerabilityNote_WindowsDetail_KnowledgeBase struct {
 	URL *string `json:"url,omitempty"`
 }
 
-/* found existing non-generated go type "WindowsUpdate", skipping
-
 // +kcc:proto=grafeas.v1.WindowsUpdate
 type WindowsUpdate struct {
 	// Required - The unique identifier for the update.
@@ -899,7 +892,6 @@ type WindowsUpdate struct {
 	// +kcc:proto:field=grafeas.v1.WindowsUpdate.last_published_timestamp
 	LastPublishedTimestamp *string `json:"lastPublishedTimestamp,omitempty"`
 }
-*/
 
 // +kcc:proto=grafeas.v1.WindowsUpdate.Category
 type WindowsUpdate_Category struct {

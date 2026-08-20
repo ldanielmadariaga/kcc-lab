@@ -63,6 +63,7 @@ func main() {
 
 	rootCmd.AddCommand(BuildEquivalentCmd())
 	rootCmd.AddCommand(BuildCompatibleCmd())
+	rootCmd.AddCommand(BuildScoreCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)

@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,76 +28,97 @@ type GrafeasNoteSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	Location string `json:"location"`
+
 	// The GrafeasNote name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// A one sentence description of this note.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.short_description
 	ShortDescription *string `json:"shortDescription,omitempty"`
 
 	// A detailed description of this note.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.long_description
 	LongDescription *string `json:"longDescription,omitempty"`
 
+	// Output only. The type of analysis. This field can be used as a filter in
+	//  list requests.
+	// +kcc:proto:field=grafeas.v1.Note.kind
+	Kind *string `json:"kind,omitempty"`
+
 	// URLs associated with this note.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.related_url
 	RelatedURL []RelatedURL `json:"relatedURL,omitempty"`
 
 	// Time of expiration for this note. Empty if note does not expire.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.expiration_time
 	ExpirationTime *string `json:"expirationTime,omitempty"`
 
+	// Output only. The time this note was created. This field can be used as a
+	//  filter in list requests.
+	// +kcc:proto:field=grafeas.v1.Note.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time this note was last updated. This field can be used as
+	//  a filter in list requests.
+	// +kcc:proto:field=grafeas.v1.Note.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
 	// Other notes related to this note.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.related_note_names
 	RelatedNoteNames []string `json:"relatedNoteNames,omitempty"`
 
 	// A note describing a package vulnerability.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.vulnerability
 	Vulnerability *VulnerabilityNote `json:"vulnerability,omitempty"`
 
 	// A note describing build provenance for a verifiable build.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.build
 	Build *BuildNote `json:"build,omitempty"`
 
 	// A note describing a base image.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.image
 	Image *ImageNote `json:"image,omitempty"`
 
 	// A note describing a package hosted by various package managers.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.package
 	Package *PackageNote `json:"package,omitempty"`
 
 	// A note describing something that can be deployed.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.deployment
 	Deployment *DeploymentNote `json:"deployment,omitempty"`
 
 	// A note describing the initial analysis of a resource.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.discovery
 	Discovery *DiscoveryNote `json:"discovery,omitempty"`
 
 	// A note describing an attestation role.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.attestation
 	Attestation *AttestationNote `json:"attestation,omitempty"`
 
 	// A note describing available package upgrades.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.upgrade
 	Upgrade *UpgradeNote `json:"upgrade,omitempty"`
 
 	// A note describing a compliance check.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.compliance
 	Compliance *ComplianceNote `json:"compliance,omitempty"`
 
 	// A note describing a dsse attestation note.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.dsse_attestation
 	DsseAttestation *DsseAttestationNote `json:"dsseAttestation,omitempty"`
 
 	// A note describing a vulnerability assessment.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.vulnerability_assessment
 	VulnerabilityAssessment *VulnerabilityAssessmentNote `json:"vulnerabilityAssessment,omitempty"`
 
 	// A note describing an SBOM reference.
-	// +optional
+	// +kcc:proto:field=grafeas.v1.Note.sbom_reference
 	SbomReference *SbomReferenceNote `json:"sbomReference,omitempty"`
+
+	// A note describing a secret.
+	// +kcc:proto:field=grafeas.v1.Note.secret
+	Secret *SecretNote `json:"secret,omitempty"`
 }
 
 // GrafeasNoteStatus defines the config connector machine state of GrafeasNote
@@ -119,20 +140,6 @@ type GrafeasNoteStatus struct {
 // GrafeasNoteObservedState is the state of the GrafeasNote resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.grafeas.v1.Note
 type GrafeasNoteObservedState struct {
-	// Output only. The type of analysis. This field can be used as a filter in
-	//  list requests.
-	// +optional
-	Kind *string `json:"kind,omitempty"`
-
-	// Output only. The time this note was created. This field can be used as a
-	//  filter in list requests.
-	// +optional
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. The time this note was last updated. This field can be used as
-	//  a filter in list requests.
-	// +optional
-	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient
@@ -141,7 +148,6 @@ type GrafeasNoteObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -168,83 +174,4 @@ type GrafeasNoteList struct {
 
 func init() {
 	SchemeBuilder.Register(&GrafeasNote{}, &GrafeasNoteList{})
-}
-
-// +kcc:proto=grafeas.v1.WindowsUpdate
-type WindowsUpdate struct {
-	// Required - The unique identifier for the update.
-	// +kcc:proto:field=grafeas.v1.WindowsUpdate.identity
-	Identity *WindowsUpdate_Identity `json:"identity,omitempty"`
-
-	// The localized title of the update.
-	// +kcc:proto:field=grafeas.v1.WindowsUpdate.title
-	Title *string `json:"title,omitempty"`
-
-	// The localized description of the update.
-	// +kcc:proto:field=grafeas.v1.WindowsUpdate.description
-	Description *string `json:"description,omitempty"`
-
-	// The list of categories to which the update belongs.
-	// +kcc:proto:field=grafeas.v1.WindowsUpdate.categories
-	Categories []WindowsUpdate_Category `json:"categories,omitempty"`
-
-	// The Microsoft Knowledge Base article IDs that are associated with the
-	//  update.
-	// +kcc:proto:field=grafeas.v1.WindowsUpdate.kb_article_ids
-	KbArticleIDs []string `json:"kbArticleIDs,omitempty"`
-
-	// The hyperlink to the support information for the update.
-	// +kcc:proto:field=grafeas.v1.WindowsUpdate.support_url
-	SupportURL *string `json:"supportURL,omitempty"`
-
-	// The last published timestamp of the update.
-	// +kcc:proto:field=grafeas.v1.WindowsUpdate.last_published_timestamp
-	LastPublishedTimestamp *string `json:"lastPublishedTimestamp,omitempty"`
-}
-
-// +kcc:proto=grafeas.v1.VulnerabilityAssessmentNote.Assessment
-type VulnerabilityAssessmentNote_Assessment struct {
-	// Holds the MITRE standard Common Vulnerabilities and Exposures (CVE)
-	//  tracking number for the vulnerability.
-	//  Deprecated: Use vulnerability_id instead to denote CVEs.
-	// +kcc:proto:field=grafeas.v1.VulnerabilityAssessmentNote.Assessment.cve
-	Cve *string `json:"cve,omitempty"`
-
-	// The vulnerability identifier for this Assessment. Will hold one of
-	//  common identifiers e.g. CVE, GHSA etc.
-	// +kcc:proto:field=grafeas.v1.VulnerabilityAssessmentNote.Assessment.vulnerability_id
-	VulnerabilityID *string `json:"vulnerabilityID,omitempty"`
-
-	// A one sentence description of this Vex.
-	// +kcc:proto:field=grafeas.v1.VulnerabilityAssessmentNote.Assessment.short_description
-	ShortDescription *string `json:"shortDescription,omitempty"`
-
-	// A detailed description of this Vex.
-	// +kcc:proto:field=grafeas.v1.VulnerabilityAssessmentNote.Assessment.long_description
-	LongDescription *string `json:"longDescription,omitempty"`
-
-	// Holds a list of references associated with this vulnerability item and
-	//  assessment. These uris have additional information about the
-	//  vulnerability and the assessment itself. E.g. Link to a document which
-	//  details how this assessment concluded the state of this vulnerability.
-	// +kcc:proto:field=grafeas.v1.VulnerabilityAssessmentNote.Assessment.related_uris
-	RelatedURIs []RelatedURL `json:"relatedURIs,omitempty"`
-
-	// Provides the state of this Vulnerability assessment.
-	// +kcc:proto:field=grafeas.v1.VulnerabilityAssessmentNote.Assessment.state
-	State *string `json:"state,omitempty"`
-
-	// Contains information about the impact of this vulnerability,
-	//  this will change with time.
-	// +kcc:proto:field=grafeas.v1.VulnerabilityAssessmentNote.Assessment.impacts
-	Impacts []string `json:"impacts,omitempty"`
-
-	// Justification provides the justification when the state of the
-	//  assessment if NOT_AFFECTED.
-	// +kcc:proto:field=grafeas.v1.VulnerabilityAssessmentNote.Assessment.justification
-	Justification *VulnerabilityAssessmentNote_Assessment_Justification `json:"justification,omitempty"`
-
-	// Specifies details on how to handle (and presumably, fix) a vulnerability.
-	// +kcc:proto:field=grafeas.v1.VulnerabilityAssessmentNote.Assessment.remediations
-	Remediations []VulnerabilityAssessmentNote_Assessment_Remediation `json:"remediations,omitempty"`
 }
