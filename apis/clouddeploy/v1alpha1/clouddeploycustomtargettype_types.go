@@ -15,64 +15,69 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	cloudbuildv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/cloudbuild/v1beta1"
+	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-var CloudDeployCustomTargetTypeGVK = GroupVersion.WithKind("CloudDeployCustomTargetType")
+var CustomTargetTypeGVK = GroupVersion.WithKind("CloudDeployCustomTargetType")
 
-// CloudDeployCustomTargetTypeSpec defines the desired state of CloudDeployCustomTargetType
+// CustomTargetTypeSpec defines the desired state of CloudDeployCustomTargetType
 // +kcc:spec:proto=google.cloud.deploy.v1.CustomTargetType
-type CloudDeployCustomTargetTypeSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-
-	// The location of this resource.
-	Location string `json:"location"`
-
+type CustomTargetTypeSpec struct {
 	// The CloudDeployCustomTargetType name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
+	// The project that this resource belongs to.
+	// +required
+	ProjectRef *refs.ProjectRef `json:"projectRef,omitempty"`
+
+	// +required
+	Location string `json:"location"`
+
 	// Optional. Description of the `CustomTargetType`. Max length is 255
 	//  characters.
 	// +kcc:proto:field=google.cloud.deploy.v1.CustomTargetType.description
 	Description *string `json:"description,omitempty"`
 
-	// Optional. User annotations. These attributes can only be set and used by
-	//  the user, and not by Cloud Deploy. See
-	//  https://google.aip.dev/128#annotations for more details such as format and
-	//  size limitations.
-	// +kcc:proto:field=google.cloud.deploy.v1.CustomTargetType.annotations
-	Annotations map[string]string `json:"annotations,omitempty"`
+	// NOT YET
+	// // Optional. User annotations. These attributes can only be set and used by
+	// //  the user, and not by Cloud Deploy. See
+	// //  https://google.aip.dev/128#annotations for more details such as format and
+	// //  size limitations.
+	// // +kcc:proto:field=google.cloud.deploy.v1.CustomTargetType.annotations
+	// Annotations map[string]string `json:"annotations,omitempty"`
 
-	// Optional. Labels are attributes that can be set and used by both the
-	//  user and by Cloud Deploy. Labels must meet the following constraints:
-	//
-	//  * Keys and values can contain only lowercase letters, numeric characters,
-	//  underscores, and dashes.
-	//  * All characters must use UTF-8 encoding, and international characters are
-	//  allowed.
-	//  * Keys must start with a lowercase letter or international character.
-	//  * Each resource is limited to a maximum of 64 labels.
-	//
-	//  Both keys and values are additionally constrained to be <= 128 bytes.
-	// +kcc:proto:field=google.cloud.deploy.v1.CustomTargetType.labels
-	Labels map[string]string `json:"labels,omitempty"`
+	// NOT YET
+	// // Optional. Labels are attributes that can be set and used by both the
+	// //  user and by Cloud Deploy. Labels must meet the following constraints:
+	// //
+	// //  * Keys and values can contain only lowercase letters, numeric characters,
+	// //  underscores, and dashes.
+	// //  * All characters must use UTF-8 encoding, and international characters are
+	// //  allowed.
+	// //  * Keys must start with a lowercase letter or international character.
+	// //  * Each resource is limited to a maximum of 64 labels.
+	// //
+	// //  Both keys and values are additionally constrained to be <= 128 bytes.
+	// // +kcc:proto:field=google.cloud.deploy.v1.CustomTargetType.labels
+	// Labels map[string]string `json:"labels,omitempty"`
 
-	// Optional. This checksum is computed by the server based on the value of
-	//  other fields, and may be sent on update and delete requests to ensure the
-	//  client has an up-to-date value before proceeding.
-	// +kcc:proto:field=google.cloud.deploy.v1.CustomTargetType.etag
-	Etag *string `json:"etag,omitempty"`
+	// // Optional. This checksum is computed by the server based on the value of
+	// //  other fields, and may be sent on update and delete requests to ensure the
+	// //  client has an up-to-date value before proceeding.
+	// // +kcc:proto:field=google.cloud.deploy.v1.CustomTargetType.etag
+	// Etag *string `json:"etag,omitempty"`
 
-	// Optional. Configures render and deploy for the `CustomTargetType` using
-	//  Skaffold custom actions.
+	// Configures render and deploy for the `CustomTargetType` using Skaffold
+	//  custom actions.
 	// +kcc:proto:field=google.cloud.deploy.v1.CustomTargetType.custom_actions
 	CustomActions *CustomTargetSkaffoldActions `json:"customActions,omitempty"`
 }
 
-// CloudDeployCustomTargetTypeStatus defines the config connector machine state of CloudDeployCustomTargetType
-type CloudDeployCustomTargetTypeStatus struct {
+// CustomTargetTypeStatus defines the config connector machine state of CloudDeployCustomTargetType
+type CustomTargetTypeStatus struct {
 	/* Conditions represent the latest available observations of the
 	   object's current state. */
 	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
@@ -84,12 +89,12 @@ type CloudDeployCustomTargetTypeStatus struct {
 	ExternalRef *string `json:"externalRef,omitempty"`
 
 	// ObservedState is the state of the resource as most recently observed in GCP.
-	ObservedState *CloudDeployCustomTargetTypeObservedState `json:"observedState,omitempty"`
+	ObservedState *CustomTargetTypeObservedState `json:"observedState,omitempty"`
 }
 
-// CloudDeployCustomTargetTypeObservedState is the state of the CloudDeployCustomTargetType resource as most recently observed in GCP.
+// CustomTargetTypeObservedState is the state of the CloudDeployCustomTargetType resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.deploy.v1.CustomTargetType
-type CloudDeployCustomTargetTypeObservedState struct {
+type CustomTargetTypeObservedState struct {
 	// Output only. Resource id of the `CustomTargetType`.
 	// +kcc:proto:field=google.cloud.deploy.v1.CustomTargetType.custom_target_type_id
 	CustomTargetTypeID *string `json:"customTargetTypeID,omitempty"`
@@ -125,8 +130,8 @@ type CloudDeployCustomTargetType struct {
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	// +required
-	Spec   CloudDeployCustomTargetTypeSpec   `json:"spec,omitempty"`
-	Status CloudDeployCustomTargetTypeStatus `json:"status,omitempty"`
+	Spec   CustomTargetTypeSpec   `json:"spec,omitempty"`
+	Status CustomTargetTypeStatus `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -139,4 +144,22 @@ type CloudDeployCustomTargetTypeList struct {
 
 func init() {
 	SchemeBuilder.Register(&CloudDeployCustomTargetType{}, &CloudDeployCustomTargetTypeList{})
+}
+
+// +kcc:proto=google.cloud.deploy.v1.SkaffoldModules.SkaffoldGCBRepoSource
+type SkaffoldModules_SkaffoldGcbRepoSource struct {
+	// Required. Name of the Cloud Build V2 RepositoryRef.
+	//  Format is
+	//  projects/{project}/locations/{location}/connections/{connection}/repositories/{repository}.
+	// +kcc:proto:field=google.cloud.deploy.v1.SkaffoldModules.SkaffoldGCBRepoSource.repository
+	RepositoryRef *cloudbuildv1beta1.RepositoryRef `json:"repositoryRef,omitempty"`
+
+	// Optional. Relative path from the repository root to the Skaffold Config
+	//  file.
+	// +kcc:proto:field=google.cloud.deploy.v1.SkaffoldModules.SkaffoldGCBRepoSource.path
+	Path *string `json:"path,omitempty"`
+
+	// Optional. Branch or tag to use when cloning the repository.
+	// +kcc:proto:field=google.cloud.deploy.v1.SkaffoldModules.SkaffoldGCBRepoSource.ref
+	Ref *string `json:"ref,omitempty"`
 }

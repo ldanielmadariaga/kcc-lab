@@ -80,7 +80,7 @@ spec:
                         key:
                           description: Key of the config variable.
                           type: string
-                        secretValueRef:
+                        secretValue:
                           description: Value is a secret.
                           oneOf:
                           - not:
@@ -123,7 +123,7 @@ spec:
                       clientID:
                         description: The client identifier.
                         type: string
-                      clientSecretRef:
+                      clientSecret:
                         description: Secret version reference containing the client
                           secret.
                         oneOf:
@@ -156,7 +156,7 @@ spec:
                   oauth2JwtBearer:
                     description: Oauth2JwtBearer.
                     properties:
-                      clientKeyRef:
+                      clientKey:
                         description: 'Secret version reference containing a PKCS#8
                           PEM-encoded private key associated with the Client Certificate.
                           This private key will be used to sign JWTs used for the
@@ -208,9 +208,9 @@ spec:
                       certType:
                         description: Format of SSH Client cert.
                         type: string
-                      sshClientCertPassRef:
-                        description: Password (passphrase) for ssh client certificate
-                          if it has one.
+                      sshClientCert:
+                        description: SSH Client Cert. It should contain both public
+                          and private key.
                         oneOf:
                         - not:
                             required:
@@ -237,9 +237,9 @@ spec:
                             description: The namespace of a SecretManagerSecret resource.
                             type: string
                         type: object
-                      sshClientCertRef:
-                        description: SSH Client Cert. It should contain both public
-                          and private key.
+                      sshClientCertPass:
+                        description: Password (passphrase) for ssh client certificate
+                          if it has one.
                         oneOf:
                         - not:
                             required:
@@ -273,7 +273,7 @@ spec:
                   userPassword:
                     description: UserPassword.
                     properties:
-                      secretRef:
+                      password:
                         description: Secret version reference containing the password.
                         oneOf:
                         - not:
@@ -321,7 +321,7 @@ spec:
                     key:
                       description: Key of the config variable.
                       type: string
-                    secretValueRef:
+                    secretValue:
                       description: Value is a secret.
                       oneOf:
                       - not:
@@ -354,36 +354,11 @@ spec:
                       type: string
                   type: object
                 type: array
-              connectorVersionRef:
+              connectorVersion:
                 description: 'Required. Connector version on which the connection
-                  is created. The format is: projects/-*-/locations/-*-/providers/-*-/connectors/-*-/versions/-*
+                  is created. The format is: projects/*/locations/*/providers/*/connectors/*/versions/*
                   Only global location is supported for ConnectorVersion resource.'
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed ConnectorsConnectorVersion
-                      resource. Should be in the format "projects/{{projectID}}/locations/global/providers/{{providerID}}/connectors/{{connectorID}}/versions/{{versionID}}".
-                    type: string
-                  name:
-                    description: The name of a ConnectorsConnectorVersion resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a ConnectorsConnectorVersion resource.
-                    type: string
-                type: object
+                type: string
               description:
                 description: Optional. Description of the resource.
                 type: string
@@ -404,37 +379,9 @@ spec:
                               accepted by the destination.
                             format: int32
                             type: integer
-                          serviceAttachmentRef:
+                          serviceAttachment:
                             description: 'PSC service attachments. Format: projects/*/regions/*/serviceAttachments/*'
-                            oneOf:
-                            - not:
-                                required:
-                                - external
-                              required:
-                              - name
-                            - not:
-                                anyOf:
-                                - required:
-                                  - name
-                                - required:
-                                  - namespace
-                              required:
-                              - external
-                            properties:
-                              external:
-                                description: The ComputeServiceAttachment selflink
-                                  in the form "projects/{{project}}/regions/{{region}}/serviceAttachments/{{name}}"
-                                  when not managed by Config Connector.
-                                type: string
-                              name:
-                                description: The `name` field of a `ComputeServiceAttachment`
-                                  resource.
-                                type: string
-                              namespace:
-                                description: The `namespace` field of a `ComputeServiceAttachment`
-                                  resource.
-                                type: string
-                            type: object
+                            type: string
                         type: object
                       type: array
                     key:
@@ -512,34 +459,10 @@ spec:
                 description: The ConnectorsConnection name. If not given, the metadata.name
                   will be used.
                 type: string
-              serviceAccountRef:
+              serviceAccount:
                 description: Optional. Service account needed for runtime plane to
                   access GCP resources.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: The `email` field of an `IAMServiceAccount` resource.
-                    type: string
-                  name:
-                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                    type: string
-                  namespace:
-                    description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
-                    type: string
-                type: object
+                type: string
               sslConfig:
                 description: Optional. Ssl config of a connection
                 properties:
@@ -557,7 +480,7 @@ spec:
                         key:
                           description: Key of the config variable.
                           type: string
-                        secretValueRef:
+                        secretValue:
                           description: Value is a secret.
                           oneOf:
                           - not:
@@ -594,7 +517,7 @@ spec:
                   clientCertType:
                     description: Type of Client Cert (PEM/JKS/.. etc.)
                     type: string
-                  clientCertificateRef:
+                  clientCertificate:
                     description: Client Certificate
                     oneOf:
                     - not:
@@ -622,7 +545,35 @@ spec:
                         description: The namespace of a SecretManagerSecret resource.
                         type: string
                     type: object
-                  clientPrivateKeyPassRef:
+                  clientPrivateKey:
+                    description: Client Private Key
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
+                    properties:
+                      external:
+                        description: A reference to an externally managed SecretManagerSecret
+                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/secrets/{{secretID}}".
+                        type: string
+                      name:
+                        description: The name of a SecretManagerSecret resource.
+                        type: string
+                      namespace:
+                        description: The namespace of a SecretManagerSecret resource.
+                        type: string
+                    type: object
+                  clientPrivateKeyPass:
                     description: Secret containing the passphrase protecting the Client
                       Private Key
                     oneOf:
@@ -651,35 +602,7 @@ spec:
                         description: The namespace of a SecretManagerSecret resource.
                         type: string
                     type: object
-                  clientPrivateKeyRef:
-                    description: Client Private Key
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: A reference to an externally managed SecretManagerSecret
-                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/secrets/{{secretID}}".
-                        type: string
-                      name:
-                        description: The name of a SecretManagerSecret resource.
-                        type: string
-                      namespace:
-                        description: The namespace of a SecretManagerSecret resource.
-                        type: string
-                    type: object
-                  privateServerCertificateRef:
+                  privateServerCertificate:
                     description: Private Server Certificate. Needs to be specified
                       if trust model is `PRIVATE`.
                     oneOf:
@@ -726,7 +649,7 @@ spec:
                   a connection or not.
                 type: boolean
             required:
-            - connectorVersionRef
+            - connectorVersion
             - location
             - projectRef
             type: object
@@ -786,10 +709,6 @@ spec:
                   imageLocation:
                     description: 'Output only. GCR location where the runtime image
                       is stored. formatted like: gcr.io/{bucketName}/{imageName}'
-                    type: string
-                  name:
-                    description: 'Output only. Resource name of the Connection. Format:
-                      projects/{project}/locations/{location}/connections/{connection}'
                     type: string
                   serviceDirectory:
                     description: Output only. The name of the Service Directory service

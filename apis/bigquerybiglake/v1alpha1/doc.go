@@ -12,5 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// +kcc:proto=google.cloud.bigquery.biglake.v1
+// +kcc:proto=mockgcp.google.cloud.bigquery.bigtable.v1
 package v1alpha1

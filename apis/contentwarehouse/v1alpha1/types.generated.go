@@ -24,9 +24,7 @@
 
 package v1alpha1
 
-import (
-	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
-)
+/* found existing non-generated go type "AccessControlAction", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.AccessControlAction
 type AccessControlAction struct {
@@ -40,6 +38,9 @@ type AccessControlAction struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.AccessControlAction.policy
 	Policy *Policy `json:"policy,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "Action", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.Action
 type Action struct {
@@ -75,6 +76,9 @@ type Action struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.Action.delete_document_action
 	DeleteDocumentAction *DeleteDocumentAction `json:"deleteDocumentAction,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "AddToFolderAction", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.AddToFolderAction
 type AddToFolderAction struct {
@@ -84,6 +88,9 @@ type AddToFolderAction struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.AddToFolderAction.folders
 	Folders []string `json:"folders,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "DataUpdateAction", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.DataUpdateAction
 type DataUpdateAction struct {
@@ -95,6 +102,9 @@ type DataUpdateAction struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.DataUpdateAction.entries
 	Entries map[string]string `json:"entries,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "DataValidationAction", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.DataValidationAction
 type DataValidationAction struct {
@@ -104,7 +114,9 @@ type DataValidationAction struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.DataValidationAction.conditions
 	Conditions map[string]string `json:"conditions,omitempty"`
 }
+*/
 
+/* unreachable type DateTimeArray
 // +kcc:proto=google.cloud.contentwarehouse.v1.DateTimeArray
 type DateTimeArray struct {
 	// List of datetime values.
@@ -112,10 +124,16 @@ type DateTimeArray struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.DateTimeArray.values
 	Values []DateTime `json:"values,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "DateTimeTypeOptions", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.DateTimeTypeOptions
 type DateTimeTypeOptions struct {
 }
+*/
+
+/* found existing non-generated go type "DeleteDocumentAction", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.DeleteDocumentAction
 type DeleteDocumentAction struct {
@@ -124,6 +142,9 @@ type DeleteDocumentAction struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.DeleteDocumentAction.enable_hard_delete
 	EnableHardDelete *bool `json:"enableHardDelete,omitempty"`
 }
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.contentwarehouse.v1.Document", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.Document
 type Document struct {
@@ -144,7 +165,6 @@ type Document struct {
 	//  document. This differs from the 'title' field as 'title' is optional and
 	//  stores the top heading in the document.
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.Document.display_name
-	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Title that describes the document.
@@ -217,8 +237,10 @@ type Document struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.Document.updater
 	Updater *string `json:"updater,omitempty"`
 }
+*/
 
-/* unreachable type DocumentSchema
+/* found existing non-generated go type with proto tag "google.cloud.contentwarehouse.v1.DocumentSchema", skipping
+
 // +kcc:proto=google.cloud.contentwarehouse.v1.DocumentSchema
 type DocumentSchema struct {
 	// The resource name of the document schema.
@@ -231,7 +253,6 @@ type DocumentSchema struct {
 
 	// Required. Name of the schema given by the user. Must be unique per project.
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.DocumentSchema.display_name
-	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Document details.
@@ -249,18 +270,21 @@ type DocumentSchema struct {
 }
 */
 
+/* unreachable type EnumArray
 // +kcc:proto=google.cloud.contentwarehouse.v1.EnumArray
 type EnumArray struct {
 	// List of enum values.
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.EnumArray.values
 	Values []string `json:"values,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "EnumTypeOptions", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.EnumTypeOptions
 type EnumTypeOptions struct {
 	// Required. List of possible enum values.
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.EnumTypeOptions.possible_values
-	// +required
 	PossibleValues []string `json:"possibleValues,omitempty"`
 
 	// Make sure the Enum property value provided in the document is in the
@@ -269,6 +293,7 @@ type EnumTypeOptions struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.EnumTypeOptions.validation_check_disabled
 	ValidationCheckDisabled *bool `json:"validationCheckDisabled,omitempty"`
 }
+*/
 
 /* unreachable type EnumValue
 // +kcc:proto=google.cloud.contentwarehouse.v1.EnumValue
@@ -280,45 +305,60 @@ type EnumValue struct {
 }
 */
 
+/* unreachable type FloatArray
 // +kcc:proto=google.cloud.contentwarehouse.v1.FloatArray
 type FloatArray struct {
 	// List of float values.
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.FloatArray.values
 	Values []float32 `json:"values,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "FloatTypeOptions", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.FloatTypeOptions
 type FloatTypeOptions struct {
 }
+*/
 
+/* unreachable type IntegerArray
 // +kcc:proto=google.cloud.contentwarehouse.v1.IntegerArray
 type IntegerArray struct {
 	// List of integer values.
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.IntegerArray.values
 	Values []int32 `json:"values,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "IntegerTypeOptions", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.IntegerTypeOptions
 type IntegerTypeOptions struct {
 }
+*/
 
+/* unreachable type MapProperty
 // +kcc:proto=google.cloud.contentwarehouse.v1.MapProperty
 type MapProperty struct {
 
 	// TODO: unsupported map type with key string and value message
 
 }
+*/
+
+/* found existing non-generated go type "MapTypeOptions", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.MapTypeOptions
 type MapTypeOptions struct {
 }
+*/
 
+/* unreachable type Property
 // +kcc:proto=google.cloud.contentwarehouse.v1.Property
 type Property struct {
 	// Required. Must match the name of a PropertyDefinition in the
 	//  DocumentSchema.
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.Property.name
-	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Integer property values.
@@ -355,13 +395,18 @@ type Property struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.Property.timestamp_values
 	TimestampValues *TimestampArray `json:"timestampValues,omitempty"`
 }
+*/
 
+/* unreachable type PropertyArray
 // +kcc:proto=google.cloud.contentwarehouse.v1.PropertyArray
 type PropertyArray struct {
 	// List of property values.
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.PropertyArray.properties
 	Properties []Property `json:"properties,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "PropertyDefinition", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.PropertyDefinition
 type PropertyDefinition struct {
@@ -370,7 +415,6 @@ type PropertyDefinition struct {
 	//  Names must be non-blank, start with a letter, and can contain alphanumeric
 	//  characters and: /, :, -, _, and .
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.PropertyDefinition.name
-	// +required
 	Name *string `json:"name,omitempty"`
 
 	// The display-name for the property, used for front-end.
@@ -445,6 +489,9 @@ type PropertyDefinition struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.PropertyDefinition.schema_sources
 	SchemaSources []PropertyDefinition_SchemaSource `json:"schemaSources,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "PropertyDefinition_SchemaSource", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.PropertyDefinition.SchemaSource
 type PropertyDefinition_SchemaSource struct {
@@ -456,14 +503,19 @@ type PropertyDefinition_SchemaSource struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.PropertyDefinition.SchemaSource.processor_type
 	ProcessorType *string `json:"processorType,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "PropertyTypeOptions", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.PropertyTypeOptions
 type PropertyTypeOptions struct {
 	// Required. List of property definitions.
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.PropertyTypeOptions.property_definitions
-	// +required
 	PropertyDefinitions []PropertyDefinition `json:"propertyDefinitions,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "PublishAction", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.PublishAction
 type PublishAction struct {
@@ -476,6 +528,9 @@ type PublishAction struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.PublishAction.messages
 	Messages []string `json:"messages,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "RemoveFromFolderAction", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.RemoveFromFolderAction
 type RemoveFromFolderAction struct {
@@ -489,6 +544,9 @@ type RemoveFromFolderAction struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.RemoveFromFolderAction.folder
 	Folder *string `json:"folder,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "Rule", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.Rule
 type Rule struct {
@@ -516,8 +574,10 @@ type Rule struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.Rule.actions
 	Actions []Action `json:"actions,omitempty"`
 }
+*/
 
-/* unreachable type RuleSet
+/* found existing non-generated go type with proto tag "google.cloud.contentwarehouse.v1.RuleSet", skipping
+
 // +kcc:proto=google.cloud.contentwarehouse.v1.RuleSet
 type RuleSet struct {
 	// The resource name of the rule set. Managed internally.
@@ -542,7 +602,8 @@ type RuleSet struct {
 }
 */
 
-/* unreachable type SynonymSet
+/* found existing non-generated go type with proto tag "google.cloud.contentwarehouse.v1.SynonymSet", skipping
+
 // +kcc:proto=google.cloud.contentwarehouse.v1.SynonymSet
 type SynonymSet struct {
 	// The resource name of the SynonymSet
@@ -564,35 +625,49 @@ type SynonymSet struct {
 }
 */
 
+/* found existing non-generated go type with proto tag "google.cloud.contentwarehouse.v1.SynonymSet.Synonym", skipping
+
 // +kcc:proto=google.cloud.contentwarehouse.v1.SynonymSet.Synonym
 type SynonymSet_Synonym struct {
 	// For example: sale, invoice, bill, order
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.SynonymSet.Synonym.words
 	Words []string `json:"words,omitempty"`
 }
+*/
 
+/* unreachable type TextArray
 // +kcc:proto=google.cloud.contentwarehouse.v1.TextArray
 type TextArray struct {
 	// List of text values.
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.TextArray.values
 	Values []string `json:"values,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "TextTypeOptions", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.TextTypeOptions
 type TextTypeOptions struct {
 }
+*/
 
+/* unreachable type TimestampArray
 // +kcc:proto=google.cloud.contentwarehouse.v1.TimestampArray
 type TimestampArray struct {
 	// List of timestamp values.
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.TimestampArray.values
 	Values []TimestampValue `json:"values,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "TimestampTypeOptions", skipping
 
 // +kcc:proto=google.cloud.contentwarehouse.v1.TimestampTypeOptions
 type TimestampTypeOptions struct {
 }
+*/
 
+/* unreachable type TimestampValue
 // +kcc:proto=google.cloud.contentwarehouse.v1.TimestampValue
 type TimestampValue struct {
 	// Timestamp value
@@ -605,6 +680,7 @@ type TimestampValue struct {
 	// +kcc:proto:field=google.cloud.contentwarehouse.v1.TimestampValue.text_value
 	TextValue *string `json:"textValue,omitempty"`
 }
+*/
 
 /* unreachable type Value
 // +kcc:proto=google.cloud.contentwarehouse.v1.Value
@@ -701,6 +777,7 @@ type BoundingPoly struct {
 }
 */
 
+/* unreachable type Document
 // +kcc:proto=google.cloud.documentai.v1.Document
 type Document struct {
 	// Optional. Currently supports Google Cloud Storage URI of the form
@@ -776,6 +853,7 @@ type Document struct {
 	// +kcc:proto:field=google.cloud.documentai.v1.Document.chunked_document
 	ChunkedDocument *Document_ChunkedDocument `json:"chunkedDocument,omitempty"`
 }
+*/
 
 /* unreachable type Document_ChunkedDocument
 // +kcc:proto=google.cloud.documentai.v1.Document.ChunkedDocument
@@ -795,7 +873,7 @@ type Document_ChunkedDocument_Chunk struct {
 
 	// Unused.
 	// +kcc:proto:field=google.cloud.documentai.v1.Document.ChunkedDocument.Chunk.source_block_ids
-	SourceBlockIDs []string `json:"sourceBlockIDs,omitempty"`
+	SourceBlockIds []string `json:"sourceBlockIds,omitempty"`
 
 	// Text content of the chunk.
 	// +kcc:proto:field=google.cloud.documentai.v1.Document.ChunkedDocument.Chunk.content
@@ -1004,7 +1082,6 @@ type Document_Entity struct {
 
 	// Required. Entity type from a schema e.g. `Address`.
 	// +kcc:proto:field=google.cloud.documentai.v1.Document.Entity.type
-	// +required
 	Type *string `json:"type,omitempty"`
 
 	// Optional. Text value of the entity e.g. `1600 Amphitheatre Pkwy`.
@@ -1689,7 +1766,6 @@ type Document_PageAnchor_PageRef struct {
 	//  This field is skipped when its value is the default `0`. See
 	//  https://developers.google.com/protocol-buffers/docs/proto3#json.
 	// +kcc:proto:field=google.cloud.documentai.v1.Document.PageAnchor.PageRef.page
-	// +required
 	Page *int64 `json:"page,omitempty"`
 
 	// Optional. The type of the layout element that is being referenced if
@@ -1784,7 +1860,7 @@ type Document_Revision struct {
 	//  that have anything to do with this revision - eg. there are
 	//  `provenance.parent.revision` fields that index into this field.
 	// +kcc:proto:field=google.cloud.documentai.v1.Document.Revision.parent_ids
-	ParentIDs []string `json:"parentIDs,omitempty"`
+	ParentIds []string `json:"parentIds,omitempty"`
 
 	// The time that the revision was created, internally generated by
 	//  doc proto storage at the time of create.
@@ -1969,6 +2045,8 @@ type Vertex struct {
 }
 */
 
+/* found existing non-generated go type "AuditConfig", skipping
+
 // +kcc:proto=google.iam.v1.AuditConfig
 type AuditConfig struct {
 	// Specifies a service that will be enabled for audit logging.
@@ -1981,6 +2059,9 @@ type AuditConfig struct {
 	// +kcc:proto:field=google.iam.v1.AuditConfig.audit_log_configs
 	AuditLogConfigs []AuditLogConfig `json:"auditLogConfigs,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "AuditLogConfig", skipping
 
 // +kcc:proto=google.iam.v1.AuditLogConfig
 type AuditLogConfig struct {
@@ -1995,6 +2076,9 @@ type AuditLogConfig struct {
 	// +kcc:proto:field=google.iam.v1.AuditLogConfig.exempted_members
 	ExemptedMembers []string `json:"exemptedMembers,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "Binding", skipping
 
 // +kcc:proto=google.iam.v1.Binding
 type Binding struct {
@@ -2063,6 +2147,9 @@ type Binding struct {
 	// +kcc:proto:field=google.iam.v1.Binding.condition
 	Condition *Expr `json:"condition,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "Policy", skipping
 
 // +kcc:proto=google.iam.v1.Policy
 type Policy struct {
@@ -2126,6 +2213,7 @@ type Policy struct {
 	// +kcc:proto:field=google.iam.v1.Policy.etag
 	Etag []byte `json:"etag,omitempty"`
 }
+*/
 
 /* unreachable type FloatValue
 // +kcc:proto=google.protobuf.FloatValue
@@ -2188,6 +2276,7 @@ type Date struct {
 }
 */
 
+/* unreachable type DateTime
 // +kcc:proto=google.type.DateTime
 type DateTime struct {
 	// Optional. Year of date. Must be from 1 to 9999, or 0 if specifying a
@@ -2234,6 +2323,9 @@ type DateTime struct {
 	// +kcc:proto:field=google.type.DateTime.time_zone
 	TimeZone *TimeZone `json:"timeZone,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "Expr", skipping
 
 // +kcc:proto=google.type.Expr
 type Expr struct {
@@ -2258,6 +2350,7 @@ type Expr struct {
 	// +kcc:proto:field=google.type.Expr.location
 	Location *string `json:"location,omitempty"`
 }
+*/
 
 /* unreachable type Money
 // +kcc:proto=google.type.Money
@@ -2389,6 +2482,7 @@ type PostalAddress struct {
 }
 */
 
+/* unreachable type TimeZone
 // +kcc:proto=google.type.TimeZone
 type TimeZone struct {
 	// IANA Time Zone Database time zone, e.g. "America/New_York".
@@ -2399,8 +2493,10 @@ type TimeZone struct {
 	// +kcc:proto:field=google.type.TimeZone.version
 	Version *string `json:"version,omitempty"`
 }
+*/
 
-/* unreachable type DocumentObservedState
+/* found existing non-generated go type with proto tag "google.cloud.contentwarehouse.v1.Document", skipping
+
 // +kcc:observedstate:proto=google.cloud.contentwarehouse.v1.Document
 type DocumentObservedState struct {
 	// Output only. The time when the document is last updated.
@@ -2422,7 +2518,8 @@ type DocumentObservedState struct {
 }
 */
 
-/* unreachable type DocumentSchemaObservedState
+/* found existing non-generated go type with proto tag "google.cloud.contentwarehouse.v1.DocumentSchema", skipping
+
 // +kcc:observedstate:proto=google.cloud.contentwarehouse.v1.DocumentSchema
 type DocumentSchemaObservedState struct {
 	// Output only. The time when the document schema is last updated.

@@ -17,22 +17,30 @@ package v1alpha1
 import (
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var VMwareEngineNetworkGVK = GroupVersion.WithKind("VMwareEngineNetwork")
 
+type Parent struct {
+	// +required
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
+	// Immutable.
+	// +required
+	Location string `json:"location"`
+}
+
 // VMwareEngineNetworkSpec defines the desired state of VMwareEngineNetwork
 // +kcc:spec:proto=google.cloud.vmwareengine.v1.VmwareEngineNetwork
 type VMwareEngineNetworkSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-
-	// The location of this resource.
-	Location string `json:"location"`
-
 	// The VMwareEngineNetwork name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
+	Parent `json:",inline"`
+
 	// User-provided description for this VMware Engine network.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.description
 	Description *string `json:"description,omitempty"`
@@ -42,12 +50,13 @@ type VMwareEngineNetworkSpec struct {
 	// +required
 	Type *string `json:"type,omitempty"`
 
+	// NOTYET: not supported in Config Connector reconciliation
 	// Checksum that may be sent on update and delete requests to ensure that the
 	//  user-provided value is up to date before the server processes a request.
 	//  The server computes checksums based on the value of other fields in the
 	//  request.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.etag
-	Etag *string `json:"etag,omitempty"`
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.Network.etag
+	// Etag *string `json:"etag,omitempty"`
 }
 
 // VMwareEngineNetworkStatus defines the config connector machine state of VMwareEngineNetwork
@@ -69,6 +78,15 @@ type VMwareEngineNetworkStatus struct {
 // VMwareEngineNetworkObservedState is the state of the VMwareEngineNetwork resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.vmwareengine.v1.VmwareEngineNetwork
 type VMwareEngineNetworkObservedState struct {
+	// Output only. The resource name of the VMware Engine network.
+	//  Resource names are schemeless URIs that follow the conventions in
+	//  https://cloud.google.com/apis/design/resource_names.
+	//  For example:
+	//  `projects/my-project/locations/global/vmwareEngineNetworks/my-network`
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.name
+	// NOTYET: this field serves the same purpose as externalRef
+	// Name *string `json:"name,omitempty"`
+
 	// Output only. Creation time of this resource.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -89,7 +107,7 @@ type VMwareEngineNetworkObservedState struct {
 
 	// Output only. System-generated unique identifier for the resource.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.VmwareEngineNetwork.uid
-	Uid *string `json:"uid,omitempty"`
+	UID *string `json:"uid,omitempty"`
 }
 
 // +genclient

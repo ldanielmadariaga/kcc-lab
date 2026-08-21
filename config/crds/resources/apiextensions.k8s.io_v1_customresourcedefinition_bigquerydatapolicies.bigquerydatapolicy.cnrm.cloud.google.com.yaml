@@ -20,7 +20,7 @@ spec:
     plural: bigquerydatapolicies
     shortNames:
     - gcpbigquerydatapolicy
-    - gcpbigquerydatapolicies
+    - gcpbigquerydatapolicys
     singular: bigquerydatapolicy
   preserveUnknownFields: false
   scope: Namespaced
@@ -78,38 +78,13 @@ spec:
                 description: Type of data policy.
                 type: string
               location:
-                description: Required. The location of the application.
+                description: The location of this resource.
                 type: string
-              policyTagRef:
-                description: Reference to a Data Catalog Policy Tag resource.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed DataCatalogPolicyTag
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/taxonomies/{{taxonomyID}}/policyTags/{{policytagID}}".
-                    type: string
-                  name:
-                    description: The name of a DataCatalogPolicyTag resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a DataCatalogPolicyTag resource.
-                    type: string
-                type: object
+              policyTag:
+                description: Policy tag resource name, in the format of `projects/{project_number}/locations/{location_id}/taxonomies/{taxonomy_id}/policyTags/{policyTag_id}`.
+                type: string
               projectRef:
-                description: Required. The host project of the application.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:

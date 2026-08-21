@@ -15,7 +15,6 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,13 +24,14 @@ var GKEBackupRestoreGVK = GroupVersion.WithKind("GKEBackupRestore")
 // GKEBackupRestoreSpec defines the desired state of GKEBackupRestore
 // +kcc:spec:proto=google.cloud.gkebackup.v1.Restore
 type GKEBackupRestoreSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-
-
 	// The GKEBackupRestore name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-	// Optional. User specified descriptive string for this Restore.
+
+	// Required. The RestorePlan from which this Restore is created.
+	// +required
+	RestorePlanRef *RestorePlanRef `json:"restorePlanRef,omitempty"`
+
+	// User specified descriptive string for this Restore.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Restore.description
 	Description *string `json:"description,omitempty"`
 
@@ -39,11 +39,9 @@ type GKEBackupRestoreSpec struct {
 	//  [Backup][google.cloud.gkebackup.v1.Backup] used as the source from which
 	//  this Restore will restore. Note that this Backup must be a sub-resource of
 	//  the RestorePlan's
-	//  [backup_plan][google.cloud.gkebackup.v1.RestorePlan.backup_plan]. Format:
-	//  `projects/*/locations/*/backupPlans/*/backups/*`.
+	//  [backup_plan][google.cloud.gkebackup.v1.RestorePlan.backup_plan].
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Restore.backup
-	// +required
-	Backup *string `json:"backup,omitempty"`
+	BackupRef *BackupRef `json:"backupRef,omitempty"`
 
 	// A set of custom labels supplied by user.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Restore.labels
@@ -51,7 +49,7 @@ type GKEBackupRestoreSpec struct {
 
 	// Optional. Immutable. Filters resources for `Restore`. If not specified, the
 	//  scope of the restore will remain the same as defined in the `RestorePlan`.
-	//  If this is specified and no resources are matched by the
+	//  If this is specified, and no resources are matched by the
 	//  `inclusion_filters` or everything is excluded by the `exclusion_filters`,
 	//  nothing will be restored. This filter can only be specified if the value of
 	//  [namespaced_resource_restore_mode][google.cloud.gkebackup.v1.RestoreConfig.namespaced_resource_restore_mode]
@@ -85,10 +83,16 @@ type GKEBackupRestoreStatus struct {
 // GKEBackupRestoreObservedState is the state of the GKEBackupRestore resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.gkebackup.v1.Restore
 type GKEBackupRestoreObservedState struct {
+	// Output only. The full name of the Restore resource.
+	//  Format: `projects/*/locations/*/restorePlans/*/restores/*`
+	// +kcc:proto:field=google.cloud.gkebackup.v1.Restore.name
+	// NOTYET: this field serves the same purpose as externalRef
+	// Name *string `json:"name,omitempty"`
+
 	// Output only. Server generated global unique identifier of
 	//  [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) format.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Restore.uid
-	Uid *string `json:"uid,omitempty"`
+	UID *string `json:"uid,omitempty"`
 
 	// Output only. The timestamp when this Restore resource was created.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Restore.create_time
@@ -114,16 +118,14 @@ type GKEBackupRestoreObservedState struct {
 	//  RestorePlan's
 	//  [restore_config][google.cloud.gkebackup.v1.RestorePlan.restore_config].
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Restore.restore_config
-	RestoreConfig *RestoreConfigObservedState `json:"restoreConfig,omitempty"`
+	RestoreConfig *RestoreConfig `json:"restoreConfig,omitempty"`
 
 	// Output only. The current state of the Restore.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Restore.state
 	State *string `json:"state,omitempty"`
 
 	// Output only. Human-readable description of why the Restore is in its
-	//  current state. This field is only meant for human readability and should
-	//  not be used programmatically as this field is not guaranteed to be
-	//  consistent.
+	//  current state.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Restore.state_reason
 	StateReason *string `json:"stateReason,omitempty"`
 
@@ -192,4 +194,16 @@ type GKEBackupRestoreList struct {
 
 func init() {
 	SchemeBuilder.Register(&GKEBackupRestore{}, &GKEBackupRestoreList{})
+}
+
+// +kcc:proto=google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+type VolumeDataRestorePolicyOverride struct {
+	// Required. The VolumeDataRestorePolicy to apply when restoring volumes in
+	//  scope.
+	// +kcc:proto:field=google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride.policy
+	Policy *string `json:"policy,omitempty"`
+
+	// A list of PVCs to apply the policy override to.
+	// +kcc:proto:field=google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride.selected_pvcs
+	SelectedPVCs *NamespacedNames `json:"selectedPVCs,omitempty"`
 }

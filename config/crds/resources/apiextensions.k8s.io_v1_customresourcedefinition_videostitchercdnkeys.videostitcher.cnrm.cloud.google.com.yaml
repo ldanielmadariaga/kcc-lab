@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: videostitchercdnkeys.videostitcher.cnrm.cloud.google.com
 spec:
@@ -86,7 +85,7 @@ spec:
                 description: The hostname this key applies to.
                 type: string
               location:
-                description: Immutable. The location of this resource.
+                description: The location of this resource.
                 type: string
               mediaCDNKey:
                 description: The configuration for a Media CDN key.
@@ -118,7 +117,7 @@ spec:
                     type: object
                 type: object
               projectRef:
-                description: Immutable. The project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -150,8 +149,8 @@ spec:
                     type: string
                 type: object
               resourceID:
-                description: Immutable. Optional. The VideoStitcherCDNKey name. If
-                  not given, the metadata.name will be used.
+                description: The VideoStitcherCDNKey name. If not given, the metadata.name
+                  will be used.
                 type: string
             required:
             - location

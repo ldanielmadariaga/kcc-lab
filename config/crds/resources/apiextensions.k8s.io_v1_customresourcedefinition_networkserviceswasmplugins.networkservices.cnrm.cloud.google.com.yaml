@@ -66,12 +66,15 @@ spec:
               description:
                 description: Optional. A human-readable description of the resource.
                 type: string
-              location:
-                description: The location that this resource belongs to.
-                type: string
-                x-kubernetes-validations:
-                - message: Location is immutable.
-                  rule: self == oldSelf
+              labels:
+                additionalProperties:
+                  type: string
+                description: |-
+                  Optional. Set of labels associated with the `WasmPlugin` resource.
+
+                   The format must comply with [the following
+                   requirements](/compute/docs/labeling-resources#requirements).
+                type: object
               logConfig:
                 description: Optional. Specifies the logging options for the activity
                   performed by this plugin. If logging is enabled, plugin logs are
@@ -81,32 +84,32 @@ spec:
                   enable:
                     description: |-
                       Optional. Specifies whether to enable logging for activity by this
-                      plugin.
+                       plugin.
 
-                      Defaults to `false`.
+                       Defaults to `false`.
                     type: boolean
                   minLogLevel:
                     description: |-
-                      Optional. Specifies the lowest level of the plugin logs that
-                      are exported to Cloud Logging. This setting relates to the logs generated
-                      by using logging statements in your Wasm code.
+                      Non-empty default. Specificies the lowest level of the plugin logs that
+                       are exported to Cloud Logging. This setting relates to the logs generated
+                       by using logging statements in your Wasm code.
 
-                      This field is can be set only if logging is enabled for the plugin.
+                       This field is can be set only if logging is enabled for the plugin.
 
-                      If the field is not provided when logging is enabled, it is set to
-                      `INFO` by default.
+                       If the field is not provided when logging is enabled, it is set to
+                       `INFO` by default.
                     type: string
                   sampleRate:
                     description: |-
-                      Optional. Configures the sampling rate of activity logs, where
-                      `1.0` means all logged activity is reported and `0.0` means no activity
-                      is reported. A floating point value between `0.0` and `1.0` indicates
-                      that a percentage of log messages is stored.
+                      Non-empty default. Configures the sampling rate of activity logs, where
+                       `1.0` means all logged activity is reported and `0.0` means no activity
+                       is reported. A floating point value between `0.0` and `1.0` indicates
+                       that a percentage of log messages is stored.
 
-                      The default value when logging is enabled is `1.0`. The value of the
-                      field must be between `0` and `1` (inclusive).
+                       The default value when logging is enabled is `1.0`. The value of the
+                       field must be between `0` and `1` (inclusive).
 
-                      This field can be specified only if logging is enabled for this plugin.
+                       This field can be specified only if logging is enabled for this plugin.
                     type: number
                 type: object
               mainVersionID:
@@ -115,7 +118,7 @@ spec:
                   be a child of this `WasmPlugin` resource.
                 type: string
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -150,36 +153,7 @@ spec:
                 description: The NetworkServicesWasmPlugin name. If not given, the
                   metadata.name will be used.
                 type: string
-              versions:
-                additionalProperties:
-                  properties:
-                    description:
-                      description: Optional. A human-readable description of the resource.
-                      type: string
-                    imageURI:
-                      description: Optional. URI of the container image containing
-                        the Wasm module, stored in the Artifact Registry.
-                      type: string
-                    labels:
-                      additionalProperties:
-                        type: string
-                      description: Optional. Set of labels associated with the `WasmPluginVersion`
-                        resource.
-                      type: object
-                    pluginConfigData:
-                      description: Configuration for the plugin.
-                      type: string
-                    pluginConfigURI:
-                      description: URI of the plugin configuration stored in the Artifact
-                        Registry.
-                      type: string
-                  type: object
-                description: Optional. All versions of this `WasmPlugin` resource
-                  in the key-value format. The key is the resource ID, and the value
-                  is the `VersionDetails` object.
-                type: object
             required:
-            - location
             - projectRef
             type: object
           status:

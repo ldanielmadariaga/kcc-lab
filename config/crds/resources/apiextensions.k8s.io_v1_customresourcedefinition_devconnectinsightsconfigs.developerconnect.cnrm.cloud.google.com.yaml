@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: devconnectinsightsconfigs.developerconnect.cnrm.cloud.google.com
 spec:
@@ -64,34 +63,16 @@ spec:
             description: DevConnectInsightsConfigSpec defines the desired state of
               DevConnectInsightsConfig
             properties:
-              appHubApplicationRef:
-                description: Optional. The name of the App Hub Application.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed AppHubApplication
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/applications/{{applicationID}}".
-                    type: string
-                  name:
-                    description: The name of an AppHubApplication resource.
-                    type: string
-                  namespace:
-                    description: The namespace of an AppHubApplication resource.
-                    type: string
+              annotations:
+                additionalProperties:
+                  type: string
+                description: Optional. User specified annotations. See https://google.aip.dev/148#annotations
+                  for more details such as format and size limitations.
                 type: object
+              appHubApplication:
+                description: 'Optional. The name of the App Hub Application. Format:
+                  projects/{project}/locations/{location}/applications/{application}'
+                type: string
               artifactConfigs:
                 description: Optional. The artifact configurations of the artifacts
                   that are deployed.
@@ -105,6 +86,8 @@ spec:
                           description: Required. The project id of the project where
                             the provenance is stored.
                           type: string
+                      required:
+                      - projectID
                       type: object
                     googleArtifactRegistry:
                       description: Optional. Set if the artifact is stored in Artifact
@@ -117,6 +100,9 @@ spec:
                         projectID:
                           description: Required. The host project of Artifact Registry.
                           type: string
+                      required:
+                      - artifactRegistryPackage
+                      - projectID
                       type: object
                     uri:
                       description: Required. Immutable. The URI of the artifact that
@@ -124,14 +110,18 @@ spec:
                         The URI does not include the tag / digest because it captures
                         a lineage of artifacts.
                       type: string
+                  required:
+                  - uri
                   type: object
                 type: array
+              labels:
+                additionalProperties:
+                  type: string
+                description: Optional. Set of labels associated with an InsightsConfig.
+                type: object
               location:
-                description: Immutable. The location of this resource.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -167,6 +157,9 @@ spec:
               resourceID:
                 description: The DevConnectInsightsConfig name. If not given, the
                   metadata.name will be used.
+                type: string
+              state:
+                description: Optional. Output only. The state of the InsightsConfig.
                 type: string
             required:
             - location
@@ -293,9 +286,6 @@ spec:
                           type: string
                       type: object
                     type: array
-                  state:
-                    description: Output only. The state of the InsightsConfig.
-                    type: string
                   updateTime:
                     description: Output only. [Output only] Update timestamp
                     type: string

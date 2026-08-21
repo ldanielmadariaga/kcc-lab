@@ -26,19 +26,22 @@ var AppHubServiceProjectAttachmentGVK = GroupVersion.WithKind("AppHubServiceProj
 // +kcc:spec:proto=google.cloud.apphub.v1.ServiceProjectAttachment
 type AppHubServiceProjectAttachmentSpec struct {
 	// The project that this resource belongs to.
+	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +required
 	Location *string `json:"location"`
 
 	// The AppHubServiceProjectAttachment name. If not given, the metadata.name will be used.
+	// +optional
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Required. Immutable. Service project name in the format: `"projects/abc"`
-	//  or `"projects/123"`. As input, project name with either project id or
-	//  number are accepted. As output, this field will contain project number.
-	// +kcc:proto:field=google.cloud.apphub.v1.ServiceProjectAttachment.service_project
+	// or `"projects/123"`. As input, project name with either project id or
+	// number are accepted. As output, this field will contain project number.
 	// +required
-	ServiceProject *string `json:"serviceProject,omitempty"`
+	ServiceProjectRef *refsv1beta1.ProjectRef `json:"serviceProjectRef"`
 }
 
 // AppHubServiceProjectAttachmentStatus defines the config connector machine state of AppHubServiceProjectAttachment
@@ -61,16 +64,16 @@ type AppHubServiceProjectAttachmentStatus struct {
 // +kcc:observedstate:proto=google.cloud.apphub.v1.ServiceProjectAttachment
 type AppHubServiceProjectAttachmentObservedState struct {
 	// Output only. Create time.
-	// +kcc:proto:field=google.cloud.apphub.v1.ServiceProjectAttachment.create_time
+	// +optional
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. A globally unique identifier (in UUID4 format) for the
-	//  `ServiceProjectAttachment`.
-	// +kcc:proto:field=google.cloud.apphub.v1.ServiceProjectAttachment.uid
+	// `ServiceProjectAttachment`.
+	// +optional
 	Uid *string `json:"uid,omitempty"`
 
 	// Output only. ServiceProjectAttachment state.
-	// +kcc:proto:field=google.cloud.apphub.v1.ServiceProjectAttachment.state
+	// +optional
 	State *string `json:"state,omitempty"`
 }
 

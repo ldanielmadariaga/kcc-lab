@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: rapidmigrationassessmentcollectors.rapidmigrationassessment.cnrm.cloud.google.com
 spec:
@@ -87,13 +86,10 @@ spec:
                 description: Labels as key value pairs.
                 type: object
               location:
-                description: Immutable. The location of this resource.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
               projectRef:
-                description: Immutable. The project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -125,36 +121,12 @@ spec:
                     type: string
                 type: object
               resourceID:
-                description: Immutable. The RapidMigrationAssessmentCollector name.
-                  If not given, the metadata.name will be used.
+                description: The RapidMigrationAssessmentCollector name. If not given,
+                  the metadata.name will be used.
                 type: string
-              serviceAccountRef:
-                description: Service Account used to ingest data to this Collector.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: The `email` field of an `IAMServiceAccount` resource.
-                    type: string
-                  name:
-                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                    type: string
-                  namespace:
-                    description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
-                    type: string
-                type: object
+              serviceAccount:
+                description: Service Account email used to ingest data to this Collector.
+                type: string
             required:
             - location
             - projectRef
@@ -225,16 +197,6 @@ spec:
                     type: object
                   state:
                     description: Output only. State of the Collector.
-                    enum:
-                    - STATE_UNSPECIFIED
-                    - STATE_INITIALIZING
-                    - STATE_READY_TO_USE
-                    - STATE_REGISTERED
-                    - STATE_ACTIVE
-                    - STATE_PAUSED
-                    - STATE_DELETING
-                    - STATE_DECOMMISSIONED
-                    - STATE_ERROR
                     type: string
                   updateTime:
                     description: Output only. Update time stamp.

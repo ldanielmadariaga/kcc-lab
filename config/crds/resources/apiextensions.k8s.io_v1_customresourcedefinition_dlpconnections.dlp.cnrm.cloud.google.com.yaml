@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: dlpconnections.dlp.cnrm.cloud.google.com
 spec:
@@ -94,41 +93,15 @@ spec:
                   usernamePassword:
                     description: A username and password stored in Secret Manager.
                     properties:
-                      secretRef:
-                        description: Required. The Secret Manager secret version that
-                          stores the password.
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
-                            type: string
-                          name:
-                            description: The `name` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                          namespace:
-                            description: The `metadata.namespace` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                        type: object
+                      passwordSecretVersionName:
+                        description: Required. The name of the Secret Manager resource
+                          that stores the password, in the form `projects/project-id/secrets/secret-name/versions/version`.
+                        type: string
                       username:
                         description: Required. The username.
                         type: string
                     required:
-                    - secretRef
+                    - passwordSecretVersionName
                     - username
                     type: object
                 required:
@@ -139,7 +112,7 @@ spec:
                 description: The location of this resource.
                 type: string
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -176,11 +149,6 @@ spec:
                 type: string
               state:
                 description: Required. The connection's state in its lifecycle.
-                enum:
-                - CONNECTION_STATE_UNSPECIFIED
-                - MISSING_CREDENTIALS
-                - AVAILABLE
-                - ERROR
                 type: string
             required:
             - location
@@ -265,9 +233,6 @@ spec:
                           type: array
                       type: object
                     type: array
-                  name:
-                    description: 'Output only. Name of the connection: `projects/{project}/locations/{location}/connections/{name}`.'
-                    type: string
                 type: object
             type: object
         required:

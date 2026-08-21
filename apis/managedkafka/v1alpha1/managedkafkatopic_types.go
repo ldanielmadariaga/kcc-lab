@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	commonv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/common/v1alpha1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,14 +25,20 @@ var ManagedKafkaTopicGVK = GroupVersion.WithKind("ManagedKafkaTopic")
 // ManagedKafkaTopicSpec defines the desired state of ManagedKafkaTopic
 // +kcc:spec:proto=google.cloud.managedkafka.v1.Topic
 type ManagedKafkaTopicSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	commonv1alpha1.CommonSpec `json:",inline"`
 
-	// The location of this resource.
+	// Required. the location of the Kafka resource.
+	// See https://cloud.google.com/managed-kafka/docs/locations for a list of supported locations.
+	// +required
 	Location string `json:"location"`
+
+	// Required. Reference to the Kafka cluster to create the topic in.
+	// +required
+	ClusterRef *ClusterRef `json:"clusterRef"`
 
 	// The ManagedKafkaTopic name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
 	// Required. The number of partitions this topic has. The partition count can
 	//  only be increased, not decreased. Please note that if partitions are
 	//  increased for a topic that has a key, the partitioning logic or the
@@ -67,13 +73,15 @@ type ManagedKafkaTopicStatus struct {
 	ExternalRef *string `json:"externalRef,omitempty"`
 
 	// ObservedState is the state of the resource as most recently observed in GCP.
-	ObservedState *ManagedKafkaTopicObservedState `json:"observedState,omitempty"`
+	// NOTYET: the resource does not have any output only fields
+	// ObservedState *ManagedKafkaTopicObservedState `json:"observedState,omitempty"`
 }
 
 // ManagedKafkaTopicObservedState is the state of the ManagedKafkaTopic resource as most recently observed in GCP.
-// +kcc:observedstate:proto=google.cloud.managedkafka.v1.Topic
-type ManagedKafkaTopicObservedState struct {
-}
+// +kcc:proto=google.cloud.managedkafka.v1.Topic
+// NOTYET: the resource does not have any output only fields
+// type ManagedKafkaTopicObservedState struct {
+// }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

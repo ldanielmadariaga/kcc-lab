@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: gkehubfleets.gkehub.cnrm.cloud.google.com
 spec:
@@ -74,36 +73,15 @@ spec:
                         description: Optional. Mode of operation for binauthz policy
                           evaluation.
                         type: string
-                      policyBindingsRefs:
+                      policyBindings:
                         description: Optional. Binauthz policies that apply to this
                           cluster.
                         items:
-                          oneOf:
-                          - not:
-                              required:
-                              - external
-                            required:
-                            - name
-                          - not:
-                              anyOf:
-                              - required:
-                                - name
-                              - required:
-                                - namespace
-                            required:
-                            - external
                           properties:
-                            external:
-                              description: A reference to an externally managed BinaryAuthorizationPlatformPolicy
-                                resource. Should be in the format "projects/{{projectID}}/platforms/{{platform}}/policies/{{policy}}".
-                              type: string
                             name:
-                              description: The name of a BinaryAuthorizationPlatformPolicy
-                                resource.
-                              type: string
-                            namespace:
-                              description: The namespace of a BinaryAuthorizationPlatformPolicy
-                                resource.
+                              description: 'The relative resource name of the binauthz
+                                platform policy to audit. GKE platform policies have
+                                the following format: `projects/{project_number}/platforms/gke/policies/{policy_id}`.'
                               type: string
                           type: object
                         type: array
@@ -142,11 +120,11 @@ spec:
               displayName:
                 description: |-
                   Optional. A user-assigned display name of the Fleet.
-                  When present, it must be between 4 to 30 characters.
-                  Allowed characters are: lowercase and uppercase letters, numbers,
-                  hyphen, single-quote, double-quote, space, and exclamation point.
+                   When present, it must be between 4 to 30 characters.
+                   Allowed characters are: lowercase and uppercase letters, numbers,
+                   hyphen, single-quote, double-quote, space, and exclamation point.
 
-                  Example: `Production Fleet`
+                   Example: `Production Fleet`
                 type: string
               labels:
                 additionalProperties:

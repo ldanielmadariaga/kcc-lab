@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: dialogflowknowledgebases.dialogflow.cnrm.cloud.google.com
 spec:
@@ -116,6 +115,7 @@ spec:
                 type: string
             required:
             - displayName
+            - location
             - projectRef
             type: object
           status:
@@ -163,12 +163,6 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
-                properties:
-                  name:
-                    description: 'The knowledge base resource name. The name must
-                      be empty when creating a knowledge base. Format: `projects/<Project
-                      ID>/locations/<Location ID>/knowledgeBases/<Knowledge Base ID>`.'
-                    type: string
                 type: object
             type: object
         required:

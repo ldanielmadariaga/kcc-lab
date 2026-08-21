@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: networkserviceslbtrafficextensions.networkservices.cnrm.cloud.google.com
 spec:
@@ -79,73 +78,36 @@ spec:
                     extensions:
                       description: Required. A set of extensions to execute for the
                         matching request. At least one extension is required. Up to
-                        3 extensions can be defined for each extension chain for `LBTrafficExtension`
-                        resource. `LBRouteExtension` and `LBEdgeExtension` chains
+                        3 extensions can be defined for each extension chain for `LbTrafficExtension`
+                        resource. `LbRouteExtension` and `LbEdgeExtension` chains
                         are limited to 1 extension per extension chain.
                       items:
                         properties:
                           authority:
                             description: |-
                               Optional. The `:authority` header in the gRPC request sent from Envoy
-                              to the extension service.
-                              Required for Callout extensions.
+                               to the extension service.
+                               Required for Callout extensions.
 
-                              This field is not supported for plugin extensions. Setting it results in
-                              a validation error.
+                               This field is not supported for plugin extensions. Setting it results in
+                               a validation error.
                             type: string
-                          backendServiceRef:
-                            description: |-
-                              Optional. The reference to the service that runs the extension.
-
-                              To configure a callout extension, `service` must be a fully-qualified reference
-                              to a [backend service](https://cloud.google.com/compute/docs/reference/rest/v1/backendServices)
-                              in the format:
-                              `https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/backendServices/{backendService}`
-                              or
-                              `https://www.googleapis.com/compute/v1/projects/{project}/global/backendServices/{backendService}`.
-                            oneOf:
-                            - not:
-                                required:
-                                - external
-                              required:
-                              - name
-                            - not:
-                                anyOf:
-                                - required:
-                                  - name
-                                - required:
-                                  - namespace
-                              required:
-                              - external
-                            properties:
-                              external:
-                                description: The value of an externally managed ComputeBackendService
-                                  resource.
-                                type: string
-                              name:
-                                description: The name of a ComputeBackendService resource.
-                                type: string
-                              namespace:
-                                description: The namespace of a ComputeBackendService
-                                  resource.
-                                type: string
-                            type: object
                           failOpen:
                             description: |-
                               Optional. Determines how the proxy behaves if the call to the extension
-                              fails or times out.
+                               fails or times out.
 
-                              When set to `TRUE`, request or response processing continues without
-                              error. Any subsequent extensions in the extension chain are also
-                              executed. When set to `FALSE` or the default setting of `FALSE` is used,
-                              one of the following happens:
+                               When set to `TRUE`, request or response processing continues without
+                               error. Any subsequent extensions in the extension chain are also
+                               executed. When set to `FALSE` or the default setting of `FALSE` is used,
+                               one of the following happens:
 
-                              * If response headers have not been delivered to the downstream client,
-                              a generic 500 error is returned to the client. The error response can be
-                              tailored by configuring a custom error response in the load balancer.
+                               * If response headers have not been delivered to the downstream client,
+                               a generic 500 error is returned to the client. The error response can be
+                               tailored by configuring a custom error response in the load balancer.
 
-                              * If response headers have been delivered, then the HTTP stream to the
-                              downstream client is reset.
+                               * If response headers have been delivered, then the HTTP stream to the
+                               downstream client is reset.
                             type: boolean
                           forwardHeaders:
                             description: Optional. List of the HTTP headers to forward
@@ -158,33 +120,33 @@ spec:
                           metadata:
                             description: |-
                               Optional. The metadata provided here is included as part of the
-                              `metadata_context` (of type `google.protobuf.Struct`) in the
-                              `ProcessingRequest` message sent to the extension server.
+                               `metadata_context` (of type `google.protobuf.Struct`) in the
+                               `ProcessingRequest` message sent to the extension server.
 
-                              The metadata is available under the namespace
-                              `com.google.<extension_type>.<resource_name>.<extension_chain_name>.<extension_name>`.
-                              For example:
-                              `com.google.lb_traffic_extension.lbtrafficextension1.chain1.ext1`.
+                               The metadata is available under the namespace
+                               `com.google.<extension_type>.<resource_name>.<extension_chain_name>.<extension_name>`.
+                               For example:
+                               `com.google.lb_traffic_extension.lbtrafficextension1.chain1.ext1`.
 
-                              The following variables are supported in the metadata:
+                               The following variables are supported in the metadata:
 
-                              `{forwarding_rule_id}` - substituted with the forwarding rule's fully
-                              qualified resource name.
+                               `{forwarding_rule_id}` - substituted with the forwarding rule's fully
+                                 qualified resource name.
 
-                              This field must not be set for plugin extensions. Setting it results in
-                              a validation error.
+                               This field must not be set for plugin extensions. Setting it results in
+                               a validation error.
 
-                              You can set metadata at either the resource level or the extension level.
-                              The extension level metadata is recommended because you can pass a
-                              different set of metadata through each extension to the backend.
+                               You can set metadata at either the resource level or the extension level.
+                               The extension level metadata is recommended because you can pass a
+                               different set of metadata through each extension to the backend.
 
-                              This field is subject to following limitations:
+                               This field is subject to following limitations:
 
-                              * The total size of the metadata must be less than 1KiB.
-                              * The total number of keys in the metadata must be less than 16.
-                              * The length of each key must be less than 64 characters.
-                              * The length of each value must be less than 1024 characters.
-                              * All values must be strings.
+                               * The total size of the metadata must be less than 1KiB.
+                               * The total number of keys in the metadata must be less than 16.
+                               * The length of each key must be less than 64 characters.
+                               * The length of each value must be less than 1024 characters.
+                               * All values must be strings.
                             x-kubernetes-preserve-unknown-fields: true
                           name:
                             description: Required. The name for this extension. The
@@ -194,81 +156,59 @@ spec:
                               length of 63 characters. Additionally, the first character
                               must be a letter and the last a letter or a number.
                             type: string
+                          service:
+                            description: |-
+                              Required. The reference to the service that runs the extension.
+
+                               To configure a callout extension, `service` must be a fully-qualified
+                               reference
+                               to a [backend
+                               service](https://cloud.google.com/compute/docs/reference/rest/v1/backendServices)
+                               in the format:
+                               `https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/backendServices/{backendService}`
+                               or
+                               `https://www.googleapis.com/compute/v1/projects/{project}/global/backendServices/{backendService}`.
+
+                               To configure a plugin extension, `service` must be a reference
+                               to a [`WasmPlugin`
+                               resource](https://cloud.google.com/service-extensions/docs/reference/rest/v1beta1/projects.locations.wasmPlugins)
+                               in the format:
+                               `projects/{project}/locations/{location}/wasmPlugins/{plugin}`
+                               or
+                               `//networkservices.googleapis.com/projects/{project}/locations/{location}/wasmPlugins/{wasmPlugin}`.
+
+                               Plugin extensions are currently supported for the
+                               `LbTrafficExtension`, the `LbRouteExtension`, and the `LbEdgeExtension`
+                               resources.
+                            type: string
                           supportedEvents:
                             description: |-
                               Optional. A set of events during request or response processing for which
-                              this extension is called.
+                               this extension is called.
 
-                              For the `LBTrafficExtension` resource, this field is required.
+                               For the `LbTrafficExtension` resource, this field is required.
 
-                              For the `LBRouteExtension` resource, this field is optional. If
-                              unspecified, `REQUEST_HEADERS` event is assumed as supported.
+                               For the `LbRouteExtension` resource, this field is optional. If
+                               unspecified, `REQUEST_HEADERS` event is assumed as supported.
 
-                              For the `LBEdgeExtension` resource, this field is required and must only
-                              contain `REQUEST_HEADERS` event.
+                               For the `LbEdgeExtension` resource, this field is required and must only
+                               contain `REQUEST_HEADERS` event.
                             items:
                               type: string
                             type: array
                           timeout:
                             description: |-
                               Optional. Specifies the timeout for each individual message on the
-                              stream. The timeout must be between `10`-`10000` milliseconds. Required
-                              for callout extensions.
+                               stream. The timeout must be between `10`-`10000` milliseconds. Required
+                               for callout extensions.
 
-                              This field is not supported for plugin extensions. Setting it results in
-                              a validation error.
+                               This field is not supported for plugin extensions. Setting it results in
+                               a validation error.
                             type: string
-                          wasmPluginRef:
-                            description: |-
-                              Optional. The reference to the WasmPlugin resource.
-
-                              To configure a plugin extension, `service` must be a reference to a
-                              [`WasmPlugin` resource](https://cloud.google.com/service-extensions/docs/reference/rest/v1beta1/projects.locations.wasmPlugins)
-                              in the format:
-                              `projects/{project}/locations/{location}/wasmPlugins/{plugin}`
-                              or
-                              `//networkservices.googleapis.com/projects/{project}/locations/{location}/wasmPlugins/{wasmPlugin}`.
-
-                              Plugin extensions are currently supported for the `LBTrafficExtension`, the
-                              `LBRouteExtension`, and the `LBEdgeExtension` resources.
-
-                              Note: Only the `external` subfield is supported as the
-                              `NetworkServicesWasmPlugin` resource is not yet supported in Config Connector.
-                            oneOf:
-                            - not:
-                                required:
-                                - external
-                              required:
-                              - name
-                            - not:
-                                anyOf:
-                                - required:
-                                  - name
-                                - required:
-                                  - namespace
-                              required:
-                              - external
-                            properties:
-                              external:
-                                description: 'The name of the wasmplugin. Allowed
-                                  value: The Google Cloud resource name of a `NetworkServicesWasmPlugin`
-                                  resource (format: `projects/{{project}}/locations/{{location}}/wasmPlugins/{{name}}`).'
-                                type: string
-                              name:
-                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                                type: string
-                              namespace:
-                                description: 'Namespace of the referent. More info:
-                                  https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
-                                type: string
-                            type: object
                         required:
                         - name
+                        - service
                         type: object
-                        x-kubernetes-validations:
-                        - message: either backendServiceRef or wasmPluginRef must
-                            be set
-                          rule: has(self.backendServiceRef) != has(self.wasmPluginRef)
                       type: array
                     matchCondition:
                       description: Required. Conditions under which this chain is
@@ -277,10 +217,10 @@ spec:
                         celExpression:
                           description: |-
                             Required. A Common Expression Language (CEL) expression that is used to
-                            match requests for which the extension chain is executed.
+                             match requests for which the extension chain is executed.
 
-                            For more information, see [CEL matcher language
-                            reference](https://cloud.google.com/service-extensions/docs/cel-matcher-language-reference).
+                             For more information, see [CEL matcher language
+                             reference](https://cloud.google.com/service-extensions/docs/cel-matcher-language-reference).
                           type: string
                       required:
                       - celExpression
@@ -299,59 +239,56 @@ spec:
                   - name
                   type: object
                 type: array
-              forwardingRuleRefs:
+              forwardingRules:
                 description: Optional. A list of references to the forwarding rules
                   to which this service extension is attached. At least one forwarding
-                  rule is required. Only one LBTrafficExtension resource can be associated
-                  with a forwarding rule.
+                  rule is required. Only one `LbTrafficExtension` resource can be
+                  associated with a forwarding rule.
                 items:
-                  description: ForwardingRuleRef is a reference to a ComputeForwardingRule.
-                  oneOf:
-                  - not:
-                      required:
-                      - external
-                    required:
-                    - name
-                  - not:
-                      anyOf:
-                      - required:
-                        - name
-                      - required:
-                        - namespace
-                    required:
-                    - external
-                  properties:
-                    external:
-                      description: A reference to an externally managed ComputeForwardingRule
-                        resource. Should be in the format "projects/{{projectID}}/global/forwardingRules/{{forwardingRuleID}}"
-                        or "projects/{{projectID}}/regions/{{region}}/forwardingRules/{{forwardingRuleID}}".
-                      type: string
-                    name:
-                      description: The name of a ComputeForwardingRule resource.
-                      type: string
-                    namespace:
-                      description: The namespace of a ComputeForwardingRule resource.
-                      type: string
-                  type: object
+                  type: string
                 type: array
+              labels:
+                additionalProperties:
+                  type: string
+                description: |-
+                  Optional. Set of labels associated with the `LbTrafficExtension` resource.
+
+                   The format must comply with [the requirements for
+                   labels](https://cloud.google.com/compute/docs/labeling-resources#requirements)
+                   for Google Cloud resources.
+                type: object
               loadBalancingScheme:
                 description: 'Required. All backend services and forwarding rules
                   referenced by this extension must share the same load balancing
-                  scheme. Supported values: INTERNAL_MANAGED, EXTERNAL_MANAGED.'
+                  scheme. Supported values: `INTERNAL_MANAGED` and `EXTERNAL_MANAGED`.
+                  For more information, refer to [Backend services overview](https://cloud.google.com/load-balancing/docs/backend-service).'
                 type: string
-              location:
-                description: The location that this resource belongs to.
-                type: string
-                x-kubernetes-validations:
-                - message: Location is immutable.
-                  rule: self == oldSelf
               metadata:
-                description: Optional. The metadata provided here is included as part
-                  of the metadata_context (of type google.protobuf.Struct) in the
-                  ProcessingRequest message sent to the extension server.
+                description: |-
+                  Optional. The metadata provided here is included as part of the
+                   `metadata_context` (of type `google.protobuf.Struct`) in the
+                   `ProcessingRequest` message sent to the extension server.
+
+                   The metadata applies to all extensions in all extensions chains in this
+                   resource.
+
+                   The metadata is available under the key
+                   `com.google.lb_traffic_extension.<resource_name>`.
+
+                   The following variables are supported in the metadata:
+
+                   `{forwarding_rule_id}` - substituted with the forwarding rule's fully
+                     qualified resource name.
+
+                   This field must not be set if at least one of the extension chains
+                   contains plugin extensions. Setting it results in a validation error.
+
+                   You can set metadata at either the resource level or the extension level.
+                   The extension level metadata is recommended because you can pass a
+                   different set of metadata through each extension to the backend.
                 x-kubernetes-preserve-unknown-fields: true
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -389,7 +326,6 @@ spec:
             required:
             - extensionChains
             - loadBalancingScheme
-            - location
             - projectRef
             type: object
           status:

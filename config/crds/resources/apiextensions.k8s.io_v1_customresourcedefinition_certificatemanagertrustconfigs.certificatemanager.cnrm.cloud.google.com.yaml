@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: certificatemanagertrustconfigs.certificatemanager.cnrm.cloud.google.com
 spec:
@@ -67,12 +66,19 @@ spec:
               description:
                 description: One or more paragraphs of text description of a TrustConfig.
                 type: string
+              etag:
+                description: This checksum is computed by the server based on the
+                  value of other fields, and may be sent on update and delete requests
+                  to ensure the client has an up-to-date value before proceeding.
+                type: string
+              labels:
+                additionalProperties:
+                  type: string
+                description: Set of labels associated with a TrustConfig.
+                type: object
               location:
                 description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location is immutable.
-                  rule: self == oldSelf
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -110,7 +116,13 @@ spec:
                   the metadata.name will be used.
                 type: string
               trustStores:
-                description: TrustStores to use for client signature verification.
+                description: |-
+                  Set of trust stores to perform validation against.
+
+                   This field is supported when TrustConfig is configured with Load Balancers,
+                   currently not supported for SPIFFE certificate validation.
+
+                   Only one TrustStore specified is currently allowed.
                 items:
                   properties:
                     intermediateCAs:

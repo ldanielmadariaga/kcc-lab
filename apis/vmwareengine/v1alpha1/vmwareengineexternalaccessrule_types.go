@@ -15,22 +15,40 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/vmwareengine/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var VMwareEngineExternalAccessRuleGVK = GroupVersion.WithKind("VMwareEngineExternalAccessRule")
 
+// +kcc:proto=google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange
+type ExternalAccessRule_IPRange struct {
+	// A single IP address. For example: `10.0.0.5`.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange.ip_address
+	IPAddress *string `json:"ipAddress,omitempty"`
+
+	// An IP address range in the CIDR format. For example: `10.0.0.0/24`.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange.ip_address_range
+	IPAddressRange *string `json:"ipAddressRange,omitempty"`
+
+	// The name of an `ExternalAddress` resource. The external address must
+	//  have been reserved in the scope of this external access rule's parent
+	//  network policy.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange.external_address
+	ExternalAddressRef *v1beta1.ExternalAddressRef `json:"externalAddressRef,omitempty"`
+}
+
 // VMwareEngineExternalAccessRuleSpec defines the desired state of VMwareEngineExternalAccessRule
 // +kcc:spec:proto=google.cloud.vmwareengine.v1.ExternalAccessRule
 type VMwareEngineExternalAccessRuleSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-
-
 	// The VMwareEngineExternalAccessRule name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+
+	// Required. The resource name of the network policy to create a new external access firewall rule in.
+	// +required
+	NetworkPolicyRef *NetworkPolicyRef `json:"networkPolicyRef"`
+
 	// User-provided description for this external access rule.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.description
 	Description *string `json:"description,omitempty"`
@@ -110,6 +128,15 @@ type VMwareEngineExternalAccessRuleStatus struct {
 // VMwareEngineExternalAccessRuleObservedState is the state of the VMwareEngineExternalAccessRule resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.vmwareengine.v1.ExternalAccessRule
 type VMwareEngineExternalAccessRuleObservedState struct {
+	// Output only. The resource name of this external access rule.
+	//  Resource names are schemeless URIs that follow the conventions in
+	//  https://cloud.google.com/apis/design/resource_names.
+	//  For example:
+	//  `projects/my-project/locations/us-central1/networkPolicies/my-policy/externalAccessRules/my-rule`
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.name
+	// NOTYET: this field serves the same purpose as externalRef
+	// Name *string `json:"name,omitempty"`
+
 	// Output only. Creation time of this resource.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -124,7 +151,7 @@ type VMwareEngineExternalAccessRuleObservedState struct {
 
 	// Output only. System-generated unique identifier for the resource.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAccessRule.uid
-	Uid *string `json:"uid,omitempty"`
+	UID *string `json:"uid,omitempty"`
 }
 
 // +genclient

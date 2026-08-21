@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: networksecuritypartnersserealms.networksecurity.cnrm.cloud.google.com
 spec:
@@ -67,7 +66,7 @@ spec:
               labels:
                 additionalProperties:
                   type: string
-                description: Optional. Labels as key value pairs
+                description: Labels as key value pairs
                 type: object
               location:
                 description: The location of this resource.

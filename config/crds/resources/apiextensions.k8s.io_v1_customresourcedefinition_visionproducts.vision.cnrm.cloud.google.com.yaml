@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: visionproducts.vision.cnrm.cloud.google.com
 spec:
@@ -79,19 +78,7 @@ spec:
                   "toys-v2", "packagedgoods-v1" or "general-v1". The legacy categories
                   "homegoods", "apparel", and "toys" are still supported, but these
                   should not be used for new products.
-                enum:
-                - homegoods-v2
-                - apparel-v2
-                - toys-v2
-                - packagedgoods-v1
-                - general-v1
-                - homegoods
-                - apparel
-                - toys
                 type: string
-                x-kubernetes-validations:
-                - message: ProductCategory field is immutable
-                  rule: self == oldSelf
               productLabels:
                 description: |-
                   Key-value pairs that can be attached to a product. At query time,
@@ -117,9 +104,6 @@ spec:
                       description: The value of the label attached to the product.
                         Cannot be empty and cannot exceed 128 bytes.
                       type: string
-                  required:
-                  - key
-                  - value
                   type: object
                 type: array
               projectRef:
@@ -159,9 +143,7 @@ spec:
                   will be used.
                 type: string
             required:
-            - displayName
             - location
-            - productCategory
             - projectRef
             type: object
           status:
@@ -210,7 +192,6 @@ spec:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
                 type: object
-                x-kubernetes-preserve-unknown-fields: true
             type: object
         required:
         - spec

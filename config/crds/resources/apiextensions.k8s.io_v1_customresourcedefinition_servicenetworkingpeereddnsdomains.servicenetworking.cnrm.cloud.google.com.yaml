@@ -67,8 +67,8 @@ spec:
                 description: The DNS domain name suffix e.g. `example.com.`. Cloud
                   DNS requires that a DNS suffix ends with a trailing dot.
                 type: string
-              networkRef:
-                description: The network that this resource belongs to.
+              projectRef:
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -85,14 +85,18 @@ spec:
                   - external
                 properties:
                   external:
-                    description: A reference to an externally managed ComputeNetwork
-                      resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
                     type: string
                   name:
-                    description: The name of a ComputeNetwork resource.
+                    description: The `name` field of a `Project` resource.
                     type: string
                   namespace:
-                    description: The namespace of a ComputeNetwork resource.
+                    description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
               resourceID:
@@ -100,7 +104,7 @@ spec:
                   the metadata.name will be used.
                 type: string
             required:
-            - networkRef
+            - projectRef
             type: object
           status:
             description: ServiceNetworkingPeeredDNSDomainStatus defines the config

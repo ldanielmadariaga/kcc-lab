@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,31 +33,33 @@ type APIHubExternalAPISpec struct {
 
 	// The APIHubExternalAPI name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-	// Required. Display name of the external API. Max length is 63 characters
-	//  (Unicode Code Points).
-	// +kcc:proto:field=google.cloud.apihub.v1.ExternalApi.display_name
-	// +required
+
+	// Required. Display name of the external API. Max length is 63 characters (Unicode Code Points).
+	// +kubebuilder:validation:Required
 	DisplayName *string `json:"displayName,omitempty"`
 
-	// Optional. Description of the external API. Max length is 2000 characters
-	//  (Unicode Code Points).
-	// +kcc:proto:field=google.cloud.apihub.v1.ExternalApi.description
+	// Optional. Description of the external API. Max length is 2000 characters (Unicode Code Points).
+	// +kubebuilder:validation:Optional
 	Description *string `json:"description,omitempty"`
 
 	// Optional. List of endpoints on which this API is accessible.
-	// +kcc:proto:field=google.cloud.apihub.v1.ExternalApi.endpoints
+	// +kubebuilder:validation:Optional
 	Endpoints []string `json:"endpoints,omitempty"`
 
 	// Optional. List of paths served by this API.
-	// +kcc:proto:field=google.cloud.apihub.v1.ExternalApi.paths
+	// +kubebuilder:validation:Optional
 	Paths []string `json:"paths,omitempty"`
 
 	// Optional. Documentation of the external API.
-	// +kcc:proto:field=google.cloud.apihub.v1.ExternalApi.documentation
+	// +kubebuilder:validation:Optional
 	Documentation *Documentation `json:"documentation,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Optional. The list of user defined attributes associated with the Version resource.
+	// The key is the attribute name. It will be of the format: `projects/{project}/locations/{location}/attributes/{attribute}`.
+	// The value is the attribute values associated with the resource.
+	// +kcc:proto:field=google.cloud.apihub.v1.ExternalApi.attributes
+	// +kubebuilder:validation:Optional
+	AttributeRefs []APIHubExternalAPIAttribute `json:"attributeRefs,omitempty"`
 }
 
 // APIHubExternalAPIStatus defines the config connector machine state of APIHubExternalAPI
@@ -80,11 +82,11 @@ type APIHubExternalAPIStatus struct {
 // +kcc:observedstate:proto=google.cloud.apihub.v1.ExternalApi
 type APIHubExternalAPIObservedState struct {
 	// Output only. Creation timestamp.
-	// +kcc:proto:field=google.cloud.apihub.v1.ExternalApi.create_time
+	// +kubebuilder:validation:Optional
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. Last update timestamp.
-	// +kcc:proto:field=google.cloud.apihub.v1.ExternalApi.update_time
+	// +kubebuilder:validation:Optional
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
@@ -94,6 +96,7 @@ type APIHubExternalAPIObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -116,6 +119,15 @@ type APIHubExternalAPIList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []APIHubExternalAPI `json:"items"`
+}
+
+type APIHubExternalAPIAttribute struct {
+	// Reference to the attribute.
+	// +kubebuilder:validation:Required
+	AttributeRef *APIHubAttributeRef `json:"attributeRef"`
+	// The value of the attribute.
+	// +kubebuilder:validation:Required
+	Values *AttributeValues `json:"values"`
 }
 
 func init() {

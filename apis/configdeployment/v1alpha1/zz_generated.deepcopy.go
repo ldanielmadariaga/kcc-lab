@@ -243,9 +243,9 @@ func (in *DeploymentUnit) DeepCopyInto(out *DeploymentUnit) {
 		*out = new(string)
 		**out = **in
 	}
-	if in.DeploymentRef != nil {
-		in, out := &in.DeploymentRef, &out.DeploymentRef
-		*out = new(ConfigDeploymentRef)
+	if in.Deployment != nil {
+		in, out := &in.Deployment, &out.Deployment
+		*out = new(string)
 		**out = **in
 	}
 	if in.Dependencies != nil {

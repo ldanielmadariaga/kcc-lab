@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	bigqueryv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/bigquery/v1beta1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -25,47 +26,29 @@ var SecurityCenterBigQueryExportGVK = GroupVersion.WithKind("SecurityCenterBigQu
 // SecurityCenterBigQueryExportSpec defines the desired state of SecurityCenterBigQueryExport
 // +kcc:spec:proto=google.cloud.securitycenter.v1.BigQueryExport
 type SecurityCenterBigQueryExportSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	// The organization that this resource belongs to.
+	// +kubebuilder:validation:Required
+	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef"`
 
 	// The location of this resource.
+	// +kubebuilder:validation:Required
 	Location *string `json:"location"`
 
-	// The SecurityCenterBigQueryExport name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
 	// The description of the export (max of 1024 characters).
-	// +kcc:proto:field=google.cloud.securitycenter.v1.BigQueryExport.description
+	// +kubebuilder:validation:Optional
 	Description *string `json:"description,omitempty"`
 
-	// Expression that defines the filter to apply across create/update events
-	//  of findings. The expression is a list of zero or more restrictions combined
-	//  via logical operators `AND` and `OR`. Parentheses are supported, and `OR`
-	//  has higher precedence than `AND`.
-	//
-	//  Restrictions have the form `<field> <operator> <value>` and may have a
-	//  `-` character in front of them to indicate negation. The fields map to
-	//  those defined in the corresponding resource.
-	//
-	//  The supported operators are:
-	//
-	//  * `=` for all value types.
-	//  * `>`, `<`, `>=`, `<=` for integer values.
-	//  * `:`, meaning substring matching, for strings.
-	//
-	//  The supported value types are:
-	//
-	//  * string literals in quotes.
-	//  * integer literals without quotes.
-	//  * boolean literals `true` and `false` without quotes.
-	// +kcc:proto:field=google.cloud.securitycenter.v1.BigQueryExport.filter
+	// Expression that defines the filter to apply across create/update events of findings.
+	// +kubebuilder:validation:Optional
 	Filter *string `json:"filter,omitempty"`
 
-	// The dataset to write findings' updates to. Its format is
-	//  "projects/[project_id]/datasets/[bigquery_dataset_id]".
-	//  BigQuery Dataset unique ID  must contain only letters (a-z, A-Z), numbers
-	//  (0-9), or underscores (_).
-	// +kcc:proto:field=google.cloud.securitycenter.v1.BigQueryExport.dataset
-	Dataset *string `json:"dataset,omitempty"`
+	// The dataset to write findings' updates to.
+	// +kubebuilder:validation:Required
+	DatasetRef *bigqueryv1beta1.DatasetRef `json:"datasetRef"`
+
+	// The SecurityCenterBigQueryExport name. If not given, the metadata.name will be used.
+	// +kubebuilder:validation:Optional
+	ResourceID *string `json:"resourceID,omitempty"`
 }
 
 // SecurityCenterBigQueryExportStatus defines the config connector machine state of SecurityCenterBigQueryExport
@@ -88,26 +71,15 @@ type SecurityCenterBigQueryExportStatus struct {
 // +kcc:observedstate:proto=google.cloud.securitycenter.v1.BigQueryExport
 type SecurityCenterBigQueryExportObservedState struct {
 	// Output only. The time at which the BigQuery export was created.
-	//  This field is set by the server and will be ignored if provided on export
-	//  on creation.
-	// +kcc:proto:field=google.cloud.securitycenter.v1.BigQueryExport.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. The most recent time at which the BigQuery export was updated.
-	//  This field is set by the server and will be ignored if provided on export
-	//  creation or update.
-	// +kcc:proto:field=google.cloud.securitycenter.v1.BigQueryExport.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. Email address of the user who last edited the BigQuery export.
-	//  This field is set by the server and will be ignored if provided on export
-	//  creation or update.
-	// +kcc:proto:field=google.cloud.securitycenter.v1.BigQueryExport.most_recent_editor
 	MostRecentEditor *string `json:"mostRecentEditor,omitempty"`
 
-	// Output only. The service account that needs permission to create table and
-	//  upload data to the BigQuery dataset.
-	// +kcc:proto:field=google.cloud.securitycenter.v1.BigQueryExport.principal
+	// Output only. The service account that needs permission to create table and upload data to the BigQuery dataset.
 	Principal *string `json:"principal,omitempty"`
 }
 

@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -51,12 +51,16 @@ type AcceleratorConfig struct {
 	AcceleratorCount *int32 `json:"acceleratorCount,omitempty"`
 }
 
+/* unreachable type AuthenticationConfig
 // +kcc:proto=google.cloud.dataproc.v1.AuthenticationConfig
 type AuthenticationConfig struct {
 	// Optional. Authentication type for the user workload running in containers.
 	// +kcc:proto:field=google.cloud.dataproc.v1.AuthenticationConfig.user_workload_authentication_type
 	UserWorkloadAuthenticationType *string `json:"userWorkloadAuthenticationType,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "AutotuningConfig", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.AutotuningConfig
 type AutotuningConfig struct {
@@ -64,8 +68,10 @@ type AutotuningConfig struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.AutotuningConfig.scenarios
 	Scenarios []string `json:"scenarios,omitempty"`
 }
+*/
 
-/* unreachable type Batch
+/* found existing non-generated go type with proto tag "google.cloud.dataproc.v1.Batch", skipping
+
 // +kcc:proto=google.cloud.dataproc.v1.Batch
 type Batch struct {
 
@@ -105,11 +111,14 @@ type Batch struct {
 }
 */
 
-/* unreachable type Batch_StateHistory
+/* found existing non-generated go type "Batch_StateHistory", skipping
+
 // +kcc:proto=google.cloud.dataproc.v1.Batch.StateHistory
 type Batch_StateHistory struct {
 }
 */
+
+/* found existing non-generated go type "DiskConfig", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.DiskConfig
 type DiskConfig struct {
@@ -158,19 +167,23 @@ type DiskConfig struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.DiskConfig.boot_disk_provisioned_throughput
 	BootDiskProvisionedThroughput *int64 `json:"bootDiskProvisionedThroughput,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "DriverSchedulingConfig", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.DriverSchedulingConfig
 type DriverSchedulingConfig struct {
 	// Required. The amount of memory in MB the driver is requesting.
 	// +kcc:proto:field=google.cloud.dataproc.v1.DriverSchedulingConfig.memory_mb
-	// +required
 	MemoryMb *int32 `json:"memoryMb,omitempty"`
 
 	// Required. The number of vCPUs the driver is requesting.
 	// +kcc:proto:field=google.cloud.dataproc.v1.DriverSchedulingConfig.vcores
-	// +required
 	Vcores *int32 `json:"vcores,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "EnvironmentConfig", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.EnvironmentConfig
 type EnvironmentConfig struct {
@@ -182,6 +195,9 @@ type EnvironmentConfig struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.EnvironmentConfig.peripherals_config
 	PeripheralsConfig *PeripheralsConfig `json:"peripheralsConfig,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "ExecutionConfig", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.ExecutionConfig
 type ExecutionConfig struct {
@@ -253,6 +269,9 @@ type ExecutionConfig struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.ExecutionConfig.authentication_config
 	AuthenticationConfig *AuthenticationConfig `json:"authenticationConfig,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "FlinkJob", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.FlinkJob
 type FlinkJob struct {
@@ -275,7 +294,7 @@ type FlinkJob struct {
 	// Optional. HCFS URIs of jar files to add to the CLASSPATHs of the
 	//  Flink driver and tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.FlinkJob.jar_file_uris
-	JarFileURIs []string `json:"jarFileURIs,omitempty"`
+	JarFileUris []string `json:"jarFileUris,omitempty"`
 
 	// Optional. HCFS URI of the savepoint, which contains the last saved progress
 	//  for starting the current job.
@@ -293,6 +312,9 @@ type FlinkJob struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.FlinkJob.logging_config
 	LoggingConfig *LoggingConfig `json:"loggingConfig,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "HadoopJob", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.HadoopJob
 type HadoopJob struct {
@@ -319,19 +341,19 @@ type HadoopJob struct {
 	// Optional. Jar file URIs to add to the CLASSPATHs of the
 	//  Hadoop driver and tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.HadoopJob.jar_file_uris
-	JarFileURIs []string `json:"jarFileURIs,omitempty"`
+	JarFileUris []string `json:"jarFileUris,omitempty"`
 
 	// Optional. HCFS (Hadoop Compatible Filesystem) URIs of files to be copied
 	//  to the working directory of Hadoop drivers and distributed tasks. Useful
 	//  for naively parallel tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.HadoopJob.file_uris
-	FileURIs []string `json:"fileURIs,omitempty"`
+	FileUris []string `json:"fileUris,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted in the working directory of
 	//  Hadoop drivers and tasks. Supported file types:
 	//  .jar, .tar, .tar.gz, .tgz, or .zip.
 	// +kcc:proto:field=google.cloud.dataproc.v1.HadoopJob.archive_uris
-	ArchiveURIs []string `json:"archiveURIs,omitempty"`
+	ArchiveUris []string `json:"archiveUris,omitempty"`
 
 	// Optional. A mapping of property names to values, used to configure Hadoop.
 	//  Properties that conflict with values set by the Dataproc API might be
@@ -344,6 +366,9 @@ type HadoopJob struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.HadoopJob.logging_config
 	LoggingConfig *LoggingConfig `json:"loggingConfig,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "HiveJob", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.HiveJob
 type HiveJob struct {
@@ -377,8 +402,9 @@ type HiveJob struct {
 	//  Hive server and Hadoop MapReduce (MR) tasks. Can contain Hive SerDes
 	//  and UDFs.
 	// +kcc:proto:field=google.cloud.dataproc.v1.HiveJob.jar_file_uris
-	JarFileURIs []string `json:"jarFileURIs,omitempty"`
+	JarFileUris []string `json:"jarFileUris,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.dataproc.v1.InstanceFlexibilityPolicy
 type InstanceFlexibilityPolicy struct {
@@ -557,7 +583,8 @@ type InstanceReference struct {
 	PublicEciesKey *string `json:"publicEciesKey,omitempty"`
 }
 
-/* unreachable type Job
+/* found existing non-generated go type with proto tag "google.cloud.dataproc.v1.Job", skipping
+
 // +kcc:proto=google.cloud.dataproc.v1.Job
 type Job struct {
 	// Optional. The fully qualified reference to the job, which can be used to
@@ -570,7 +597,6 @@ type Job struct {
 	// Required. Job information, including how, when, and where to
 	//  run the job.
 	// +kcc:proto:field=google.cloud.dataproc.v1.Job.placement
-	// +required
 	Placement *JobPlacement `json:"placement,omitempty"`
 
 	// Optional. Job is a Hadoop job.
@@ -633,11 +659,12 @@ type Job struct {
 }
 */
 
+/* found existing non-generated go type "JobPlacement", skipping
+
 // +kcc:proto=google.cloud.dataproc.v1.JobPlacement
 type JobPlacement struct {
 	// Required. The name of the cluster where the job will be submitted.
 	// +kcc:proto:field=google.cloud.dataproc.v1.JobPlacement.cluster_name
-	// +required
 	ClusterName *string `json:"clusterName,omitempty"`
 
 	// Optional. Cluster labels to identify a cluster where the job will be
@@ -645,6 +672,9 @@ type JobPlacement struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.JobPlacement.cluster_labels
 	ClusterLabels map[string]string `json:"clusterLabels,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "JobReference", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.JobReference
 type JobReference struct {
@@ -662,6 +692,9 @@ type JobReference struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.JobReference.job_id
 	JobID *string `json:"jobID,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "JobScheduling", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.JobScheduling
 type JobScheduling struct {
@@ -693,12 +726,16 @@ type JobScheduling struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.JobScheduling.max_failures_total
 	MaxFailuresTotal *int32 `json:"maxFailuresTotal,omitempty"`
 }
+*/
 
-/* unreachable type JobStatus
+/* found existing non-generated go type "JobStatus", skipping
+
 // +kcc:proto=google.cloud.dataproc.v1.JobStatus
 type JobStatus struct {
 }
 */
+
+/* found existing non-generated go type "JupyterConfig", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.JupyterConfig
 type JupyterConfig struct {
@@ -710,6 +747,9 @@ type JupyterConfig struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.JupyterConfig.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "LoggingConfig", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.LoggingConfig
 type LoggingConfig struct {
@@ -717,6 +757,7 @@ type LoggingConfig struct {
 	// TODO: unsupported map type with key string and value enum
 
 }
+*/
 
 /* unreachable type ManagedGroupConfig
 // +kcc:proto=google.cloud.dataproc.v1.ManagedGroupConfig
@@ -724,7 +765,8 @@ type ManagedGroupConfig struct {
 }
 */
 
-/* unreachable type NodeGroup
+/* found existing non-generated go type with proto tag "google.cloud.dataproc.v1.NodeGroup", skipping
+
 // +kcc:proto=google.cloud.dataproc.v1.NodeGroup
 type NodeGroup struct {
 	// The Node group [resource name](https://aip.dev/122).
@@ -733,7 +775,6 @@ type NodeGroup struct {
 
 	// Required. Node group roles.
 	// +kcc:proto:field=google.cloud.dataproc.v1.NodeGroup.roles
-	// +required
 	Roles []string `json:"roles,omitempty"`
 
 	// Optional. The node group instance group configuration.
@@ -753,6 +794,8 @@ type NodeGroup struct {
 }
 */
 
+/* found existing non-generated go type "PeripheralsConfig", skipping
+
 // +kcc:proto=google.cloud.dataproc.v1.PeripheralsConfig
 type PeripheralsConfig struct {
 	// Optional. Resource name of an existing Dataproc Metastore service.
@@ -767,6 +810,9 @@ type PeripheralsConfig struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.PeripheralsConfig.spark_history_server_config
 	SparkHistoryServerConfig *SparkHistoryServerConfig `json:"sparkHistoryServerConfig,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "PigJob", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.PigJob
 type PigJob struct {
@@ -799,12 +845,15 @@ type PigJob struct {
 	// Optional. HCFS URIs of jar files to add to the CLASSPATH of
 	//  the Pig Client and Hadoop MapReduce (MR) tasks. Can contain Pig UDFs.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PigJob.jar_file_uris
-	JarFileURIs []string `json:"jarFileURIs,omitempty"`
+	JarFileUris []string `json:"jarFileUris,omitempty"`
 
 	// Optional. The runtime log config for job execution.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PigJob.logging_config
 	LoggingConfig *LoggingConfig `json:"loggingConfig,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "PrestoJob", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.PrestoJob
 type PrestoJob struct {
@@ -841,6 +890,9 @@ type PrestoJob struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.PrestoJob.logging_config
 	LoggingConfig *LoggingConfig `json:"loggingConfig,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "PyPiRepositoryConfig", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.PyPiRepositoryConfig
 type PyPiRepositoryConfig struct {
@@ -848,13 +900,15 @@ type PyPiRepositoryConfig struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.PyPiRepositoryConfig.pypi_repository
 	PypiRepository *string `json:"pypiRepository,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "PySparkBatch", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.PySparkBatch
 type PySparkBatch struct {
 	// Required. The HCFS URI of the main Python file to use as the Spark driver.
 	//  Must be a .py file.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkBatch.main_python_file_uri
-	// +required
 	MainPythonFileURI *string `json:"mainPythonFileURI,omitempty"`
 
 	// Optional. The arguments to pass to the driver. Do not include arguments
@@ -866,31 +920,33 @@ type PySparkBatch struct {
 	// Optional. HCFS file URIs of Python files to pass to the PySpark
 	//  framework. Supported file types: `.py`, `.egg`, and `.zip`.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkBatch.python_file_uris
-	PythonFileURIs []string `json:"pythonFileURIs,omitempty"`
+	PythonFileUris []string `json:"pythonFileUris,omitempty"`
 
 	// Optional. HCFS URIs of jar files to add to the classpath of the
 	//  Spark driver and tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkBatch.jar_file_uris
-	JarFileURIs []string `json:"jarFileURIs,omitempty"`
+	JarFileUris []string `json:"jarFileUris,omitempty"`
 
 	// Optional. HCFS URIs of files to be placed in the working directory of
 	//  each executor.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkBatch.file_uris
-	FileURIs []string `json:"fileURIs,omitempty"`
+	FileUris []string `json:"fileUris,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted into the working directory
 	//  of each executor. Supported file types:
 	//  `.jar`, `.tar`, `.tar.gz`, `.tgz`, and `.zip`.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkBatch.archive_uris
-	ArchiveURIs []string `json:"archiveURIs,omitempty"`
+	ArchiveUris []string `json:"archiveUris,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "PySparkJob", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.PySparkJob
 type PySparkJob struct {
 	// Required. The HCFS URI of the main Python file to use as the driver. Must
 	//  be a .py file.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkJob.main_python_file_uri
-	// +required
 	MainPythonFileURI *string `json:"mainPythonFileURI,omitempty"`
 
 	// Optional. The arguments to pass to the driver.  Do not include arguments,
@@ -902,23 +958,23 @@ type PySparkJob struct {
 	// Optional. HCFS file URIs of Python files to pass to the PySpark
 	//  framework. Supported file types: .py, .egg, and .zip.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkJob.python_file_uris
-	PythonFileURIs []string `json:"pythonFileURIs,omitempty"`
+	PythonFileUris []string `json:"pythonFileUris,omitempty"`
 
 	// Optional. HCFS URIs of jar files to add to the CLASSPATHs of the
 	//  Python driver and tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkJob.jar_file_uris
-	JarFileURIs []string `json:"jarFileURIs,omitempty"`
+	JarFileUris []string `json:"jarFileUris,omitempty"`
 
 	// Optional. HCFS URIs of files to be placed in the working directory of
 	//  each executor. Useful for naively parallel tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkJob.file_uris
-	FileURIs []string `json:"fileURIs,omitempty"`
+	FileUris []string `json:"fileUris,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted into the working directory
 	//  of each executor. Supported file types:
 	//  .jar, .tar, .tar.gz, .tgz, and .zip.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkJob.archive_uris
-	ArchiveURIs []string `json:"archiveURIs,omitempty"`
+	ArchiveUris []string `json:"archiveUris,omitempty"`
 
 	// Optional. A mapping of property names to values, used to configure PySpark.
 	//  Properties that conflict with values set by the Dataproc API might be
@@ -931,6 +987,9 @@ type PySparkJob struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkJob.logging_config
 	LoggingConfig *LoggingConfig `json:"loggingConfig,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "QueryList", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.QueryList
 type QueryList struct {
@@ -949,9 +1008,11 @@ type QueryList struct {
 	//        }
 	//      }
 	// +kcc:proto:field=google.cloud.dataproc.v1.QueryList.queries
-	// +required
 	Queries []string `json:"queries,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "RepositoryConfig", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.RepositoryConfig
 type RepositoryConfig struct {
@@ -959,6 +1020,9 @@ type RepositoryConfig struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.RepositoryConfig.pypi_repository_config
 	PypiRepositoryConfig *PyPiRepositoryConfig `json:"pypiRepositoryConfig,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "RuntimeConfig", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.RuntimeConfig
 type RuntimeConfig struct {
@@ -989,19 +1053,21 @@ type RuntimeConfig struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.RuntimeConfig.cohort
 	Cohort *string `json:"cohort,omitempty"`
 }
+*/
 
-/* unreachable type RuntimeInfo
+/* found existing non-generated go type "RuntimeInfo", skipping
+
 // +kcc:proto=google.cloud.dataproc.v1.RuntimeInfo
 type RuntimeInfo struct {
 }
 */
 
-/* unreachable type Session
+/* found existing non-generated go type with proto tag "google.cloud.dataproc.v1.Session", skipping
+
 // +kcc:proto=google.cloud.dataproc.v1.Session
 type Session struct {
 	// Required. The resource name of the session.
 	// +kcc:proto:field=google.cloud.dataproc.v1.Session.name
-	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. Jupyter session config.
@@ -1049,18 +1115,19 @@ type Session struct {
 }
 */
 
-/* unreachable type Session_SessionStateHistory
+/* found existing non-generated go type with proto tag "google.cloud.dataproc.v1.Session.SessionStateHistory", skipping
+
 // +kcc:proto=google.cloud.dataproc.v1.Session.SessionStateHistory
 type Session_SessionStateHistory struct {
 }
 */
 
-/* unreachable type SessionTemplate
+/* found existing non-generated go type with proto tag "google.cloud.dataproc.v1.SessionTemplate", skipping
+
 // +kcc:proto=google.cloud.dataproc.v1.SessionTemplate
 type SessionTemplate struct {
 	// Required. The resource name of the session template.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SessionTemplate.name
-	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. Brief description of the template.
@@ -1095,6 +1162,8 @@ type SessionTemplate struct {
 }
 */
 
+/* found existing non-generated go type "SparkBatch", skipping
+
 // +kcc:proto=google.cloud.dataproc.v1.SparkBatch
 type SparkBatch struct {
 	// Optional. The HCFS URI of the jar file that contains the main class.
@@ -1115,23 +1184,29 @@ type SparkBatch struct {
 	// Optional. HCFS URIs of jar files to add to the classpath of the
 	//  Spark driver and tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkBatch.jar_file_uris
-	JarFileURIs []string `json:"jarFileURIs,omitempty"`
+	JarFileUris []string `json:"jarFileUris,omitempty"`
 
 	// Optional. HCFS URIs of files to be placed in the working directory of
 	//  each executor.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkBatch.file_uris
-	FileURIs []string `json:"fileURIs,omitempty"`
+	FileUris []string `json:"fileUris,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted into the working directory
 	//  of each executor. Supported file types:
 	//  `.jar`, `.tar`, `.tar.gz`, `.tgz`, and `.zip`.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkBatch.archive_uris
-	ArchiveURIs []string `json:"archiveURIs,omitempty"`
+	ArchiveUris []string `json:"archiveUris,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "SparkConnectConfig", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.SparkConnectConfig
 type SparkConnectConfig struct {
 }
+*/
+
+/* found existing non-generated go type "SparkHistoryServerConfig", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.SparkHistoryServerConfig
 type SparkHistoryServerConfig struct {
@@ -1144,6 +1219,9 @@ type SparkHistoryServerConfig struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkHistoryServerConfig.dataproc_cluster
 	DataprocCluster *string `json:"dataprocCluster,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "SparkJob", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.SparkJob
 type SparkJob struct {
@@ -1166,18 +1244,18 @@ type SparkJob struct {
 	// Optional. HCFS URIs of jar files to add to the CLASSPATHs of the
 	//  Spark driver and tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkJob.jar_file_uris
-	JarFileURIs []string `json:"jarFileURIs,omitempty"`
+	JarFileUris []string `json:"jarFileUris,omitempty"`
 
 	// Optional. HCFS URIs of files to be placed in the working directory of
 	//  each executor. Useful for naively parallel tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkJob.file_uris
-	FileURIs []string `json:"fileURIs,omitempty"`
+	FileUris []string `json:"fileUris,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted into the working directory
 	//  of each executor. Supported file types:
 	//  .jar, .tar, .tar.gz, .tgz, and .zip.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkJob.archive_uris
-	ArchiveURIs []string `json:"archiveURIs,omitempty"`
+	ArchiveUris []string `json:"archiveUris,omitempty"`
 
 	// Optional. A mapping of property names to values, used to configure Spark.
 	//  Properties that conflict with values set by the Dataproc API might be
@@ -1190,13 +1268,15 @@ type SparkJob struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkJob.logging_config
 	LoggingConfig *LoggingConfig `json:"loggingConfig,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "SparkRBatch", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.SparkRBatch
 type SparkRBatch struct {
 	// Required. The HCFS URI of the main R file to use as the driver.
 	//  Must be a `.R` or `.r` file.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkRBatch.main_r_file_uri
-	// +required
 	MainRFileURI *string `json:"mainRFileURI,omitempty"`
 
 	// Optional. The arguments to pass to the Spark driver. Do not include
@@ -1208,21 +1288,23 @@ type SparkRBatch struct {
 	// Optional. HCFS URIs of files to be placed in the working directory of
 	//  each executor.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkRBatch.file_uris
-	FileURIs []string `json:"fileURIs,omitempty"`
+	FileUris []string `json:"fileUris,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted into the working directory
 	//  of each executor. Supported file types:
 	//  `.jar`, `.tar`, `.tar.gz`, `.tgz`, and `.zip`.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkRBatch.archive_uris
-	ArchiveURIs []string `json:"archiveURIs,omitempty"`
+	ArchiveUris []string `json:"archiveUris,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "SparkRJob", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.SparkRJob
 type SparkRJob struct {
 	// Required. The HCFS URI of the main R file to use as the driver.
 	//  Must be a .R file.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkRJob.main_r_file_uri
-	// +required
 	MainRFileURI *string `json:"mainRFileURI,omitempty"`
 
 	// Optional. The arguments to pass to the driver.  Do not include arguments,
@@ -1234,13 +1316,13 @@ type SparkRJob struct {
 	// Optional. HCFS URIs of files to be placed in the working directory of
 	//  each executor. Useful for naively parallel tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkRJob.file_uris
-	FileURIs []string `json:"fileURIs,omitempty"`
+	FileUris []string `json:"fileUris,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted into the working directory
 	//  of each executor. Supported file types:
 	//  .jar, .tar, .tar.gz, .tgz, and .zip.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkRJob.archive_uris
-	ArchiveURIs []string `json:"archiveURIs,omitempty"`
+	ArchiveUris []string `json:"archiveUris,omitempty"`
 
 	// Optional. A mapping of property names to values, used to configure SparkR.
 	//  Properties that conflict with values set by the Dataproc API might be
@@ -1253,13 +1335,15 @@ type SparkRJob struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkRJob.logging_config
 	LoggingConfig *LoggingConfig `json:"loggingConfig,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "SparkSQLBatch", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.SparkSqlBatch
 type SparkSQLBatch struct {
 	// Required. The HCFS URI of the script that contains Spark SQL queries to
 	//  execute.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkSqlBatch.query_file_uri
-	// +required
 	QueryFileURI *string `json:"queryFileURI,omitempty"`
 
 	// Optional. Mapping of query variable names to values (equivalent to the
@@ -1269,8 +1353,11 @@ type SparkSQLBatch struct {
 
 	// Optional. HCFS URIs of jar files to be added to the Spark CLASSPATH.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkSqlBatch.jar_file_uris
-	JarFileURIs []string `json:"jarFileURIs,omitempty"`
+	JarFileUris []string `json:"jarFileUris,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "SparkSQLJob", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.SparkSqlJob
 type SparkSQLJob struct {
@@ -1295,12 +1382,13 @@ type SparkSQLJob struct {
 
 	// Optional. HCFS URIs of jar files to be added to the Spark CLASSPATH.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkSqlJob.jar_file_uris
-	JarFileURIs []string `json:"jarFileURIs,omitempty"`
+	JarFileUris []string `json:"jarFileUris,omitempty"`
 
 	// Optional. The runtime log config for job execution.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkSqlJob.logging_config
 	LoggingConfig *LoggingConfig `json:"loggingConfig,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.dataproc.v1.StartupConfig
 type StartupConfig struct {
@@ -1313,6 +1401,8 @@ type StartupConfig struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.StartupConfig.required_registration_fraction
 	RequiredRegistrationFraction *float64 `json:"requiredRegistrationFraction,omitempty"`
 }
+
+/* found existing non-generated go type "TrinoJob", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.TrinoJob
 type TrinoJob struct {
@@ -1349,6 +1439,9 @@ type TrinoJob struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.TrinoJob.logging_config
 	LoggingConfig *LoggingConfig `json:"loggingConfig,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "UsageMetrics", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.UsageMetrics
 type UsageMetrics struct {
@@ -1374,6 +1467,9 @@ type UsageMetrics struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.UsageMetrics.accelerator_type
 	AcceleratorType *string `json:"acceleratorType,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "UsageSnapshot", skipping
 
 // +kcc:proto=google.cloud.dataproc.v1.UsageSnapshot
 type UsageSnapshot struct {
@@ -1413,23 +1509,22 @@ type UsageSnapshot struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.UsageSnapshot.snapshot_time
 	SnapshotTime *string `json:"snapshotTime,omitempty"`
 }
+*/
 
-/* unreachable type YarnApplication
+/* found existing non-generated go type "YarnApplication", skipping
+
 // +kcc:proto=google.cloud.dataproc.v1.YarnApplication
 type YarnApplication struct {
 	// Required. The application name.
 	// +kcc:proto:field=google.cloud.dataproc.v1.YarnApplication.name
-	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Required. The application state.
 	// +kcc:proto:field=google.cloud.dataproc.v1.YarnApplication.state
-	// +required
 	State *string `json:"state,omitempty"`
 
 	// Required. The numerical progress of the application, from 1 to 100.
 	// +kcc:proto:field=google.cloud.dataproc.v1.YarnApplication.progress
-	// +required
 	Progress *float32 `json:"progress,omitempty"`
 
 	// Optional. The HTTP URL of the ApplicationMaster, HistoryServer, or
@@ -1441,7 +1536,8 @@ type YarnApplication struct {
 }
 */
 
-/* unreachable type BatchObservedState
+/* found existing non-generated go type with proto tag "google.cloud.dataproc.v1.Batch", skipping
+
 // +kcc:observedstate:proto=google.cloud.dataproc.v1.Batch
 type BatchObservedState struct {
 	// Output only. The resource name of the batch.
@@ -1488,6 +1584,8 @@ type BatchObservedState struct {
 }
 */
 
+/* found existing non-generated go type "Batch_StateHistoryObservedState", skipping
+
 // +kcc:observedstate:proto=google.cloud.dataproc.v1.Batch.StateHistory
 type Batch_StateHistoryObservedState struct {
 	// Output only. The state of the batch at this point in history.
@@ -1502,6 +1600,7 @@ type Batch_StateHistoryObservedState struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.Batch.StateHistory.state_start_time
 	StateStartTime *string `json:"stateStartTime,omitempty"`
 }
+*/
 
 // +kcc:observedstate:proto=google.cloud.dataproc.v1.InstanceFlexibilityPolicy
 type InstanceFlexibilityPolicyObservedState struct {
@@ -1549,7 +1648,8 @@ type InstanceGroupConfigObservedState struct {
 	InstanceFlexibilityPolicy *InstanceFlexibilityPolicyObservedState `json:"instanceFlexibilityPolicy,omitempty"`
 }
 
-/* unreachable type JobObservedState
+/* found existing non-generated go type with proto tag "google.cloud.dataproc.v1.Job", skipping
+
 // +kcc:observedstate:proto=google.cloud.dataproc.v1.Job
 type JobObservedState struct {
 	// Required. Job information, including how, when, and where to
@@ -1572,7 +1672,7 @@ type JobObservedState struct {
 	//  **Beta** Feature: This report is available for testing purposes only. It
 	//  might be changed before final release.
 	// +kcc:proto:field=google.cloud.dataproc.v1.Job.yarn_applications
-	YarnApplications []YarnApplicationObservedState `json:"yarnApplications,omitempty"`
+	YarnApplications []YarnApplication `json:"yarnApplications,omitempty"`
 
 	// Output only. A URI pointing to the location of the stdout of the job's
 	//  driver program.
@@ -1600,6 +1700,8 @@ type JobObservedState struct {
 }
 */
 
+/* found existing non-generated go type "JobPlacementObservedState", skipping
+
 // +kcc:observedstate:proto=google.cloud.dataproc.v1.JobPlacement
 type JobPlacementObservedState struct {
 	// Output only. A cluster UUID generated by the Dataproc service when
@@ -1607,6 +1709,9 @@ type JobPlacementObservedState struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.JobPlacement.cluster_uuid
 	ClusterUuid *string `json:"clusterUuid,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "JobStatusObservedState", skipping
 
 // +kcc:observedstate:proto=google.cloud.dataproc.v1.JobStatus
 type JobStatusObservedState struct {
@@ -1628,6 +1733,7 @@ type JobStatusObservedState struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.JobStatus.substate
 	Substate *string `json:"substate,omitempty"`
 }
+*/
 
 // +kcc:observedstate:proto=google.cloud.dataproc.v1.ManagedGroupConfig
 type ManagedGroupConfigObservedState struct {
@@ -1646,7 +1752,8 @@ type ManagedGroupConfigObservedState struct {
 	InstanceGroupManagerURI *string `json:"instanceGroupManagerURI,omitempty"`
 }
 
-/* unreachable type NodeGroupObservedState
+/* found existing non-generated go type with proto tag "google.cloud.dataproc.v1.NodeGroup", skipping
+
 // +kcc:observedstate:proto=google.cloud.dataproc.v1.NodeGroup
 type NodeGroupObservedState struct {
 	// Optional. The node group instance group configuration.
@@ -1654,6 +1761,8 @@ type NodeGroupObservedState struct {
 	NodeGroupConfig *InstanceGroupConfigObservedState `json:"nodeGroupConfig,omitempty"`
 }
 */
+
+/* found existing non-generated go type "RuntimeInfoObservedState", skipping
 
 // +kcc:observedstate:proto=google.cloud.dataproc.v1.RuntimeInfo
 type RuntimeInfoObservedState struct {
@@ -1689,8 +1798,10 @@ type RuntimeInfoObservedState struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.RuntimeInfo.current_usage
 	CurrentUsage *UsageSnapshot `json:"currentUsage,omitempty"`
 }
+*/
 
-/* unreachable type SessionObservedState
+/* found existing non-generated go type with proto tag "google.cloud.dataproc.v1.Session", skipping
+
 // +kcc:observedstate:proto=google.cloud.dataproc.v1.Session
 type SessionObservedState struct {
 	// Output only. A session UUID (Unique Universal Identifier). The service
@@ -1729,6 +1840,8 @@ type SessionObservedState struct {
 }
 */
 
+/* found existing non-generated go type "Session_SessionStateHistoryObservedState", skipping
+
 // +kcc:observedstate:proto=google.cloud.dataproc.v1.Session.SessionStateHistory
 type Session_SessionStateHistoryObservedState struct {
 	// Output only. The state of the session at this point in the session
@@ -1745,8 +1858,10 @@ type Session_SessionStateHistoryObservedState struct {
 	// +kcc:proto:field=google.cloud.dataproc.v1.Session.SessionStateHistory.state_start_time
 	StateStartTime *string `json:"stateStartTime,omitempty"`
 }
+*/
 
-/* unreachable type SessionTemplateObservedState
+/* found existing non-generated go type with proto tag "google.cloud.dataproc.v1.SessionTemplate", skipping
+
 // +kcc:observedstate:proto=google.cloud.dataproc.v1.SessionTemplate
 type SessionTemplateObservedState struct {
 	// Output only. The time when the template was created.
@@ -1767,25 +1882,3 @@ type SessionTemplateObservedState struct {
 	Uuid *string `json:"uuid,omitempty"`
 }
 */
-
-// +kcc:observedstate:proto=google.cloud.dataproc.v1.YarnApplication
-type YarnApplicationObservedState struct {
-	// Required. The application name.
-	// +kcc:proto:field=google.cloud.dataproc.v1.YarnApplication.name
-	Name *string `json:"name,omitempty"`
-
-	// Required. The application state.
-	// +kcc:proto:field=google.cloud.dataproc.v1.YarnApplication.state
-	State *string `json:"state,omitempty"`
-
-	// Required. The numerical progress of the application, from 1 to 100.
-	// +kcc:proto:field=google.cloud.dataproc.v1.YarnApplication.progress
-	Progress *float32 `json:"progress,omitempty"`
-
-	// Optional. The HTTP URL of the ApplicationMaster, HistoryServer, or
-	//  TimelineServer that provides application-specific information. The URL uses
-	//  the internal hostname, and requires a proxy server for resolution and,
-	//  possibly, access.
-	// +kcc:proto:field=google.cloud.dataproc.v1.YarnApplication.tracking_url
-	TrackingURL *string `json:"trackingURL,omitempty"`
-}

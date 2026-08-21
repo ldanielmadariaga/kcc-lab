@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: cloudbuildconnections.cloudbuild.cnrm.cloud.google.com
 spec:
@@ -77,109 +76,31 @@ spec:
                       either a workspace, project or repository access token. It's
                       recommended to use a system account to generate these credentials.
                     properties:
-                      userTokenSecretVersionRef:
+                      userTokenSecretVersion:
                         description: 'Required. A SecretManager resource containing
                           the user token that authorizes the Cloud Build connection.
                           Format: `projects/*/secrets/*/versions/*`.'
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
-                            type: string
-                          name:
-                            description: The `name` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                          namespace:
-                            description: The `metadata.namespace` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                        type: object
+                        type: string
                     required:
-                    - userTokenSecretVersionRef
+                    - userTokenSecretVersion
                     type: object
                   readAuthorizerCredential:
                     description: Required. An access token with the `repository` access.
                       It can be either a workspace, project or repository access token.
                       It's recommended to use a system account to generate the credentials.
                     properties:
-                      userTokenSecretVersionRef:
+                      userTokenSecretVersion:
                         description: 'Required. A SecretManager resource containing
                           the user token that authorizes the Cloud Build connection.
                           Format: `projects/*/secrets/*/versions/*`.'
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
-                            type: string
-                          name:
-                            description: The `name` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                          namespace:
-                            description: The `metadata.namespace` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                        type: object
+                        type: string
                     required:
-                    - userTokenSecretVersionRef
+                    - userTokenSecretVersion
                     type: object
-                  webhookSecretSecretVersionRef:
+                  webhookSecretSecretVersion:
                     description: Required. SecretManager resource containing the webhook
                       secret used to verify webhook events, formatted as `projects/*/secrets/*/versions/*`.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
-                        type: string
-                      name:
-                        description: The `name` field of a `SecretManagerSecretVersion`
-                          resource.
-                        type: string
-                      namespace:
-                        description: The `metadata.namespace` field of a `SecretManagerSecretVersion`
-                          resource.
-                        type: string
-                    type: object
+                    type: string
                   workspace:
                     description: Required. The Bitbucket Cloud Workspace ID to be
                       connected to Google Cloud Platform.
@@ -187,7 +108,7 @@ spec:
                 required:
                 - authorizerCredential
                 - readAuthorizerCredential
-                - webhookSecretSecretVersionRef
+                - webhookSecretSecretVersion
                 - workspace
                 type: object
               bitbucketDataCenterConfig:
@@ -197,39 +118,13 @@ spec:
                     description: Required. A http access token with the `REPO_ADMIN`
                       scope access.
                     properties:
-                      userTokenSecretVersionRef:
+                      userTokenSecretVersion:
                         description: 'Required. A SecretManager resource containing
                           the user token that authorizes the Cloud Build connection.
                           Format: `projects/*/secrets/*/versions/*`.'
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
-                            type: string
-                          name:
-                            description: The `name` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                          namespace:
-                            description: The `metadata.namespace` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                        type: object
+                        type: string
                     required:
-                    - userTokenSecretVersionRef
+                    - userTokenSecretVersion
                     type: object
                   hostURI:
                     description: Required. The URI of the Bitbucket Data Center instance
@@ -239,39 +134,13 @@ spec:
                     description: Required. A http access token with the `REPO_READ`
                       access.
                     properties:
-                      userTokenSecretVersionRef:
+                      userTokenSecretVersion:
                         description: 'Required. A SecretManager resource containing
                           the user token that authorizes the Cloud Build connection.
                           Format: `projects/*/secrets/*/versions/*`.'
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
-                            type: string
-                          name:
-                            description: The `name` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                          namespace:
-                            description: The `metadata.namespace` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                        type: object
+                        type: string
                     required:
-                    - userTokenSecretVersionRef
+                    - userTokenSecretVersion
                     type: object
                   serviceDirectoryConfig:
                     description: Optional. Configuration for using Service Directory
@@ -281,81 +150,38 @@ spec:
                       empty, calls to the Bitbucket Data Center will be made over
                       the public internet.
                     properties:
-                      serviceRef:
-                        description: Required. The Service Directory service name.
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: A reference to an externally managed DataprocJob
-                              resource. Should be in the format "/projects/*/locations/*/namespaces/*/services/*".
-                            type: string
-                          name:
-                            description: The name of a DataprocJob resource.
-                            type: string
-                          namespace:
-                            description: The namespace of a DataprocJob resource.
-                            type: string
-                        type: object
+                      service:
+                        description: 'Required. The Service Directory service name.
+                          Format: projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}.'
+                        type: string
+                    required:
+                    - service
                     type: object
                   sslCA:
                     description: Optional. SSL certificate to use for requests to
                       the Bitbucket Data Center.
                     type: string
-                  webhookSecretSecretVersionRef:
+                  webhookSecretSecretVersion:
                     description: Required. Immutable. SecretManager resource containing
                       the webhook secret used to verify webhook events, formatted
                       as `projects/*/secrets/*/versions/*`.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
-                        type: string
-                      name:
-                        description: The `name` field of a `SecretManagerSecretVersion`
-                          resource.
-                        type: string
-                      namespace:
-                        description: The `metadata.namespace` field of a `SecretManagerSecretVersion`
-                          resource.
-                        type: string
-                    type: object
+                    type: string
                 required:
                 - authorizerCredential
                 - hostURI
                 - readAuthorizerCredential
-                - webhookSecretSecretVersionRef
+                - webhookSecretSecretVersion
                 type: object
               disabled:
                 description: If disabled is set to true, functionality is disabled
                   for this connection. Repository based API methods and webhooks processing
                   for repositories in this connection will be disabled.
                 type: boolean
+              etag:
+                description: This checksum is computed by the server based on the
+                  value of other fields, and may be sent on update and delete requests
+                  to ensure the client has an up-to-date value before proceeding.
+                type: string
               githubConfig:
                 description: Configuration for connections to github.com.
                 properties:
@@ -369,37 +195,11 @@ spec:
                       instead of a human user account. The OAuth token must be tied
                       to the Cloud Build GitHub App.
                     properties:
-                      oauthTokenSecretVersionRef:
+                      oauthTokenSecretVersion:
                         description: 'A SecretManager resource containing the OAuth
                           token that authorizes the Cloud Build connection. Format:
                           `projects/*/secrets/*/versions/*`.'
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
-                            type: string
-                          name:
-                            description: The `name` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                          namespace:
-                            description: The `metadata.namespace` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                        type: object
+                        type: string
                     type: object
                 type: object
               githubEnterpriseConfig:
@@ -425,36 +225,10 @@ spec:
                     description: Required. The URI of the GitHub Enterprise host this
                       connection is for.
                     type: string
-                  privateKeySecretVersionRef:
+                  privateKeySecretVersion:
                     description: SecretManager resource containing the private key
                       of the GitHub App, formatted as `projects/*/secrets/*/versions/*`.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
-                        type: string
-                      name:
-                        description: The `name` field of a `SecretManagerSecretVersion`
-                          resource.
-                        type: string
-                      namespace:
-                        description: The `metadata.namespace` field of a `SecretManagerSecretVersion`
-                          resource.
-                        type: string
-                    type: object
+                    type: string
                   serviceDirectoryConfig:
                     description: Configuration for using Service Directory to privately
                       connect to a GitHub Enterprise server. This should only be set
@@ -463,68 +237,20 @@ spec:
                       to the GitHub Enterprise server will be made over the public
                       internet.
                     properties:
-                      serviceRef:
-                        description: Required. The Service Directory service name.
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: A reference to an externally managed DataprocJob
-                              resource. Should be in the format "/projects/*/locations/*/namespaces/*/services/*".
-                            type: string
-                          name:
-                            description: The name of a DataprocJob resource.
-                            type: string
-                          namespace:
-                            description: The namespace of a DataprocJob resource.
-                            type: string
-                        type: object
+                      service:
+                        description: 'Required. The Service Directory service name.
+                          Format: projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}.'
+                        type: string
+                    required:
+                    - service
                     type: object
                   sslCA:
                     description: SSL certificate to use for requests to GitHub Enterprise.
                     type: string
-                  webhookSecretSecretVersionRef:
+                  webhookSecretSecretVersion:
                     description: SecretManager resource containing the webhook secret
                       of the GitHub App, formatted as `projects/*/secrets/*/versions/*`.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
-                        type: string
-                      name:
-                        description: The `name` field of a `SecretManagerSecretVersion`
-                          resource.
-                        type: string
-                      namespace:
-                        description: The `metadata.namespace` field of a `SecretManagerSecretVersion`
-                          resource.
-                        type: string
-                    type: object
+                    type: string
                 required:
                 - apiKey
                 - hostURI
@@ -537,39 +263,13 @@ spec:
                     description: Required. A GitLab personal access token with the
                       `api` scope access.
                     properties:
-                      userTokenSecretVersionRef:
+                      userTokenSecretVersion:
                         description: 'Required. A SecretManager resource containing
                           the user token that authorizes the Cloud Build connection.
                           Format: `projects/*/secrets/*/versions/*`.'
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
-                            type: string
-                          name:
-                            description: The `name` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                          namespace:
-                            description: The `metadata.namespace` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                        type: object
+                        type: string
                     required:
-                    - userTokenSecretVersionRef
+                    - userTokenSecretVersion
                     type: object
                   hostURI:
                     description: The URI of the GitLab Enterprise host this connection
@@ -579,39 +279,13 @@ spec:
                     description: Required. A GitLab personal access token with the
                       minimum `read_api` scope access.
                     properties:
-                      userTokenSecretVersionRef:
+                      userTokenSecretVersion:
                         description: 'Required. A SecretManager resource containing
                           the user token that authorizes the Cloud Build connection.
                           Format: `projects/*/secrets/*/versions/*`.'
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
-                            type: string
-                          name:
-                            description: The `name` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                          namespace:
-                            description: The `metadata.namespace` field of a `SecretManagerSecretVersion`
-                              resource.
-                            type: string
-                        type: object
+                        type: string
                     required:
-                    - userTokenSecretVersionRef
+                    - userTokenSecretVersion
                     type: object
                   serviceDirectoryConfig:
                     description: Configuration for using Service Directory to privately
@@ -621,73 +295,25 @@ spec:
                       to the GitLab Enterprise server will be made over the public
                       internet.
                     properties:
-                      serviceRef:
-                        description: Required. The Service Directory service name.
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: A reference to an externally managed DataprocJob
-                              resource. Should be in the format "/projects/*/locations/*/namespaces/*/services/*".
-                            type: string
-                          name:
-                            description: The name of a DataprocJob resource.
-                            type: string
-                          namespace:
-                            description: The namespace of a DataprocJob resource.
-                            type: string
-                        type: object
+                      service:
+                        description: 'Required. The Service Directory service name.
+                          Format: projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}.'
+                        type: string
+                    required:
+                    - service
                     type: object
                   sslCA:
                     description: SSL certificate to use for requests to GitLab Enterprise.
                     type: string
-                  webhookSecretSecretVersionRef:
+                  webhookSecretSecretVersion:
                     description: Required. Immutable. SecretManager resource containing
                       the webhook secret of a GitLab Enterprise project, formatted
                       as `projects/*/secrets/*/versions/*`.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
-                        type: string
-                      name:
-                        description: The `name` field of a `SecretManagerSecretVersion`
-                          resource.
-                        type: string
-                      namespace:
-                        description: The `metadata.namespace` field of a `SecretManagerSecretVersion`
-                          resource.
-                        type: string
-                    type: object
+                    type: string
                 required:
                 - authorizerCredential
                 - readAuthorizerCredential
-                - webhookSecretSecretVersionRef
+                - webhookSecretSecretVersion
                 type: object
               location:
                 description: The location of this resource.
@@ -808,6 +434,24 @@ spec:
                   bitbucketDataCenterConfig:
                     description: Configuration for connections to Bitbucket Data Center.
                     properties:
+                      authorizerCredential:
+                        description: Required. A http access token with the `REPO_ADMIN`
+                          scope access.
+                        properties:
+                          username:
+                            description: Output only. The username associated to this
+                              token.
+                            type: string
+                        type: object
+                      readAuthorizerCredential:
+                        description: Required. A http access token with the `REPO_READ`
+                          access.
+                        properties:
+                          username:
+                            description: Output only. The username associated to this
+                              token.
+                            type: string
+                        type: object
                       serverVersion:
                         description: Output only. Version of the Bitbucket Data Center
                           running on the `host_uri`.
@@ -816,12 +460,6 @@ spec:
                   createTime:
                     description: Output only. Server assigned timestamp for when the
                       connection was created.
-                    type: string
-                  etag:
-                    description: This checksum is computed by the server based on
-                      the value of other fields, and may be sent on update and delete
-                      requests to ensure the client has an up-to-date value before
-                      proceeding.
                     type: string
                   githubConfig:
                     description: Configuration for connections to github.com.
@@ -851,6 +489,15 @@ spec:
                     description: Configuration for connections to gitlab.com or an
                       instance of GitLab Enterprise.
                     properties:
+                      authorizerCredential:
+                        description: Required. A GitLab personal access token with
+                          the `api` scope access.
+                        properties:
+                          username:
+                            description: Output only. The username associated to this
+                              token.
+                            type: string
+                        type: object
                       readAuthorizerCredential:
                         description: Required. A GitLab personal access token with
                           the minimum `read_api` scope access.

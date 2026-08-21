@@ -67,29 +67,23 @@ spec:
               displayName:
                 description: Optional. User friendly display name.
                 type: string
-              location:
-                description: The location that this resource belongs to.
-                type: string
-                x-kubernetes-validations:
-                - message: Location is immutable.
-                  rule: self == oldSelf
+              labels:
+                additionalProperties:
+                  type: string
+                description: Optional. User-defined labels for the lake.
+                type: object
               metastore:
                 description: Optional. Settings to manage lake and Dataproc Metastore
                   service instance association.
                 properties:
-                  serviceRef:
+                  service:
                     description: 'Optional. A relative reference to the Dataproc Metastore
                       (https://cloud.google.com/dataproc-metastore/docs) service associated
                       with the lake: `projects/{project_id}/locations/{location_id}/services/{service_id}`'
-                    properties:
-                      external:
-                        description: A reference to an externally managed DataprocJob
-                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/services/{{serviceID}}".
-                        type: string
-                    type: object
+                    type: string
                 type: object
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -125,7 +119,6 @@ spec:
                   will be used.
                 type: string
             required:
-            - location
             - projectRef
             type: object
           status:

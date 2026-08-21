@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: notebookinstancev2s.notebooks.cnrm.cloud.google.com
 spec:
@@ -62,323 +61,134 @@ spec:
           spec:
             description: NotebookInstanceV2Spec defines the desired state of NotebookInstanceV2
             properties:
-              disableProxyAccess:
-                description: Optional. If true, the notebook instance will not register
-                  with the proxy.
-                type: boolean
-              gceSetup:
-                description: Optional. Compute Engine setup for the notebook.
+              acceleratorConfig:
+                description: The hardware accelerator used on this instance. If you
+                  use accelerators, make sure that your configuration has [enough
+                  vCPUs and memory to support the `machine_type` you have selected](https://cloud.google.com/compute/docs/gpus/#gpus-list).
                 properties:
-                  acceleratorConfigs:
-                    description: Optional. The hardware accelerators used on this
-                      instance.
-                    items:
-                      properties:
-                        coreCount:
-                          description: Optional. Count of cores of this accelerator.
-                          format: int64
-                          type: integer
-                        type:
-                          description: Optional. Type of this accelerator.
-                          type: string
-                      type: object
-                    type: array
-                  bootDisk:
-                    description: Optional. The boot disk for the VM.
-                    properties:
-                      diskEncryption:
-                        description: Optional. Input only. Disk encryption method
-                          used on the boot and data disks, defaults to GMEK.
-                        type: string
-                      diskSizeGB:
-                        description: Optional. The size of the boot disk in GB attached
-                          to this instance, up to a maximum of 64000 GB (64 TB). If
-                          not specified, this defaults to the recommended value of
-                          150GB.
-                        format: int64
-                        type: integer
-                      diskType:
-                        description: Optional. Indicates the type of the disk.
-                        type: string
-                      kmsKeyRef:
-                        description: Optional. The KMS key used to encrypt the disks,
-                          only applicable if disk_encryption is CMEK.
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: A reference to an externally managed KMSCryptoKey
-                              resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
-                            type: string
-                          name:
-                            description: The name of a KMSCryptoKey resource.
-                            type: string
-                          namespace:
-                            description: The namespace of a KMSCryptoKey resource.
-                            type: string
-                        type: object
-                    type: object
-                  containerImage:
-                    description: Optional. Use a container image to start the notebook
-                      instance.
-                    properties:
-                      repository:
-                        description: 'Required. The path to the container image repository.
-                          For example: `gcr.io/{project_id}/{image_name}`'
-                        type: string
-                      tag:
-                        description: Optional. The tag of the container image. If
-                          not specified, this defaults to the latest tag.
-                        type: string
-                    type: object
-                  dataDisks:
-                    description: Optional. Data disks attached to the VM instance.
-                    items:
-                      properties:
-                        diskEncryption:
-                          description: Optional. Input only. Disk encryption method
-                            used on the boot and data disks, defaults to GMEK.
-                          type: string
-                        diskSizeGB:
-                          description: Optional. The size of the disk in GB attached
-                            to this VM instance, up to a maximum of 64000 GB (64 TB).
-                            If not specified, this defaults to 100.
-                          format: int64
-                          type: integer
-                        diskType:
-                          description: Optional. Input only. Indicates the type of
-                            the disk.
-                          type: string
-                        kmsKeyRef:
-                          description: Optional. The KMS key used to encrypt the disks,
-                            only applicable if disk_encryption is CMEK.
-                          oneOf:
-                          - not:
-                              required:
-                              - external
-                            required:
-                            - name
-                          - not:
-                              anyOf:
-                              - required:
-                                - name
-                              - required:
-                                - namespace
-                            required:
-                            - external
-                          properties:
-                            external:
-                              description: A reference to an externally managed KMSCryptoKey
-                                resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
-                              type: string
-                            name:
-                              description: The name of a KMSCryptoKey resource.
-                              type: string
-                            namespace:
-                              description: The namespace of a KMSCryptoKey resource.
-                              type: string
-                          type: object
-                      type: object
-                    type: array
-                  disablePublicIP:
-                    description: Optional. If true, no external IP will be assigned
-                      to this VM instance.
-                    type: boolean
-                  enableIPForwarding:
-                    description: Optional. Flag to enable ip forwarding or not, default
-                      false/off.
-                    type: boolean
-                  gpuDriverConfig:
-                    description: Optional. Configuration for GPU drivers.
-                    properties:
-                      customGpuDriverPath:
-                        description: Optional. Specify a custom Cloud Storage path
-                          where the GPU driver is stored. If not specified, we'll
-                          automatically choose from official GPU drivers.
-                        type: string
-                      enableGpuDriver:
-                        description: Optional. Whether the end user authorizes Google
-                          Cloud to install GPU driver on this VM instance. If this
-                          field is empty or set to false, the GPU driver won't be
-                          installed. Only applicable to instances with GPUs.
-                        type: boolean
-                    type: object
-                  machineType:
-                    description: Optional. The machine type of the VM instance.
+                  coreCount:
+                    description: Count of cores of this accelerator.
+                    format: int64
+                    type: integer
+                  type:
+                    description: Type of this accelerator.
                     type: string
-                  metadata:
-                    additionalProperties:
-                      type: string
-                    description: Optional. Custom metadata to apply to this instance.
-                    type: object
-                  networkInterfaces:
-                    description: Optional. The network interfaces for the VM.
-                    items:
-                      properties:
-                        networkRef:
-                          description: Optional. The ComputeNetwork that this VM instance
-                            is in.
-                          oneOf:
-                          - not:
-                              required:
-                              - external
-                            required:
-                            - name
-                          - not:
-                              anyOf:
-                              - required:
-                                - name
-                              - required:
-                                - namespace
-                            required:
-                            - external
-                          properties:
-                            external:
-                              description: A reference to an externally managed ComputeNetwork
-                                resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
-                              type: string
-                            name:
-                              description: The name of a ComputeNetwork resource.
-                              type: string
-                            namespace:
-                              description: The namespace of a ComputeNetwork resource.
-                              type: string
-                          type: object
-                        nicType:
-                          description: Optional. The type of vNIC to be used on this
-                            interface. This may be gVNIC or VirtioNet.
-                          type: string
-                        subnetRef:
-                          description: Optional. The ComputeSubnetwork that this VM
-                            instance is in.
-                          oneOf:
-                          - not:
-                              required:
-                              - external
-                            required:
-                            - name
-                          - not:
-                              anyOf:
-                              - required:
-                                - name
-                              - required:
-                                - namespace
-                            required:
-                            - external
-                          properties:
-                            external:
-                              description: A reference to an externally managed ComputeSubnetwork
-                                resource. Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
-                              type: string
-                            name:
-                              description: The name of a ComputeSubnetwork resource.
-                              type: string
-                            namespace:
-                              description: The namespace of a ComputeSubnetwork resource.
-                              type: string
-                          type: object
-                      type: object
-                    type: array
-                  serviceAccounts:
-                    description: Optional. The service account that serves as an identity
-                      for the VM instance.
-                    items:
-                      properties:
-                        serviceAccountRef:
-                          description: Optional. The IAMServiceAccount that serves
-                            as an identity for the VM instance.
-                          oneOf:
-                          - not:
-                              required:
-                              - external
-                            required:
-                            - name
-                          - not:
-                              anyOf:
-                              - required:
-                                - name
-                              - required:
-                                - namespace
-                            required:
-                            - external
-                          properties:
-                            external:
-                              description: The `email` field of an `IAMServiceAccount`
-                                resource.
-                              type: string
-                            name:
-                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                              type: string
-                            namespace:
-                              description: 'Namespace of the referent. More info:
-                                https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
-                              type: string
-                          type: object
-                      type: object
-                    type: array
-                  shieldedInstanceConfig:
-                    description: Optional. Shielded VM configuration.
-                    properties:
-                      enableIntegrityMonitoring:
-                        description: Optional. Defines whether the VM instance has
-                          integrity monitoring enabled. Enabled by default.
-                        type: boolean
-                      enableSecureBoot:
-                        description: Optional. Defines whether the VM instance has
-                          Secure Boot enabled.
-                        type: boolean
-                      enableVTPM:
-                        description: Optional. Defines whether the VM instance has
-                          the vTPM enabled. Enabled by default.
-                        type: boolean
-                    type: object
-                  tags:
-                    description: Optional. The Compute Engine tags to add to runtime.
-                    items:
-                      type: string
-                    type: array
-                  vmImage:
-                    description: Optional. Use a Compute Engine VM image to start
-                      the notebook instance.
-                    properties:
-                      family:
-                        description: Optional. Use this VM image family to find the
-                          image; the newest image in this family will be used.
-                        type: string
-                      name:
-                        description: Optional. Use VM image name to find the image.
-                        type: string
-                      project:
-                        description: Required. The name of the Google Cloud project
-                          that this VM image belongs to.
-                        type: string
-                    type: object
                 type: object
+              bootDiskSizeGB:
+                description: Input only. The size of the boot disk in GB attached
+                  to this instance, up to a maximum of 64000 GB (64 TB). The minimum
+                  recommended value is 100 GB. If not specified, this defaults to
+                  100.
+                format: int64
+                type: integer
+              bootDiskType:
+                description: Input only. The type of the boot disk attached to this
+                  instance, defaults to standard persistent disk (`PD_STANDARD`).
+                type: string
+              canIPForward:
+                description: Optional. Flag to enable ip forwarding or not, default
+                  false/off. https://cloud.google.com/vpc/docs/using-routes#canipforward
+                type: boolean
+              containerImage:
+                description: Use a container image to start the notebook instance.
+                properties:
+                  repository:
+                    description: 'Required. The path to the container image repository.
+                      For example: `gcr.io/{project_id}/{image_name}`'
+                    type: string
+                  tag:
+                    description: The tag of the container image. If not specified,
+                      this defaults to the latest tag.
+                    type: string
+                required:
+                - repository
+                type: object
+              customGpuDriverPath:
+                description: Specify a custom Cloud Storage path where the GPU driver
+                  is stored. If not specified, we'll automatically choose from official
+                  GPU drivers.
+                type: string
+              dataDiskSizeGB:
+                description: Input only. The size of the data disk in GB attached
+                  to this instance, up to a maximum of 64000 GB (64 TB). You can choose
+                  the size of the data disk based on how big your notebooks and data
+                  are. If not specified, this defaults to 100.
+                format: int64
+                type: integer
+              dataDiskType:
+                description: Input only. The type of the data disk attached to this
+                  instance, defaults to standard persistent disk (`PD_STANDARD`).
+                type: string
+              diskEncryption:
+                description: Input only. Disk encryption method used on the boot and
+                  data disks, defaults to GMEK.
+                type: string
+              installGpuDriver:
+                description: Whether the end user authorizes Google Cloud to install
+                  GPU driver on this instance. If this field is empty or set to false,
+                  the GPU driver won't be installed. Only applicable to instances
+                  with GPUs.
+                type: boolean
               instanceOwners:
-                description: 'Optional. Input only. The owner of this instance after
-                  creation. Format: `alias@example.com`'
+                description: |-
+                  Input only. The owner of this instance after creation. Format: `alias@example.com`
+
+                   Currently supports one owner only. If not specified, all of the service
+                   account users of your VM instance's service account can use
+                   the instance.
                 items:
                   type: string
                 type: array
+              kmsKey:
+                description: |-
+                  Input only. The KMS key used to encrypt the disks, only applicable if disk_encryption
+                   is CMEK.
+                   Format:
+                   `projects/{project_id}/locations/{location}/keyRings/{key_ring_id}/cryptoKeys/{key_id}`
+
+                   Learn more about [using your own encryption keys](/kms/docs/quickstart).
+                type: string
               labels:
                 additionalProperties:
                   type: string
-                description: Optional. Labels to apply to this instance.
+                description: Labels to apply to this instance. These can be later
+                  modified by the setLabels method.
                 type: object
               location:
                 description: The location of this resource.
+                type: string
+              machineType:
+                description: Required. The [Compute Engine machine type](https://cloud.google.com/compute/docs/machine-types)
+                  of this instance.
+                type: string
+              metadata:
+                additionalProperties:
+                  type: string
+                description: Custom metadata to apply to this instance.
+                type: object
+              network:
+                description: 'The name of the VPC that this instance is in. Format:
+                  `projects/{project_id}/global/networks/{network_id}`'
+                type: string
+              nicType:
+                description: Optional. The type of vNIC to be used on this interface.
+                  This may be gVNIC or VirtioNet.
+                type: string
+              noProxyAccess:
+                description: If true, the notebook instance will not register with
+                  the proxy.
+                type: boolean
+              noPublicIP:
+                description: If true, no public IP will be assigned to this instance.
+                type: boolean
+              noRemoveDataDisk:
+                description: Input only. If true, the data disk will not be auto deleted
+                  when deleting the instance.
+                type: boolean
+              postStartupScript:
+                description: Path to a Bash script that automatically runs after a
+                  notebook instance fully boots up. The path must be a URL or Cloud
+                  Storage path (`gs://path-to-file/file-name`).
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
@@ -412,12 +222,150 @@ spec:
                     description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
+              reservationAffinity:
+                description: Optional. The optional reservation affinity. Setting
+                  this field will apply the specified [Zonal Compute Reservation](https://cloud.google.com/compute/docs/instances/reserving-zonal-resources)
+                  to this notebook instance.
+                properties:
+                  consumeReservationType:
+                    description: Optional. Type of reservation to consume
+                    type: string
+                  key:
+                    description: Optional. Corresponds to the label key of reservation
+                      resource.
+                    type: string
+                  values:
+                    description: Optional. Corresponds to the label values of reservation
+                      resource.
+                    items:
+                      type: string
+                    type: array
+                type: object
               resourceID:
                 description: The NotebookInstanceV2 name. If not given, the metadata.name
                   will be used.
                 type: string
+              serviceAccount:
+                description: |-
+                  The service account on this instance, giving access to other Google
+                   Cloud services.
+                   You can use any service account within the same project, but you
+                   must have the service account user permission to use the instance.
+
+                   If not specified, the [Compute Engine default service
+                   account](https://cloud.google.com/compute/docs/access/service-accounts#default_service_account)
+                   is used.
+                type: string
+              serviceAccountScopes:
+                description: |-
+                  Optional. The URIs of service account scopes to be included in
+                   Compute Engine instances.
+
+                   If not specified, the following
+                   [scopes](https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam)
+                   are defined:
+                    - https://www.googleapis.com/auth/cloud-platform
+                    - https://www.googleapis.com/auth/userinfo.email
+                   If not using default scopes, you need at least:
+                      https://www.googleapis.com/auth/compute
+                items:
+                  type: string
+                type: array
+              shieldedInstanceConfig:
+                description: Optional. Shielded VM configuration. [Images using supported
+                  Shielded VM features](https://cloud.google.com/compute/docs/instances/modifying-shielded-vm).
+                properties:
+                  enableIntegrityMonitoring:
+                    description: |-
+                      Defines whether the instance has integrity monitoring enabled.
+
+                       Enables monitoring and attestation of the boot integrity of the instance.
+                       The attestation is performed against the integrity policy baseline. This
+                       baseline is initially derived from the implicitly trusted boot image when
+                       the instance is created. Enabled by default.
+                    type: boolean
+                  enableSecureBoot:
+                    description: |-
+                      Defines whether the instance has Secure Boot enabled.
+
+                       Secure Boot helps ensure that the system only runs authentic software by
+                       verifying the digital signature of all boot components, and halting the
+                       boot process if signature verification fails. Disabled by default.
+                    type: boolean
+                  enableVTPM:
+                    description: Defines whether the instance has the vTPM enabled.
+                      Enabled by default.
+                    type: boolean
+                type: object
+              subnet:
+                description: 'The name of the subnet that this instance is in. Format:
+                  `projects/{project_id}/regions/{region}/subnetworks/{subnetwork_id}`'
+                type: string
+              tags:
+                description: Optional. The Compute Engine tags to add to runtime (see
+                  [Tagging instances](https://cloud.google.com/compute/docs/label-or-tag-resources#tags)).
+                items:
+                  type: string
+                type: array
+              upgradeHistory:
+                description: The upgrade history of this instance.
+                items:
+                  properties:
+                    action:
+                      description: Action. Rolloback or Upgrade.
+                      type: string
+                    containerImage:
+                      description: The container image before this instance upgrade.
+                      type: string
+                    createTime:
+                      description: The time that this instance upgrade history entry
+                        is created.
+                      type: string
+                    framework:
+                      description: The framework of this notebook instance.
+                      type: string
+                    snapshot:
+                      description: The snapshot of the boot disk of this notebook
+                        instance before upgrade.
+                      type: string
+                    state:
+                      description: The state of this instance upgrade history entry.
+                      type: string
+                    targetImage:
+                      description: 'Target VM Image. Format: `ainotebooks-vm/project/image-name/name`.'
+                      type: string
+                    targetVersion:
+                      description: Target VM Version, like m63.
+                      type: string
+                    version:
+                      description: The version of the notebook instance before this
+                        upgrade.
+                      type: string
+                    vmImage:
+                      description: The VM image before this instance upgrade.
+                      type: string
+                  type: object
+                type: array
+              vmImage:
+                description: Use a Compute Engine VM image to start the notebook instance.
+                properties:
+                  imageFamily:
+                    description: Use this VM image family to find the image; the newest
+                      image in this family will be used.
+                    type: string
+                  imageName:
+                    description: Use VM image name to find the image.
+                    type: string
+                  project:
+                    description: 'Required. The name of the Google Cloud project that
+                      this VM image belongs to. Format: `{project_id}`'
+                    type: string
+                required:
+                - project
+                type: object
             required:
             - location
+            - machineType
             - projectRef
             type: object
           status:
@@ -473,35 +421,110 @@ spec:
                     description: Output only. Email address of entity that sent original
                       CreateInstance request.
                     type: string
-                  gceSetup:
-                    description: Setup for the Notebook instance.
-                    properties:
-                      serviceAccounts:
-                        description: Optional. The service account that serves as
-                          an identity for the VM instance.
-                        items:
-                          properties:
-                            scopes:
-                              description: Output only. The list of scopes to be made
-                                available for this service account.
-                              items:
+                  disks:
+                    description: Output only. Attached disks to notebook instance.
+                    items:
+                      properties:
+                        autoDelete:
+                          description: Indicates whether the disk will be auto-deleted
+                            when the instance is deleted (but not when the disk is
+                            detached from the instance).
+                          type: boolean
+                        boot:
+                          description: Indicates that this is a boot disk. The virtual
+                            machine will use the first partition of the disk for its
+                            root filesystem.
+                          type: boolean
+                        deviceName:
+                          description: |-
+                            Indicates a unique device name of your choice that is reflected into the
+                             `/dev/disk/by-id/google-*` tree of a Linux operating system running
+                             within the instance. This name can be used to reference the device for
+                             mounting, resizing, and so on, from within the instance.
+
+                             If not specified, the server chooses a default device name to apply to
+                             this disk, in the form persistent-disk-x, where x is a number assigned by
+                             Google Compute Engine.This field is only applicable for persistent disks.
+                          type: string
+                        diskSizeGB:
+                          description: Indicates the size of the disk in base-2 GB.
+                          format: int64
+                          type: integer
+                        guestOSFeatures:
+                          description: Indicates a list of features to enable on the
+                            guest operating system. Applicable only for bootable images.
+                            Read  Enabling guest operating system features to see
+                            a list of available options.
+                          items:
+                            properties:
+                              type:
+                                description: |-
+                                  The ID of a supported feature. Read  Enabling guest operating system
+                                   features to see a list of available options.
+                                   Valid values:
+
+                                   * `FEATURE_TYPE_UNSPECIFIED`
+                                   * `MULTI_IP_SUBNET`
+                                   * `SECURE_BOOT`
+                                   * `UEFI_COMPATIBLE`
+                                   * `VIRTIO_SCSI_MULTIQUEUE`
+                                   * `WINDOWS`
                                 type: string
-                              type: array
-                          type: object
-                        type: array
-                    type: object
-                  gcpID:
-                    description: Output only. Unique ID of the resource.
-                    type: string
-                  healthInfo:
-                    additionalProperties:
-                      type: string
-                    description: Output only. Additional information about instance
-                      health.
-                    type: object
-                  healthState:
-                    description: Output only. Instance health_state.
-                    type: string
+                            type: object
+                          type: array
+                        index:
+                          description: A zero-based index to this disk, where 0 is
+                            reserved for the boot disk. If you have many disks attached
+                            to an instance, each disk would have a unique index number.
+                          format: int64
+                          type: integer
+                        interface:
+                          description: |-
+                            Indicates the disk interface to use for attaching this disk, which is
+                             either SCSI or NVME. The default is SCSI. Persistent disks must always
+                             use SCSI and the request will fail if you attempt to attach a persistent
+                             disk in any other format than SCSI. Local SSDs can use either NVME or
+                             SCSI. For performance characteristics of SCSI over NVMe, see Local SSD
+                             performance.
+                             Valid values:
+
+                             * `NVME`
+                             * `SCSI`
+                          type: string
+                        kind:
+                          description: Type of the resource. Always compute#attachedDisk
+                            for attached disks.
+                          type: string
+                        licenses:
+                          description: A list of publicly visible licenses. Reserved
+                            for Google's use. A License represents billing and aggregate
+                            usage data for public and marketplace images.
+                          items:
+                            type: string
+                          type: array
+                        mode:
+                          description: |-
+                            The mode in which to attach this disk, either `READ_WRITE` or
+                             `READ_ONLY`. If not specified, the default is to attach the disk in
+                             `READ_WRITE` mode. Valid values:
+
+                             * `READ_ONLY`
+                             * `READ_WRITE`
+                          type: string
+                        source:
+                          description: Indicates a valid partial or full URL to an
+                            existing Persistent Disk resource.
+                          type: string
+                        type:
+                          description: |-
+                            Indicates the type of the disk, either `SCRATCH` or `PERSISTENT`.
+                             Valid values:
+
+                             * `PERSISTENT`
+                             * `SCRATCH`
+                          type: string
+                      type: object
+                    type: array
                   proxyURI:
                     description: Output only. The proxy endpoint that is used to access
                       the Jupyter notebook.
@@ -512,45 +535,6 @@ spec:
                   updateTime:
                     description: Output only. Instance update time.
                     type: string
-                  upgradeHistory:
-                    description: Output only. The upgrade history of this instance.
-                    items:
-                      properties:
-                        action:
-                          description: Optional. Action. Rolloback or Upgrade.
-                          type: string
-                        containerImage:
-                          description: Optional. The container image before this instance
-                            upgrade.
-                          type: string
-                        createTime:
-                          description: Immutable. The time that this instance upgrade
-                            history entry is created.
-                          type: string
-                        framework:
-                          description: Optional. The framework of this notebook instance.
-                          type: string
-                        snapshot:
-                          description: Optional. The snapshot of the boot disk of
-                            this notebook instance before upgrade.
-                          type: string
-                        state:
-                          description: Output only. The state of this instance upgrade
-                            history entry.
-                          type: string
-                        targetVersion:
-                          description: Optional. Target VM Version, like m63.
-                          type: string
-                        version:
-                          description: Optional. The version of the notebook instance
-                            before this upgrade.
-                          type: string
-                        vmImage:
-                          description: Optional. The VM image before this instance
-                            upgrade.
-                          type: string
-                      type: object
-                    type: array
                 type: object
             type: object
         required:

@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: networksecuritysecurityprofilegroups.networksecurity.cnrm.cloud.google.com
 spec:
@@ -64,66 +63,14 @@ spec:
             description: NetworkSecuritySecurityProfileGroupSpec defines the desired
               state of NetworkSecuritySecurityProfileGroup
             properties:
-              customInterceptProfileRef:
+              customInterceptProfile:
                 description: Optional. Reference to a SecurityProfile with the CustomIntercept
                   configuration.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed NetworkSecuritySecurityProfile
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/securityProfiles/{{security_profile}}".
-                    type: string
-                  name:
-                    description: The name of a NetworkSecuritySecurityProfile resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a NetworkSecuritySecurityProfile
-                      resource.
-                    type: string
-                type: object
-              customMirroringProfileRef:
+                type: string
+              customMirroringProfile:
                 description: Optional. Reference to a SecurityProfile with the CustomMirroring
                   configuration.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed NetworkSecuritySecurityProfile
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/securityProfiles/{{security_profile}}".
-                    type: string
-                  name:
-                    description: The name of a NetworkSecuritySecurityProfile resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a NetworkSecuritySecurityProfile
-                      resource.
-                    type: string
-                type: object
+                type: string
               description:
                 description: Optional. An optional description of the profile group.
                   Max length 2048 characters.
@@ -172,66 +119,14 @@ spec:
                 description: The NetworkSecuritySecurityProfileGroup name. If not
                   given, the metadata.name will be used.
                 type: string
-              threatPreventionProfileRef:
+              threatPreventionProfile:
                 description: Optional. Reference to a SecurityProfile with the ThreatPrevention
                   configuration.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed NetworkSecuritySecurityProfile
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/securityProfiles/{{security_profile}}".
-                    type: string
-                  name:
-                    description: The name of a NetworkSecuritySecurityProfile resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a NetworkSecuritySecurityProfile
-                      resource.
-                    type: string
-                type: object
-              urlFilteringProfileRef:
+                type: string
+              urlFilteringProfile:
                 description: Optional. Reference to a SecurityProfile with the UrlFiltering
                   configuration.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed NetworkSecuritySecurityProfile
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/securityProfiles/{{security_profile}}".
-                    type: string
-                  name:
-                    description: The name of a NetworkSecuritySecurityProfile resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a NetworkSecuritySecurityProfile
-                      resource.
-                    type: string
-                type: object
+                type: string
             required:
             - location
             - projectRef

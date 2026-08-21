@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,14 +25,26 @@ var EdgeContainerMachineGVK = GroupVersion.WithKind("EdgeContainerMachine")
 // EdgeContainerMachineSpec defines the desired state of EdgeContainerMachine
 // +kcc:spec:proto=google.cloud.edgecontainer.v1.Machine
 type EdgeContainerMachineSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	// Labels associated with this resource.
+	// +kcc:proto:field=google.cloud.edgecontainer.v1.Machine.labels
+	Labels map[string]string `json:"labels,omitempty"`
 
-	// The location of this resource.
-	Location string `json:"location"`
+	// The Google Distributed Cloud Edge zone of this machine.
+	// +kcc:proto:field=google.cloud.edgecontainer.v1.Machine.zone
+	Zone *string `json:"zone,omitempty"`
+
+	*Parent `json:",inline"`
 
 	// The EdgeContainerMachine name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+}
+
+type Parent struct {
+	// Required. The location of the machine.
+	Location string `json:"location,omitempty"`
+
+	// Required. The host project of the machine.
+	ProjectRef *v1beta1.ProjectRef `json:"projectRef,omitempty"`
 }
 
 // EdgeContainerMachineStatus defines the config connector machine state of EdgeContainerMachine
@@ -54,10 +66,38 @@ type EdgeContainerMachineStatus struct {
 // EdgeContainerMachineObservedState is the state of the EdgeContainerMachine resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.edgecontainer.v1.Machine
 type EdgeContainerMachineObservedState struct {
+	// Output only. The time when the node pool was created.
+	// +kcc:proto:field=google.cloud.edgecontainer.v1.Machine.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the node pool was last updated.
+	// +kcc:proto:field=google.cloud.edgecontainer.v1.Machine.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The software version of the machine.
+	// +kcc:proto:field=google.cloud.edgecontainer.v1.Machine.version
+	Version *string `json:"version,omitempty"`
+
+	// Output only. Whether the machine is disabled. If disabled, the machine is
+	//  unable to enter service.
+	// +kcc:proto:field=google.cloud.edgecontainer.v1.Machine.disabled
+	Disabled *bool `json:"disabled,omitempty"`
+
+	// Canonical resource name of the node that this machine is responsible for
+	//  hosting e.g.
+	//  projects/{project}/locations/{location}/clusters/{cluster_id}/nodePools/{pool_id}/{node},
+	//  Or empty if the machine is not assigned to assume the role of a node.
+	//
+	//  For control plane nodes hosted on edge machines, this will return
+	//  the following format:
+	//    "projects/{project}/locations/{location}/clusters/{cluster_id}/controlPlaneNodes/{node}".
+	// +kcc:proto:field=google.cloud.edgecontainer.v1.Machine.hosted_node
+	HostedNode *string `json:"hostedNode,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// TODO(user): make sure the pluralizaiton below is correct
 // +kubebuilder:resource:categories=gcp,shortName=gcpedgecontainermachine;gcpedgecontainermachines
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
