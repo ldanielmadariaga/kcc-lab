@@ -13,8 +13,7 @@ conclusions.
 409 kinds carry a `--resource` line in a `generate.sh`. **239 are in scope.** The other 170 are
 excluded for reasons unrelated to generator quality: 163 are not `v1alpha1` invocations, 6 sit in
 services passing `--skip-scaffold-files` so the generator never writes their types file, and 1 has
-no
-types file at all.
+no types file at all.
 
 92 services regenerated, 90 without error. 127 resources came back genuinely regenerated. **98 were
 scored**, after excluding `compute` and `networksecurity`, whose per-service CRD generation failed
@@ -50,16 +49,39 @@ actually implements references.
 |---|---|---|
 | reference fields, deferred to the judgement pass by design | 624 | 72.6% |
 | `map<string, Message>` the generator cannot type | 124 | 14.4% |
-| other, not yet characterised | 105 | 12.2% |
+| other | 105 | 12.2% |
 | plural acronyms that slipped past the flag | 6 | 0.7% |
 
 Excluding references it is 90.8%; excluding the map limitation too, 95.2%.
 
+### The "other" bucket, unpicked
+
+It is three unrelated things, and only one is a generator defect.
+
+**63 fields are genuinely dropped** — the real finding. Whole objects vanish with their subtrees:
+`BigQueryMigrationMigrationWorkflow.spec.tasks`, and `HypercomputeClusterCluster`'s
+`spec.computeResources` and `spec.networkResources`. `AnalyticsAccount.spec.redirectURI` is a plain
+string that is simply absent. These are silent and uncharacterised, and they are the part worth
+chasing.
+
+**25 are reference children misfiled by my classifier**, not a separate cause. Paths like
+`NetworkManagementConnectivityTest.spec.destination.sqlInstance.external` are the `external`, `name`
+and `namespace` children a reference expands into; the classifier missed them because the parent is
+named `sqlInstance` rather than `sqlInstanceRef`. The reference gap is correspondingly larger than
+152 fields and this bucket smaller.
+
+**14 are a bug in the measurement harness, not the generator.** The Location normaliser recorded
+each resource's original form by looking for a `Location` field in its `_types.go`. Upstream often
+does not declare one: `DataplexLakeSpec` inlines `parent.ProjectAndLocationRef`, which contributes
+both `projectRef` and `location` to the CRD without a `Location` field existing. The normaliser read
+that as "no location", deleted the scaffold's, and the comparison then reported it missing. Verified
+on `DataplexLake`, whose upstream CRD has exactly `location` and `projectRef` — the same shape the
+scaffold emits, so these would have matched untouched. The spec rate is understated by this amount.
+
 ## What is missing, and whether anyone can see it
 
 This is the table that matters, and it is less flattering than the coverage figure. Counting
-distinct
-fields rather than paths, 387 are missing:
+distinct fields rather than paths, 387 are missing:
 
 | category | in the queue today | seeder would add | new TODO entry | silent | total |
 |---|---|---|---|---|---|
@@ -75,10 +97,8 @@ paths each (the object plus `external`, `name` and `namespace`), which is why th
 
 Two things follow. `map<string, Message>` is the one unambiguous win: 124 fields, every one silent
 before, every one now carrying a queue entry. And **"other" at 105 fields is both entirely silent
-and
-entirely uncharacterised** — comparable in size to the whole reference gap the seeder closes, and
-the
-largest thing we still cannot explain.
+and entirely uncharacterised** — comparable in size to the whole reference gap the seeder closes,
+and the largest thing we still cannot explain.
 
 Note that the 54% reference recall quoted elsewhere is against the 111 references whose original
 field could be paired, not against all 152 missing reference fields.
@@ -107,15 +127,12 @@ layers; none is in the ObservedState or acronym work, which behaved correctly ev
 
 The judgement queue is meant to list what a human still has to decide. Measured against the 111
 confirmed references, it named **11 — 10%**. `CloudBuildConnection` needs 15 references and the
-queue
-listed none of them.
+queue listed none of them.
 
 The cause is not a bug: `judgementFor` consults only `google.api.resource_reference`, which is
-present
-on a minority of fields. A post-generation seeder reusing the rules from `TestMissingRefs` reaches
-**60 correct against 39 wrong — 61% precision, 54% recall.** For a list a person confirms rather
-than
-an automatic rename, that trade is reasonable; a wrong hint costs a moment's reading.
+present on a minority of fields. A post-generation seeder reusing the rules from `TestMissingRefs`
+reaches **60 correct against 39 wrong — 61% precision, 54% recall.** For a list a person confirms
+rather than an automatic rename, that trade is reasonable; a wrong hint costs a moment's reading.
 
 What it still misses, by target type:
 
@@ -135,10 +152,9 @@ to chase: "network" is the exact name the earlier heuristic was rejected over.
 
 Flagging fields whose name contains URI or URL looked promising and is wrong on this corpus. **None
 of the 111 confirmed references is URI-named.** There are 9 URI-named string fields and upstream
-made
-references of none — they are container images, GCS object paths, an OAuth redirect. The existing
-policy of treating them as not-representable is correct. Caveat: 9 is a small sample, enough to say
-"do not invert this", not enough to say "never".
+made references of none — they are container images, GCS object paths, an OAuth redirect. The
+existing policy of treating them as not-representable is correct. Caveat: 9 is a small sample,
+enough to say "do not invert this", not enough to say "never".
 
 ## Lessons for the evaluation framework
 
@@ -173,14 +189,13 @@ services are generator output there. Verified on `GrafeasNote`, whose CRD has no
 baseline but does at `ae2abcdb9b`.
 
 **Comparison** by `crd-mcp-server score`, which flattens both CRDs to `path -> type` maps and
-reports
-matched, missing, extra and mismatched per bucket. It reuses `walk`/`flatten` from `compare.go`, so
-it sees schemas exactly as the existing equivalence check does.
+reports matched, missing, extra and mismatched per bucket. It reuses `walk`/`flatten` from
+`compare.go`, so it sees schemas exactly as the existing equivalence check does.
 
 **Resource resolution** from each CRD's own `kind:` field, never from the filename.
 
-**The measured set** counts a resource only if its `_types.go` actually differs from baseline;
-a restored resource would otherwise score a false 100%.
+**The measured set** counts a resource only if its `_types.go` actually differs from baseline; a
+restored resource would otherwise score a false 100%.
 
 **Reference pairing**: the score tool reports each baseline reference path alongside the plain field
 we generated in its place, so pairs are read from the comparison rather than reconstructed. Target
