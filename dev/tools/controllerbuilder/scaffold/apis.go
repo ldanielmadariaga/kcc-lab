@@ -55,8 +55,24 @@ func (a *APIScaffolder) resourceMetadata(fullName string) *protoapi.ResourceMeta
 	}
 	d, err := a.Proto.Files().FindDescriptorByName(protoreflect.FullName(fullName))
 	if err != nil {
-		klog.V(2).Infof("no descriptor for %q, scaffolding will guess: %v", fullName, err)
-		return nil
+		// PackageProtoTag may name several proto packages, and ProtoMessageFullName
+		// composes the name from the first one. grafeas is the case: it is invoked
+		// with "google.cloud.grafeas.v1,grafeas.v1" while Note lives in the second,
+		// so the first guess never resolves. Try the rest before giving up.
+		d = nil
+		if base := strings.TrimSuffix(fullName, "."+lastSegment(fullName)); base != "" {
+			for _, pkg := range strings.Split(a.PackageProtoTag, ",") {
+				candidate := pkg + "." + lastSegment(fullName)
+				if alt, altErr := a.Proto.Files().FindDescriptorByName(protoreflect.FullName(candidate)); altErr == nil {
+					d = alt
+					break
+				}
+			}
+		}
+		if d == nil {
+			klog.V(2).Infof("no descriptor for %q, scaffolding will guess: %v", fullName, err)
+			return nil
+		}
 	}
 	msg, ok := d.(protoreflect.MessageDescriptor)
 	if !ok {
@@ -205,6 +221,33 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 	typeFilePath := a.PathToTypeFile(resource)
 	cArgs := a.buildAPIArgs(&resource)
 	if prepopulated != nil {
+		// A resource nested under another resource gets no Location: its parent's
+		// identity already fixes one, and upstream is split 8 to 7 on whether to
+		// repeat it, so there is no convention to copy. Omitting is the reversible
+		// half -- adding a field later is easy, removing a required one is a
+		// breaking change -- but the choice belongs to whoever finishes the
+		// resource, so it is written down rather than made silently.
+		switch cArgs.ParentStyle {
+		case string(protoapi.ParentOther):
+			prepopulated.Judgement = append(prepopulated.Judgement, JudgementItem{
+				FieldPath: ".spec.location",
+				Reason:    "location-omitted-nested-parent",
+				Detail: "parent is " + cArgs.ResourcePattern +
+					"; location is implied by the parent, add it only if the API needs it stated",
+			})
+		case string(protoapi.ParentUnknown):
+			// No google.api.resource on the message, so the parent shape is not
+			// knowable here. Omit for the same reason as the nested case: adding
+			// a field later is easy, removing a required one is a breaking
+			// change. GrafeasNote is the worked example -- unannotated, project
+			// parented, and upstream gives it no location.
+			prepopulated.Judgement = append(prepopulated.Judgement, JudgementItem{
+				FieldPath: ".spec.location",
+				Reason:    "location-omitted-unknown-parent",
+				Detail: "the proto declares no google.api.resource, so the parent shape is unknown; " +
+					"add location if the resource is regional",
+			})
+		}
 		cArgs.SpecFields = prepopulated.SpecFields
 		cArgs.ObservedStateFields = prepopulated.ObservedStateFields
 		// Computed from both bodies here rather than taken from the result,
@@ -296,4 +339,12 @@ func scaffoldGroupVersionFile(path string, cArgs *apis.APIArgs) error {
 	}
 	color.HiGreen("New file added %q\n", path)
 	return nil
+}
+
+// lastSegment returns the final dot-separated component of a proto full name.
+func lastSegment(fullName string) string {
+	if i := strings.LastIndex(fullName, "."); i >= 0 {
+		return fullName[i+1:]
+	}
+	return fullName
 }

@@ -86,9 +86,15 @@ var {{ .Kind }}GVK = GroupVersion.WithKind("{{ .Kind }}")
 type {{ .Kind }}Spec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef ` + "`" + `json:"projectRef"` + "`" + `
+{{- if eq .ParentStyle "project_location" }}
 
 	// The location of this resource.
-	Location string ` + "`" + `json:"location"` + "`" + `
+	// A pointer, matching the 100 of 129 existing resources that use one; the
+	// value form does not compile against hand-written identity files that
+	// dereference it. No omitempty, so the field stays required, as upstream
+	// has it.
+	Location *string ` + "`" + `json:"location"` + "`" + `
+{{- end }}
 
 	// The {{ .Kind }} name. If not given, the metadata.name will be used.
 	ResourceID *string ` + "`" + `json:"resourceID,omitempty"` + "`" + `

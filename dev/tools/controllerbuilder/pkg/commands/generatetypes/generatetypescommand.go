@@ -130,6 +130,11 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 		Group:           gv.Group,
 		Version:         gv.Version,
 		PackageProtoTag: o.ServiceName,
+		// Without this the scaffolder cannot read google.api.resource, so every
+		// resource is classified ParentUnknown and the collection segment is
+		// guessed from the message name. The field was added with the parent-shape
+		// work but never set here, so that work has never run for generate-types.
+		Proto: api,
 	}
 	if scaffolder.DocFileNotExist() {
 		if err := scaffolder.AddDocFile(); err != nil {
@@ -218,10 +223,14 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 						prepopulated.ObservedStateFields, prepopulated.ExtraImports =
 							scaffold.PrepopulateObservedState(details, typeGenerator.ObservedStateMessages())
 					}
-					judgement = append(judgement, scaffold.FormatJudgementEntries(resource.Kind, gv.Group, prepopulated.Judgement))
 				}
 				if err := scaffolder.AddTypeFile(resource, prepopulated); err != nil {
 					return fmt.Errorf("add type file %s: %w", scaffolder.PathToTypeFile(resource), err)
+				}
+				// After AddTypeFile, which is where decisions that depend on the
+				// parent shape are recorded.
+				if prepopulated != nil {
+					judgement = append(judgement, scaffold.FormatJudgementEntries(resource.Kind, gv.Group, prepopulated.Judgement))
 				}
 			}
 		}
