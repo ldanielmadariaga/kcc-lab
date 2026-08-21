@@ -330,3 +330,85 @@ func HasReferenceShape(propertyNames []string) bool {
 	}
 	return true
 }
+
+// NameRule matches a field whose name identifies what it points at.
+//
+// These exist because the description signals miss a whole class: a Secret
+// Manager version or a VPC is often named plainly, with no resource-name
+// template in its description, so hasResourceNameTemplate never fires.
+// Measured on the 239-resource run, that class is half of what the rules were
+// missing.
+//
+// On reading their measured precision: 20 of the 21 hints the answer key calls
+// wrong are fields whose exact name upstream turned into a reference in another
+// resource -- "network" is a reference in nine resources and a plain string in
+// BlockchainNodeEngineBlockchainNode, userTokenSecretVersion is a reference in
+// CloudBuildConnection and a string in DevConnectConnection. So the raw figure
+// measures upstream's inconsistency more than this code's error rate, and for a
+// queue that proposes work to a person, surfacing them is the point. Only one
+// hint had a genuinely novel name.
+//
+// Kept as a short list of specific targets rather than a general vocabulary.
+// Matching reference names generically was tried and rejected at 2,164
+// findings. What makes these safe is that each names one target type and is
+// measured against the answer key in
+// hack/tools/greenfield/reference_testset.tsv, with any rule that does not earn
+// its place removed.
+type NameRule struct {
+	// Target is the KCC ref type the field points at, for the hint text.
+	Target string
+	// Match takes the field's leaf name, already stripped of any list suffix.
+	Match func(leaf string) bool
+}
+
+func eq(names ...string) func(string) bool {
+	return func(leaf string) bool {
+		for _, n := range names {
+			if strings.EqualFold(leaf, n) {
+				return true
+			}
+		}
+		return false
+	}
+}
+
+func hasSuffix(suffix string) func(string) bool {
+	return func(leaf string) bool {
+		return len(leaf) > len(suffix) && strings.EqualFold(leaf[len(leaf)-len(suffix):], suffix)
+	}
+}
+
+// NameRules is ordered most specific first; the first match wins.
+var NameRules = []NameRule{
+	// Every confirmed instance ends in SecretVersion, and the suffix is long
+	// enough not to collide with anything else in the corpus.
+	{Target: "SecretManagerSecretVersionRef", Match: hasSuffix("SecretVersion")},
+	// "network" is the exact name the rejected heuristic was built on, so it is
+	// admitted only as a whole leaf, never as a substring: a field called
+	// networkConfig or networkPolicy is not a network.
+	{Target: "ComputeNetworkRef", Match: eq("network", "vpc", "vpcName")},
+	{Target: "KMSCryptoKeyRef", Match: eq("kmsKey", "cmekKeyName", "encryptionKey", "kmsKeyName")},
+}
+
+// MatchName returns the reference target a field's name indicates, if any.
+//
+// Deliberately NOT consulted by Classify. TestMissingRefs writes its findings
+// to missingrefs.txt, a ratchet that refuses new entries even under
+// WRITE_GOLDEN_OUTPUT, and these rules add 28 of them -- correct ones, such as
+// ComputePacketMirroring's .spec.network, but a gate nobody can pass until
+// every one is implemented. The queue seeder proposes work and gates nothing,
+// so it can use them today. Tightening the check is a separate decision, and
+// has to come with the implementations or reviewed refs_deferred.txt entries.
+func MatchName(fieldPath string) (string, bool) {
+	leaf := fieldPath
+	if i := strings.LastIndex(leaf, "."); i >= 0 {
+		leaf = leaf[i+1:]
+	}
+	leaf = strings.TrimSuffix(leaf, "[]")
+	for _, r := range NameRules {
+		if r.Match(leaf) {
+			return r.Target, true
+		}
+	}
+	return "", false
+}

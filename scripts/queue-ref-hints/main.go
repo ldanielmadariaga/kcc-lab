@@ -125,12 +125,21 @@ func hintsFor(crd apiextensions.CustomResourceDefinition, version apiextensions.
 			return
 		}
 		verdict, _ := refs.Classify(path, props.Description)
+		reason := "possible-reference-by-description"
 		if verdict != refs.IsReference {
-			return
+			// The description rules miss a whole class: a Secret Manager version
+			// or a VPC is often named plainly with no resource-name template to
+			// go on. The name rules cover those, and are applied here rather
+			// than inside Classify because Classify also feeds a ratchet.
+			target, ok := refs.MatchName(path)
+			if !ok {
+				return
+			}
+			reason = "possible-reference-by-name (" + target + ")"
 		}
 		out = append(out, fmt.Sprintf(
-			"kind=%s group=%s: field %q reason=possible-reference-by-description",
-			crd.Spec.Names.Kind, crd.Spec.Group, path))
+			"kind=%s group=%s: field %q reason=%s",
+			crd.Spec.Names.Kind, crd.Spec.Group, path, reason))
 	})
 	return out
 }
