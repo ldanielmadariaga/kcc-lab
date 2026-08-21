@@ -36,11 +36,14 @@ import (
 
 type TypeGenerator struct {
 	generatorBase
-	api                     *protoapi.Proto
-	goPackage               string
-	visitedMessages         []protoreflect.MessageDescriptor
-	outputMessages          []*OutputMessageDetails
-	observedStateMessages   sets.String
+	api                   *protoapi.Proto
+	goPackage             string
+	visitedMessages       []protoreflect.MessageDescriptor
+	outputMessages        []*OutputMessageDetails
+	observedStateMessages sets.String
+	// unsupportedFields are fields the generator could not type, collected as
+	// they are written so the judgement queue can report them.
+	unsupportedFields       []UnsupportedField
 	generatedFileAnnotation *codegenannotations.FileAnnotation
 	includeSkippedOutput    bool
 	writeOptions            WriteOptions
@@ -361,7 +364,13 @@ func (g *TypeGenerator) WriteVisitedMessages() error {
 			continue
 		}
 
-		WriteMessage(&out.body, msg, g.writeOptions)
+		// Rendered to a scratch buffer first so the markers WriteField leaves for
+		// fields it could not type can be collected. Otherwise the field is absent
+		// from the CRD and the only trace is a comment nobody reads.
+		var body bytes.Buffer
+		WriteMessage(&body, msg, g.writeOptions)
+		g.unsupportedFields = append(g.unsupportedFields, scanUnsupported(string(msg.FullName()), body.String())...)
+		out.body.Write(body.Bytes())
 	}
 	return errors.Join(g.errors...)
 }
@@ -555,7 +564,10 @@ func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protorefl
 
 	goType, err := GoTypeForField(field, isTransitiveOutput)
 	if err != nil {
-		fmt.Fprintf(out, "\n\t// TODO: %v\n\n", err)
+		// Name the field. Without it the marker says only "unsupported map type"
+		// and neither a reader nor the judgement queue can tell which field went
+		// missing from the CRD.
+		fmt.Fprintf(out, "\n\t// TODO: %s: %v\n\n", jsonName, err)
 		return
 	}
 
@@ -845,4 +857,40 @@ func IsFieldBehavior(field protoreflect.FieldDescriptor, fieldBehavior annotatio
 		}
 	}
 	return false
+}
+
+// UnsupportedField is a proto field the generator could not produce a Go type
+// for. The field is omitted from the generated struct, so it never reaches the
+// CRD.
+type UnsupportedField struct {
+	// Message is the fully-qualified proto message that owns the field.
+	Message string
+	// Field is the KRM JSON name the field would have had.
+	Field string
+	// Reason is the generator's own explanation.
+	Reason string
+}
+
+// UnsupportedFields returns everything the generator could not type during this
+// run, for the judgement queue.
+func (g *TypeGenerator) UnsupportedFields() []UnsupportedField {
+	return g.unsupportedFields
+}
+
+// scanUnsupported pulls the "// TODO: <field>: <reason>" markers out of a
+// rendered message body.
+func scanUnsupported(msgName, body string) []UnsupportedField {
+	var out []UnsupportedField
+	for _, line := range strings.Split(body, "\n") {
+		after, ok := strings.CutPrefix(strings.TrimSpace(line), "// TODO: ")
+		if !ok {
+			continue
+		}
+		field, reason, found := strings.Cut(after, ": ")
+		if !found {
+			field, reason = "", after
+		}
+		out = append(out, UnsupportedField{Message: msgName, Field: field, Reason: reason})
+	}
+	return out
 }

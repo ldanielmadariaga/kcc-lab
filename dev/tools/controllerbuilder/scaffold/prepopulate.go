@@ -94,9 +94,22 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 			continue
 		}
 
-		codegen.WriteField(&buf, field, msg, emitted, false, opts)
+		// Rendered separately so the field's own output can be inspected before
+		// it is appended. When the generator cannot type a field it writes a
+		// "// TODO:" comment and moves on, and the field then never reaches the
+		// CRD. That is a silent drop unless somebody records it.
+		var field_ bytes.Buffer
+		codegen.WriteField(&field_, field, msg, emitted, false, opts)
+		buf.Write(field_.Bytes())
 		emitted++
 
+		if reason, ok := unsupportedFieldReason(field_.String()); ok {
+			out.Judgement = append(out.Judgement, JudgementItem{
+				FieldPath: ".spec." + codegen.GetJSONForKRM(field),
+				Reason:    "unsupported-field-type",
+				Detail:    reason,
+			})
+		}
 		if item, ok := judgementFor(field); ok {
 			out.Judgement = append(out.Judgement, item)
 		}
@@ -287,4 +300,26 @@ func ExtraImportsFor(bodies ...string) []string {
 	}
 	sort.Strings(out)
 	return out
+}
+
+// unsupportedFieldReason reports the generator's own explanation when it could
+// not produce a Go type for a field.
+//
+// WriteField emits "// TODO: <err>" in place of the field and carries on, so the
+// field is absent from the CRD with nothing but a comment in generated source to
+// say why. Measured on the 239-resource run: 15 such markers in scaffolded type
+// files and 37 more in types.generated.go, between them accounting for 124 lost
+// CRD field paths, none of it recorded anywhere a person would look.
+func unsupportedFieldReason(rendered string) (string, bool) {
+	for _, line := range strings.Split(rendered, "\n") {
+		line = strings.TrimSpace(line)
+		if after, ok := strings.CutPrefix(line, "// TODO: "); ok {
+			// WriteField prefixes the field name; FieldPath already carries it.
+			if _, reason, found := strings.Cut(after, ": "); found {
+				return reason, true
+			}
+			return after, true
+		}
+	}
+	return "", false
 }

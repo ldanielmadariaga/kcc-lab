@@ -228,6 +228,25 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 	}
 
 	if o.PrepopulateSpec {
+		// Fields the generator could not type are recorded here rather than only
+		// as a comment in generated source. They are absent from the CRD, so
+		// leaving them unlisted makes a silent drop look like a complete resource.
+		// Reported per service, since a nested message can be shared by several
+		// resources and the generator has no single owner to attribute it to.
+		// Written as comments, not entries. A nested message is shared by any
+		// resource that references it, so there is no single Kind to attribute it
+		// to -- and every non-comment line in this file suppresses [refs] for the
+		// Kind it names, so a made-up Kind would quietly switch off a real check.
+		if u := typeGenerator.UnsupportedFields(); len(u) > 0 {
+			var b strings.Builder
+			b.WriteString("\n# Fields dropped because the generator could not produce a Go type for\n")
+			b.WriteString("# them. They are absent from the CRD. Shared nested messages, so they are\n")
+			b.WriteString("# listed per service rather than against one Kind.\n")
+			for _, f := range u {
+				fmt.Fprintf(&b, "# dropped: %s.%s reason=%s\n", f.Message, f.Field, f.Reason)
+			}
+			judgement = append(judgement, b.String())
+		}
 		if err := writeJudgementQueue(o.OutputAPIDirectory, goPackage, judgement); err != nil {
 			return fmt.Errorf("writing judgement queue: %w", err)
 		}
