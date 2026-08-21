@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpspannerinstanceconfig
     - gcpspannerinstanceconfigs
     singular: spannerinstanceconfig
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -65,16 +61,28 @@ spec:
             description: SpannerInstanceConfigSpec defines the desired state of SpannerInstanceConfig
             properties:
               baseConfigRef:
-                description: |-
-                  Base configuration name, e.g. projects/<project_name>/instanceConfigs/nam3,
-                   based on which this configuration is created. Only set for user-managed
-                   configurations. `base_config` must refer to a configuration of type
-                   `GOOGLE_MANAGED` in the same project as this configuration.
+                description: Base configuration name, e.g. projects/<project_name>/instanceConfigs/nam3,
+                  based on which this configuration is created. Only set for user-managed
+                  configurations. `base_config` must refer to a configuration of type
+                  `GOOGLE_MANAGED` in the same project as this configuration.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed SpannerInstanceConfig resource.
-                      Should be in the format "projects/{{projectID}}/locations/{{location}}/instanceconfigs/{{instanceconfigID}}".
+                    description: A reference to an externally managed SpannerInstanceConfig
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/instanceconfigs/{{instanceconfigID}}".
                     type: string
                   name:
                     description: The name of a SpannerInstanceConfig resource.
@@ -114,14 +122,27 @@ spec:
                    allow "_" in a future release.
                 type: object
               leaderOptions:
-                description: |-
-                  Allowed values of the "default_leader" schema option for databases in
-                   instances that use this instance configuration.
+                description: Allowed values of the "default_leader" schema option
+                  for databases in instances that use this instance configuration.
                 items:
                   type: string
                 type: array
               projectRef:
                 description: The Project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -150,11 +171,10 @@ spec:
                 items:
                   properties:
                     defaultLeaderLocation:
-                      description: |-
-                        If true, this location is designated as the default leader location where
-                         leader replicas are placed. See the [region types
-                         documentation](https://cloud.google.com/spanner/docs/instances#region_types)
-                         for more details.
+                      description: If true, this location is designated as the default
+                        leader location where leader replicas are placed. See the
+                        [region types documentation](https://cloud.google.com/spanner/docs/instances#region_types)
+                        for more details.
                       type: boolean
                     location:
                       description: The location of the serving resources, e.g., "us-central1".
@@ -178,9 +198,8 @@ spec:
               machine state of SpannerInstanceConfig
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -192,9 +211,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -222,27 +240,24 @@ spec:
                   observed in GCP.
                 properties:
                   configType:
-                    description: |-
-                      Output only. Whether this instance configuration is a Google-managed or
-                       user-managed configuration.
+                    description: Output only. Whether this instance configuration
+                      is a Google-managed or user-managed configuration.
                     type: string
                   freeInstanceAvailability:
-                    description: |-
-                      Output only. Describes whether free instances are available to be created
-                       in this instance configuration.
+                    description: Output only. Describes whether free instances are
+                      available to be created in this instance configuration.
                     type: string
                   optionalReplicas:
-                    description: |-
-                      Output only. The available optional replicas to choose from for
-                       user-managed configurations. Populated for Google-managed configurations.
+                    description: Output only. The available optional replicas to choose
+                      from for user-managed configurations. Populated for Google-managed
+                      configurations.
                     items:
                       properties:
                         defaultLeaderLocation:
-                          description: |-
-                            If true, this location is designated as the default leader location where
-                             leader replicas are placed. See the [region types
-                             documentation](https://cloud.google.com/spanner/docs/instances#region_types)
-                             for more details.
+                          description: If true, this location is designated as the
+                            default leader location where leader replicas are placed.
+                            See the [region types documentation](https://cloud.google.com/spanner/docs/instances#region_types)
+                            for more details.
                           type: boolean
                         location:
                           description: The location of the serving resources, e.g.,
@@ -257,15 +272,13 @@ spec:
                     description: Output only. The `QuorumType` of the instance configuration.
                     type: string
                   reconciling:
-                    description: |-
-                      Output only. If true, the instance configuration is being created or
-                       updated. If false, there are no ongoing operations for the instance
-                       configuration.
+                    description: Output only. If true, the instance configuration
+                      is being created or updated. If false, there are no ongoing
+                      operations for the instance configuration.
                     type: boolean
                   state:
-                    description: |-
-                      Output only. The current instance configuration state. Applicable only for
-                       `USER_MANAGED` configurations.
+                    description: Output only. The current instance configuration state.
+                      Applicable only for `USER_MANAGED` configurations.
                     type: string
                   storageLimitPerProcessingUnit:
                     description: Output only. The storage limit in bytes per processing

@@ -28,6 +28,10 @@ import (
 	pb "cloud.google.com/go/aiplatform/apiv1/aiplatformpb"
 	aiplatformpb "cloud.google.com/go/aiplatform/apiv1beta1/aiplatformpb"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/aiplatform/v1alpha1"
+	krmcomputerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
+	krmcomputev1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1alpha1"
+	krmcomputev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -41,7 +45,8 @@ func AIPlatformModelObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Mo
 	out.VersionID = direct.LazyPtr(in.GetVersionId())
 	out.VersionCreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetVersionCreateTime())
 	out.VersionUpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetVersionUpdateTime())
-	out.SupportedExportFormats = direct.Slice_FromProto(mapCtx, in.SupportedExportFormats, Model_ExportFormatObservedState_FromProto)
+	// MISSING: DefaultCheckpointID
+	out.SupportedExportFormats = direct.Slice_FromProto(mapCtx, in.SupportedExportFormats, Model_ExportFormat_FromProto)
 	out.TrainingPipeline = direct.LazyPtr(in.GetTrainingPipeline())
 	out.SupportedDeploymentResourcesTypes = direct.EnumSlice_FromProto(mapCtx, in.SupportedDeploymentResourcesTypes)
 	out.SupportedInputStorageFormats = in.SupportedInputStorageFormats
@@ -49,12 +54,13 @@ func AIPlatformModelObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Mo
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.DeployedModels = direct.Slice_FromProto(mapCtx, in.DeployedModels, DeployedModelRef_FromProto)
+	// MISSING: Etag
 	out.ModelSourceInfo = ModelSourceInfo_FromProto(mapCtx, in.GetModelSourceInfo())
-	out.OriginalModelInfo = Model_OriginalModelInfoObservedState_FromProto(mapCtx, in.GetOriginalModelInfo())
+	out.OriginalModelInfo = Model_OriginalModelInfo_FromProto(mapCtx, in.GetOriginalModelInfo())
 	out.MetadataArtifact = direct.LazyPtr(in.GetMetadataArtifact())
 	out.SatisfiesPzs = direct.LazyPtr(in.GetSatisfiesPzs())
 	out.SatisfiesPzi = direct.LazyPtr(in.GetSatisfiesPzi())
-	out.Checkpoints = direct.Slice_FromProto(mapCtx, in.Checkpoints, Checkpoint_FromProto)
+	// MISSING: Checkpoints
 	return out
 }
 */
@@ -69,7 +75,8 @@ func AIPlatformModelObservedState_ToProto(mapCtx *direct.MapContext, in *krm.AIP
 	out.VersionId = direct.ValueOf(in.VersionID)
 	out.VersionCreateTime = direct.StringTimestamp_ToProto(mapCtx, in.VersionCreateTime)
 	out.VersionUpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.VersionUpdateTime)
-	out.SupportedExportFormats = direct.Slice_ToProto(mapCtx, in.SupportedExportFormats, Model_ExportFormatObservedState_ToProto)
+	// MISSING: DefaultCheckpointID
+	out.SupportedExportFormats = direct.Slice_ToProto(mapCtx, in.SupportedExportFormats, Model_ExportFormat_ToProto)
 	out.TrainingPipeline = direct.ValueOf(in.TrainingPipeline)
 	out.SupportedDeploymentResourcesTypes = direct.EnumSlice_ToProto[pb.Model_DeploymentResourcesType](mapCtx, in.SupportedDeploymentResourcesTypes)
 	out.SupportedInputStorageFormats = in.SupportedInputStorageFormats
@@ -77,12 +84,13 @@ func AIPlatformModelObservedState_ToProto(mapCtx *direct.MapContext, in *krm.AIP
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.DeployedModels = direct.Slice_ToProto(mapCtx, in.DeployedModels, DeployedModelRef_ToProto)
+	// MISSING: Etag
 	out.ModelSourceInfo = ModelSourceInfo_ToProto(mapCtx, in.ModelSourceInfo)
-	out.OriginalModelInfo = Model_OriginalModelInfoObservedState_ToProto(mapCtx, in.OriginalModelInfo)
+	out.OriginalModelInfo = Model_OriginalModelInfo_ToProto(mapCtx, in.OriginalModelInfo)
 	out.MetadataArtifact = direct.ValueOf(in.MetadataArtifact)
 	out.SatisfiesPzs = direct.ValueOf(in.SatisfiesPzs)
 	out.SatisfiesPzi = direct.ValueOf(in.SatisfiesPzi)
-	out.Checkpoints = direct.Slice_ToProto(mapCtx, in.Checkpoints, Checkpoint_ToProto)
+	// MISSING: Checkpoints
 	return out
 }
 */
@@ -98,19 +106,20 @@ func AIPlatformModelSpec_FromProto(mapCtx *direct.MapContext, in *pb.Model) *krm
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.VersionDescription = direct.LazyPtr(in.GetVersionDescription())
-	out.DefaultCheckpointID = direct.LazyPtr(in.GetDefaultCheckpointId())
+	// MISSING: DefaultCheckpointID
 	out.PredictSchemata = PredictSchemata_FromProto(mapCtx, in.GetPredictSchemata())
 	out.MetadataSchemaURI = direct.LazyPtr(in.GetMetadataSchemaUri())
-	out.Metadata = Value_FromProto(mapCtx, in.GetMetadata())
+	out.Metadata = direct.Value_FromProto(mapCtx, in.GetMetadata())
 	out.PipelineJob = direct.LazyPtr(in.GetPipelineJob())
 	out.ContainerSpec = ModelContainerSpec_FromProto(mapCtx, in.GetContainerSpec())
 	out.ArtifactURI = direct.LazyPtr(in.GetArtifactUri())
 	out.ExplanationSpec = ExplanationSpec_FromProto(mapCtx, in.GetExplanationSpec())
-	out.Etag = direct.LazyPtr(in.GetEtag())
+	// MISSING: Etag
 	out.Labels = in.Labels
 	out.DataStats = Model_DataStats_FromProto(mapCtx, in.GetDataStats())
 	out.EncryptionSpec = EncryptionSpec_FromProto(mapCtx, in.GetEncryptionSpec())
 	out.BaseModelSource = Model_BaseModelSource_FromProto(mapCtx, in.GetBaseModelSource())
+	// MISSING: Checkpoints
 	return out
 }
 */
@@ -128,19 +137,20 @@ found existing non-generated mapping function "AIPlatformModelSpec_ToProto", ski
 		out.DisplayName = direct.ValueOf(in.DisplayName)
 		out.Description = direct.ValueOf(in.Description)
 		out.VersionDescription = direct.ValueOf(in.VersionDescription)
-		out.DefaultCheckpointId = direct.ValueOf(in.DefaultCheckpointID)
+		// MISSING: DefaultCheckpointID
 		out.PredictSchemata = PredictSchemata_ToProto(mapCtx, in.PredictSchemata)
 		out.MetadataSchemaUri = direct.ValueOf(in.MetadataSchemaURI)
-		out.Metadata = Value_ToProto(mapCtx, in.Metadata)
+		out.Metadata = direct.Value_ToProto(mapCtx, in.Metadata)
 		out.PipelineJob = direct.ValueOf(in.PipelineJob)
 		out.ContainerSpec = ModelContainerSpec_ToProto(mapCtx, in.ContainerSpec)
 		out.ArtifactUri = direct.ValueOf(in.ArtifactURI)
 		out.ExplanationSpec = ExplanationSpec_ToProto(mapCtx, in.ExplanationSpec)
-		out.Etag = direct.ValueOf(in.Etag)
+		// MISSING: Etag
 		out.Labels = in.Labels
 		out.DataStats = Model_DataStats_ToProto(mapCtx, in.DataStats)
 		out.EncryptionSpec = EncryptionSpec_ToProto(mapCtx, in.EncryptionSpec)
 		out.BaseModelSource = Model_BaseModelSource_ToProto(mapCtx, in.BaseModelSource)
+		// MISSING: Checkpoints
 		return out
 	}
 */
@@ -188,7 +198,9 @@ func AuthConfig_APIKeyConfig_FromProto(mapCtx *direct.MapContext, in *aiplatform
 	}
 	out := &krm.AuthConfig_APIKeyConfig{}
 	out.Name = direct.LazyPtr(in.GetName())
-	out.APIKeySecret = direct.LazyPtr(in.GetApiKeySecret())
+	if in.GetApiKeySecret() != "" {
+		out.APIKeySecretRef = &refsv1beta1.SecretManagerSecretVersionRef{External: in.GetApiKeySecret()}
+	}
 	out.HTTPElementLocation = direct.Enum_FromProto(mapCtx, in.GetHttpElementLocation())
 	return out
 }
@@ -201,7 +213,9 @@ func AuthConfig_APIKeyConfig_ToProto(mapCtx *direct.MapContext, in *krm.AuthConf
 	}
 	out := &aiplatformpb.AuthConfig_ApiKeyConfig{}
 	out.Name = direct.ValueOf(in.Name)
-	out.ApiKeySecret = direct.ValueOf(in.APIKeySecret)
+	if in.APIKeySecretRef != nil {
+		out.ApiKeySecret = in.APIKeySecretRef.External
+	}
 	out.HttpElementLocation = direct.Enum_ToProto[aiplatformpb.HttpElementLocation](mapCtx, in.HTTPElementLocation)
 	return out
 }
@@ -213,7 +227,9 @@ func AuthConfig_GoogleServiceAccountConfig_FromProto(mapCtx *direct.MapContext, 
 		return nil
 	}
 	out := &krm.AuthConfig_GoogleServiceAccountConfig{}
-	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
+	if in.GetServiceAccount() != "" {
+		out.ServiceAccountRef = &refsv1beta1.IAMServiceAccountRef{External: in.GetServiceAccount()}
+	}
 	return out
 }
 */
@@ -224,7 +240,9 @@ func AuthConfig_GoogleServiceAccountConfig_ToProto(mapCtx *direct.MapContext, in
 		return nil
 	}
 	out := &aiplatformpb.AuthConfig_GoogleServiceAccountConfig{}
-	out.ServiceAccount = direct.ValueOf(in.ServiceAccount)
+	if in.ServiceAccountRef != nil {
+		out.ServiceAccount = in.ServiceAccountRef.External
+	}
 	return out
 }
 */
@@ -235,7 +253,9 @@ func AuthConfig_HTTPBasicAuthConfig_FromProto(mapCtx *direct.MapContext, in *aip
 		return nil
 	}
 	out := &krm.AuthConfig_HTTPBasicAuthConfig{}
-	out.CredentialSecret = direct.LazyPtr(in.GetCredentialSecret())
+	if in.GetCredentialSecret() != "" {
+		out.CredentialSecretRef = &refsv1beta1.SecretManagerSecretVersionRef{External: in.GetCredentialSecret()}
+	}
 	return out
 }
 */
@@ -246,7 +266,9 @@ func AuthConfig_HTTPBasicAuthConfig_ToProto(mapCtx *direct.MapContext, in *krm.A
 		return nil
 	}
 	out := &aiplatformpb.AuthConfig_HttpBasicAuthConfig{}
-	out.CredentialSecret = direct.ValueOf(in.CredentialSecret)
+	if in.CredentialSecretRef != nil {
+		out.CredentialSecret = in.CredentialSecretRef.External
+	}
 	return out
 }
 */
@@ -258,7 +280,9 @@ func AuthConfig_OIDCConfig_FromProto(mapCtx *direct.MapContext, in *aiplatformpb
 	}
 	out := &krm.AuthConfig_OIDCConfig{}
 	out.IDToken = direct.LazyPtr(in.GetIdToken())
-	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
+	if in.GetServiceAccount() != "" {
+		out.ServiceAccountRef = &refsv1beta1.IAMServiceAccountRef{External: in.GetServiceAccount()}
+	}
 	return out
 }
 */
@@ -274,8 +298,8 @@ found existing non-generated mapping function "AuthConfig_OIDCConfig_ToProto", s
 		if oneof := AuthConfig_OIDCConfig_IdToken_ToProto(mapCtx, in.IDToken); oneof != nil {
 			out.OidcConfig = oneof
 		}
-		if oneof := AuthConfig_OIDCConfig_ServiceAccount_ToProto(mapCtx, in.ServiceAccount); oneof != nil {
-			out.OidcConfig = oneof
+		if in.ServiceAccountRef != nil {
+			out.ServiceAccount = in.ServiceAccountRef.External
 		}
 		return out
 	}
@@ -286,12 +310,6 @@ func AuthConfig_OIDCConfig_IdToken_ToProto(mapCtx *direct.MapContext, in *string
 	}
 	return &aiplatformpb.AuthConfig_OidcConfig_IdToken{IdToken: *in}
 }
-func AuthConfig_OIDCConfig_ServiceAccount_ToProto(mapCtx *direct.MapContext, in *string) *aiplatformpb.AuthConfig_OidcConfig_ServiceAccount {
-	if in == nil {
-		return nil
-	}
-	return &aiplatformpb.AuthConfig_OidcConfig_ServiceAccount{ServiceAccount: *in}
-}
 
 /* found existing non-generated mapping function "AuthConfig_OauthConfig_FromProto", skipping
 func AuthConfig_OauthConfig_FromProto(mapCtx *direct.MapContext, in *aiplatformpb.AuthConfig_OauthConfig) *krm.AuthConfig_OauthConfig {
@@ -300,7 +318,9 @@ func AuthConfig_OauthConfig_FromProto(mapCtx *direct.MapContext, in *aiplatformp
 	}
 	out := &krm.AuthConfig_OauthConfig{}
 	out.AccessToken = direct.LazyPtr(in.GetAccessToken())
-	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
+	if in.GetServiceAccount() != "" {
+		out.ServiceAccountRef = &refsv1beta1.IAMServiceAccountRef{External: in.GetServiceAccount()}
+	}
 	return out
 }
 */
@@ -316,8 +336,8 @@ found existing non-generated mapping function "AuthConfig_OauthConfig_ToProto", 
 		if oneof := AuthConfig_OauthConfig_AccessToken_ToProto(mapCtx, in.AccessToken); oneof != nil {
 			out.OauthConfig = oneof
 		}
-		if oneof := AuthConfig_OauthConfig_ServiceAccount_ToProto(mapCtx, in.ServiceAccount); oneof != nil {
-			out.OauthConfig = oneof
+		if in.ServiceAccountRef != nil {
+			out.ServiceAccount = in.ServiceAccountRef.External
 		}
 		return out
 	}
@@ -327,12 +347,6 @@ func AuthConfig_OauthConfig_AccessToken_ToProto(mapCtx *direct.MapContext, in *s
 		return nil
 	}
 	return &aiplatformpb.AuthConfig_OauthConfig_AccessToken{AccessToken: *in}
-}
-func AuthConfig_OauthConfig_ServiceAccount_ToProto(mapCtx *direct.MapContext, in *string) *aiplatformpb.AuthConfig_OauthConfig_ServiceAccount {
-	if in == nil {
-		return nil
-	}
-	return &aiplatformpb.AuthConfig_OauthConfig_ServiceAccount{ServiceAccount: *in}
 }
 func BigQueryDestination_FromProto(mapCtx *direct.MapContext, in *pb.BigQueryDestination) *krm.BigQueryDestination {
 	if in == nil {
@@ -382,26 +396,6 @@ func BlurBaselineConfig_ToProto(mapCtx *direct.MapContext, in *krm.BlurBaselineC
 	}
 	out := &pb.BlurBaselineConfig{}
 	out.MaxBlurSigma = direct.ValueOf(in.MaxBlurSigma)
-	return out
-}
-func Checkpoint_FromProto(mapCtx *direct.MapContext, in *pb.Checkpoint) *krm.Checkpoint {
-	if in == nil {
-		return nil
-	}
-	out := &krm.Checkpoint{}
-	out.CheckpointID = direct.LazyPtr(in.GetCheckpointId())
-	out.Epoch = direct.LazyPtr(in.GetEpoch())
-	out.Step = direct.LazyPtr(in.GetStep())
-	return out
-}
-func Checkpoint_ToProto(mapCtx *direct.MapContext, in *krm.Checkpoint) *pb.Checkpoint {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Checkpoint{}
-	out.CheckpointId = direct.ValueOf(in.CheckpointID)
-	out.Epoch = direct.ValueOf(in.Epoch)
-	out.Step = direct.ValueOf(in.Step)
 	return out
 }
 func CodeExecutionResultObservedState_FromProto(mapCtx *direct.MapContext, in *pb.CodeExecutionResult) *krm.CodeExecutionResultObservedState {
@@ -456,9 +450,7 @@ func ContextObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Context) *
 	out.ParentContexts = in.ParentContexts
 	out.SchemaTitle = direct.LazyPtr(in.GetSchemaTitle())
 	out.SchemaVersion = direct.LazyPtr(in.GetSchemaVersion())
-	if v := direct.Struct_FromProto(mapCtx, in.GetMetadata()); v != nil {
-		out.Metadata = *v
-	}
+	out.Metadata = direct.Struct_FromProto(mapCtx, in.GetMetadata())
 	out.Description = direct.LazyPtr(in.GetDescription())
 	return out
 }
@@ -481,7 +473,7 @@ found existing non-generated mapping function "ContextObservedState_ToProto", sk
 		out.ParentContexts = in.ParentContexts
 		out.SchemaTitle = direct.ValueOf(in.SchemaTitle)
 		out.SchemaVersion = direct.ValueOf(in.SchemaVersion)
-		out.Metadata = direct.Struct_ToProto(mapCtx, &in.Metadata)
+		out.Metadata = direct.Struct_ToProto(mapCtx, in.Metadata)
 		out.Description = direct.ValueOf(in.Description)
 		return out
 	}
@@ -493,7 +485,9 @@ func DNSPeeringConfig_FromProto(mapCtx *direct.MapContext, in *pb.DnsPeeringConf
 	out := &krm.DNSPeeringConfig{}
 	out.Domain = direct.LazyPtr(in.GetDomain())
 	out.TargetProject = direct.LazyPtr(in.GetTargetProject())
-	out.TargetNetwork = direct.LazyPtr(in.GetTargetNetwork())
+	if in.GetTargetNetwork() != "" {
+		out.TargetNetworkRef = &krmcomputev1beta1.ComputeNetworkRef{External: in.GetTargetNetwork()}
+	}
 	return out
 }
 func DNSPeeringConfig_ToProto(mapCtx *direct.MapContext, in *krm.DNSPeeringConfig) *pb.DnsPeeringConfig {
@@ -503,7 +497,9 @@ func DNSPeeringConfig_ToProto(mapCtx *direct.MapContext, in *krm.DNSPeeringConfi
 	out := &pb.DnsPeeringConfig{}
 	out.Domain = direct.ValueOf(in.Domain)
 	out.TargetProject = direct.ValueOf(in.TargetProject)
-	out.TargetNetwork = direct.ValueOf(in.TargetNetwork)
+	if in.TargetNetworkRef != nil {
+		out.TargetNetwork = in.TargetNetworkRef.External
+	}
 	return out
 }
 func DeployedModelRef_FromProto(mapCtx *direct.MapContext, in *pb.DeployedModelRef) *krm.DeployedModelRef {
@@ -531,7 +527,7 @@ func EncryptionSpec_FromProto(mapCtx *direct.MapContext, in *pb.EncryptionSpec) 
 		return nil
 	}
 	out := &krm.EncryptionSpec{}
-	out.KMSKeyName = direct.LazyPtr(in.GetKmsKeyName())
+	// MISSING: KMSKeyName
 	return out
 }
 */
@@ -544,7 +540,7 @@ found existing non-generated mapping function "EncryptionSpec_ToProto", skipping
 			return nil
 		}
 		out := &pb.EncryptionSpec{}
-		out.KmsKeyName = direct.ValueOf(in.KMSKeyName)
+		// MISSING: KMSKeyName
 		return out
 	}
 */
@@ -572,7 +568,9 @@ func Examples_FromProto(mapCtx *direct.MapContext, in *pb.Examples) *krm.Example
 	}
 	out := &krm.Examples{}
 	out.ExampleGCSSource = Examples_ExampleGCSSource_FromProto(mapCtx, in.GetExampleGcsSource())
-	out.NearestNeighborSearchConfig = Value_FromProto(mapCtx, in.GetNearestNeighborSearchConfig())
+	if v := direct.Value_FromProto(mapCtx, in.GetNearestNeighborSearchConfig()); v != nil {
+		out.NearestNeighborSearchConfig = *v
+	}
 	out.Presets = Presets_FromProto(mapCtx, in.GetPresets())
 	out.NeighborCount = direct.LazyPtr(in.GetNeighborCount())
 	return out
@@ -585,7 +583,7 @@ func Examples_ToProto(mapCtx *direct.MapContext, in *krm.Examples) *pb.Examples 
 	if oneof := Examples_ExampleGCSSource_ToProto(mapCtx, in.ExampleGCSSource); oneof != nil {
 		out.Source = &pb.Examples_ExampleGcsSource_{ExampleGcsSource: oneof}
 	}
-	if oneof := Value_ToProto(mapCtx, in.NearestNeighborSearchConfig); oneof != nil {
+	if oneof := direct.Value_ToProto(mapCtx, in.NearestNeighborSearchConfig); oneof != nil {
 		out.Config = &pb.Examples_NearestNeighborSearchConfig{NearestNeighborSearchConfig: oneof}
 	}
 	if oneof := Presets_ToProto(mapCtx, in.Presets); oneof != nil {
@@ -646,9 +644,7 @@ func ExecutionObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Executio
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.SchemaTitle = direct.LazyPtr(in.GetSchemaTitle())
 	out.SchemaVersion = direct.LazyPtr(in.GetSchemaVersion())
-	if v := direct.Struct_FromProto(mapCtx, in.GetMetadata()); v != nil {
-		out.Metadata = *v
-	}
+	out.Metadata = direct.Struct_FromProto(mapCtx, in.GetMetadata())
 	out.Description = direct.LazyPtr(in.GetDescription())
 	return out
 }
@@ -671,7 +667,7 @@ found existing non-generated mapping function "ExecutionObservedState_ToProto", 
 		out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 		out.SchemaTitle = direct.ValueOf(in.SchemaTitle)
 		out.SchemaVersion = direct.ValueOf(in.SchemaVersion)
-		out.Metadata = direct.Struct_ToProto(mapCtx, &in.Metadata)
+		out.Metadata = direct.Struct_ToProto(mapCtx, in.Metadata)
 		out.Description = direct.ValueOf(in.Description)
 		return out
 	}
@@ -686,7 +682,7 @@ func ExplanationParameters_FromProto(mapCtx *direct.MapContext, in *pb.Explanati
 	out.XraiAttribution = XraiAttribution_FromProto(mapCtx, in.GetXraiAttribution())
 	out.Examples = Examples_FromProto(mapCtx, in.GetExamples())
 	out.TopK = direct.LazyPtr(in.GetTopK())
-	out.OutputIndices = ListValue_FromProto(mapCtx, in.GetOutputIndices())
+	// MISSING: OutputIndices
 	return out
 }
 func ExplanationParameters_ToProto(mapCtx *direct.MapContext, in *krm.ExplanationParameters) *pb.ExplanationParameters {
@@ -707,7 +703,7 @@ func ExplanationParameters_ToProto(mapCtx *direct.MapContext, in *krm.Explanatio
 		out.Method = &pb.ExplanationParameters_Examples{Examples: oneof}
 	}
 	out.TopK = direct.ValueOf(in.TopK)
-	out.OutputIndices = ListValue_ToProto(mapCtx, in.OutputIndices)
+	// MISSING: OutputIndices
 	return out
 }
 func ExplanationSpec_FromProto(mapCtx *direct.MapContext, in *pb.ExplanationSpec) *krm.ExplanationSpec {
@@ -790,7 +786,7 @@ func ExtensionOperationObservedState_FromProto(mapCtx *direct.MapContext, in *ai
 	}
 	out := &krm.ExtensionOperationObservedState{}
 	out.OperationID = direct.LazyPtr(in.GetOperationId())
-	out.FunctionDeclaration = FunctionDeclarationObservedState_FromProto(mapCtx, in.GetFunctionDeclaration())
+	out.FunctionDeclaration = FunctionDeclaration_FromProto(mapCtx, in.GetFunctionDeclaration())
 	return out
 }
 func ExtensionOperationObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ExtensionOperationObservedState) *aiplatformpb.ExtensionOperation {
@@ -799,7 +795,7 @@ func ExtensionOperationObservedState_ToProto(mapCtx *direct.MapContext, in *krm.
 	}
 	out := &aiplatformpb.ExtensionOperation{}
 	out.OperationId = direct.ValueOf(in.OperationID)
-	out.FunctionDeclaration = FunctionDeclarationObservedState_ToProto(mapCtx, in.FunctionDeclaration)
+	out.FunctionDeclaration = FunctionDeclaration_ToProto(mapCtx, in.FunctionDeclaration)
 	return out
 }
 
@@ -809,7 +805,9 @@ func ExtensionPrivateServiceConnectConfig_FromProto(mapCtx *direct.MapContext, i
 		return nil
 	}
 	out := &krm.ExtensionPrivateServiceConnectConfig{}
-	out.ServiceDirectory = direct.LazyPtr(in.GetServiceDirectory())
+	if in.GetServiceDirectory() != "" {
+		out.ServiceDirectoryRef = &krmservicedirectoryv1beta1.ServiceDirectoryServiceRef{External: in.GetServiceDirectory()}
+	}
 	return out
 }
 */
@@ -822,7 +820,9 @@ found existing non-generated mapping function "ExtensionPrivateServiceConnectCon
 			return nil
 		}
 		out := &aiplatformpb.ExtensionPrivateServiceConnectConfig{}
-		out.ServiceDirectory = direct.ValueOf(in.ServiceDirectory)
+		if in.ServiceDirectoryRef != nil {
+			out.ServiceDirectory = in.ServiceDirectoryRef.External
+		}
 		return out
 	}
 */
@@ -914,26 +914,6 @@ func FeatureOnlineStore_DedicatedServingEndpoint_ToProto(mapCtx *direct.MapConte
 	// MISSING: PublicEndpointDomainName
 	out.PrivateServiceConnectConfig = PrivateServiceConnectConfig_ToProto(mapCtx, in.PrivateServiceConnectConfig)
 	// MISSING: ServiceAttachment
-	return out
-}
-func FeatureOnlineStore_DedicatedServingEndpointObservedState_FromProto(mapCtx *direct.MapContext, in *pb.FeatureOnlineStore_DedicatedServingEndpoint) *krm.FeatureOnlineStore_DedicatedServingEndpointObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.FeatureOnlineStore_DedicatedServingEndpointObservedState{}
-	out.PublicEndpointDomainName = direct.LazyPtr(in.GetPublicEndpointDomainName())
-	out.PrivateServiceConnectConfig = PrivateServiceConnectConfigObservedState_FromProto(mapCtx, in.GetPrivateServiceConnectConfig())
-	out.ServiceAttachment = direct.LazyPtr(in.GetServiceAttachment())
-	return out
-}
-func FeatureOnlineStore_DedicatedServingEndpointObservedState_ToProto(mapCtx *direct.MapContext, in *krm.FeatureOnlineStore_DedicatedServingEndpointObservedState) *pb.FeatureOnlineStore_DedicatedServingEndpoint {
-	if in == nil {
-		return nil
-	}
-	out := &pb.FeatureOnlineStore_DedicatedServingEndpoint{}
-	out.PublicEndpointDomainName = direct.ValueOf(in.PublicEndpointDomainName)
-	out.PrivateServiceConnectConfig = PrivateServiceConnectConfigObservedState_ToProto(mapCtx, in.PrivateServiceConnectConfig)
-	out.ServiceAttachment = direct.ValueOf(in.ServiceAttachment)
 	return out
 }
 func FeatureOnlineStore_Optimized_FromProto(mapCtx *direct.MapContext, in *pb.FeatureOnlineStore_Optimized) *krm.FeatureOnlineStore_Optimized {
@@ -1028,30 +1008,30 @@ func FunctionCallObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Functi
 	out.Args = direct.Struct_ToProto(mapCtx, &in.Args)
 	return out
 }
-func FunctionDeclarationObservedState_FromProto(mapCtx *direct.MapContext, in *aiplatformpb.FunctionDeclaration) *krm.FunctionDeclarationObservedState {
+func FunctionDeclaration_FromProto(mapCtx *direct.MapContext, in *aiplatformpb.FunctionDeclaration) *krm.FunctionDeclaration {
 	if in == nil {
 		return nil
 	}
-	out := &krm.FunctionDeclarationObservedState{}
+	out := &krm.FunctionDeclaration{}
 	out.Name = direct.LazyPtr(in.GetName())
 	out.Description = direct.LazyPtr(in.GetDescription())
-	out.Parameters = Schema_FromProto(mapCtx, in.GetParameters())
-	out.ParametersJsonSchema = Value_FromProto(mapCtx, in.GetParametersJsonSchema())
-	out.Response = Schema_FromProto(mapCtx, in.GetResponse())
-	out.ResponseJsonSchema = Value_FromProto(mapCtx, in.GetResponseJsonSchema())
+	// MISSING: Parameters
+	// MISSING: ParametersJsonSchema
+	// MISSING: Response
+	// MISSING: ResponseJsonSchema
 	return out
 }
-func FunctionDeclarationObservedState_ToProto(mapCtx *direct.MapContext, in *krm.FunctionDeclarationObservedState) *aiplatformpb.FunctionDeclaration {
+func FunctionDeclaration_ToProto(mapCtx *direct.MapContext, in *krm.FunctionDeclaration) *aiplatformpb.FunctionDeclaration {
 	if in == nil {
 		return nil
 	}
 	out := &aiplatformpb.FunctionDeclaration{}
 	out.Name = direct.ValueOf(in.Name)
 	out.Description = direct.ValueOf(in.Description)
-	out.Parameters = Schema_ToProto(mapCtx, in.Parameters)
-	out.ParametersJsonSchema = Value_ToProto(mapCtx, in.ParametersJsonSchema)
-	out.Response = Schema_ToProto(mapCtx, in.Response)
-	out.ResponseJsonSchema = Value_ToProto(mapCtx, in.ResponseJsonSchema)
+	// MISSING: Parameters
+	// MISSING: ParametersJsonSchema
+	// MISSING: Response
+	// MISSING: ResponseJsonSchema
 	return out
 }
 func FunctionResponseObservedState_FromProto(mapCtx *direct.MapContext, in *pb.FunctionResponse) *krm.FunctionResponseObservedState {
@@ -1218,90 +1198,6 @@ func MachineSpec_ToProto(mapCtx *direct.MapContext, in *krm.MachineSpec) *pb.Mac
 	out.ReservationAffinity = ReservationAffinity_ToProto(mapCtx, in.ReservationAffinity)
 	return out
 }
-func Model_FromProto(mapCtx *direct.MapContext, in *pb.Model) *krm.Model {
-	if in == nil {
-		return nil
-	}
-	out := &krm.Model{}
-	out.Name = direct.LazyPtr(in.GetName())
-	// MISSING: VersionID
-	out.VersionAliases = in.VersionAliases
-	// MISSING: VersionCreateTime
-	// MISSING: VersionUpdateTime
-	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	out.Description = direct.LazyPtr(in.GetDescription())
-	out.VersionDescription = direct.LazyPtr(in.GetVersionDescription())
-	out.DefaultCheckpointID = direct.LazyPtr(in.GetDefaultCheckpointId())
-	out.PredictSchemata = PredictSchemata_FromProto(mapCtx, in.GetPredictSchemata())
-	out.MetadataSchemaURI = direct.LazyPtr(in.GetMetadataSchemaUri())
-	out.Metadata = Value_FromProto(mapCtx, in.GetMetadata())
-	// MISSING: SupportedExportFormats
-	// MISSING: TrainingPipeline
-	out.PipelineJob = direct.LazyPtr(in.GetPipelineJob())
-	out.ContainerSpec = ModelContainerSpec_FromProto(mapCtx, in.GetContainerSpec())
-	out.ArtifactURI = direct.LazyPtr(in.GetArtifactUri())
-	// MISSING: SupportedDeploymentResourcesTypes
-	// MISSING: SupportedInputStorageFormats
-	// MISSING: SupportedOutputStorageFormats
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: DeployedModels
-	out.ExplanationSpec = ExplanationSpec_FromProto(mapCtx, in.GetExplanationSpec())
-	out.Etag = direct.LazyPtr(in.GetEtag())
-	out.Labels = in.Labels
-	out.DataStats = Model_DataStats_FromProto(mapCtx, in.GetDataStats())
-	out.EncryptionSpec = EncryptionSpec_FromProto(mapCtx, in.GetEncryptionSpec())
-	// MISSING: ModelSourceInfo
-	// MISSING: OriginalModelInfo
-	// MISSING: MetadataArtifact
-	out.BaseModelSource = Model_BaseModelSource_FromProto(mapCtx, in.GetBaseModelSource())
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
-	// MISSING: Checkpoints
-	return out
-}
-func Model_ToProto(mapCtx *direct.MapContext, in *krm.Model) *pb.Model {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Model{}
-	out.Name = direct.ValueOf(in.Name)
-	// MISSING: VersionID
-	out.VersionAliases = in.VersionAliases
-	// MISSING: VersionCreateTime
-	// MISSING: VersionUpdateTime
-	out.DisplayName = direct.ValueOf(in.DisplayName)
-	out.Description = direct.ValueOf(in.Description)
-	out.VersionDescription = direct.ValueOf(in.VersionDescription)
-	out.DefaultCheckpointId = direct.ValueOf(in.DefaultCheckpointID)
-	out.PredictSchemata = PredictSchemata_ToProto(mapCtx, in.PredictSchemata)
-	out.MetadataSchemaUri = direct.ValueOf(in.MetadataSchemaURI)
-	out.Metadata = Value_ToProto(mapCtx, in.Metadata)
-	// MISSING: SupportedExportFormats
-	// MISSING: TrainingPipeline
-	out.PipelineJob = direct.ValueOf(in.PipelineJob)
-	out.ContainerSpec = ModelContainerSpec_ToProto(mapCtx, in.ContainerSpec)
-	out.ArtifactUri = direct.ValueOf(in.ArtifactURI)
-	// MISSING: SupportedDeploymentResourcesTypes
-	// MISSING: SupportedInputStorageFormats
-	// MISSING: SupportedOutputStorageFormats
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: DeployedModels
-	out.ExplanationSpec = ExplanationSpec_ToProto(mapCtx, in.ExplanationSpec)
-	out.Etag = direct.ValueOf(in.Etag)
-	out.Labels = in.Labels
-	out.DataStats = Model_DataStats_ToProto(mapCtx, in.DataStats)
-	out.EncryptionSpec = EncryptionSpec_ToProto(mapCtx, in.EncryptionSpec)
-	// MISSING: ModelSourceInfo
-	// MISSING: OriginalModelInfo
-	// MISSING: MetadataArtifact
-	out.BaseModelSource = Model_BaseModelSource_ToProto(mapCtx, in.BaseModelSource)
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
-	// MISSING: Checkpoints
-	return out
-}
 func ModelContainerSpec_FromProto(mapCtx *direct.MapContext, in *pb.ModelContainerSpec) *krm.ModelContainerSpec {
 	if in == nil {
 		return nil
@@ -1362,90 +1258,6 @@ func ModelGardenSource_ToProto(mapCtx *direct.MapContext, in *krm.ModelGardenSou
 	out.PublicModelName = direct.ValueOf(in.PublicModelName)
 	out.VersionId = direct.ValueOf(in.VersionID)
 	out.SkipHfModelCache = direct.ValueOf(in.SkipHfModelCache)
-	return out
-}
-func ModelObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Model) *krm.ModelObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.ModelObservedState{}
-	// MISSING: Name
-	out.VersionID = direct.LazyPtr(in.GetVersionId())
-	// MISSING: VersionAliases
-	out.VersionCreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetVersionCreateTime())
-	out.VersionUpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetVersionUpdateTime())
-	// MISSING: DisplayName
-	// MISSING: Description
-	// MISSING: VersionDescription
-	// MISSING: DefaultCheckpointID
-	// MISSING: PredictSchemata
-	// MISSING: MetadataSchemaURI
-	// MISSING: Metadata
-	out.SupportedExportFormats = direct.Slice_FromProto(mapCtx, in.SupportedExportFormats, Model_ExportFormatObservedState_FromProto)
-	out.TrainingPipeline = direct.LazyPtr(in.GetTrainingPipeline())
-	// MISSING: PipelineJob
-	// MISSING: ContainerSpec
-	// MISSING: ArtifactURI
-	out.SupportedDeploymentResourcesTypes = direct.EnumSlice_FromProto(mapCtx, in.SupportedDeploymentResourcesTypes)
-	out.SupportedInputStorageFormats = in.SupportedInputStorageFormats
-	out.SupportedOutputStorageFormats = in.SupportedOutputStorageFormats
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.DeployedModels = direct.Slice_FromProto(mapCtx, in.DeployedModels, DeployedModelRef_FromProto)
-	// MISSING: ExplanationSpec
-	// MISSING: Etag
-	// MISSING: Labels
-	// MISSING: DataStats
-	// MISSING: EncryptionSpec
-	out.ModelSourceInfo = ModelSourceInfo_FromProto(mapCtx, in.GetModelSourceInfo())
-	out.OriginalModelInfo = Model_OriginalModelInfoObservedState_FromProto(mapCtx, in.GetOriginalModelInfo())
-	out.MetadataArtifact = direct.LazyPtr(in.GetMetadataArtifact())
-	// MISSING: BaseModelSource
-	out.SatisfiesPzs = direct.LazyPtr(in.GetSatisfiesPzs())
-	out.SatisfiesPzi = direct.LazyPtr(in.GetSatisfiesPzi())
-	out.Checkpoints = direct.Slice_FromProto(mapCtx, in.Checkpoints, Checkpoint_FromProto)
-	return out
-}
-func ModelObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ModelObservedState) *pb.Model {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Model{}
-	// MISSING: Name
-	out.VersionId = direct.ValueOf(in.VersionID)
-	// MISSING: VersionAliases
-	out.VersionCreateTime = direct.StringTimestamp_ToProto(mapCtx, in.VersionCreateTime)
-	out.VersionUpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.VersionUpdateTime)
-	// MISSING: DisplayName
-	// MISSING: Description
-	// MISSING: VersionDescription
-	// MISSING: DefaultCheckpointID
-	// MISSING: PredictSchemata
-	// MISSING: MetadataSchemaURI
-	// MISSING: Metadata
-	out.SupportedExportFormats = direct.Slice_ToProto(mapCtx, in.SupportedExportFormats, Model_ExportFormatObservedState_ToProto)
-	out.TrainingPipeline = direct.ValueOf(in.TrainingPipeline)
-	// MISSING: PipelineJob
-	// MISSING: ContainerSpec
-	// MISSING: ArtifactURI
-	out.SupportedDeploymentResourcesTypes = direct.EnumSlice_ToProto[pb.Model_DeploymentResourcesType](mapCtx, in.SupportedDeploymentResourcesTypes)
-	out.SupportedInputStorageFormats = in.SupportedInputStorageFormats
-	out.SupportedOutputStorageFormats = in.SupportedOutputStorageFormats
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	out.DeployedModels = direct.Slice_ToProto(mapCtx, in.DeployedModels, DeployedModelRef_ToProto)
-	// MISSING: ExplanationSpec
-	// MISSING: Etag
-	// MISSING: Labels
-	// MISSING: DataStats
-	// MISSING: EncryptionSpec
-	out.ModelSourceInfo = ModelSourceInfo_ToProto(mapCtx, in.ModelSourceInfo)
-	out.OriginalModelInfo = Model_OriginalModelInfoObservedState_ToProto(mapCtx, in.OriginalModelInfo)
-	out.MetadataArtifact = direct.ValueOf(in.MetadataArtifact)
-	// MISSING: BaseModelSource
-	out.SatisfiesPzs = direct.ValueOf(in.SatisfiesPzs)
-	out.SatisfiesPzi = direct.ValueOf(in.SatisfiesPzi)
-	out.Checkpoints = direct.Slice_ToProto(mapCtx, in.Checkpoints, Checkpoint_ToProto)
 	return out
 }
 func ModelSourceInfo_FromProto(mapCtx *direct.MapContext, in *pb.ModelSourceInfo) *krm.ModelSourceInfo {
@@ -1514,38 +1326,38 @@ func Model_DataStats_ToProto(mapCtx *direct.MapContext, in *krm.Model_DataStats)
 	out.TestAnnotationsCount = direct.ValueOf(in.TestAnnotationsCount)
 	return out
 }
-func Model_ExportFormatObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Model_ExportFormat) *krm.Model_ExportFormatObservedState {
+func Model_ExportFormat_FromProto(mapCtx *direct.MapContext, in *pb.Model_ExportFormat) *krm.Model_ExportFormat {
 	if in == nil {
 		return nil
 	}
-	out := &krm.Model_ExportFormatObservedState{}
-	out.ID = direct.LazyPtr(in.GetId())
-	out.ExportableContents = direct.EnumSlice_FromProto(mapCtx, in.ExportableContents)
+	out := &krm.Model_ExportFormat{}
+	// MISSING: ID
+	// MISSING: ExportableContents
 	return out
 }
-func Model_ExportFormatObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Model_ExportFormatObservedState) *pb.Model_ExportFormat {
+func Model_ExportFormat_ToProto(mapCtx *direct.MapContext, in *krm.Model_ExportFormat) *pb.Model_ExportFormat {
 	if in == nil {
 		return nil
 	}
 	out := &pb.Model_ExportFormat{}
-	out.Id = direct.ValueOf(in.ID)
-	out.ExportableContents = direct.EnumSlice_ToProto[pb.Model_ExportFormat_ExportableContent](mapCtx, in.ExportableContents)
+	// MISSING: ID
+	// MISSING: ExportableContents
 	return out
 }
-func Model_OriginalModelInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Model_OriginalModelInfo) *krm.Model_OriginalModelInfoObservedState {
+func Model_OriginalModelInfo_FromProto(mapCtx *direct.MapContext, in *pb.Model_OriginalModelInfo) *krm.Model_OriginalModelInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.Model_OriginalModelInfoObservedState{}
-	out.Model = direct.LazyPtr(in.GetModel())
+	out := &krm.Model_OriginalModelInfo{}
+	// MISSING: Model
 	return out
 }
-func Model_OriginalModelInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Model_OriginalModelInfoObservedState) *pb.Model_OriginalModelInfo {
+func Model_OriginalModelInfo_ToProto(mapCtx *direct.MapContext, in *krm.Model_OriginalModelInfo) *pb.Model_OriginalModelInfo {
 	if in == nil {
 		return nil
 	}
 	out := &pb.Model_OriginalModelInfo{}
-	out.Model = direct.ValueOf(in.Model)
+	// MISSING: Model
 	return out
 }
 
@@ -1556,8 +1368,12 @@ func NetworkSpec_FromProto(mapCtx *direct.MapContext, in *pb.NetworkSpec) *krm.N
 	}
 	out := &krm.NetworkSpec{}
 	out.EnableInternetAccess = direct.LazyPtr(in.GetEnableInternetAccess())
-	out.Network = direct.LazyPtr(in.GetNetwork())
-	out.Subnetwork = direct.LazyPtr(in.GetSubnetwork())
+	if in.GetNetwork() != "" {
+		out.NetworkRef = &krmcomputev1beta1.ComputeNetworkRef{External: in.GetNetwork()}
+	}
+	if in.GetSubnetwork() != "" {
+		out.SubnetworkRef = &krmcomputev1beta1.ComputeSubnetworkRef{External: in.GetSubnetwork()}
+	}
 	return out
 }
 */
@@ -1569,8 +1385,12 @@ func NetworkSpec_ToProto(mapCtx *direct.MapContext, in *krm.NetworkSpec) *pb.Net
 	}
 	out := &pb.NetworkSpec{}
 	out.EnableInternetAccess = direct.ValueOf(in.EnableInternetAccess)
-	out.Network = direct.ValueOf(in.Network)
-	out.Subnetwork = direct.ValueOf(in.Subnetwork)
+	if in.NetworkRef != nil {
+		out.Network = in.NetworkRef.External
+	}
+	if in.SubnetworkRef != nil {
+		out.Subnetwork = in.SubnetworkRef.External
+	}
 	return out
 }
 */
@@ -1586,14 +1406,18 @@ func NotebookExecutionJob_FromProto(mapCtx *direct.MapContext, in *pb.NotebookEx
 	out.DirectNotebookSource = NotebookExecutionJob_DirectNotebookSource_FromProto(mapCtx, in.GetDirectNotebookSource())
 	out.NotebookRuntimeTemplateResourceName = direct.LazyPtr(in.GetNotebookRuntimeTemplateResourceName())
 	out.CustomEnvironmentSpec = NotebookExecutionJob_CustomEnvironmentSpec_FromProto(mapCtx, in.GetCustomEnvironmentSpec())
-	out.GCSOutputURI = direct.LazyPtr(in.GetGcsOutputUri())
+	if in.GetGcsOutputUri() != "" {
+		out.GCSOutputURIRef = &krmstoragev1beta1.StorageBucketRef{External: in.GetGcsOutputUri()}
+	}
 	out.ExecutionUser = direct.LazyPtr(in.GetExecutionUser())
-	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
+	if in.GetServiceAccount() != "" {
+		out.ServiceAccountRef = &refsv1beta1.IAMServiceAccountRef{External: in.GetServiceAccount()}
+	}
 	out.WorkbenchRuntime = NotebookExecutionJob_WorkbenchRuntime_FromProto(mapCtx, in.GetWorkbenchRuntime())
 	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.ExecutionTimeout = direct.StringDuration_FromProto(mapCtx, in.GetExecutionTimeout())
-	out.ScheduleResourceName = direct.LazyPtr(in.GetScheduleResourceName())
+	// MISSING: ScheduleResourceName
 	// MISSING: JobState
 	// MISSING: Status
 	// MISSING: CreateTime
@@ -1628,14 +1452,14 @@ found existing non-generated mapping function "NotebookExecutionJob_ToProto", sk
 		if oneof := NotebookExecutionJob_CustomEnvironmentSpec_ToProto(mapCtx, in.CustomEnvironmentSpec); oneof != nil {
 			out.EnvironmentSpec = &pb.NotebookExecutionJob_CustomEnvironmentSpec_{CustomEnvironmentSpec: oneof}
 		}
-		if oneof := NotebookExecutionJob_GcsOutputUri_ToProto(mapCtx, in.GCSOutputURI); oneof != nil {
-			out.ExecutionSink = oneof
+		if in.GCSOutputURIRef != nil {
+			out.GcsOutputUri = in.GCSOutputURIRef.External
 		}
 		if oneof := NotebookExecutionJob_ExecutionUser_ToProto(mapCtx, in.ExecutionUser); oneof != nil {
 			out.ExecutionIdentity = oneof
 		}
-		if oneof := NotebookExecutionJob_ServiceAccount_ToProto(mapCtx, in.ServiceAccount); oneof != nil {
-			out.ExecutionIdentity = oneof
+		if in.ServiceAccountRef != nil {
+			out.ServiceAccount = in.ServiceAccountRef.External
 		}
 		if oneof := NotebookExecutionJob_WorkbenchRuntime_ToProto(mapCtx, in.WorkbenchRuntime); oneof != nil {
 			out.RuntimeEnvironment = &pb.NotebookExecutionJob_WorkbenchRuntime_{WorkbenchRuntime: oneof}
@@ -1643,7 +1467,7 @@ found existing non-generated mapping function "NotebookExecutionJob_ToProto", sk
 		// MISSING: Name
 		out.DisplayName = direct.ValueOf(in.DisplayName)
 		out.ExecutionTimeout = direct.StringDuration_ToProto(mapCtx, in.ExecutionTimeout)
-		out.ScheduleResourceName = direct.ValueOf(in.ScheduleResourceName)
+		// MISSING: ScheduleResourceName
 		// MISSING: JobState
 		// MISSING: Status
 		// MISSING: CreateTime
@@ -1660,23 +1484,11 @@ func NotebookExecutionJob_NotebookRuntimeTemplateResourceName_ToProto(mapCtx *di
 	}
 	return &pb.NotebookExecutionJob_NotebookRuntimeTemplateResourceName{NotebookRuntimeTemplateResourceName: *in}
 }
-func NotebookExecutionJob_GcsOutputUri_ToProto(mapCtx *direct.MapContext, in *string) *pb.NotebookExecutionJob_GcsOutputUri {
-	if in == nil {
-		return nil
-	}
-	return &pb.NotebookExecutionJob_GcsOutputUri{GcsOutputUri: *in}
-}
 func NotebookExecutionJob_ExecutionUser_ToProto(mapCtx *direct.MapContext, in *string) *pb.NotebookExecutionJob_ExecutionUser {
 	if in == nil {
 		return nil
 	}
 	return &pb.NotebookExecutionJob_ExecutionUser{ExecutionUser: *in}
-}
-func NotebookExecutionJob_ServiceAccount_ToProto(mapCtx *direct.MapContext, in *string) *pb.NotebookExecutionJob_ServiceAccount {
-	if in == nil {
-		return nil
-	}
-	return &pb.NotebookExecutionJob_ServiceAccount{ServiceAccount: *in}
 }
 func NotebookExecutionJobObservedState_FromProto(mapCtx *direct.MapContext, in *pb.NotebookExecutionJob) *krm.NotebookExecutionJobObservedState {
 	if in == nil {
@@ -1759,7 +1571,7 @@ func NotebookExecutionJob_DataformRepositorySource_FromProto(mapCtx *direct.MapC
 		return nil
 	}
 	out := &krm.NotebookExecutionJob_DataformRepositorySource{}
-	out.DataformRepositoryResourceName = direct.LazyPtr(in.GetDataformRepositoryResourceName())
+	// MISSING: DataformRepositoryResourceName
 	out.CommitSha = direct.LazyPtr(in.GetCommitSha())
 	return out
 }
@@ -1773,7 +1585,7 @@ found existing non-generated mapping function "NotebookExecutionJob_DataformRepo
 			return nil
 		}
 		out := &pb.NotebookExecutionJob_DataformRepositorySource{}
-		out.DataformRepositoryResourceName = direct.ValueOf(in.DataformRepositoryResourceName)
+		// MISSING: DataformRepositoryResourceName
 		out.CommitSha = direct.ValueOf(in.CommitSha)
 		return out
 	}
@@ -1832,7 +1644,9 @@ func PSCAutomationConfig_FromProto(mapCtx *direct.MapContext, in *pb.PSCAutomati
 	}
 	out := &krm.PSCAutomationConfig{}
 	out.ProjectID = direct.LazyPtr(in.GetProjectId())
-	out.Network = direct.LazyPtr(in.GetNetwork())
+	if in.GetNetwork() != "" {
+		out.NetworkRef = &krmcomputerefs.ComputeNetworkRef{External: in.GetNetwork()}
+	}
 	// MISSING: IPAddress
 	// MISSING: ForwardingRule
 	// MISSING: State
@@ -1845,37 +1659,13 @@ func PSCAutomationConfig_ToProto(mapCtx *direct.MapContext, in *krm.PSCAutomatio
 	}
 	out := &pb.PSCAutomationConfig{}
 	out.ProjectId = direct.ValueOf(in.ProjectID)
-	out.Network = direct.ValueOf(in.Network)
+	if in.NetworkRef != nil {
+		out.Network = in.NetworkRef.External
+	}
 	// MISSING: IPAddress
 	// MISSING: ForwardingRule
 	// MISSING: State
 	// MISSING: ErrorMessage
-	return out
-}
-func PSCAutomationConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.PSCAutomationConfig) *krm.PSCAutomationConfigObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.PSCAutomationConfigObservedState{}
-	// MISSING: ProjectID
-	// MISSING: Network
-	out.IPAddress = direct.LazyPtr(in.GetIpAddress())
-	out.ForwardingRule = direct.LazyPtr(in.GetForwardingRule())
-	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.ErrorMessage = direct.LazyPtr(in.GetErrorMessage())
-	return out
-}
-func PSCAutomationConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PSCAutomationConfigObservedState) *pb.PSCAutomationConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.PSCAutomationConfig{}
-	// MISSING: ProjectID
-	// MISSING: Network
-	out.IpAddress = direct.ValueOf(in.IPAddress)
-	out.ForwardingRule = direct.ValueOf(in.ForwardingRule)
-	out.State = direct.Enum_ToProto[pb.PSCAutomationState](mapCtx, in.State)
-	out.ErrorMessage = direct.ValueOf(in.ErrorMessage)
 	return out
 }
 func PSCInterfaceConfig_FromProto(mapCtx *direct.MapContext, in *pb.PscInterfaceConfig) *krm.PSCInterfaceConfig {
@@ -1883,7 +1673,9 @@ func PSCInterfaceConfig_FromProto(mapCtx *direct.MapContext, in *pb.PscInterface
 		return nil
 	}
 	out := &krm.PSCInterfaceConfig{}
-	out.NetworkAttachment = direct.LazyPtr(in.GetNetworkAttachment())
+	if in.GetNetworkAttachment() != "" {
+		out.NetworkAttachmentRef = &krmcomputev1alpha1.ComputeNetworkAttachmentRef{External: in.GetNetworkAttachment()}
+	}
 	out.DNSPeeringConfigs = direct.Slice_FromProto(mapCtx, in.DnsPeeringConfigs, DNSPeeringConfig_FromProto)
 	return out
 }
@@ -1892,7 +1684,9 @@ func PSCInterfaceConfig_ToProto(mapCtx *direct.MapContext, in *krm.PSCInterfaceC
 		return nil
 	}
 	out := &pb.PscInterfaceConfig{}
-	out.NetworkAttachment = direct.ValueOf(in.NetworkAttachment)
+	if in.NetworkAttachmentRef != nil {
+		out.NetworkAttachment = in.NetworkAttachmentRef.External
+	}
 	out.DnsPeeringConfigs = direct.Slice_ToProto(mapCtx, in.DNSPeeringConfigs, DNSPeeringConfig_ToProto)
 	return out
 }
@@ -1970,72 +1764,6 @@ func PersistentDiskSpec_ToProto(mapCtx *direct.MapContext, in *krm.PersistentDis
 	out.DiskSizeGb = direct.ValueOf(in.DiskSizeGB)
 	return out
 }
-
-/* found existing non-generated mapping function "PipelineJob_FromProto", skipping
-func PipelineJob_FromProto(mapCtx *direct.MapContext, in *pb.PipelineJob) *krm.PipelineJob {
-	if in == nil {
-		return nil
-	}
-	out := &krm.PipelineJob{}
-	// MISSING: Name
-	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: CreateTime
-	// MISSING: StartTime
-	// MISSING: EndTime
-	// MISSING: UpdateTime
-	if v := direct.Struct_FromProto(mapCtx, in.GetPipelineSpec()); v != nil {
-		out.PipelineSpec = *v
-	}
-	// MISSING: State
-	// MISSING: JobDetail
-	// MISSING: Error
-	out.Labels = in.Labels
-	out.RuntimeConfig = PipelineJob_RuntimeConfig_FromProto(mapCtx, in.GetRuntimeConfig())
-	out.EncryptionSpec = EncryptionSpec_FromProto(mapCtx, in.GetEncryptionSpec())
-	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
-	out.Network = direct.LazyPtr(in.GetNetwork())
-	out.ReservedIPRanges = in.ReservedIpRanges
-	out.PSCInterfaceConfig = PSCInterfaceConfig_FromProto(mapCtx, in.GetPscInterfaceConfig())
-	out.TemplateURI = direct.LazyPtr(in.GetTemplateUri())
-	// MISSING: TemplateMetadata
-	// MISSING: ScheduleName
-	out.PreflightValidations = direct.LazyPtr(in.GetPreflightValidations())
-	return out
-}
-*/
-
-/*
-found existing non-generated mapping function "PipelineJob_ToProto", skipping
-
-	func PipelineJob_ToProto(mapCtx *direct.MapContext, in *krm.PipelineJob) *pb.PipelineJob {
-		if in == nil {
-			return nil
-		}
-		out := &pb.PipelineJob{}
-		// MISSING: Name
-		out.DisplayName = direct.ValueOf(in.DisplayName)
-		// MISSING: CreateTime
-		// MISSING: StartTime
-		// MISSING: EndTime
-		// MISSING: UpdateTime
-		out.PipelineSpec = direct.Struct_ToProto(mapCtx, &in.PipelineSpec)
-		// MISSING: State
-		// MISSING: JobDetail
-		// MISSING: Error
-		out.Labels = in.Labels
-		out.RuntimeConfig = PipelineJob_RuntimeConfig_ToProto(mapCtx, in.RuntimeConfig)
-		out.EncryptionSpec = EncryptionSpec_ToProto(mapCtx, in.EncryptionSpec)
-		out.ServiceAccount = direct.ValueOf(in.ServiceAccount)
-		out.Network = direct.ValueOf(in.Network)
-		out.ReservedIpRanges = in.ReservedIPRanges
-		out.PscInterfaceConfig = PSCInterfaceConfig_ToProto(mapCtx, in.PSCInterfaceConfig)
-		out.TemplateUri = direct.ValueOf(in.TemplateURI)
-		// MISSING: TemplateMetadata
-		// MISSING: ScheduleName
-		out.PreflightValidations = direct.ValueOf(in.PreflightValidations)
-		return out
-	}
-*/
 func PipelineJobDetailObservedState_FromProto(mapCtx *direct.MapContext, in *pb.PipelineJobDetail) *krm.PipelineJobDetailObservedState {
 	if in == nil {
 		return nil
@@ -2056,67 +1784,11 @@ func PipelineJobDetailObservedState_ToProto(mapCtx *direct.MapContext, in *krm.P
 	out.TaskDetails = direct.Slice_ToProto(mapCtx, in.TaskDetails, PipelineTaskDetailObservedState_ToProto)
 	return out
 }
-func PipelineJobObservedState_FromProto(mapCtx *direct.MapContext, in *pb.PipelineJob) *krm.PipelineJobObservedState {
+func PipelineJobRuntimeConfig_FromProto(mapCtx *direct.MapContext, in *pb.PipelineJob_RuntimeConfig) *krm.PipelineJobRuntimeConfig {
 	if in == nil {
 		return nil
 	}
-	out := &krm.PipelineJobObservedState{}
-	out.Name = direct.LazyPtr(in.GetName())
-	// MISSING: DisplayName
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.StartTime = direct.StringTimestamp_FromProto(mapCtx, in.GetStartTime())
-	out.EndTime = direct.StringTimestamp_FromProto(mapCtx, in.GetEndTime())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: PipelineSpec
-	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.JobDetail = PipelineJobDetailObservedState_FromProto(mapCtx, in.GetJobDetail())
-	out.Error = direct.Status_FromProto(mapCtx, in.GetError())
-	// MISSING: Labels
-	// MISSING: RuntimeConfig
-	// MISSING: EncryptionSpec
-	// MISSING: ServiceAccount
-	// MISSING: Network
-	// MISSING: ReservedIPRanges
-	// MISSING: PSCInterfaceConfig
-	// MISSING: TemplateURI
-	out.TemplateMetadata = PipelineTemplateMetadata_FromProto(mapCtx, in.GetTemplateMetadata())
-	out.ScheduleName = direct.LazyPtr(in.GetScheduleName())
-	// MISSING: PreflightValidations
-	return out
-}
-func PipelineJobObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PipelineJobObservedState) *pb.PipelineJob {
-	if in == nil {
-		return nil
-	}
-	out := &pb.PipelineJob{}
-	out.Name = direct.ValueOf(in.Name)
-	// MISSING: DisplayName
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.StartTime = direct.StringTimestamp_ToProto(mapCtx, in.StartTime)
-	out.EndTime = direct.StringTimestamp_ToProto(mapCtx, in.EndTime)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: PipelineSpec
-	out.State = direct.Enum_ToProto[pb.PipelineState](mapCtx, in.State)
-	out.JobDetail = PipelineJobDetailObservedState_ToProto(mapCtx, in.JobDetail)
-	out.Error = direct.Status_ToProto(mapCtx, in.Error)
-	// MISSING: Labels
-	// MISSING: RuntimeConfig
-	// MISSING: EncryptionSpec
-	// MISSING: ServiceAccount
-	// MISSING: Network
-	// MISSING: ReservedIPRanges
-	// MISSING: PSCInterfaceConfig
-	// MISSING: TemplateURI
-	out.TemplateMetadata = PipelineTemplateMetadata_ToProto(mapCtx, in.TemplateMetadata)
-	out.ScheduleName = direct.ValueOf(in.ScheduleName)
-	// MISSING: PreflightValidations
-	return out
-}
-func PipelineJob_RuntimeConfig_FromProto(mapCtx *direct.MapContext, in *pb.PipelineJob_RuntimeConfig) *krm.PipelineJob_RuntimeConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.PipelineJob_RuntimeConfig{}
+	out := &krm.PipelineJobRuntimeConfig{}
 	// MISSING: Parameters
 	out.GCSOutputDirectory = direct.LazyPtr(in.GetGcsOutputDirectory())
 	// MISSING: ParameterValues
@@ -2124,7 +1796,7 @@ func PipelineJob_RuntimeConfig_FromProto(mapCtx *direct.MapContext, in *pb.Pipel
 	// MISSING: InputArtifacts
 	return out
 }
-func PipelineJob_RuntimeConfig_ToProto(mapCtx *direct.MapContext, in *krm.PipelineJob_RuntimeConfig) *pb.PipelineJob_RuntimeConfig {
+func PipelineJobRuntimeConfig_ToProto(mapCtx *direct.MapContext, in *krm.PipelineJobRuntimeConfig) *pb.PipelineJob_RuntimeConfig {
 	if in == nil {
 		return nil
 	}
@@ -2354,28 +2026,6 @@ func PrivateServiceConnectConfig_ToProto(mapCtx *direct.MapContext, in *krm.Priv
 	// MISSING: ServiceAttachment
 	return out
 }
-func PrivateServiceConnectConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.PrivateServiceConnectConfig) *krm.PrivateServiceConnectConfigObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.PrivateServiceConnectConfigObservedState{}
-	// MISSING: EnablePrivateServiceConnect
-	// MISSING: ProjectAllowlist
-	out.PSCAutomationConfigs = direct.Slice_FromProto(mapCtx, in.PscAutomationConfigs, PSCAutomationConfigObservedState_FromProto)
-	out.ServiceAttachment = direct.LazyPtr(in.GetServiceAttachment())
-	return out
-}
-func PrivateServiceConnectConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PrivateServiceConnectConfigObservedState) *pb.PrivateServiceConnectConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.PrivateServiceConnectConfig{}
-	// MISSING: EnablePrivateServiceConnect
-	// MISSING: ProjectAllowlist
-	out.PscAutomationConfigs = direct.Slice_ToProto(mapCtx, in.PSCAutomationConfigs, PSCAutomationConfigObservedState_ToProto)
-	out.ServiceAttachment = direct.ValueOf(in.ServiceAttachment)
-	return out
-}
 func Probe_FromProto(mapCtx *direct.MapContext, in *pb.Probe) *krm.Probe {
 	if in == nil {
 		return nil
@@ -2538,7 +2188,8 @@ func RuntimeConfig_FromProto(mapCtx *direct.MapContext, in *aiplatformpb.Runtime
 	}
 	out := &krm.RuntimeConfig{}
 	out.CodeInterpreterRuntimeConfig = RuntimeConfig_CodeInterpreterRuntimeConfig_FromProto(mapCtx, in.GetCodeInterpreterRuntimeConfig())
-	out.VertexAiSearchRuntimeConfig = RuntimeConfig_VertexAiSearchRuntimeConfig_FromProto(mapCtx, in.GetVertexAiSearchRuntimeConfig())
+	// MISSING: VertexAiSearchRuntimeConfig
+	// (near miss): "VertexAiSearchRuntimeConfig" vs "VertexAISearchRuntimeConfig"
 	if v := direct.Struct_FromProto(mapCtx, in.GetDefaultParams()); v != nil {
 		out.DefaultParams = *v
 	}
@@ -2555,9 +2206,8 @@ func RuntimeConfig_ToProto(mapCtx *direct.MapContext, in *krm.RuntimeConfig) *ai
 	if oneof := RuntimeConfig_CodeInterpreterRuntimeConfig_ToProto(mapCtx, in.CodeInterpreterRuntimeConfig); oneof != nil {
 		out.GoogleFirstPartyExtensionConfig = &aiplatformpb.RuntimeConfig_CodeInterpreterRuntimeConfig_{CodeInterpreterRuntimeConfig: oneof}
 	}
-	if oneof := RuntimeConfig_VertexAiSearchRuntimeConfig_ToProto(mapCtx, in.VertexAiSearchRuntimeConfig); oneof != nil {
-		out.GoogleFirstPartyExtensionConfig = &aiplatformpb.RuntimeConfig_VertexAiSearchRuntimeConfig{VertexAiSearchRuntimeConfig: oneof}
-	}
+	// MISSING: VertexAiSearchRuntimeConfig
+	// (near miss): "VertexAiSearchRuntimeConfig" vs "VertexAISearchRuntimeConfig"
 	out.DefaultParams = direct.Struct_ToProto(mapCtx, &in.DefaultParams)
 	return out
 }
@@ -2569,43 +2219,57 @@ func RuntimeConfig_CodeInterpreterRuntimeConfig_FromProto(mapCtx *direct.MapCont
 		return nil
 	}
 	out := &krm.RuntimeConfig_CodeInterpreterRuntimeConfig{}
-	out.FileInputGCSBucket = direct.LazyPtr(in.GetFileInputGcsBucket())
-	out.FileOutputGCSBucket = direct.LazyPtr(in.GetFileOutputGcsBucket())
+	if in.GetFileInputGcsBucket() != "" {
+		out.FileInputGCSBucketRef = &krmstoragev1beta1.StorageBucketRef{External: in.GetFileInputGcsBucket()}
+	}
+	if in.GetFileOutputGcsBucket() != "" {
+		out.FileOutputGCSBucketRef = &krmstoragev1beta1.StorageBucketRef{External: in.GetFileOutputGcsBucket()}
+	}
+	return out
+}
+*/
+
+/* found existing non-generated mapping function "RuntimeConfig_CodeInterpreterRuntimeConfig_ToProto", skipping
+func RuntimeConfig_CodeInterpreterRuntimeConfig_ToProto(mapCtx *direct.MapContext, in *krm.RuntimeConfig_CodeInterpreterRuntimeConfig) *aiplatformpb.RuntimeConfig_CodeInterpreterRuntimeConfig {
+	if in == nil {
+		return nil
+	}
+	out := &aiplatformpb.RuntimeConfig_CodeInterpreterRuntimeConfig{}
+	if in.FileInputGCSBucketRef != nil {
+		out.FileInputGcsBucket = in.FileInputGCSBucketRef.External
+	}
+	if in.FileOutputGCSBucketRef != nil {
+		out.FileOutputGcsBucket = in.FileOutputGCSBucketRef.External
+	}
+	return out
+}
+*/
+
+/* found existing non-generated mapping function "RuntimeConfig_VertexAISearchRuntimeConfig_FromProto", skipping
+func RuntimeConfig_VertexAISearchRuntimeConfig_FromProto(mapCtx *direct.MapContext, in *aiplatformpb.RuntimeConfig_VertexAISearchRuntimeConfig) *krm.RuntimeConfig_VertexAISearchRuntimeConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.RuntimeConfig_VertexAISearchRuntimeConfig{}
+	// MISSING: ServingConfigName
+	// MISSING: EngineID
 	return out
 }
 */
 
 /*
-found existing non-generated mapping function "RuntimeConfig_CodeInterpreterRuntimeConfig_ToProto", skipping
+found existing non-generated mapping function "RuntimeConfig_VertexAISearchRuntimeConfig_ToProto", skipping
 
-	func RuntimeConfig_CodeInterpreterRuntimeConfig_ToProto(mapCtx *direct.MapContext, in *krm.RuntimeConfig_CodeInterpreterRuntimeConfig) *aiplatformpb.RuntimeConfig_CodeInterpreterRuntimeConfig {
+	func RuntimeConfig_VertexAISearchRuntimeConfig_ToProto(mapCtx *direct.MapContext, in *krm.RuntimeConfig_VertexAISearchRuntimeConfig) *aiplatformpb.RuntimeConfig_VertexAISearchRuntimeConfig {
 		if in == nil {
 			return nil
 		}
-		out := &aiplatformpb.RuntimeConfig_CodeInterpreterRuntimeConfig{}
-		out.FileInputGcsBucket = direct.ValueOf(in.FileInputGCSBucket)
-		out.FileOutputGcsBucket = direct.ValueOf(in.FileOutputGCSBucket)
+		out := &aiplatformpb.RuntimeConfig_VertexAISearchRuntimeConfig{}
+		// MISSING: ServingConfigName
+		// MISSING: EngineID
 		return out
 	}
 */
-func RuntimeConfig_VertexAiSearchRuntimeConfig_FromProto(mapCtx *direct.MapContext, in *aiplatformpb.RuntimeConfig_VertexAISearchRuntimeConfig) *krm.RuntimeConfig_VertexAiSearchRuntimeConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.RuntimeConfig_VertexAiSearchRuntimeConfig{}
-	out.ServingConfigName = direct.LazyPtr(in.GetServingConfigName())
-	out.EngineID = direct.LazyPtr(in.GetEngineId())
-	return out
-}
-func RuntimeConfig_VertexAiSearchRuntimeConfig_ToProto(mapCtx *direct.MapContext, in *krm.RuntimeConfig_VertexAiSearchRuntimeConfig) *aiplatformpb.RuntimeConfig_VertexAISearchRuntimeConfig {
-	if in == nil {
-		return nil
-	}
-	out := &aiplatformpb.RuntimeConfig_VertexAISearchRuntimeConfig{}
-	out.ServingConfigName = direct.ValueOf(in.ServingConfigName)
-	out.EngineId = direct.ValueOf(in.EngineID)
-	return out
-}
 func SampledShapleyAttribution_FromProto(mapCtx *direct.MapContext, in *pb.SampledShapleyAttribution) *krm.SampledShapleyAttribution {
 	if in == nil {
 		return nil
@@ -2634,8 +2298,8 @@ func Schema_FromProto(mapCtx *direct.MapContext, in *aiplatformpb.Schema) *krm.S
 	out.Title = direct.LazyPtr(in.GetTitle())
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.Nullable = direct.LazyPtr(in.GetNullable())
-	out.Default = Value_FromProto(mapCtx, in.GetDefault())
-	out.Items = Schema_FromProto(mapCtx, in.GetItems())
+	out.Default = direct.Value_FromProto(mapCtx, in.GetDefault())
+	out.Items = apiextensionsv1.JSON_FromProto(mapCtx, in.GetItems())
 	out.MinItems = direct.LazyPtr(in.GetMinItems())
 	out.MaxItems = direct.LazyPtr(in.GetMaxItems())
 	out.Enum = in.Enum
@@ -2649,9 +2313,9 @@ func Schema_FromProto(mapCtx *direct.MapContext, in *aiplatformpb.Schema) *krm.S
 	out.MinLength = direct.LazyPtr(in.GetMinLength())
 	out.MaxLength = direct.LazyPtr(in.GetMaxLength())
 	out.Pattern = direct.LazyPtr(in.GetPattern())
-	out.Example = Value_FromProto(mapCtx, in.GetExample())
-	out.AnyOf = direct.Slice_FromProto(mapCtx, in.AnyOf, Schema_FromProto)
-	out.AdditionalProperties = Value_FromProto(mapCtx, in.GetAdditionalProperties())
+	out.Example = direct.Value_FromProto(mapCtx, in.GetExample())
+	out.AnyOf = direct.Slice_FromProto(mapCtx, in.AnyOf, apiextensionsv1.JSON_FromProto)
+	out.AdditionalProperties = direct.Value_FromProto(mapCtx, in.GetAdditionalProperties())
 	out.Ref = direct.LazyPtr(in.GetRef())
 	// MISSING: Defs
 	return out
@@ -2671,8 +2335,8 @@ found existing non-generated mapping function "Schema_ToProto", skipping
 		out.Title = direct.ValueOf(in.Title)
 		out.Description = direct.ValueOf(in.Description)
 		out.Nullable = direct.ValueOf(in.Nullable)
-		out.Default = Value_ToProto(mapCtx, in.Default)
-		out.Items = Schema_ToProto(mapCtx, in.Items)
+		out.Default = direct.Value_ToProto(mapCtx, in.Default)
+		out.Items = apiextensionsv1.JSON_ToProto(mapCtx, in.Items)
 		out.MinItems = direct.ValueOf(in.MinItems)
 		out.MaxItems = direct.ValueOf(in.MaxItems)
 		out.Enum = in.Enum
@@ -2686,9 +2350,9 @@ found existing non-generated mapping function "Schema_ToProto", skipping
 		out.MinLength = direct.ValueOf(in.MinLength)
 		out.MaxLength = direct.ValueOf(in.MaxLength)
 		out.Pattern = direct.ValueOf(in.Pattern)
-		out.Example = Value_ToProto(mapCtx, in.Example)
-		out.AnyOf = direct.Slice_ToProto(mapCtx, in.AnyOf, Schema_ToProto)
-		out.AdditionalProperties = Value_ToProto(mapCtx, in.AdditionalProperties)
+		out.Example = direct.Value_ToProto(mapCtx, in.Example)
+		out.AnyOf = direct.Slice_ToProto(mapCtx, in.AnyOf, apiextensionsv1.JSON_ToProto)
+		out.AdditionalProperties = direct.Value_ToProto(mapCtx, in.AdditionalProperties)
 		out.Ref = direct.ValueOf(in.Ref)
 		// MISSING: Defs
 		return out
@@ -2947,7 +2611,7 @@ func StudySpec_ParameterSpec_ConditionalParameterSpec_FromProto(mapCtx *direct.M
 	out.ParentDiscreteValues = StudySpec_ParameterSpec_ConditionalParameterSpec_DiscreteValueCondition_FromProto(mapCtx, in.GetParentDiscreteValues())
 	out.ParentIntValues = StudySpec_ParameterSpec_ConditionalParameterSpec_IntValueCondition_FromProto(mapCtx, in.GetParentIntValues())
 	out.ParentCategoricalValues = StudySpec_ParameterSpec_ConditionalParameterSpec_CategoricalValueCondition_FromProto(mapCtx, in.GetParentCategoricalValues())
-	out.ParameterSpec = StudySpec_ParameterSpec_FromProto(mapCtx, in.GetParameterSpec())
+	// MISSING: ParameterSpec
 	return out
 }
 func StudySpec_ParameterSpec_ConditionalParameterSpec_ToProto(mapCtx *direct.MapContext, in *krm.StudySpec_ParameterSpec_ConditionalParameterSpec) *pb.StudySpec_ParameterSpec_ConditionalParameterSpec {
@@ -2964,7 +2628,7 @@ func StudySpec_ParameterSpec_ConditionalParameterSpec_ToProto(mapCtx *direct.Map
 	if oneof := StudySpec_ParameterSpec_ConditionalParameterSpec_CategoricalValueCondition_ToProto(mapCtx, in.ParentCategoricalValues); oneof != nil {
 		out.ParentValueCondition = &pb.StudySpec_ParameterSpec_ConditionalParameterSpec_ParentCategoricalValues{ParentCategoricalValues: oneof}
 	}
-	out.ParameterSpec = StudySpec_ParameterSpec_ToProto(mapCtx, in.ParameterSpec)
+	// MISSING: ParameterSpec
 	return out
 }
 func StudySpec_ParameterSpec_ConditionalParameterSpec_CategoricalValueCondition_FromProto(mapCtx *direct.MapContext, in *pb.StudySpec_ParameterSpec_ConditionalParameterSpec_CategoricalValueCondition) *krm.StudySpec_ParameterSpec_ConditionalParameterSpec_CategoricalValueCondition {
@@ -3397,57 +3061,57 @@ func TuningDataStatsObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Tun
 	}
 	return out
 }
-
-/* found existing non-generated mapping function "Value_FromProto", skipping
-func Value_FromProto(mapCtx *direct.MapContext, in *pb.Value) *krm.Value {
+func VertexAIExtensionObservedState_FromProto(mapCtx *direct.MapContext, in *aiplatformpb.Extension) *krm.VertexAIExtensionObservedState {
 	if in == nil {
 		return nil
 	}
-	out := &krm.Value{}
-	out.IntValue = direct.LazyPtr(in.GetIntValue())
-	out.DoubleValue = direct.LazyPtr(in.GetDoubleValue())
-	out.StringValue = direct.LazyPtr(in.GetStringValue())
+	out := &krm.VertexAIExtensionObservedState{}
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.Etag = direct.LazyPtr(in.GetEtag())
+	out.ExtensionOperations = direct.Slice_FromProto(mapCtx, in.ExtensionOperations, ExtensionOperationObservedState_FromProto)
 	return out
 }
-*/
-
-/*
-found existing non-generated mapping function "Value_ToProto", skipping
-
-	func Value_ToProto(mapCtx *direct.MapContext, in *krm.Value) *pb.Value {
-		if in == nil {
-			return nil
-		}
-		out := &pb.Value{}
-		if oneof := Value_IntValue_ToProto(mapCtx, in.IntValue); oneof != nil {
-			out.Value = oneof
-		}
-		if oneof := Value_DoubleValue_ToProto(mapCtx, in.DoubleValue); oneof != nil {
-			out.Value = oneof
-		}
-		if oneof := Value_StringValue_ToProto(mapCtx, in.StringValue); oneof != nil {
-			out.Value = oneof
-		}
-		return out
-	}
-*/
-func Value_IntValue_ToProto(mapCtx *direct.MapContext, in *int64) *pb.Value_IntValue {
+func VertexAIExtensionObservedState_ToProto(mapCtx *direct.MapContext, in *krm.VertexAIExtensionObservedState) *aiplatformpb.Extension {
 	if in == nil {
 		return nil
 	}
-	return &pb.Value_IntValue{IntValue: *in}
+	out := &aiplatformpb.Extension{}
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.Etag = direct.ValueOf(in.Etag)
+	out.ExtensionOperations = direct.Slice_ToProto(mapCtx, in.ExtensionOperations, ExtensionOperationObservedState_ToProto)
+	return out
 }
-func Value_DoubleValue_ToProto(mapCtx *direct.MapContext, in *float64) *pb.Value_DoubleValue {
+func VertexAIExtensionSpec_FromProto(mapCtx *direct.MapContext, in *aiplatformpb.Extension) *krm.VertexAIExtensionSpec {
 	if in == nil {
 		return nil
 	}
-	return &pb.Value_DoubleValue{DoubleValue: *in}
+	out := &krm.VertexAIExtensionSpec{}
+	// MISSING: Name
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.Manifest = ExtensionManifest_FromProto(mapCtx, in.GetManifest())
+	out.RuntimeConfig = RuntimeConfig_FromProto(mapCtx, in.GetRuntimeConfig())
+	out.ToolUseExamples = direct.Slice_FromProto(mapCtx, in.ToolUseExamples, ToolUseExample_FromProto)
+	out.PrivateServiceConnectConfig = ExtensionPrivateServiceConnectConfig_FromProto(mapCtx, in.GetPrivateServiceConnectConfig())
+	return out
 }
-func Value_StringValue_ToProto(mapCtx *direct.MapContext, in *string) *pb.Value_StringValue {
+func VertexAIExtensionSpec_ToProto(mapCtx *direct.MapContext, in *krm.VertexAIExtensionSpec) *aiplatformpb.Extension {
 	if in == nil {
 		return nil
 	}
-	return &pb.Value_StringValue{StringValue: *in}
+	out := &aiplatformpb.Extension{}
+	// MISSING: Name
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Description = direct.ValueOf(in.Description)
+	out.Manifest = ExtensionManifest_ToProto(mapCtx, in.Manifest)
+	out.RuntimeConfig = RuntimeConfig_ToProto(mapCtx, in.RuntimeConfig)
+	out.ToolUseExamples = direct.Slice_ToProto(mapCtx, in.ToolUseExamples, ToolUseExample_ToProto)
+	out.PrivateServiceConnectConfig = ExtensionPrivateServiceConnectConfig_ToProto(mapCtx, in.PrivateServiceConnectConfig)
+	return out
 }
 func VertexAIFeatureOnlineStoreObservedState_FromProto(mapCtx *direct.MapContext, in *pb.FeatureOnlineStore) *krm.VertexAIFeatureOnlineStoreObservedState {
 	if in == nil {
@@ -3457,8 +3121,8 @@ func VertexAIFeatureOnlineStoreObservedState_FromProto(mapCtx *direct.MapContext
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.DedicatedServingEndpoint = FeatureOnlineStore_DedicatedServingEndpointObservedState_FromProto(mapCtx, in.GetDedicatedServingEndpoint())
 	out.SatisfiesPzs = direct.LazyPtr(in.GetSatisfiesPzs())
 	out.SatisfiesPzi = direct.LazyPtr(in.GetSatisfiesPzi())
 	return out
@@ -3471,8 +3135,8 @@ func VertexAIFeatureOnlineStoreObservedState_ToProto(mapCtx *direct.MapContext, 
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.Etag = direct.ValueOf(in.Etag)
 	out.State = direct.Enum_ToProto[pb.FeatureOnlineStore_State](mapCtx, in.State)
-	out.DedicatedServingEndpoint = FeatureOnlineStore_DedicatedServingEndpointObservedState_ToProto(mapCtx, in.DedicatedServingEndpoint)
 	out.SatisfiesPzs = direct.ValueOf(in.SatisfiesPzs)
 	out.SatisfiesPzi = direct.ValueOf(in.SatisfiesPzi)
 	return out
@@ -3485,7 +3149,6 @@ func VertexAIFeatureOnlineStoreSpec_FromProto(mapCtx *direct.MapContext, in *pb.
 	out.Bigtable = FeatureOnlineStore_Bigtable_FromProto(mapCtx, in.GetBigtable())
 	out.Optimized = FeatureOnlineStore_Optimized_FromProto(mapCtx, in.GetOptimized())
 	// MISSING: Name
-	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.Labels = in.Labels
 	out.DedicatedServingEndpoint = FeatureOnlineStore_DedicatedServingEndpoint_FromProto(mapCtx, in.GetDedicatedServingEndpoint())
 	out.EncryptionSpec = EncryptionSpec_FromProto(mapCtx, in.GetEncryptionSpec())
@@ -3503,7 +3166,6 @@ func VertexAIFeatureOnlineStoreSpec_ToProto(mapCtx *direct.MapContext, in *krm.V
 		out.StorageType = &pb.FeatureOnlineStore_Optimized_{Optimized: oneof}
 	}
 	// MISSING: Name
-	out.Etag = direct.ValueOf(in.Etag)
 	out.Labels = in.Labels
 	out.DedicatedServingEndpoint = FeatureOnlineStore_DedicatedServingEndpoint_ToProto(mapCtx, in.DedicatedServingEndpoint)
 	out.EncryptionSpec = EncryptionSpec_ToProto(mapCtx, in.EncryptionSpec)
@@ -3514,7 +3176,7 @@ func VertexAIPipelineJobObservedState_FromProto(mapCtx *direct.MapContext, in *p
 		return nil
 	}
 	out := &krm.VertexAIPipelineJobObservedState{}
-	// MISSING: Name
+	out.Name = direct.LazyPtr(in.GetName())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.StartTime = direct.StringTimestamp_FromProto(mapCtx, in.GetStartTime())
 	out.EndTime = direct.StringTimestamp_FromProto(mapCtx, in.GetEndTime())
@@ -3531,7 +3193,7 @@ func VertexAIPipelineJobObservedState_ToProto(mapCtx *direct.MapContext, in *krm
 		return nil
 	}
 	out := &pb.PipelineJob{}
-	// MISSING: Name
+	out.Name = direct.ValueOf(in.Name)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.StartTime = direct.StringTimestamp_ToProto(mapCtx, in.StartTime)
 	out.EndTime = direct.StringTimestamp_ToProto(mapCtx, in.EndTime)
@@ -3548,16 +3210,17 @@ func VertexAIPipelineJobSpec_FromProto(mapCtx *direct.MapContext, in *pb.Pipelin
 		return nil
 	}
 	out := &krm.VertexAIPipelineJobSpec{}
-	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	if v := direct.Struct_FromProto(mapCtx, in.GetPipelineSpec()); v != nil {
-		out.PipelineSpec = *v
-	}
+	out.PipelineSpec = direct.Struct_FromProto(mapCtx, in.GetPipelineSpec())
 	out.Labels = in.Labels
-	out.RuntimeConfig = PipelineJob_RuntimeConfig_FromProto(mapCtx, in.GetRuntimeConfig())
+	out.RuntimeConfig = PipelineJobRuntimeConfig_FromProto(mapCtx, in.GetRuntimeConfig())
 	out.EncryptionSpec = EncryptionSpec_FromProto(mapCtx, in.GetEncryptionSpec())
-	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
-	out.Network = direct.LazyPtr(in.GetNetwork())
+	if in.GetServiceAccount() != "" {
+		out.ServiceAccountRef = &refsv1beta1.IAMServiceAccountRef{External: in.GetServiceAccount()}
+	}
+	if in.GetNetwork() != "" {
+		out.NetworkRef = &krmcomputev1beta1.ComputeNetworkRef{External: in.GetNetwork()}
+	}
 	out.ReservedIPRanges = in.ReservedIpRanges
 	out.PSCInterfaceConfig = PSCInterfaceConfig_FromProto(mapCtx, in.GetPscInterfaceConfig())
 	out.TemplateURI = direct.LazyPtr(in.GetTemplateUri())
@@ -3569,14 +3232,17 @@ func VertexAIPipelineJobSpec_ToProto(mapCtx *direct.MapContext, in *krm.VertexAI
 		return nil
 	}
 	out := &pb.PipelineJob{}
-	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	out.PipelineSpec = direct.Struct_ToProto(mapCtx, &in.PipelineSpec)
+	out.PipelineSpec = direct.Struct_ToProto(mapCtx, in.PipelineSpec)
 	out.Labels = in.Labels
-	out.RuntimeConfig = PipelineJob_RuntimeConfig_ToProto(mapCtx, in.RuntimeConfig)
+	out.RuntimeConfig = PipelineJobRuntimeConfig_ToProto(mapCtx, in.RuntimeConfig)
 	out.EncryptionSpec = EncryptionSpec_ToProto(mapCtx, in.EncryptionSpec)
-	out.ServiceAccount = direct.ValueOf(in.ServiceAccount)
-	out.Network = direct.ValueOf(in.Network)
+	if in.ServiceAccountRef != nil {
+		out.ServiceAccount = in.ServiceAccountRef.External
+	}
+	if in.NetworkRef != nil {
+		out.Network = in.NetworkRef.External
+	}
 	out.ReservedIpRanges = in.ReservedIPRanges
 	out.PscInterfaceConfig = PSCInterfaceConfig_ToProto(mapCtx, in.PSCInterfaceConfig)
 	out.TemplateUri = direct.ValueOf(in.TemplateURI)
@@ -3590,7 +3256,7 @@ func VertexAIScheduleObservedState_FromProto(mapCtx *direct.MapContext, in *pb.S
 	out := &krm.VertexAIScheduleObservedState{}
 	out.CreatePipelineJobRequest = CreatePipelineJobRequestObservedState_FromProto(mapCtx, in.GetCreatePipelineJobRequest())
 	out.CreateNotebookExecutionJobRequest = CreateNotebookExecutionJobRequestObservedState_FromProto(mapCtx, in.GetCreateNotebookExecutionJobRequest())
-	// MISSING: Name
+	out.Name = direct.LazyPtr(in.GetName())
 	out.StartedRunCount = direct.LazyPtr(in.GetStartedRunCount())
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
@@ -3613,7 +3279,7 @@ func VertexAIScheduleObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Ve
 	if oneof := CreateNotebookExecutionJobRequestObservedState_ToProto(mapCtx, in.CreateNotebookExecutionJobRequest); oneof != nil {
 		out.Request = &pb.Schedule_CreateNotebookExecutionJobRequest{CreateNotebookExecutionJobRequest: oneof}
 	}
-	// MISSING: Name
+	out.Name = direct.ValueOf(in.Name)
 	out.StartedRunCount = direct.ValueOf(in.StartedRunCount)
 	out.State = direct.Enum_ToProto[pb.Schedule_State](mapCtx, in.State)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
@@ -3633,7 +3299,6 @@ func VertexAIScheduleSpec_FromProto(mapCtx *direct.MapContext, in *pb.Schedule) 
 	out.Cron = direct.LazyPtr(in.GetCron())
 	out.CreatePipelineJobRequest = CreatePipelineJobRequest_FromProto(mapCtx, in.GetCreatePipelineJobRequest())
 	out.CreateNotebookExecutionJobRequest = CreateNotebookExecutionJobRequest_FromProto(mapCtx, in.GetCreateNotebookExecutionJobRequest())
-	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.StartTime = direct.StringTimestamp_FromProto(mapCtx, in.GetStartTime())
 	out.EndTime = direct.StringTimestamp_FromProto(mapCtx, in.GetEndTime())
@@ -3656,7 +3321,6 @@ func VertexAIScheduleSpec_ToProto(mapCtx *direct.MapContext, in *krm.VertexAISch
 	if oneof := CreateNotebookExecutionJobRequest_ToProto(mapCtx, in.CreateNotebookExecutionJobRequest); oneof != nil {
 		out.Request = &pb.Schedule_CreateNotebookExecutionJobRequest{CreateNotebookExecutionJobRequest: oneof}
 	}
-	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
 	out.StartTime = direct.StringTimestamp_ToProto(mapCtx, in.StartTime)
 	out.EndTime = direct.StringTimestamp_ToProto(mapCtx, in.EndTime)
@@ -3718,10 +3382,10 @@ func VertexAIStudyObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Stud
 		return nil
 	}
 	out := &krm.VertexAIStudyObservedState{}
-	// MISSING: Name
+	out.Name = direct.LazyPtr(in.GetName())
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.InactiveReason = direct.LazyPtr(in.GetInactiveReason())
+	// MISSING: InactiveReason
 	return out
 }
 func VertexAIStudyObservedState_ToProto(mapCtx *direct.MapContext, in *krm.VertexAIStudyObservedState) *pb.Study {
@@ -3729,10 +3393,10 @@ func VertexAIStudyObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Verte
 		return nil
 	}
 	out := &pb.Study{}
-	// MISSING: Name
+	out.Name = direct.ValueOf(in.Name)
 	out.State = direct.Enum_ToProto[pb.Study_State](mapCtx, in.State)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.InactiveReason = direct.ValueOf(in.InactiveReason)
+	// MISSING: InactiveReason
 	return out
 }
 func VertexAIStudySpec_FromProto(mapCtx *direct.MapContext, in *pb.Study) *krm.VertexAIStudySpec {
@@ -3740,9 +3404,9 @@ func VertexAIStudySpec_FromProto(mapCtx *direct.MapContext, in *pb.Study) *krm.V
 		return nil
 	}
 	out := &krm.VertexAIStudySpec{}
-	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.StudySpec = StudySpec_FromProto(mapCtx, in.GetStudySpec())
+	// MISSING: InactiveReason
 	return out
 }
 func VertexAIStudySpec_ToProto(mapCtx *direct.MapContext, in *krm.VertexAIStudySpec) *pb.Study {
@@ -3750,9 +3414,9 @@ func VertexAIStudySpec_ToProto(mapCtx *direct.MapContext, in *krm.VertexAIStudyS
 		return nil
 	}
 	out := &pb.Study{}
-	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
 	out.StudySpec = StudySpec_ToProto(mapCtx, in.StudySpec)
+	// MISSING: InactiveReason
 	return out
 }
 func VertexAITrainingPipelineObservedState_FromProto(mapCtx *direct.MapContext, in *pb.TrainingPipeline) *krm.VertexAITrainingPipelineObservedState {
@@ -3760,9 +3424,10 @@ func VertexAITrainingPipelineObservedState_FromProto(mapCtx *direct.MapContext, 
 		return nil
 	}
 	out := &krm.VertexAITrainingPipelineObservedState{}
-	// MISSING: Name
-	out.TrainingTaskMetadata = Value_FromProto(mapCtx, in.GetTrainingTaskMetadata())
-	out.ModelToUpload = ModelObservedState_FromProto(mapCtx, in.GetModelToUpload())
+	out.Name = direct.LazyPtr(in.GetName())
+	out.TrainingTaskMetadata = direct.Value_FromProto(mapCtx, in.GetTrainingTaskMetadata())
+	out.ModelToUpload = AIPlatformModelObservedState_FromProto(mapCtx, in.GetModelToUpload())
+	// MISSING: ParentModel
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.Error = direct.Status_FromProto(mapCtx, in.GetError())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
@@ -3776,9 +3441,10 @@ func VertexAITrainingPipelineObservedState_ToProto(mapCtx *direct.MapContext, in
 		return nil
 	}
 	out := &pb.TrainingPipeline{}
-	// MISSING: Name
-	out.TrainingTaskMetadata = Value_ToProto(mapCtx, in.TrainingTaskMetadata)
-	out.ModelToUpload = ModelObservedState_ToProto(mapCtx, in.ModelToUpload)
+	out.Name = direct.ValueOf(in.Name)
+	out.TrainingTaskMetadata = direct.Value_ToProto(mapCtx, in.TrainingTaskMetadata)
+	out.ModelToUpload = AIPlatformModelObservedState_ToProto(mapCtx, in.ModelToUpload)
+	// MISSING: ParentModel
 	out.State = direct.Enum_ToProto[pb.PipelineState](mapCtx, in.State)
 	out.Error = direct.Status_ToProto(mapCtx, in.Error)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
@@ -3792,14 +3458,13 @@ func VertexAITrainingPipelineSpec_FromProto(mapCtx *direct.MapContext, in *pb.Tr
 		return nil
 	}
 	out := &krm.VertexAITrainingPipelineSpec{}
-	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.InputDataConfig = InputDataConfig_FromProto(mapCtx, in.GetInputDataConfig())
 	out.TrainingTaskDefinition = direct.LazyPtr(in.GetTrainingTaskDefinition())
-	out.TrainingTaskInputs = Value_FromProto(mapCtx, in.GetTrainingTaskInputs())
-	out.ModelToUpload = Model_FromProto(mapCtx, in.GetModelToUpload())
+	out.TrainingTaskInputs = direct.Value_FromProto(mapCtx, in.GetTrainingTaskInputs())
+	out.ModelToUpload = AIPlatformModelSpec_FromProto(mapCtx, in.GetModelToUpload())
 	out.ModelID = direct.LazyPtr(in.GetModelId())
-	out.ParentModel = direct.LazyPtr(in.GetParentModel())
+	// MISSING: ParentModel
 	out.Labels = in.Labels
 	out.EncryptionSpec = EncryptionSpec_FromProto(mapCtx, in.GetEncryptionSpec())
 	return out
@@ -3809,14 +3474,13 @@ func VertexAITrainingPipelineSpec_ToProto(mapCtx *direct.MapContext, in *krm.Ver
 		return nil
 	}
 	out := &pb.TrainingPipeline{}
-	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
 	out.InputDataConfig = InputDataConfig_ToProto(mapCtx, in.InputDataConfig)
 	out.TrainingTaskDefinition = direct.ValueOf(in.TrainingTaskDefinition)
-	out.TrainingTaskInputs = Value_ToProto(mapCtx, in.TrainingTaskInputs)
-	out.ModelToUpload = Model_ToProto(mapCtx, in.ModelToUpload)
+	out.TrainingTaskInputs = direct.Value_ToProto(mapCtx, in.TrainingTaskInputs)
+	out.ModelToUpload = AIPlatformModelSpec_ToProto(mapCtx, in.ModelToUpload)
 	out.ModelId = direct.ValueOf(in.ModelID)
-	out.ParentModel = direct.ValueOf(in.ParentModel)
+	// MISSING: ParentModel
 	out.Labels = in.Labels
 	out.EncryptionSpec = EncryptionSpec_ToProto(mapCtx, in.EncryptionSpec)
 	return out
@@ -3826,7 +3490,7 @@ func VertexAITuningJobObservedState_FromProto(mapCtx *direct.MapContext, in *pb.
 		return nil
 	}
 	out := &krm.VertexAITuningJobObservedState{}
-	// MISSING: Name
+	out.Name = direct.LazyPtr(in.GetName())
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.StartTime = direct.StringTimestamp_FromProto(mapCtx, in.GetStartTime())
@@ -3843,7 +3507,7 @@ func VertexAITuningJobObservedState_ToProto(mapCtx *direct.MapContext, in *krm.V
 		return nil
 	}
 	out := &pb.TuningJob{}
-	// MISSING: Name
+	out.Name = direct.ValueOf(in.Name)
 	out.State = direct.Enum_ToProto[pb.JobState](mapCtx, in.State)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.StartTime = direct.StringTimestamp_ToProto(mapCtx, in.StartTime)
@@ -3864,12 +3528,13 @@ func VertexAITuningJobSpec_FromProto(mapCtx *direct.MapContext, in *pb.TuningJob
 	out := &krm.VertexAITuningJobSpec{}
 	out.BaseModel = direct.LazyPtr(in.GetBaseModel())
 	out.SupervisedTuningSpec = SupervisedTuningSpec_FromProto(mapCtx, in.GetSupervisedTuningSpec())
-	// MISSING: Name
 	out.TunedModelDisplayName = direct.LazyPtr(in.GetTunedModelDisplayName())
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.Labels = in.Labels
 	out.EncryptionSpec = EncryptionSpec_FromProto(mapCtx, in.GetEncryptionSpec())
-	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
+	if in.GetServiceAccount() != "" {
+		out.ServiceAccountRef = &refsv1beta1.IAMServiceAccountRef{External: in.GetServiceAccount()}
+	}
 	return out
 }
 */
@@ -3888,12 +3553,13 @@ found existing non-generated mapping function "VertexAITuningJobSpec_ToProto", s
 		if oneof := SupervisedTuningSpec_ToProto(mapCtx, in.SupervisedTuningSpec); oneof != nil {
 			out.TuningSpec = &pb.TuningJob_SupervisedTuningSpec{SupervisedTuningSpec: oneof}
 		}
-		// MISSING: Name
 		out.TunedModelDisplayName = direct.ValueOf(in.TunedModelDisplayName)
 		out.Description = direct.ValueOf(in.Description)
 		out.Labels = in.Labels
 		out.EncryptionSpec = EncryptionSpec_ToProto(mapCtx, in.EncryptionSpec)
-		out.ServiceAccount = direct.ValueOf(in.ServiceAccount)
+		if in.ServiceAccountRef != nil {
+			out.ServiceAccount = in.ServiceAccountRef.External
+		}
 		return out
 	}
 */

@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: stable
@@ -22,6 +22,7 @@ spec:
     - gcpcomputenodegroup
     - gcpcomputenodegroups
     singular: computenodegroup
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
         description: ComputeNodeGroup is the Schema for the ComputeNodeGroup API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -66,30 +62,28 @@ spec:
             description: ComputeNodeGroupSpec defines the desired state of ComputeNodeGroup
             properties:
               autoscalingPolicy:
-                description: |-
-                  Immutable. If you use sole-tenant nodes for your workloads, you can use the node
-                  group autoscaler to automatically manage the sizes of your node groups.
+                description: Immutable. If you use sole-tenant nodes for your workloads,
+                  you can use the node group autoscaler to automatically manage the
+                  sizes of your node groups.
                 properties:
                   maxNodes:
-                    description: |-
-                      Immutable. Maximum size of the node group. Set to a value less than or equal
-                      to 100 and greater than or equal to min-nodes.
+                    description: Immutable. Maximum size of the node group. Set to
+                      a value less than or equal to 100 and greater than or equal
+                      to min-nodes.
                     format: int64
                     type: integer
                   minNodes:
-                    description: |-
-                      Immutable. Minimum size of the node group. Must be less
-                      than or equal to max-nodes. The default value is 0.
+                    description: Immutable. Minimum size of the node group. Must be
+                      less than or equal to max-nodes. The default value is 0.
                     format: int64
                     type: integer
                   mode:
-                    description: |-
-                      Immutable. The autoscaling mode. Set to one of the following:
-                      - OFF: Disables the autoscaler.
-                      - ON: Enables scaling in and scaling out.
-                      - ONLY_SCALE_OUT: Enables only scaling out.
+                    description: 'Immutable. The autoscaling mode. Set to one of the
+                      following: - OFF: Disables the autoscaler. - ON: Enables scaling
+                      in and scaling out. - ONLY_SCALE_OUT: Enables only scaling out.
                       You must use this mode if your node groups are configured to
-                      restart their hosted VMs on minimal servers. Possible values: ["OFF", "ON", "ONLY_SCALE_OUT"].
+                      restart their hosted VMs on minimal servers. Possible values:
+                      ["OFF", "ON", "ONLY_SCALE_OUT"].'
                     type: string
                 type: object
               description:
@@ -120,6 +114,20 @@ spec:
                 type: object
               nodeTemplateRef:
                 description: The node template to which this node group belongs.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: A reference to an externally managed ComputeNodeTemplate
@@ -148,6 +156,20 @@ spec:
                         idRef:
                           description: The key of this project config in the parent
                             map.
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
                           properties:
                             external:
                               description: The `projectID` field of a project, when
@@ -161,9 +183,22 @@ spec:
                               type: string
                           type: object
                         projectIdRef:
-                          description: |-
-                            The project id/number should be the same as the key of this project
-                            config in the project map.
+                          description: The project id/number should be the same as
+                            the key of this project config in the project map.
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
                           properties:
                             external:
                               description: The `projectID` field of a project, when
@@ -205,9 +240,8 @@ spec:
               state of ComputeNodeGroup
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -219,9 +253,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

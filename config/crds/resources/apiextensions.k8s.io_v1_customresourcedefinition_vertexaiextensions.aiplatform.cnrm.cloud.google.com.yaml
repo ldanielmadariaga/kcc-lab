@@ -335,6 +335,11 @@ spec:
                     description: Required. Extension name shown to the LLM. The name
                       can be up to 128 characters long.
                     type: string
+                required:
+                - apiSpec
+                - authConfig
+                - description
+                - name
                 type: object
               privateServiceConnectConfig:
                 description: Optional. The Private Service Connect config of the Extension.
@@ -539,6 +544,8 @@ spec:
                         operationID:
                           description: Required. Operation ID of the extension.
                           type: string
+                      required:
+                      - operationID
                       type: object
                     functionName:
                       description: Function name to call.
@@ -555,6 +562,9 @@ spec:
                     responseSummary:
                       description: Summary of the tool response to the user query.
                       type: string
+                  required:
+                  - displayName
+                  - query
                   type: object
                 type: array
             required:

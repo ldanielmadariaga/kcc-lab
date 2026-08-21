@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,6 +21,7 @@ spec:
     - gcpbigtableauthorizedview
     - gcpbigtableauthorizedviews
     singular: bigtableauthorizedview
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -66,10 +62,9 @@ spec:
             description: BigtableAuthorizedViewSpec defines the desired state of BigtableAuthorizedView
             properties:
               deletionProtection:
-                description: |-
-                  Set to true to make the AuthorizedView protected against deletion.
-                   The parent Table and containing Instance cannot be deleted if an
-                   AuthorizedView has this bit set.
+                description: Set to true to make the AuthorizedView protected against
+                  deletion. The parent Table and containing Instance cannot be deleted
+                  if an AuthorizedView has this bit set.
                 type: boolean
               resourceID:
                 description: The BigtableAuthorizedView name. If not given, the metadata.name
@@ -83,12 +78,11 @@ spec:
                     additionalProperties:
                       properties:
                         qualifierPrefixes:
-                          description: |-
-                            Prefixes for qualifiers to be included in the AuthorizedView. Every
-                             qualifier starting with one of these prefixes is included in the
-                             AuthorizedView. To provide access to all qualifiers, include the empty
-                             string as a prefix
-                             ("").
+                          description: Prefixes for qualifiers to be included in the
+                            AuthorizedView. Every qualifier starting with one of these
+                            prefixes is included in the AuthorizedView. To provide
+                            access to all qualifiers, include the empty string as
+                            a prefix ("").
                           items:
                             format: byte
                             type: string
@@ -101,14 +95,13 @@ spec:
                             type: string
                           type: array
                       type: object
-                    description: |-
-                      Map from column family name to the columns in this family to be included
-                       in the AuthorizedView.
+                    description: Map from column family name to the columns in this
+                      family to be included in the AuthorizedView.
                     type: object
                   rowPrefixes:
-                    description: |-
-                      Row prefixes to be included in the AuthorizedView.
-                       To provide access to all rows, include the empty string as a prefix ("").
+                    description: Row prefixes to be included in the AuthorizedView.
+                      To provide access to all rows, include the empty string as a
+                      prefix ("").
                     items:
                       format: byte
                       type: string
@@ -116,6 +109,20 @@ spec:
                 type: object
               tableRef:
                 description: TableRef is a reference to a BigtableTable.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: A reference to an externally managed BigtableTable
@@ -136,9 +143,8 @@ spec:
               machine state of BigtableAuthorizedView
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -150,9 +156,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

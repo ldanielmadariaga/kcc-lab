@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: stable
@@ -22,6 +22,7 @@ spec:
     - gcpcomputesecuritypolicy
     - gcpcomputesecuritypolicies
     singular: computesecuritypolicy
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -35,19 +36,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -133,11 +129,24 @@ spec:
                   redirectSiteKeyRef:
                     description: RecaptchaEnterpriseKeyRef is a reference to a GCP
                       RecaptchaEnterpriseKey.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
-                        description: |-
-                          A reference to an externally managed RecaptchaEnterpriseKey resource.
-                          Should be in the format "projects/{{projectID}}/keys/{{keyID}}".
+                        description: A reference to an externally managed RecaptchaEnterpriseKey
+                          resource. Should be in the format "projects/{{projectID}}/keys/{{keyID}}".
                         type: string
                       name:
                         description: The name of a RecaptchaEnterpriseKey resource.
@@ -237,9 +246,12 @@ spec:
                               type: string
                           type: object
                         versionedExpr:
-                          description: |-
-                            Preconfigured versioned expression. If this field is specified, config must also be specified. Available preconfigured expressions along with their requirements are: SRC_IPS_V1 - must specify the corresponding src_ip_range field in config.
-                             Check the VersionedExpr enum for the list of possible values.
+                          description: 'Preconfigured versioned expression. If this
+                            field is specified, config must also be specified. Available
+                            preconfigured expressions along with their requirements
+                            are: SRC_IPS_V1 - must specify the corresponding src_ip_range
+                            field in config. Check the VersionedExpr enum for the
+                            list of possible values.'
                           type: string
                       type: object
                     preconfiguredWafConfig:
@@ -260,9 +272,9 @@ spec:
                                 items:
                                   properties:
                                     operator:
-                                      description: |-
-                                        The match operator for the field.
-                                         Check the Op enum for the list of possible values.
+                                      description: The match operator for the field.
+                                        Check the Op enum for the list of possible
+                                        values.
                                       type: string
                                     value:
                                       description: The value of the field.
@@ -276,9 +288,9 @@ spec:
                                 items:
                                   properties:
                                     operator:
-                                      description: |-
-                                        The match operator for the field.
-                                         Check the Op enum for the list of possible values.
+                                      description: The match operator for the field.
+                                        Check the Op enum for the list of possible
+                                        values.
                                       type: string
                                     value:
                                       description: The value of the field.
@@ -293,9 +305,9 @@ spec:
                                 items:
                                   properties:
                                     operator:
-                                      description: |-
-                                        The match operator for the field.
-                                         Check the Op enum for the list of possible values.
+                                      description: The match operator for the field.
+                                        Check the Op enum for the list of possible
+                                        values.
                                       type: string
                                     value:
                                       description: The value of the field.
@@ -310,9 +322,9 @@ spec:
                                 items:
                                   properties:
                                     operator:
-                                      description: |-
-                                        The match operator for the field.
-                                         Check the Op enum for the list of possible values.
+                                      description: The match operator for the field.
+                                        Check the Op enum for the list of possible
+                                        values.
                                       type: string
                                     value:
                                       description: The value of the field.
@@ -382,9 +394,42 @@ spec:
                             only.
                           type: string
                         enforceOnKey:
-                          description: |-
-                            Determines the key to enforce the rate_limit_threshold on. Possible values are: - ALL: A single rate limit threshold is applied to all the requests matching this rule. This is the default value if "enforceOnKey" is not configured. - IP: The source IP address of the request is the key. Each IP has this limit enforced separately. - HTTP_HEADER: The value of the HTTP header whose name is configured under "enforceOnKeyName". The key value is truncated to the first 128 bytes of the header value. If no such header is present in the request, the key type defaults to ALL. - XFF_IP: The first IP address (i.e. the originating client IP address) specified in the list of IPs under X-Forwarded-For HTTP header. If no such header is present or the value is not a valid IP, the key defaults to the source IP address of the request i.e. key type IP. - HTTP_COOKIE: The value of the HTTP cookie whose name is configured under "enforceOnKeyName". The key value is truncated to the first 128 bytes of the cookie value. If no such cookie is present in the request, the key type defaults to ALL. - HTTP_PATH: The URL path of the HTTP request. The key value is truncated to the first 128 bytes. - SNI: Server name indication in the TLS session of the HTTPS request. The key value is truncated to the first 128 bytes. The key type defaults to ALL on a HTTP session. - REGION_CODE: The country/region from which the request originates. - TLS_JA3_FINGERPRINT: JA3 TLS/SSL fingerprint if the client connects using HTTPS, HTTP/2 or HTTP/3. If not available, the key type defaults to ALL. - USER_IP: The IP address of the originating client, which is resolved based on "userIpRequestHeaders" configured with the security policy. If there is no "userIpRequestHeaders" configuration or an IP address cannot be resolved from it, the key type defaults to IP. - TLS_JA4_FINGERPRINT: JA4 TLS/SSL fingerprint if the client connects using HTTPS, HTTP/2 or HTTP/3. If not available, the key type defaults to ALL.
-                             Check the EnforceOnKey enum for the list of possible values.
+                          description: 'Determines the key to enforce the rate_limit_threshold
+                            on. Possible values are: - ALL: A single rate limit threshold
+                            is applied to all the requests matching this rule. This
+                            is the default value if "enforceOnKey" is not configured.
+                            - IP: The source IP address of the request is the key.
+                            Each IP has this limit enforced separately. - HTTP_HEADER:
+                            The value of the HTTP header whose name is configured
+                            under "enforceOnKeyName". The key value is truncated to
+                            the first 128 bytes of the header value. If no such header
+                            is present in the request, the key type defaults to ALL.
+                            - XFF_IP: The first IP address (i.e. the originating client
+                            IP address) specified in the list of IPs under X-Forwarded-For
+                            HTTP header. If no such header is present or the value
+                            is not a valid IP, the key defaults to the source IP address
+                            of the request i.e. key type IP. - HTTP_COOKIE: The value
+                            of the HTTP cookie whose name is configured under "enforceOnKeyName".
+                            The key value is truncated to the first 128 bytes of the
+                            cookie value. If no such cookie is present in the request,
+                            the key type defaults to ALL. - HTTP_PATH: The URL path
+                            of the HTTP request. The key value is truncated to the
+                            first 128 bytes. - SNI: Server name indication in the
+                            TLS session of the HTTPS request. The key value is truncated
+                            to the first 128 bytes. The key type defaults to ALL on
+                            a HTTP session. - REGION_CODE: The country/region from
+                            which the request originates. - TLS_JA3_FINGERPRINT: JA3
+                            TLS/SSL fingerprint if the client connects using HTTPS,
+                            HTTP/2 or HTTP/3. If not available, the key type defaults
+                            to ALL. - USER_IP: The IP address of the originating client,
+                            which is resolved based on "userIpRequestHeaders" configured
+                            with the security policy. If there is no "userIpRequestHeaders"
+                            configuration or an IP address cannot be resolved from
+                            it, the key type defaults to IP. - TLS_JA4_FINGERPRINT:
+                            JA4 TLS/SSL fingerprint if the client connects using HTTPS,
+                            HTTP/2 or HTTP/3. If not available, the key type defaults
+                            to ALL. Check the EnforceOnKey enum for the list of possible
+                            values.'
                           type: string
                         enforceOnKeyConfigs:
                           description: If specified, any combination of values of
@@ -402,9 +447,46 @@ spec:
                                   value is taken as the key value.'
                                 type: string
                               enforceOnKeyType:
-                                description: |-
-                                  Determines the key to enforce the rate_limit_threshold on. Possible values are: - ALL: A single rate limit threshold is applied to all the requests matching this rule. This is the default value if "enforceOnKeyConfigs" is not configured. - IP: The source IP address of the request is the key. Each IP has this limit enforced separately. - HTTP_HEADER: The value of the HTTP header whose name is configured under "enforceOnKeyName". The key value is truncated to the first 128 bytes of the header value. If no such header is present in the request, the key type defaults to ALL. - XFF_IP: The first IP address (i.e. the originating client IP address) specified in the list of IPs under X-Forwarded-For HTTP header. If no such header is present or the value is not a valid IP, the key defaults to the source IP address of the request i.e. key type IP. - HTTP_COOKIE: The value of the HTTP cookie whose name is configured under "enforceOnKeyName". The key value is truncated to the first 128 bytes of the cookie value. If no such cookie is present in the request, the key type defaults to ALL. - HTTP_PATH: The URL path of the HTTP request. The key value is truncated to the first 128 bytes. - SNI: Server name indication in the TLS session of the HTTPS request. The key value is truncated to the first 128 bytes. The key type defaults to ALL on a HTTP session. - REGION_CODE: The country/region from which the request originates. - TLS_JA3_FINGERPRINT: JA3 TLS/SSL fingerprint if the client connects using HTTPS, HTTP/2 or HTTP/3. If not available, the key type defaults to ALL. - USER_IP: The IP address of the originating client, which is resolved based on "userIpRequestHeaders" configured with the security policy. If there is no "userIpRequestHeaders" configuration or an IP address cannot be resolved from it, the key type defaults to IP. - TLS_JA4_FINGERPRINT: JA4 TLS/SSL fingerprint if the client connects using HTTPS, HTTP/2 or HTTP/3. If not available, the key type defaults to ALL.
-                                   Check the EnforceOnKeyType enum for the list of possible values.
+                                description: 'Determines the key to enforce the rate_limit_threshold
+                                  on. Possible values are: - ALL: A single rate limit
+                                  threshold is applied to all the requests matching
+                                  this rule. This is the default value if "enforceOnKeyConfigs"
+                                  is not configured. - IP: The source IP address of
+                                  the request is the key. Each IP has this limit enforced
+                                  separately. - HTTP_HEADER: The value of the HTTP
+                                  header whose name is configured under "enforceOnKeyName".
+                                  The key value is truncated to the first 128 bytes
+                                  of the header value. If no such header is present
+                                  in the request, the key type defaults to ALL. -
+                                  XFF_IP: The first IP address (i.e. the originating
+                                  client IP address) specified in the list of IPs
+                                  under X-Forwarded-For HTTP header. If no such header
+                                  is present or the value is not a valid IP, the key
+                                  defaults to the source IP address of the request
+                                  i.e. key type IP. - HTTP_COOKIE: The value of the
+                                  HTTP cookie whose name is configured under "enforceOnKeyName".
+                                  The key value is truncated to the first 128 bytes
+                                  of the cookie value. If no such cookie is present
+                                  in the request, the key type defaults to ALL. -
+                                  HTTP_PATH: The URL path of the HTTP request. The
+                                  key value is truncated to the first 128 bytes. -
+                                  SNI: Server name indication in the TLS session of
+                                  the HTTPS request. The key value is truncated to
+                                  the first 128 bytes. The key type defaults to ALL
+                                  on a HTTP session. - REGION_CODE: The country/region
+                                  from which the request originates. - TLS_JA3_FINGERPRINT:
+                                  JA3 TLS/SSL fingerprint if the client connects using
+                                  HTTPS, HTTP/2 or HTTP/3. If not available, the key
+                                  type defaults to ALL. - USER_IP: The IP address
+                                  of the originating client, which is resolved based
+                                  on "userIpRequestHeaders" configured with the security
+                                  policy. If there is no "userIpRequestHeaders" configuration
+                                  or an IP address cannot be resolved from it, the
+                                  key type defaults to IP. - TLS_JA4_FINGERPRINT:
+                                  JA4 TLS/SSL fingerprint if the client connects using
+                                  HTTPS, HTTP/2 or HTTP/3. If not available, the key
+                                  type defaults to ALL. Check the EnforceOnKeyType
+                                  enum for the list of possible values.'
                                 type: string
                             type: object
                           type: array
@@ -437,9 +519,11 @@ spec:
                                 specified for GOOGLE_RECAPTCHA.
                               type: string
                             type:
-                              description: |-
-                                Type of the redirect action. Possible values are: - GOOGLE_RECAPTCHA: redirect to reCAPTCHA for manual challenge assessment. - EXTERNAL_302: redirect to a different URL via a 302 response.
-                                 Check the Type enum for the list of possible values.
+                              description: 'Type of the redirect action. Possible
+                                values are: - GOOGLE_RECAPTCHA: redirect to reCAPTCHA
+                                for manual challenge assessment. - EXTERNAL_302: redirect
+                                to a different URL via a 302 response. Check the Type
+                                enum for the list of possible values.'
                               type: string
                           required:
                           - type
@@ -476,9 +560,11 @@ spec:
                             GOOGLE_RECAPTCHA.
                           type: string
                         type:
-                          description: |-
-                            Type of the redirect action. Possible values are: - GOOGLE_RECAPTCHA: redirect to reCAPTCHA for manual challenge assessment. - EXTERNAL_302: redirect to a different URL via a 302 response.
-                             Check the Type enum for the list of possible values.
+                          description: 'Type of the redirect action. Possible values
+                            are: - GOOGLE_RECAPTCHA: redirect to reCAPTCHA for manual
+                            challenge assessment. - EXTERNAL_302: redirect to a different
+                            URL via a 302 response. Check the Type enum for the list
+                            of possible values.'
                           type: string
                       required:
                       - type
@@ -497,9 +583,8 @@ spec:
               machine state of ComputeSecurityPolicy
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -511,9 +596,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

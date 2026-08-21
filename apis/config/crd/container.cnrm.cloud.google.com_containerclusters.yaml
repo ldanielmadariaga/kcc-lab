@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: stable
@@ -22,6 +22,7 @@ spec:
     - gcpcontainercluster
     - gcpcontainerclusters
     singular: containercluster
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
         description: ContainerCluster is the Schema for the ContainerCluster API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -247,13 +243,26 @@ spec:
                     description: Contains defaults for a node pool created by NAP.
                     properties:
                       bootDiskKMSKeyRef:
-                        description: |-
-                          Immutable. The Customer Managed Encryption Key used to encrypt the
-                          boot disk attached to each node in the node pool.
+                        description: Immutable. The Customer Managed Encryption Key
+                          used to encrypt the boot disk attached to each node in the
+                          node pool.
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
                         properties:
                           external:
-                            description: |-
-                              A reference to an externally managed KMSCryptoKey.
+                            description: A reference to an externally managed KMSCryptoKey.
                               Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
                             type: string
                           name:
@@ -318,6 +327,20 @@ spec:
                           type: string
                         type: array
                       serviceAccountRef:
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
                         properties:
                           external:
                             description: The `email` field of an `IAMServiceAccount`
@@ -368,9 +391,10 @@ spec:
                                       should be (0.0, 1.0].
                                     type: number
                                   batchSoakDuration:
-                                    description: |-
-                                      Soak time after each batch gets drained.
-                                      A duration in seconds with up to nine fractional digits, ending with 's'. Example: "3.5s".
+                                    description: 'Soak time after each batch gets
+                                      drained. A duration in seconds with up to nine
+                                      fractional digits, ending with ''s''. Example:
+                                      "3.5s".'
                                     type: string
                                 type: object
                             type: object
@@ -679,11 +703,24 @@ spec:
                         subnetworkRef:
                           description: 'The subnetwork path for the additional IP
                             range. Format: projects/{project}/regions/{region}/subnetworks/{subnetwork}.'
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
                           properties:
                             external:
-                              description: |-
-                                A reference to an externally managed ComputeSubnetwork resource.
-                                Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
+                              description: A reference to an externally managed ComputeSubnetwork
+                                resource. Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
                               type: string
                             name:
                               description: The name of a ComputeSubnetwork resource.
@@ -873,6 +910,17 @@ spec:
                   password:
                     description: The password to use for HTTP basic authentication
                       when accessing the Kubernetes master endpoint.
+                    oneOf:
+                    - not:
+                        required:
+                        - valueFrom
+                      required:
+                      - value
+                    - not:
+                        required:
+                        - value
+                      required:
+                      - valueFrom
                     properties:
                       value:
                         description: Value of the field. Cannot be used if 'valueFrom'
@@ -1011,11 +1059,24 @@ spec:
                 type: object
               networkRef:
                 description: ComputeNetworkRef is a reference to a GCP ComputeNetwork.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeNetwork resource.
-                      Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                    description: A reference to an externally managed ComputeNetwork
+                      resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
                     type: string
                   name:
                     description: The name of a ComputeNetwork resource.
@@ -1047,10 +1108,23 @@ spec:
                         type: integer
                     type: object
                   bootDiskKMSCryptoKeyRef:
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
-                        description: |-
-                          A reference to an externally managed KMSCryptoKey.
+                        description: A reference to an externally managed KMSCryptoKey.
                           Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
                         type: string
                       name:
@@ -1101,6 +1175,20 @@ spec:
                                     secretRef:
                                       description: SecretRef is a reference to a SecretManagerSecretVersion
                                         resource.
+                                      oneOf:
+                                      - not:
+                                          required:
+                                          - external
+                                        required:
+                                        - name
+                                      - not:
+                                          anyOf:
+                                          - required:
+                                            - name
+                                          - required:
+                                            - namespace
+                                        required:
+                                        - external
                                       properties:
                                         external:
                                           description: ' If provided must be in the
@@ -1139,6 +1227,20 @@ spec:
                                         secretRef:
                                           description: Reference to SecretManagerSecretVersion
                                             for the CA certificate.
+                                          oneOf:
+                                          - not:
+                                              required:
+                                              - external
+                                            required:
+                                            - name
+                                          - not:
+                                              anyOf:
+                                              - required:
+                                                - name
+                                              - required:
+                                                - namespace
+                                            required:
+                                            - external
                                           properties:
                                             external:
                                               description: ' If provided must be in
@@ -1174,6 +1276,20 @@ spec:
                                             secretRef:
                                               description: Reference to SecretManagerSecretVersion
                                                 for the client certificate.
+                                              oneOf:
+                                              - not:
+                                                  required:
+                                                  - external
+                                                required:
+                                                - name
+                                              - not:
+                                                  anyOf:
+                                                  - required:
+                                                    - name
+                                                  - required:
+                                                    - namespace
+                                                required:
+                                                - external
                                               properties:
                                                 external:
                                                   description: ' If provided must
@@ -1198,6 +1314,20 @@ spec:
                                             secretRef:
                                               description: Reference to SecretManagerSecretVersion
                                                 for the client key.
+                                              oneOf:
+                                              - not:
+                                                  required:
+                                                  - external
+                                                required:
+                                                - name
+                                              - not:
+                                                  anyOf:
+                                                  - required:
+                                                    - name
+                                                  - required:
+                                                    - namespace
+                                                required:
+                                                - external
                                               properties:
                                                 external:
                                                   description: ' If provided must
@@ -1480,10 +1610,23 @@ spec:
                       newer CPU platform.
                     type: string
                   nodeGroupRef:
-                    description: |-
-                      Immutable. Setting this field will assign instances
+                    description: Immutable. Setting this field will assign instances
                       of this pool to run on the specified node group. This is useful
                       for running workloads on sole tenant nodes.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
                         description: A reference to an externally managed ComputeNodeGroup
@@ -1550,6 +1693,20 @@ spec:
                     - sandboxType
                     type: object
                   serviceAccountRef:
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
                         description: The `email` field of an `IAMServiceAccount` resource.
@@ -1728,6 +1885,20 @@ spec:
                         type: object
                       topicRef:
                         description: The PubSubTopic to send the notification to.
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
                         properties:
                           external:
                             description: A reference to an externally managed PubSubTopic
@@ -1800,14 +1971,26 @@ spec:
                       endpoint.
                     type: string
                   privateEndpointSubnetworkRef:
-                    description: |-
-                      Immutable. Subnetwork in cluster's network where master's endpoint
-                      will be provisioned.
+                    description: Immutable. Subnetwork in cluster's network where
+                      master's endpoint will be provisioned.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
-                        description: |-
-                          A reference to an externally managed ComputeSubnetwork resource.
-                          Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
+                        description: A reference to an externally managed ComputeSubnetwork
+                          resource. Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
                         type: string
                       name:
                         description: The name of a ComputeSubnetwork resource.
@@ -1852,12 +2035,13 @@ spec:
                   it. Instead, use the "UNSPECIFIED" channel.
                 properties:
                   channel:
-                    description: |-
-                      The selected release channel. Accepted values are:
-                      * UNSPECIFIED: Not set.
-                      * RAPID: Weekly upgrade cadence; Early testers and developers who requires new features.
-                      * REGULAR: Multiple per month upgrade cadence; Production users who need features not yet offered in the Stable channel.
-                      * STABLE: Every few months upgrade cadence; Production users who need stability above all else, and for whom frequent upgrades are too risky.
+                    description: 'The selected release channel. Accepted values are:
+                      * UNSPECIFIED: Not set. * RAPID: Weekly upgrade cadence; Early
+                      testers and developers who requires new features. * REGULAR:
+                      Multiple per month upgrade cadence; Production users who need
+                      features not yet offered in the Stable channel. * STABLE: Every
+                      few months upgrade cadence; Production users who need stability
+                      above all else, and for whom frequent upgrades are too risky.'
                     type: string
                 required:
                 - channel
@@ -1923,11 +2107,24 @@ spec:
                 type: object
               subnetworkRef:
                 description: ComputeSubnetworkRef is a reference to a GCP ComputeSubnetwork.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeSubnetwork resource.
-                      Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
+                    description: A reference to an externally managed ComputeSubnetwork
+                      resource. Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
                     type: string
                   name:
                     description: The name of a ComputeSubnetwork resource.
@@ -1951,9 +2148,10 @@ spec:
                   in GCP IAM policies.
                 properties:
                   identityNamespace:
-                    description: |-
-                      DEPRECATED. This field will be removed in a future major release as it has been deprecated in the API. Use `workloadPool` instead; `workloadPool` field will supersede this field.
-                      Enables workload identity.
+                    description: DEPRECATED. This field will be removed in a future
+                      major release as it has been deprecated in the API. Use `workloadPool`
+                      instead; `workloadPool` field will supersede this field. Enables
+                      workload identity.
                     type: string
                   workloadPool:
                     description: The workload pool to attach all Kubernetes service
@@ -1966,9 +2164,8 @@ spec:
           status:
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  ContainerCluster's current state.
+                description: Conditions represent the latest available observations
+                  of the ContainerCluster's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -1980,9 +2177,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -21,6 +21,7 @@ spec:
     - gcpbigquerytable
     - gcpbigquerytables
     singular: bigquerytable
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
         description: BigQueryTable is the Schema for the BigQueryTable API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -65,20 +61,32 @@ spec:
             description: BigQueryTableSpec defines the desired state of BigQueryTable
             properties:
               clustering:
-                description: |-
-                  Clustering specification for the table. Must be specified with time-based
-                   partitioning, data in the table will be first partitioned and subsequently
-                   clustered.
+                description: Clustering specification for the table. Must be specified
+                  with time-based partitioning, data in the table will be first partitioned
+                  and subsequently clustered.
                 items:
                   type: string
                 type: array
               datasetRef:
                 description: DatasetRef is a reference to a BigQueryDataset.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally-managed BigQueryDataset resource.
-                      Should be in the format "projects/{{projectID}}/datasets/{{datasetID}}".
+                    description: A reference to an externally-managed BigQueryDataset
+                      resource. Should be in the format "projects/{{projectID}}/datasets/{{datasetID}}".
                     type: string
                   name:
                     description: The name of a BigQueryDataset resource.
@@ -94,14 +102,27 @@ spec:
                 description: Custom encryption configuration (e.g., Cloud KMS keys).
                 properties:
                   kmsKeyRef:
-                    description: |-
-                      Describes the Cloud KMS encryption key that will be used to
-                       protect destination BigQuery table. The BigQuery Service Account associated
-                       with your project requires access to this encryption key.
+                    description: Describes the Cloud KMS encryption key that will
+                      be used to protect destination BigQuery table. The BigQuery
+                      Service Account associated with your project requires access
+                      to this encryption key.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
-                        description: |-
-                          A reference to an externally managed KMSCryptoKey.
+                        description: A reference to an externally managed KMSCryptoKey.
                           Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
                         type: string
                       name:
@@ -112,115 +133,108 @@ spec:
                         type: string
                     type: object
                   kmsKeyVersion:
-                    description: |-
-                      DEPRECATED.
-                      // The table will be encrypted with the primary version of Cloud KMS encryption key.
-                      // The self link or full name of the kms key version used to encrypt this table.
+                    description: DEPRECATED. // The table will be encrypted with the
+                      primary version of Cloud KMS encryption key. // The self link
+                      or full name of the kms key version used to encrypt this table.
                     type: string
                 required:
                 - kmsKeyRef
                 type: object
               expirationTime:
-                description: |-
-                  The time when this table expires, in milliseconds since the
-                   epoch. If not present, the table will persist indefinitely. Expired tables
-                   will be deleted and their storage reclaimed.  The defaultTableExpirationMs
-                   property of the encapsulating dataset can be used to set a default
-                   expirationTime on newly created tables.
+                description: The time when this table expires, in milliseconds since
+                  the epoch. If not present, the table will persist indefinitely.
+                  Expired tables will be deleted and their storage reclaimed.  The
+                  defaultTableExpirationMs property of the encapsulating dataset can
+                  be used to set a default expirationTime on newly created tables.
                 format: int64
                 type: integer
               externalDataConfiguration:
-                description: |-
-                  Describes the data format, location, and other properties of
-                   a table stored outside of BigQuery. By defining these properties, the data
-                   source can then be queried as if it were a standard BigQuery table.
+                description: Describes the data format, location, and other properties
+                  of a table stored outside of BigQuery. By defining these properties,
+                  the data source can then be queried as if it were a standard BigQuery
+                  table.
                 properties:
                   autodetect:
-                    description: |-
-                      Try to detect schema and format options automatically.
-                       Any option specified explicitly will be honored.
+                    description: Try to detect schema and format options automatically.
+                      Any option specified explicitly will be honored.
                     type: boolean
                   avroOptions:
                     description: Additional properties to set if sourceFormat is set
                       to AVRO.
                     properties:
                       useAvroLogicalTypes:
-                        description: |-
-                          If sourceFormat is set to "AVRO", indicates whether to interpret
-                           logical types as the corresponding BigQuery data type (for example,
-                           TIMESTAMP), instead of using the raw type (for example, INTEGER).
+                        description: If sourceFormat is set to "AVRO", indicates whether
+                          to interpret logical types as the corresponding BigQuery
+                          data type (for example, TIMESTAMP), instead of using the
+                          raw type (for example, INTEGER).
                         type: boolean
                     required:
                     - useAvroLogicalTypes
                     type: object
                   compression:
-                    description: |-
-                      The compression type of the data source.
-                       Possible values include GZIP and NONE. The default value is NONE.
-                       This setting is ignored for Google Cloud Bigtable, Google Cloud Datastore
-                       backups, Avro, ORC and Parquet
-                       formats. An empty string is an invalid value.
+                    description: The compression type of the data source. Possible
+                      values include GZIP and NONE. The default value is NONE. This
+                      setting is ignored for Google Cloud Bigtable, Google Cloud Datastore
+                      backups, Avro, ORC and Parquet formats. An empty string is an
+                      invalid value.
                     type: string
                   connectionId:
-                    description: |-
-                      The connection specifying the credentials to be used to read
-                       external storage, such as Azure Blob, Cloud Storage, or S3. The
-                       connection_id can have the form
-                       `{project_id}.{location_id};{connection_id}` or
-                       `projects/{project_id}/locations/{location_id}/connections/{connection_id}`.
+                    description: The connection specifying the credentials to be used
+                      to read external storage, such as Azure Blob, Cloud Storage,
+                      or S3. The connection_id can have the form `{project_id}.{location_id};{connection_id}`
+                      or `projects/{project_id}/locations/{location_id}/connections/{connection_id}`.
                     type: string
                   csvOptions:
                     description: Additional properties to set if sourceFormat is set
                       to CSV.
                     properties:
                       allowJaggedRows:
-                        description: |-
-                          Indicates if BigQuery should accept rows that are missing
-                           trailing optional columns. If true, BigQuery treats missing trailing
-                           columns as null values.
-                           If false, records with missing trailing columns are treated as bad records,
-                           and if there are too many bad records, an invalid error is returned in the
-                           job result. The default value is false.
+                        description: Indicates if BigQuery should accept rows that
+                          are missing trailing optional columns. If true, BigQuery
+                          treats missing trailing columns as null values. If false,
+                          records with missing trailing columns are treated as bad
+                          records, and if there are too many bad records, an invalid
+                          error is returned in the job result. The default value is
+                          false.
                         type: boolean
                       allowQuotedNewlines:
-                        description: |-
-                          Indicates if BigQuery should allow quoted data sections that
-                           contain newline characters in a CSV file. The default value is false.
+                        description: Indicates if BigQuery should allow quoted data
+                          sections that contain newline characters in a CSV file.
+                          The default value is false.
                         type: boolean
                       encoding:
-                        description: |-
-                          The character encoding of the data.
-                           The supported values are UTF-8, ISO-8859-1, UTF-16BE, UTF-16LE, UTF-32BE,
-                           and UTF-32LE.  The default value is UTF-8.
-                           BigQuery decodes the data after the raw, binary data has been split using
-                           the values of the quote and fieldDelimiter properties.
+                        description: The character encoding of the data. The supported
+                          values are UTF-8, ISO-8859-1, UTF-16BE, UTF-16LE, UTF-32BE,
+                          and UTF-32LE.  The default value is UTF-8. BigQuery decodes
+                          the data after the raw, binary data has been split using
+                          the values of the quote and fieldDelimiter properties.
                         type: string
                       fieldDelimiter:
-                        description: |-
-                          The separator character for fields in a CSV file. The separator
-                           is interpreted as a single byte. For files encoded in ISO-8859-1, any
-                           single character can be used as a separator. For files encoded in UTF-8,
-                           characters represented in decimal range 1-127 (U+0001-U+007F) can be used
-                           without any modification. UTF-8 characters encoded with multiple bytes
-                           (i.e. U+0080 and above) will have only the first byte used for separating
-                           fields. The remaining bytes will be treated as a part of the field.
-                           BigQuery also supports the escape sequence "\t" (U+0009) to specify a tab
-                           separator. The default value is comma (",", U+002C).
+                        description: The separator character for fields in a CSV file.
+                          The separator is interpreted as a single byte. For files
+                          encoded in ISO-8859-1, any single character can be used
+                          as a separator. For files encoded in UTF-8, characters represented
+                          in decimal range 1-127 (U+0001-U+007F) can be used without
+                          any modification. UTF-8 characters encoded with multiple
+                          bytes (i.e. U+0080 and above) will have only the first byte
+                          used for separating fields. The remaining bytes will be
+                          treated as a part of the field. BigQuery also supports the
+                          escape sequence "\t" (U+0009) to specify a tab separator.
+                          The default value is comma (",", U+002C).
                         type: string
                       quote:
-                        description: |-
-                          The value that is used to quote data sections in a CSV file.
-                           BigQuery converts the string to ISO-8859-1 encoding, and then uses the
-                           first byte of the encoded string to split the data in its raw, binary
-                           state.
-                           The default value is a double-quote (").
-                           If your data does not contain quoted sections,
-                           set the property value to an empty string.
-                           If your data contains quoted newline characters, you must also set the
-                           allowQuotedNewlines property to true.
-                           To include the specific quote character within a quoted value, precede it
-                           with an additional matching quote character. For example, if you want to
-                           escape the default character  ' " ', use ' "" '.
+                        description: The value that is used to quote data sections
+                          in a CSV file. BigQuery converts the string to ISO-8859-1
+                          encoding, and then uses the first byte of the encoded string
+                          to split the data in its raw, binary state. The default
+                          value is a double-quote ("). If your data does not contain
+                          quoted sections, set the property value to an empty string.
+                          If your data contains quoted newline characters, you must
+                          also set the allowQuotedNewlines property to true. To include
+                          the specific quote character within a quoted value, precede
+                          it with an additional matching quote character. For example,
+                          if you want to escape the default character  ' " ', use
+                          ' "" '.
                         type: string
                       skipLeadingRows:
                         description: |-
@@ -243,44 +257,42 @@ spec:
                     - quote
                     type: object
                   fileSetSpecType:
-                    description: |-
-                      Specifies how source URIs are interpreted for constructing the
-                       file set to load.  By default source URIs are expanded against the
-                       underlying storage.  Other options include specifying manifest files. Only
-                       applicable to object storage systems.
+                    description: Specifies how source URIs are interpreted for constructing
+                      the file set to load.  By default source URIs are expanded against
+                      the underlying storage.  Other options include specifying manifest
+                      files. Only applicable to object storage systems.
                     type: string
                   googleSheetsOptions:
                     description: Additional options if sourceFormat is set to GOOGLE_SHEETS.
                     properties:
                       range:
-                        description: |-
-                          Range of a sheet to query from. Only used when non-empty.
-                           Typical format: sheet_name!top_left_cell_id:bottom_right_cell_id
-                           For example: sheet1!A1:B20
+                        description: 'Range of a sheet to query from. Only used when
+                          non-empty. Typical format: sheet_name!top_left_cell_id:bottom_right_cell_id
+                          For example: sheet1!A1:B20'
                         type: string
                       skipLeadingRows:
-                        description: |-
-                          The number of rows at the top of a sheet that BigQuery will skip
-                           when reading the data. The default value is 0. This property is useful if
-                           you have header rows that should be skipped. When autodetect is on,
-                           the behavior is the following:
-                           * skipLeadingRows unspecified - Autodetect tries to detect headers in the
-                             first row. If they are not detected, the row is read as data. Otherwise
-                             data is read starting from the second row.
-                           * skipLeadingRows is 0 - Instructs autodetect that there are no headers and
-                             data should be read starting from the first row.
-                           * skipLeadingRows = N > 0 - Autodetect skips N-1 rows and tries to detect
-                             headers in row N. If headers are not detected, row N is just skipped.
-                             Otherwise row N is used to extract column names for the detected schema.
+                        description: 'The number of rows at the top of a sheet that
+                          BigQuery will skip when reading the data. The default value
+                          is 0. This property is useful if you have header rows that
+                          should be skipped. When autodetect is on, the behavior is
+                          the following: * skipLeadingRows unspecified - Autodetect
+                          tries to detect headers in the first row. If they are not
+                          detected, the row is read as data. Otherwise data is read
+                          starting from the second row. * skipLeadingRows is 0 - Instructs
+                          autodetect that there are no headers and data should be
+                          read starting from the first row. * skipLeadingRows = N
+                          > 0 - Autodetect skips N-1 rows and tries to detect headers
+                          in row N. If headers are not detected, row N is just skipped.
+                          Otherwise row N is used to extract column names for the
+                          detected schema.'
                         format: int64
                         type: integer
                     type: object
                   hivePartitioningOptions:
-                    description: |-
-                      When set, configures hive partitioning support. Not all storage
-                       formats support hive partitioning -- requesting hive partitioning on an
-                       unsupported format will lead to an error, as will providing an invalid
-                       specification.
+                    description: When set, configures hive partitioning support. Not
+                      all storage formats support hive partitioning -- requesting
+                      hive partitioning on an unsupported format will lead to an error,
+                      as will providing an invalid specification.
                     properties:
                       mode:
                         description: |-
@@ -337,48 +349,40 @@ spec:
                         type: string
                     type: object
                   ignoreUnknownValues:
-                    description: |-
-                      Indicates if BigQuery should allow extra values that are not
-                       represented in the table schema.
-                       If true, the extra values are ignored.
-                       If false, records with extra columns are treated as bad records, and if
-                       there are too many bad records, an invalid error is returned in the job
-                       result.
-                       The default value is false.
-                       The sourceFormat property determines what BigQuery treats as an extra
-                       value:
-                         CSV: Trailing columns
-                         JSON: Named values that don't match any column names
-                         Google Cloud Bigtable: This setting is ignored.
-                         Google Cloud Datastore backups: This setting is ignored.
-                         Avro: This setting is ignored.
-                         ORC: This setting is ignored.
-                         Parquet: This setting is ignored.
+                    description: 'Indicates if BigQuery should allow extra values
+                      that are not represented in the table schema. If true, the extra
+                      values are ignored. If false, records with extra columns are
+                      treated as bad records, and if there are too many bad records,
+                      an invalid error is returned in the job result. The default
+                      value is false. The sourceFormat property determines what BigQuery
+                      treats as an extra value: CSV: Trailing columns JSON: Named
+                      values that don''t match any column names Google Cloud Bigtable:
+                      This setting is ignored. Google Cloud Datastore backups: This
+                      setting is ignored. Avro: This setting is ignored. ORC: This
+                      setting is ignored. Parquet: This setting is ignored.'
                     type: boolean
                   jsonOptions:
                     description: Additional properties to set if sourceFormat is set
                       to JSON.
                     properties:
                       encoding:
-                        description: |-
-                          The character encoding of the data.
-                           The supported values are UTF-8, UTF-16BE, UTF-16LE, UTF-32BE,
-                           and UTF-32LE.  The default value is UTF-8.
+                        description: The character encoding of the data. The supported
+                          values are UTF-8, UTF-16BE, UTF-16LE, UTF-32BE, and UTF-32LE.  The
+                          default value is UTF-8.
                         type: string
                     type: object
                   maxBadRecords:
-                    description: |-
-                      The maximum number of bad records that BigQuery can ignore when
-                       reading data. If the number of bad records exceeds this value, an invalid
-                       error is returned in the job result. The default value is 0, which requires
-                       that all records are valid. This setting is ignored for Google Cloud
-                       Bigtable, Google Cloud Datastore backups, Avro, ORC and Parquet formats.
+                    description: The maximum number of bad records that BigQuery can
+                      ignore when reading data. If the number of bad records exceeds
+                      this value, an invalid error is returned in the job result.
+                      The default value is 0, which requires that all records are
+                      valid. This setting is ignored for Google Cloud Bigtable, Google
+                      Cloud Datastore backups, Avro, ORC and Parquet formats.
                     format: int64
                     type: integer
                   metadataCacheMode:
-                    description: |-
-                      Metadata Cache Mode for the table. Set this to enable caching of
-                       metadata from external data source.
+                    description: Metadata Cache Mode for the table. Set this to enable
+                      caching of metadata from external data source.
                     type: string
                   objectMetadata:
                     description: |-
@@ -393,28 +397,24 @@ spec:
                       to PARQUET.
                     properties:
                       enableListInference:
-                        description: |-
-                          Indicates whether to use schema inference specifically for
-                           Parquet LIST logical type.
+                        description: Indicates whether to use schema inference specifically
+                          for Parquet LIST logical type.
                         type: boolean
                       enumAsString:
-                        description: |-
-                          Indicates whether to infer Parquet ENUM logical type as STRING
-                           instead of BYTES by default.
+                        description: Indicates whether to infer Parquet ENUM logical
+                          type as STRING instead of BYTES by default.
                         type: boolean
                     type: object
                   referenceFileSchemaUri:
-                    description: |-
-                      When creating an external table, the user can provide a reference
-                       file with the table schema. This is enabled for the following formats:
-                       AVRO, PARQUET, ORC.
+                    description: 'When creating an external table, the user can provide
+                      a reference file with the table schema. This is enabled for
+                      the following formats: AVRO, PARQUET, ORC.'
                     type: string
                   schema:
-                    description: |-
-                      The schema for the data.
-                       Schema is required for CSV and JSON formats if autodetect is not on.
-                       Schema is disallowed for Google Cloud Bigtable, Cloud Datastore backups,
-                       Avro, ORC and Parquet formats.
+                    description: The schema for the data. Schema is required for CSV
+                      and JSON formats if autodetect is not on. Schema is disallowed
+                      for Google Cloud Bigtable, Cloud Datastore backups, Avro, ORC
+                      and Parquet formats.
                     type: string
                   sourceFormat:
                     description: Please see sourceFormat under ExternalDataConfiguration
@@ -438,57 +438,51 @@ spec:
               labels:
                 additionalProperties:
                   type: string
-                description: |-
-                  When using `alpha.cnrm.cloud.google.com/reconciler:direct` annotion, use labels field
-                  to set the labels for this resource on GCP.
-                  Otherwise, use .metadata.labels.
-                  Please refer to https://github.com/GoogleCloudPlatform/k8s-config-connector/issues/4274 for context.
-                  The labels associated with this table. You can use these to organize and
-                   group your tables. Label keys and values can be no longer than 63
-                   characters, can only contain lowercase letters, numeric characters,
-                   underscores and dashes. International characters are allowed. Label values
-                   are optional. Label keys must start with a letter and each label in the
-                   list must have a different key.
+                description: When using `alpha.cnrm.cloud.google.com/reconciler:direct`
+                  annotion, use labels field to set the labels for this resource on
+                  GCP. Otherwise, use .metadata.labels. Please refer to https://github.com/GoogleCloudPlatform/k8s-config-connector/issues/4274
+                  for context. The labels associated with this table. You can use
+                  these to organize and group your tables. Label keys and values can
+                  be no longer than 63 characters, can only contain lowercase letters,
+                  numeric characters, underscores and dashes. International characters
+                  are allowed. Label values are optional. Label keys must start with
+                  a letter and each label in the list must have a different key.
                 type: object
               materializedView:
                 description: The materialized view definition.
                 properties:
                   allowNonIncrementalDefinition:
-                    description: |-
-                      This option declares the intention to construct a materialized
-                       view that isn't refreshed incrementally.
+                    description: This option declares the intention to construct a
+                      materialized view that isn't refreshed incrementally.
                     type: boolean
                   enableRefresh:
-                    description: |-
-                      Enable automatic refresh of the materialized view when the base
-                       table is updated. The default value is "true".
+                    description: Enable automatic refresh of the materialized view
+                      when the base table is updated. The default value is "true".
                     type: boolean
                   query:
                     description: Required. A query whose results are persisted.
                     type: string
                   refreshIntervalMs:
-                    description: |-
-                      The maximum frequency at which this materialized view will be
-                       refreshed. The default value is "1800000" (30 minutes).
+                    description: The maximum frequency at which this materialized
+                      view will be refreshed. The default value is "1800000" (30 minutes).
                     format: int64
                     type: integer
                 required:
                 - query
                 type: object
               maxStaleness:
-                description: |-
-                  The maximum staleness of data that could be returned when the
-                   table (or stale MV) is queried. Staleness encoded as a string encoding
-                   of sql IntervalValue type.
+                description: The maximum staleness of data that could be returned
+                  when the table (or stale MV) is queried. Staleness encoded as a
+                  string encoding of sql IntervalValue type.
                 type: string
               rangePartitioning:
                 description: If specified, configures range partitioning for this
                   table.
                 properties:
                   field:
-                    description: |-
-                      Required. The name of the column to partition the table on. It must be a
-                       top-level, INT64 column whose mode is NULLABLE or REQUIRED.
+                    description: Required. The name of the column to partition the
+                      table on. It must be a top-level, INT64 column whose mode is
+                      NULLABLE or REQUIRED.
                     type: string
                   range:
                     description: Defines the ranges for range partitioning.
@@ -515,10 +509,8 @@ spec:
                 - range
                 type: object
               requirePartitionFilter:
-                description: |-
-                  If set to true, queries over this table require
-                   a partition filter that can be used for partition elimination to be
-                   specified.
+                description: If set to true, queries over this table require a partition
+                  filter that can be used for partition elimination to be specified.
                 type: boolean
               resourceID:
                 description: The BigQueryTable name. If not given, the metadata.name
@@ -531,9 +523,8 @@ spec:
                 description: Tables Primary Key and Foreign Key information
                 properties:
                   foreignKeys:
-                    description: |-
-                      Present only if the table has a foreign key.
-                       The foreign key is not enforced.
+                    description: Present only if the table has a foreign key. The
+                      foreign key is not enforced.
                     items:
                       properties:
                         columnReferences:
@@ -541,9 +532,8 @@ spec:
                             key.
                           properties:
                             referencedColumn:
-                              description: |-
-                                Required. The column in the primary key that are referenced by the
-                                 referencing_column.
+                              description: Required. The column in the primary key
+                                that are referenced by the referencing_column.
                               type: string
                             referencingColumn:
                               description: Required. The column that composes the
@@ -558,9 +548,8 @@ spec:
                             is named.
                           type: string
                         referencedTable:
-                          description: |-
-                            Required. The table that holds the primary key and is referenced by this
-                             foreign key.
+                          description: Required. The table that holds the primary
+                            key and is referenced by this foreign key.
                           properties:
                             datasetId:
                               description: The ID of the dataset containing this table.
@@ -569,14 +558,14 @@ spec:
                               description: The ID of the project containing this table.
                               type: string
                             tableId:
-                              description: |-
-                                The Id of the table. The Id can contain Unicode characters in
-                                 category L (letter), M (mark), N (number), Pc (connector, including
-                                 underscore), Pd (dash), and Zs (space). For more information, see [General
-                                 Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category).
-                                 The maximum length is 1,024 characters.  Certain operations allow suffixing
-                                 of the table Id with a partition decorator, such as
-                                 `sample_table$20190123`.
+                              description: The Id of the table. The Id can contain
+                                Unicode characters in category L (letter), M (mark),
+                                N (number), Pc (connector, including underscore),
+                                Pd (dash), and Zs (space). For more information, see
+                                [General Category](https://wikipedia.org/wiki/Unicode_character_property#General_Category).
+                                The maximum length is 1,024 characters.  Certain operations
+                                allow suffixing of the table Id with a partition decorator,
+                                such as `sample_table$20190123`.
                               type: string
                           required:
                           - datasetId
@@ -589,10 +578,9 @@ spec:
                       type: object
                     type: array
                   primaryKey:
-                    description: |-
-                      Represents a primary key constraint on a table's columns.
-                       Present only if the table has a primary key.
-                       The primary key is not enforced.
+                    description: Represents a primary key constraint on a table's
+                      columns. Present only if the table has a primary key. The primary
+                      key is not enforced.
                     properties:
                       columns:
                         description: Required. The columns that are composed of the
@@ -609,19 +597,17 @@ spec:
                   this table.
                 properties:
                   expirationMs:
-                    description: |-
-                      Number of milliseconds for which to keep the storage for a
-                       partition.
-                       A wrapper is used here because 0 is an invalid value.
+                    description: Number of milliseconds for which to keep the storage
+                      for a partition. A wrapper is used here because 0 is an invalid
+                      value.
                     format: int64
                     type: integer
                   field:
-                    description: |-
-                      Optional. Immutable. If not set, the table is partitioned by pseudo
-                       column '_PARTITIONTIME'; if set, the table is partitioned by this field.
-                       The field must be a top-level TIMESTAMP or DATE field. Its mode must be
-                       NULLABLE or REQUIRED.
-                       A wrapper is used here because an empty string is an invalid value.
+                    description: Optional. Immutable. If not set, the table is partitioned
+                      by pseudo column '_PARTITIONTIME'; if set, the table is partitioned
+                      by this field. The field must be a top-level TIMESTAMP or DATE
+                      field. Its mode must be NULLABLE or REQUIRED. A wrapper is used
+                      here because an empty string is an invalid value.
                     type: string
                   requirePartitionFilter:
                     description: DEPRECATED. This field is deprecated; please use
@@ -630,9 +616,9 @@ spec:
                       be used for partition elimination to be specified.
                     type: boolean
                   type:
-                    description: |-
-                      Required. The supported types are DAY, HOUR, MONTH, and YEAR, which will
-                       generate one partition per day, hour, month, and year, respectively.
+                    description: Required. The supported types are DAY, HOUR, MONTH,
+                      and YEAR, which will generate one partition per day, hour, month,
+                      and year, respectively.
                     type: string
                 required:
                 - type
@@ -665,9 +651,8 @@ spec:
               state of BigQueryTable
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -679,9 +664,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -693,9 +677,8 @@ spec:
                   type: object
                 type: array
               creationTime:
-                description: |-
-                  Output only. The time when this table was created, in milliseconds since
-                   the epoch.
+                description: Output only. The time when this table was created, in
+                  milliseconds since the epoch.
                 format: int64
                 type: integer
               etag:
@@ -706,32 +689,27 @@ spec:
                   GCP.
                 type: string
               lastModifiedTime:
-                description: |-
-                  Output only. The time when this table was last modified, in milliseconds
-                   since the epoch.
+                description: Output only. The time when this table was last modified,
+                  in milliseconds since the epoch.
                 format: int64
                 type: integer
               location:
-                description: |-
-                  Output only. The geographic location where the table resides. This value
-                   is inherited from the dataset.
+                description: Output only. The geographic location where the table
+                  resides. This value is inherited from the dataset.
                 type: string
               numBytes:
-                description: |-
-                  Output only. The size of this table in logical bytes, excluding any data in
-                   the streaming buffer.
+                description: Output only. The size of this table in logical bytes,
+                  excluding any data in the streaming buffer.
                 format: int64
                 type: integer
               numLongTermBytes:
-                description: |-
-                  Output only. The number of logical bytes in the table that are considered
-                   "long-term storage".
+                description: Output only. The number of logical bytes in the table
+                  that are considered "long-term storage".
                 format: int64
                 type: integer
               numRows:
-                description: |-
-                  Output only. The number of rows of data in this table, excluding any data
-                   in the streaming buffer.
+                description: Output only. The number of rows of data in this table,
+                  excluding any data in the streaming buffer.
                 format: int64
                 type: integer
               observedGeneration:

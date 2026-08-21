@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpbigquerymigrationmigrationworkflow
     - gcpbigquerymigrationmigrationworkflows
     singular: bigquerymigrationmigrationworkflow
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -69,9 +65,9 @@ spec:
                 description: Time when the workflow was created.
                 type: string
               displayName:
-                description: |-
-                  The display name of the workflow. This can be set to give a workflow
-                   a descriptive name. There is no guarantee or enforcement of uniqueness.
+                description: The display name of the workflow. This can be set to
+                  give a workflow a descriptive name. There is no guarantee or enforcement
+                  of uniqueness.
                 type: string
               lastUpdateTime:
                 description: Time when the workflow was last updated.
@@ -81,6 +77,20 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -108,9 +118,9 @@ spec:
                       description: Task configuration for Assessment.
                       properties:
                         dataSource:
-                          description: |-
-                            Required. The data source or data warehouse type (eg: TERADATA/REDSHIFT)
-                             from which the input data is extracted.
+                          description: 'Required. The data source or data warehouse
+                            type (eg: TERADATA/REDSHIFT) from which the input data
+                            is extracted.'
                           type: string
                         inputPath:
                           description: Required. The Cloud Storage path for assessment
@@ -120,9 +130,9 @@ spec:
                           description: Required. The BigQuery dataset for output.
                           type: string
                         querylogsPath:
-                          description: |-
-                            Optional. An optional Cloud Storage path to write the query logs (which is
-                             then used as an input path on the translation task)
+                          description: Optional. An optional Cloud Storage path to
+                            write the query logs (which is then used as an input path
+                            on the translation task)
                           type: string
                       required:
                       - dataSource
@@ -133,10 +143,9 @@ spec:
                       description: Time when the task was created.
                       type: string
                     details:
-                      description: |-
-                        DEPRECATED! Use one of the task_details below.
-                         The details of the task. The type URL must be one of the supported task
-                         details messages and correspond to the Task's type.
+                      description: DEPRECATED! Use one of the task_details below.
+                        The details of the task. The type URL must be one of the supported
+                        task details messages and correspond to the Task's type.
                       properties:
                         typeURL:
                           description: |-
@@ -185,28 +194,28 @@ spec:
                             task.
                           properties:
                             defaultPathURI:
-                              description: |-
-                                The Cloud Storage location to be used as the default path for files that
-                                 are not otherwise specified in the file replacement map.
+                              description: The Cloud Storage location to be used as
+                                the default path for files that are not otherwise
+                                specified in the file replacement map.
                               type: string
                             fileReplacementMap:
                               additionalProperties:
                                 type: string
-                              description: |-
-                                Maps the local paths that are used in BTEQ scripts (the keys) to the paths
-                                 in Cloud Storage that should be used in their stead in the translation (the
-                                 value).
+                              description: Maps the local paths that are used in BTEQ
+                                scripts (the keys) to the paths in Cloud Storage that
+                                should be used in their stead in the translation (the
+                                value).
                               type: object
                             projectDataset:
-                              description: |-
-                                Specifies the project and dataset in BigQuery that will be used for
-                                 external table creation during the translation.
+                              description: Specifies the project and dataset in BigQuery
+                                that will be used for external table creation during
+                                the translation.
                               properties:
                                 datasetID:
-                                  description: |-
-                                    A unique ID for this dataset, without the project name. The ID
-                                     must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_).
-                                     The maximum length is 1,024 characters.
+                                  description: A unique ID for this dataset, without
+                                    the project name. The ID must contain only letters
+                                    (a-z, A-Z), numbers (0-9), or underscores (_).
+                                    The maximum length is 1,024 characters.
                                   type: string
                                 projectID:
                                   description: The ID of the project containing this
@@ -261,20 +270,20 @@ spec:
                             files.
                           type: string
                         schemaPath:
-                          description: |-
-                            The Cloud Storage path to DDL files as table schema to assist semantic
-                             translation.
+                          description: The Cloud Storage path to DDL files as table
+                            schema to assist semantic translation.
                           type: string
                         teradataOptions:
                           description: The Teradata SQL specific settings for the
                             translation task.
                           type: object
                         translationExceptionTable:
-                          description: |-
-                            Specifies the exact name of the bigquery table ("dataset.table") to be used
-                             for surfacing raw translation errors. If the table does not exist, we will
-                             create it. If it already exists and the schema is the same, we will re-use.
-                             If the table exists and the schema is different, we will throw an error.
+                          description: Specifies the exact name of the bigquery table
+                            ("dataset.table") to be used for surfacing raw translation
+                            errors. If the table does not exist, we will create it.
+                            If it already exists and the schema is the same, we will
+                            re-use. If the table exists and the schema is different,
+                            we will throw an error.
                           type: string
                       type: object
                     type:
@@ -282,10 +291,9 @@ spec:
                         task type.
                       type: string
                   type: object
-                description: |-
-                  The tasks in a workflow in a named map. The name (i.e. key) has no
-                   meaning and is merely a convenient way to address a specific task
-                   in a workflow.
+                description: The tasks in a workflow in a named map. The name (i.e.
+                  key) has no meaning and is merely a convenient way to address a
+                  specific task in a workflow.
                 type: object
             required:
             - location
@@ -296,9 +304,8 @@ spec:
               connector machine state of BigQueryMigrationMigrationWorkflow
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -310,9 +317,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

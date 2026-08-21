@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: stable
@@ -22,6 +22,7 @@ spec:
     - gcpcomputeroute
     - gcpcomputeroutes
     singular: computeroute
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
         description: ComputeRoute is the Schema for the ComputeRoute API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -66,22 +62,33 @@ spec:
             description: ComputeRouteSpec defines the desired state of ComputeRoute
             properties:
               description:
-                description: |-
-                  Immutable. An optional description of this resource. Provide this property
-                  when you create the resource.
+                description: Immutable. An optional description of this resource.
+                  Provide this property when you create the resource.
                 type: string
               destRange:
-                description: |-
-                  Immutable. The destination range of outgoing packets that this route applies to.
-                  Only IPv4 is supported.
+                description: Immutable. The destination range of outgoing packets
+                  that this route applies to. Only IPv4 is supported.
                 type: string
               networkRef:
                 description: The network that this route applies to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeNetwork resource.
-                      Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                    description: A reference to an externally managed ComputeNetwork
+                      resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
                     type: string
                   name:
                     description: The name of a ComputeNetwork resource.
@@ -91,25 +98,35 @@ spec:
                     type: string
                 type: object
               nextHopGateway:
-                description: |-
-                  Immutable. URL to a gateway that should handle matching packets.
-                  Currently, you can only specify the internet gateway, using a full or
-                  partial valid URL:
-                  * 'https://www.googleapis.com/compute/v1/projects/project/global/gateways/default-internet-gateway'
-                  * 'projects/project/global/gateways/default-internet-gateway'
-                  * 'global/gateways/default-internet-gateway'
-                  * The string 'default-internet-gateway'.
+                description: 'Immutable. URL to a gateway that should handle matching
+                  packets. Currently, you can only specify the internet gateway, using
+                  a full or partial valid URL: * ''https://www.googleapis.com/compute/v1/projects/project/global/gateways/default-internet-gateway''
+                  * ''projects/project/global/gateways/default-internet-gateway''
+                  * ''global/gateways/default-internet-gateway'' * The string ''default-internet-gateway''.'
                 type: string
               nextHopILBRef:
-                description: |-
-                  A forwarding rule of type loadBalancingScheme=INTERNAL that should
-                  handle matching packets.  Note that this can only be used when the
-                  destinationRange is a public (non-RFC 1918) IP CIDR range.
+                description: A forwarding rule of type loadBalancingScheme=INTERNAL
+                  that should handle matching packets.  Note that this can only be
+                  used when the destinationRange is a public (non-RFC 1918) IP CIDR
+                  range.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeForwardingRule resource.
-                      Should be in the format "projects/{{projectID}}/global/forwardingRules/{{forwardingRuleID}}"
+                    description: A reference to an externally managed ComputeForwardingRule
+                      resource. Should be in the format "projects/{{projectID}}/global/forwardingRules/{{forwardingRuleID}}"
                       or "projects/{{projectID}}/regions/{{region}}/forwardingRules/{{forwardingRuleID}}".
                     type: string
                   name:
@@ -121,6 +138,20 @@ spec:
                 type: object
               nextHopInstanceRef:
                 description: Instance that should handle matching packets.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: A reference to an externally managed ComputeInstance
@@ -134,12 +165,25 @@ spec:
                     type: string
                 type: object
               nextHopIp:
-                description: |-
-                  Immutable. Network IP address of an instance that should
+                description: Immutable. Network IP address of an instance that should
                   handle matching packets.
                 type: string
               nextHopVPNTunnelRef:
                 description: The ComputeVPNTunnel that should handle matching packets
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: 'Allowed value: The `selfLink` field of a `ComputeVPNTunnel`
@@ -164,14 +208,12 @@ spec:
                 format: int32
                 type: integer
               resourceID:
-                description: |-
-                  Immutable. Optional. The name of the resource. Used for
+                description: Immutable. Optional. The name of the resource. Used for
                   creation and acquisition. When unset, the value of `metadata.name`
                   is used as the default.
                 type: string
               tags:
-                description: |-
-                  Immutable. A list of instance tags to which this route
+                description: Immutable. A list of instance tags to which this route
                   applies.
                 items:
                   type: string
@@ -185,9 +227,8 @@ spec:
               of ComputeRoute
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -199,9 +240,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

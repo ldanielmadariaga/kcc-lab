@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/dcl2crd: "true"
     cnrm.cloud.google.com/managed-by-kcc: "true"
@@ -22,6 +22,7 @@ spec:
     - gcposconfigospolicyassignment
     - gcposconfigospolicyassignments
     singular: osconfigospolicyassignment
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -47,19 +48,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -68,17 +64,15 @@ spec:
               of OSConfigOSPolicyAssignment
             properties:
               description:
-                description: |-
-                  OS policy assignment description.
-                  Length of the description is limited to 1024 characters.
+                description: OS policy assignment description. Length of the description
+                  is limited to 1024 characters.
                 type: string
               instanceFilter:
                 description: Required. Filter to select VMs.
                 properties:
                   all:
-                    description: |-
-                      Target all VMs in the project. If true, no other criteria is
-                       permitted.
+                    description: Target all VMs in the project. If true, no other
+                      criteria is permitted.
                     type: boolean
                   exclusionLabels:
                     description: |-
@@ -91,10 +85,9 @@ spec:
                         labels:
                           additionalProperties:
                             type: string
-                          description: |-
-                            Labels are identified by key/value pairs in this map.
-                             A VM should contain all the key/value pairs specified in this
-                             map to be selected.
+                          description: Labels are identified by key/value pairs in
+                            this map. A VM should contain all the key/value pairs
+                            specified in this map to be selected.
                           type: object
                       type: object
                     type: array
@@ -109,10 +102,9 @@ spec:
                         labels:
                           additionalProperties:
                             type: string
-                          description: |-
-                            Labels are identified by key/value pairs in this map.
-                             A VM should contain all the key/value pairs specified in this
-                             map to be selected.
+                          description: Labels are identified by key/value pairs in
+                            this map. A VM should contain all the key/value pairs
+                            specified in this map to be selected.
                           type: object
                       type: object
                     type: array
@@ -150,16 +142,15 @@ spec:
                 items:
                   properties:
                     allowNoResourceGroupMatch:
-                      description: |-
-                        This flag determines the OS policy compliance status when none of the
-                         resource groups within the policy are applicable for a VM. Set this value
-                         to `true` if the policy needs to be reported as compliant even if the
-                         policy has nothing to validate or enforce.
+                      description: This flag determines the OS policy compliance status
+                        when none of the resource groups within the policy are applicable
+                        for a VM. Set this value to `true` if the policy needs to
+                        be reported as compliant even if the policy has nothing to
+                        validate or enforce.
                       type: boolean
                     description:
-                      description: |-
-                        Policy description.
-                         Length of the description is limited to 1024 characters.
+                      description: Policy description. Length of the description is
+                        limited to 1024 characters.
                       type: string
                     id:
                       description: |-
@@ -222,19 +213,19 @@ spec:
                               type: object
                             type: array
                           resources:
-                            description: |-
-                              Required. List of resources configured for this resource group.
-                               The resources are executed in the exact order specified here.
+                            description: Required. List of resources configured for
+                              this resource group. The resources are executed in the
+                              exact order specified here.
                             items:
                               properties:
                                 exec:
                                   description: Exec resource
                                   properties:
                                     enforce:
-                                      description: |-
-                                        What to run to bring this resource into the desired state.
-                                         An exit code of 100 indicates "success", any other exit code indicates
-                                         a failure running enforce.
+                                      description: What to run to bring this resource
+                                        into the desired state. An exit code of 100
+                                        indicates "success", any other exit code indicates
+                                        a failure running enforce.
                                       properties:
                                         args:
                                           description: Optional arguments to pass
@@ -285,9 +276,11 @@ spec:
                                                     the remote file.
                                                   type: string
                                                 uri:
-                                                  description: |-
-                                                    Required. URI from which to fetch the object. It should contain both
-                                                     the protocol and path following the format `{protocol}://{location}`.
+                                                  description: Required. URI from
+                                                    which to fetch the object. It
+                                                    should contain both the protocol
+                                                    and path following the format
+                                                    `{protocol}://{location}`.
                                                   type: string
                                               required:
                                               - uri
@@ -299,28 +292,29 @@ spec:
                                             NONE, SHELL, POWERSHELL'
                                           type: string
                                         outputFilePath:
-                                          description: |-
-                                            Only recorded for enforce Exec.
-                                             Path to an output file (that is created by this Exec) whose
-                                             content will be recorded in OSPolicyResourceCompliance after a
-                                             successful run. Absence or failure to read this file will result in
-                                             this ExecResource being non-compliant. Output file size is limited to
-                                             100K bytes.
+                                          description: Only recorded for enforce Exec.
+                                            Path to an output file (that is created
+                                            by this Exec) whose content will be recorded
+                                            in OSPolicyResourceCompliance after a
+                                            successful run. Absence or failure to
+                                            read this file will result in this ExecResource
+                                            being non-compliant. Output file size
+                                            is limited to 100K bytes.
                                           type: string
                                         script:
-                                          description: |-
-                                            An inline script.
-                                             The size of the script is limited to 1024 characters.
+                                          description: An inline script. The size
+                                            of the script is limited to 1024 characters.
                                           type: string
                                       required:
                                       - interpreter
                                       type: object
                                     validate:
-                                      description: |-
-                                        Required. What to run to validate this resource is in the desired
-                                         state. An exit code of 100 indicates "in desired state", and exit code
-                                         of 101 indicates "not in desired state". Any other exit code indicates
-                                         a failure running validate.
+                                      description: Required. What to run to validate
+                                        this resource is in the desired state. An
+                                        exit code of 100 indicates "in desired state",
+                                        and exit code of 101 indicates "not in desired
+                                        state". Any other exit code indicates a failure
+                                        running validate.
                                       properties:
                                         args:
                                           description: Optional arguments to pass
@@ -371,9 +365,11 @@ spec:
                                                     the remote file.
                                                   type: string
                                                 uri:
-                                                  description: |-
-                                                    Required. URI from which to fetch the object. It should contain both
-                                                     the protocol and path following the format `{protocol}://{location}`.
+                                                  description: Required. URI from
+                                                    which to fetch the object. It
+                                                    should contain both the protocol
+                                                    and path following the format
+                                                    `{protocol}://{location}`.
                                                   type: string
                                               required:
                                               - uri
@@ -385,18 +381,18 @@ spec:
                                             NONE, SHELL, POWERSHELL'
                                           type: string
                                         outputFilePath:
-                                          description: |-
-                                            Only recorded for enforce Exec.
-                                             Path to an output file (that is created by this Exec) whose
-                                             content will be recorded in OSPolicyResourceCompliance after a
-                                             successful run. Absence or failure to read this file will result in
-                                             this ExecResource being non-compliant. Output file size is limited to
-                                             100K bytes.
+                                          description: Only recorded for enforce Exec.
+                                            Path to an output file (that is created
+                                            by this Exec) whose content will be recorded
+                                            in OSPolicyResourceCompliance after a
+                                            successful run. Absence or failure to
+                                            read this file will result in this ExecResource
+                                            being non-compliant. Output file size
+                                            is limited to 100K bytes.
                                           type: string
                                         script:
-                                          description: |-
-                                            An inline script.
-                                             The size of the script is limited to 1024 characters.
+                                          description: An inline script. The size
+                                            of the script is limited to 1024 characters.
                                           type: string
                                       required:
                                       - interpreter
@@ -408,9 +404,8 @@ spec:
                                   description: File resource
                                   properties:
                                     content:
-                                      description: |-
-                                        A a file with this content.
-                                         The size of the content is limited to 1024 characters.
+                                      description: A a file with this content. The
+                                        size of the content is limited to 1024 characters.
                                       type: string
                                     file:
                                       description: A remote or local source.
@@ -455,9 +450,10 @@ spec:
                                                 remote file.
                                               type: string
                                             uri:
-                                              description: |-
-                                                Required. URI from which to fetch the object. It should contain both
-                                                 the protocol and path following the format `{protocol}://{location}`.
+                                              description: Required. URI from which
+                                                to fetch the object. It should contain
+                                                both the protocol and path following
+                                                the format `{protocol}://{location}`.
                                               type: string
                                           required:
                                           - uri
@@ -518,11 +514,11 @@ spec:
                                       description: A deb package file.
                                       properties:
                                         pullDeps:
-                                          description: |-
-                                            Whether dependencies should also be installed.
-                                             - install when false: `dpkg -i package`
-                                             - install when true: `apt-get update && apt-get -y install
-                                             package.deb`
+                                          description: 'Whether dependencies should
+                                            also be installed. - install when false:
+                                            `dpkg -i package` - install when true:
+                                            `apt-get update && apt-get -y install
+                                            package.deb`'
                                           type: boolean
                                         source:
                                           description: Required. A deb package.
@@ -567,9 +563,11 @@ spec:
                                                     the remote file.
                                                   type: string
                                                 uri:
-                                                  description: |-
-                                                    Required. URI from which to fetch the object. It should contain both
-                                                     the protocol and path following the format `{protocol}://{location}`.
+                                                  description: Required. URI from
+                                                    which to fetch the object. It
+                                                    should contain both the protocol
+                                                    and path following the format
+                                                    `{protocol}://{location}`.
                                                   type: string
                                               required:
                                               - uri
@@ -597,11 +595,10 @@ spec:
                                       description: An MSI package.
                                       properties:
                                         properties:
-                                          description: |-
-                                            Additional properties to use during installation.
-                                             This should be in the format of Property=Setting.
-                                             Appended to the defaults of `ACTION=INSTALL
-                                             REBOOT=ReallySuppress`.
+                                          description: Additional properties to use
+                                            during installation. This should be in
+                                            the format of Property=Setting. Appended
+                                            to the defaults of `ACTION=INSTALL REBOOT=ReallySuppress`.
                                           items:
                                             type: string
                                           type: array
@@ -648,9 +645,11 @@ spec:
                                                     the remote file.
                                                   type: string
                                                 uri:
-                                                  description: |-
-                                                    Required. URI from which to fetch the object. It should contain both
-                                                     the protocol and path following the format `{protocol}://{location}`.
+                                                  description: Required. URI from
+                                                    which to fetch the object. It
+                                                    should contain both the protocol
+                                                    and path following the format
+                                                    `{protocol}://{location}`.
                                                   type: string
                                               required:
                                               - uri
@@ -663,11 +662,11 @@ spec:
                                       description: An rpm package file.
                                       properties:
                                         pullDeps:
-                                          description: |-
-                                            Whether dependencies should also be installed.
-                                             - install when false: `rpm --upgrade --replacepkgs package.rpm`
-                                             - install when true: `yum -y install package.rpm` or
-                                             `zypper -y install package.rpm`
+                                          description: 'Whether dependencies should
+                                            also be installed. - install when false:
+                                            `rpm --upgrade --replacepkgs package.rpm`
+                                            - install when true: `yum -y install package.rpm`
+                                            or `zypper -y install package.rpm`'
                                           type: boolean
                                         source:
                                           description: Required. An rpm package.
@@ -712,9 +711,11 @@ spec:
                                                     the remote file.
                                                   type: string
                                                 uri:
-                                                  description: |-
-                                                    Required. URI from which to fetch the object. It should contain both
-                                                     the protocol and path following the format `{protocol}://{location}`.
+                                                  description: Required. URI from
+                                                    which to fetch the object. It
+                                                    should contain both the protocol
+                                                    and path following the format
+                                                    `{protocol}://{location}`.
                                                   type: string
                                               required:
                                               - uri
@@ -756,9 +757,9 @@ spec:
                                             ARCHIVE_TYPE_UNSPECIFIED, DEB, DEB_SRC'
                                           type: string
                                         components:
-                                          description: |-
-                                            Required. List of components for this repository. Must contain at
-                                             least one item.
+                                          description: Required. List of components
+                                            for this repository. Must contain at least
+                                            one item.
                                           items:
                                             type: string
                                           type: array
@@ -767,9 +768,9 @@ spec:
                                             repository.
                                           type: string
                                         gpgKey:
-                                          description: |-
-                                            URI of the key file for this repository. The agent maintains a
-                                             keyring at `/etc/apt/trusted.gpg.d/osconfig_agent_managed.gpg`.
+                                          description: URI of the key file for this
+                                            repository. The agent maintains a keyring
+                                            at `/etc/apt/trusted.gpg.d/osconfig_agent_managed.gpg`.
                                           type: string
                                         uri:
                                           description: Required. URI for this repository.
@@ -809,11 +810,13 @@ spec:
                                             type: string
                                           type: array
                                         id:
-                                          description: |-
-                                            Required. A one word, unique name for this repository. This is  the
-                                             `repo id` in the yum config file and also the `display_name` if
-                                             `display_name` is omitted. This id is also used as the unique
-                                             identifier when checking for resource conflicts.
+                                          description: Required. A one word, unique
+                                            name for this repository. This is  the
+                                            `repo id` in the yum config file and also
+                                            the `display_name` if `display_name` is
+                                            omitted. This id is also used as the unique
+                                            identifier when checking for resource
+                                            conflicts.
                                           type: string
                                       required:
                                       - baseUrl
@@ -835,11 +838,13 @@ spec:
                                             type: string
                                           type: array
                                         id:
-                                          description: |-
-                                            Required. A one word, unique name for this repository. This is the
-                                             `repo id` in the zypper config file and also the `display_name` if
-                                             `display_name` is omitted. This id is also used as the unique
-                                             identifier when checking for GuestPolicy conflicts.
+                                          description: Required. A one word, unique
+                                            name for this repository. This is the
+                                            `repo id` in the zypper config file and
+                                            also the `display_name` if `display_name`
+                                            is omitted. This id is also used as the
+                                            unique identifier when checking for GuestPolicy
+                                            conflicts.
                                           type: string
                                       required:
                                       - baseUrl
@@ -862,6 +867,20 @@ spec:
                 type: array
               projectRef:
                 description: Immutable. The Project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: |-
@@ -882,39 +901,32 @@ spec:
                   is used as the default.
                 type: string
               rollout:
-                description: |-
-                  Required. Rollout to deploy the OS policy assignment.
-                  A rollout is triggered in the following situations:
-                  1) OSPolicyAssignment is created.
-                  2) OSPolicyAssignment is updated and the update contains changes to one of
-                  the following fields:
-                     - instance_filter
-                     - os_policies
-                  3) OSPolicyAssignment is deleted.
+                description: 'Required. Rollout to deploy the OS policy assignment.
+                  A rollout is triggered in the following situations: 1) OSPolicyAssignment
+                  is created. 2) OSPolicyAssignment is updated and the update contains
+                  changes to one of the following fields: - instance_filter - os_policies
+                  3) OSPolicyAssignment is deleted.'
                 properties:
                   disruptionBudget:
-                    description: |-
-                      Required. The maximum number (or percentage) of VMs per zone to disrupt
-                       at any given moment.
+                    description: Required. The maximum number (or percentage) of VMs
+                      per zone to disrupt at any given moment.
                     properties:
                       fixed:
                         description: Specifies a fixed value.
                         format: int64
                         type: integer
                       percent:
-                        description: |-
-                          Specifies the relative value defined as a percentage, which will be
-                           multiplied by a reference value.
+                        description: Specifies the relative value defined as a percentage,
+                          which will be multiplied by a reference value.
                         format: int64
                         type: integer
                     type: object
                   minWaitDuration:
-                    description: |-
-                      Required. This determines the minimum duration of time to wait after the
-                       configuration changes are applied through the current rollout. A
-                       VM continues to count towards the `disruption_budget` at least
-                       until this duration of time has passed after configuration changes are
-                       applied.
+                    description: Required. This determines the minimum duration of
+                      time to wait after the configuration changes are applied through
+                      the current rollout. A VM continues to count towards the `disruption_budget`
+                      at least until this duration of time has passed after configuration
+                      changes are applied.
                     type: string
                 required:
                 - disruptionBudget
@@ -936,16 +948,14 @@ spec:
               machine state of OSConfigOSPolicyAssignment
             properties:
               baseline:
-                description: |-
-                  Output only. Indicates that this revision has been successfully rolled out
-                  in this zone and new VMs will be assigned OS policies from this revision.
-                  For a given OS policy assignment, there is only one revision with a value
-                  of `true` for this field.
+                description: Output only. Indicates that this revision has been successfully
+                  rolled out in this zone and new VMs will be assigned OS policies
+                  from this revision. For a given OS policy assignment, there is only
+                  one revision with a value of `true` for this field.
                 type: boolean
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -957,9 +967,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -986,20 +995,17 @@ spec:
                   the resource.
                 type: integer
               reconciling:
-                description: |-
-                  Output only. Indicates that reconciliation is in progress for the revision.
-                  This value is `true` when the `rollout_state` is one of:
-                  * IN_PROGRESS
-                  * CANCELLING
+                description: 'Output only. Indicates that reconciliation is in progress
+                  for the revision. This value is `true` when the `rollout_state`
+                  is one of: * IN_PROGRESS * CANCELLING'
                 type: boolean
               revisionCreateTime:
                 description: Output only. The timestamp that the revision was created.
                 format: date-time
                 type: string
               revisionId:
-                description: |-
-                  Output only. The assignment revision ID
-                  A new revision is committed whenever a rollout is triggered for an OS policy assignment
+                description: Output only. The assignment revision ID A new revision
+                  is committed whenever a rollout is triggered for an OS policy assignment
                 type: string
               rolloutState:
                 description: 'Output only. OS policy assignment rollout state Possible

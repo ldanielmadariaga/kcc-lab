@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: stable
@@ -22,6 +22,7 @@ spec:
     - gcpcomputeimage
     - gcpcomputeimages
     singular: computeimage
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
         description: ComputeImage is the Schema for the compute API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -66,15 +62,27 @@ spec:
             description: ComputeImageSpec defines the desired state of ComputeImage
             properties:
               description:
-                description: |-
-                  Immutable. An optional description of this resource. Provide this property when
-                  you create the resource.
+                description: Immutable. An optional description of this resource.
+                  Provide this property when you create the resource.
                 type: string
               diskRef:
-                description: |-
-                  The source disk to create this image based on.
-                  You must provide either this property or the
-                  rawDisk.source property but not both to create an image.
+                description: The source disk to create this image based on. You must
+                  provide either this property or the rawDisk.source property but
+                  not both to create an image.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: A reference to an externally managed ComputeDisk
@@ -94,17 +102,15 @@ spec:
                 format: int64
                 type: integer
               family:
-                description: |-
-                  Immutable. The name of the image family to which this image belongs. You can
-                  create disks by specifying an image family instead of a specific
-                  image name. The image family always returns its latest image that is
-                  not deprecated. The name of the image family must comply with
-                  RFC1035.
+                description: Immutable. The name of the image family to which this
+                  image belongs. You can create disks by specifying an image family
+                  instead of a specific image name. The image family always returns
+                  its latest image that is not deprecated. The name of the image family
+                  must comply with RFC1035.
                 type: string
               guestOsFeatures:
-                description: |-
-                  Immutable. A list of features to enable on the guest operating system.
-                  Applicable only for bootable images.
+                description: Immutable. A list of features to enable on the guest
+                  operating system. Applicable only for bootable images.
                 items:
                   properties:
                     type:
@@ -128,14 +134,26 @@ spec:
                   disk from the image).
                 properties:
                   kmsKeySelfLinkRef:
-                    description: |-
-                      The self link of the encryption key that is stored in Google Cloud
-                      KMS.
+                    description: The self link of the encryption key that is stored
+                      in Google Cloud KMS.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
-                        description: |-
-                          A reference to an externally managed KMSCryptoKey resource.
-                          Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
+                        description: A reference to an externally managed KMSCryptoKey
+                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
                         type: string
                       name:
                         description: The name of a KMSCryptoKey resource.
@@ -145,10 +163,23 @@ spec:
                         type: string
                     type: object
                   kmsKeyServiceAccountRef:
-                    description: |-
-                      The service account being used for the encryption request for the
-                      given KMS key. If absent, the Compute Engine default service account
-                      is used.
+                    description: The service account being used for the encryption
+                      request for the given KMS key. If absent, the Compute Engine
+                      default service account is used.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
                         description: The `email` field of an `IAMServiceAccount` resource.
@@ -170,22 +201,21 @@ spec:
                 description: Immutable. The parameters of the raw disk image.
                 properties:
                   containerType:
-                    description: |-
-                      Immutable. The format used to encode and transmit the block device, which
-                      should be TAR. This is just a container and transmission format
-                      and not a runtime format. Provided by the client when the disk
-                      image is created. Default value: "TAR" Possible values: ["TAR"].
+                    description: 'Immutable. The format used to encode and transmit
+                      the block device, which should be TAR. This is just a container
+                      and transmission format and not a runtime format. Provided by
+                      the client when the disk image is created. Default value: "TAR"
+                      Possible values: ["TAR"].'
                     type: string
                   sha1:
-                    description: |-
-                      Immutable. An optional SHA1 checksum of the disk image before unpackaging.
-                      This is provided by the client when the disk image is created.
+                    description: Immutable. An optional SHA1 checksum of the disk
+                      image before unpackaging. This is provided by the client when
+                      the disk image is created.
                     type: string
                   source:
-                    description: |-
-                      Immutable. The full Google Cloud Storage URL where disk storage is stored
-                      You must provide either this property or the sourceDisk property
-                      but not both.
+                    description: Immutable. The full Google Cloud Storage URL where
+                      disk storage is stored You must provide either this property
+                      or the sourceDisk property but not both.
                     type: string
                 required:
                 - source
@@ -197,11 +227,25 @@ spec:
                 type: string
               sourceImageRef:
                 description: The source image used to create this image.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeImage resource.
-                      Should be in the format "projects/{{project}}/global/images/{{name}}" or "projects/{{project}}/global/images/family/{{family}}".
+                    description: A reference to an externally managed ComputeImage
+                      resource. Should be in the format "projects/{{project}}/global/images/{{name}}"
+                      or "projects/{{project}}/global/images/family/{{family}}".
                     type: string
                   name:
                     description: The name of a ComputeImage resource.
@@ -212,6 +256,20 @@ spec:
                 type: object
               sourceSnapshotRef:
                 description: The source snapshot used to create this image.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: A reference to an externally managed ComputeSnapshot
@@ -226,10 +284,8 @@ spec:
                     type: string
                 type: object
               storageLocations:
-                description: |-
-                  Immutable. Cloud Storage bucket storage location of the image
-                  (regional or multi-regional).
-                  Reference link: https://cloud.google.com/compute/docs/reference/rest/v1/images.
+                description: 'Immutable. Cloud Storage bucket storage location of
+                  the image (regional or multi-regional). Reference link: https://cloud.google.com/compute/docs/reference/rest/v1/images.'
                 items:
                   type: string
                 type: array
@@ -239,15 +295,13 @@ spec:
               of ComputeImage
             properties:
               archiveSizeBytes:
-                description: |-
-                  Size of the image tar.gz archive stored in Google Cloud Storage (in
-                  bytes).
+                description: Size of the image tar.gz archive stored in Google Cloud
+                  Storage (in bytes).
                 format: int64
                 type: integer
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  ComputeImage's current state.
+                description: Conditions represent the latest available observations
+                  of the ComputeImage's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -259,9 +313,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -276,9 +329,8 @@ spec:
                 description: Creation timestamp in RFC3339 text format.
                 type: string
               labelFingerprint:
-                description: |-
-                  The fingerprint used for optimistic locking of this resource. Used
-                  internally during updates.
+                description: The fingerprint used for optimistic locking of this resource.
+                  Used internally during updates.
                 type: string
               observedGeneration:
                 description: ObservedGeneration is the generation of the resource

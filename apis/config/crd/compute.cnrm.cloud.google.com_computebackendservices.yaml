@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: stable
@@ -22,6 +22,7 @@ spec:
     - gcpcomputebackendservice
     - gcpcomputebackendservices
     singular: computebackendservice
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -47,19 +48,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -107,14 +103,32 @@ spec:
 
                          When the 'load_balancing_scheme' is INTERNAL, only instance groups
                          are supported.
+                      oneOf:
+                      - required:
+                        - instanceGroupRef
+                      - required:
+                        - networkEndpointGroupRef
                       properties:
                         instanceGroupRef:
                           description: Reference to a ComputeInstanceGroup resource.
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
                           properties:
                             external:
-                              description: |-
-                                A reference to an externally managed ComputeInstanceGroup resource.
-                                Should be in the format "projects/{{projectID}}/zones/{{zone}}/instanceGroups/{{instanceGroupID}}".
+                              description: A reference to an externally managed ComputeInstanceGroup
+                                resource. Should be in the format "projects/{{projectID}}/zones/{{zone}}/instanceGroups/{{instanceGroupID}}".
                               type: string
                             name:
                               description: The name of a ComputeInstanceGroup resource.
@@ -127,11 +141,24 @@ spec:
                         networkEndpointGroupRef:
                           description: Reference to a ComputeNetworkEndpointGroup
                             resource.
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
                           properties:
                             external:
-                              description: |-
-                                A reference to an externally managed ComputeNetworkEndpointGroup resource.
-                                Should be in the format "projects/{project}/zones/{zone}/networkEndpointGroups/{networkEndpointGroup}".
+                              description: A reference to an externally managed ComputeNetworkEndpointGroup
+                                resource. Should be in the format "projects/{project}/zones/{zone}/networkEndpointGroups/{networkEndpointGroup}".
                               type: string
                             name:
                               description: The name of a ComputeNetworkEndpointGroup
@@ -247,9 +274,23 @@ spec:
                         type: array
                     type: object
                   cacheMode:
-                    description: |-
-                      Specifies the cache setting for all responses from this backend. The possible values are: USE_ORIGIN_HEADERS Requires the origin to set valid caching headers to cache content. Responses without these headers will not be cached at Google's edge, and will require a full trip to the origin on every request, potentially impacting performance and increasing load on the origin server. FORCE_CACHE_ALL Cache all content, ignoring any "private", "no-store" or "no-cache" directives in Cache-Control response headers. Warning: this may result in Cloud CDN caching private, per-user (user identifiable) content. CACHE_ALL_STATIC Automatically cache static content, including common image formats, media (video and audio), and web assets (JavaScript and CSS). Requests and responses that are marked as uncacheable, as well as dynamic content (including HTML), will not be cached. If no value is provided for cdnPolicy.cacheMode, it defaults to CACHE_ALL_STATIC.
-                       Check the CacheMode enum for the list of possible values.
+                    description: 'Specifies the cache setting for all responses from
+                      this backend. The possible values are: USE_ORIGIN_HEADERS Requires
+                      the origin to set valid caching headers to cache content. Responses
+                      without these headers will not be cached at Google''s edge,
+                      and will require a full trip to the origin on every request,
+                      potentially impacting performance and increasing load on the
+                      origin server. FORCE_CACHE_ALL Cache all content, ignoring any
+                      "private", "no-store" or "no-cache" directives in Cache-Control
+                      response headers. Warning: this may result in Cloud CDN caching
+                      private, per-user (user identifiable) content. CACHE_ALL_STATIC
+                      Automatically cache static content, including common image formats,
+                      media (video and audio), and web assets (JavaScript and CSS).
+                      Requests and responses that are marked as uncacheable, as well
+                      as dynamic content (including HTML), will not be cached. If
+                      no value is provided for cdnPolicy.cacheMode, it defaults to
+                      CACHE_ALL_STATIC. Check the CacheMode enum for the list of possible
+                      values.'
                     type: string
                   clientTtl:
                     description: Specifies a separate client (e.g. browser client)
@@ -439,9 +480,24 @@ spec:
                   haPolicy.
                 properties:
                   connectionPersistenceOnUnhealthyBackends:
-                    description: |-
-                      Specifies connection persistence when backends are unhealthy. The default value is DEFAULT_FOR_PROTOCOL. If set to DEFAULT_FOR_PROTOCOL, the existing connections persist on unhealthy backends only for connection-oriented protocols (TCP and SCTP) and only if the Tracking Mode is PER_CONNECTION (default tracking mode) or the Session Affinity is configured for 5-tuple. They do not persist for UDP. If set to NEVER_PERSIST, after a backend becomes unhealthy, the existing connections on the unhealthy backend are never persisted on the unhealthy backend. They are always diverted to newly selected healthy backends (unless all backends are unhealthy). If set to ALWAYS_PERSIST, existing connections always persist on unhealthy backends regardless of protocol and session affinity. It is generally not recommended to use this mode overriding the default. For more details, see [Connection Persistence for Network Load Balancing](https://cloud.google.com/load-balancing/docs/network/networklb-backend-service#connection-persistence) and [Connection Persistence for Internal TCP/UDP Load Balancing](https://cloud.google.com/load-balancing/docs/internal#connection-persistence).
-                       Check the ConnectionPersistenceOnUnhealthyBackends enum for the list of possible values.
+                    description: Specifies connection persistence when backends are
+                      unhealthy. The default value is DEFAULT_FOR_PROTOCOL. If set
+                      to DEFAULT_FOR_PROTOCOL, the existing connections persist on
+                      unhealthy backends only for connection-oriented protocols (TCP
+                      and SCTP) and only if the Tracking Mode is PER_CONNECTION (default
+                      tracking mode) or the Session Affinity is configured for 5-tuple.
+                      They do not persist for UDP. If set to NEVER_PERSIST, after
+                      a backend becomes unhealthy, the existing connections on the
+                      unhealthy backend are never persisted on the unhealthy backend.
+                      They are always diverted to newly selected healthy backends
+                      (unless all backends are unhealthy). If set to ALWAYS_PERSIST,
+                      existing connections always persist on unhealthy backends regardless
+                      of protocol and session affinity. It is generally not recommended
+                      to use this mode overriding the default. For more details, see
+                      [Connection Persistence for Network Load Balancing](https://cloud.google.com/load-balancing/docs/network/networklb-backend-service#connection-persistence)
+                      and [Connection Persistence for Internal TCP/UDP Load Balancing](https://cloud.google.com/load-balancing/docs/internal#connection-persistence).
+                      Check the ConnectionPersistenceOnUnhealthyBackends enum for
+                      the list of possible values.
                     type: string
                   enableStrongAffinity:
                     description: Enable Strong Session Affinity for external passthrough
@@ -460,9 +516,15 @@ spec:
                     format: int32
                     type: integer
                   trackingMode:
-                    description: |-
-                      Specifies the key used for connection tracking. There are two options: - PER_CONNECTION: This is the default mode. The Connection Tracking is performed as per the Connection Key (default Hash Method) for the specific protocol. - PER_SESSION: The Connection Tracking is performed as per the configured Session Affinity. It matches the configured Session Affinity. For more details, see [Tracking Mode for Network Load Balancing](https://cloud.google.com/load-balancing/docs/network/networklb-backend-service#tracking-mode) and [Tracking Mode for Internal TCP/UDP Load Balancing](https://cloud.google.com/load-balancing/docs/internal#tracking-mode).
-                       Check the TrackingMode enum for the list of possible values.
+                    description: 'Specifies the key used for connection tracking.
+                      There are two options: - PER_CONNECTION: This is the default
+                      mode. The Connection Tracking is performed as per the Connection
+                      Key (default Hash Method) for the specific protocol. - PER_SESSION:
+                      The Connection Tracking is performed as per the configured Session
+                      Affinity. It matches the configured Session Affinity. For more
+                      details, see [Tracking Mode for Network Load Balancing](https://cloud.google.com/load-balancing/docs/network/networklb-backend-service#tracking-mode)
+                      and [Tracking Mode for Internal TCP/UDP Load Balancing](https://cloud.google.com/load-balancing/docs/internal#tracking-mode).
+                      Check the TrackingMode enum for the list of possible values.'
                     type: string
                 type: object
               consistentHash:
@@ -535,11 +597,24 @@ spec:
                 type: string
               edgeSecurityPolicyRef:
                 description: ComputeSecurityPolicyRef is a reference to a ComputeSecurityPolicy.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeSecurityPolicy resource.
-                      Should be in the format "projects/{{projectID}}/global/securityPolicies/{{name}}".
+                    description: A reference to an externally managed ComputeSecurityPolicy
+                      resource. Should be in the format "projects/{{projectID}}/global/securityPolicies/{{name}}".
                     type: string
                   name:
                     description: The name of a ComputeSecurityPolicy resource.
@@ -588,9 +663,28 @@ spec:
                   description: The health check resources for health checking this
                     ComputeBackendService. Currently at most one health check can
                     be specified, and a health check is required.
+                  oneOf:
+                  - required:
+                    - healthCheckRef
+                  - required:
+                    - httpHealthCheckRef
                   properties:
                     healthCheckRef:
                       description: Reference to a ComputeHealthCheck resource.
+                      oneOf:
+                      - not:
+                          required:
+                          - external
+                        required:
+                        - name
+                      - not:
+                          anyOf:
+                          - required:
+                            - name
+                          - required:
+                            - namespace
+                        required:
+                        - external
                       properties:
                         external:
                           description: |-
@@ -607,6 +701,20 @@ spec:
                       type: object
                     httpHealthCheckRef:
                       description: Reference to a ComputeHTTPHealthCheck resource.
+                      oneOf:
+                      - not:
+                          required:
+                          - external
+                        required:
+                        - name
+                      - not:
+                          anyOf:
+                          - required:
+                            - name
+                          - required:
+                            - namespace
+                        required:
+                        - external
                       properties:
                         external:
                           description: A reference to an externally managed ComputeHTTPHealthCheck
@@ -629,6 +737,20 @@ spec:
                     type: string
                   oauth2ClientIdRef:
                     description: Reference to a ComputeBackendServiceOauth2ClientId.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
                         description: External is the Google OAuth2 Client ID, e.g.
@@ -645,6 +767,17 @@ spec:
                   oauth2ClientSecret:
                     description: OAuth2 client secret to use for the authentication
                       flow.
+                    oneOf:
+                    - not:
+                        required:
+                        - valueFrom
+                      required:
+                      - value
+                    - not:
+                        required:
+                        - value
+                      required:
+                      - valueFrom
                     properties:
                       value:
                         description: Value of the field. Cannot be used if 'valueFrom'
@@ -736,11 +869,24 @@ spec:
                 type: object
               networkRef:
                 description: ComputeNetworkRef is a reference to a GCP ComputeNetwork.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeNetwork resource.
-                      Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                    description: A reference to an externally managed ComputeNetwork
+                      resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
                     type: string
                   name:
                     description: The name of a ComputeNetwork resource.
@@ -851,11 +997,24 @@ spec:
                 type: string
               securityPolicyRef:
                 description: ComputeSecurityPolicyRef is a reference to a ComputeSecurityPolicy.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeSecurityPolicy resource.
-                      Should be in the format "projects/{{projectID}}/global/securityPolicies/{{name}}".
+                    description: A reference to an externally managed ComputeSecurityPolicy
+                      resource. Should be in the format "projects/{{projectID}}/global/securityPolicies/{{name}}".
                     type: string
                   name:
                     description: The name of a ComputeSecurityPolicy resource.
@@ -871,6 +1030,20 @@ spec:
                 properties:
                   clientTLSPolicyRef:
                     description: Reference to a ComputeSecuritySettingsClientTLSPolicy.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
                         description: External is the selfLink of the referent.
@@ -920,9 +1093,8 @@ spec:
             description: The observed state of the ComputeBackendService.
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -934,9 +1106,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

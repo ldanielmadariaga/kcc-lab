@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,6 +21,7 @@ spec:
     - gcpvisionaiapplication
     - gcpvisionaiapplications
     singular: visionaiapplication
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -72,18 +68,15 @@ spec:
                     description: Event-related configuration for this application.
                     properties:
                       channel:
-                        description: |-
-                          The delivery channel for the event notification, only pub/sub topic is
-                           supported now.
-                           Example channel:
-                           [//pubsub.googleapis.com/projects/visionai-testing-stable/topics/test-topic]
+                        description: 'The delivery channel for the event notification,
+                          only pub/sub topic is supported now. Example channel: [//pubsub.googleapis.com/projects/visionai-testing-stable/topics/test-topic]'
                         type: string
                       minimalDeliveryInterval:
-                        description: |-
-                          The expected delivery interval for the same event. The same event won't
-                           be notified multiple times during this internal event that it is
-                           happening multiple times during the period of time.The same event is
-                           identified by <event_id, app_platform_metadata>.
+                        description: The expected delivery interval for the same event.
+                          The same event won't be notified multiple times during this
+                          internal event that it is happening multiple times during
+                          the period of time.The same event is identified by <event_id,
+                          app_platform_metadata>.
                         type: string
                     type: object
                   nodes:
@@ -147,12 +140,13 @@ spec:
                                      returned AppPlatformCloudFunctionResponse.
                                   type: object
                                 createDefaultTableIfNotExists:
-                                  description: |-
-                                    If true, App Platform will create the BigQuery DataSet and the
-                                     BigQuery Table with default schema if the specified table doesn't exist.
-                                     This doesn't work if any cloud function customized schema is specified
-                                     since the system doesn't know your desired schema.
-                                     JSON column will be used in the default table created by App Platform.
+                                  description: If true, App Platform will create the
+                                    BigQuery DataSet and the BigQuery Table with default
+                                    schema if the specified table doesn't exist. This
+                                    doesn't work if any cloud function customized
+                                    schema is specified since the system doesn't know
+                                    your desired schema. JSON column will be used
+                                    in the default table created by App Platform.
                                   type: boolean
                                 table:
                                   description: BigQuery table resource for Vision
@@ -160,9 +154,8 @@ spec:
                                   type: string
                               type: object
                             experimentalConfig:
-                              description: |-
-                                Experimental configurations. Structured object containing not-yet-stable
-                                 processor parameters.
+                              description: Experimental configurations. Structured
+                                object containing not-yet-stable processor parameters.
                               x-kubernetes-preserve-unknown-fields: true
                             gcsOutputConfig:
                               description: Configs of Cloud Storage output processor.
@@ -182,11 +175,25 @@ spec:
                                 corpusRef:
                                   description: Resource name of the Media Warehouse
                                     corpus.
+                                  oneOf:
+                                  - not:
+                                      required:
+                                      - external
+                                    required:
+                                    - name
+                                  - not:
+                                      anyOf:
+                                      - required:
+                                        - name
+                                      - required:
+                                        - namespace
+                                    required:
+                                    - external
                                   properties:
                                     external:
-                                      description: |-
-                                        A reference to an externally managed VisionAI Corpus resource.
-                                        Should be in the format "projects/{{projectID}}/locations/{{location}}/corpora/{{corpusID}}".
+                                      description: A reference to an externally managed
+                                        VisionAI Corpus resource. Should be in the
+                                        format "projects/{{projectID}}/locations/{{location}}/corpora/{{corpusID}}".
                                       type: string
                                     name:
                                       description: The name of a VisionAICorpus resource.
@@ -200,9 +207,9 @@ spec:
                                   description: Deprecated.
                                   type: string
                                 ttl:
-                                  description: |-
-                                    The duration for which all media assets, associated metadata, and search
-                                     documents can exist.
+                                  description: The duration for which all media assets,
+                                    associated metadata, and search documents can
+                                    exist.
                                   type: string
                               type: object
                               x-kubernetes-preserve-unknown-fields: true
@@ -210,19 +217,17 @@ spec:
                               description: Configs of occupancy count processor.
                               properties:
                                 enableDwellingTimeTracking:
-                                  description: |-
-                                    Whether to track each invidual object's loitering time inside the scene or
-                                     specific zone.
+                                  description: Whether to track each invidual object's
+                                    loitering time inside the scene or specific zone.
                                   type: boolean
                                 enablePeopleCounting:
-                                  description: |-
-                                    Whether to count the appearances of people, output counts have 'people' as
-                                     the key.
+                                  description: Whether to count the appearances of
+                                    people, output counts have 'people' as the key.
                                   type: boolean
                                 enableVehicleCounting:
-                                  description: |-
-                                    Whether to count the appearances of vehicles, output counts will have
-                                     'vehicle' as the key.
+                                  description: Whether to count the appearances of
+                                    vehicles, output counts will have 'vehicle' as
+                                    the key.
                                   type: boolean
                               type: object
                             personBlurConfig:
@@ -240,16 +245,15 @@ spec:
                               description: Configs of Person Vehicle Detection processor.
                               properties:
                                 enablePeopleCounting:
-                                  description: |-
-                                    At least one of enable_people_counting and enable_vehicle_counting fields
-                                     must be set to true.
-                                     Whether to count the appearances of people, output counts have 'people' as
-                                     the key.
+                                  description: At least one of enable_people_counting
+                                    and enable_vehicle_counting fields must be set
+                                    to true. Whether to count the appearances of people,
+                                    output counts have 'people' as the key.
                                   type: boolean
                                 enableVehicleCounting:
-                                  description: |-
-                                    Whether to count the appearances of vehicles, output counts will have
-                                     'vehicle' as the key.
+                                  description: Whether to count the appearances of
+                                    vehicles, output counts will have 'vehicle' as
+                                    the key.
                                   type: boolean
                               type: object
                             personalProtectiveEquipmentDetectionConfig:
@@ -269,9 +273,9 @@ spec:
                               description: Runtime configs of Product Recognizer processor.
                               properties:
                                 recognitionConfidenceThreshold:
-                                  description: |-
-                                    Confidence threshold to filter detection results. If not set, a system
-                                     default value will be used.
+                                  description: Confidence threshold to filter detection
+                                    results. If not set, a system default value will
+                                    be used.
                                   type: number
                                 retailEndpoint:
                                   description: The resource name of retail endpoint
@@ -282,24 +286,25 @@ spec:
                               description: Runtime configs of Tag Recognizer processor.
                               properties:
                                 entityDetectionConfidenceThreshold:
-                                  description: |-
-                                    Confidence threshold to filter detection results. If not set, a system
-                                     default value will be used.
+                                  description: Confidence threshold to filter detection
+                                    results. If not set, a system default value will
+                                    be used.
                                   type: number
                                 tagParsingConfig:
                                   description: Configuration to customize how tags
                                     are parsed.
                                   properties:
                                     entityParsingConfigs:
-                                      description: |-
-                                        Each tag entity class may have an optional EntityParsingConfig which is
-                                         used to help parse the entities of the class.
+                                      description: Each tag entity class may have
+                                        an optional EntityParsingConfig which is used
+                                        to help parse the entities of the class.
                                       items:
                                         properties:
                                           entityClass:
-                                            description: |-
-                                              Required. The tag entity class name. This should match the class name
-                                               produced by the tag entity detection model.
+                                            description: Required. The tag entity
+                                              class name. This should match the class
+                                              name produced by the tag entity detection
+                                              model.
                                             type: string
                                           entityMatchingStrategy:
                                             description: Optional. Entity matching
@@ -309,6 +314,8 @@ spec:
                                             description: Optional. An regular expression
                                               hint.
                                             type: string
+                                        required:
+                                        - entityClass
                                         type: object
                                       type: array
                                   type: object
@@ -327,20 +334,20 @@ spec:
                                     type: string
                                   type: array
                                 boundingBoxSizeLimit:
-                                  description: |-
-                                    Only Bounding Box whose size is larger than this limit will be returned.
-                                     Object Tracking only.
-                                     Value 0.0 means to return all the detected entities.
+                                  description: Only Bounding Box whose size is larger
+                                    than this limit will be returned. Object Tracking
+                                    only. Value 0.0 means to return all the detected
+                                    entities.
                                   type: number
                                 confidenceThreshold:
-                                  description: |-
-                                    Only entities with higher score than the threshold will be returned.
-                                     Value 0.0 means returns all the detected entities.
+                                  description: Only entities with higher score than
+                                    the threshold will be returned. Value 0.0 means
+                                    returns all the detected entities.
                                   type: number
                                 maxPredictions:
-                                  description: |-
-                                    At most this many predictions will be returned per output frame.
-                                     Value 0 means to return all the detected entities.
+                                  description: At most this many predictions will
+                                    be returned per output frame. Value 0 means to
+                                    return all the detected entities.
                                   format: int32
                                   type: integer
                               type: object
@@ -348,14 +355,14 @@ spec:
                               description: Configs of Vertex AutoML vision processor.
                               properties:
                                 confidenceThreshold:
-                                  description: |-
-                                    Only entities with higher score than the threshold will be returned.
-                                     Value 0.0 means to return all the detected entities.
+                                  description: Only entities with higher score than
+                                    the threshold will be returned. Value 0.0 means
+                                    to return all the detected entities.
                                   type: number
                                 maxPredictions:
-                                  description: |-
-                                    At most this many predictions will be returned per output frame.
-                                     Value 0 means to return all the detected entities.
+                                  description: At most this many predictions will
+                                    be returned per output frame. Value 0 means to
+                                    return all the detected entities.
                                   format: int32
                                   type: integer
                               type: object
@@ -363,21 +370,17 @@ spec:
                               description: Configs of Vertex Custom processor.
                               properties:
                                 attachApplicationMetadata:
-                                  description: |-
-                                    If true, the prediction request received by custom model will also contain
-                                     metadata with the following schema:
-                                     'appPlatformMetadata': {
-                                           'ingestionTime': DOUBLE; (UNIX timestamp)
-                                           'application': STRING;
-                                           'instanceId': STRING;
-                                           'node': STRING;
-                                           'processor': STRING;
-                                      }
+                                  description: 'If true, the prediction request received
+                                    by custom model will also contain metadata with
+                                    the following schema: ''appPlatformMetadata'':
+                                    { ''ingestionTime'': DOUBLE; (UNIX timestamp)
+                                    ''application'': STRING; ''instanceId'': STRING;
+                                    ''node'': STRING; ''processor'': STRING; }'
                                   type: boolean
                                 dedicatedResources:
-                                  description: |-
-                                    A description of resources that are dedicated to the DeployedModel, and
-                                     that need a higher degree of manual configuration.
+                                  description: A description of resources that are
+                                    dedicated to the DeployedModel, and that need
+                                    a higher degree of manual configuration.
                                   properties:
                                     autoscalingMetricSpecs:
                                       description: |-
@@ -416,19 +419,22 @@ spec:
                                                * `aiplatform.googleapis.com/prediction/online/cpu/utilization`
                                             type: string
                                           target:
-                                            description: |-
-                                              The target resource utilization in percentage (1% - 100%) for the given
-                                               metric; once the real usage deviates from the target by a certain
-                                               percentage, the machine replicas change. The default value is 60
-                                               (representing 60%) if not provided.
+                                            description: The target resource utilization
+                                              in percentage (1% - 100%) for the given
+                                              metric; once the real usage deviates
+                                              from the target by a certain percentage,
+                                              the machine replicas change. The default
+                                              value is 60 (representing 60%) if not
+                                              provided.
                                             format: int32
                                             type: integer
+                                        required:
+                                        - metricName
                                         type: object
                                       type: array
                                     machineSpec:
-                                      description: |-
-                                        Required. Immutable. The specification of a single machine used by the
-                                         prediction.
+                                      description: Required. Immutable. The specification
+                                        of a single machine used by the prediction.
                                       properties:
                                         acceleratorCount:
                                           description: The number of accelerators
@@ -436,10 +442,9 @@ spec:
                                           format: int32
                                           type: integer
                                         acceleratorType:
-                                          description: |-
-                                            Immutable. The type of accelerator(s) that may be attached to the machine
-                                             as per
-                                             [accelerator_count][google.cloud.visionai.v1.MachineSpec.accelerator_count].
+                                          description: Immutable. The type of accelerator(s)
+                                            that may be attached to the machine as
+                                            per [accelerator_count][google.cloud.visionai.v1.MachineSpec.accelerator_count].
                                           type: string
                                         machineType:
                                           description: |-
@@ -485,42 +490,44 @@ spec:
                                          replicas may be freed.
                                       format: int32
                                       type: integer
+                                  required:
+                                  - machineSpec
+                                  - minReplicaCount
                                   type: object
                                 dynamicConfigInputTopic:
-                                  description: |-
-                                    Optional. By setting the configuration_input_topic, processor will
-                                     subscribe to given topic, only pub/sub topic is supported now. Example
-                                     channel:
-                                     //pubsub.googleapis.com/projects/visionai-testing-stable/topics/test-topic
-                                     message schema should be:
-                                     message Message {
-                                     // The ID of the stream that associates with the application instance.
-                                     string stream_id = 1;
-                                     // The target fps. By default, the custom processor will *not* send any
-                                     data to the Vertex Prediction container. Note that once the
-                                     dynamic_config_input_topic is set, max_prediction_fps will not work and be
-                                     preceded by the fps set inside the topic.
-                                     int32 fps = 2;
-                                     }
+                                  description: 'Optional. By setting the configuration_input_topic,
+                                    processor will subscribe to given topic, only
+                                    pub/sub topic is supported now. Example channel:
+                                    //pubsub.googleapis.com/projects/visionai-testing-stable/topics/test-topic
+                                    message schema should be: message Message { //
+                                    The ID of the stream that associates with the
+                                    application instance. string stream_id = 1; //
+                                    The target fps. By default, the custom processor
+                                    will *not* send any data to the Vertex Prediction
+                                    container. Note that once the dynamic_config_input_topic
+                                    is set, max_prediction_fps will not work and be
+                                    preceded by the fps set inside the topic. int32
+                                    fps = 2; }'
                                   type: string
                                 maxPredictionFps:
-                                  description: |-
-                                    The max prediction frame per second. This attribute sets how fast the
-                                     operator sends prediction requests to Vertex AI endpoint. Default value is
-                                     0, which means there is no max prediction fps limit. The operator sends
-                                     prediction requests at input fps.
+                                  description: The max prediction frame per second.
+                                    This attribute sets how fast the operator sends
+                                    prediction requests to Vertex AI endpoint. Default
+                                    value is 0, which means there is no max prediction
+                                    fps limit. The operator sends prediction requests
+                                    at input fps.
                                   format: int32
                                   type: integer
                                 postProcessingCloudFunction:
-                                  description: |-
-                                    If not empty, the prediction result will be sent to the specified cloud
-                                     function for post processing.
-                                     * The cloud function will receive AppPlatformCloudFunctionRequest where
-                                     the annotations field will be the json format of proto PredictResponse.
-                                     * The cloud function should return AppPlatformCloudFunctionResponse with
-                                     PredictResponse stored in the annotations field.
-                                     * To drop the prediction output, simply clear the payload field in the
-                                     returned AppPlatformCloudFunctionResponse.
+                                  description: If not empty, the prediction result
+                                    will be sent to the specified cloud function for
+                                    post processing. * The cloud function will receive
+                                    AppPlatformCloudFunctionRequest where the annotations
+                                    field will be the json format of proto PredictResponse.
+                                    * The cloud function should return AppPlatformCloudFunctionResponse
+                                    with PredictResponse stored in the annotations
+                                    field. * To drop the prediction output, simply
+                                    clear the payload field in the returned AppPlatformCloudFunctionResponse.
                                   type: string
                               type: object
                             videoStreamInputConfig:
@@ -542,9 +549,10 @@ spec:
                                               description: Annotation for type ACTIVE_ZONE
                                               properties:
                                                 normalizedVertices:
-                                                  description: |-
-                                                    The bounding polygon normalized vertices. Top left corner of the image
-                                                     will be [0, 0].
+                                                  description: The bounding polygon
+                                                    normalized vertices. Top left
+                                                    corner of the image will be [0,
+                                                    0].
                                                   items:
                                                     properties:
                                                       x:
@@ -578,10 +586,11 @@ spec:
                                                 the annotation.
                                               type: string
                                             id:
-                                              description: |-
-                                                ID of the annotation. It must be unique when used in the certain context.
-                                                 For example, all the annotations to one input streams of a Vision AI
-                                                 application.
+                                              description: ID of the annotation. It
+                                                must be unique when used in the certain
+                                                context. For example, all the annotations
+                                                to one input streams of a Vision AI
+                                                application.
                                               type: string
                                             sourceStream:
                                               description: The Vision AI stream resource
@@ -593,15 +602,17 @@ spec:
                                           type: object
                                         type: array
                                       nodeAnnotations:
-                                        description: |-
-                                          Annotations that will be applied to the specific node of the application.
-                                           If the same type of the annotations is applied to both application and
-                                           node, the node annotation will be added in addition to the global
-                                           application one.
-                                           For example, if there is one active zone annotation for the whole
-                                           application and one active zone annotation for the Occupancy Analytic
-                                           processor, then the Occupancy Analytic processor will have two active zones
-                                           defined.
+                                        description: Annotations that will be applied
+                                          to the specific node of the application.
+                                          If the same type of the annotations is applied
+                                          to both application and node, the node annotation
+                                          will be added in addition to the global
+                                          application one. For example, if there is
+                                          one active zone annotation for the whole
+                                          application and one active zone annotation
+                                          for the Occupancy Analytic processor, then
+                                          the Occupancy Analytic processor will have
+                                          two active zones defined.
                                         items:
                                           properties:
                                             annotations:
@@ -614,9 +625,10 @@ spec:
                                                       ACTIVE_ZONE
                                                     properties:
                                                       normalizedVertices:
-                                                        description: |-
-                                                          The bounding polygon normalized vertices. Top left corner of the image
-                                                           will be [0, 0].
+                                                        description: The bounding
+                                                          polygon normalized vertices.
+                                                          Top left corner of the image
+                                                          will be [0, 0].
                                                         items:
                                                           properties:
                                                             x:
@@ -652,10 +664,12 @@ spec:
                                                       for the annotation.
                                                     type: string
                                                   id:
-                                                    description: |-
-                                                      ID of the annotation. It must be unique when used in the certain context.
-                                                       For example, all the annotations to one input streams of a Vision AI
-                                                       application.
+                                                    description: ID of the annotation.
+                                                      It must be unique when used
+                                                      in the certain context. For
+                                                      example, all the annotations
+                                                      to one input streams of a Vision
+                                                      AI application.
                                                     type: string
                                                   sourceStream:
                                                     description: The Vision AI stream
@@ -701,24 +715,24 @@ spec:
                              output stream.
                           type: boolean
                         parents:
-                          description: |-
-                            Parent node. Input node should not have parent node. For V1 Alpha1/Beta
-                             only media warehouse node can have multiple parents, other types of nodes
-                             will only have one parent.
+                          description: Parent node. Input node should not have parent
+                            node. For V1 Alpha1/Beta only media warehouse node can
+                            have multiple parents, other types of nodes will only
+                            have one parent.
                           items:
                             properties:
                               connectedInputChannel:
-                                description: |-
-                                  The connected input channel of the current node's processor.
-                                   It can be omitted if target processor only has 1 input channel.
+                                description: The connected input channel of the current
+                                  node's processor. It can be omitted if target processor
+                                  only has 1 input channel.
                                 type: string
                               parentNode:
                                 description: The name of the parent node.
                                 type: string
                               parentOutputChannel:
-                                description: |-
-                                  The connected output artifact of the parent node.
-                                   It can be omitted if target processor only has 1 output artifact.
+                                description: The connected output artifact of the
+                                  parent node. It can be omitted if target processor
+                                  only has 1 output artifact.
                                 type: string
                             type: object
                           type: array
@@ -726,6 +740,8 @@ spec:
                           description: Processor name refer to the chosen processor
                             resource.
                           type: string
+                      required:
+                      - name
                       type: object
                     type: array
                 type: object
@@ -743,6 +759,20 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -773,9 +803,8 @@ spec:
               state of VisionAIApplication
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -787,9 +816,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -831,22 +859,20 @@ spec:
                         items:
                           properties:
                             key:
-                              description: |-
-                                The key of the output resource, it has to be unique within the same
-                                 producer node. One producer node can output several output resources,
-                                 the key can be used to match corresponding output resources.
+                              description: The key of the output resource, it has
+                                to be unique within the same producer node. One producer
+                                node can output several output resources, the key
+                                can be used to match corresponding output resources.
                               type: string
                             outputResource:
                               description: The full resource name of the outputted
                                 resources.
                               type: string
                             producerNode:
-                              description: |-
-                                The name of graph node who produces the output resource name.
-                                 For example:
-                                 output_resource:
-                                 /projects/123/locations/us-central1/corpora/my-corpus/dataSchemas/my-schema
-                                 producer_node: occupancy-count
+                              description: 'The name of graph node who produces the
+                                output resource name. For example: output_resource:
+                                /projects/123/locations/us-central1/corpora/my-corpus/dataSchemas/my-schema
+                                producer_node: occupancy-count'
                               type: string
                           type: object
                         type: array

@@ -201,6 +201,8 @@ spec:
                                         description: Cloud Storage or HTTP uri for
                                           the document.
                                         type: string
+                                    required:
+                                    - document
                                     type: object
                                   type: array
                                 summary:

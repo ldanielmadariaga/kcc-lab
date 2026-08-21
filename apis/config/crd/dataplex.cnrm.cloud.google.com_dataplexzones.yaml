@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpdataplexzone
     - gcpdataplexzones
     singular: dataplexzone
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -44,19 +45,14 @@ spec:
         description: DataplexZone is the Schema for the DataplexZone API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -67,31 +63,28 @@ spec:
                 description: Optional. Description of the zone.
                 type: string
               discoverySpec:
-                description: |-
-                  Optional. Specification of the discovery feature applied to data in this
-                   zone.
+                description: Optional. Specification of the discovery feature applied
+                  to data in this zone.
                 properties:
                   csvOptions:
                     description: Optional. Configuration for CSV data.
                     properties:
                       delimiter:
-                        description: |-
-                          Optional. The delimiter being used to separate values. This defaults to
-                           ','.
+                        description: Optional. The delimiter being used to separate
+                          values. This defaults to ','.
                         type: string
                       disableTypeInference:
-                        description: |-
-                          Optional. Whether to disable the inference of data type for CSV data.
-                           If true, all columns will be registered as strings.
+                        description: Optional. Whether to disable the inference of
+                          data type for CSV data. If true, all columns will be registered
+                          as strings.
                         type: boolean
                       encoding:
                         description: Optional. The character encoding of the data.
                           The default is UTF-8.
                         type: string
                       headerRows:
-                        description: |-
-                          Optional. The number of rows to interpret as header rows that should be
-                           skipped when reading data rows.
+                        description: Optional. The number of rows to interpret as
+                          header rows that should be skipped when reading data rows.
                         format: int32
                         type: integer
                     type: object
@@ -99,21 +92,21 @@ spec:
                     description: Required. Whether discovery is enabled.
                     type: boolean
                   excludePatterns:
-                    description: |-
-                      Optional. The list of patterns to apply for selecting data to exclude
-                       during discovery.  For Cloud Storage bucket assets, these are interpreted
-                       as glob patterns used to match object names. For BigQuery dataset assets,
-                       these are interpreted as patterns to match table names.
+                    description: Optional. The list of patterns to apply for selecting
+                      data to exclude during discovery.  For Cloud Storage bucket
+                      assets, these are interpreted as glob patterns used to match
+                      object names. For BigQuery dataset assets, these are interpreted
+                      as patterns to match table names.
                     items:
                       type: string
                     type: array
                   includePatterns:
-                    description: |-
-                      Optional. The list of patterns to apply for selecting data to include
-                       during discovery if only a subset of the data should considered. For
-                       Cloud Storage bucket assets, these are interpreted as glob patterns used
-                       to match object names. For BigQuery dataset assets, these are interpreted
-                       as patterns to match table names.
+                    description: Optional. The list of patterns to apply for selecting
+                      data to include during discovery if only a subset of the data
+                      should considered. For Cloud Storage bucket assets, these are
+                      interpreted as glob patterns used to match object names. For
+                      BigQuery dataset assets, these are interpreted as patterns to
+                      match table names.
                     items:
                       type: string
                     type: array
@@ -121,10 +114,9 @@ spec:
                     description: Optional. Configuration for Json data.
                     properties:
                       disableTypeInference:
-                        description: |-
-                          Optional. Whether to disable the inference of data type for Json data.
-                           If true, all columns will be registered as their primitive types
-                           (strings, number or boolean).
+                        description: Optional. Whether to disable the inference of
+                          data type for Json data. If true, all columns will be registered
+                          as their primitive types (strings, number or boolean).
                         type: boolean
                       encoding:
                         description: Optional. The character encoding of the data.
@@ -157,6 +149,20 @@ spec:
                 type: object
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -178,14 +184,12 @@ spec:
                   will be used.
                 type: string
               resourceSpec:
-                description: |-
-                  Required. Specification of the resources that are referenced by the assets
-                   within this zone.
+                description: Required. Specification of the resources that are referenced
+                  by the assets within this zone.
                 properties:
                   locationType:
-                    description: |-
-                      Required. Immutable. The location type of the resources that are allowed
-                       to be attached to the assets within this zone.
+                    description: Required. Immutable. The location type of the resources
+                      that are allowed to be attached to the assets within this zone.
                     type: string
                 required:
                 - locationType
@@ -203,9 +207,8 @@ spec:
               of DataplexZone
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -217,9 +220,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -254,9 +256,8 @@ spec:
                         format: int32
                         type: integer
                       securityPolicyApplyingAssets:
-                        description: |-
-                          Number of assets that are in process of updating the security policy on
-                           attached resources.
+                        description: Number of assets that are in process of updating
+                          the security policy on attached resources.
                         format: int32
                         type: integer
                       updateTime:
@@ -270,9 +271,9 @@ spec:
                     description: Output only. Current state of the zone.
                     type: string
                   uid:
-                    description: |-
-                      Output only. System generated globally unique ID for the zone. This ID will
-                       be different if the zone is deleted and re-created with the same name.
+                    description: Output only. System generated globally unique ID
+                      for the zone. This ID will be different if the zone is deleted
+                      and re-created with the same name.
                     type: string
                   updateTime:
                     description: Output only. The time when the zone was last updated.

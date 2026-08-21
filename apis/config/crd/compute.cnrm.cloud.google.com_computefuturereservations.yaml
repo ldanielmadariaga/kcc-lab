@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpcomputefuturereservation
     - gcpcomputefuturereservations
     singular: computefuturereservation
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -81,9 +77,8 @@ spec:
                               format: int32
                               type: integer
                             acceleratorType:
-                              description: |-
-                                Full or partial URL to accelerator type. e.g.
-                                 "projects/{PROJECT}/zones/{ZONE}/acceleratorTypes/ct4l"
+                              description: Full or partial URL to accelerator type.
+                                e.g. "projects/{PROJECT}/zones/{ZONE}/acceleratorTypes/ct4l"
                               type: string
                           type: object
                       type: object
@@ -101,22 +96,21 @@ spec:
                               format: int32
                               type: integer
                             acceleratorType:
-                              description: |-
-                                Full or partial URL to accelerator type. e.g.
-                                 "projects/{PROJECT}/zones/{ZONE}/acceleratorTypes/ct4l"
+                              description: Full or partial URL to accelerator type.
+                                e.g. "projects/{PROJECT}/zones/{ZONE}/acceleratorTypes/ct4l"
                               type: string
                           type: object
                       type: object
                     type: array
                   vmFamily:
-                    description: |-
-                      The VM family that all instances scheduled against this reservation must belong to.
-                       Check the VmFamily enum for the list of possible values.
+                    description: The VM family that all instances scheduled against
+                      this reservation must belong to. Check the VmFamily enum for
+                      the list of possible values.
                     type: string
                   workloadType:
-                    description: |-
-                      The workload type of the instances that will target this reservation.
-                       Check the WorkloadType enum for the list of possible values.
+                    description: The workload type of the instances that will target
+                      this reservation. Check the WorkloadType enum for the list of
+                      possible values.
                     type: string
                 type: object
               autoCreatedReservationsDeleteTime:
@@ -132,18 +126,17 @@ spec:
                   and fractions of seconds at nanosecond resolution.
                 properties:
                   nanos:
-                    description: |-
-                      Span of time that's a fraction of a second at nanosecond resolution.
-                       Durations less than one second are represented with a 0
-                       `seconds` field and a positive `nanos` field. Must be from 0
-                       to 999,999,999 inclusive.
+                    description: Span of time that's a fraction of a second at nanosecond
+                      resolution. Durations less than one second are represented with
+                      a 0 `seconds` field and a positive `nanos` field. Must be from
+                      0 to 999,999,999 inclusive.
                     format: int32
                     type: integer
                   seconds:
-                    description: |-
-                      Span of time at a resolution of a second. Must be from 0
-                       to 315,576,000,000 inclusive. Note: these bounds are computed from:
-                       60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years
+                    description: 'Span of time at a resolution of a second. Must be
+                      from 0 to 315,576,000,000 inclusive. Note: these bounds are
+                      computed from: 60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year
+                      * 10000 years'
                     format: int64
                     type: integer
                 type: object
@@ -165,18 +158,16 @@ spec:
                       to.
                     type: string
                   commitmentPlan:
-                    description: |-
-                      Indicates if a Commitment needs to be created as part of FR delivery. If
-                       this field is not present, then no
-                       commitment needs to be created.
-                       Check the CommitmentPlan enum for the list of possible values.
+                    description: Indicates if a Commitment needs to be created as
+                      part of FR delivery. If this field is not present, then no commitment
+                      needs to be created. Check the CommitmentPlan enum for the list
+                      of possible values.
                     type: string
                   previousCommitmentTerms:
-                    description: |-
-                      Only applicable if FR is delivering to the same reservation. If set, all
-                       parent commitments will be extended to match the end date of the plan for
-                       this commitment.
-                       Check the PreviousCommitmentTerms enum for the list of possible values.
+                    description: Only applicable if FR is delivering to the same reservation.
+                      If set, all parent commitments will be extended to match the
+                      end date of the plan for this commitment. Check the PreviousCommitmentTerms
+                      enum for the list of possible values.
                     type: string
                 type: object
               creationTimestamp:
@@ -184,9 +175,8 @@ spec:
                   reservation in RFC3339 text format.'
                 type: string
               deploymentType:
-                description: |-
-                  Type of the deployment requested as part of future reservation.
-                   Check the DeploymentType enum for the list of possible values.
+                description: Type of the deployment requested as part of future reservation.
+                  Check the DeploymentType enum for the list of possible values.
                 type: string
               description:
                 description: An optional description of this resource. Provide this
@@ -215,12 +205,25 @@ spec:
                   name format will be -date-####.
                 type: string
               planningStatus:
-                description: |-
-                  Planning state before being submitted for evaluation
-                   Check the PlanningStatus enum for the list of possible values.
+                description: Planning state before being submitted for evaluation
+                  Check the PlanningStatus enum for the list of possible values.
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -238,9 +241,9 @@ spec:
                     type: string
                 type: object
               reservationMode:
-                description: |-
-                  The reservation mode which determines reservation-termination behavior and expected pricing.
-                   Check the ReservationMode enum for the list of possible values.
+                description: The reservation mode which determines reservation-termination
+                  behavior and expected pricing. Check the ReservationMode enum for
+                  the list of possible values.
                 type: string
               reservationName:
                 description: Name of reservations where the capacity is provisioned
@@ -254,9 +257,8 @@ spec:
                   metadata.name will be used.
                 type: string
               schedulingType:
-                description: |-
-                  Maintenance information for this reservation
-                   Check the SchedulingType enum for the list of possible values.
+                description: Maintenance information for this reservation Check the
+                  SchedulingType enum for the list of possible values.
                 type: string
               selfLink:
                 description: '[Output Only] Server-defined fully-qualified URL for
@@ -288,9 +290,8 @@ spec:
                       type: string
                     type: array
                   shareType:
-                    description: |-
-                      Type of sharing for this shared-reservation
-                       Check the ShareType enum for the list of possible values.
+                    description: Type of sharing for this shared-reservation Check
+                      the ShareType enum for the list of possible values.
                     type: string
                 type: object
               specificReservationRequired:
@@ -316,20 +317,17 @@ spec:
                               format: int32
                               type: integer
                             acceleratorType:
-                              description: |-
-                                Full or partial URL of the accelerator type resource to attach to this
-                                 instance. For example:projects/my-project/zones/us-central1-c/acceleratorTypes/nvidia-tesla-p100
-                                 If you are creating an instance template, specify only the
-                                 accelerator name.
-                                 See GPUs on Compute Engine
-                                 for a full list of accelerator types.
+                              description: Full or partial URL of the accelerator
+                                type resource to attach to this instance. For example:projects/my-project/zones/us-central1-c/acceleratorTypes/nvidia-tesla-p100
+                                If you are creating an instance template, specify
+                                only the accelerator name. See GPUs on Compute Engine
+                                for a full list of accelerator types.
                               type: string
                           type: object
                         type: array
                       localSsds:
-                        description: |-
-                          Specifies amount of local ssd to reserve with each instance. The type
-                           of disk is local-ssd.
+                        description: Specifies amount of local ssd to reserve with
+                          each instance. The type of disk is local-ssd.
                         items:
                           properties:
                             diskSizeGB:
@@ -338,39 +336,36 @@ spec:
                               format: int64
                               type: integer
                             interface:
-                              description: |-
-                                Specifies the disk interface to use for attaching this disk, which is
-                                 either SCSI or NVME. The default isSCSI.
-                                 For performance characteristics of SCSI over NVMe, seeLocal SSD performance.
-                                 Check the Interface enum for the list of possible values.
+                              description: Specifies the disk interface to use for
+                                attaching this disk, which is either SCSI or NVME.
+                                The default isSCSI. For performance characteristics
+                                of SCSI over NVMe, seeLocal SSD performance. Check
+                                the Interface enum for the list of possible values.
                               type: string
                           type: object
                         type: array
                       locationHint:
-                        description: |-
-                          An opaque location hint used to place the allocation close to other
-                           resources.
-                           This field is for use by internal tools that use the public API.
+                        description: An opaque location hint used to place the allocation
+                          close to other resources. This field is for use by internal
+                          tools that use the public API.
                         type: string
                       machineType:
-                        description: |-
-                          Specifies type of machine (name only) which has fixed number of vCPUs
-                           and fixed amount of memory. This also includes specifying custom
-                           machine type following custom-NUMBER_OF_CPUS-AMOUNT_OF_MEMORY pattern.
+                        description: Specifies type of machine (name only) which has
+                          fixed number of vCPUs and fixed amount of memory. This also
+                          includes specifying custom machine type following custom-NUMBER_OF_CPUS-AMOUNT_OF_MEMORY
+                          pattern.
                         type: string
                       minCPUPlatform:
                         description: Minimum cpu platform the reservation.
                         type: string
                     type: object
                   sourceInstanceTemplate:
-                    description: |-
-                      The instance template that will be used to populate the
-                       ReservedInstanceProperties of the future reservation
+                    description: The instance template that will be used to populate
+                      the ReservedInstanceProperties of the future reservation
                     type: string
                   totalCount:
-                    description: |-
-                      Total number of instances for which capacity assurance is requested at a
-                       future time period.
+                    description: Total number of instances for which capacity assurance
+                      is requested at a future time period.
                     format: int64
                     type: integer
                 type: object
@@ -378,26 +373,23 @@ spec:
                 description: '[Output only] Status of the Future Reservation'
                 properties:
                   amendmentStatus:
-                    description: |-
-                      Output only. [Output Only] The current status of the requested amendment.
-                       Check the AmendmentStatus enum for the list of possible values.
+                    description: Output only. [Output Only] The current status of
+                      the requested amendment. Check the AmendmentStatus enum for
+                      the list of possible values.
                     type: string
                   autoCreatedReservations:
-                    description: |-
-                      Output only. Fully qualified urls of the automatically created reservations at
-                       start_time.
+                    description: Output only. Fully qualified urls of the automatically
+                      created reservations at start_time.
                     items:
                       type: string
                     type: array
                   existingMatchingUsageInfo:
-                    description: |-
-                      Output only. [Output Only] Represents the existing matching usage for the future
-                       reservation.
+                    description: Output only. [Output Only] Represents the existing
+                      matching usage for the future reservation.
                     properties:
                       count:
-                        description: |-
-                          Output only. Count to represent min(FR total_count,
-                           matching_reserved_capacity+matching_unreserved_instances)
+                        description: Output only. Count to represent min(FR total_count,
+                          matching_reserved_capacity+matching_unreserved_instances)
                         format: int64
                         type: integer
                       timestamp:
@@ -406,34 +398,32 @@ spec:
                         type: string
                     type: object
                   fulfilledCount:
-                    description: |-
-                      Output only. This count indicates the fulfilled capacity so far. This is set during
-                       "PROVISIONING" state. This count also includes capacity delivered as part
-                       of existing matching reservations.
+                    description: Output only. This count indicates the fulfilled capacity
+                      so far. This is set during "PROVISIONING" state. This count
+                      also includes capacity delivered as part of existing matching
+                      reservations.
                     format: int64
                     type: integer
                   lastKnownGoodState:
-                    description: |-
-                      Output only. [Output Only] This field represents the future reservation before an
-                       amendment was requested. If the amendment is declined, the Future
-                       Reservation will be reverted to the last known good state. The last known
-                       good state is not set when updating a future reservation whose
-                       Procurement Status is DRAFTING.
+                    description: Output only. [Output Only] This field represents
+                      the future reservation before an amendment was requested. If
+                      the amendment is declined, the Future Reservation will be reverted
+                      to the last known good state. The last known good state is not
+                      set when updating a future reservation whose Procurement Status
+                      is DRAFTING.
                     properties:
                       description:
-                        description: |-
-                          Output only. [Output Only] The description of the FutureReservation before an
-                           amendment was requested.
+                        description: Output only. [Output Only] The description of
+                          the FutureReservation before an amendment was requested.
                         type: string
                       existingMatchingUsageInfo:
-                        description: |-
-                          Output only. [Output Only] Represents the matching usage for the future
-                           reservation before an amendment was requested.
+                        description: Output only. [Output Only] Represents the matching
+                          usage for the future reservation before an amendment was
+                          requested.
                         properties:
                           count:
-                            description: |-
-                              Output only. Count to represent min(FR total_count,
-                               matching_reserved_capacity+matching_unreserved_instances)
+                            description: Output only. Count to represent min(FR total_count,
+                              matching_reserved_capacity+matching_unreserved_instances)
                             format: int64
                             type: integer
                           timestamp:
@@ -467,9 +457,9 @@ spec:
                                   type: string
                                 type: array
                               shareType:
-                                description: |-
-                                  Type of sharing for this shared-reservation
-                                   Check the ShareType enum for the list of possible values.
+                                description: Type of sharing for this shared-reservation
+                                  Check the ShareType enum for the list of possible
+                                  values.
                                 type: string
                             type: object
                           specificSkuProperties:
@@ -490,20 +480,20 @@ spec:
                                           format: int32
                                           type: integer
                                         acceleratorType:
-                                          description: |-
-                                            Full or partial URL of the accelerator type resource to attach to this
-                                             instance. For example:projects/my-project/zones/us-central1-c/acceleratorTypes/nvidia-tesla-p100
-                                             If you are creating an instance template, specify only the
-                                             accelerator name.
-                                             See GPUs on Compute Engine
-                                             for a full list of accelerator types.
+                                          description: Full or partial URL of the
+                                            accelerator type resource to attach to
+                                            this instance. For example:projects/my-project/zones/us-central1-c/acceleratorTypes/nvidia-tesla-p100
+                                            If you are creating an instance template,
+                                            specify only the accelerator name. See
+                                            GPUs on Compute Engine for a full list
+                                            of accelerator types.
                                           type: string
                                       type: object
                                     type: array
                                   localSsds:
-                                    description: |-
-                                      Specifies amount of local ssd to reserve with each instance. The type
-                                       of disk is local-ssd.
+                                    description: Specifies amount of local ssd to
+                                      reserve with each instance. The type of disk
+                                      is local-ssd.
                                     items:
                                       properties:
                                         diskSizeGB:
@@ -512,39 +502,41 @@ spec:
                                           format: int64
                                           type: integer
                                         interface:
-                                          description: |-
-                                            Specifies the disk interface to use for attaching this disk, which is
-                                             either SCSI or NVME. The default isSCSI.
-                                             For performance characteristics of SCSI over NVMe, seeLocal SSD performance.
-                                             Check the Interface enum for the list of possible values.
+                                          description: Specifies the disk interface
+                                            to use for attaching this disk, which
+                                            is either SCSI or NVME. The default isSCSI.
+                                            For performance characteristics of SCSI
+                                            over NVMe, seeLocal SSD performance. Check
+                                            the Interface enum for the list of possible
+                                            values.
                                           type: string
                                       type: object
                                     type: array
                                   locationHint:
-                                    description: |-
-                                      An opaque location hint used to place the allocation close to other
-                                       resources.
-                                       This field is for use by internal tools that use the public API.
+                                    description: An opaque location hint used to place
+                                      the allocation close to other resources. This
+                                      field is for use by internal tools that use
+                                      the public API.
                                     type: string
                                   machineType:
-                                    description: |-
-                                      Specifies type of machine (name only) which has fixed number of vCPUs
-                                       and fixed amount of memory. This also includes specifying custom
-                                       machine type following custom-NUMBER_OF_CPUS-AMOUNT_OF_MEMORY pattern.
+                                    description: Specifies type of machine (name only)
+                                      which has fixed number of vCPUs and fixed amount
+                                      of memory. This also includes specifying custom
+                                      machine type following custom-NUMBER_OF_CPUS-AMOUNT_OF_MEMORY
+                                      pattern.
                                     type: string
                                   minCPUPlatform:
                                     description: Minimum cpu platform the reservation.
                                     type: string
                                 type: object
                               sourceInstanceTemplate:
-                                description: |-
-                                  The instance template that will be used to populate the
-                                   ReservedInstanceProperties of the future reservation
+                                description: The instance template that will be used
+                                  to populate the ReservedInstanceProperties of the
+                                  future reservation
                                 type: string
                               totalCount:
-                                description: |-
-                                  Total number of instances for which capacity assurance is requested at a
-                                   future time period.
+                                description: Total number of instances for which capacity
+                                  assurance is requested at a future time period.
                                 format: int64
                                 type: integer
                             type: object
@@ -555,66 +547,61 @@ spec:
                               duration:
                                 properties:
                                   nanos:
-                                    description: |-
-                                      Span of time that's a fraction of a second at nanosecond resolution.
-                                       Durations less than one second are represented with a 0
-                                       `seconds` field and a positive `nanos` field. Must be from 0
-                                       to 999,999,999 inclusive.
+                                    description: Span of time that's a fraction of
+                                      a second at nanosecond resolution. Durations
+                                      less than one second are represented with a
+                                      0 `seconds` field and a positive `nanos` field.
+                                      Must be from 0 to 999,999,999 inclusive.
                                     format: int32
                                     type: integer
                                   seconds:
-                                    description: |-
-                                      Span of time at a resolution of a second. Must be from 0
-                                       to 315,576,000,000 inclusive. Note: these bounds are computed from:
-                                       60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years
+                                    description: 'Span of time at a resolution of
+                                      a second. Must be from 0 to 315,576,000,000
+                                      inclusive. Note: these bounds are computed from:
+                                      60 sec/min * 60 min/hr * 24 hr/day * 365.25
+                                      days/year * 10000 years'
                                     format: int64
                                     type: integer
                                 type: object
                               endTime:
                                 type: string
                               startTime:
-                                description: |-
-                                  Start time of the Future Reservation. The start_time is an RFC3339
-                                   string.
+                                description: Start time of the Future Reservation.
+                                  The start_time is an RFC3339 string.
                                 type: string
                             type: object
                         type: object
                       lockTime:
-                        description: |-
-                          Output only. [Output Only] The lock time of the FutureReservation before an
-                           amendment was requested.
+                        description: Output only. [Output Only] The lock time of the
+                          FutureReservation before an amendment was requested.
                         type: string
                       namePrefix:
-                        description: |-
-                          Output only. [Output Only] The name prefix of the Future Reservation before an
-                           amendment was requested.
+                        description: Output only. [Output Only] The name prefix of
+                          the Future Reservation before an amendment was requested.
                         type: string
                       procurementStatus:
-                        description: |-
-                          Output only. [Output Only] The status of the last known good state for the Future
-                           Reservation.
-                           Check the ProcurementStatus enum for the list of possible values.
+                        description: Output only. [Output Only] The status of the
+                          last known good state for the Future Reservation. Check
+                          the ProcurementStatus enum for the list of possible values.
                         type: string
                     type: object
                   lockTime:
-                    description: |-
-                      Output only. Time when Future Reservation would become LOCKED, after which no
-                       modifications to Future Reservation will be allowed. Applicable only
-                       after the Future Reservation is in the APPROVED state. The lock_time is
-                       an RFC3339 string. The procurement_status will transition to PROCURING
-                       state at this time.
+                    description: Output only. Time when Future Reservation would become
+                      LOCKED, after which no modifications to Future Reservation will
+                      be allowed. Applicable only after the Future Reservation is
+                      in the APPROVED state. The lock_time is an RFC3339 string. The
+                      procurement_status will transition to PROCURING state at this
+                      time.
                     type: string
                   procurementStatus:
-                    description: |-
-                      Output only. Current state of this Future Reservation
-                       Check the ProcurementStatus enum for the list of possible values.
+                    description: Output only. Current state of this Future Reservation
+                      Check the ProcurementStatus enum for the list of possible values.
                     type: string
                   specificSkuProperties:
                     properties:
                       sourceInstanceTemplateID:
-                        description: |-
-                          ID of the instance template used to populate the Future Reservation
-                           properties.
+                        description: ID of the instance template used to populate
+                          the Future Reservation properties.
                         type: string
                     type: object
                 type: object
@@ -624,27 +611,25 @@ spec:
                   duration:
                     properties:
                       nanos:
-                        description: |-
-                          Span of time that's a fraction of a second at nanosecond resolution.
-                           Durations less than one second are represented with a 0
-                           `seconds` field and a positive `nanos` field. Must be from 0
-                           to 999,999,999 inclusive.
+                        description: Span of time that's a fraction of a second at
+                          nanosecond resolution. Durations less than one second are
+                          represented with a 0 `seconds` field and a positive `nanos`
+                          field. Must be from 0 to 999,999,999 inclusive.
                         format: int32
                         type: integer
                       seconds:
-                        description: |-
-                          Span of time at a resolution of a second. Must be from 0
-                           to 315,576,000,000 inclusive. Note: these bounds are computed from:
-                           60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years
+                        description: 'Span of time at a resolution of a second. Must
+                          be from 0 to 315,576,000,000 inclusive. Note: these bounds
+                          are computed from: 60 sec/min * 60 min/hr * 24 hr/day *
+                          365.25 days/year * 10000 years'
                         format: int64
                         type: integer
                     type: object
                   endTime:
                     type: string
                   startTime:
-                    description: |-
-                      Start time of the Future Reservation. The start_time is an RFC3339
-                       string.
+                    description: Start time of the Future Reservation. The start_time
+                      is an RFC3339 string.
                     type: string
                 type: object
               zone:
@@ -660,9 +645,8 @@ spec:
               machine state of ComputeFutureReservation
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -674,9 +658,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

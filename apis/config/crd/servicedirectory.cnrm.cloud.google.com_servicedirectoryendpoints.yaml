@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: stable
@@ -22,6 +22,7 @@ spec:
     - gcpservicedirectoryendpoint
     - gcpservicedirectoryendpoints
     singular: servicedirectoryendpoint
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -47,19 +48,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -70,11 +66,24 @@ spec:
               addressRef:
                 description: Optional. The ComputeAddress resource whose IP address
                   this endpoint uses.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeAddress resource.
-                      Should be in the format "projects/{{projectID}}/global/addresses/{{addressID}}"
+                    description: A reference to an externally managed ComputeAddress
+                      resource. Should be in the format "projects/{{projectID}}/global/addresses/{{addressID}}"
                       or "projects/{{projectID}}/regions/{{region}}/addresses/{{addressID}}".
                     type: string
                   name:
@@ -87,11 +96,24 @@ spec:
               networkRef:
                 description: Optional. The ComputeNetwork resource representing the
                   GCE network of this endpoint.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeNetwork resource.
-                      Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                    description: A reference to an externally managed ComputeNetwork
+                      resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
                     type: string
                   name:
                     description: The name of a ComputeNetwork resource.
@@ -101,25 +123,36 @@ spec:
                     type: string
                 type: object
               port:
-                description: |-
-                  Optional. Port that the endpoint is running on, must be in the
-                  range of [0, 65535]. If unspecified, the default is 0.
+                description: Optional. Port that the endpoint is running on, must
+                  be in the range of [0, 65535]. If unspecified, the default is 0.
                 format: int32
                 type: integer
               resourceID:
-                description: |-
-                  Immutable. Optional. The endpointId of the resource.
+                description: Immutable. Optional. The endpointId of the resource.
                   Used for creation and acquisition. When unset, the value of `metadata.name`
                   is used as the default.
                 type: string
               serviceRef:
                 description: Required. The ServiceDirectoryService that this endpoint
                   belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ServiceDirectoryService resource.
-                      Should be in the format "projects/{{projectID}}/locations/{{location}}/namespaces/{{namespaceID}}/services/{{serviceID}}".
+                    description: A reference to an externally managed ServiceDirectoryService
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/namespaces/{{namespaceID}}/services/{{serviceID}}".
                     type: string
                   name:
                     description: The name of a ServiceDirectoryService resource.
@@ -136,9 +169,8 @@ spec:
               machine state of ServiceDirectoryEndpoint
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -150,9 +182,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -164,9 +195,7 @@ spec:
                   type: object
                 type: array
               name:
-                description: |-
-                  The resource name for the endpoint in the format
-                  'projects/*/locations/*/namespaces/*/services/*/endpoints/*'.
+                description: The resource name for the endpoint in the format 'projects/*/locations/*/namespaces/*/services/*/endpoints/*'.
                 type: string
               observedGeneration:
                 description: ObservedGeneration is the generation of the resource

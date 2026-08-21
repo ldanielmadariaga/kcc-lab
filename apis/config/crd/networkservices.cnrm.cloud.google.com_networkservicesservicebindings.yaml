@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpnetworkservicesservicebinding
     - gcpnetworkservicesservicebindings
     singular: networkservicesservicebinding
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -66,9 +62,8 @@ spec:
               of NetworkServicesServiceBinding
             properties:
               description:
-                description: |-
-                  Optional. A free-text description of the resource. Max length 1024
-                   characters.
+                description: Optional. A free-text description of the resource. Max
+                  length 1024 characters.
                 type: string
               labels:
                 additionalProperties:
@@ -81,6 +76,20 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -102,11 +111,10 @@ spec:
                   the metadata.name will be used.
                 type: string
               service:
-                description: |-
-                  Optional. The full Service Directory Service name of the format
-                   `projects/*/locations/*/namespaces/*/services/*`.
-                   This field is for Service Directory integration which will be deprecated
-                   soon.
+                description: Optional. The full Service Directory Service name of
+                  the format `projects/*/locations/*/namespaces/*/services/*`. This
+                  field is for Service Directory integration which will be deprecated
+                  soon.
                 type: string
             required:
             - location
@@ -117,9 +125,8 @@ spec:
               machine state of NetworkServicesServiceBinding
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -131,9 +138,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -165,12 +171,12 @@ spec:
                       created.
                     type: string
                   serviceID:
-                    description: |-
-                      Output only. The unique identifier of the Service Directory Service against
-                       which the ServiceBinding resource is validated. This is populated when the
-                       Service Binding resource is used in another resource (like Backend
-                       Service). This is of the UUID4 format. This field is for Service Directory
-                       integration which will be deprecated soon.
+                    description: Output only. The unique identifier of the Service
+                      Directory Service against which the ServiceBinding resource
+                      is validated. This is populated when the Service Binding resource
+                      is used in another resource (like Backend Service). This is
+                      of the UUID4 format. This field is for Service Directory integration
+                      which will be deprecated soon.
                     type: string
                   updateTime:
                     description: Output only. The timestamp when the resource was

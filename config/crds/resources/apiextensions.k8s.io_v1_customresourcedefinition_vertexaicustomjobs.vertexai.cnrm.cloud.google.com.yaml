@@ -132,6 +132,8 @@ spec:
                           automatically appended. The directory is created if it doesn't
                           exist.
                         type: string
+                    required:
+                    - outputURIPrefix
                     type: object
                   enableDashboardAccess:
                     description: |-
@@ -341,6 +343,10 @@ spec:
                                 AI Service Agent requires the dns.peer role on this
                                 project.
                               type: string
+                          required:
+                          - domain
+                          - targetNetwork
+                          - targetProject
                           type: object
                         type: array
                       networkAttachment:
@@ -499,6 +505,9 @@ spec:
                                       be expanded, regardless of whether the variable
                                       exists or not.'
                                     type: string
+                                required:
+                                - name
+                                - value
                                 type: object
                               type: array
                             imageURI:
@@ -506,6 +515,8 @@ spec:
                                 in the Container Registry that is to be run on each
                                 worker replica.
                               type: string
+                          required:
+                          - imageURI
                           type: object
                         diskSpec:
                           description: Disk spec.
@@ -596,6 +607,8 @@ spec:
                                   items:
                                     type: string
                                   type: array
+                              required:
+                              - reservationAffinityType
                               type: object
                             tpuTopology:
                               description: 'Immutable. The topology of the TPUs. Corresponds
@@ -620,6 +633,10 @@ spec:
                               server:
                                 description: Required. IP address of the NFS server.
                                 type: string
+                            required:
+                            - mountPoint
+                            - path
+                            - server
                             type: object
                           type: array
                         pythonPackageSpec:

@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,6 +21,7 @@ spec:
     - gcpcloudsecuritycomplianceframework
     - gcpcloudsecuritycomplianceframeworks
     singular: cloudsecuritycomplianceframework
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -77,15 +73,27 @@ spec:
                 items:
                   properties:
                     cloudControlRef:
-                      description: |-
-                        Required. The name of the CloudControl in the format:
-                         “organizations/{organization}/locations/{location}/
-                         cloudControls/{cloud-control}”
+                      description: 'Required. The name of the CloudControl in the
+                        format: “organizations/{organization}/locations/{location}/
+                        cloudControls/{cloud-control}”'
+                      oneOf:
+                      - not:
+                          required:
+                          - external
+                        required:
+                        - name
+                      - not:
+                          anyOf:
+                          - required:
+                            - name
+                          - required:
+                            - namespace
+                        required:
+                        - external
                       properties:
                         external:
-                          description: |-
-                            A reference to an externally managed CloudSecurityComplianceCloudControl resource.
-                            Should be in the format "organizations/{{organizationID}}/locations/{{location}}/cloudControls/{{cloudControlID}}".
+                          description: A reference to an externally managed CloudSecurityComplianceCloudControl
+                            resource. Should be in the format "organizations/{{organizationID}}/locations/{{location}}/cloudControls/{{cloudControlID}}".
                           type: string
                         name:
                           description: The name of a CloudSecurityComplianceCloudControl
@@ -101,10 +109,10 @@ spec:
                       format: int64
                       type: integer
                     parameters:
-                      description: |-
-                        Optional. Parameters is a key-value pair that is required by the
-                         CloudControl. The specification of these parameters will be present in
-                         cloudcontrol.Eg: { "name": "location","value": "us-west-1"}.
+                      description: 'Optional. Parameters is a key-value pair that
+                        is required by the CloudControl. The specification of these
+                        parameters will be present in cloudcontrol.Eg: { "name": "location","value":
+                        "us-west-1"}.'
                       items:
                         properties:
                           name:
@@ -127,20 +135,32 @@ spec:
                       description: The cloud control group included in the framework.
                       properties:
                         cloudControlDetails:
-                          description: |-
-                            Required. The details of the cloud controls to be referred to in the
-                             framework.
+                          description: Required. The details of the cloud controls
+                            to be referred to in the framework.
                           items:
                             properties:
                               cloudControlRef:
-                                description: |-
-                                  Required. The name of the CloudControl in the format:
-                                   “organizations/{organization}/locations/{location}/
-                                   cloudControls/{cloud-control}”
+                                description: 'Required. The name of the CloudControl
+                                  in the format: “organizations/{organization}/locations/{location}/
+                                  cloudControls/{cloud-control}”'
+                                oneOf:
+                                - not:
+                                    required:
+                                    - external
+                                  required:
+                                  - name
+                                - not:
+                                    anyOf:
+                                    - required:
+                                      - name
+                                    - required:
+                                      - namespace
+                                  required:
+                                  - external
                                 properties:
                                   external:
-                                    description: |-
-                                      A reference to an externally managed CloudSecurityComplianceCloudControl resource.
+                                    description: A reference to an externally managed
+                                      CloudSecurityComplianceCloudControl resource.
                                       Should be in the format "organizations/{{organizationID}}/locations/{{location}}/cloudControls/{{cloudControlID}}".
                                     type: string
                                   name:
@@ -157,10 +177,10 @@ spec:
                                 format: int64
                                 type: integer
                               parameters:
-                                description: |-
-                                  Optional. Parameters is a key-value pair that is required by the
-                                   CloudControl. The specification of these parameters will be present in
-                                   cloudcontrol.Eg: { "name": "location","value": "us-west-1"}.
+                                description: 'Optional. Parameters is a key-value
+                                  pair that is required by the CloudControl. The specification
+                                  of these parameters will be present in cloudcontrol.Eg:
+                                  { "name": "location","value": "us-west-1"}.'
                                 items:
                                   properties:
                                     name:
@@ -176,15 +196,27 @@ spec:
                             type: object
                           type: array
                         cloudControlGroupRef:
-                          description: |-
-                            Required. The name of the cloud control group in the format:
-                             “organizations/{organization}/locations/{location}/
-                             cloudControlGroups/{cloud-control-group}”
+                          description: 'Required. The name of the cloud control group
+                            in the format: “organizations/{organization}/locations/{location}/
+                            cloudControlGroups/{cloud-control-group}”'
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
                           properties:
                             external:
-                              description: |-
-                                A reference to an externally managed CloudSecurityComplianceCloudControlGroup resource.
-                                Should be in the format "organizations/{{organizationID}}/locations/{{location}}/cloudControlGroups/{{cloudControlGroupID}}".
+                              description: A reference to an externally managed CloudSecurityComplianceCloudControlGroup
+                                resource. Should be in the format "organizations/{{organizationID}}/locations/{{location}}/cloudControlGroups/{{cloudControlGroupID}}".
                               type: string
                             name:
                               description: The name of a CloudSecurityComplianceCloudControlGroup
@@ -196,20 +228,30 @@ spec:
                               type: string
                           type: object
                         controlID:
-                          description: |-
-                            Optional. The control identifier used to fetch the findings. This is same
-                             as the control report name.
+                          description: Optional. The control identifier used to fetch
+                            the findings. This is same as the control report name.
                           type: string
                         controlRef:
-                          description: |-
-                            Optional. The industry-defined Control assciated with the cloud controls in
-                             this group.
-                             organizations/{organization}/locations/{location}/controls/{control_id}
+                          description: Optional. The industry-defined Control assciated
+                            with the cloud controls in this group. organizations/{organization}/locations/{location}/controls/{control_id}
+                          oneOf:
+                          - not:
+                              required:
+                              - external
+                            required:
+                            - name
+                          - not:
+                              anyOf:
+                              - required:
+                                - name
+                              - required:
+                                - namespace
+                            required:
+                            - external
                           properties:
                             external:
-                              description: |-
-                                A reference to an externally managed CloudSecurityComplianceControl resource.
-                                Should be in the format "organizations/{{organizationID}}/locations/{{location}}/controls/{{controlID}}".
+                              description: A reference to an externally managed CloudSecurityComplianceControl
+                                resource. Should be in the format "organizations/{{organizationID}}/locations/{{location}}/controls/{{controlID}}".
                               type: string
                             name:
                               description: The name of a CloudSecurityComplianceControl
@@ -221,9 +263,8 @@ spec:
                               type: string
                           type: object
                         description:
-                          description: |-
-                            Optional. The description of the cloud control group.The maximum length is
-                             2000 characters.
+                          description: Optional. The description of the cloud control
+                            group.The maximum length is 2000 characters.
                           type: string
                         majorRevisionID:
                           description: Optional. Major revision of the cloud control
@@ -267,9 +308,8 @@ spec:
               connector machine state of CloudSecurityComplianceFramework
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -281,9 +321,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -319,9 +358,8 @@ spec:
                           description: The cloud control group included in the framework.
                           properties:
                             type:
-                              description: |-
-                                Optional. Output only. The type of the cloud control group. Default is
-                                 TYPE_CUSTOM.
+                              description: Optional. Output only. The type of the
+                                cloud control group. Default is TYPE_CUSTOM.
                               type: string
                           type: object
                       type: object

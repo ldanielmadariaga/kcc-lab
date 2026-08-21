@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: stable
@@ -22,6 +22,7 @@ spec:
     - gcpcomputerouternat
     - gcpcomputerouternats
     singular: computerouternat
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
         description: ComputeRouterNAT is the Schema for the compute API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -70,11 +66,24 @@ spec:
                   be valid static external IPs that have been assigned to the NAT.
                 items:
                   description: ComputeAddressRef is a reference to a GCP ComputeAddress.
+                  oneOf:
+                  - not:
+                      required:
+                      - external
+                    required:
+                    - name
+                  - not:
+                      anyOf:
+                      - required:
+                        - name
+                      - required:
+                        - namespace
+                    required:
+                    - external
                   properties:
                     external:
-                      description: |-
-                        A reference to an externally managed ComputeAddress resource.
-                        Should be in the format "projects/{{projectID}}/global/addresses/{{addressID}}"
+                      description: A reference to an externally managed ComputeAddress
+                        resource. Should be in the format "projects/{{projectID}}/global/addresses/{{addressID}}"
                         or "projects/{{projectID}}/regions/{{region}}/addresses/{{addressID}}".
                       type: string
                     name:
@@ -96,16 +105,14 @@ spec:
                   Mutually exclusive with enableEndpointIndependentMapping.
                 type: boolean
               enableEndpointIndependentMapping:
-                description: |-
-                  Specifies if endpoint independent mapping is enabled. This is enabled by default. For more information
-                  see the [official documentation](https://cloud.google.com/nat/docs/overview#specs-rfcs).
+                description: Specifies if endpoint independent mapping is enabled.
+                  This is enabled by default. For more information see the [official
+                  documentation](https://cloud.google.com/nat/docs/overview#specs-rfcs).
                 type: boolean
               endpointTypes:
-                description: |-
-                  Immutable. Specifies the endpoint Types supported by the NAT Gateway.
-                  Supported values include:
-                  'ENDPOINT_TYPE_VM', 'ENDPOINT_TYPE_SWG',
-                  'ENDPOINT_TYPE_MANAGED_PROXY_LB'.
+                description: 'Immutable. Specifies the endpoint Types supported by
+                  the NAT Gateway. Supported values include: ''ENDPOINT_TYPE_VM'',
+                  ''ENDPOINT_TYPE_SWG'', ''ENDPOINT_TYPE_MANAGED_PROXY_LB''.'
                 items:
                   type: string
                 type: array
@@ -129,8 +136,7 @@ spec:
                 - filter
                 type: object
               maxPortsPerVm:
-                description: |-
-                  Maximum number of ports allocated to a VM from this NAT.
+                description: Maximum number of ports allocated to a VM from this NAT.
                   This field can only be set when enableDynamicPortAllocation is enabled.
                 format: int64
                 type: integer
@@ -139,21 +145,34 @@ spec:
                 format: int64
                 type: integer
               natIpAllocateOption:
-                description: |-
-                  How external IPs should be allocated for this NAT. Valid values are
-                  'AUTO_ONLY' for only allowing NAT IPs allocated by Google Cloud
-                  Platform, or 'MANUAL_ONLY' for only user-allocated NAT IP addresses. Possible values: ["MANUAL_ONLY", "AUTO_ONLY"].
+                description: 'How external IPs should be allocated for this NAT. Valid
+                  values are ''AUTO_ONLY'' for only allowing NAT IPs allocated by
+                  Google Cloud Platform, or ''MANUAL_ONLY'' for only user-allocated
+                  NAT IP addresses. Possible values: ["MANUAL_ONLY", "AUTO_ONLY"].'
                 type: string
               natIps:
                 description: NAT IPs. Only valid if natIpAllocateOption is set to
                   MANUAL_ONLY.
                 items:
                   description: ComputeAddressRef is a reference to a GCP ComputeAddress.
+                  oneOf:
+                  - not:
+                      required:
+                      - external
+                    required:
+                    - name
+                  - not:
+                      anyOf:
+                      - required:
+                        - name
+                      - required:
+                        - namespace
+                    required:
+                    - external
                   properties:
                     external:
-                      description: |-
-                        A reference to an externally managed ComputeAddress resource.
-                        Should be in the format "projects/{{projectID}}/global/addresses/{{addressID}}"
+                      description: A reference to an externally managed ComputeAddress
+                        resource. Should be in the format "projects/{{projectID}}/global/addresses/{{addressID}}"
                         or "projects/{{projectID}}/regions/{{region}}/addresses/{{addressID}}".
                       type: string
                     name:
@@ -174,11 +193,24 @@ spec:
                 type: string
               routerRef:
                 description: The Cloud Router in which this NAT will be configured.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeRouter resource.
-                      Should be in the format "projects/{{projectID}}/regions/{{region}}/routers/{{routerID}}".
+                    description: A reference to an externally managed ComputeRouter
+                      resource. Should be in the format "projects/{{projectID}}/regions/{{region}}/routers/{{routerID}}".
                     type: string
                   name:
                     description: The name of a ComputeRouter resource.
@@ -203,11 +235,25 @@ spec:
                           items:
                             description: ComputeAddressRef is a reference to a GCP
                               ComputeAddress.
+                            oneOf:
+                            - not:
+                                required:
+                                - external
+                              required:
+                              - name
+                            - not:
+                                anyOf:
+                                - required:
+                                  - name
+                                - required:
+                                  - namespace
+                              required:
+                              - external
                             properties:
                               external:
-                                description: |-
-                                  A reference to an externally managed ComputeAddress resource.
-                                  Should be in the format "projects/{{projectID}}/global/addresses/{{addressID}}"
+                                description: A reference to an externally managed
+                                  ComputeAddress resource. Should be in the format
+                                  "projects/{{projectID}}/global/addresses/{{addressID}}"
                                   or "projects/{{projectID}}/regions/{{region}}/addresses/{{addressID}}".
                                 type: string
                               name:
@@ -226,11 +272,25 @@ spec:
                           items:
                             description: ComputeSubnetworkRef is a reference to a
                               GCP ComputeSubnetwork.
+                            oneOf:
+                            - not:
+                                required:
+                                - external
+                              required:
+                              - name
+                            - not:
+                                anyOf:
+                                - required:
+                                  - name
+                                - required:
+                                  - namespace
+                              required:
+                              - external
                             properties:
                               external:
-                                description: |-
-                                  A reference to an externally managed ComputeSubnetwork resource.
-                                  Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
+                                description: A reference to an externally managed
+                                  ComputeSubnetwork resource. Should be in the format
+                                  "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
                                 type: string
                               name:
                                 description: The name of a ComputeSubnetwork resource.
@@ -250,11 +310,25 @@ spec:
                           items:
                             description: ComputeAddressRef is a reference to a GCP
                               ComputeAddress.
+                            oneOf:
+                            - not:
+                                required:
+                                - external
+                              required:
+                              - name
+                            - not:
+                                anyOf:
+                                - required:
+                                  - name
+                                - required:
+                                  - namespace
+                              required:
+                              - external
                             properties:
                               external:
-                                description: |-
-                                  A reference to an externally managed ComputeAddress resource.
-                                  Should be in the format "projects/{{projectID}}/global/addresses/{{addressID}}"
+                                description: A reference to an externally managed
+                                  ComputeAddress resource. Should be in the format
+                                  "projects/{{projectID}}/global/addresses/{{addressID}}"
                                   or "projects/{{projectID}}/regions/{{region}}/addresses/{{addressID}}".
                                 type: string
                               name:
@@ -272,11 +346,25 @@ spec:
                           items:
                             description: ComputeSubnetworkRef is a reference to a
                               GCP ComputeSubnetwork.
+                            oneOf:
+                            - not:
+                                required:
+                                - external
+                              required:
+                              - name
+                            - not:
+                                anyOf:
+                                - required:
+                                  - name
+                                - required:
+                                  - namespace
+                              required:
+                              - external
                             properties:
                               external:
-                                description: |-
-                                  A reference to an externally managed ComputeSubnetwork resource.
-                                  Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
+                                description: A reference to an externally managed
+                                  ComputeSubnetwork resource. Should be in the format
+                                  "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
                                 type: string
                               name:
                                 description: The name of a ComputeSubnetwork resource.
@@ -307,9 +395,9 @@ spec:
                         "nexthop.hub == 'https://networkconnectivity.googleapis.com/v1alpha1/projects/my-project/global/hub/hub-1'".
                       type: string
                     ruleNumber:
-                      description: |-
-                        An integer uniquely identifying a rule in the list.
-                        The rule number must be a positive value between 0 and 65000, and must be unique among rules within a NAT.
+                      description: An integer uniquely identifying a rule in the list.
+                        The rule number must be a positive value between 0 and 65000,
+                        and must be unique among rules within a NAT.
                       format: int64
                       type: integer
                   required:
@@ -318,49 +406,56 @@ spec:
                   type: object
                 type: array
               sourceSubnetworkIpRangesToNat:
-                description: |-
-                  How NAT should be configured per Subnetwork.
-                  If 'ALL_SUBNETWORKS_ALL_IP_RANGES', all of the
-                  IP ranges in every Subnetwork are allowed to Nat.
-                  If 'ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES', all of the primary IP
-                  ranges in every Subnetwork are allowed to Nat.
-                  'LIST_OF_SUBNETWORKS': A list of Subnetworks are allowed to Nat
-                  (specified in the field subnetwork below). Note that if this field
-                  contains ALL_SUBNETWORKS_ALL_IP_RANGES or
-                  ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES, then there should not be any
-                  other RouterNat section in any Router for this network in this region. Possible values: ["ALL_SUBNETWORKS_ALL_IP_RANGES", "ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES", "LIST_OF_SUBNETWORKS"].
+                description: 'How NAT should be configured per Subnetwork. If ''ALL_SUBNETWORKS_ALL_IP_RANGES'',
+                  all of the IP ranges in every Subnetwork are allowed to Nat. If
+                  ''ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES'', all of the primary IP
+                  ranges in every Subnetwork are allowed to Nat. ''LIST_OF_SUBNETWORKS'':
+                  A list of Subnetworks are allowed to Nat (specified in the field
+                  subnetwork below). Note that if this field contains ALL_SUBNETWORKS_ALL_IP_RANGES
+                  or ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES, then there should not
+                  be any other RouterNat section in any Router for this network in
+                  this region. Possible values: ["ALL_SUBNETWORKS_ALL_IP_RANGES",
+                  "ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES", "LIST_OF_SUBNETWORKS"].'
                 type: string
               subnetwork:
-                description: |-
-                  One or more subnetwork NAT configurations. Only used if
-                  'source_subnetwork_ip_ranges_to_nat' is set to 'LIST_OF_SUBNETWORKS'.
+                description: One or more subnetwork NAT configurations. Only used
+                  if 'source_subnetwork_ip_ranges_to_nat' is set to 'LIST_OF_SUBNETWORKS'.
                 items:
                   properties:
                     secondaryIpRangeNames:
-                      description: |-
-                        List of the secondary ranges of the subnetwork that are allowed
-                        to use NAT. This can be populated only if
-                        'LIST_OF_SECONDARY_IP_RANGES' is one of the values in
-                        sourceIpRangesToNat.
+                      description: List of the secondary ranges of the subnetwork
+                        that are allowed to use NAT. This can be populated only if
+                        'LIST_OF_SECONDARY_IP_RANGES' is one of the values in sourceIpRangesToNat.
                       items:
                         type: string
                       type: array
                     sourceIpRangesToNat:
-                      description: |-
-                        List of options for which source IPs in the subnetwork
-                        should have NAT enabled. Supported values include:
-                        'ALL_IP_RANGES', 'LIST_OF_SECONDARY_IP_RANGES',
-                        'PRIMARY_IP_RANGE'.
+                      description: 'List of options for which source IPs in the subnetwork
+                        should have NAT enabled. Supported values include: ''ALL_IP_RANGES'',
+                        ''LIST_OF_SECONDARY_IP_RANGES'', ''PRIMARY_IP_RANGE''.'
                       items:
                         type: string
                       type: array
                     subnetworkRef:
                       description: The subnetwork to NAT.
+                      oneOf:
+                      - not:
+                          required:
+                          - external
+                        required:
+                        - name
+                      - not:
+                          anyOf:
+                          - required:
+                            - name
+                          - required:
+                            - namespace
+                        required:
+                        - external
                       properties:
                         external:
-                          description: |-
-                            A reference to an externally managed ComputeSubnetwork resource.
-                            Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
+                          description: A reference to an externally managed ComputeSubnetwork
+                            resource. Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
                           type: string
                         name:
                           description: The name of a ComputeSubnetwork resource.
@@ -375,20 +470,17 @@ spec:
                   type: object
                 type: array
               tcpEstablishedIdleTimeoutSec:
-                description: |-
-                  Timeout (in seconds) for TCP established connections.
+                description: Timeout (in seconds) for TCP established connections.
                   Defaults to 1200s if not set.
                 format: int64
                 type: integer
               tcpTimeWaitTimeoutSec:
-                description: |-
-                  Timeout (in seconds) for TCP connections that are in TIME_WAIT state.
-                  Defaults to 120s if not set.
+                description: Timeout (in seconds) for TCP connections that are in
+                  TIME_WAIT state. Defaults to 120s if not set.
                 format: int64
                 type: integer
               tcpTransitoryIdleTimeoutSec:
-                description: |-
-                  Timeout (in seconds) for TCP transitory connections.
+                description: Timeout (in seconds) for TCP transitory connections.
                   Defaults to 30s if not set.
                 format: int64
                 type: integer
@@ -413,9 +505,8 @@ spec:
               state of ComputeRouterNAT
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  ComputeRouterNAT's current state.
+                description: Conditions represent the latest available observations
+                  of the ComputeRouterNAT's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -427,9 +518,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

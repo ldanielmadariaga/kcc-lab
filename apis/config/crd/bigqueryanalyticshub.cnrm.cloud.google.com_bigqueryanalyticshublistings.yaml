@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpbigqueryanalyticshublisting
     - gcpbigqueryanalyticshublistings
     singular: bigqueryanalyticshublisting
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -74,11 +70,24 @@ spec:
               dataExchangeRef:
                 description: BigQueryAnalyticsHubDataExchangeRef is a reference to
                   a BigQueryAnalyticsHubDataExchange.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed BigQueryAnalyticsHubDataExchange resource.
-                      Should be in the format "projects/{{projectID}}/locations/{{location}}/dataExchanges/{{dataExchangeID}}".
+                    description: A reference to an externally managed BigQueryAnalyticsHubDataExchange
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/dataExchanges/{{dataExchangeID}}".
                     type: string
                   name:
                     description: The name of a BigQueryAnalyticsHubDataExchange resource.
@@ -96,27 +105,26 @@ spec:
                     description: Optional. Name of the data provider.
                     type: string
                   primaryContact:
-                    description: |-
-                      Optional. Email or URL of the data provider.
-                       Max Length: 1000 bytes.
+                    description: 'Optional. Email or URL of the data provider. Max
+                      Length: 1000 bytes.'
                     type: string
                 type: object
               description:
-                description: |-
-                  Optional. Short description of the listing. The description must contain only
-                   Unicode characters or tabs  (HT), new lines (LF), carriage returns (CR), and
-                   page breaks (FF). Default value is an empty string. Max length: 2000 bytes.
+                description: 'Optional. Short description of the listing. The description
+                  must contain only Unicode characters or tabs  (HT), new lines (LF),
+                  carriage returns (CR), and page breaks (FF). Default value is an
+                  empty string. Max length: 2000 bytes.'
                 type: string
               discoveryType:
                 description: Optional. Type of discovery of the listing on the discovery
                   page.
                 type: string
               displayName:
-                description: |-
-                  Required. Human-readable display name of the listing. The display name must
-                   contain only Unicode letters, numbers (0-9), underscores (_), dashes (-),
-                   spaces ( ), ampersands (&) and can't start or end with spaces. Default
-                   value is an empty string. Max length: 63 bytes.
+                description: 'Required. Human-readable display name of the listing.
+                  The display name must contain only Unicode letters, numbers (0-9),
+                  underscores (_), dashes (-), spaces ( ), ampersands (&) and can''t
+                  start or end with spaces. Default value is an empty string. Max
+                  length: 63 bytes.'
                 type: string
               documentation:
                 description: Optional. Documentation describing the listing.
@@ -125,12 +133,25 @@ spec:
                 description: Immutable. The name of the location this data exchange.
                 type: string
               primaryContact:
-                description: |-
-                  Optional. Email or URL of the primary point of contact of the listing.
-                   Max Length: 1000 bytes.
+                description: 'Optional. Email or URL of the primary point of contact
+                  of the listing. Max Length: 1000 bytes.'
                 type: string
               projectRef:
                 description: The Project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -148,29 +169,25 @@ spec:
                     type: string
                 type: object
               publisher:
-                description: |-
-                  Optional. Details of the publisher who owns the listing and who can share
-                   the source data.
+                description: Optional. Details of the publisher who owns the listing
+                  and who can share the source data.
                 properties:
                   name:
                     description: Optional. Name of the listing publisher.
                     type: string
                   primaryContact:
-                    description: |-
-                      Optional. Email or URL of the listing publisher.
-                       Max Length: 1000 bytes.
+                    description: 'Optional. Email or URL of the listing publisher.
+                      Max Length: 1000 bytes.'
                     type: string
                 type: object
               requestAccess:
-                description: |-
-                  Optional. Email or URL of the request access of the listing.
-                   Subscribers can use this reference to request access.
-                   Max Length: 1000 bytes.
+                description: 'Optional. Email or URL of the request access of the
+                  listing. Subscribers can use this reference to request access. Max
+                  Length: 1000 bytes.'
                 type: string
               resourceID:
-                description: |-
-                  Immutable.
-                  The BigQueryAnalyticsHubDataExchangeListing name. If not given, the metadata.name will be used.
+                description: Immutable. The BigQueryAnalyticsHubDataExchangeListing
+                  name. If not given, the metadata.name will be used.
                 type: string
                 x-kubernetes-validations:
                 - message: ResourceID field is immutable
@@ -181,14 +198,26 @@ spec:
                     description: One of the following fields must be set.
                     properties:
                       datasetRef:
-                        description: |-
-                          Resource name of the dataset source for this listing.
-                           e.g. `projects/myproject/datasets/123`
+                        description: Resource name of the dataset source for this
+                          listing. e.g. `projects/myproject/datasets/123`
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
                         properties:
                           external:
-                            description: |-
-                              A reference to an externally-managed BigQueryDataset resource.
-                              Should be in the format "projects/{{projectID}}/datasets/{{datasetID}}".
+                            description: A reference to an externally-managed BigQueryDataset
+                              resource. Should be in the format "projects/{{projectID}}/datasets/{{datasetID}}".
                             type: string
                           name:
                             description: The name of a BigQueryDataset resource.
@@ -198,42 +227,51 @@ spec:
                             type: string
                         type: object
                       restrictedExportPolicy:
-                        description: |-
-                          Optional. If set, restricted export policy will be propagated and
-                           enforced on the linked dataset.
+                        description: Optional. If set, restricted export policy will
+                          be propagated and enforced on the linked dataset.
                         properties:
                           enabled:
                             description: Optional. If true, enable restricted export.
                             type: boolean
                           restrictDirectTableAccess:
-                            description: |-
-                              Optional. If true, restrict direct table access (read
-                               api/tabledata.list) on linked table.
+                            description: Optional. If true, restrict direct table
+                              access (read api/tabledata.list) on linked table.
                             type: boolean
                           restrictQueryResult:
-                            description: |-
-                              Optional. If true, restrict export of query result derived from
-                               restricted linked dataset table.
+                            description: Optional. If true, restrict export of query
+                              result derived from restricted linked dataset table.
                             type: boolean
                         type: object
                       selectedResources:
-                        description: |-
-                          Optional. Resources in this dataset that are selectively shared.
-                           If this field is empty, then the entire dataset (all resources) are
-                           shared. This field is only valid for data clean room exchanges.
+                        description: Optional. Resources in this dataset that are
+                          selectively shared. If this field is empty, then the entire
+                          dataset (all resources) are shared. This field is only valid
+                          for data clean room exchanges.
                         items:
                           properties:
                             tableRef:
-                              description: |-
-                                Optional. A reference to a BigQueryTable.
-                                Format:
-                                 `projects/{projectId}/datasets/{datasetId}/tables/{tableId}`
-                                 Example:"projects/test_project/datasets/test_dataset/tables/test_table"
+                              description: 'Optional. A reference to a BigQueryTable.
+                                Format: `projects/{projectId}/datasets/{datasetId}/tables/{tableId}`
+                                Example:"projects/test_project/datasets/test_dataset/tables/test_table"'
+                              oneOf:
+                              - not:
+                                  required:
+                                  - external
+                                required:
+                                - name
+                              - not:
+                                  anyOf:
+                                  - required:
+                                    - name
+                                  - required:
+                                    - namespace
+                                required:
+                                - external
                               properties:
                                 external:
-                                  description: |-
-                                    A reference to an externally-managed BigQueryTable resource.
-                                    Should be in the format "projects/{{projectID}}/datasets/{{datasetID}}/tables/{{tableID}}".
+                                  description: A reference to an externally-managed
+                                    BigQueryTable resource. Should be in the format
+                                    "projects/{{projectID}}/datasets/{{datasetID}}/tables/{{tableID}}".
                                   type: string
                                 name:
                                   description: The name of a BigQueryTable resource.
@@ -260,9 +298,8 @@ spec:
               machine state of BigQueryAnalyticsHubDataExchangeListing
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -274,9 +311,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -336,19 +372,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -365,11 +396,24 @@ spec:
               dataExchangeRef:
                 description: BigQueryAnalyticsHubDataExchangeRef is a reference to
                   a BigQueryAnalyticsHubDataExchange.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed BigQueryAnalyticsHubDataExchange resource.
-                      Should be in the format "projects/{{projectID}}/locations/{{location}}/dataExchanges/{{dataExchangeID}}".
+                    description: A reference to an externally managed BigQueryAnalyticsHubDataExchange
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/dataExchanges/{{dataExchangeID}}".
                     type: string
                   name:
                     description: The name of a BigQueryAnalyticsHubDataExchange resource.
@@ -387,27 +431,26 @@ spec:
                     description: Optional. Name of the data provider.
                     type: string
                   primaryContact:
-                    description: |-
-                      Optional. Email or URL of the data provider.
-                       Max Length: 1000 bytes.
+                    description: 'Optional. Email or URL of the data provider. Max
+                      Length: 1000 bytes.'
                     type: string
                 type: object
               description:
-                description: |-
-                  Optional. Short description of the listing. The description must contain only
-                   Unicode characters or tabs  (HT), new lines (LF), carriage returns (CR), and
-                   page breaks (FF). Default value is an empty string. Max length: 2000 bytes.
+                description: 'Optional. Short description of the listing. The description
+                  must contain only Unicode characters or tabs  (HT), new lines (LF),
+                  carriage returns (CR), and page breaks (FF). Default value is an
+                  empty string. Max length: 2000 bytes.'
                 type: string
               discoveryType:
                 description: Optional. Type of discovery of the listing on the discovery
                   page.
                 type: string
               displayName:
-                description: |-
-                  Required. Human-readable display name of the listing. The display name must
-                   contain only Unicode letters, numbers (0-9), underscores (_), dashes (-),
-                   spaces ( ), ampersands (&) and can't start or end with spaces. Default
-                   value is an empty string. Max length: 63 bytes.
+                description: 'Required. Human-readable display name of the listing.
+                  The display name must contain only Unicode letters, numbers (0-9),
+                  underscores (_), dashes (-), spaces ( ), ampersands (&) and can''t
+                  start or end with spaces. Default value is an empty string. Max
+                  length: 63 bytes.'
                 type: string
               documentation:
                 description: Optional. Documentation describing the listing.
@@ -416,12 +459,25 @@ spec:
                 description: Immutable. The name of the location this data exchange.
                 type: string
               primaryContact:
-                description: |-
-                  Optional. Email or URL of the primary point of contact of the listing.
-                   Max Length: 1000 bytes.
+                description: 'Optional. Email or URL of the primary point of contact
+                  of the listing. Max Length: 1000 bytes.'
                 type: string
               projectRef:
                 description: The Project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -439,29 +495,25 @@ spec:
                     type: string
                 type: object
               publisher:
-                description: |-
-                  Optional. Details of the publisher who owns the listing and who can share
-                   the source data.
+                description: Optional. Details of the publisher who owns the listing
+                  and who can share the source data.
                 properties:
                   name:
                     description: Optional. Name of the listing publisher.
                     type: string
                   primaryContact:
-                    description: |-
-                      Optional. Email or URL of the listing publisher.
-                       Max Length: 1000 bytes.
+                    description: 'Optional. Email or URL of the listing publisher.
+                      Max Length: 1000 bytes.'
                     type: string
                 type: object
               requestAccess:
-                description: |-
-                  Optional. Email or URL of the request access of the listing.
-                   Subscribers can use this reference to request access.
-                   Max Length: 1000 bytes.
+                description: 'Optional. Email or URL of the request access of the
+                  listing. Subscribers can use this reference to request access. Max
+                  Length: 1000 bytes.'
                 type: string
               resourceID:
-                description: |-
-                  Immutable.
-                  The BigQueryAnalyticsHubDataExchangeListing name. If not given, the metadata.name will be used.
+                description: Immutable. The BigQueryAnalyticsHubDataExchangeListing
+                  name. If not given, the metadata.name will be used.
                 type: string
                 x-kubernetes-validations:
                 - message: ResourceID field is immutable
@@ -472,14 +524,26 @@ spec:
                     description: One of the following fields must be set.
                     properties:
                       datasetRef:
-                        description: |-
-                          Resource name of the dataset source for this listing.
-                           e.g. `projects/myproject/datasets/123`
+                        description: Resource name of the dataset source for this
+                          listing. e.g. `projects/myproject/datasets/123`
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
                         properties:
                           external:
-                            description: |-
-                              A reference to an externally-managed BigQueryDataset resource.
-                              Should be in the format "projects/{{projectID}}/datasets/{{datasetID}}".
+                            description: A reference to an externally-managed BigQueryDataset
+                              resource. Should be in the format "projects/{{projectID}}/datasets/{{datasetID}}".
                             type: string
                           name:
                             description: The name of a BigQueryDataset resource.
@@ -489,42 +553,51 @@ spec:
                             type: string
                         type: object
                       restrictedExportPolicy:
-                        description: |-
-                          Optional. If set, restricted export policy will be propagated and
-                           enforced on the linked dataset.
+                        description: Optional. If set, restricted export policy will
+                          be propagated and enforced on the linked dataset.
                         properties:
                           enabled:
                             description: Optional. If true, enable restricted export.
                             type: boolean
                           restrictDirectTableAccess:
-                            description: |-
-                              Optional. If true, restrict direct table access (read
-                               api/tabledata.list) on linked table.
+                            description: Optional. If true, restrict direct table
+                              access (read api/tabledata.list) on linked table.
                             type: boolean
                           restrictQueryResult:
-                            description: |-
-                              Optional. If true, restrict export of query result derived from
-                               restricted linked dataset table.
+                            description: Optional. If true, restrict export of query
+                              result derived from restricted linked dataset table.
                             type: boolean
                         type: object
                       selectedResources:
-                        description: |-
-                          Optional. Resources in this dataset that are selectively shared.
-                           If this field is empty, then the entire dataset (all resources) are
-                           shared. This field is only valid for data clean room exchanges.
+                        description: Optional. Resources in this dataset that are
+                          selectively shared. If this field is empty, then the entire
+                          dataset (all resources) are shared. This field is only valid
+                          for data clean room exchanges.
                         items:
                           properties:
                             tableRef:
-                              description: |-
-                                Optional. A reference to a BigQueryTable.
-                                Format:
-                                 `projects/{projectId}/datasets/{datasetId}/tables/{tableId}`
-                                 Example:"projects/test_project/datasets/test_dataset/tables/test_table"
+                              description: 'Optional. A reference to a BigQueryTable.
+                                Format: `projects/{projectId}/datasets/{datasetId}/tables/{tableId}`
+                                Example:"projects/test_project/datasets/test_dataset/tables/test_table"'
+                              oneOf:
+                              - not:
+                                  required:
+                                  - external
+                                required:
+                                - name
+                              - not:
+                                  anyOf:
+                                  - required:
+                                    - name
+                                  - required:
+                                    - namespace
+                                required:
+                                - external
                               properties:
                                 external:
-                                  description: |-
-                                    A reference to an externally-managed BigQueryTable resource.
-                                    Should be in the format "projects/{{projectID}}/datasets/{{datasetID}}/tables/{{tableID}}".
+                                  description: A reference to an externally-managed
+                                    BigQueryTable resource. Should be in the format
+                                    "projects/{{projectID}}/datasets/{{datasetID}}/tables/{{tableID}}".
                                   type: string
                                 name:
                                   description: The name of a BigQueryTable resource.
@@ -551,9 +624,8 @@ spec:
               machine state of BigQueryAnalyticsHubDataExchangeListing
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -565,9 +637,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

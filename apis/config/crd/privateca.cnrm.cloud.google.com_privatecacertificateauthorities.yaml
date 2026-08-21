@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/dcl2crd: "true"
     cnrm.cloud.google.com/managed-by-kcc: "true"
@@ -22,6 +22,7 @@ spec:
     - gcpprivatecacertificateauthority
     - gcpprivatecacertificateauthorities
     singular: privatecacertificateauthority
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -47,19 +48,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -70,11 +66,24 @@ spec:
               caPoolRef:
                 description: Immutable. Optional. The PrivateCACAPool that includes
                   this CertificateAuthority.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed PrivateCACAPool resource.
-                      Should be in the format "projects/{{projectID}}/locations/{{location}}/caPools/{{caPoolID}}".
+                    description: A reference to an externally managed PrivateCACAPool
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/caPools/{{caPoolID}}".
                     type: string
                   name:
                     description: The name of a PrivateCACAPool resource.
@@ -216,18 +225,18 @@ spec:
                           that are relevant in a CA certificate.
                         properties:
                           isCa:
-                            description: |-
-                              Optional. Refers to the "CA" boolean field in the X.509 extension.
-                               When this value is missing, the basic constraints extension will be
-                               omitted from the certificate.
+                            description: Optional. Refers to the "CA" boolean field
+                              in the X.509 extension. When this value is missing,
+                              the basic constraints extension will be omitted from
+                              the certificate.
                             type: boolean
                           maxIssuerPathLength:
-                            description: |-
-                              Optional. Refers to the path length constraint field in the X.509
-                               extension. For a CA certificate, this value describes the depth of
-                               subordinate CA certificates that are allowed. If this value is less than
-                               0, the request will fail. If this value is missing, the max path length
-                               will be omitted from the certificate.
+                            description: Optional. Refers to the path length constraint
+                              field in the X.509 extension. For a CA certificate,
+                              this value describes the depth of subordinate CA certificates
+                              that are allowed. If this value is less than 0, the
+                              request will fail. If this value is missing, the max
+                              path length will be omitted from the certificate.
                             format: int32
                             type: integer
                           zeroMaxIssuerPathLength:
@@ -250,9 +259,9 @@ spec:
                                 description: The key may be used to sign certificates.
                                 type: boolean
                               contentCommitment:
-                                description: |-
-                                  The key may be used for cryptographic commitments. Note that this may
-                                   also be referred to as "non-repudiation".
+                                description: The key may be used for cryptographic
+                                  commitments. Note that this may also be referred
+                                  to as "non-repudiation".
                                 type: boolean
                               crlSign:
                                 description: The key may be used sign certificate
@@ -284,34 +293,32 @@ spec:
                               used.
                             properties:
                               clientAuth:
-                                description: |-
-                                  Corresponds to OID 1.3.6.1.5.5.7.3.2. Officially described as "TLS WWW
-                                   client authentication", though regularly used for non-WWW TLS.
+                                description: Corresponds to OID 1.3.6.1.5.5.7.3.2.
+                                  Officially described as "TLS WWW client authentication",
+                                  though regularly used for non-WWW TLS.
                                 type: boolean
                               codeSigning:
-                                description: |-
-                                  Corresponds to OID 1.3.6.1.5.5.7.3.3. Officially described as "Signing of
-                                   downloadable executable code client authentication".
+                                description: Corresponds to OID 1.3.6.1.5.5.7.3.3.
+                                  Officially described as "Signing of downloadable
+                                  executable code client authentication".
                                 type: boolean
                               emailProtection:
-                                description: |-
-                                  Corresponds to OID 1.3.6.1.5.5.7.3.4. Officially described as "Email
-                                   protection".
+                                description: Corresponds to OID 1.3.6.1.5.5.7.3.4.
+                                  Officially described as "Email protection".
                                 type: boolean
                               ocspSigning:
-                                description: |-
-                                  Corresponds to OID 1.3.6.1.5.5.7.3.9. Officially described as "Signing
-                                   OCSP responses".
+                                description: Corresponds to OID 1.3.6.1.5.5.7.3.9.
+                                  Officially described as "Signing OCSP responses".
                                 type: boolean
                               serverAuth:
-                                description: |-
-                                  Corresponds to OID 1.3.6.1.5.5.7.3.1. Officially described as "TLS WWW
-                                   server authentication", though regularly used for non-WWW TLS.
+                                description: Corresponds to OID 1.3.6.1.5.5.7.3.1.
+                                  Officially described as "TLS WWW server authentication",
+                                  though regularly used for non-WWW TLS.
                                 type: boolean
                               timeStamping:
-                                description: |-
-                                  Corresponds to OID 1.3.6.1.5.5.7.3.8. Officially described as "Binding
-                                   the hash of an object to a time".
+                                description: Corresponds to OID 1.3.6.1.5.5.7.3.8.
+                                  Officially described as "Binding the hash of an
+                                  object to a time".
                                 type: boolean
                             type: object
                           unknownExtendedKeyUsages:
@@ -354,11 +361,24 @@ spec:
               gcsBucketRef:
                 description: Immutable. Optional. The StorageBucket where this CertificateAuthority's
                   CA certificate is published.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed StorageBucket resource.
-                      Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
+                    description: A reference to an externally managed StorageBucket
+                      resource. Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
                     type: string
                   name:
                     description: The name of a StorageBucket resource.
@@ -381,10 +401,23 @@ spec:
                   cloudKmsKeyVersionRef:
                     description: Optional. The resource name for an existing Cloud
                       KMS CryptoKeyVersion.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
-                        description: |-
-                          A reference to an externally managed cryptoKeyVersion.
+                        description: A reference to an externally managed cryptoKeyVersion.
                           Should be in the format `projects/{{project}}/locations/{{location}}/keyRings/{{keyRing}}/cryptoKeys/{{cryptoKey}}/cryptoKeyVersions/{{version}}`.
                         type: string
                       name:
@@ -405,6 +438,20 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -454,9 +501,9 @@ spec:
                     type: array
                 type: object
               caCertificateDescriptions:
-                description: |-
-                  Output only. A structured description of this CertificateAuthority's CA certificate and its issuers. Ordered as self-to-root.
-                  Ordered as self-to-root.
+                description: Output only. A structured description of this CertificateAuthority's
+                  CA certificate and its issuers. Ordered as self-to-root. Ordered
+                  as self-to-root.
                 items:
                   properties:
                     aiaIssuingCertificateUrls:
@@ -682,9 +729,9 @@ spec:
                                   description: The key may be used to sign certificates.
                                   type: boolean
                                 contentCommitment:
-                                  description: |-
-                                    The key may be used for cryptographic commitments. Note that this may
-                                     also be referred to as "non-repudiation".
+                                  description: The key may be used for cryptographic
+                                    commitments. Note that this may also be referred
+                                    to as "non-repudiation".
                                   type: boolean
                                 crlSign:
                                   description: The key may be used sign certificate
@@ -716,34 +763,32 @@ spec:
                                 used.
                               properties:
                                 clientAuth:
-                                  description: |-
-                                    Corresponds to OID 1.3.6.1.5.5.7.3.2. Officially described as "TLS WWW
-                                     client authentication", though regularly used for non-WWW TLS.
+                                  description: Corresponds to OID 1.3.6.1.5.5.7.3.2.
+                                    Officially described as "TLS WWW client authentication",
+                                    though regularly used for non-WWW TLS.
                                   type: boolean
                                 codeSigning:
-                                  description: |-
-                                    Corresponds to OID 1.3.6.1.5.5.7.3.3. Officially described as "Signing of
-                                     downloadable executable code client authentication".
+                                  description: Corresponds to OID 1.3.6.1.5.5.7.3.3.
+                                    Officially described as "Signing of downloadable
+                                    executable code client authentication".
                                   type: boolean
                                 emailProtection:
-                                  description: |-
-                                    Corresponds to OID 1.3.6.1.5.5.7.3.4. Officially described as "Email
-                                     protection".
+                                  description: Corresponds to OID 1.3.6.1.5.5.7.3.4.
+                                    Officially described as "Email protection".
                                   type: boolean
                                 ocspSigning:
-                                  description: |-
-                                    Corresponds to OID 1.3.6.1.5.5.7.3.9. Officially described as "Signing
-                                     OCSP responses".
+                                  description: Corresponds to OID 1.3.6.1.5.5.7.3.9.
+                                    Officially described as "Signing OCSP responses".
                                   type: boolean
                                 serverAuth:
-                                  description: |-
-                                    Corresponds to OID 1.3.6.1.5.5.7.3.1. Officially described as "TLS WWW
-                                     server authentication", though regularly used for non-WWW TLS.
+                                  description: Corresponds to OID 1.3.6.1.5.5.7.3.1.
+                                    Officially described as "TLS WWW server authentication",
+                                    though regularly used for non-WWW TLS.
                                   type: boolean
                                 timeStamping:
-                                  description: |-
-                                    Corresponds to OID 1.3.6.1.5.5.7.3.8. Officially described as "Binding
-                                     the hash of an object to a time".
+                                  description: Corresponds to OID 1.3.6.1.5.5.7.3.8.
+                                    Officially described as "Binding the hash of an
+                                    object to a time".
                                   type: boolean
                               type: object
                             unknownExtendedKeyUsages:
@@ -778,9 +823,8 @@ spec:
                   type: object
                 type: array
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -792,9 +836,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

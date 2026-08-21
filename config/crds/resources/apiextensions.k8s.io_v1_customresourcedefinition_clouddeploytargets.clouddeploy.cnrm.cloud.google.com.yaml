@@ -574,6 +574,8 @@ spec:
                     description: Required. The location for the Cloud Run Service.
                       Format must be `projects/{project}/locations/{location}`.
                     type: string
+                required:
+                - location
                 type: object
             required:
             - location

@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpcomputemachineimage
     - gcpcomputemachineimages
     singular: computemachineimage
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -97,9 +93,9 @@ spec:
                           creation.
                         type: boolean
                       performanceMonitoringUnit:
-                        description: |-
-                          Type of Performance Monitoring Unit requested on instance.
-                           Check the PerformanceMonitoringUnit enum for the list of possible values.
+                        description: Type of Performance Monitoring Unit requested
+                          on instance. Check the PerformanceMonitoringUnit enum for
+                          the list of possible values.
                         type: string
                       threadsPerCore:
                         description: The number of threads per physical core. To disable
@@ -138,9 +134,9 @@ spec:
                       that for MachineImage, this is not supported yet.
                     properties:
                       confidentialInstanceType:
-                        description: |-
-                          Defines the type of technology used by the confidential instance.
-                           Check the ConfidentialInstanceType enum for the list of possible values.
+                        description: Defines the type of technology used by the confidential
+                          instance. Check the ConfidentialInstanceType enum for the
+                          list of possible values.
                         type: string
                       enableConfidentialCompute:
                         description: Defines whether the instance should have confidential
@@ -157,9 +153,9 @@ spec:
                     items:
                       properties:
                         architecture:
-                          description: |-
-                            [Output Only] The architecture of the attached disk. Valid values are ARM64 or X86_64.
-                             Check the Architecture enum for the list of possible values.
+                          description: '[Output Only] The architecture of the attached
+                            disk. Valid values are ARM64 or X86_64. Check the Architecture
+                            enum for the list of possible values.'
                           type: string
                         autoDelete:
                           description: Specifies whether the disk will be auto-deleted
@@ -264,9 +260,15 @@ spec:
                           items:
                             properties:
                               type:
-                                description: |-
-                                  The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE For more information, see Enabling guest operating system features.
-                                   Check the Type enum for the list of possible values.
+                                description: 'The ID of a supported feature. To add
+                                  multiple values, use commas to separate values.
+                                  Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE
+                                  - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE -
+                                  GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE
+                                  - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE
+                                  - IDPF - SNP_SVSM_CAPABLE For more information,
+                                  see Enabling guest operating system features. Check
+                                  the Type enum for the list of possible values.'
                                 type: string
                             type: object
                           type: array
@@ -286,9 +288,9 @@ spec:
                             only define one or the other, but not both.'
                           properties:
                             architecture:
-                              description: |-
-                                The architecture of the attached disk. Valid values are arm64 or x86_64.
-                                 Check the Architecture enum for the list of possible values.
+                              description: The architecture of the attached disk.
+                                Valid values are arm64 or x86_64. Check the Architecture
+                                enum for the list of possible values.
                               type: string
                             description:
                               description: An optional description. Provide this property
@@ -343,9 +345,10 @@ spec:
                                 type: string
                               type: array
                             onUpdateAction:
-                              description: |-
-                                Specifies which action to take on instance update with this disk. Default is to use the existing disk.
-                                 Check the OnUpdateAction enum for the list of possible values.
+                              description: Specifies which action to take on instance
+                                update with this disk. Default is to use the existing
+                                disk. Check the OnUpdateAction enum for the list of
+                                possible values.
                               type: string
                             provisionedIops:
                               description: Indicates how many IOPS to provision for
@@ -532,9 +535,13 @@ spec:
                               type: string
                           type: object
                         interface:
-                          description: |-
-                            Specifies the disk interface to use for attaching this disk, which is either SCSI or NVME. For most machine types, the default is SCSI. Local SSDs can use either NVME or SCSI. In certain configurations, persistent disks can use NVMe. For more information, see About persistent disks.
-                             Check the Interface enum for the list of possible values.
+                          description: Specifies the disk interface to use for attaching
+                            this disk, which is either SCSI or NVME. For most machine
+                            types, the default is SCSI. Local SSDs can use either
+                            NVME or SCSI. In certain configurations, persistent disks
+                            can use NVMe. For more information, see About persistent
+                            disks. Check the Interface enum for the list of possible
+                            values.
                           type: string
                         kind:
                           description: '[Output Only] Type of the resource. Always
@@ -546,14 +553,18 @@ spec:
                             type: string
                           type: array
                         mode:
-                          description: |-
-                            The mode in which to attach this disk, either READ_WRITE or READ_ONLY. If not specified, the default is to attach the disk in READ_WRITE mode.
-                             Check the Mode enum for the list of possible values.
+                          description: The mode in which to attach this disk, either
+                            READ_WRITE or READ_ONLY. If not specified, the default
+                            is to attach the disk in READ_WRITE mode. Check the Mode
+                            enum for the list of possible values.
                           type: string
                         savedState:
-                          description: |-
-                            For LocalSSD disks on VM Instances in STOPPED or SUSPENDED state, this field is set to PRESERVED if the LocalSSD data has been saved to a persistent location by customer request. (see the discard_local_ssd option on Stop/Suspend). Read-only in the api.
-                             Check the SavedState enum for the list of possible values.
+                          description: For LocalSSD disks on VM Instances in STOPPED
+                            or SUSPENDED state, this field is set to PRESERVED if
+                            the LocalSSD data has been saved to a persistent location
+                            by customer request. (see the discard_local_ssd option
+                            on Stop/Suspend). Read-only in the api. Check the SavedState
+                            enum for the list of possible values.
                           type: string
                         shieldedInstanceInitialState:
                           description: '[Output Only] shielded vm initial state stored
@@ -568,9 +579,8 @@ spec:
                                       file.
                                     type: string
                                   fileType:
-                                    description: |-
-                                      The file type of source file.
-                                       Check the FileType enum for the list of possible values.
+                                    description: The file type of source file. Check
+                                      the FileType enum for the list of possible values.
                                     type: string
                                 type: object
                               type: array
@@ -583,9 +593,8 @@ spec:
                                       file.
                                     type: string
                                   fileType:
-                                    description: |-
-                                      The file type of source file.
-                                       Check the FileType enum for the list of possible values.
+                                    description: The file type of source file. Check
+                                      the FileType enum for the list of possible values.
                                     type: string
                                 type: object
                               type: array
@@ -598,9 +607,8 @@ spec:
                                       file.
                                     type: string
                                   fileType:
-                                    description: |-
-                                      The file type of source file.
-                                       Check the FileType enum for the list of possible values.
+                                    description: The file type of source file. Check
+                                      the FileType enum for the list of possible values.
                                     type: string
                                 type: object
                               type: array
@@ -612,9 +620,8 @@ spec:
                                     file.
                                   type: string
                                 fileType:
-                                  description: |-
-                                    The file type of source file.
-                                     Check the FileType enum for the list of possible values.
+                                  description: The file type of source file. Check
+                                    the FileType enum for the list of possible values.
                                   type: string
                               type: object
                           type: object
@@ -630,9 +637,9 @@ spec:
                             regional disk.
                           type: string
                         type:
-                          description: |-
-                            Specifies the type of the disk, either SCRATCH or PERSISTENT. If not specified, the default is PERSISTENT.
-                             Check the Type enum for the list of possible values.
+                          description: Specifies the type of the disk, either SCRATCH
+                            or PERSISTENT. If not specified, the default is PERSISTENT.
+                            Check the Type enum for the list of possible values.
                           type: string
                       type: object
                     type: array
@@ -647,20 +654,19 @@ spec:
                           format: int32
                           type: integer
                         acceleratorType:
-                          description: |-
-                            Full or partial URL of the accelerator type resource to attach to this
-                             instance. For example:projects/my-project/zones/us-central1-c/acceleratorTypes/nvidia-tesla-p100
-                             If you are creating an instance template, specify only the
-                             accelerator name.
-                             See GPUs on Compute Engine
-                             for a full list of accelerator types.
+                          description: Full or partial URL of the accelerator type
+                            resource to attach to this instance. For example:projects/my-project/zones/us-central1-c/acceleratorTypes/nvidia-tesla-p100
+                            If you are creating an instance template, specify only
+                            the accelerator name. See GPUs on Compute Engine for a
+                            full list of accelerator types.
                           type: string
                       type: object
                     type: array
                   keyRevocationActionType:
-                    description: |-
-                      KeyRevocationActionType of the instance. Supported options are "STOP" and "NONE". The default value is "NONE" if it is not specified.
-                       Check the KeyRevocationActionType enum for the list of possible values.
+                    description: KeyRevocationActionType of the instance. Supported
+                      options are "STOP" and "NONE". The default value is "NONE" if
+                      it is not specified. Check the KeyRevocationActionType enum
+                      for the list of possible values.
                     type: string
                   labels:
                     additionalProperties:
@@ -777,9 +783,16 @@ spec:
                                   instance.
                                 type: string
                               networkTier:
-                                description: |-
-                                  This signifies the networking tier used for configuring this access configuration and can only take the following values: PREMIUM, STANDARD. If an AccessConfig is specified without a valid external IP address, an ephemeral IP will be created with this networkTier. If an AccessConfig with a valid external IP address is specified, it must match that of the networkTier associated with the Address resource owning that IP.
-                                   Check the NetworkTier enum for the list of possible values.
+                                description: 'This signifies the networking tier used
+                                  for configuring this access configuration and can
+                                  only take the following values: PREMIUM, STANDARD.
+                                  If an AccessConfig is specified without a valid
+                                  external IP address, an ephemeral IP will be created
+                                  with this networkTier. If an AccessConfig with a
+                                  valid external IP address is specified, it must
+                                  match that of the networkTier associated with the
+                                  Address resource owning that IP. Check the NetworkTier
+                                  enum for the list of possible values.'
                                 type: string
                               publicPtrDomainName:
                                 description: The DNS domain name for the public PTR
@@ -802,9 +815,11 @@ spec:
                                   IPv6 range associated.
                                 type: boolean
                               type:
-                                description: |-
-                                  The type of configuration. In accessConfigs (IPv4), the default and only option is ONE_TO_ONE_NAT. In ipv6AccessConfigs, the default and only option is DIRECT_IPV6.
-                                   Check the Type enum for the list of possible values.
+                                description: The type of configuration. In accessConfigs
+                                  (IPv4), the default and only option is ONE_TO_ONE_NAT.
+                                  In ipv6AccessConfigs, the default and only option
+                                  is DIRECT_IPV6. Check the Type enum for the list
+                                  of possible values.
                                 type: string
                             type: object
                           type: array
@@ -891,9 +906,16 @@ spec:
                                   instance.
                                 type: string
                               networkTier:
-                                description: |-
-                                  This signifies the networking tier used for configuring this access configuration and can only take the following values: PREMIUM, STANDARD. If an AccessConfig is specified without a valid external IP address, an ephemeral IP will be created with this networkTier. If an AccessConfig with a valid external IP address is specified, it must match that of the networkTier associated with the Address resource owning that IP.
-                                   Check the NetworkTier enum for the list of possible values.
+                                description: 'This signifies the networking tier used
+                                  for configuring this access configuration and can
+                                  only take the following values: PREMIUM, STANDARD.
+                                  If an AccessConfig is specified without a valid
+                                  external IP address, an ephemeral IP will be created
+                                  with this networkTier. If an AccessConfig with a
+                                  valid external IP address is specified, it must
+                                  match that of the networkTier associated with the
+                                  Address resource owning that IP. Check the NetworkTier
+                                  enum for the list of possible values.'
                                 type: string
                               publicPtrDomainName:
                                 description: The DNS domain name for the public PTR
@@ -916,16 +938,20 @@ spec:
                                   IPv6 range associated.
                                 type: boolean
                               type:
-                                description: |-
-                                  The type of configuration. In accessConfigs (IPv4), the default and only option is ONE_TO_ONE_NAT. In ipv6AccessConfigs, the default and only option is DIRECT_IPV6.
-                                   Check the Type enum for the list of possible values.
+                                description: The type of configuration. In accessConfigs
+                                  (IPv4), the default and only option is ONE_TO_ONE_NAT.
+                                  In ipv6AccessConfigs, the default and only option
+                                  is DIRECT_IPV6. Check the Type enum for the list
+                                  of possible values.
                                 type: string
                             type: object
                           type: array
                         ipv6AccessType:
-                          description: |-
-                            [Output Only] One of EXTERNAL, INTERNAL to indicate whether the IP can be accessed from the Internet. This field is always inherited from its subnetwork. Valid only if stackType is IPV4_IPV6.
-                             Check the Ipv6AccessType enum for the list of possible values.
+                          description: '[Output Only] One of EXTERNAL, INTERNAL to
+                            indicate whether the IP can be accessed from the Internet.
+                            This field is always inherited from its subnetwork. Valid
+                            only if stackType is IPV4_IPV6. Check the Ipv6AccessType
+                            enum for the list of possible values.'
                           type: string
                         ipv6Address:
                           description: An IPv6 internal network address for this network
@@ -967,9 +993,9 @@ spec:
                             system.
                           type: string
                         nicType:
-                          description: |-
-                            The type of vNIC to be used on this interface. This may be gVNIC or VirtioNet.
-                             Check the NicType enum for the list of possible values.
+                          description: The type of vNIC to be used on this interface.
+                            This may be gVNIC or VirtioNet. Check the NicType enum
+                            for the list of possible values.
                           type: string
                         queueCount:
                           description: The networking queue count that's specified
@@ -979,9 +1005,12 @@ spec:
                           format: int32
                           type: integer
                         stackType:
-                          description: |-
-                            The stack type for this network interface. To assign only IPv4 addresses, use IPV4_ONLY. To assign both IPv4 and IPv6 addresses, use IPV4_IPV6. If not specified, IPV4_ONLY is used. This field can be both set at instance creation and update network interface operations.
-                             Check the StackType enum for the list of possible values.
+                          description: The stack type for this network interface.
+                            To assign only IPv4 addresses, use IPV4_ONLY. To assign
+                            both IPv4 and IPv6 addresses, use IPV4_IPV6. If not specified,
+                            IPV4_ONLY is used. This field can be both set at instance
+                            creation and update network interface operations. Check
+                            the StackType enum for the list of possible values.
                           type: string
                         subnetwork:
                           description: 'The URL of the Subnetwork resource for this
@@ -1006,18 +1035,21 @@ spec:
                         type: string
                     type: object
                   privateIPV6GoogleAccess:
-                    description: |-
-                      The private IPv6 google access type for VMs. If not specified, use INHERIT_FROM_SUBNETWORK as default. Note that for MachineImage, this is not supported yet.
-                       Check the PrivateIpv6GoogleAccess enum for the list of possible values.
+                    description: The private IPv6 google access type for VMs. If not
+                      specified, use INHERIT_FROM_SUBNETWORK as default. Note that
+                      for MachineImage, this is not supported yet. Check the PrivateIpv6GoogleAccess
+                      enum for the list of possible values.
                     type: string
                   reservationAffinity:
                     description: Specifies the reservations that instances can consume
                       from. Note that for MachineImage, this is not supported yet.
                     properties:
                       consumeReservationType:
-                        description: |-
-                          Specifies the type of reservation from which this instance can consume resources: ANY_RESERVATION (default), SPECIFIC_RESERVATION, or NO_RESERVATION. See Consuming reserved instances for examples.
-                           Check the ConsumeReservationType enum for the list of possible values.
+                        description: 'Specifies the type of reservation from which
+                          this instance can consume resources: ANY_RESERVATION (default),
+                          SPECIFIC_RESERVATION, or NO_RESERVATION. See Consuming reserved
+                          instances for examples. Check the ConsumeReservationType
+                          enum for the list of possible values.'
                         type: string
                       key:
                         description: Corresponds to the label key of a reservation
@@ -1079,9 +1111,9 @@ spec:
                         format: int32
                         type: integer
                       instanceTerminationAction:
-                        description: |-
-                          Specifies the termination action for the instance.
-                           Check the InstanceTerminationAction enum for the list of possible values.
+                        description: Specifies the termination action for the instance.
+                          Check the InstanceTerminationAction enum for the list of
+                          possible values.
                         type: string
                       localSsdRecoveryTimeout:
                         description: Specifies the maximum amount of time a Local
@@ -1090,18 +1122,17 @@ spec:
                           with hour granularity and the default value being 1 hour.
                         properties:
                           nanos:
-                            description: |-
-                              Span of time that's a fraction of a second at nanosecond resolution.
-                               Durations less than one second are represented with a 0
-                               `seconds` field and a positive `nanos` field. Must be from 0
-                               to 999,999,999 inclusive.
+                            description: Span of time that's a fraction of a second
+                              at nanosecond resolution. Durations less than one second
+                              are represented with a 0 `seconds` field and a positive
+                              `nanos` field. Must be from 0 to 999,999,999 inclusive.
                             format: int32
                             type: integer
                           seconds:
-                            description: |-
-                              Span of time at a resolution of a second. Must be from 0
-                               to 315,576,000,000 inclusive. Note: these bounds are computed from:
-                               60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years
+                            description: 'Span of time at a resolution of a second.
+                              Must be from 0 to 315,576,000,000 inclusive. Note: these
+                              bounds are computed from: 60 sec/min * 60 min/hr * 24
+                              hr/day * 365.25 days/year * 10000 years'
                             format: int64
                             type: integer
                         type: object
@@ -1116,18 +1147,17 @@ spec:
                           will be performed at the end of the run duration.
                         properties:
                           nanos:
-                            description: |-
-                              Span of time that's a fraction of a second at nanosecond resolution.
-                               Durations less than one second are represented with a 0
-                               `seconds` field and a positive `nanos` field. Must be from 0
-                               to 999,999,999 inclusive.
+                            description: Span of time that's a fraction of a second
+                              at nanosecond resolution. Durations less than one second
+                              are represented with a 0 `seconds` field and a positive
+                              `nanos` field. Must be from 0 to 999,999,999 inclusive.
                             format: int32
                             type: integer
                           seconds:
-                            description: |-
-                              Span of time at a resolution of a second. Must be from 0
-                               to 315,576,000,000 inclusive. Note: these bounds are computed from:
-                               60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years
+                            description: 'Span of time at a resolution of a second.
+                              Must be from 0 to 315,576,000,000 inclusive. Note: these
+                              bounds are computed from: 60 sec/min * 60 min/hr * 24
+                              hr/day * 365.25 days/year * 10000 years'
                             format: int64
                             type: integer
                         type: object
@@ -1146,9 +1176,10 @@ spec:
                               description: Corresponds to the label key of Node resource.
                               type: string
                             operator:
-                              description: |-
-                                Defines the operation of node selection. Valid operators are IN for affinity and NOT_IN for anti-affinity.
-                                 Check the Operator enum for the list of possible values.
+                              description: Defines the operation of node selection.
+                                Valid operators are IN for affinity and NOT_IN for
+                                anti-affinity. Check the Operator enum for the list
+                                of possible values.
                               type: string
                             values:
                               description: Corresponds to the label values of Node
@@ -1159,9 +1190,12 @@ spec:
                           type: object
                         type: array
                       onHostMaintenance:
-                        description: |-
-                          Defines the maintenance behavior for this instance. For standard instances, the default behavior is MIGRATE. For preemptible instances, the default and only possible behavior is TERMINATE. For more information, see Set VM host maintenance policy.
-                           Check the OnHostMaintenance enum for the list of possible values.
+                        description: Defines the maintenance behavior for this instance.
+                          For standard instances, the default behavior is MIGRATE.
+                          For preemptible instances, the default and only possible
+                          behavior is TERMINATE. For more information, see Set VM
+                          host maintenance policy. Check the OnHostMaintenance enum
+                          for the list of possible values.
                         type: string
                       onInstanceStopAction:
                         properties:
@@ -1180,9 +1214,9 @@ spec:
                           instance states.
                         type: boolean
                       provisioningModel:
-                        description: |-
-                          Specifies the provisioning model of the instance.
-                           Check the ProvisioningModel enum for the list of possible values.
+                        description: Specifies the provisioning model of the instance.
+                          Check the ProvisioningModel enum for the list of possible
+                          values.
                         type: string
                       terminationTime:
                         description: Specifies the timestamp, when the instance will
@@ -1322,6 +1356,20 @@ spec:
                 type: object
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -1354,9 +1402,9 @@ spec:
                 items:
                   properties:
                     architecture:
-                      description: |-
-                        [Output Only] The architecture of the attached disk.
-                         Check the Architecture enum for the list of possible values.
+                      description: '[Output Only] The architecture of the attached
+                        disk. Check the Architecture enum for the list of possible
+                        values.'
                       type: string
                     kind:
                       description: '[Output Only] Type of the resource. Always compute#savedDisk
@@ -1372,9 +1420,12 @@ spec:
                       format: int64
                       type: integer
                     storageBytesStatus:
-                      description: |-
-                        [Output Only] An indicator whether storageBytes is in a stable state or it is being adjusted as a result of shared storage reallocation. This status can either be UPDATING, meaning the size of the snapshot is being updated, or UP_TO_DATE, meaning the size of the snapshot is up-to-date.
-                         Check the StorageBytesStatus enum for the list of possible values.
+                      description: '[Output Only] An indicator whether storageBytes
+                        is in a stable state or it is being adjusted as a result of
+                        shared storage reallocation. This status can either be UPDATING,
+                        meaning the size of the snapshot is being updated, or UP_TO_DATE,
+                        meaning the size of the snapshot is up-to-date. Check the
+                        StorageBytesStatus enum for the list of possible values.'
                       type: string
                   type: object
                 type: array
@@ -1552,9 +1603,15 @@ spec:
                           items:
                             properties:
                               type:
-                                description: |-
-                                  The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE For more information, see Enabling guest operating system features.
-                                   Check the Type enum for the list of possible values.
+                                description: 'The ID of a supported feature. To add
+                                  multiple values, use commas to separate values.
+                                  Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE
+                                  - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE -
+                                  GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE
+                                  - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE
+                                  - IDPF - SNP_SVSM_CAPABLE For more information,
+                                  see Enabling guest operating system features. Check
+                                  the Type enum for the list of possible values.'
                                 type: string
                             type: object
                           type: array
@@ -1564,9 +1621,9 @@ spec:
                           format: int32
                           type: integer
                         interface:
-                          description: |-
-                            Specifies the disk interface to use for attaching this disk, which is either SCSI or NVME.
-                             Check the Interface enum for the list of possible values.
+                          description: Specifies the disk interface to use for attaching
+                            this disk, which is either SCSI or NVME. Check the Interface
+                            enum for the list of possible values.
                           type: string
                         kind:
                           description: '[Output Only] Type of the resource. Always
@@ -1578,9 +1635,9 @@ spec:
                             type: string
                           type: array
                         mode:
-                          description: |-
-                            The mode in which this disk is attached to the source instance, either READ_WRITE or READ_ONLY.
-                             Check the Mode enum for the list of possible values.
+                          description: The mode in which this disk is attached to
+                            the source instance, either READ_WRITE or READ_ONLY. Check
+                            the Mode enum for the list of possible values.
                           type: string
                         source:
                           description: Specifies a URL of the disk attached to the
@@ -1592,14 +1649,18 @@ spec:
                           format: int64
                           type: integer
                         storageBytesStatus:
-                          description: |-
-                            [Output Only] An indicator whether storageBytes is in a stable state or it is being adjusted as a result of shared storage reallocation. This status can either be UPDATING, meaning the size of the snapshot is being updated, or UP_TO_DATE, meaning the size of the snapshot is up-to-date.
-                             Check the StorageBytesStatus enum for the list of possible values.
+                          description: '[Output Only] An indicator whether storageBytes
+                            is in a stable state or it is being adjusted as a result
+                            of shared storage reallocation. This status can either
+                            be UPDATING, meaning the size of the snapshot is being
+                            updated, or UP_TO_DATE, meaning the size of the snapshot
+                            is up-to-date. Check the StorageBytesStatus enum for the
+                            list of possible values.'
                           type: string
                         type:
-                          description: |-
-                            Specifies the type of the attached disk, either SCRATCH or PERSISTENT.
-                             Check the Type enum for the list of possible values.
+                          description: Specifies the type of the attached disk, either
+                            SCRATCH or PERSISTENT. Check the Type enum for the list
+                            of possible values.
                           type: string
                       type: object
                     type: array
@@ -1614,20 +1675,19 @@ spec:
                           format: int32
                           type: integer
                         acceleratorType:
-                          description: |-
-                            Full or partial URL of the accelerator type resource to attach to this
-                             instance. For example:projects/my-project/zones/us-central1-c/acceleratorTypes/nvidia-tesla-p100
-                             If you are creating an instance template, specify only the
-                             accelerator name.
-                             See GPUs on Compute Engine
-                             for a full list of accelerator types.
+                          description: Full or partial URL of the accelerator type
+                            resource to attach to this instance. For example:projects/my-project/zones/us-central1-c/acceleratorTypes/nvidia-tesla-p100
+                            If you are creating an instance template, specify only
+                            the accelerator name. See GPUs on Compute Engine for a
+                            full list of accelerator types.
                           type: string
                       type: object
                     type: array
                   keyRevocationActionType:
-                    description: |-
-                      KeyRevocationActionType of the instance. Supported options are "STOP" and "NONE". The default value is "NONE" if it is not specified.
-                       Check the KeyRevocationActionType enum for the list of possible values.
+                    description: KeyRevocationActionType of the instance. Supported
+                      options are "STOP" and "NONE". The default value is "NONE" if
+                      it is not specified. Check the KeyRevocationActionType enum
+                      for the list of possible values.
                     type: string
                   labels:
                     additionalProperties:
@@ -1741,9 +1801,16 @@ spec:
                                   instance.
                                 type: string
                               networkTier:
-                                description: |-
-                                  This signifies the networking tier used for configuring this access configuration and can only take the following values: PREMIUM, STANDARD. If an AccessConfig is specified without a valid external IP address, an ephemeral IP will be created with this networkTier. If an AccessConfig with a valid external IP address is specified, it must match that of the networkTier associated with the Address resource owning that IP.
-                                   Check the NetworkTier enum for the list of possible values.
+                                description: 'This signifies the networking tier used
+                                  for configuring this access configuration and can
+                                  only take the following values: PREMIUM, STANDARD.
+                                  If an AccessConfig is specified without a valid
+                                  external IP address, an ephemeral IP will be created
+                                  with this networkTier. If an AccessConfig with a
+                                  valid external IP address is specified, it must
+                                  match that of the networkTier associated with the
+                                  Address resource owning that IP. Check the NetworkTier
+                                  enum for the list of possible values.'
                                 type: string
                               publicPtrDomainName:
                                 description: The DNS domain name for the public PTR
@@ -1766,9 +1833,11 @@ spec:
                                   IPv6 range associated.
                                 type: boolean
                               type:
-                                description: |-
-                                  The type of configuration. In accessConfigs (IPv4), the default and only option is ONE_TO_ONE_NAT. In ipv6AccessConfigs, the default and only option is DIRECT_IPV6.
-                                   Check the Type enum for the list of possible values.
+                                description: The type of configuration. In accessConfigs
+                                  (IPv4), the default and only option is ONE_TO_ONE_NAT.
+                                  In ipv6AccessConfigs, the default and only option
+                                  is DIRECT_IPV6. Check the Type enum for the list
+                                  of possible values.
                                 type: string
                             type: object
                           type: array
@@ -1855,9 +1924,16 @@ spec:
                                   instance.
                                 type: string
                               networkTier:
-                                description: |-
-                                  This signifies the networking tier used for configuring this access configuration and can only take the following values: PREMIUM, STANDARD. If an AccessConfig is specified without a valid external IP address, an ephemeral IP will be created with this networkTier. If an AccessConfig with a valid external IP address is specified, it must match that of the networkTier associated with the Address resource owning that IP.
-                                   Check the NetworkTier enum for the list of possible values.
+                                description: 'This signifies the networking tier used
+                                  for configuring this access configuration and can
+                                  only take the following values: PREMIUM, STANDARD.
+                                  If an AccessConfig is specified without a valid
+                                  external IP address, an ephemeral IP will be created
+                                  with this networkTier. If an AccessConfig with a
+                                  valid external IP address is specified, it must
+                                  match that of the networkTier associated with the
+                                  Address resource owning that IP. Check the NetworkTier
+                                  enum for the list of possible values.'
                                 type: string
                               publicPtrDomainName:
                                 description: The DNS domain name for the public PTR
@@ -1880,16 +1956,20 @@ spec:
                                   IPv6 range associated.
                                 type: boolean
                               type:
-                                description: |-
-                                  The type of configuration. In accessConfigs (IPv4), the default and only option is ONE_TO_ONE_NAT. In ipv6AccessConfigs, the default and only option is DIRECT_IPV6.
-                                   Check the Type enum for the list of possible values.
+                                description: The type of configuration. In accessConfigs
+                                  (IPv4), the default and only option is ONE_TO_ONE_NAT.
+                                  In ipv6AccessConfigs, the default and only option
+                                  is DIRECT_IPV6. Check the Type enum for the list
+                                  of possible values.
                                 type: string
                             type: object
                           type: array
                         ipv6AccessType:
-                          description: |-
-                            [Output Only] One of EXTERNAL, INTERNAL to indicate whether the IP can be accessed from the Internet. This field is always inherited from its subnetwork. Valid only if stackType is IPV4_IPV6.
-                             Check the Ipv6AccessType enum for the list of possible values.
+                          description: '[Output Only] One of EXTERNAL, INTERNAL to
+                            indicate whether the IP can be accessed from the Internet.
+                            This field is always inherited from its subnetwork. Valid
+                            only if stackType is IPV4_IPV6. Check the Ipv6AccessType
+                            enum for the list of possible values.'
                           type: string
                         ipv6Address:
                           description: An IPv6 internal network address for this network
@@ -1931,9 +2011,9 @@ spec:
                             system.
                           type: string
                         nicType:
-                          description: |-
-                            The type of vNIC to be used on this interface. This may be gVNIC or VirtioNet.
-                             Check the NicType enum for the list of possible values.
+                          description: The type of vNIC to be used on this interface.
+                            This may be gVNIC or VirtioNet. Check the NicType enum
+                            for the list of possible values.
                           type: string
                         queueCount:
                           description: The networking queue count that's specified
@@ -1943,9 +2023,12 @@ spec:
                           format: int32
                           type: integer
                         stackType:
-                          description: |-
-                            The stack type for this network interface. To assign only IPv4 addresses, use IPV4_ONLY. To assign both IPv4 and IPv6 addresses, use IPV4_IPV6. If not specified, IPV4_ONLY is used. This field can be both set at instance creation and update network interface operations.
-                             Check the StackType enum for the list of possible values.
+                          description: The stack type for this network interface.
+                            To assign only IPv4 addresses, use IPV4_ONLY. To assign
+                            both IPv4 and IPv6 addresses, use IPV4_IPV6. If not specified,
+                            IPV4_ONLY is used. This field can be both set at instance
+                            creation and update network interface operations. Check
+                            the StackType enum for the list of possible values.
                           type: string
                         subnetwork:
                           description: 'The URL of the Subnetwork resource for this
@@ -1988,9 +2071,9 @@ spec:
                         format: int32
                         type: integer
                       instanceTerminationAction:
-                        description: |-
-                          Specifies the termination action for the instance.
-                           Check the InstanceTerminationAction enum for the list of possible values.
+                        description: Specifies the termination action for the instance.
+                          Check the InstanceTerminationAction enum for the list of
+                          possible values.
                         type: string
                       localSsdRecoveryTimeout:
                         description: Specifies the maximum amount of time a Local
@@ -1999,18 +2082,17 @@ spec:
                           with hour granularity and the default value being 1 hour.
                         properties:
                           nanos:
-                            description: |-
-                              Span of time that's a fraction of a second at nanosecond resolution.
-                               Durations less than one second are represented with a 0
-                               `seconds` field and a positive `nanos` field. Must be from 0
-                               to 999,999,999 inclusive.
+                            description: Span of time that's a fraction of a second
+                              at nanosecond resolution. Durations less than one second
+                              are represented with a 0 `seconds` field and a positive
+                              `nanos` field. Must be from 0 to 999,999,999 inclusive.
                             format: int32
                             type: integer
                           seconds:
-                            description: |-
-                              Span of time at a resolution of a second. Must be from 0
-                               to 315,576,000,000 inclusive. Note: these bounds are computed from:
-                               60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years
+                            description: 'Span of time at a resolution of a second.
+                              Must be from 0 to 315,576,000,000 inclusive. Note: these
+                              bounds are computed from: 60 sec/min * 60 min/hr * 24
+                              hr/day * 365.25 days/year * 10000 years'
                             format: int64
                             type: integer
                         type: object
@@ -2025,18 +2107,17 @@ spec:
                           will be performed at the end of the run duration.
                         properties:
                           nanos:
-                            description: |-
-                              Span of time that's a fraction of a second at nanosecond resolution.
-                               Durations less than one second are represented with a 0
-                               `seconds` field and a positive `nanos` field. Must be from 0
-                               to 999,999,999 inclusive.
+                            description: Span of time that's a fraction of a second
+                              at nanosecond resolution. Durations less than one second
+                              are represented with a 0 `seconds` field and a positive
+                              `nanos` field. Must be from 0 to 999,999,999 inclusive.
                             format: int32
                             type: integer
                           seconds:
-                            description: |-
-                              Span of time at a resolution of a second. Must be from 0
-                               to 315,576,000,000 inclusive. Note: these bounds are computed from:
-                               60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years
+                            description: 'Span of time at a resolution of a second.
+                              Must be from 0 to 315,576,000,000 inclusive. Note: these
+                              bounds are computed from: 60 sec/min * 60 min/hr * 24
+                              hr/day * 365.25 days/year * 10000 years'
                             format: int64
                             type: integer
                         type: object
@@ -2055,9 +2136,10 @@ spec:
                               description: Corresponds to the label key of Node resource.
                               type: string
                             operator:
-                              description: |-
-                                Defines the operation of node selection. Valid operators are IN for affinity and NOT_IN for anti-affinity.
-                                 Check the Operator enum for the list of possible values.
+                              description: Defines the operation of node selection.
+                                Valid operators are IN for affinity and NOT_IN for
+                                anti-affinity. Check the Operator enum for the list
+                                of possible values.
                               type: string
                             values:
                               description: Corresponds to the label values of Node
@@ -2068,9 +2150,12 @@ spec:
                           type: object
                         type: array
                       onHostMaintenance:
-                        description: |-
-                          Defines the maintenance behavior for this instance. For standard instances, the default behavior is MIGRATE. For preemptible instances, the default and only possible behavior is TERMINATE. For more information, see Set VM host maintenance policy.
-                           Check the OnHostMaintenance enum for the list of possible values.
+                        description: Defines the maintenance behavior for this instance.
+                          For standard instances, the default behavior is MIGRATE.
+                          For preemptible instances, the default and only possible
+                          behavior is TERMINATE. For more information, see Set VM
+                          host maintenance policy. Check the OnHostMaintenance enum
+                          for the list of possible values.
                         type: string
                       onInstanceStopAction:
                         properties:
@@ -2089,9 +2174,9 @@ spec:
                           instance states.
                         type: boolean
                       provisioningModel:
-                        description: |-
-                          Specifies the provisioning model of the instance.
-                           Check the ProvisioningModel enum for the list of possible values.
+                        description: Specifies the provisioning model of the instance.
+                          Check the ProvisioningModel enum for the list of possible
+                          values.
                         type: string
                       terminationTime:
                         description: Specifies the timestamp, when the instance will
@@ -2143,9 +2228,9 @@ spec:
                     type: object
                 type: object
               status:
-                description: |-
-                  [Output Only] The status of the machine image. One of the following values: INVALID, CREATING, READY, DELETING, and UPLOADING.
-                   Check the Status enum for the list of possible values.
+                description: '[Output Only] The status of the machine image. One of
+                  the following values: INVALID, CREATING, READY, DELETING, and UPLOADING.
+                  Check the Status enum for the list of possible values.'
                 type: string
               storageLocations:
                 description: The regional or multi-regional Cloud Storage bucket location
@@ -2166,9 +2251,8 @@ spec:
               state of ComputeMachineImage
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -2180,9 +2264,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

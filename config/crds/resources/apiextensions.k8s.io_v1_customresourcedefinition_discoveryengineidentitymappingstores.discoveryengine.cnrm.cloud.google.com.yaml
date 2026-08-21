@@ -187,8 +187,12 @@ spec:
                               description: Required. Single-regional kms key resource
                                 name which will be used to encrypt resources `projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{keyId}`.
                               type: string
+                          required:
+                          - kmsKey
                           type: object
                         type: array
+                    required:
+                    - name
                     type: object
                 type: object
             type: object

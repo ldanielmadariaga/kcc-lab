@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,6 +21,7 @@ spec:
     - gcpvertexaituningjob
     - gcpvertexaituningjobs
     singular: vertexaituningjob
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
         description: VertexAITuningJob is the Schema for the VertexAITuningJob API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -65,33 +61,40 @@ spec:
             description: VertexAITuningJobSpec defines the desired state of VertexAITuningJob
             properties:
               baseModel:
-                description: |-
-                  The base model that is being tuned. See [Supported
-                   models](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/tuning#supported_models).
+                description: The base model that is being tuned. See [Supported models](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/tuning#supported_models).
                 type: string
               description:
-                description: |-
-                  Optional. The description of the
-                   [TuningJob][google.cloud.aiplatform.v1.TuningJob].
+                description: Optional. The description of the [TuningJob][google.cloud.aiplatform.v1.TuningJob].
                 type: string
               encryptionSpec:
-                description: |-
-                  Customer-managed encryption key options for a TuningJob. If this is set,
-                   then all resources created by the TuningJob will be encrypted with the
-                   provided encryption key.
+                description: Customer-managed encryption key options for a TuningJob.
+                  If this is set, then all resources created by the TuningJob will
+                  be encrypted with the provided encryption key.
                 properties:
                   kmsKeyRef:
-                    description: |-
-                      Required. The Cloud KMS resource identifier of the customer managed
-                       encryption key used to protect a resource. Has the form:
-                       `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
-                       The key needs to be in the same region as where the compute resource is
-                       created.
+                    description: 'Required. The Cloud KMS resource identifier of the
+                      customer managed encryption key used to protect a resource.
+                      Has the form: `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
+                      The key needs to be in the same region as where the compute
+                      resource is created.'
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
-                        description: |-
-                          A reference to an externally managed KMSCryptoKey resource.
-                          Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
+                        description: A reference to an externally managed KMSCryptoKey
+                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
                         type: string
                       name:
                         description: The name of a KMSCryptoKey resource.
@@ -121,6 +124,20 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -150,6 +167,20 @@ spec:
 
                    Users starting the pipeline must have the `iam.serviceAccounts.actAs`
                    permission on this service account.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `email` field of an `IAMServiceAccount` resource.
@@ -165,10 +196,9 @@ spec:
                 description: Tuning Spec for Supervised Fine Tuning.
                 properties:
                   exportLastCheckpointOnly:
-                    description: |-
-                      Optional. If set to true, disable intermediate checkpoints for SFT and only
-                       the last checkpoint will be exported. Otherwise, enable intermediate
-                       checkpoints for SFT. Default is false.
+                    description: Optional. If set to true, disable intermediate checkpoints
+                      for SFT and only the last checkpoint will be exported. Otherwise,
+                      enable intermediate checkpoints for SFT. Default is false.
                     type: boolean
                   hyperParameters:
                     description: Optional. Hyperparameters for SFT.
@@ -177,9 +207,8 @@ spec:
                         description: Optional. Adapter size for tuning.
                         type: string
                       epochCount:
-                        description: |-
-                          Optional. Number of complete passes the model makes over the entire
-                           training dataset during training.
+                        description: Optional. Number of complete passes the model
+                          makes over the entire training dataset during training.
                         format: int64
                         type: integer
                       learningRateMultiplier:
@@ -188,23 +217,22 @@ spec:
                         type: number
                     type: object
                   trainingDatasetURI:
-                    description: |-
-                      Required. Cloud Storage path to file containing training dataset for
-                       tuning. The dataset must be formatted as a JSONL file.
+                    description: Required. Cloud Storage path to file containing training
+                      dataset for tuning. The dataset must be formatted as a JSONL
+                      file.
                     type: string
                   validationDatasetURI:
-                    description: |-
-                      Optional. Cloud Storage path to file containing validation dataset for
-                       tuning. The dataset must be formatted as a JSONL file.
+                    description: Optional. Cloud Storage path to file containing validation
+                      dataset for tuning. The dataset must be formatted as a JSONL
+                      file.
                     type: string
                 required:
                 - trainingDatasetURI
                 type: object
               tunedModelDisplayName:
-                description: |-
-                  Optional. The display name of the
-                   [TunedModel][google.cloud.aiplatform.v1.Model]. The name can be up to 128
-                   characters long and can consist of any UTF-8 characters.
+                description: Optional. The display name of the [TunedModel][google.cloud.aiplatform.v1.Model].
+                  The name can be up to 128 characters long and can consist of any
+                  UTF-8 characters.
                 type: string
             required:
             - location
@@ -215,9 +243,8 @@ spec:
               state of VertexAITuningJob
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -229,9 +256,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -259,50 +285,42 @@ spec:
                   observed in GCP.
                 properties:
                   createTime:
-                    description: |-
-                      Output only. Time when the
-                       [TuningJob][google.cloud.aiplatform.v1.TuningJob] was created.
+                    description: Output only. Time when the [TuningJob][google.cloud.aiplatform.v1.TuningJob]
+                      was created.
                     type: string
                   endTime:
-                    description: |-
-                      Output only. Time when the TuningJob entered any of the following
-                       [JobStates][google.cloud.aiplatform.v1.JobState]: `JOB_STATE_SUCCEEDED`,
-                       `JOB_STATE_FAILED`, `JOB_STATE_CANCELLED`, `JOB_STATE_EXPIRED`.
+                    description: 'Output only. Time when the TuningJob entered any
+                      of the following [JobStates][google.cloud.aiplatform.v1.JobState]:
+                      `JOB_STATE_SUCCEEDED`, `JOB_STATE_FAILED`, `JOB_STATE_CANCELLED`,
+                      `JOB_STATE_EXPIRED`.'
                     type: string
                   error:
-                    description: |-
-                      Output only. Only populated when job's state is `JOB_STATE_FAILED` or
-                       `JOB_STATE_CANCELLED`.
+                    description: Output only. Only populated when job's state is `JOB_STATE_FAILED`
+                      or `JOB_STATE_CANCELLED`.
                     properties:
                       code:
-                        description: |-
-                          The status code, which should be an enum value of
-                           [google.rpc.Code][google.rpc.Code].
+                        description: The status code, which should be an enum value
+                          of [google.rpc.Code][google.rpc.Code].
                         format: int32
                         type: integer
                       message:
-                        description: |-
-                          A developer-facing error message, which should be in English. Any
-                           user-facing error message should be localized and sent in the
-                           [google.rpc.Status.details][google.rpc.Status.details] field, or localized
-                           by the client.
+                        description: A developer-facing error message, which should
+                          be in English. Any user-facing error message should be localized
+                          and sent in the [google.rpc.Status.details][google.rpc.Status.details]
+                          field, or localized by the client.
                         type: string
                     type: object
                   experiment:
-                    description: |-
-                      Output only. The Experiment associated with this
-                       [TuningJob][google.cloud.aiplatform.v1.TuningJob].
+                    description: Output only. The Experiment associated with this
+                      [TuningJob][google.cloud.aiplatform.v1.TuningJob].
                     type: string
                   name:
-                    description: |-
-                      Output only. Identifier. Resource name of a TuningJob. Format:
-                       `projects/{project}/locations/{location}/tuningJobs/{tuning_job}`
+                    description: 'Output only. Identifier. Resource name of a TuningJob.
+                      Format: `projects/{project}/locations/{location}/tuningJobs/{tuning_job}`'
                     type: string
                   startTime:
-                    description: |-
-                      Output only. Time when the
-                       [TuningJob][google.cloud.aiplatform.v1.TuningJob] for the first time
-                       entered the `JOB_STATE_RUNNING` state.
+                    description: Output only. Time when the [TuningJob][google.cloud.aiplatform.v1.TuningJob]
+                      for the first time entered the `JOB_STATE_RUNNING` state.
                     type: string
                   state:
                     description: Output only. The detailed state of the job.
@@ -312,19 +330,17 @@ spec:
                       result of this job.
                     properties:
                       checkpoints:
-                        description: |-
-                          Output only. The checkpoints associated with this TunedModel.
-                           This field is only populated for tuning jobs that enable intermediate
-                           checkpoints.
+                        description: Output only. The checkpoints associated with
+                          this TunedModel. This field is only populated for tuning
+                          jobs that enable intermediate checkpoints.
                         items:
                           properties:
                             checkpointID:
                               description: The ID of the checkpoint.
                               type: string
                             endpoint:
-                              description: |-
-                                The Endpoint resource name that the checkpoint is deployed to. Format:
-                                 `projects/{project}/locations/{location}/endpoints/{endpoint}`.
+                              description: 'The Endpoint resource name that the checkpoint
+                                is deployed to. Format: `projects/{project}/locations/{location}/endpoints/{endpoint}`.'
                               type: string
                             epoch:
                               description: The epoch of the checkpoint.
@@ -337,28 +353,24 @@ spec:
                           type: object
                         type: array
                       endpoint:
-                        description: |-
-                          Output only. A resource name of an Endpoint. Format:
-                           `projects/{project}/locations/{location}/endpoints/{endpoint}`.
+                        description: 'Output only. A resource name of an Endpoint.
+                          Format: `projects/{project}/locations/{location}/endpoints/{endpoint}`.'
                         type: string
                       model:
-                        description: |-
-                          Output only. The resource name of the TunedModel. Format:
-                           `projects/{project}/locations/{location}/models/{model}`.
+                        description: 'Output only. The resource name of the TunedModel.
+                          Format: `projects/{project}/locations/{location}/models/{model}`.'
                         type: string
                     type: object
                   tuningDataStats:
-                    description: |-
-                      Output only. The tuning data statistics associated with this
-                       [TuningJob][google.cloud.aiplatform.v1.TuningJob].
+                    description: Output only. The tuning data statistics associated
+                      with this [TuningJob][google.cloud.aiplatform.v1.TuningJob].
                     properties:
                       supervisedTuningDataStats:
                         description: The SFT Tuning data stats.
                         properties:
                           droppedExampleReasons:
-                            description: |-
-                              Output only. For each index in `truncated_example_indices`, the user-facing
-                               reason why the example was dropped.
+                            description: Output only. For each index in `truncated_example_indices`,
+                              the user-facing reason why the example was dropped.
                             items:
                               type: string
                             type: array
@@ -373,10 +385,10 @@ spec:
                             format: int64
                             type: integer
                           totalTruncatedExampleCount:
-                            description: |-
-                              Output only. The number of examples in the dataset that have been dropped.
-                               An example can be dropped for reasons including: too many tokens, contains
-                               an invalid image, contains too many images, etc.
+                            description: 'Output only. The number of examples in the
+                              dataset that have been dropped. An example can be dropped
+                              for reasons including: too many tokens, contains an
+                              invalid image, contains too many images, etc.'
                             format: int64
                             type: integer
                           totalTuningCharacterCount:
@@ -385,9 +397,8 @@ spec:
                             format: int64
                             type: integer
                           truncatedExampleIndices:
-                            description: |-
-                              Output only. A partial sample of the indices (starting from 1) of the
-                               dropped examples.
+                            description: Output only. A partial sample of the indices
+                              (starting from 1) of the dropped examples.
                             items:
                               format: int64
                               type: integer
@@ -408,9 +419,9 @@ spec:
                             items:
                               properties:
                                 parts:
-                                  description: |-
-                                    Required. Ordered `Parts` that constitute a single message. Parts may have
-                                     different IANA MIME types.
+                                  description: Required. Ordered `Parts` that constitute
+                                    a single message. Parts may have different IANA
+                                    MIME types.
                                   items:
                                     properties:
                                       codeExecutionResult:
@@ -422,9 +433,9 @@ spec:
                                               code execution.
                                             type: string
                                           output:
-                                            description: |-
-                                              Optional. Contains stdout when code execution is successful, stderr or
-                                               other description otherwise.
+                                            description: Optional. Contains stdout
+                                              when code execution is successful, stderr
+                                              or other description otherwise.
                                             type: string
                                         type: object
                                       executableCode:
@@ -452,40 +463,43 @@ spec:
                                             type: string
                                         type: object
                                       functionCall:
-                                        description: |-
-                                          Optional. A predicted [FunctionCall] returned from the model that
-                                           contains a string representing the [FunctionDeclaration.name] with the
-                                           parameters and their values.
+                                        description: Optional. A predicted [FunctionCall]
+                                          returned from the model that contains a
+                                          string representing the [FunctionDeclaration.name]
+                                          with the parameters and their values.
                                         properties:
                                           args:
-                                            description: |-
-                                              Optional. Required. The function parameters and values in JSON object
-                                               format. See [FunctionDeclaration.parameters] for parameter details.
+                                            description: Optional. Required. The function
+                                              parameters and values in JSON object
+                                              format. See [FunctionDeclaration.parameters]
+                                              for parameter details.
                                             x-kubernetes-preserve-unknown-fields: true
                                           name:
-                                            description: |-
-                                              Required. The name of the function to call.
-                                               Matches [FunctionDeclaration.name].
+                                            description: Required. The name of the
+                                              function to call. Matches [FunctionDeclaration.name].
                                             type: string
                                         type: object
                                       functionResponse:
-                                        description: |-
-                                          Optional. The result output of a [FunctionCall] that contains a string
-                                           representing the [FunctionDeclaration.name] and a structured JSON object
-                                           containing any output from the function call. It is used as context to
-                                           the model.
+                                        description: Optional. The result output of
+                                          a [FunctionCall] that contains a string
+                                          representing the [FunctionDeclaration.name]
+                                          and a structured JSON object containing
+                                          any output from the function call. It is
+                                          used as context to the model.
                                         properties:
                                           name:
-                                            description: |-
-                                              Required. The name of the function to call.
-                                               Matches [FunctionDeclaration.name] and [FunctionCall.name].
+                                            description: Required. The name of the
+                                              function to call. Matches [FunctionDeclaration.name]
+                                              and [FunctionCall.name].
                                             type: string
                                           response:
-                                            description: |-
-                                              Required. The function response in JSON object format.
-                                               Use "output" key to specify function output and "error" key to specify
-                                               error details (if any). If "output" and "error" keys are not specified,
-                                               then whole "response" is treated as function output.
+                                            description: Required. The function response
+                                              in JSON object format. Use "output"
+                                              key to specify function output and "error"
+                                              key to specify error details (if any).
+                                              If "output" and "error" keys are not
+                                              specified, then whole "response" is
+                                              treated as function output.
                                             x-kubernetes-preserve-unknown-fields: true
                                         type: object
                                       inlineData:
@@ -508,15 +522,15 @@ spec:
                                           from the model.
                                         type: boolean
                                       thoughtSignature:
-                                        description: |-
-                                          An opaque signature for the thought so it can be reused in subsequent
-                                           requests.
+                                        description: An opaque signature for the thought
+                                          so it can be reused in subsequent requests.
                                         format: byte
                                         type: string
                                       videoMetadata:
-                                        description: |-
-                                          Optional. Video metadata. The metadata should only be specified while the
-                                           video data is presented in inline_data or file_data.
+                                        description: Optional. Video metadata. The
+                                          metadata should only be specified while
+                                          the video data is presented in inline_data
+                                          or file_data.
                                         properties:
                                           endOffset:
                                             description: Optional. The end offset
@@ -712,10 +726,8 @@ spec:
                         type: object
                     type: object
                   updateTime:
-                    description: |-
-                      Output only. Time when the
-                       [TuningJob][google.cloud.aiplatform.v1.TuningJob] was most recently
-                       updated.
+                    description: Output only. Time when the [TuningJob][google.cloud.aiplatform.v1.TuningJob]
+                      was most recently updated.
                     type: string
                 type: object
             type: object

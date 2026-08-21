@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpmemorystoreinstanceendpoint
     - gcpmemorystoreinstanceendpoints
     singular: memorystoreinstanceendpoint
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -70,9 +66,9 @@ spec:
                 items:
                   properties:
                     connections:
-                      description: |-
-                        Optional. A group of PSC connections. They are created in the same VPC
-                         network, one for each service attachment in the cluster.
+                      description: Optional. A group of PSC connections. They are
+                        created in the same VPC network, one for each service attachment
+                        in the cluster.
                       items:
                         properties:
                           pscConnection:
@@ -82,11 +78,25 @@ spec:
                               forwardingRuleRef:
                                 description: Required. The consumer side forwarding
                                   rule.
+                                oneOf:
+                                - not:
+                                    required:
+                                    - external
+                                  required:
+                                  - name
+                                - not:
+                                    anyOf:
+                                    - required:
+                                      - name
+                                    - required:
+                                      - namespace
+                                  required:
+                                  - external
                                 properties:
                                   external:
-                                    description: |-
-                                      A reference to an externally managed ComputeForwardingRule resource.
-                                      Should be in the format "projects/{{projectID}}/global/forwardingRules/{{forwardingRuleID}}"
+                                    description: A reference to an externally managed
+                                      ComputeForwardingRule resource. Should be in
+                                      the format "projects/{{projectID}}/global/forwardingRules/{{forwardingRuleID}}"
                                       or "projects/{{projectID}}/regions/{{region}}/forwardingRules/{{forwardingRuleID}}".
                                     type: string
                                   name:
@@ -99,9 +109,9 @@ spec:
                                     type: string
                                 type: object
                               port:
-                                description: |-
-                                  Optional. The port number of the PSC connection.
-                                   Port will only be set for Primary/Reader or Discovery endpoint.
+                                description: Optional. The port number of the PSC
+                                  connection. Port will only be set for Primary/Reader
+                                  or Discovery endpoint.
                                 format: int32
                                 type: integer
                             required:
@@ -115,11 +125,24 @@ spec:
                 x-kubernetes-list-type: atomic
               instanceRef:
                 description: Required. The Memorystore instance reference of the endpoint.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed MemorystoreInstance resource.
-                      Should be in the format "projects/{{projectID}}/locations/{{location}}/instances/{{instanceID}}".
+                    description: A reference to an externally managed MemorystoreInstance
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/instances/{{instanceID}}".
                     type: string
                   name:
                     description: The name of a MemorystoreInstance resource.
@@ -140,9 +163,8 @@ spec:
               machine state of MemorystoreInstanceEndpoint
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -154,9 +176,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -184,32 +205,31 @@ spec:
                     items:
                       properties:
                         connections:
-                          description: |-
-                            Optional. A group of PSC connections. They are created in the same VPC
-                             network, one for each service attachment in the cluster.
+                          description: Optional. A group of PSC connections. They
+                            are created in the same VPC network, one for each service
+                            attachment in the cluster.
                           items:
                             properties:
                               pscConnection:
-                                description: |-
-                                  Optional. Detailed information of a PSC connection that is created through
-                                   service connectivity automation.
+                                description: Optional. Detailed information of a PSC
+                                  connection that is created through service connectivity
+                                  automation.
                                 properties:
                                   connectionType:
-                                    description: |-
-                                      Output only. Type of the PSC connection. For valid values,
-                                       see https://docs.cloud.google.com/memorystore/docs/valkey/reference/rest/v1/projects.locations.instances#connectiontype
+                                    description: Output only. Type of the PSC connection.
+                                      For valid values, see https://docs.cloud.google.com/memorystore/docs/valkey/reference/rest/v1/projects.locations.instances#connectiontype
                                     type: string
                                   projectID:
                                     description: Output only. The consumer project_id
                                       where the forwarding rule is created from.
                                     type: string
                                   pscConnectionStatus:
-                                    description: |-
-                                      Output only. The status of the PSC connection: whether a connection exists
-                                       and ACTIVE or it no longer exists. Please note that this value is updated
-                                       periodically. Please use Private Service Connect APIs for the latest
-                                       status. For valid values,
-                                       see https://docs.cloud.google.com/memorystore/docs/valkey/reference/rest/v1/projects.locations.instances#pscconnectionstatus
+                                    description: 'Output only. The status of the PSC
+                                      connection: whether a connection exists and
+                                      ACTIVE or it no longer exists. Please note that
+                                      this value is updated periodically. Please use
+                                      Private Service Connect APIs for the latest
+                                      status. For valid values, see https://docs.cloud.google.com/memorystore/docs/valkey/reference/rest/v1/projects.locations.instances#pscconnectionstatus'
                                     type: string
                                 type: object
                             type: object

@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: stable
@@ -22,6 +22,7 @@ spec:
     - gcpcomputetargetsslproxy
     - gcpcomputetargetsslproxies
     singular: computetargetsslproxy
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
         description: ComputeTargetSSLProxy is the Schema for the compute API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -66,6 +62,20 @@ spec:
             properties:
               backendServiceRef:
                 description: A reference to the ComputeBackendService resource.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The value of an externally managed ComputeBackendService
@@ -79,11 +89,23 @@ spec:
                     type: string
                 type: object
               certificateMapRef:
-                description: |-
-                  A reference to the CertificateMap resource uri that identifies a
-                  certificate map associated with the given target proxy. This
-                  field can only be set for global target proxies. Accepted format is
-                  '//certificatemanager.googleapis.com/projects/{project}/locations/{location}/certificateMaps/{resourceName}'.
+                description: A reference to the CertificateMap resource uri that identifies
+                  a certificate map associated with the given target proxy. This field
+                  can only be set for global target proxies. Accepted format is '//certificatemanager.googleapis.com/projects/{project}/locations/{location}/certificateMaps/{resourceName}'.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: A reference to an externally managed CertificateManagerCertificateMap
@@ -101,9 +123,9 @@ spec:
                 description: Immutable. An optional description of this resource.
                 type: string
               proxyHeader:
-                description: |-
-                  Specifies the type of proxy header to append before sending data to
-                  the backend. Default value: "NONE" Possible values: ["NONE", "PROXY_V1"].
+                description: 'Specifies the type of proxy header to append before
+                  sending data to the backend. Default value: "NONE" Possible values:
+                  ["NONE", "PROXY_V1"].'
                 type: string
               resourceID:
                 description: Immutable. Optional. The name of the resource. Used for
@@ -113,6 +135,20 @@ spec:
               sslCertificates:
                 items:
                   description: A reference to a ComputeSSLCertificate resource.
+                  oneOf:
+                  - not:
+                      required:
+                      - external
+                    required:
+                    - name
+                  - not:
+                      anyOf:
+                      - required:
+                        - name
+                      - required:
+                        - namespace
+                    required:
+                    - external
                   properties:
                     external:
                       description: 'Allowed value: string of the format `projects/{{project}}/global/sslCertificates/{{value}}`
@@ -129,16 +165,27 @@ spec:
                   type: object
                 type: array
               sslPolicyRef:
-                description: |-
-                  A reference to the ComputeSSLPolicy resource that will be
-                  associated with the TargetSslProxy resource. If not set, the
-                  ComputeTargetSSLProxy resource will not have any SSL policy
-                  configured.
+                description: A reference to the ComputeSSLPolicy resource that will
+                  be associated with the TargetSslProxy resource. If not set, the
+                  ComputeTargetSSLProxy resource will not have any SSL policy configured.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeSSLPolicy resource.
-                      Should be in the format "projects/{{projectID}}/global/sslPolicies/{{sslPolicyID}}"
+                    description: A reference to an externally managed ComputeSSLPolicy
+                      resource. Should be in the format "projects/{{projectID}}/global/sslPolicies/{{sslPolicyID}}"
                       or "projects/{{projectID}}/regions/{{region}}/sslPolicies/{{sslPolicyID}}".
                     type: string
                   name:
@@ -154,9 +201,8 @@ spec:
           status:
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  ComputeTargetSSLProxy's current state.
+                description: Conditions represent the latest available observations
+                  of the ComputeTargetSSLProxy's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -168,9 +214,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,6 +21,7 @@ spec:
     - gcpvertexaitrainingpipeline
     - gcpvertexaitrainingpipelines
     singular: vertexaitrainingpipeline
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -70,22 +66,33 @@ spec:
                 description: Required. The user-defined name of this TrainingPipeline.
                 type: string
               encryptionSpec:
-                description: |-
-                  Customer-managed encryption key spec for a TrainingPipeline. If set, this
-                   TrainingPipeline will be secured by this key.
+                description: Customer-managed encryption key spec for a TrainingPipeline.
+                  If set, this TrainingPipeline will be secured by this key.
                 properties:
                   kmsKeyRef:
-                    description: |-
-                      Required. The Cloud KMS resource identifier of the customer managed
-                       encryption key used to protect a resource. Has the form:
-                       `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
-                       The key needs to be in the same region as where the compute resource is
-                       created.
+                    description: 'Required. The Cloud KMS resource identifier of the
+                      customer managed encryption key used to protect a resource.
+                      Has the form: `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
+                      The key needs to be in the same region as where the compute
+                      resource is created.'
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
-                        description: |-
-                          A reference to an externally managed KMSCryptoKey resource.
-                          Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
+                        description: A reference to an externally managed KMSCryptoKey
+                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
                         type: string
                       name:
                         description: The name of a KMSCryptoKey resource.
@@ -96,9 +103,8 @@ spec:
                     type: object
                 type: object
               inputDataConfig:
-                description: |-
-                  Specifies Vertex AI owned input data that may be used for training the
-                   Model.
+                description: Specifies Vertex AI owned input data that may be used
+                  for training the Model.
                 properties:
                   annotationSchemaURI:
                     description: |-
@@ -179,47 +185,43 @@ spec:
                     - outputURI
                     type: object
                   datasetID:
-                    description: |-
-                      Required. The ID of the Dataset in the same Project and Location which data
-                       will be used to train the Model. The Dataset must use schema compatible
-                       with Model being trained, and what is compatible should be described in the
-                       used TrainingPipeline's [training_task_definition]
-                       [google.cloud.aiplatform.v1.TrainingPipeline.training_task_definition].
-                       For tabular Datasets, all their data is exported to training, to pick
-                       and choose from.
+                    description: Required. The ID of the Dataset in the same Project
+                      and Location which data will be used to train the Model. The
+                      Dataset must use schema compatible with Model being trained,
+                      and what is compatible should be described in the used TrainingPipeline's
+                      [training_task_definition] [google.cloud.aiplatform.v1.TrainingPipeline.training_task_definition].
+                      For tabular Datasets, all their data is exported to training,
+                      to pick and choose from.
                     type: string
                   filterSplit:
                     description: Split based on the provided filters for each set.
                     properties:
                       testFilter:
-                        description: |-
-                          Required. A filter on DataItems of the Dataset. DataItems that match
-                           this filter are used to test the Model. A filter with same syntax
-                           as the one used in
-                           [DatasetService.ListDataItems][google.cloud.aiplatform.v1.DatasetService.ListDataItems]
-                           may be used. If a single DataItem is matched by more than one of the
-                           FilterSplit filters, then it is assigned to the first set that applies to
-                           it in the training, validation, test order.
+                        description: Required. A filter on DataItems of the Dataset.
+                          DataItems that match this filter are used to test the Model.
+                          A filter with same syntax as the one used in [DatasetService.ListDataItems][google.cloud.aiplatform.v1.DatasetService.ListDataItems]
+                          may be used. If a single DataItem is matched by more than
+                          one of the FilterSplit filters, then it is assigned to the
+                          first set that applies to it in the training, validation,
+                          test order.
                         type: string
                       trainingFilter:
-                        description: |-
-                          Required. A filter on DataItems of the Dataset. DataItems that match
-                           this filter are used to train the Model. A filter with same syntax
-                           as the one used in
-                           [DatasetService.ListDataItems][google.cloud.aiplatform.v1.DatasetService.ListDataItems]
-                           may be used. If a single DataItem is matched by more than one of the
-                           FilterSplit filters, then it is assigned to the first set that applies to
-                           it in the training, validation, test order.
+                        description: Required. A filter on DataItems of the Dataset.
+                          DataItems that match this filter are used to train the Model.
+                          A filter with same syntax as the one used in [DatasetService.ListDataItems][google.cloud.aiplatform.v1.DatasetService.ListDataItems]
+                          may be used. If a single DataItem is matched by more than
+                          one of the FilterSplit filters, then it is assigned to the
+                          first set that applies to it in the training, validation,
+                          test order.
                         type: string
                       validationFilter:
-                        description: |-
-                          Required. A filter on DataItems of the Dataset. DataItems that match
-                           this filter are used to validate the Model. A filter with same syntax
-                           as the one used in
-                           [DatasetService.ListDataItems][google.cloud.aiplatform.v1.DatasetService.ListDataItems]
-                           may be used. If a single DataItem is matched by more than one of the
-                           FilterSplit filters, then it is assigned to the first set that applies to
-                           it in the training, validation, test order.
+                        description: Required. A filter on DataItems of the Dataset.
+                          DataItems that match this filter are used to validate the
+                          Model. A filter with same syntax as the one used in [DatasetService.ListDataItems][google.cloud.aiplatform.v1.DatasetService.ListDataItems]
+                          may be used. If a single DataItem is matched by more than
+                          one of the FilterSplit filters, then it is assigned to the
+                          first set that applies to it in the training, validation,
+                          test order.
                         type: string
                     required:
                     - testFilter
@@ -267,11 +269,10 @@ spec:
                        "gcs_destination/dataset-<dataset-id>-<annotation-type>-<time>/test-*.${AIP_DATA_FORMAT}"
                     properties:
                       outputURIPrefix:
-                        description: |-
-                          Required. Google Cloud Storage URI to output directory. If the uri doesn't
-                           end with
-                           '/', a '/' will be automatically appended. The directory is created if it
-                           doesn't exist.
+                        description: Required. Google Cloud Storage URI to output
+                          directory. If the uri doesn't end with '/', a '/' will be
+                          automatically appended. The directory is created if it doesn't
+                          exist.
                         type: string
                     required:
                     - outputURIPrefix
@@ -287,13 +288,13 @@ spec:
                        Split based on a predefined key.
                     properties:
                       key:
-                        description: |-
-                          Required. The key is a name of one of the Dataset's data columns.
-                           The value of the key (either the label's value or value in the column)
-                           must be one of {`training`, `validation`, `test`}, and it defines to which
-                           set the given piece of data is assigned. If for a piece of data the key
-                           is not present or has an invalid value, that piece is ignored by the
-                           pipeline.
+                        description: Required. The key is a name of one of the Dataset's
+                          data columns. The value of the key (either the label's value
+                          or value in the column) must be one of {`training`, `validation`,
+                          `test`}, and it defines to which set the given piece of
+                          data is assigned. If for a piece of data the key is not
+                          present or has an invalid value, that piece is ignored by
+                          the pipeline.
                         type: string
                     required:
                     - key
@@ -327,9 +328,9 @@ spec:
                        Split based on the distribution of the specified column.
                     properties:
                       key:
-                        description: |-
-                          Required. The key is a name of one of the Dataset's data columns.
-                           The key provided must be for a categorical column.
+                        description: Required. The key is a name of one of the Dataset's
+                          data columns. The key provided must be for a categorical
+                          column.
                         type: string
                       testFraction:
                         description: The fraction of the input data that is to be
@@ -353,12 +354,12 @@ spec:
                        Split based on the timestamp of the input data pieces.
                     properties:
                       key:
-                        description: |-
-                          Required. The key is a name of one of the Dataset's data columns.
-                           The values of the key (the values in the column) must be in RFC 3339
-                           `date-time` format, where `time-offset` = `"Z"`
-                           (e.g. 1985-04-12T23:20:50.52Z). If for a piece of data the key is not
-                           present or has an invalid value, that piece is ignored by the pipeline.
+                        description: Required. The key is a name of one of the Dataset's
+                          data columns. The values of the key (the values in the column)
+                          must be in RFC 3339 `date-time` format, where `time-offset`
+                          = `"Z"` (e.g. 1985-04-12T23:20:50.52Z). If for a piece of
+                          data the key is not present or has an invalid value, that
+                          piece is ignored by the pipeline.
                         type: string
                       testFraction:
                         description: The fraction of the input data that is to be
@@ -387,20 +388,31 @@ spec:
                 description: The location of this resource.
                 type: string
               modelID:
-                description: |-
-                  Optional. The ID to use for the uploaded Model, which will become the final
-                   component of the model resource name.
+                description: Optional. The ID to use for the uploaded Model, which
+                  will become the final component of the model resource name.
                 type: string
               modelRef:
-                description: |-
-                  Optional. When specify this field, the `model_to_upload` will not be
-                   uploaded as a new model, instead, it will become a new version of this
-                   `parent_model`.
+                description: Optional. When specify this field, the `model_to_upload`
+                  will not be uploaded as a new model, instead, it will become a new
+                  version of this `parent_model`.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed AIPlatformModel resource.
-                      Should be in the format "projects/{{projectID}}/locations/{{location}}/models/{{modelID}}".
+                    description: A reference to an externally managed AIPlatformModel
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/models/{{modelID}}".
                     type: string
                   name:
                     description: The name of an AIPlatformModel resource.
@@ -413,14 +425,14 @@ spec:
                 description: Describes the Model that may be uploaded by this TrainingPipeline.
                 properties:
                   artifactURI:
-                    description: |-
-                      Immutable. The path to the directory containing the Model artifact and any
-                       of its supporting files. Not required for AutoML Models.
+                    description: Immutable. The path to the directory containing the
+                      Model artifact and any of its supporting files. Not required
+                      for AutoML Models.
                     type: string
                   baseModelSource:
-                    description: |-
-                      Optional. User input field to specify the base model source. Currently it
-                       only supports specifying the Model Garden models and Genie models.
+                    description: Optional. User input field to specify the base model
+                      source. Currently it only supports specifying the Model Garden
+                      models and Genie models.
                     properties:
                       genieSource:
                         description: Information about the base model of Genie models.
@@ -451,12 +463,11 @@ spec:
                         type: object
                     type: object
                   containerSpec:
-                    description: |-
-                      Input only. The specification of the container that is to be used when
-                       deploying this Model. The specification is ingested upon
-                       [ModelService.UploadModel][google.cloud.aiplatform.v1.ModelService.UploadModel],
-                       and all binaries it contains are copied and stored internally by Vertex AI.
-                       Not required for AutoML Models.
+                    description: Input only. The specification of the container that
+                      is to be used when deploying this Model. The specification is
+                      ingested upon [ModelService.UploadModel][google.cloud.aiplatform.v1.ModelService.UploadModel],
+                      and all binaries it contains are copied and stored internally
+                      by Vertex AI. Not required for AutoML Models.
                     properties:
                       args:
                         description: |-
@@ -538,9 +549,8 @@ spec:
                           type: string
                         type: array
                       deploymentTimeout:
-                        description: |-
-                          Immutable. Deployment timeout.
-                           Limit for deployment timeout is 2 hours.
+                        description: Immutable. Deployment timeout. Limit for deployment
+                          timeout is 2 hours.
                         type: string
                       env:
                         description: |-
@@ -581,14 +591,14 @@ spec:
                                 Must be a valid C identifier.
                               type: string
                             value:
-                              description: |-
-                                Required. Variables that reference a $(VAR_NAME) are expanded
-                                 using the previous defined environment variables in the container and
-                                 any service environment variables. If a variable cannot be resolved,
-                                 the reference in the input string will be unchanged. The $(VAR_NAME)
-                                 syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped
-                                 references will never be expanded, regardless of whether the variable
-                                 exists or not.
+                              description: 'Required. Variables that reference a $(VAR_NAME)
+                                are expanded using the previous defined environment
+                                variables in the container and any service environment
+                                variables. If a variable cannot be resolved, the reference
+                                in the input string will be unchanged. The $(VAR_NAME)
+                                syntax can be escaped with a double $$, ie: $$(VAR_NAME).
+                                Escaped references will never be expanded, regardless
+                                of whether the variable exists or not.'
                               type: string
                           required:
                           - name
@@ -609,9 +619,9 @@ spec:
                         items:
                           properties:
                             containerPort:
-                              description: |-
-                                The number of the port to expose on the pod's IP address.
-                                 Must be a valid port number, between 1 and 65535 inclusive.
+                              description: The number of the port to expose on the
+                                pod's IP address. Must be a valid port number, between
+                                1 and 65535 inclusive.
                               format: int32
                               type: integer
                           type: object
@@ -625,13 +635,14 @@ spec:
                               by executing a command.
                             properties:
                               command:
-                                description: |-
-                                  Command is the command line to execute inside the container, the working
-                                   directory for the command is root ('/') in the container's filesystem.
-                                   The command is simply exec'd, it is not run inside a shell, so
-                                   traditional shell instructions ('|', etc) won't work. To use a shell, you
-                                   need to explicitly call out to that shell. Exit status of 0 is treated as
-                                   live/healthy and non-zero is unhealthy.
+                                description: Command is the command line to execute
+                                  inside the container, the working directory for
+                                  the command is root ('/') in the container's filesystem.
+                                  The command is simply exec'd, it is not run inside
+                                  a shell, so traditional shell instructions ('|',
+                                  etc) won't work. To use a shell, you need to explicitly
+                                  call out to that shell. Exit status of 0 is treated
+                                  as live/healthy and non-zero is unhealthy.
                                 items:
                                   type: string
                                 type: array
@@ -663,14 +674,13 @@ spec:
                                 type: string
                             type: object
                           httpGet:
-                            description: |-
-                              HttpGetAction probes the health of a container by sending an HTTP GET
-                               request.
+                            description: HttpGetAction probes the health of a container
+                              by sending an HTTP GET request.
                             properties:
                               host:
-                                description: |-
-                                  Host name to connect to, defaults to the model serving container's IP.
-                                   You probably want to set "Host" in httpHeaders instead.
+                                description: Host name to connect to, defaults to
+                                  the model serving container's IP. You probably want
+                                  to set "Host" in httpHeaders instead.
                                 type: string
                               httpHeaders:
                                 description: Custom headers to set in the request.
@@ -678,10 +688,9 @@ spec:
                                 items:
                                   properties:
                                     name:
-                                      description: |-
-                                        The header field name.
-                                         This will be canonicalized upon output, so case-variant names will be
-                                         understood as the same header.
+                                      description: The header field name. This will
+                                        be canonicalized upon output, so case-variant
+                                        names will be understood as the same header.
                                       type: string
                                     value:
                                       description: The header field value
@@ -692,15 +701,14 @@ spec:
                                 description: Path to access on the HTTP server.
                                 type: string
                               port:
-                                description: |-
-                                  Number of the port to access on the container.
-                                   Number must be in the range 1 to 65535.
+                                description: Number of the port to access on the container.
+                                  Number must be in the range 1 to 65535.
                                 format: int32
                                 type: integer
                               scheme:
-                                description: |-
-                                  Scheme to use for connecting to the host.
-                                   Defaults to HTTP. Acceptable values are "HTTP" or "HTTPS".
+                                description: Scheme to use for connecting to the host.
+                                  Defaults to HTTP. Acceptable values are "HTTP" or
+                                  "HTTPS".
                                 type: string
                             type: object
                           initialDelaySeconds:
@@ -728,19 +736,16 @@ spec:
                             format: int32
                             type: integer
                           tcpSocket:
-                            description: |-
-                              TcpSocketAction probes the health of a container by opening a TCP socket
-                               connection.
+                            description: TcpSocketAction probes the health of a container
+                              by opening a TCP socket connection.
                             properties:
                               host:
-                                description: |-
-                                  Optional: Host name to connect to, defaults to the model serving
-                                   container's IP.
+                                description: 'Optional: Host name to connect to, defaults
+                                  to the model serving container''s IP.'
                                 type: string
                               port:
-                                description: |-
-                                  Number of the port to access on the container.
-                                   Number must be in the range 1 to 65535.
+                                description: Number of the port to access on the container.
+                                  Number must be in the range 1 to 65535.
                                 format: int32
                                 type: integer
                             type: object
@@ -826,13 +831,14 @@ spec:
                               by executing a command.
                             properties:
                               command:
-                                description: |-
-                                  Command is the command line to execute inside the container, the working
-                                   directory for the command is root ('/') in the container's filesystem.
-                                   The command is simply exec'd, it is not run inside a shell, so
-                                   traditional shell instructions ('|', etc) won't work. To use a shell, you
-                                   need to explicitly call out to that shell. Exit status of 0 is treated as
-                                   live/healthy and non-zero is unhealthy.
+                                description: Command is the command line to execute
+                                  inside the container, the working directory for
+                                  the command is root ('/') in the container's filesystem.
+                                  The command is simply exec'd, it is not run inside
+                                  a shell, so traditional shell instructions ('|',
+                                  etc) won't work. To use a shell, you need to explicitly
+                                  call out to that shell. Exit status of 0 is treated
+                                  as live/healthy and non-zero is unhealthy.
                                 items:
                                   type: string
                                 type: array
@@ -864,14 +870,13 @@ spec:
                                 type: string
                             type: object
                           httpGet:
-                            description: |-
-                              HttpGetAction probes the health of a container by sending an HTTP GET
-                               request.
+                            description: HttpGetAction probes the health of a container
+                              by sending an HTTP GET request.
                             properties:
                               host:
-                                description: |-
-                                  Host name to connect to, defaults to the model serving container's IP.
-                                   You probably want to set "Host" in httpHeaders instead.
+                                description: Host name to connect to, defaults to
+                                  the model serving container's IP. You probably want
+                                  to set "Host" in httpHeaders instead.
                                 type: string
                               httpHeaders:
                                 description: Custom headers to set in the request.
@@ -879,10 +884,9 @@ spec:
                                 items:
                                   properties:
                                     name:
-                                      description: |-
-                                        The header field name.
-                                         This will be canonicalized upon output, so case-variant names will be
-                                         understood as the same header.
+                                      description: The header field name. This will
+                                        be canonicalized upon output, so case-variant
+                                        names will be understood as the same header.
                                       type: string
                                     value:
                                       description: The header field value
@@ -893,15 +897,14 @@ spec:
                                 description: Path to access on the HTTP server.
                                 type: string
                               port:
-                                description: |-
-                                  Number of the port to access on the container.
-                                   Number must be in the range 1 to 65535.
+                                description: Number of the port to access on the container.
+                                  Number must be in the range 1 to 65535.
                                 format: int32
                                 type: integer
                               scheme:
-                                description: |-
-                                  Scheme to use for connecting to the host.
-                                   Defaults to HTTP. Acceptable values are "HTTP" or "HTTPS".
+                                description: Scheme to use for connecting to the host.
+                                  Defaults to HTTP. Acceptable values are "HTTP" or
+                                  "HTTPS".
                                 type: string
                             type: object
                           initialDelaySeconds:
@@ -929,19 +932,16 @@ spec:
                             format: int32
                             type: integer
                           tcpSocket:
-                            description: |-
-                              TcpSocketAction probes the health of a container by opening a TCP socket
-                               connection.
+                            description: TcpSocketAction probes the health of a container
+                              by opening a TCP socket connection.
                             properties:
                               host:
-                                description: |-
-                                  Optional: Host name to connect to, defaults to the model serving
-                                   container's IP.
+                                description: 'Optional: Host name to connect to, defaults
+                                  to the model serving container''s IP.'
                                 type: string
                               port:
-                                description: |-
-                                  Number of the port to access on the container.
-                                   Number must be in the range 1 to 65535.
+                                description: Number of the port to access on the container.
+                                  Number must be in the range 1 to 65535.
                                 format: int32
                                 type: integer
                             type: object
@@ -980,9 +980,9 @@ spec:
                         items:
                           properties:
                             containerPort:
-                              description: |-
-                                The number of the port to expose on the pod's IP address.
-                                 Must be a valid port number, between 1 and 65535 inclusive.
+                              description: The number of the port to expose on the
+                                pod's IP address. Must be a valid port number, between
+                                1 and 65535 inclusive.
                               format: int32
                               type: integer
                           type: object
@@ -1021,9 +1021,8 @@ spec:
                              variable](https://cloud.google.com/vertex-ai/docs/predictions/custom-container-requirements#aip-variables).)
                         type: string
                       sharedMemorySizeMb:
-                        description: |-
-                          Immutable. The amount of the VM memory to reserve as the shared memory for
-                           the model in megabytes.
+                        description: Immutable. The amount of the VM memory to reserve
+                          as the shared memory for the model in megabytes.
                         format: int64
                         type: integer
                       startupProbe:
@@ -1035,13 +1034,14 @@ spec:
                               by executing a command.
                             properties:
                               command:
-                                description: |-
-                                  Command is the command line to execute inside the container, the working
-                                   directory for the command is root ('/') in the container's filesystem.
-                                   The command is simply exec'd, it is not run inside a shell, so
-                                   traditional shell instructions ('|', etc) won't work. To use a shell, you
-                                   need to explicitly call out to that shell. Exit status of 0 is treated as
-                                   live/healthy and non-zero is unhealthy.
+                                description: Command is the command line to execute
+                                  inside the container, the working directory for
+                                  the command is root ('/') in the container's filesystem.
+                                  The command is simply exec'd, it is not run inside
+                                  a shell, so traditional shell instructions ('|',
+                                  etc) won't work. To use a shell, you need to explicitly
+                                  call out to that shell. Exit status of 0 is treated
+                                  as live/healthy and non-zero is unhealthy.
                                 items:
                                   type: string
                                 type: array
@@ -1073,14 +1073,13 @@ spec:
                                 type: string
                             type: object
                           httpGet:
-                            description: |-
-                              HttpGetAction probes the health of a container by sending an HTTP GET
-                               request.
+                            description: HttpGetAction probes the health of a container
+                              by sending an HTTP GET request.
                             properties:
                               host:
-                                description: |-
-                                  Host name to connect to, defaults to the model serving container's IP.
-                                   You probably want to set "Host" in httpHeaders instead.
+                                description: Host name to connect to, defaults to
+                                  the model serving container's IP. You probably want
+                                  to set "Host" in httpHeaders instead.
                                 type: string
                               httpHeaders:
                                 description: Custom headers to set in the request.
@@ -1088,10 +1087,9 @@ spec:
                                 items:
                                   properties:
                                     name:
-                                      description: |-
-                                        The header field name.
-                                         This will be canonicalized upon output, so case-variant names will be
-                                         understood as the same header.
+                                      description: The header field name. This will
+                                        be canonicalized upon output, so case-variant
+                                        names will be understood as the same header.
                                       type: string
                                     value:
                                       description: The header field value
@@ -1102,15 +1100,14 @@ spec:
                                 description: Path to access on the HTTP server.
                                 type: string
                               port:
-                                description: |-
-                                  Number of the port to access on the container.
-                                   Number must be in the range 1 to 65535.
+                                description: Number of the port to access on the container.
+                                  Number must be in the range 1 to 65535.
                                 format: int32
                                 type: integer
                               scheme:
-                                description: |-
-                                  Scheme to use for connecting to the host.
-                                   Defaults to HTTP. Acceptable values are "HTTP" or "HTTPS".
+                                description: Scheme to use for connecting to the host.
+                                  Defaults to HTTP. Acceptable values are "HTTP" or
+                                  "HTTPS".
                                 type: string
                             type: object
                           initialDelaySeconds:
@@ -1138,19 +1135,16 @@ spec:
                             format: int32
                             type: integer
                           tcpSocket:
-                            description: |-
-                              TcpSocketAction probes the health of a container by opening a TCP socket
-                               connection.
+                            description: TcpSocketAction probes the health of a container
+                              by opening a TCP socket connection.
                             properties:
                               host:
-                                description: |-
-                                  Optional: Host name to connect to, defaults to the model serving
-                                   container's IP.
+                                description: 'Optional: Host name to connect to, defaults
+                                  to the model serving container''s IP.'
                                 type: string
                               port:
-                                description: |-
-                                  Number of the port to access on the container.
-                                   Number must be in the range 1 to 65535.
+                                description: Number of the port to access on the container.
+                                  Number must be in the range 1 to 65535.
                                 format: int32
                                 type: integer
                             type: object
@@ -1174,19 +1168,18 @@ spec:
                        [data_input_config][google.cloud.aiplatform.v1.TrainingPipeline.input_data_config].
                     properties:
                       testAnnotationsCount:
-                        description: |-
-                          Number of Annotations that are used for evaluating this Model. If the
-                           Model is evaluated multiple times, this will be the number of test
-                           Annotations used by the first evaluation. If the Model is not evaluated,
-                           the number is 0.
+                        description: Number of Annotations that are used for evaluating
+                          this Model. If the Model is evaluated multiple times, this
+                          will be the number of test Annotations used by the first
+                          evaluation. If the Model is not evaluated, the number is
+                          0.
                         format: int64
                         type: integer
                       testDataItemsCount:
-                        description: |-
-                          Number of DataItems that were used for evaluating this Model. If the
-                           Model is evaluated multiple times, this will be the number of test
-                           DataItems used by the first evaluation. If the Model is not evaluated,
-                           the number is 0.
+                        description: Number of DataItems that were used for evaluating
+                          this Model. If the Model is evaluated multiple times, this
+                          will be the number of test DataItems used by the first evaluation.
+                          If the Model is not evaluated, the number is 0.
                         format: int64
                         type: integer
                       trainingAnnotationsCount:
@@ -1200,15 +1193,13 @@ spec:
                         format: int64
                         type: integer
                       validationAnnotationsCount:
-                        description: |-
-                          Number of Annotations that are used for validating this Model during
-                           training.
+                        description: Number of Annotations that are used for validating
+                          this Model during training.
                         format: int64
                         type: integer
                       validationDataItemsCount:
-                        description: |-
-                          Number of DataItems that were used for validating this Model during
-                           training.
+                        description: Number of DataItems that were used for validating
+                          this Model during training.
                         format: int64
                         type: integer
                     type: object
@@ -1216,28 +1207,39 @@ spec:
                     description: The description of the Model.
                     type: string
                   displayName:
-                    description: |-
-                      Required. The display name of the Model.
-                       The name can be up to 128 characters long and can consist of any UTF-8
-                       characters.
+                    description: Required. The display name of the Model. The name
+                      can be up to 128 characters long and can consist of any UTF-8
+                      characters.
                     type: string
                   encryptionSpec:
-                    description: |-
-                      Customer-managed encryption key spec for a Model. If set, this
-                       Model and all sub-resources of this Model will be secured by this key.
+                    description: Customer-managed encryption key spec for a Model.
+                      If set, this Model and all sub-resources of this Model will
+                      be secured by this key.
                     properties:
                       kmsKeyRef:
-                        description: |-
-                          Required. The Cloud KMS resource identifier of the customer managed
-                           encryption key used to protect a resource. Has the form:
-                           `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
-                           The key needs to be in the same region as where the compute resource is
-                           created.
+                        description: 'Required. The Cloud KMS resource identifier
+                          of the customer managed encryption key used to protect a
+                          resource. Has the form: `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
+                          The key needs to be in the same region as where the compute
+                          resource is created.'
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
                         properties:
                           external:
-                            description: |-
-                              A reference to an externally managed KMSCryptoKey resource.
-                              Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
+                            description: A reference to an externally managed KMSCryptoKey
+                              resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
                             type: string
                           name:
                             description: The name of a KMSCryptoKey resource.
@@ -1286,25 +1288,23 @@ spec:
                           and output for explanation.
                         properties:
                           featureAttributionsSchemaURI:
-                            description: |-
-                              Points to a YAML file stored on Google Cloud Storage describing the format
-                               of the [feature
-                               attributions][google.cloud.aiplatform.v1.Attribution.feature_attributions].
-                               The schema is defined as an OpenAPI 3.0.2 [Schema
-                               Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject).
-                               AutoML tabular Models always have this field populated by Vertex AI.
-                               Note: The URI given on output may be different, including the URI scheme,
-                               than the one given on input. The output URI will point to a location where
-                               the user only has a read access.
+                            description: 'Points to a YAML file stored on Google Cloud
+                              Storage describing the format of the [feature attributions][google.cloud.aiplatform.v1.Attribution.feature_attributions].
+                              The schema is defined as an OpenAPI 3.0.2 [Schema Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject).
+                              AutoML tabular Models always have this field populated
+                              by Vertex AI. Note: The URI given on output may be different,
+                              including the URI scheme, than the one given on input.
+                              The output URI will point to a location where the user
+                              only has a read access.'
                             type: string
                           inputs:
                             additionalProperties:
                               properties:
                                 denseShapeTensorName:
-                                  description: |-
-                                    Specifies the shape of the values of the input if the input is a sparse
-                                     representation. Refer to Tensorflow documentation for more details:
-                                     https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor.
+                                  description: 'Specifies the shape of the values
+                                    of the input if the input is a sparse representation.
+                                    Refer to Tensorflow documentation for more details:
+                                    https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor.'
                                   type: string
                                 encodedBaselines:
                                   description: |-
@@ -1330,14 +1330,13 @@ spec:
                                      table.
                                   type: string
                                 encoding:
-                                  description: |-
-                                    Defines how the feature is encoded into the input tensor. Defaults to
-                                     IDENTITY.
+                                  description: Defines how the feature is encoded
+                                    into the input tensor. Defaults to IDENTITY.
                                   type: string
                                 featureValueDomain:
-                                  description: |-
-                                    The domain details of the input feature value. Like min/max, original
-                                     mean or standard deviation if normalized.
+                                  description: The domain details of the input feature
+                                    value. Like min/max, original mean or standard
+                                    deviation if normalized.
                                   properties:
                                     maxValue:
                                       description: The maximum permissible value for
@@ -1348,42 +1347,39 @@ spec:
                                         this feature.
                                       type: number
                                     originalMean:
-                                      description: |-
-                                        If this input feature has been normalized to a mean value of 0,
-                                         the original_mean specifies the mean value of the domain prior to
-                                         normalization.
+                                      description: If this input feature has been
+                                        normalized to a mean value of 0, the original_mean
+                                        specifies the mean value of the domain prior
+                                        to normalization.
                                       type: number
                                     originalStddev:
-                                      description: |-
-                                        If this input feature has been normalized to a standard deviation of
-                                         1.0, the original_stddev specifies the standard deviation of the domain
-                                         prior to normalization.
+                                      description: If this input feature has been
+                                        normalized to a standard deviation of 1.0,
+                                        the original_stddev specifies the standard
+                                        deviation of the domain prior to normalization.
                                       type: number
                                   type: object
                                 groupName:
-                                  description: |-
-                                    Name of the group that the input belongs to. Features with the same group
-                                     name will be treated as one feature when computing attributions. Features
-                                     grouped together can have different shapes in value. If provided, there
-                                     will be one single attribution generated in
-                                     [Attribution.feature_attributions][google.cloud.aiplatform.v1.Attribution.feature_attributions],
-                                     keyed by the group name.
+                                  description: Name of the group that the input belongs
+                                    to. Features with the same group name will be
+                                    treated as one feature when computing attributions.
+                                    Features grouped together can have different shapes
+                                    in value. If provided, there will be one single
+                                    attribution generated in [Attribution.feature_attributions][google.cloud.aiplatform.v1.Attribution.feature_attributions],
+                                    keyed by the group name.
                                   type: string
                                 indexFeatureMapping:
-                                  description: |-
-                                    A list of feature names for each index in the input tensor.
-                                     Required when the input
-                                     [InputMetadata.encoding][google.cloud.aiplatform.v1.ExplanationMetadata.InputMetadata.encoding]
-                                     is BAG_OF_FEATURES, BAG_OF_FEATURES_SPARSE, INDICATOR.
+                                  description: A list of feature names for each index
+                                    in the input tensor. Required when the input [InputMetadata.encoding][google.cloud.aiplatform.v1.ExplanationMetadata.InputMetadata.encoding]
+                                    is BAG_OF_FEATURES, BAG_OF_FEATURES_SPARSE, INDICATOR.
                                   items:
                                     type: string
                                   type: array
                                 indicesTensorName:
-                                  description: |-
-                                    Specifies the index of the values of the input tensor.
-                                     Required when the input tensor is a sparse representation. Refer to
-                                     Tensorflow documentation for more details:
-                                     https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor.
+                                  description: 'Specifies the index of the values
+                                    of the input tensor. Required when the input tensor
+                                    is a sparse representation. Refer to Tensorflow
+                                    documentation for more details: https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor.'
                                   type: string
                                 inputBaselines:
                                   description: |-
@@ -1409,31 +1405,31 @@ spec:
                                     x-kubernetes-preserve-unknown-fields: true
                                   type: array
                                 inputTensorName:
-                                  description: |-
-                                    Name of the input tensor for this feature. Required and is only
-                                     applicable to Vertex AI-provided images for Tensorflow.
+                                  description: Name of the input tensor for this feature.
+                                    Required and is only applicable to Vertex AI-provided
+                                    images for Tensorflow.
                                   type: string
                                 modality:
-                                  description: |-
-                                    Modality of the feature. Valid values are: numeric, image. Defaults to
-                                     numeric.
+                                  description: 'Modality of the feature. Valid values
+                                    are: numeric, image. Defaults to numeric.'
                                   type: string
                                 visualization:
                                   description: Visualization configurations for image
                                     explanation.
                                   properties:
                                     clipPercentLowerbound:
-                                      description: |-
-                                        Excludes attributions below the specified percentile, from the
-                                         highlighted areas. Defaults to 62.
+                                      description: Excludes attributions below the
+                                        specified percentile, from the highlighted
+                                        areas. Defaults to 62.
                                       type: number
                                     clipPercentUpperbound:
-                                      description: |-
-                                        Excludes attributions above the specified percentile from the
-                                         highlighted areas. Using the clip_percent_upperbound and
-                                         clip_percent_lowerbound together can be useful for filtering out noise
-                                         and making it easier to see areas of strong attribution. Defaults to
-                                         99.9.
+                                      description: Excludes attributions above the
+                                        specified percentile from the highlighted
+                                        areas. Using the clip_percent_upperbound and
+                                        clip_percent_lowerbound together can be useful
+                                        for filtering out noise and making it easier
+                                        to see areas of strong attribution. Defaults
+                                        to 99.9.
                                       type: number
                                     colorMap:
                                       description: |-
@@ -1451,23 +1447,23 @@ spec:
                                          influential in blue.
                                       type: string
                                     overlayType:
-                                      description: |-
-                                        How the original image is displayed in the visualization.
-                                         Adjusting the overlay can help increase visual clarity if the original
-                                         image makes it difficult to view the visualization. Defaults to NONE.
+                                      description: How the original image is displayed
+                                        in the visualization. Adjusting the overlay
+                                        can help increase visual clarity if the original
+                                        image makes it difficult to view the visualization.
+                                        Defaults to NONE.
                                       type: string
                                     polarity:
-                                      description: |-
-                                        Whether to only highlight pixels with positive contributions, negative
-                                         or both. Defaults to POSITIVE.
+                                      description: Whether to only highlight pixels
+                                        with positive contributions, negative or both.
+                                        Defaults to POSITIVE.
                                       type: string
                                     type:
-                                      description: |-
-                                        Type of the image visualization. Only applicable to
-                                         [Integrated Gradients
-                                         attribution][google.cloud.aiplatform.v1.ExplanationParameters.integrated_gradients_attribution].
-                                         OUTLINES shows regions of attribution, while PIXELS shows per-pixel
-                                         attribution. Defaults to OUTLINES.
+                                      description: Type of the image visualization.
+                                        Only applicable to [Integrated Gradients attribution][google.cloud.aiplatform.v1.ExplanationParameters.integrated_gradients_attribution].
+                                        OUTLINES shows regions of attribution, while
+                                        PIXELS shows per-pixel attribution. Defaults
+                                        to OUTLINES.
                                       type: string
                                   type: object
                               type: object
@@ -1524,9 +1520,9 @@ spec:
                                      [Attribution.output_index][google.cloud.aiplatform.v1.Attribution.output_index].
                                   x-kubernetes-preserve-unknown-fields: true
                                 outputTensorName:
-                                  description: |-
-                                    Name of the output tensor. Required and is only applicable to Vertex
-                                     AI provided images for Tensorflow.
+                                  description: Name of the output tensor. Required
+                                    and is only applicable to Vertex AI provided images
+                                    for Tensorflow.
                                   type: string
                               type: object
                             description: |-
@@ -1546,27 +1542,26 @@ spec:
                           of the Model's predictions.
                         properties:
                           examples:
-                            description: |-
-                              Example-based explanations that returns the nearest neighbors from the
-                               provided dataset.
+                            description: Example-based explanations that returns the
+                              nearest neighbors from the provided dataset.
                             properties:
                               exampleGCSSource:
                                 description: The Cloud Storage input instances.
                                 properties:
                                   dataFormat:
-                                    description: |-
-                                      The format in which instances are given, if not specified, assume it's
-                                       JSONL format. Currently only JSONL format is supported.
+                                    description: The format in which instances are
+                                      given, if not specified, assume it's JSONL format.
+                                      Currently only JSONL format is supported.
                                     type: string
                                   gcsSource:
                                     description: The Cloud Storage location for the
                                       input instances.
                                     properties:
                                       uris:
-                                        description: |-
-                                          Required. Google Cloud Storage URI(-s) to the input file(s). May contain
-                                           wildcards. For more information on wildcards, see
-                                           https://cloud.google.com/storage/docs/wildcards.
+                                        description: Required. Google Cloud Storage
+                                          URI(-s) to the input file(s). May contain
+                                          wildcards. For more information on wildcards,
+                                          see https://cloud.google.com/storage/docs/wildcards.
                                         items:
                                           type: string
                                         type: array
@@ -1575,11 +1570,9 @@ spec:
                                     type: object
                                 type: object
                               nearestNeighborSearchConfig:
-                                description: |-
-                                  The full configuration for the generated index, the semantics are the
-                                   same as [metadata][google.cloud.aiplatform.v1.Index.metadata] and should
-                                   match
-                                   [NearestNeighborSearchConfig](https://cloud.google.com/vertex-ai/docs/explainable-ai/configuring-explanations-example-based#nearest-neighbor-search-config).
+                                description: The full configuration for the generated
+                                  index, the semantics are the same as [metadata][google.cloud.aiplatform.v1.Index.metadata]
+                                  and should match [NearestNeighborSearchConfig](https://cloud.google.com/vertex-ai/docs/explainable-ai/configuring-explanations-example-based#nearest-neighbor-search-config).
                                 x-kubernetes-preserve-unknown-fields: true
                               neighborCount:
                                 description: The number of neighbors to return when
@@ -1587,29 +1580,30 @@ spec:
                                 format: int32
                                 type: integer
                               presets:
-                                description: |-
-                                  Simplified preset configuration, which automatically sets configuration
-                                   values based on the desired query speed-precision trade-off and modality.
+                                description: Simplified preset configuration, which
+                                  automatically sets configuration values based on
+                                  the desired query speed-precision trade-off and
+                                  modality.
                                 properties:
                                   modality:
-                                    description: |-
-                                      The modality of the uploaded model, which automatically configures the
-                                       distance measurement and feature normalization for the underlying example
-                                       index and queries. If your model does not precisely fit one of these types,
-                                       it is okay to choose the closest type.
+                                    description: The modality of the uploaded model,
+                                      which automatically configures the distance
+                                      measurement and feature normalization for the
+                                      underlying example index and queries. If your
+                                      model does not precisely fit one of these types,
+                                      it is okay to choose the closest type.
                                     type: string
                                   query:
-                                    description: |-
-                                      Preset option controlling parameters for speed-precision trade-off when
-                                       querying for examples. If omitted, defaults to `PRECISE`.
+                                    description: Preset option controlling parameters
+                                      for speed-precision trade-off when querying
+                                      for examples. If omitted, defaults to `PRECISE`.
                                     type: string
                                 type: object
                             type: object
                           integratedGradientsAttribution:
-                            description: |-
-                              An attribution method that computes Aumann-Shapley values taking
-                               advantage of the model's fully differentiable structure. Refer to this
-                               paper for more details: https://arxiv.org/abs/1703.01365
+                            description: 'An attribution method that computes Aumann-Shapley
+                              values taking advantage of the model''s fully differentiable
+                              structure. Refer to this paper for more details: https://arxiv.org/abs/1703.01365'
                             properties:
                               blurBaselineConfig:
                                 description: |-
@@ -1621,11 +1615,11 @@ spec:
                                    https://arxiv.org/abs/2004.03383
                                 properties:
                                   maxBlurSigma:
-                                    description: |-
-                                      The standard deviation of the blur kernel for the blurred baseline. The
-                                       same blurring parameter is used for both the height and the width
-                                       dimension. If not set, the method defaults to the zero (i.e. black for
-                                       images) baseline.
+                                    description: The standard deviation of the blur
+                                      kernel for the blurred baseline. The same blurring
+                                      parameter is used for both the height and the
+                                      width dimension. If not set, the method defaults
+                                      to the zero (i.e. black for images) baseline.
                                     type: number
                                 type: object
                               smoothGradConfig:
@@ -1638,15 +1632,13 @@ spec:
                                    details: https://arxiv.org/pdf/1706.03825.pdf
                                 properties:
                                   featureNoiseSigma:
-                                    description: |-
-                                      This is similar to
-                                       [noise_sigma][google.cloud.aiplatform.v1.SmoothGradConfig.noise_sigma],
-                                       but provides additional flexibility. A separate noise sigma can be
-                                       provided for each feature, which is useful if their distributions are
-                                       different. No noise is added to features that are not set. If this field
-                                       is unset,
-                                       [noise_sigma][google.cloud.aiplatform.v1.SmoothGradConfig.noise_sigma]
-                                       will be used for all features.
+                                    description: This is similar to [noise_sigma][google.cloud.aiplatform.v1.SmoothGradConfig.noise_sigma],
+                                      but provides additional flexibility. A separate
+                                      noise sigma can be provided for each feature,
+                                      which is useful if their distributions are different.
+                                      No noise is added to features that are not set.
+                                      If this field is unset, [noise_sigma][google.cloud.aiplatform.v1.SmoothGradConfig.noise_sigma]
+                                      will be used for all features.
                                     properties:
                                       noiseSigma:
                                         description: Noise sigma per feature. No noise
@@ -1654,18 +1646,19 @@ spec:
                                         items:
                                           properties:
                                             name:
-                                              description: |-
-                                                The name of the input feature for which noise sigma is provided. The
-                                                 features are defined in
-                                                 [explanation metadata
-                                                 inputs][google.cloud.aiplatform.v1.ExplanationMetadata.inputs].
+                                              description: The name of the input feature
+                                                for which noise sigma is provided.
+                                                The features are defined in [explanation
+                                                metadata inputs][google.cloud.aiplatform.v1.ExplanationMetadata.inputs].
                                               type: string
                                             sigma:
-                                              description: |-
-                                                This represents the standard deviation of the Gaussian kernel that will
-                                                 be used to add noise to the feature prior to computing gradients. Similar
-                                                 to [noise_sigma][google.cloud.aiplatform.v1.SmoothGradConfig.noise_sigma]
-                                                 but represents the noise added to the current feature. Defaults to 0.1.
+                                              description: This represents the standard
+                                                deviation of the Gaussian kernel that
+                                                will be used to add noise to the feature
+                                                prior to computing gradients. Similar
+                                                to [noise_sigma][google.cloud.aiplatform.v1.SmoothGradConfig.noise_sigma]
+                                                but represents the noise added to
+                                                the current feature. Defaults to 0.1.
                                               type: number
                                           type: object
                                         type: array
@@ -1687,11 +1680,12 @@ spec:
                                        instead for each feature.
                                     type: number
                                   noisySampleCount:
-                                    description: |-
-                                      The number of gradient samples to use for
-                                       approximation. The higher this number, the more accurate the gradient
-                                       is, but the runtime complexity increases by this factor as well.
-                                       Valid range of its value is [1, 50]. Defaults to 3.
+                                    description: The number of gradient samples to
+                                      use for approximation. The higher this number,
+                                      the more accurate the gradient is, but the runtime
+                                      complexity increases by this factor as well.
+                                      Valid range of its value is [1, 50]. Defaults
+                                      to 3.
                                     format: int32
                                     type: integer
                                 type: object
@@ -1708,11 +1702,11 @@ spec:
                             - stepCount
                             type: object
                           sampledShapleyAttribution:
-                            description: |-
-                              An attribution method that approximates Shapley values for features that
-                               contribute to the label being predicted. A sampling strategy is used to
-                               approximate the value rather than considering all subsets of features.
-                               Refer to this paper for model details: https://arxiv.org/abs/1306.4265.
+                            description: 'An attribution method that approximates
+                              Shapley values for features that contribute to the label
+                              being predicted. A sampling strategy is used to approximate
+                              the value rather than considering all subsets of features.
+                              Refer to this paper for model details: https://arxiv.org/abs/1306.4265.'
                             properties:
                               pathCount:
                                 description: |-
@@ -1726,11 +1720,11 @@ spec:
                             - pathCount
                             type: object
                           topK:
-                            description: |-
-                              If populated, returns attributions for top K indices of outputs
-                               (defaults to 1). Only applies to Models that predicts more than one outputs
-                               (e,g, multi-class Models). When set to -1, returns explanations for all
-                               outputs.
+                            description: If populated, returns attributions for top
+                              K indices of outputs (defaults to 1). Only applies to
+                              Models that predicts more than one outputs (e,g, multi-class
+                              Models). When set to -1, returns explanations for all
+                              outputs.
                             format: int32
                             type: integer
                           xraiAttribution:
@@ -1755,11 +1749,11 @@ spec:
                                    https://arxiv.org/abs/2004.03383
                                 properties:
                                   maxBlurSigma:
-                                    description: |-
-                                      The standard deviation of the blur kernel for the blurred baseline. The
-                                       same blurring parameter is used for both the height and the width
-                                       dimension. If not set, the method defaults to the zero (i.e. black for
-                                       images) baseline.
+                                    description: The standard deviation of the blur
+                                      kernel for the blurred baseline. The same blurring
+                                      parameter is used for both the height and the
+                                      width dimension. If not set, the method defaults
+                                      to the zero (i.e. black for images) baseline.
                                     type: number
                                 type: object
                               smoothGradConfig:
@@ -1772,15 +1766,13 @@ spec:
                                    details: https://arxiv.org/pdf/1706.03825.pdf
                                 properties:
                                   featureNoiseSigma:
-                                    description: |-
-                                      This is similar to
-                                       [noise_sigma][google.cloud.aiplatform.v1.SmoothGradConfig.noise_sigma],
-                                       but provides additional flexibility. A separate noise sigma can be
-                                       provided for each feature, which is useful if their distributions are
-                                       different. No noise is added to features that are not set. If this field
-                                       is unset,
-                                       [noise_sigma][google.cloud.aiplatform.v1.SmoothGradConfig.noise_sigma]
-                                       will be used for all features.
+                                    description: This is similar to [noise_sigma][google.cloud.aiplatform.v1.SmoothGradConfig.noise_sigma],
+                                      but provides additional flexibility. A separate
+                                      noise sigma can be provided for each feature,
+                                      which is useful if their distributions are different.
+                                      No noise is added to features that are not set.
+                                      If this field is unset, [noise_sigma][google.cloud.aiplatform.v1.SmoothGradConfig.noise_sigma]
+                                      will be used for all features.
                                     properties:
                                       noiseSigma:
                                         description: Noise sigma per feature. No noise
@@ -1788,18 +1780,19 @@ spec:
                                         items:
                                           properties:
                                             name:
-                                              description: |-
-                                                The name of the input feature for which noise sigma is provided. The
-                                                 features are defined in
-                                                 [explanation metadata
-                                                 inputs][google.cloud.aiplatform.v1.ExplanationMetadata.inputs].
+                                              description: The name of the input feature
+                                                for which noise sigma is provided.
+                                                The features are defined in [explanation
+                                                metadata inputs][google.cloud.aiplatform.v1.ExplanationMetadata.inputs].
                                               type: string
                                             sigma:
-                                              description: |-
-                                                This represents the standard deviation of the Gaussian kernel that will
-                                                 be used to add noise to the feature prior to computing gradients. Similar
-                                                 to [noise_sigma][google.cloud.aiplatform.v1.SmoothGradConfig.noise_sigma]
-                                                 but represents the noise added to the current feature. Defaults to 0.1.
+                                              description: This represents the standard
+                                                deviation of the Gaussian kernel that
+                                                will be used to add noise to the feature
+                                                prior to computing gradients. Similar
+                                                to [noise_sigma][google.cloud.aiplatform.v1.SmoothGradConfig.noise_sigma]
+                                                but represents the noise added to
+                                                the current feature. Defaults to 0.1.
                                               type: number
                                           type: object
                                         type: array
@@ -1821,11 +1814,12 @@ spec:
                                        instead for each feature.
                                     type: number
                                   noisySampleCount:
-                                    description: |-
-                                      The number of gradient samples to use for
-                                       approximation. The higher this number, the more accurate the gradient
-                                       is, but the runtime complexity increases by this factor as well.
-                                       Valid range of its value is [1, 50]. Defaults to 3.
+                                    description: The number of gradient samples to
+                                      use for approximation. The higher this number,
+                                      the more accurate the gradient is, but the runtime
+                                      complexity increases by this factor as well.
+                                      Valid range of its value is [1, 50]. Defaults
+                                      to 3.
                                     format: int32
                                     type: integer
                                 type: object
@@ -1861,11 +1855,9 @@ spec:
                     description: Immutable. The location where the model should reside.
                     type: string
                   metadata:
-                    description: |-
-                      Immutable. An additional information about the Model; the schema of the
-                       metadata can be found in
-                       [metadata_schema][google.cloud.aiplatform.v1.Model.metadata_schema_uri].
-                       Unset if the Model does not have any additional information.
+                    description: Immutable. An additional information about the Model;
+                      the schema of the metadata can be found in [metadata_schema][google.cloud.aiplatform.v1.Model.metadata_schema_uri].
+                      Unset if the Model does not have any additional information.
                     properties:
                       boolValue:
                         description: Represents a boolean value.
@@ -1884,81 +1876,84 @@ spec:
                         x-kubernetes-preserve-unknown-fields: true
                     type: object
                   metadataSchemaURI:
-                    description: |-
-                      Immutable. Points to a YAML file stored on Google Cloud Storage describing
-                       additional information about the Model, that is specific to it. Unset if
-                       the Model does not have any additional information. The schema is defined
-                       as an OpenAPI 3.0.2 [Schema
-                       Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject).
-                       AutoML Models always have this field populated by Vertex AI, if no
-                       additional metadata is needed, this field is set to an empty string.
-                       Note: The URI given on output will be immutable and probably different,
-                       including the URI scheme, than the one given on input. The output URI will
-                       point to a location where the user only has a read access.
+                    description: 'Immutable. Points to a YAML file stored on Google
+                      Cloud Storage describing additional information about the Model,
+                      that is specific to it. Unset if the Model does not have any
+                      additional information. The schema is defined as an OpenAPI
+                      3.0.2 [Schema Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject).
+                      AutoML Models always have this field populated by Vertex AI,
+                      if no additional metadata is needed, this field is set to an
+                      empty string. Note: The URI given on output will be immutable
+                      and probably different, including the URI scheme, than the one
+                      given on input. The output URI will point to a location where
+                      the user only has a read access.'
                     type: string
                   pipelineJob:
-                    description: |-
-                      Optional. This field is populated if the model is produced by a pipeline
-                       job.
+                    description: Optional. This field is populated if the model is
+                      produced by a pipeline job.
                     type: string
                   predictSchemata:
-                    description: |-
-                      The schemata that describe formats of the Model's predictions and
-                       explanations as given and returned via
-                       [PredictionService.Predict][google.cloud.aiplatform.v1.PredictionService.Predict]
-                       and
-                       [PredictionService.Explain][google.cloud.aiplatform.v1.PredictionService.Explain].
+                    description: The schemata that describe formats of the Model's
+                      predictions and explanations as given and returned via [PredictionService.Predict][google.cloud.aiplatform.v1.PredictionService.Predict]
+                      and [PredictionService.Explain][google.cloud.aiplatform.v1.PredictionService.Explain].
                     properties:
                       instanceSchemaURI:
-                        description: |-
-                          Immutable. Points to a YAML file stored on Google Cloud Storage describing
-                           the format of a single instance, which are used in
-                           [PredictRequest.instances][google.cloud.aiplatform.v1.PredictRequest.instances],
-                           [ExplainRequest.instances][google.cloud.aiplatform.v1.ExplainRequest.instances]
-                           and
-                           [BatchPredictionJob.input_config][google.cloud.aiplatform.v1.BatchPredictionJob.input_config].
-                           The schema is defined as an OpenAPI 3.0.2 [Schema
-                           Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject).
-                           AutoML Models always have this field populated by Vertex AI.
-                           Note: The URI given on output will be immutable and probably different,
-                           including the URI scheme, than the one given on input. The output URI will
-                           point to a location where the user only has a read access.
+                        description: 'Immutable. Points to a YAML file stored on Google
+                          Cloud Storage describing the format of a single instance,
+                          which are used in [PredictRequest.instances][google.cloud.aiplatform.v1.PredictRequest.instances],
+                          [ExplainRequest.instances][google.cloud.aiplatform.v1.ExplainRequest.instances]
+                          and [BatchPredictionJob.input_config][google.cloud.aiplatform.v1.BatchPredictionJob.input_config].
+                          The schema is defined as an OpenAPI 3.0.2 [Schema Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject).
+                          AutoML Models always have this field populated by Vertex
+                          AI. Note: The URI given on output will be immutable and
+                          probably different, including the URI scheme, than the one
+                          given on input. The output URI will point to a location
+                          where the user only has a read access.'
                         type: string
                       parametersSchemaURI:
-                        description: |-
-                          Immutable. Points to a YAML file stored on Google Cloud Storage describing
-                           the parameters of prediction and explanation via
-                           [PredictRequest.parameters][google.cloud.aiplatform.v1.PredictRequest.parameters],
-                           [ExplainRequest.parameters][google.cloud.aiplatform.v1.ExplainRequest.parameters]
-                           and
-                           [BatchPredictionJob.model_parameters][google.cloud.aiplatform.v1.BatchPredictionJob.model_parameters].
-                           The schema is defined as an OpenAPI 3.0.2 [Schema
-                           Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject).
-                           AutoML Models always have this field populated by Vertex AI, if no
-                           parameters are supported, then it is set to an empty string.
-                           Note: The URI given on output will be immutable and probably different,
-                           including the URI scheme, than the one given on input. The output URI will
-                           point to a location where the user only has a read access.
+                        description: 'Immutable. Points to a YAML file stored on Google
+                          Cloud Storage describing the parameters of prediction and
+                          explanation via [PredictRequest.parameters][google.cloud.aiplatform.v1.PredictRequest.parameters],
+                          [ExplainRequest.parameters][google.cloud.aiplatform.v1.ExplainRequest.parameters]
+                          and [BatchPredictionJob.model_parameters][google.cloud.aiplatform.v1.BatchPredictionJob.model_parameters].
+                          The schema is defined as an OpenAPI 3.0.2 [Schema Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject).
+                          AutoML Models always have this field populated by Vertex
+                          AI, if no parameters are supported, then it is set to an
+                          empty string. Note: The URI given on output will be immutable
+                          and probably different, including the URI scheme, than the
+                          one given on input. The output URI will point to a location
+                          where the user only has a read access.'
                         type: string
                       predictionSchemaURI:
-                        description: |-
-                          Immutable. Points to a YAML file stored on Google Cloud Storage describing
-                           the format of a single prediction produced by this Model, which are
-                           returned via
-                           [PredictResponse.predictions][google.cloud.aiplatform.v1.PredictResponse.predictions],
-                           [ExplainResponse.explanations][google.cloud.aiplatform.v1.ExplainResponse.explanations],
-                           and
-                           [BatchPredictionJob.output_config][google.cloud.aiplatform.v1.BatchPredictionJob.output_config].
-                           The schema is defined as an OpenAPI 3.0.2 [Schema
-                           Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject).
-                           AutoML Models always have this field populated by Vertex AI.
-                           Note: The URI given on output will be immutable and probably different,
-                           including the URI scheme, than the one given on input. The output URI will
-                           point to a location where the user only has a read access.
+                        description: 'Immutable. Points to a YAML file stored on Google
+                          Cloud Storage describing the format of a single prediction
+                          produced by this Model, which are returned via [PredictResponse.predictions][google.cloud.aiplatform.v1.PredictResponse.predictions],
+                          [ExplainResponse.explanations][google.cloud.aiplatform.v1.ExplainResponse.explanations],
+                          and [BatchPredictionJob.output_config][google.cloud.aiplatform.v1.BatchPredictionJob.output_config].
+                          The schema is defined as an OpenAPI 3.0.2 [Schema Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.2.md#schemaObject).
+                          AutoML Models always have this field populated by Vertex
+                          AI. Note: The URI given on output will be immutable and
+                          probably different, including the URI scheme, than the one
+                          given on input. The output URI will point to a location
+                          where the user only has a read access.'
                         type: string
                     type: object
                   projectRef:
                     description: The project that this resource belongs to.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
                         description: The `projectID` field of a project, when not
@@ -1980,16 +1975,13 @@ spec:
                       will be used.
                     type: string
                   versionAliases:
-                    description: |-
-                      User provided version aliases so that a model version can be referenced via
-                       alias (i.e.
-                       `projects/PROJECT/locations/LOCATION/models/MODEL_ID@VERSION_ALIAS`
-                       instead of auto-generated version id (i.e.
-                       `projects/PROJECT/locations/LOCATION/models/MODEL_ID@VERSION_ID`).
-                       The format is [a-z][a-zA-Z0-9-]{0,126}[a-z0-9] to distinguish from
-                       version_id. A default version alias will be created for the first version
-                       of the model, and there must be exactly one default version alias for a
-                       model.
+                    description: User provided version aliases so that a model version
+                      can be referenced via alias (i.e. `projects/PROJECT/locations/LOCATION/models/MODEL_ID@VERSION_ALIAS`
+                      instead of auto-generated version id (i.e. `projects/PROJECT/locations/LOCATION/models/MODEL_ID@VERSION_ID`).
+                      The format is [a-z][a-zA-Z0-9-]{0,126}[a-z0-9] to distinguish
+                      from version_id. A default version alias will be created for
+                      the first version of the model, and there must be exactly one
+                      default version alias for a model.
                     items:
                       type: string
                     type: array
@@ -2002,6 +1994,20 @@ spec:
                 type: object
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -2023,17 +2029,14 @@ spec:
                   metadata.name will be used.
                 type: string
               trainingTaskDefinition:
-                description: |-
-                  Required. A Google Cloud Storage path to the YAML file that defines the
-                   training task which is responsible for producing the model artifact, and
-                   may also include additional auxiliary work. The definition files that can
-                   be used here are found in
-                   gs://google-cloud-aiplatform/schema/trainingjob/definition/.
+                description: Required. A Google Cloud Storage path to the YAML file
+                  that defines the training task which is responsible for producing
+                  the model artifact, and may also include additional auxiliary work.
+                  The definition files that can be used here are found in gs://google-cloud-aiplatform/schema/trainingjob/definition/.
                 type: string
               trainingTaskInputs:
-                description: |-
-                  Required. The training task's parameter(s), as specified in the
-                   trainingTaskDefinition's inputs.
+                description: Required. The training task's parameter(s), as specified
+                  in the trainingTaskDefinition's inputs.
                 properties:
                   boolValue:
                     description: Represents a boolean value.
@@ -2063,9 +2066,8 @@ spec:
               machine state of VertexAITrainingPipeline
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -2077,9 +2079,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -2110,28 +2111,24 @@ spec:
                     description: Output only. Time when the TrainingPipeline was created.
                     type: string
                   endTime:
-                    description: |-
-                      Output only. Time when the TrainingPipeline entered any of the following
-                       states: PIPELINE_STATE_SUCCEEDED, PIPELINE_STATE_FAILED,
-                       PIPELINE_STATE_CANCELLED.
+                    description: 'Output only. Time when the TrainingPipeline entered
+                      any of the following states: PIPELINE_STATE_SUCCEEDED, PIPELINE_STATE_FAILED,
+                      PIPELINE_STATE_CANCELLED.'
                     type: string
                   error:
-                    description: |-
-                      Output only. Only populated when the pipeline's state is
-                       PIPELINE_STATE_FAILED or PIPELINE_STATE_CANCELLED.
+                    description: Output only. Only populated when the pipeline's state
+                      is PIPELINE_STATE_FAILED or PIPELINE_STATE_CANCELLED.
                     properties:
                       code:
-                        description: |-
-                          The status code, which should be an enum value of
-                           [google.rpc.Code][google.rpc.Code].
+                        description: The status code, which should be an enum value
+                          of [google.rpc.Code][google.rpc.Code].
                         format: int32
                         type: integer
                       message:
-                        description: |-
-                          A developer-facing error message, which should be in English. Any
-                           user-facing error message should be localized and sent in the
-                           [google.rpc.Status.details][google.rpc.Status.details] field, or localized
-                           by the client.
+                        description: A developer-facing error message, which should
+                          be in English. Any user-facing error message should be localized
+                          and sent in the [google.rpc.Status.details][google.rpc.Status.details]
+                          field, or localized by the client.
                         type: string
                     type: object
                   modelToUpload:
@@ -2143,9 +2140,9 @@ spec:
                           into Vertex AI.
                         type: string
                       deployedModels:
-                        description: |-
-                          Output only. The pointers to DeployedModels created from this Model. Note
-                           that Model could have been deployed to Endpoints in different Locations.
+                        description: Output only. The pointers to DeployedModels created
+                          from this Model. Note that Model could have been deployed
+                          to Endpoints in different Locations.
                         items:
                           properties:
                             deployedModelID:
@@ -2158,32 +2155,27 @@ spec:
                           type: object
                         type: array
                       metadataArtifact:
-                        description: |-
-                          Output only. The resource name of the Artifact that was created in
-                           MetadataStore when creating the Model. The Artifact resource name pattern
-                           is
-                           `projects/{project}/locations/{location}/metadataStores/{metadata_store}/artifacts/{artifact}`.
+                        description: Output only. The resource name of the Artifact
+                          that was created in MetadataStore when creating the Model.
+                          The Artifact resource name pattern is `projects/{project}/locations/{location}/metadataStores/{metadata_store}/artifacts/{artifact}`.
                         type: string
                       modelSourceInfo:
-                        description: |-
-                          Output only. Source of a model. It can either be automl training pipeline,
-                           custom training pipeline, BigQuery ML, or saved and tuned from Genie or
-                           Model Garden.
+                        description: Output only. Source of a model. It can either
+                          be automl training pipeline, custom training pipeline, BigQuery
+                          ML, or saved and tuned from Genie or Model Garden.
                         properties:
                           copy:
-                            description: |-
-                              If this Model is copy of another Model. If true then
-                               [source_type][google.cloud.aiplatform.v1.ModelSourceInfo.source_type]
-                               pertains to the original.
+                            description: If this Model is copy of another Model. If
+                              true then [source_type][google.cloud.aiplatform.v1.ModelSourceInfo.source_type]
+                              pertains to the original.
                             type: boolean
                           sourceType:
                             description: Type of the model source.
                             type: string
                         type: object
                       originalModelInfo:
-                        description: |-
-                          Output only. If this Model is a copy of another Model, this contains info
-                           about the original.
+                        description: Output only. If this Model is a copy of another
+                          Model, this contains info about the original.
                         type: object
                       satisfiesPzi:
                         description: Output only. Reserved for future use.
@@ -2192,31 +2184,25 @@ spec:
                         description: Output only. Reserved for future use.
                         type: boolean
                       supportedDeploymentResourcesTypes:
-                        description: |-
-                          Output only. When this Model is deployed, its prediction resources are
-                           described by the `prediction_resources` field of the
-                           [Endpoint.deployed_models][google.cloud.aiplatform.v1.Endpoint.deployed_models]
-                           object. Because not all Models support all resource configuration types,
-                           the configuration types this Model supports are listed here. If no
-                           configuration types are listed, the Model cannot be deployed to an
-                           [Endpoint][google.cloud.aiplatform.v1.Endpoint] and does not support
-                           online predictions
-                           ([PredictionService.Predict][google.cloud.aiplatform.v1.PredictionService.Predict]
-                           or
-                           [PredictionService.Explain][google.cloud.aiplatform.v1.PredictionService.Explain]).
-                           Such a Model can serve predictions by using a
-                           [BatchPredictionJob][google.cloud.aiplatform.v1.BatchPredictionJob], if it
-                           has at least one entry each in
-                           [supported_input_storage_formats][google.cloud.aiplatform.v1.Model.supported_input_storage_formats]
-                           and
-                           [supported_output_storage_formats][google.cloud.aiplatform.v1.Model.supported_output_storage_formats].
+                        description: Output only. When this Model is deployed, its
+                          prediction resources are described by the `prediction_resources`
+                          field of the [Endpoint.deployed_models][google.cloud.aiplatform.v1.Endpoint.deployed_models]
+                          object. Because not all Models support all resource configuration
+                          types, the configuration types this Model supports are listed
+                          here. If no configuration types are listed, the Model cannot
+                          be deployed to an [Endpoint][google.cloud.aiplatform.v1.Endpoint]
+                          and does not support online predictions ([PredictionService.Predict][google.cloud.aiplatform.v1.PredictionService.Predict]
+                          or [PredictionService.Explain][google.cloud.aiplatform.v1.PredictionService.Explain]).
+                          Such a Model can serve predictions by using a [BatchPredictionJob][google.cloud.aiplatform.v1.BatchPredictionJob],
+                          if it has at least one entry each in [supported_input_storage_formats][google.cloud.aiplatform.v1.Model.supported_input_storage_formats]
+                          and [supported_output_storage_formats][google.cloud.aiplatform.v1.Model.supported_output_storage_formats].
                         items:
                           type: string
                         type: array
                       supportedExportFormats:
-                        description: |-
-                          Output only. The formats in which this Model may be exported. If empty,
-                           this Model is not available for export.
+                        description: Output only. The formats in which this Model
+                          may be exported. If empty, this Model is not available for
+                          export.
                         items:
                           type: object
                         type: array
@@ -2313,9 +2299,8 @@ spec:
                           type: string
                         type: array
                       trainingPipeline:
-                        description: |-
-                          Output only. The resource name of the TrainingPipeline that uploaded this
-                           Model, if any.
+                        description: Output only. The resource name of the TrainingPipeline
+                          that uploaded this Model, if any.
                         type: string
                       updateTime:
                         description: Output only. Timestamp when this Model was most
@@ -2326,11 +2311,10 @@ spec:
                           created.
                         type: string
                       versionID:
-                        description: |-
-                          Output only. Immutable. The version ID of the model.
-                           A new version is committed when a new model version is uploaded or
-                           trained under an existing model id. It is an auto-incrementing decimal
-                           number in string representation.
+                        description: Output only. Immutable. The version ID of the
+                          model. A new version is committed when a new model version
+                          is uploaded or trained under an existing model id. It is
+                          an auto-incrementing decimal number in string representation.
                         type: string
                       versionUpdateTime:
                         description: Output only. Timestamp when this version was
@@ -2341,19 +2325,18 @@ spec:
                     description: Output only. Resource name of the TrainingPipeline.
                     type: string
                   startTime:
-                    description: |-
-                      Output only. Time when the TrainingPipeline for the first time entered the
-                       PIPELINE_STATE_RUNNING state.
+                    description: Output only. Time when the TrainingPipeline for the
+                      first time entered the PIPELINE_STATE_RUNNING state.
                     type: string
                   state:
                     description: Output only. The detailed state of the pipeline.
                     type: string
                   trainingTaskMetadata:
-                    description: |-
-                      Output only. The metadata information as specified in the
-                       trainingTaskDefinition's metadata. This metadata is an auxiliary runtime
-                       and final information about the training task. While the pipeline is
-                       running this information is populated only at a best effort basis.
+                    description: Output only. The metadata information as specified
+                      in the trainingTaskDefinition's metadata. This metadata is an
+                      auxiliary runtime and final information about the training task.
+                      While the pipeline is running this information is populated
+                      only at a best effort basis.
                     properties:
                       boolValue:
                         description: Represents a boolean value.

@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: stable
@@ -22,6 +22,7 @@ spec:
     - gcpcomputetargetinstance
     - gcpcomputetargetinstances
     singular: computetargetinstance
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
         description: ComputeTargetInstance is the Schema for the compute API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -71,6 +67,20 @@ spec:
               instanceRef:
                 description: The ComputeInstance handling traffic for this target
                   instance.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: A reference to an externally managed ComputeInstance
@@ -84,20 +94,32 @@ spec:
                     type: string
                 type: object
               natPolicy:
-                description: |-
-                  Immutable. NAT option controlling how IPs are NAT'ed to the instance.
-                  Currently only NO_NAT (default value) is supported. Default value: "NO_NAT" Possible values: ["NO_NAT"].
+                description: 'Immutable. NAT option controlling how IPs are NAT''ed
+                  to the instance. Currently only NO_NAT (default value) is supported.
+                  Default value: "NO_NAT" Possible values: ["NO_NAT"].'
                 type: string
               networkRef:
-                description: |-
-                  The network this target instance uses to forward
-                  traffic. If not specified, the traffic will be forwarded to the network
-                  that the default network interface belongs to.
+                description: The network this target instance uses to forward traffic.
+                  If not specified, the traffic will be forwarded to the network that
+                  the default network interface belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeNetwork resource.
-                      Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                    description: A reference to an externally managed ComputeNetwork
+                      resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
                     type: string
                   name:
                     description: The name of a ComputeNetwork resource.
@@ -114,11 +136,24 @@ spec:
               securityPolicyRef:
                 description: The resource URL for the security policy associated with
                   this target instance.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeSecurityPolicy resource.
-                      Should be in the format "projects/{{projectID}}/global/securityPolicies/{{name}}".
+                    description: A reference to an externally managed ComputeSecurityPolicy
+                      resource. Should be in the format "projects/{{projectID}}/global/securityPolicies/{{name}}".
                     type: string
                   name:
                     description: The name of a ComputeSecurityPolicy resource.
@@ -140,9 +175,8 @@ spec:
               machine state of ComputeTargetInstance
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  ComputeTargetInstance's current state.
+                description: Conditions represent the latest available observations
+                  of the ComputeTargetInstance's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -154,9 +188,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

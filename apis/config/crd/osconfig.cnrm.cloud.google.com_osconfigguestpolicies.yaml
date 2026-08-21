@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/dcl2crd: "true"
     cnrm.cloud.google.com/managed-by-kcc: "true"
@@ -22,6 +22,7 @@ spec:
     - gcposconfigguestpolicy
     - gcposconfigguestpolicies
     singular: osconfigguestpolicy
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -47,19 +48,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -80,18 +76,17 @@ spec:
                   conflicts](/compute/docs/os-config-management/create-guest-policy#handle-conflicts).
                 properties:
                   groupLabels:
-                    description: |-
-                      Targets instances matching at least one of these label sets. This allows
-                      an assignment to target disparate groups, for example "env=prod or
-                      env=staging".
+                    description: Targets instances matching at least one of these
+                      label sets. This allows an assignment to target disparate groups,
+                      for example "env=prod or env=staging".
                     items:
                       properties:
                         labels:
                           additionalProperties:
                             type: string
-                          description: |-
-                            Google Compute Engine instance labels that must be present for an
-                            instance to be included in this assignment group.
+                          description: Google Compute Engine instance labels that
+                            must be present for an instance to be included in this
+                            assignment group.
                           type: object
                       type: object
                     type: array
@@ -119,6 +114,20 @@ spec:
                       within this project.
                     items:
                       description: InstanceRef is a reference to a ComputeInstance.
+                      oneOf:
+                      - not:
+                          required:
+                          - external
+                        required:
+                        - name
+                      - not:
+                          anyOf:
+                          - required:
+                            - name
+                          - required:
+                            - namespace
+                        required:
+                        - external
                       properties:
                         external:
                           description: A reference to an externally managed ComputeInstance
@@ -141,19 +150,17 @@ spec:
                     items:
                       properties:
                         osArchitecture:
-                          description: |-
-                            Targets VM instances with OS Inventory enabled and having the following
-                            OS architecture.
+                          description: Targets VM instances with OS Inventory enabled
+                            and having the following OS architecture.
                           type: string
                         osShortName:
-                          description: |-
-                            Targets VM instances with OS Inventory enabled and having the following
-                            OS short name, for example "debian" or "windows".
+                          description: Targets VM instances with OS Inventory enabled
+                            and having the following OS short name, for example "debian"
+                            or "windows".
                           type: string
                         osVersion:
-                          description: |-
-                            Targets VM instances with OS Inventory enabled and having the following
-                            following OS version.
+                          description: Targets VM instances with OS Inventory enabled
+                            and having the following following OS version.
                           type: string
                       type: object
                     type: array
@@ -169,16 +176,14 @@ spec:
                     type: array
                 type: object
               description:
-                description: |-
-                  Description of the guest policy. Length of the description is limited
-                  to 1024 characters.
+                description: Description of the guest policy. Length of the description
+                  is limited to 1024 characters.
                 type: string
               packageRepositories:
-                description: |-
-                  A list of package repositories to configure on the VM instance. This is
-                  done before any other configs are applied so they can use these repos.
-                  Package repositories are only configured if the corresponding package
-                  manager(s) are available.
+                description: A list of package repositories to configure on the VM
+                  instance. This is done before any other configs are applied so they
+                  can use these repos. Package repositories are only configured if
+                  the corresponding package manager(s) are available.
                 items:
                   properties:
                     apt:
@@ -198,10 +203,9 @@ spec:
                           description: Required. Distribution of this repository.
                           type: string
                         gpgKey:
-                          description: |-
-                            URI of the key file for this repository. The agent maintains
-                            a keyring at `/etc/apt/trusted.gpg.d/osconfig_agent_managed.gpg` containing
-                            all the keys in any applied guest policy.
+                          description: URI of the key file for this repository. The
+                            agent maintains a keyring at `/etc/apt/trusted.gpg.d/osconfig_agent_managed.gpg`
+                            containing all the keys in any applied guest policy.
                           type: string
                         uri:
                           description: Required. URI for this repository.
@@ -238,11 +242,11 @@ spec:
                             type: string
                           type: array
                         id:
-                          description: |-
-                            Required. A one word, unique name for this repository. This is
-                            the `repo id` in the Yum config file and also the `display_name` if
-                            `display_name` is omitted. This id is also used as the unique identifier
-                            when checking for guest policy conflicts.
+                          description: Required. A one word, unique name for this
+                            repository. This is the `repo id` in the Yum config file
+                            and also the `display_name` if `display_name` is omitted.
+                            This id is also used as the unique identifier when checking
+                            for guest policy conflicts.
                           type: string
                       required:
                       - baseUrl
@@ -263,10 +267,10 @@ spec:
                             type: string
                           type: array
                         id:
-                          description: |-
-                            Required. A one word, unique name for this repository. This is
-                            the `repo id` in the zypper config file and also the `display_name` if
-                            `display_name` is omitted. This id is also used as the unique identifier
+                          description: Required. A one word, unique name for this
+                            repository. This is the `repo id` in the zypper config
+                            file and also the `display_name` if `display_name` is
+                            omitted. This id is also used as the unique identifier
                             when checking for guest policy conflicts.
                           type: string
                       required:
@@ -280,9 +284,8 @@ spec:
                 items:
                   properties:
                     desiredState:
-                      description: |-
-                        The desired_state the agent should maintain for this package. The
-                        default is to ensure the package is installed.
+                      description: The desired_state the agent should maintain for
+                        this package. The default is to ensure the package is installed.
                       type: string
                     manager:
                       description: |-
@@ -297,10 +300,9 @@ spec:
                         The default behavior is ANY.
                       type: string
                     name:
-                      description: |-
-                        Required. The name of the package. A package is uniquely identified for conflict
-                        validation by checking the package name and the manager(s) that the
-                        package targets.
+                      description: Required. The name of the package. A package is
+                        uniquely identified for conflict validation by checking the
+                        package name and the manager(s) that the package targets.
                       type: string
                   type: object
                 type: array
@@ -326,16 +328,28 @@ spec:
                             description: A Google Cloud Storage artifact.
                             properties:
                               bucketRef:
-                                description: |-
-                                  Bucket of the Google Cloud Storage object.
-                                  Given an example URL:
-                                  `https://storage.googleapis.com/my-bucket/foo/bar#1234567`
-                                  this value would be `my-bucket`.
+                                description: 'Bucket of the Google Cloud Storage object.
+                                  Given an example URL: `https://storage.googleapis.com/my-bucket/foo/bar#1234567`
+                                  this value would be `my-bucket`.'
+                                oneOf:
+                                - not:
+                                    required:
+                                    - external
+                                  required:
+                                  - name
+                                - not:
+                                    anyOf:
+                                    - required:
+                                      - name
+                                    - required:
+                                      - namespace
+                                  required:
+                                  - external
                                 properties:
                                   external:
-                                    description: |-
-                                      A reference to an externally managed StorageBucket resource.
-                                      Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
+                                    description: A reference to an externally managed
+                                      StorageBucket resource. Should be in the format
+                                      "projects/{{projectID}}/buckets/{{bucketID}}".
                                     type: string
                                   name:
                                     description: The name of a StorageBucket resource.
@@ -346,43 +360,39 @@ spec:
                                     type: string
                                 type: object
                               generation:
-                                description: |-
-                                  Must be provided if allow_insecure is false.
-                                  Generation number of the Google Cloud Storage object.
-                                  `https://storage.googleapis.com/my-bucket/foo/bar#1234567`
+                                description: Must be provided if allow_insecure is
+                                  false. Generation number of the Google Cloud Storage
+                                  object. `https://storage.googleapis.com/my-bucket/foo/bar#1234567`
                                   this value would be `1234567`.
                                 format: int64
                                 type: integer
                               object:
-                                description: |-
-                                  Name of the Google Cloud Storage object.
-                                  As specified [here]
-                                  (https://cloud.google.com/storage/docs/naming#objectnames)
-                                  Given an example URL:
-                                  `https://storage.googleapis.com/my-bucket/foo/bar#1234567`
-                                  this value would be `foo/bar`.
+                                description: 'Name of the Google Cloud Storage object.
+                                  As specified [here] (https://cloud.google.com/storage/docs/naming#objectnames)
+                                  Given an example URL: `https://storage.googleapis.com/my-bucket/foo/bar#1234567`
+                                  this value would be `foo/bar`.'
                                 type: string
                             type: object
                           id:
-                            description: |-
-                              Required. Id of the artifact, which the installation and update steps of this
-                              recipe can reference. Artifacts in a recipe cannot have the same id.
+                            description: Required. Id of the artifact, which the installation
+                              and update steps of this recipe can reference. Artifacts
+                              in a recipe cannot have the same id.
                             type: string
                           remote:
                             description: A generic remote artifact.
                             properties:
                               checksum:
-                                description: |-
-                                  Must be provided if `allow_insecure` is `false`.
-                                  SHA256 checksum in hex format, to compare to the checksum of the
-                                  artifact. If the checksum is not empty and it doesn't match the
-                                  artifact then the recipe installation fails before running any of the
-                                  steps.
+                                description: Must be provided if `allow_insecure`
+                                  is `false`. SHA256 checksum in hex format, to compare
+                                  to the checksum of the artifact. If the checksum
+                                  is not empty and it doesn't match the artifact then
+                                  the recipe installation fails before running any
+                                  of the steps.
                                 type: string
                               uri:
-                                description: |-
-                                  URI from which to fetch the object. It should contain both the protocol
-                                  and path following the format {protocol}://{location}.
+                                description: URI from which to fetch the object. It
+                                  should contain both the protocol and path following
+                                  the format {protocol}://{location}.
                                 type: string
                             type: object
                         type: object
@@ -401,10 +411,10 @@ spec:
                         create or update a recipe to the REMOVE state is rejected.
                       type: string
                     installSteps:
-                      description: |-
-                        Actions to be taken for installing this recipe. On failure it stops
-                        executing steps and does not attempt another installation. Any steps taken
-                        (including partially completed steps) are not rolled back.
+                      description: Actions to be taken for installing this recipe.
+                        On failure it stops executing steps and does not attempt another
+                        installation. Any steps taken (including partially completed
+                        steps) are not rolled back.
                       items:
                         properties:
                           archiveExtraction:
@@ -415,9 +425,8 @@ spec:
                                   in the recipe.
                                 type: string
                               destination:
-                                description: |-
-                                  Directory to extract archive to.
-                                  Defaults to `/` on Linux or `C:\` on Windows.
+                                description: Directory to extract archive to. Defaults
+                                  to `/` on Linux or `C:\` on Windows.
                                 type: string
                               type:
                                 description: Required. The type of the archive to
@@ -444,10 +453,10 @@ spec:
                                   to put the file.
                                 type: string
                               overwrite:
-                                description: |-
-                                  Whether to allow this step to overwrite existing files. If this is
-                                  false and the file already exists the file is not overwritten
-                                  and the step is considered a success. Defaults to false.
+                                description: Whether to allow this step to overwrite
+                                  existing files. If this is false and the file already
+                                  exists the file is not overwritten and the step
+                                  is considered a success. Defaults to false.
                                 type: boolean
                               permissions:
                                 description: |-
@@ -470,9 +479,9 @@ spec:
                             description: Executes an artifact or local file.
                             properties:
                               allowedExitCodes:
-                                description: |-
-                                  Defaults to [0]. A list of possible return values that the program
-                                  can return to indicate a success.
+                                description: Defaults to [0]. A list of possible return
+                                  values that the program can return to indicate a
+                                  success.
                                 items:
                                   format: int64
                                   type: integer
@@ -496,9 +505,9 @@ spec:
                             description: Installs an MSI file.
                             properties:
                               allowedExitCodes:
-                                description: |-
-                                  Return codes that indicate that the software installed or updated
-                                  successfully. Behaviour defaults to [0]
+                                description: Return codes that indicate that the software
+                                  installed or updated successfully. Behaviour defaults
+                                  to [0]
                                 items:
                                   format: int64
                                   type: integer
@@ -508,9 +517,8 @@ spec:
                                   in the recipe.
                                 type: string
                               flags:
-                                description: |-
-                                  The flags to use when installing the MSI
-                                  defaults to ["/i"] (i.e. the install flag).
+                                description: The flags to use when installing the
+                                  MSI defaults to ["/i"] (i.e. the install flag).
                                 items:
                                   type: string
                                 type: array
@@ -527,19 +535,18 @@ spec:
                             description: Runs commands in a shell.
                             properties:
                               allowedExitCodes:
-                                description: |-
-                                  Return codes that indicate that the software installed or updated
-                                  successfully. Behaviour defaults to [0]
+                                description: Return codes that indicate that the software
+                                  installed or updated successfully. Behaviour defaults
+                                  to [0]
                                 items:
                                   format: int64
                                   type: integer
                                 type: array
                               interpreter:
-                                description: |-
-                                  The script interpreter to use to run the script. If no interpreter is
-                                  specified the script is executed directly, which likely
-                                  only succeed for scripts with
-                                  [shebang lines](https://en.wikipedia.org/wiki/Shebang_\(Unix\)).
+                                description: The script interpreter to use to run
+                                  the script. If no interpreter is specified the script
+                                  is executed directly, which likely only succeed
+                                  for scripts with [shebang lines](https://en.wikipedia.org/wiki/Shebang_\(Unix\)).
                                 type: string
                               script:
                                 description: Required. The shell script to be executed.
@@ -558,10 +565,10 @@ spec:
                         could potentially have conflicting assignments.
                       type: string
                     updateSteps:
-                      description: |-
-                        Actions to be taken for updating this recipe. On failure it stops
-                        executing steps and does not attempt another update for this recipe. Any
-                        steps taken (including partially completed steps) are not rolled back.
+                      description: Actions to be taken for updating this recipe. On
+                        failure it stops executing steps and does not attempt another
+                        update for this recipe. Any steps taken (including partially
+                        completed steps) are not rolled back.
                       items:
                         properties:
                           archiveExtraction:
@@ -572,9 +579,8 @@ spec:
                                   in the recipe.
                                 type: string
                               destination:
-                                description: |-
-                                  Directory to extract archive to.
-                                  Defaults to `/` on Linux or `C:\` on Windows.
+                                description: Directory to extract archive to. Defaults
+                                  to `/` on Linux or `C:\` on Windows.
                                 type: string
                               type:
                                 description: Required. The type of the archive to
@@ -601,10 +607,10 @@ spec:
                                   to put the file.
                                 type: string
                               overwrite:
-                                description: |-
-                                  Whether to allow this step to overwrite existing files. If this is
-                                  false and the file already exists the file is not overwritten
-                                  and the step is considered a success. Defaults to false.
+                                description: Whether to allow this step to overwrite
+                                  existing files. If this is false and the file already
+                                  exists the file is not overwritten and the step
+                                  is considered a success. Defaults to false.
                                 type: boolean
                               permissions:
                                 description: |-
@@ -627,9 +633,9 @@ spec:
                             description: Executes an artifact or local file.
                             properties:
                               allowedExitCodes:
-                                description: |-
-                                  Defaults to [0]. A list of possible return values that the program
-                                  can return to indicate a success.
+                                description: Defaults to [0]. A list of possible return
+                                  values that the program can return to indicate a
+                                  success.
                                 items:
                                   format: int64
                                   type: integer
@@ -653,9 +659,9 @@ spec:
                             description: Installs an MSI file.
                             properties:
                               allowedExitCodes:
-                                description: |-
-                                  Return codes that indicate that the software installed or updated
-                                  successfully. Behaviour defaults to [0]
+                                description: Return codes that indicate that the software
+                                  installed or updated successfully. Behaviour defaults
+                                  to [0]
                                 items:
                                   format: int64
                                   type: integer
@@ -665,9 +671,8 @@ spec:
                                   in the recipe.
                                 type: string
                               flags:
-                                description: |-
-                                  The flags to use when installing the MSI
-                                  defaults to ["/i"] (i.e. the install flag).
+                                description: The flags to use when installing the
+                                  MSI defaults to ["/i"] (i.e. the install flag).
                                 items:
                                   type: string
                                 type: array
@@ -684,19 +689,18 @@ spec:
                             description: Runs commands in a shell.
                             properties:
                               allowedExitCodes:
-                                description: |-
-                                  Return codes that indicate that the software installed or updated
-                                  successfully. Behaviour defaults to [0]
+                                description: Return codes that indicate that the software
+                                  installed or updated successfully. Behaviour defaults
+                                  to [0]
                                 items:
                                   format: int64
                                   type: integer
                                 type: array
                               interpreter:
-                                description: |-
-                                  The script interpreter to use to run the script. If no interpreter is
-                                  specified the script is executed directly, which likely
-                                  only succeed for scripts with
-                                  [shebang lines](https://en.wikipedia.org/wiki/Shebang_\(Unix\)).
+                                description: The script interpreter to use to run
+                                  the script. If no interpreter is specified the script
+                                  is executed directly, which likely only succeed
+                                  for scripts with [shebang lines](https://en.wikipedia.org/wiki/Shebang_\(Unix\)).
                                 type: string
                               script:
                                 description: Required. The shell script to be executed.
@@ -705,9 +709,8 @@ spec:
                         type: object
                       type: array
                     version:
-                      description: |-
-                        The version of this software recipe. Version can be up to 4 period
-                        separated numbers (e.g. 12.34.56.78).
+                      description: The version of this software recipe. Version can
+                        be up to 4 period separated numbers (e.g. 12.34.56.78).
                       type: string
                   type: object
                 type: array
@@ -722,9 +725,8 @@ spec:
               state of OSConfigGuestPolicy
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -736,9 +738,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

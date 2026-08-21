@@ -231,44 +231,6 @@ spec:
                    is a backup plan that performs a daily backup at 6pm and retains data for 3
                    months". The description must be at most 2048 characters.
                 type: string
-              location:
-                description: Immutable.
-                type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
-              projectRef:
-                description: The Project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: The `projectID` field of a project, when not managed
-                      by Config Connector.
-                    type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
-                  name:
-                    description: The `name` field of a `Project` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `Project` resource.
-                    type: string
-                type: object
               resourceID:
                 description: The BackupDRBackupPlan name. If not given, the metadata.name
                   will be used.
@@ -280,8 +242,6 @@ spec:
                 type: string
             required:
             - backupVaultRef
-            - location
-            - projectRef
             type: object
           status:
             description: BackupDRBackupPlanStatus defines the config connector machine
@@ -558,44 +518,6 @@ spec:
                    is a backup plan that performs a daily backup at 6pm and retains data for 3
                    months". The description must be at most 2048 characters.
                 type: string
-              location:
-                description: Immutable.
-                type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
-              projectRef:
-                description: The Project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: The `projectID` field of a project, when not managed
-                      by Config Connector.
-                    type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
-                  name:
-                    description: The `name` field of a `Project` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `Project` resource.
-                    type: string
-                type: object
               resourceID:
                 description: The BackupDRBackupPlan name. If not given, the metadata.name
                   will be used.
@@ -607,8 +529,6 @@ spec:
                 type: string
             required:
             - backupVaultRef
-            - location
-            - projectRef
             type: object
           status:
             description: BackupDRBackupPlanStatus defines the config connector machine

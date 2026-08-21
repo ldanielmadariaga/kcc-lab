@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -21,6 +21,7 @@ spec:
     - gcpdatacatalogpolicytag
     - gcpdatacatalogpolicytags
     singular: datacatalogpolicytag
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -66,24 +62,37 @@ spec:
             description: DataCatalogPolicyTagSpec defines the desired state of DataCatalogPolicyTag
             properties:
               description:
-                description: |-
-                  Description of this policy tag. It must: contain only unicode characters, tabs,
-                  newlines, carriage returns and page breaks; and be at most 2000 bytes long when
-                  encoded in UTF-8. If not set, defaults to an empty description.
+                description: 'Description of this policy tag. It must: contain only
+                  unicode characters, tabs, newlines, carriage returns and page breaks;
+                  and be at most 2000 bytes long when encoded in UTF-8. If not set,
+                  defaults to an empty description.'
                 type: string
               displayName:
-                description: |-
-                  User defined name of this policy tag. It must: be unique within the parent
-                  taxonomy; contain only unicode letters, numbers, underscores, dashes and spaces;
-                  not start or end with spaces; and be at most 200 bytes long when encoded in UTF-8.
+                description: 'User defined name of this policy tag. It must: be unique
+                  within the parent taxonomy; contain only unicode letters, numbers,
+                  underscores, dashes and spaces; not start or end with spaces; and
+                  be at most 200 bytes long when encoded in UTF-8.'
                 type: string
               parentPolicyTagRef:
                 description: PolicyTagRef is a reference to a DataCatalogPolicyTag.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed DataCatalogPolicyTag resource.
-                      Should be in the format "projects/{{projectID}}/locations/{{location}}/taxonomies/{{taxonomyID}}/policyTags/{{policytagID}}".
+                    description: A reference to an externally managed DataCatalogPolicyTag
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/taxonomies/{{taxonomyID}}/policyTags/{{policytagID}}".
                     type: string
                   name:
                     description: The name of a DataCatalogPolicyTag resource.
@@ -99,11 +108,24 @@ spec:
                 type: string
               taxonomyRef:
                 description: TaxonomyRef is a reference to a DataCatalogTaxonomy.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed DataCatalogTaxonomy resource.
-                      Should be in the format "projects/{{projectID}}/locations/{{location}}/taxonomies/{{taxonomyID}}".
+                    description: A reference to an externally managed DataCatalogTaxonomy
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/taxonomies/{{taxonomyID}}".
                     type: string
                   name:
                     description: The name of a DataCatalogTaxonomy resource.
@@ -126,9 +148,8 @@ spec:
                   type: string
                 type: array
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -140,9 +161,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -158,9 +178,7 @@ spec:
                   in GCP.
                 type: string
               name:
-                description: |-
-                  Resource name of this policy tag, whose format is:
-                  "projects/{project}/locations/{region}/taxonomies/{taxonomy}/policyTags/{policytag}".
+                description: 'Resource name of this policy tag, whose format is: "projects/{project}/locations/{region}/taxonomies/{taxonomy}/policyTags/{policytag}".'
                 type: string
               observedGeneration:
                 description: ObservedGeneration is the generation of the resource

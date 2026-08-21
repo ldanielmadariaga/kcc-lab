@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,6 +21,7 @@ spec:
     - gcpcloudsecurityframework
     - gcpcloudsecurityframeworks
     singular: cloudsecurityframework
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -76,15 +72,27 @@ spec:
                 items:
                   properties:
                     cloudControlRef:
-                      description: |-
-                        Required. The name of the CloudControl in the format:
-                         “organizations/{organization}/locations/{location}/
-                         cloudControls/{cloud-control}”
+                      description: 'Required. The name of the CloudControl in the
+                        format: “organizations/{organization}/locations/{location}/
+                        cloudControls/{cloud-control}”'
+                      oneOf:
+                      - not:
+                          required:
+                          - external
+                        required:
+                        - name
+                      - not:
+                          anyOf:
+                          - required:
+                            - name
+                          - required:
+                            - namespace
+                        required:
+                        - external
                       properties:
                         external:
-                          description: |-
-                            A reference to an externally managed CloudSecurityComplianceCloudControl resource.
-                            Should be in the format "organizations/{{organizationID}}/locations/{{location}}/cloudControls/{{cloudControlID}}".
+                          description: A reference to an externally managed CloudSecurityComplianceCloudControl
+                            resource. Should be in the format "organizations/{{organizationID}}/locations/{{location}}/cloudControls/{{cloudControlID}}".
                           type: string
                         name:
                           description: The name of a CloudSecurityComplianceCloudControl
@@ -100,10 +108,10 @@ spec:
                       format: int64
                       type: integer
                     parameters:
-                      description: |-
-                        Optional. Parameters is a key-value pair that is required by the
-                         CloudControl. The specification of these parameters will be present in
-                         cloudcontrol.Eg: { "name": "location","value": "us-west-1"}.
+                      description: 'Optional. Parameters is a key-value pair that
+                        is required by the CloudControl. The specification of these
+                        parameters will be present in cloudcontrol.Eg: { "name": "location","value":
+                        "us-west-1"}.'
                       items:
                         properties:
                           name:
@@ -148,6 +156,20 @@ spec:
               projectRef:
                 description: The project that this resource belongs to. Only one of
                   organizationRef or projectRef may be specified.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -180,9 +202,8 @@ spec:
               machine state of CloudSecurityFramework
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -194,9 +215,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

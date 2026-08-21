@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpccinsightsconversation
     - gcpccinsightsconversations
     singular: ccinsightsconversation
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -65,9 +61,8 @@ spec:
             description: CCInsightsConversationSpec defines the desired state of CCInsightsConversation
             properties:
               agentID:
-                description: |-
-                  An opaque, user-specified string representing the human agent who handled
-                   the conversation.
+                description: An opaque, user-specified string representing the human
+                  agent who handled the conversation.
                 type: string
               callMetadata:
                 description: Call-specific metadata.
@@ -88,9 +83,8 @@ spec:
                     description: The source when the conversation comes from Dialogflow.
                     properties:
                       audioURI:
-                        description: |-
-                          Cloud Storage URI that points to a file that contains the conversation
-                           audio.
+                        description: Cloud Storage URI that points to a file that
+                          contains the conversation audio.
                         type: string
                     type: object
                   gcsSource:
@@ -98,28 +92,26 @@ spec:
                       and transcript.
                     properties:
                       audioURI:
-                        description: |-
-                          Cloud Storage URI that points to a file that contains the conversation
-                           audio.
+                        description: Cloud Storage URI that points to a file that
+                          contains the conversation audio.
                         type: string
                       transcriptURI:
-                        description: |-
-                          Immutable. Cloud Storage URI that points to a file that contains the
-                           conversation transcript.
+                        description: Immutable. Cloud Storage URI that points to a
+                          file that contains the conversation transcript.
                         type: string
                     type: object
                 type: object
               expireTime:
-                description: |-
-                  The time at which this conversation should expire. After this time, the
-                   conversation data and any associated analyses will be deleted.
+                description: The time at which this conversation should expire. After
+                  this time, the conversation data and any associated analyses will
+                  be deleted.
                 type: string
               labels:
                 additionalProperties:
                   type: string
-                description: |-
-                  A map for the user to specify any custom fields. A maximum of 100 labels
-                   per conversation is allowed, with a maximum of 256 characters per entry.
+                description: A map for the user to specify any custom fields. A maximum
+                  of 100 labels per conversation is allowed, with a maximum of 256
+                  characters per entry.
                 type: object
               languageCode:
                 description: A user-specified language code for the conversation.
@@ -128,21 +120,33 @@ spec:
                 description: The location of this resource.
                 type: string
               medium:
-                description: |-
-                  Immutable. The conversation medium, if unspecified will default to
-                   PHONE_CALL.
+                description: Immutable. The conversation medium, if unspecified will
+                  default to PHONE_CALL.
                 type: string
               metadataJson:
-                description: |-
-                  Input only. JSON metadata encoded as a string.
-                   This field is primarily used by Insights integrations with various telphony
-                   systems and must be in one of Insight's supported formats.
+                description: Input only. JSON metadata encoded as a string. This field
+                  is primarily used by Insights integrations with various telphony
+                  systems and must be in one of Insight's supported formats.
                 type: string
               obfuscatedUserID:
                 description: Obfuscated user ID which the customer sent to us.
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -176,9 +180,8 @@ spec:
                           description: The agent's name.
                           type: string
                         dispositionCode:
-                          description: |-
-                            A user-provided string indicating the outcome of the agent's segment of
-                             the call.
+                          description: A user-provided string indicating the outcome
+                            of the agent's segment of the call.
                           type: string
                         team:
                           description: A user-specified string representing the agent's
@@ -208,9 +211,8 @@ spec:
                 description: The time at which the conversation started.
                 type: string
               ttl:
-                description: |-
-                  Input only. The TTL for this resource. If specified, then this TTL will
-                   be used to calculate the expire time.
+                description: Input only. The TTL for this resource. If specified,
+                  then this TTL will be used to calculate the expire time.
                 type: string
             required:
             - location
@@ -221,9 +223,8 @@ spec:
               machine state of CCInsightsConversation
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -235,9 +236,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -276,10 +276,9 @@ spec:
                         description: The source when the conversation comes from Dialogflow.
                         properties:
                           dialogflowConversation:
-                            description: |-
-                              Output only. The name of the Dialogflow conversation that this conversation
-                               resource is derived from. Format:
-                               projects/{project}/locations/{location}/conversations/{conversation}
+                            description: 'Output only. The name of the Dialogflow
+                              conversation that this conversation resource is derived
+                              from. Format: projects/{project}/locations/{location}/conversations/{conversation}'
                             type: string
                         type: object
                     type: object
@@ -291,9 +290,8 @@ spec:
                       if one exists.
                     properties:
                       analysisResult:
-                        description: |-
-                          Output only. The result of the analysis, which is populated when the
-                           analysis finishes.
+                        description: Output only. The result of the analysis, which
+                          is populated when the analysis finishes.
                         properties:
                           callAnalysisMetadata:
                             description: Call-specific metadata created by the analysis.
@@ -308,15 +306,17 @@ spec:
                                         where the annotation ends, inclusive.
                                       properties:
                                         transcriptIndex:
-                                          description: |-
-                                            The index in the sequence of transcribed pieces of the conversation where
-                                             the boundary is located. This index starts at zero.
+                                          description: The index in the sequence of
+                                            transcribed pieces of the conversation
+                                            where the boundary is located. This index
+                                            starts at zero.
                                           format: int32
                                           type: integer
                                         wordIndex:
-                                          description: |-
-                                            The word index of this boundary with respect to the first word in the
-                                             transcript piece. This index starts at zero.
+                                          description: The word index of this boundary
+                                            with respect to the first word in the
+                                            transcript piece. This index starts at
+                                            zero.
                                           format: int32
                                           type: integer
                                       type: object
@@ -325,40 +325,44 @@ spec:
                                         where the annotation starts, inclusive.
                                       properties:
                                         transcriptIndex:
-                                          description: |-
-                                            The index in the sequence of transcribed pieces of the conversation where
-                                             the boundary is located. This index starts at zero.
+                                          description: The index in the sequence of
+                                            transcribed pieces of the conversation
+                                            where the boundary is located. This index
+                                            starts at zero.
                                           format: int32
                                           type: integer
                                         wordIndex:
-                                          description: |-
-                                            The word index of this boundary with respect to the first word in the
-                                             transcript piece. This index starts at zero.
+                                          description: The word index of this boundary
+                                            with respect to the first word in the
+                                            transcript piece. This index starts at
+                                            zero.
                                           format: int32
                                           type: integer
                                       type: object
                                     channelTag:
-                                      description: |-
-                                        The channel of the audio where the annotation occurs. For single-channel
-                                         audio, this field is not populated.
+                                      description: The channel of the audio where
+                                        the annotation occurs. For single-channel
+                                        audio, this field is not populated.
                                       format: int32
                                       type: integer
                                     entityMentionData:
                                       description: Data specifying an entity mention.
                                       properties:
                                         entityUniqueID:
-                                          description: |-
-                                            The key of this entity in conversation entities.
-                                             Can be used to retrieve the exact `Entity` this mention is attached to.
+                                          description: The key of this entity in conversation
+                                            entities. Can be used to retrieve the
+                                            exact `Entity` this mention is attached
+                                            to.
                                           type: string
                                         sentiment:
                                           description: Sentiment expressed for this
                                             mention of the entity.
                                           properties:
                                             magnitude:
-                                              description: |-
-                                                A non-negative number from 0 to infinity which represents the abolute
-                                                 magnitude of sentiment regardless of score.
+                                              description: A non-negative number from
+                                                0 to infinity which represents the
+                                                abolute magnitude of sentiment regardless
+                                                of score.
                                               type: number
                                             score:
                                               description: The sentiment score between
@@ -376,9 +380,9 @@ spec:
                                       description: Data specifying an intent match.
                                       properties:
                                         intentUniqueID:
-                                          description: |-
-                                            The id of the matched intent.
-                                             Can be used to retrieve the corresponding intent information.
+                                          description: The id of the matched intent.
+                                            Can be used to retrieve the corresponding
+                                            intent information.
                                           type: string
                                       type: object
                                     interruptionData:
@@ -392,18 +396,19 @@ spec:
                                             assignment.
                                           properties:
                                             displayName:
-                                              description: |-
-                                                Immutable. Display name of the assigned issue. This field is set at time of
-                                                 analyis and immutable since then.
+                                              description: Immutable. Display name
+                                                of the assigned issue. This field
+                                                is set at time of analyis and immutable
+                                                since then.
                                               type: string
                                             issue:
                                               description: Resource name of the assigned
                                                 issue.
                                               type: string
                                             score:
-                                              description: |-
-                                                Score indicating the likelihood of the issue assignment.
-                                                 currently bounded on [0,1].
+                                              description: Score indicating the likelihood
+                                                of the issue assignment. currently
+                                                bounded on [0,1].
                                               type: number
                                           type: object
                                       type: object
@@ -423,9 +428,9 @@ spec:
                                       description: Data specifying sentiment.
                                       properties:
                                         magnitude:
-                                          description: |-
-                                            A non-negative number from 0 to infinity which represents the abolute
-                                             magnitude of sentiment regardless of score.
+                                          description: A non-negative number from
+                                            0 to infinity which represents the abolute
+                                            magnitude of sentiment regardless of score.
                                           type: number
                                         score:
                                           description: The sentiment score between
@@ -468,9 +473,9 @@ spec:
                                         for this entity in the conversation.
                                       properties:
                                         magnitude:
-                                          description: |-
-                                            A non-negative number from 0 to infinity which represents the abolute
-                                             magnitude of sentiment regardless of score.
+                                          description: A non-negative number from
+                                            0 to infinity which represents the abolute
+                                            magnitude of sentiment regardless of score.
                                           type: number
                                         score:
                                           description: The sentiment score between
@@ -501,27 +506,27 @@ spec:
                                   result.
                                 properties:
                                   issueModel:
-                                    description: |-
-                                      Issue model that generates the result.
-                                       Format: projects/{project}/locations/{location}/issueModels/{issue_model}
+                                    description: 'Issue model that generates the result.
+                                      Format: projects/{project}/locations/{location}/issueModels/{issue_model}'
                                     type: string
                                   issues:
                                     description: All the matched issues.
                                     items:
                                       properties:
                                         displayName:
-                                          description: |-
-                                            Immutable. Display name of the assigned issue. This field is set at time of
-                                             analyis and immutable since then.
+                                          description: Immutable. Display name of
+                                            the assigned issue. This field is set
+                                            at time of analyis and immutable since
+                                            then.
                                           type: string
                                         issue:
                                           description: Resource name of the assigned
                                             issue.
                                           type: string
                                         score:
-                                          description: |-
-                                            Score indicating the likelihood of the issue assignment.
-                                             currently bounded on [0,1].
+                                          description: Score indicating the likelihood
+                                            of the issue assignment. currently bounded
+                                            on [0,1].
                                           type: number
                                       type: object
                                     type: array
@@ -558,20 +563,18 @@ spec:
                                         the revision was created.
                                       type: string
                                     name:
-                                      description: |-
-                                        Identifier. The name of the scorecard result.
-                                         Format:
-                                         projects/{project}/locations/{location}/qaScorecardResults/{qa_scorecard_result}
+                                      description: 'Identifier. The name of the scorecard
+                                        result. Format: projects/{project}/locations/{location}/qaScorecardResults/{qa_scorecard_result}'
                                       type: string
                                     normalizedScore:
-                                      description: |-
-                                        The normalized score, which is the score divided by the potential score.
-                                         Any manual edits are included if they exist.
+                                      description: The normalized score, which is
+                                        the score divided by the potential score.
+                                        Any manual edits are included if they exist.
                                       type: number
                                     potentialScore:
-                                      description: |-
-                                        The maximum potential overall score of the scorecard. Any questions
-                                         answered using `na_value` are excluded from this calculation.
+                                      description: The maximum potential overall score
+                                        of the scorecard. Any questions answered using
+                                        `na_value` are excluded from this calculation.
                                       type: number
                                     qaAnswers:
                                       description: Set of QaAnswers represented in
@@ -591,9 +594,9 @@ spec:
                                                       description: Boolean value.
                                                       type: boolean
                                                     key:
-                                                      description: |-
-                                                        A short string used as an identifier. Matches the value used in
-                                                         QaQuestion.AnswerChoice.key.
+                                                      description: A short string
+                                                        used as an identifier. Matches
+                                                        the value used in QaQuestion.AnswerChoice.key.
                                                       type: string
                                                     naValue:
                                                       description: A value of "Not
@@ -601,9 +604,9 @@ spec:
                                                         only ever be `true`.
                                                       type: boolean
                                                     normalizedScore:
-                                                      description: |-
-                                                        Output only. Normalized score of the questions. Calculated as score /
-                                                         potential_score.
+                                                      description: Output only. Normalized
+                                                        score of the questions. Calculated
+                                                        as score / potential_score.
                                                       type: number
                                                     numValue:
                                                       description: Numerical value.
@@ -634,18 +637,18 @@ spec:
                                                 description: Boolean value.
                                                 type: boolean
                                               key:
-                                                description: |-
-                                                  A short string used as an identifier. Matches the value used in
-                                                   QaQuestion.AnswerChoice.key.
+                                                description: A short string used as
+                                                  an identifier. Matches the value
+                                                  used in QaQuestion.AnswerChoice.key.
                                                 type: string
                                               naValue:
                                                 description: A value of "Not Applicable
                                                   (N/A)". Should only ever be `true`.
                                                 type: boolean
                                               normalizedScore:
-                                                description: |-
-                                                  Output only. Normalized score of the questions. Calculated as score /
-                                                   potential_score.
+                                                description: Output only. Normalized
+                                                  score of the questions. Calculated
+                                                  as score / potential_score.
                                                 type: number
                                               numValue:
                                                 description: Numerical value.
@@ -675,10 +678,10 @@ spec:
                                               the agent greet the customer?"
                                             type: string
                                           tags:
-                                            description: |-
-                                              User-defined list of arbitrary tags. Matches the value from
-                                               QaScorecard.ScorecardQuestion.tags. Used for grouping/organization and
-                                               for weighting the score of each answer.
+                                            description: User-defined list of arbitrary
+                                              tags. Matches the value from QaScorecard.ScorecardQuestion.tags.
+                                              Used for grouping/organization and for
+                                              weighting the score of each answer.
                                             items:
                                               type: string
                                             type: array
@@ -711,9 +714,9 @@ spec:
                                         type: object
                                       type: array
                                     score:
-                                      description: |-
-                                        The overall numerical score of the result, incorporating any manual edits
-                                         if they exist.
+                                      description: The overall numerical score of
+                                        the result, incorporating any manual edits
+                                        if they exist.
                                       type: number
                                     scoreSources:
                                       description: List of all individual score sets.
@@ -725,9 +728,10 @@ spec:
                                               score.
                                             type: number
                                           potentialScore:
-                                            description: |-
-                                              The maximum potential overall score of the scorecard. Any questions
-                                               answered using `na_value` are excluded from this calculation.
+                                            description: The maximum potential overall
+                                              score of the scorecard. Any questions
+                                              answered using `na_value` are excluded
+                                              from this calculation.
                                             type: number
                                           qaTagResults:
                                             description: Collection of tags and their
@@ -777,9 +781,9 @@ spec:
                                       description: Data specifying sentiment.
                                       properties:
                                         magnitude:
-                                          description: |-
-                                            A non-negative number from 0 to infinity which represents the abolute
-                                             magnitude of sentiment regardless of score.
+                                          description: A non-negative number from
+                                            0 to infinity which represents the abolute
+                                            magnitude of sentiment regardless of score.
                                           type: number
                                         score:
                                           description: The sentiment score between
@@ -807,27 +811,27 @@ spec:
                             type: string
                         type: object
                       annotatorSelector:
-                        description: |-
-                          To select the annotators to run and the phrase matchers to use
-                           (if any). If not specified, all annotators will be run.
+                        description: To select the annotators to run and the phrase
+                          matchers to use (if any). If not specified, all annotators
+                          will be run.
                         properties:
                           issueModels:
-                            description: |-
-                              The issue model to run. If not provided, the most recently deployed topic
-                               model will be used. The provided issue model will only be used for
-                               inference if the issue model is deployed and if run_issue_model_annotator
-                               is set to true. If more than one issue model is provided, only the first
-                               provided issue model will be used for inference.
+                            description: The issue model to run. If not provided,
+                              the most recently deployed topic model will be used.
+                              The provided issue model will only be used for inference
+                              if the issue model is deployed and if run_issue_model_annotator
+                              is set to true. If more than one issue model is provided,
+                              only the first provided issue model will be used for
+                              inference.
                             items:
                               type: string
                             type: array
                           phraseMatchers:
-                            description: |-
-                              The list of phrase matchers to run. If not provided, all active phrase
-                               matchers will be used. If inactive phrase matchers are provided, they will
-                               not be used. Phrase matchers will be run only if
-                               run_phrase_matcher_annotator is set to true. Format:
-                               projects/{project}/locations/{location}/phraseMatchers/{phrase_matcher}
+                            description: 'The list of phrase matchers to run. If not
+                              provided, all active phrase matchers will be used. If
+                              inactive phrase matchers are provided, they will not
+                              be used. Phrase matchers will be run only if run_phrase_matcher_annotator
+                              is set to true. Format: projects/{project}/locations/{location}/phraseMatchers/{phrase_matcher}'
                             items:
                               type: string
                             type: array
@@ -854,9 +858,9 @@ spec:
                             description: Whether to run the interruption annotator.
                             type: boolean
                           runIssueModelAnnotator:
-                            description: |-
-                              Whether to run the issue model annotator. A model should have already been
-                               deployed for this to take effect.
+                            description: Whether to run the issue model annotator.
+                              A model should have already been deployed for this to
+                              take effect.
                             type: boolean
                           runPhraseMatcherAnnotator:
                             description: Whether to run the active phrase matcher
@@ -878,10 +882,8 @@ spec:
                             description: Configuration for the summarization annotator.
                             properties:
                               conversationProfile:
-                                description: |-
-                                  Resource name of the Dialogflow conversation profile.
-                                   Format:
-                                   projects/{project}/locations/{location}/conversationProfiles/{conversation_profile}
+                                description: 'Resource name of the Dialogflow conversation
+                                  profile. Format: projects/{project}/locations/{location}/conversationProfiles/{conversation_profile}'
                                 type: string
                               summarizationModel:
                                 description: Default summarization model to be used.
@@ -889,15 +891,12 @@ spec:
                             type: object
                         type: object
                       createTime:
-                        description: |-
-                          Output only. The time at which the analysis was created, which occurs when
-                           the long-running operation completes.
+                        description: Output only. The time at which the analysis was
+                          created, which occurs when the long-running operation completes.
                         type: string
                       name:
-                        description: |-
-                          Immutable. The resource name of the analysis.
-                           Format:
-                           projects/{project}/locations/{location}/conversations/{conversation}/analyses/{analysis}
+                        description: 'Immutable. The resource name of the analysis.
+                          Format: projects/{project}/locations/{location}/conversations/{conversation}/analyses/{analysis}'
                         type: string
                       requestTime:
                         description: Output only. The time at which the analysis was
@@ -908,26 +907,20 @@ spec:
                     description: Output only. Latest summary of the conversation.
                     properties:
                       answerRecord:
-                        description: |-
-                          The name of the answer record.
-                           Format:
-                           projects/{project}/locations/{location}/answerRecords/{answer_record}
+                        description: 'The name of the answer record. Format: projects/{project}/locations/{location}/answerRecords/{answer_record}'
                         type: string
                       confidence:
                         description: The confidence score of the summarization.
                         type: number
                       conversationModel:
-                        description: |-
-                          The name of the model that generates this summary.
-                           Format:
-                           projects/{project}/locations/{location}/conversationModels/{conversation_model}
+                        description: 'The name of the model that generates this summary.
+                          Format: projects/{project}/locations/{location}/conversationModels/{conversation_model}'
                         type: string
                       metadata:
                         additionalProperties:
                           type: string
-                        description: |-
-                          A map that contains metadata about the summarization and the document
-                           from which it originates.
+                        description: A map that contains metadata about the summarization
+                          and the document from which it originates.
                         type: object
                       text:
                         description: The summarization content that is concatenated
@@ -936,23 +929,20 @@ spec:
                       textSections:
                         additionalProperties:
                           type: string
-                        description: |-
-                          The summarization content that is divided into sections. The key is the
-                           section's name and the value is the section's content. There is no
-                           specific format for the key or value.
+                        description: The summarization content that is divided into
+                          sections. The key is the section's name and the value is
+                          the section's content. There is no specific format for the
+                          key or value.
                         type: object
                     type: object
                   runtimeAnnotations:
-                    description: |-
-                      Output only. The annotations that were generated during the customer and
-                       agent interaction.
+                    description: Output only. The annotations that were generated
+                      during the customer and agent interaction.
                     items:
                       properties:
                         annotationID:
-                          description: |-
-                            The unique identifier of the annotation.
-                             Format:
-                             projects/{project}/locations/{location}/conversationDatasets/{dataset}/conversationDataItems/{data_item}/conversationAnnotations/{annotation}
+                          description: 'The unique identifier of the annotation. Format:
+                            projects/{project}/locations/{location}/conversationDatasets/{dataset}/conversationDataItems/{data_item}/conversationAnnotations/{annotation}'
                           type: string
                         answerFeedback:
                           description: The feedback that the customer has about the
@@ -966,38 +956,33 @@ spec:
                               description: The correctness level of an answer.
                               type: string
                             displayed:
-                              description: |-
-                                Indicates whether an answer or item was displayed to the human agent in the
-                                 agent desktop UI.
+                              description: Indicates whether an answer or item was
+                                displayed to the human agent in the agent desktop
+                                UI.
                               type: boolean
                           type: object
                         articleSuggestion:
                           description: Agent Assist Article Suggestion data.
                           properties:
                             confidenceScore:
-                              description: |-
-                                The system's confidence score that this article is a good match for this
-                                 conversation, ranging from 0.0 (completely uncertain) to 1.0 (completely
-                                 certain).
+                              description: The system's confidence score that this
+                                article is a good match for this conversation, ranging
+                                from 0.0 (completely uncertain) to 1.0 (completely
+                                certain).
                               type: number
                             metadata:
                               additionalProperties:
                                 type: string
-                              description: |-
-                                Map that contains metadata about the Article Suggestion and the document
-                                 that it originates from.
+                              description: Map that contains metadata about the Article
+                                Suggestion and the document that it originates from.
                               type: object
                             queryRecord:
-                              description: |-
-                                The name of the answer record.
-                                 Format:
-                                 projects/{project}/locations/{location}/answerRecords/{answer_record}
+                              description: 'The name of the answer record. Format:
+                                projects/{project}/locations/{location}/answerRecords/{answer_record}'
                               type: string
                             source:
-                              description: |-
-                                The knowledge document that this answer was extracted from.
-                                 Format:
-                                 projects/{project}/knowledgeBases/{knowledge_base}/documents/{document}
+                              description: 'The knowledge document that this answer
+                                was extracted from. Format: projects/{project}/knowledgeBases/{knowledge_base}/documents/{document}'
                               type: string
                             title:
                               description: Article title.
@@ -1010,26 +995,21 @@ spec:
                           description: Conversation summarization suggestion data.
                           properties:
                             answerRecord:
-                              description: |-
-                                The name of the answer record.
-                                 Format:
-                                 projects/{project}/locations/{location}/answerRecords/{answer_record}
+                              description: 'The name of the answer record. Format:
+                                projects/{project}/locations/{location}/answerRecords/{answer_record}'
                               type: string
                             confidence:
                               description: The confidence score of the summarization.
                               type: number
                             conversationModel:
-                              description: |-
-                                The name of the model that generates this summary.
-                                 Format:
-                                 projects/{project}/locations/{location}/conversationModels/{conversation_model}
+                              description: 'The name of the model that generates this
+                                summary. Format: projects/{project}/locations/{location}/conversationModels/{conversation_model}'
                               type: string
                             metadata:
                               additionalProperties:
                                 type: string
-                              description: |-
-                                A map that contains metadata about the summarization and the document
-                                 from which it originates.
+                              description: A map that contains metadata about the
+                                summarization and the document from which it originates.
                               type: object
                             text:
                               description: The summarization content that is concatenated
@@ -1038,10 +1018,10 @@ spec:
                             textSections:
                               additionalProperties:
                                 type: string
-                              description: |-
-                                The summarization content that is divided into sections. The key is the
-                                 section's name and the value is the section's content. There is no
-                                 specific format for the key or value.
+                              description: The summarization content that is divided
+                                into sections. The key is the section's name and the
+                                value is the section's content. There is no specific
+                                format for the key or value.
                               type: object
                           type: object
                         createTime:
@@ -1051,14 +1031,12 @@ spec:
                           description: Dialogflow interaction data.
                           properties:
                             confidence:
-                              description: |-
-                                The confidence of the match ranging from 0.0 (completely uncertain) to 1.0
-                                 (completely certain).
+                              description: The confidence of the match ranging from
+                                0.0 (completely uncertain) to 1.0 (completely certain).
                               type: number
                             dialogflowIntentID:
-                              description: |-
-                                The Dialogflow intent resource path. Format:
-                                 projects/{project}/agent/{agent}/intents/{intent}
+                              description: 'The Dialogflow intent resource path. Format:
+                                projects/{project}/agent/{agent}/intents/{intent}'
                               type: string
                           type: object
                         endBoundary:
@@ -1066,15 +1044,15 @@ spec:
                             annotation ends, inclusive.
                           properties:
                             transcriptIndex:
-                              description: |-
-                                The index in the sequence of transcribed pieces of the conversation where
-                                 the boundary is located. This index starts at zero.
+                              description: The index in the sequence of transcribed
+                                pieces of the conversation where the boundary is located.
+                                This index starts at zero.
                               format: int32
                               type: integer
                             wordIndex:
-                              description: |-
-                                The word index of this boundary with respect to the first word in the
-                                 transcript piece. This index starts at zero.
+                              description: The word index of this boundary with respect
+                                to the first word in the transcript piece. This index
+                                starts at zero.
                               format: int32
                               type: integer
                           type: object
@@ -1086,55 +1064,48 @@ spec:
                                 base document.
                               type: string
                             confidenceScore:
-                              description: |-
-                                The system's confidence score that this answer is a good match for this
-                                 conversation, ranging from 0.0 (completely uncertain) to 1.0 (completely
-                                 certain).
+                              description: The system's confidence score that this
+                                answer is a good match for this conversation, ranging
+                                from 0.0 (completely uncertain) to 1.0 (completely
+                                certain).
                               type: number
                             metadata:
                               additionalProperties:
                                 type: string
-                              description: |-
-                                Map that contains metadata about the FAQ answer and the document that
-                                 it originates from.
+                              description: Map that contains metadata about the FAQ
+                                answer and the document that it originates from.
                               type: object
                             queryRecord:
-                              description: |-
-                                The name of the answer record.
-                                 Format:
-                                 projects/{project}/locations/{location}/answerRecords/{answer_record}
+                              description: 'The name of the answer record. Format:
+                                projects/{project}/locations/{location}/answerRecords/{answer_record}'
                               type: string
                             question:
                               description: The corresponding FAQ question.
                               type: string
                             source:
-                              description: |-
-                                The knowledge document that this answer was extracted from.
-                                 Format:
-                                 projects/{project}/knowledgeBases/{knowledge_base}/documents/{document}.
+                              description: 'The knowledge document that this answer
+                                was extracted from. Format: projects/{project}/knowledgeBases/{knowledge_base}/documents/{document}.'
                               type: string
                           type: object
                         smartComposeSuggestion:
                           description: Agent Assist Smart Compose suggestion data.
                           properties:
                             confidenceScore:
-                              description: |-
-                                The system's confidence score that this suggestion is a good match for this
-                                 conversation, ranging from 0.0 (completely uncertain) to 1.0 (completely
-                                 certain).
+                              description: The system's confidence score that this
+                                suggestion is a good match for this conversation,
+                                ranging from 0.0 (completely uncertain) to 1.0 (completely
+                                certain).
                               type: number
                             metadata:
                               additionalProperties:
                                 type: string
-                              description: |-
-                                Map that contains metadata about the Smart Compose suggestion and the
-                                 document from which it originates.
+                              description: Map that contains metadata about the Smart
+                                Compose suggestion and the document from which it
+                                originates.
                               type: object
                             queryRecord:
-                              description: |-
-                                The name of the answer record.
-                                 Format:
-                                 projects/{project}/locations/{location}/answerRecords/{answer_record}
+                              description: 'The name of the answer record. Format:
+                                projects/{project}/locations/{location}/answerRecords/{answer_record}'
                               type: string
                             suggestion:
                               description: The content of the suggestion.
@@ -1144,23 +1115,20 @@ spec:
                           description: Agent Assist Smart Reply data.
                           properties:
                             confidenceScore:
-                              description: |-
-                                The system's confidence score that this reply is a good match for this
-                                 conversation, ranging from 0.0 (completely uncertain) to 1.0 (completely
-                                 certain).
+                              description: The system's confidence score that this
+                                reply is a good match for this conversation, ranging
+                                from 0.0 (completely uncertain) to 1.0 (completely
+                                certain).
                               type: number
                             metadata:
                               additionalProperties:
                                 type: string
-                              description: |-
-                                Map that contains metadata about the Smart Reply and the document from
-                                 which it originates.
+                              description: Map that contains metadata about the Smart
+                                Reply and the document from which it originates.
                               type: object
                             queryRecord:
-                              description: |-
-                                The name of the answer record.
-                                 Format:
-                                 projects/{project}/locations/{location}/answerRecords/{answer_record}
+                              description: 'The name of the answer record. Format:
+                                projects/{project}/locations/{location}/answerRecords/{answer_record}'
                               type: string
                             reply:
                               description: The content of the reply.
@@ -1171,15 +1139,15 @@ spec:
                             annotation starts, inclusive.
                           properties:
                             transcriptIndex:
-                              description: |-
-                                The index in the sequence of transcribed pieces of the conversation where
-                                 the boundary is located. This index starts at zero.
+                              description: The index in the sequence of transcribed
+                                pieces of the conversation where the boundary is located.
+                                This index starts at zero.
                               format: int32
                               type: integer
                             wordIndex:
-                              description: |-
-                                The word index of this boundary with respect to the first word in the
-                                 transcript piece. This index starts at zero.
+                              description: The word index of this boundary with respect
+                                to the first word in the transcript piece. This index
+                                starts at zero.
                               format: int32
                               type: integer
                           type: object
@@ -1187,14 +1155,14 @@ spec:
                           description: Explicit input used for generating the answer
                           properties:
                             generatorName:
-                              description: |-
-                                The resource name of associated generator. Format:
-                                 `projects/<Project ID>/locations/<Location ID>/generators/<Generator ID>`
+                              description: 'The resource name of associated generator.
+                                Format: `projects/<Project ID>/locations/<Location
+                                ID>/generators/<Generator ID>`'
                               type: string
                             query:
-                              description: |-
-                                Query text. Article Search uses this to store the input query used
-                                 to generate the search results.
+                              description: Query text. Article Search uses this to
+                                store the input query used to generate the search
+                                results.
                               type: string
                             querySource:
                               description: Query source for the answer.
@@ -1211,33 +1179,32 @@ spec:
                         items:
                           properties:
                             channelTag:
-                              description: |-
-                                For conversations derived from multi-channel audio, this is the channel
-                                 number corresponding to the audio from that channel. For
-                                 audioChannelCount = N, its output values can range from '1' to 'N'. A
-                                 channel tag of 0 indicates that the audio is mono.
+                              description: For conversations derived from multi-channel
+                                audio, this is the channel number corresponding to
+                                the audio from that channel. For audioChannelCount
+                                = N, its output values can range from '1' to 'N'.
+                                A channel tag of 0 indicates that the audio is mono.
                               format: int32
                               type: integer
                             confidence:
-                              description: |-
-                                A confidence estimate between 0.0 and 1.0 of the fidelity of this
-                                 segment. A default value of 0.0 indicates that the value is unset.
+                              description: A confidence estimate between 0.0 and 1.0
+                                of the fidelity of this segment. A default value of
+                                0.0 indicates that the value is unset.
                               type: number
                             dialogflowSegmentMetadata:
                               description: CCAI metadata relating to the current transcript
                                 segment.
                               properties:
                                 smartReplyAllowlistCovered:
-                                  description: |-
-                                    Whether the transcript segment was covered under the configured smart
-                                     reply allowlist in Agent Assist.
+                                  description: Whether the transcript segment was
+                                    covered under the configured smart reply allowlist
+                                    in Agent Assist.
                                   type: boolean
                               type: object
                             languageCode:
-                              description: |-
-                                The language code of this segment as a
-                                 [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) language tag.
-                                 Example: "en-US".
+                              description: 'The language code of this segment as a
+                                [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt)
+                                language tag. Example: "en-US".'
                               type: string
                             messageTime:
                               description: The time that the message occurred, if
@@ -1247,15 +1214,13 @@ spec:
                               description: The participant of this segment.
                               properties:
                                 dialogflowParticipant:
-                                  description: |-
-                                    Deprecated. Use `dialogflow_participant_name` instead.
-                                     The name of the Dialogflow participant. Format:
-                                     projects/{project}/locations/{location}/conversations/{conversation}/participants/{participant}
+                                  description: 'Deprecated. Use `dialogflow_participant_name`
+                                    instead. The name of the Dialogflow participant.
+                                    Format: projects/{project}/locations/{location}/conversations/{conversation}/participants/{participant}'
                                   type: string
                                 dialogflowParticipantName:
-                                  description: |-
-                                    The name of the participant provided by Dialogflow. Format:
-                                     projects/{project}/locations/{location}/conversations/{conversation}/participants/{participant}
+                                  description: 'The name of the participant provided
+                                    by Dialogflow. Format: projects/{project}/locations/{location}/conversations/{conversation}/participants/{participant}'
                                   type: string
                                 obfuscatedExternalUserID:
                                   description: Obfuscated user ID from Dialogflow.
@@ -1272,9 +1237,9 @@ spec:
                               description: The sentiment for this transcript segment.
                               properties:
                                 magnitude:
-                                  description: |-
-                                    A non-negative number from 0 to infinity which represents the abolute
-                                     magnitude of sentiment regardless of score.
+                                  description: A non-negative number from 0 to infinity
+                                    which represents the abolute magnitude of sentiment
+                                    regardless of score.
                                   type: number
                                 score:
                                   description: The sentiment score between -1.0 (negative)
@@ -1290,19 +1255,18 @@ spec:
                               items:
                                 properties:
                                   confidence:
-                                    description: |-
-                                      A confidence estimate between 0.0 and 1.0 of the fidelity of this
-                                       word. A default value of 0.0 indicates that the value is unset.
+                                    description: A confidence estimate between 0.0
+                                      and 1.0 of the fidelity of this word. A default
+                                      value of 0.0 indicates that the value is unset.
                                     type: number
                                   endOffset:
-                                    description: |-
-                                      Time offset of the end of this word relative to the beginning of the
-                                       total conversation.
+                                    description: Time offset of the end of this word
+                                      relative to the beginning of the total conversation.
                                     type: string
                                   startOffset:
-                                    description: |-
-                                      Time offset of the start of this word relative to the beginning of
-                                       the total conversation.
+                                    description: Time offset of the start of this
+                                      word relative to the beginning of the total
+                                      conversation.
                                     type: string
                                   word:
                                     description: The word itself. Includes punctuation

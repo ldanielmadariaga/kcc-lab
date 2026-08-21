@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpassuredworkloadsworkload
     - gcpassuredworkloadsworkloads
     singular: assuredworkloadsworkload
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -66,15 +62,12 @@ spec:
               AssuredWorkloadsWorkload
             properties:
               billingAccount:
-                description: |-
-                  Optional. The billing account used for the resources which are
-                   direct children of workload. This billing account is initially associated
-                   with the resources created as part of Workload creation.
-                   After the initial creation of these resources, the customer can change
-                   the assigned billing account.
-                   The resource name has the form
-                   `billingAccounts/{billing_account_id}`. For example,
-                   `billingAccounts/012345-567890-ABCDEF`.
+                description: Optional. The billing account used for the resources
+                  which are direct children of workload. This billing account is initially
+                  associated with the resources created as part of Workload creation.
+                  After the initial creation of these resources, the customer can
+                  change the assigned billing account. The resource name has the form
+                  `billingAccounts/{billing_account_id}`. For example, `billingAccounts/012345-567890-ABCDEF`.
                 type: string
               complianceRegime:
                 description: Required. Immutable. Compliance Regime associated with
@@ -90,33 +83,31 @@ spec:
                    Example: My Workload
                 type: string
               enableSovereignControls:
-                description: |-
-                  Optional. Indicates the sovereignty status of the given workload.
-                   Currently meant to be used by Europe/Canada customers.
+                description: Optional. Indicates the sovereignty status of the given
+                  workload. Currently meant to be used by Europe/Canada customers.
                 type: boolean
               etag:
-                description: |-
-                  Optional. ETag of the workload, it is calculated on the basis
-                   of the Workload contents. It will be used in Update & Delete operations.
+                description: Optional. ETag of the workload, it is calculated on the
+                  basis of the Workload contents. It will be used in Update & Delete
+                  operations.
                 type: string
               kmsSettings:
-                description: |-
-                  Input only. Settings used to create a CMEK crypto key. When set, a project with a KMS
-                   CMEK key is provisioned.
-                   This field is deprecated as of Feb 28, 2022.
-                   In order to create a Keyring, callers should specify,
-                   ENCRYPTION_KEYS_PROJECT or KEYRING in ResourceSettings.resource_type field.
+                description: Input only. Settings used to create a CMEK crypto key.
+                  When set, a project with a KMS CMEK key is provisioned. This field
+                  is deprecated as of Feb 28, 2022. In order to create a Keyring,
+                  callers should specify, ENCRYPTION_KEYS_PROJECT or KEYRING in ResourceSettings.resource_type
+                  field.
                 properties:
                   nextRotationTime:
-                    description: |-
-                      Required. Input only. Immutable. The time at which the Key Management Service will automatically create a
-                       new version of the crypto key and mark it as the primary.
+                    description: Required. Input only. Immutable. The time at which
+                      the Key Management Service will automatically create a new version
+                      of the crypto key and mark it as the primary.
                     type: string
                   rotationPeriod:
-                    description: |-
-                      Required. Input only. Immutable. [next_rotation_time] will be advanced by this period when the Key
-                       Management Service automatically rotates a key. Must be at least 24 hours
-                       and at most 876,000 hours.
+                    description: Required. Input only. Immutable. [next_rotation_time]
+                      will be advanced by this period when the Key Management Service
+                      automatically rotates a key. Must be at least 24 hours and at
+                      most 876,000 hours.
                     type: string
                 required:
                 - nextRotationTime
@@ -132,6 +123,20 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -149,44 +154,37 @@ spec:
                     type: string
                 type: object
               provisionedResourcesParent:
-                description: |-
-                  Input only. The parent resource for the resources managed by this Assured Workload. May
-                   be either empty or a folder resource which is a child of the
-                   Workload parent. If not specified all resources are created under the
-                   parent organization.
-                   Format:
-                   folders/{folder_id}
+                description: 'Input only. The parent resource for the resources managed
+                  by this Assured Workload. May be either empty or a folder resource
+                  which is a child of the Workload parent. If not specified all resources
+                  are created under the parent organization. Format: folders/{folder_id}'
                 type: string
               resourceID:
                 description: The AssuredWorkloadsWorkload name. If not given, the
                   metadata.name will be used.
                 type: string
               resourceSettings:
-                description: |-
-                  Input only. Resource properties that are used to customize workload resources.
-                   These properties (such as custom project id) will be used to create
-                   workload resources if possible. This field is optional.
+                description: Input only. Resource properties that are used to customize
+                  workload resources. These properties (such as custom project id)
+                  will be used to create workload resources if possible. This field
+                  is optional.
                 items:
                   properties:
                     displayName:
-                      description: |-
-                        User-assigned resource display name.
-                         If not empty it will be used to create a resource with the specified
-                         name.
+                      description: User-assigned resource display name. If not empty
+                        it will be used to create a resource with the specified name.
                       type: string
                     resourceID:
-                      description: |-
-                        Resource identifier.
-                         For a project this represents project_id. If the project is already
-                         taken, the workload creation will fail.
-                         For KeyRing, this represents the keyring_id.
-                         For a folder, don't set this value as folder_id is assigned by Google.
+                      description: Resource identifier. For a project this represents
+                        project_id. If the project is already taken, the workload
+                        creation will fail. For KeyRing, this represents the keyring_id.
+                        For a folder, don't set this value as folder_id is assigned
+                        by Google.
                       type: string
                     resourceType:
-                      description: |-
-                        Indicates the type of resource. This field should be specified to
-                         correspond the id to the right resource type (CONSUMER_FOLDER or
-                         ENCRYPTION_KEYS_PROJECT)
+                      description: Indicates the type of resource. This field should
+                        be specified to correspond the id to the right resource type
+                        (CONSUMER_FOLDER or ENCRYPTION_KEYS_PROJECT)
                       type: string
                   type: object
                 type: array
@@ -200,9 +198,8 @@ spec:
               machine state of AssuredWorkloadsWorkload
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -214,9 +211,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -244,11 +240,11 @@ spec:
                   observed in GCP.
                 properties:
                   compliantButDisallowedServices:
-                    description: |-
-                      Output only. Urls for services which are compliant for this Assured Workload, but which
-                       are currently disallowed by the ResourceUsageRestriction org policy.
-                       Invoke RestrictAllowedResources endpoint to allow your project developers
-                       to use these services in their environment."
+                    description: Output only. Urls for services which are compliant
+                      for this Assured Workload, but which are currently disallowed
+                      by the ResourceUsageRestriction org policy. Invoke RestrictAllowedResources
+                      endpoint to allow your project developers to use these services
+                      in their environment."
                     items:
                       type: string
                     type: array
@@ -260,17 +256,15 @@ spec:
                       of the given workload.
                     type: string
                   resources:
-                    description: |-
-                      Output only. The resources associated with this workload.
-                       These resources will be created when creating the workload.
-                       If any of the projects already exist, the workload creation will fail.
-                       Always read only.
+                    description: Output only. The resources associated with this workload.
+                      These resources will be created when creating the workload.
+                      If any of the projects already exist, the workload creation
+                      will fail. Always read only.
                     items:
                       properties:
                         resourceID:
-                          description: |-
-                            Resource identifier.
-                             For a project this represents project_number.
+                          description: Resource identifier. For a project this represents
+                            project_number.
                           format: int64
                           type: integer
                         resourceType:
@@ -279,10 +273,10 @@ spec:
                       type: object
                     type: array
                   saaEnrollmentResponse:
-                    description: |-
-                      Output only. Represents the SAA enrollment response of the given workload.
-                       SAA enrollment response is queried during GetWorkload call.
-                       In failure cases, user friendly error message is shown in SAA details page.
+                    description: Output only. Represents the SAA enrollment response
+                      of the given workload. SAA enrollment response is queried during
+                      GetWorkload call. In failure cases, user friendly error message
+                      is shown in SAA details page.
                     properties:
                       setupErrors:
                         description: Indicates SAA enrollment setup error if any.

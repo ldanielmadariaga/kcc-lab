@@ -127,6 +127,8 @@ spec:
                               items:
                                 type: string
                               type: array
+                          required:
+                          - values
                           type: object
                         stringValue:
                           description: Optional. A string value.
@@ -180,6 +182,8 @@ spec:
                                     items:
                                       type: string
                                     type: array
+                                required:
+                                - values
                                 type: object
                               stringValue:
                                 description: Optional. A string value.
@@ -261,12 +265,16 @@ spec:
                                               items:
                                                 type: string
                                               type: array
+                                          required:
+                                          - values
                                           type: object
                                         stringValue:
                                           description: Optional. A string value.
                                           type: string
                                       type: object
                                     type: array
+                                required:
+                                - values
                                 type: object
                               intRange:
                                 description: Allowed range for numeric parameters.
@@ -281,6 +289,9 @@ spec:
                                       the numeric parameter (inclusive).
                                     format: int64
                                     type: integer
+                                required:
+                                - max
+                                - min
                                 type: object
                               regexpPattern:
                                 description: Regular expression for string parameters.
@@ -289,6 +300,8 @@ spec:
                                     description: Required. Regex Pattern to match
                                       the value(s) of parameter.
                                     type: string
+                                required:
+                                - pattern
                                 type: object
                             type: object
                           valueType:
@@ -356,12 +369,16 @@ spec:
                                         items:
                                           type: string
                                         type: array
+                                    required:
+                                    - values
                                     type: object
                                   stringValue:
                                     description: Optional. A string value.
                                     type: string
                                 type: object
                               type: array
+                          required:
+                          - values
                           type: object
                         intRange:
                           description: Allowed range for numeric parameters.
@@ -376,6 +393,9 @@ spec:
                                 numeric parameter (inclusive).
                               format: int64
                               type: integer
+                          required:
+                          - max
+                          - min
                           type: object
                         regexpPattern:
                           description: Regular expression for string parameters.
@@ -384,6 +404,8 @@ spec:
                               description: Required. Regex Pattern to match the value(s)
                                 of parameter.
                               type: string
+                          required:
+                          - pattern
                           type: object
                       type: object
                     valueType:
@@ -421,7 +443,11 @@ spec:
                               items:
                                 type: string
                               type: array
+                          required:
+                          - values
                           type: object
+                      required:
+                      - expression
                       type: object
                     description:
                       description: Optional. Description of the Rule. The maximum
@@ -432,6 +458,8 @@ spec:
                       items:
                         type: string
                       type: array
+                  required:
+                  - ruleActionTypes
                   type: object
                 type: array
               severity:

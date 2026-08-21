@@ -444,6 +444,65 @@ spec:
                                       type: object
                                   type: object
                                 type: array
+                              entities:
+                                additionalProperties:
+                                  properties:
+                                    displayName:
+                                      description: The representative name for the
+                                        entity.
+                                      type: string
+                                    metadata:
+                                      additionalProperties:
+                                        type: string
+                                      description: |-
+                                        Metadata associated with the entity.
+
+                                         For most entity types, the metadata is a Wikipedia URL (`wikipedia_url`)
+                                         and Knowledge Graph MID (`mid`), if they are available. For the metadata
+                                         associated with other entity types, see the Type table below.
+                                      type: object
+                                    salience:
+                                      description: |-
+                                        The salience score associated with the entity in the [0, 1.0] range.
+
+                                         The salience score for an entity provides information about the
+                                         importance or centrality of that entity to the entire document text.
+                                         Scores closer to 0 are less salient, while scores closer to 1.0 are highly
+                                         salient.
+                                      type: number
+                                    sentiment:
+                                      description: The aggregate sentiment expressed
+                                        for this entity in the conversation.
+                                      properties:
+                                        magnitude:
+                                          description: A non-negative number from
+                                            0 to infinity which represents the abolute
+                                            magnitude of sentiment regardless of score.
+                                          type: number
+                                        score:
+                                          description: The sentiment score between
+                                            -1.0 (negative) and 1.0 (positive).
+                                          type: number
+                                      type: object
+                                    type:
+                                      description: The entity type.
+                                      type: string
+                                  type: object
+                                description: All the entities in the call.
+                                type: object
+                              intents:
+                                additionalProperties:
+                                  properties:
+                                    displayName:
+                                      description: The human-readable name of the
+                                        intent.
+                                      type: string
+                                    id:
+                                      description: The unique identifier of the intent.
+                                      type: string
+                                  type: object
+                                description: All the matched intents in the call.
+                                type: object
                               issueModelResult:
                                 description: Overall conversation-level issue modeling
                                   result.
@@ -473,6 +532,21 @@ spec:
                                           type: number
                                       type: object
                                     type: array
+                                type: object
+                              phraseMatchers:
+                                additionalProperties:
+                                  properties:
+                                    displayName:
+                                      description: The human-readable name of the
+                                        phrase matcher.
+                                      type: string
+                                    phraseMatcher:
+                                      description: The unique identifier (the resource
+                                        name) of the phrase matcher.
+                                      type: string
+                                  type: object
+                                description: All the matched phrase matchers in the
+                                  call.
                                 type: object
                               qaScorecardResults:
                                 description: Results of scoring QaScorecards.

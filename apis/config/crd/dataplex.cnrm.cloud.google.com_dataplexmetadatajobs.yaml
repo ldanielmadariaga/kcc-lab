@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpdataplexmetadatajob
     - gcpdataplexmetadatajobs
     singular: dataplexmetadatajob
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -83,12 +79,11 @@ spec:
                     description: Required. The scope of the export job.
                     properties:
                       aspectTypes:
-                        description: |-
-                          The aspect types that are in scope for the export job, specified as
-                           relative resource names in the format
-                           `projects/{project_id_or_number}/locations/{location}/aspectTypes/{aspect_type_id}`.
-                           Only aspects that belong to the specified aspect types are affected by
-                           the job.
+                        description: The aspect types that are in scope for the export
+                          job, specified as relative resource names in the format
+                          `projects/{project_id_or_number}/locations/{location}/aspectTypes/{aspect_type_id}`.
+                          Only aspects that belong to the specified aspect types are
+                          affected by the job.
                         items:
                           type: string
                         type: array
@@ -108,12 +103,11 @@ spec:
                           type: string
                         type: array
                       entryTypes:
-                        description: |-
-                          The entry types that are in scope for the export job, specified as
-                           relative resource names in the format
-                           `projects/{project_id_or_number}/locations/{location}/entryTypes/{entry_type_id}`.
-                           Only entries that belong to the specified entry types are affected by
-                           the job.
+                        description: The entry types that are in scope for the export
+                          job, specified as relative resource names in the format
+                          `projects/{project_id_or_number}/locations/{location}/entryTypes/{entry_type_id}`.
+                          Only entries that belong to the specified entry types are
+                          affected by the job.
                         items:
                           type: string
                         type: array
@@ -172,9 +166,8 @@ spec:
                        If unspecified, defaults to `INFO`.
                     type: string
                   scope:
-                    description: |-
-                      Required. A boundary on the scope of impact that the metadata import job
-                       can have.
+                    description: Required. A boundary on the scope of impact that
+                      the metadata import job can have.
                     properties:
                       aspectTypes:
                         description: |-
@@ -229,9 +222,8 @@ spec:
                     - entryTypes
                     type: object
                   sourceCreateTime:
-                    description: |-
-                      Optional. The time when the process that created the metadata import
-                       files began.
+                    description: Optional. The time when the process that created
+                      the metadata import files began.
                     type: string
                   sourceStorageURI:
                     description: |-
@@ -270,6 +262,20 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -303,9 +309,8 @@ spec:
               state of DataplexMetadataJob
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -317,9 +322,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -413,10 +417,9 @@ spec:
                         type: string
                     type: object
                   uid:
-                    description: |-
-                      Output only. A system-generated, globally unique ID for the metadata job.
-                       If the metadata job is deleted and then re-created with the same name, this
-                       ID is different.
+                    description: Output only. A system-generated, globally unique
+                      ID for the metadata job. If the metadata job is deleted and
+                      then re-created with the same name, this ID is different.
                     type: string
                   updateTime:
                     description: Output only. The time when the metadata job was updated.

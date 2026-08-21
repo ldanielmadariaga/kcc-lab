@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: stable
@@ -22,6 +22,7 @@ spec:
     - gcpkmscryptokey
     - gcpkmscryptokeys
     singular: kmscryptokey
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
         description: KMSCryptoKey is the Schema for the KMSCryptoKey API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -66,8 +62,8 @@ spec:
             description: KMSCryptoKeySpec defines the desired state of KMSCryptoKey
             properties:
               destroyScheduledDuration:
-                description: |-
-                  Immutable. The period of time that versions of this key spend in the DESTROY_SCHEDULED state before transitioning to DESTROYED.
+                description: Immutable. The period of time that versions of this key
+                  spend in the DESTROY_SCHEDULED state before transitioning to DESTROYED.
                   If not specified at creation time, the default duration is 24 hours.
                 type: string
               importOnly:
@@ -76,10 +72,23 @@ spec:
                 type: boolean
               keyRingRef:
                 description: The KMSKeyRing that this key belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed KMSKeyRing resource.
+                    description: A reference to an externally managed KMSKeyRing resource.
                       Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyRingID}}".
                     type: string
                   name:
@@ -90,42 +99,39 @@ spec:
                     type: string
                 type: object
               purpose:
-                description: |-
-                  Immutable. The immutable purpose of this CryptoKey. See the
-                  [purpose reference](https://cloud.google.com/kms/docs/reference/rest/v1/projects.locations.keyRings.cryptoKeys#CryptoKeyPurpose)
-                  for possible inputs.
-                  Default value is "ENCRYPT_DECRYPT".
+                description: Immutable. The immutable purpose of this CryptoKey. See
+                  the [purpose reference](https://cloud.google.com/kms/docs/reference/rest/v1/projects.locations.keyRings.cryptoKeys#CryptoKeyPurpose)
+                  for possible inputs. Default value is "ENCRYPT_DECRYPT".
                 type: string
               resourceID:
-                description: |-
-                  Immutable. Optional. The name of the resource. Used for
+                description: Immutable. Optional. The name of the resource. Used for
                   creation and acquisition. When unset, the value of `metadata.name`
                   is used as the default.
                 type: string
               rotationPeriod:
-                description: |-
-                  Every time this period passes, generate a new CryptoKeyVersion and set it as the primary.
-                  The first rotation will take place after the specified period. The rotation period has
-                  the format of a decimal number with up to 9 fractional digits, followed by the
-                  letter 's' (seconds). It must be greater than a day (ie, 86400).
+                description: Every time this period passes, generate a new CryptoKeyVersion
+                  and set it as the primary. The first rotation will take place after
+                  the specified period. The rotation period has the format of a decimal
+                  number with up to 9 fractional digits, followed by the letter 's'
+                  (seconds). It must be greater than a day (ie, 86400).
                 type: string
               skipInitialVersionCreation:
-                description: |-
-                  Immutable. If set to true, the request will create a CryptoKey without any CryptoKeyVersions.
-                  You must use the 'google_kms_key_ring_import_job' resource to import the CryptoKeyVersion.
+                description: Immutable. If set to true, the request will create a
+                  CryptoKey without any CryptoKeyVersions. You must use the 'google_kms_key_ring_import_job'
+                  resource to import the CryptoKeyVersion.
                 type: boolean
               versionTemplate:
                 description: A template describing settings for new crypto key versions.
                 properties:
                   algorithm:
-                    description: |-
-                      The algorithm to use when creating a version based on this template.
-                      See the [algorithm reference](https://cloud.google.com/kms/docs/reference/rest/v1/CryptoKeyVersionAlgorithm) for possible inputs.
+                    description: The algorithm to use when creating a version based
+                      on this template. See the [algorithm reference](https://cloud.google.com/kms/docs/reference/rest/v1/CryptoKeyVersionAlgorithm)
+                      for possible inputs.
                     type: string
                   protectionLevel:
-                    description: |-
-                      Immutable. The protection level to use when creating a version based on this template.
-                      Possible values include "SOFTWARE", "HSM", "EXTERNAL", "EXTERNAL_VPC". Defaults to "SOFTWARE".
+                    description: Immutable. The protection level to use when creating
+                      a version based on this template. Possible values include "SOFTWARE",
+                      "HSM", "EXTERNAL", "EXTERNAL_VPC". Defaults to "SOFTWARE".
                     type: string
                 required:
                 - algorithm
@@ -138,9 +144,8 @@ spec:
               of KMSCryptoKey
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -152,9 +157,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

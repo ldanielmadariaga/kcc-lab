@@ -63,9 +63,51 @@ spec:
             description: ComputeNetworkAttachmentSpec defines the desired state of
               ComputeNetworkAttachment
             properties:
+              connectionEndpoints:
+                description: '[Output Only] An array of connections for all the producers
+                  connected to this network attachment.'
+                items:
+                  properties:
+                    ipAddress:
+                      description: The IPv4 address assigned to the producer instance
+                        network interface. This value will be a range in case of Serverless.
+                      type: string
+                    ipv6Address:
+                      description: The IPv6 address assigned to the producer instance
+                        network interface. This is only assigned when the stack types
+                        of both the instance network interface and the consumer subnet
+                        are IPv4_IPv6.
+                      type: string
+                    projectIDOrNum:
+                      description: The project id or number of the interface to which
+                        the IP was assigned.
+                      type: string
+                    secondaryIPCIDRRanges:
+                      description: Alias IP ranges from the same subnetwork.
+                      items:
+                        type: string
+                      type: array
+                    status:
+                      description: The status of a connected endpoint to this network
+                        attachment. Check the Status enum for the list of possible
+                        values.
+                      type: string
+                    subnetwork:
+                      description: The subnetwork used to assign the IP to the producer
+                        instance network interface.
+                      type: string
+                    subnetworkCIDRRange:
+                      description: '[Output Only] The CIDR range of the subnet from
+                        which the IPv4 internal IP was allocated from.'
+                      type: string
+                  type: object
+                type: array
               connectionPreference:
                 description: Check the ConnectionPreference enum for the list of possible
                   values.
+                type: string
+              creationTimestamp:
+                description: '[Output Only] Creation timestamp in RFC3339 text format.'
                 type: string
               description:
                 description: An optional description of this resource. Provide this
@@ -76,82 +118,39 @@ spec:
                   stored in this object. This field is used in optimistic locking.
                   An up-to-date fingerprint must be provided in order to patch.
                 type: string
+              id:
+                description: '[Output Only] The unique identifier for the resource
+                  type. The server generates this identifier.'
+                format: int64
+                type: integer
+              kind:
+                description: '[Output Only] Type of the resource.'
+                type: string
               location:
+                description: The location of this resource.
+                type: string
+              network:
+                description: '[Output Only] The URL of the network which the Network
+                  Attachment belongs to. Practically it is inferred by fetching the
+                  network of the first subnetwork associated. Because it is required
+                  that all the subnetworks must be from the same network, it is assured
+                  that the Network Attachment belongs to the same network as all the
+                  subnetworks.'
                 type: string
               producerAcceptLists:
                 description: Projects that are allowed to connect to this network
                   attachment. The project can be specified using its id or number.
                 items:
-                  description: The Project that this resource belongs to.
-                  oneOf:
-                  - not:
-                      required:
-                      - external
-                    required:
-                    - name
-                  - not:
-                      anyOf:
-                      - required:
-                        - name
-                      - required:
-                        - namespace
-                    required:
-                    - external
-                  properties:
-                    external:
-                      description: The `projectID` field of a project, when not managed
-                        by Config Connector.
-                      type: string
-                    kind:
-                      description: The kind of the Project resource; optional but
-                        must be `Project` if provided.
-                      type: string
-                    name:
-                      description: The `name` field of a `Project` resource.
-                      type: string
-                    namespace:
-                      description: The `namespace` field of a `Project` resource.
-                      type: string
-                  type: object
+                  type: string
                 type: array
               producerRejectLists:
                 description: Projects that are not allowed to connect to this network
                   attachment. The project can be specified using its id or number.
                 items:
-                  description: The Project that this resource belongs to.
-                  oneOf:
-                  - not:
-                      required:
-                      - external
-                    required:
-                    - name
-                  - not:
-                      anyOf:
-                      - required:
-                        - name
-                      - required:
-                        - namespace
-                    required:
-                    - external
-                  properties:
-                    external:
-                      description: The `projectID` field of a project, when not managed
-                        by Config Connector.
-                      type: string
-                    kind:
-                      description: The kind of the Project resource; optional but
-                        must be `Project` if provided.
-                      type: string
-                    name:
-                      description: The `name` field of a `Project` resource.
-                      type: string
-                    namespace:
-                      description: The `namespace` field of a `Project` resource.
-                      type: string
-                  type: object
+                  type: string
                 type: array
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -182,42 +181,29 @@ spec:
                     description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
+              region:
+                description: '[Output Only] URL of the region where the network attachment
+                  resides. This field applies only to the region resource. You must
+                  specify this field as part of the HTTP request URL. It is not settable
+                  as a field in the request body.'
+                type: string
               resourceID:
                 description: The ComputeNetworkAttachment name. If not given, the
                   metadata.name will be used.
                 type: string
-              subnetworkRefs:
+              selfLink:
+                description: '[Output Only] Server-defined URL for the resource.'
+                type: string
+              selfLinkWithID:
+                description: '[Output Only] Server-defined URL for this resource''s
+                  resource id.'
+                type: string
+              subnetworks:
                 description: An array of URLs where each entry is the URL of a subnet
                   provided by the service consumer to use for endpoints in the producers
                   that connect to this network attachment.
                 items:
-                  description: ComputeSubnetworkRef is a reference to a GCP ComputeSubnetwork.
-                  oneOf:
-                  - not:
-                      required:
-                      - external
-                    required:
-                    - name
-                  - not:
-                      anyOf:
-                      - required:
-                        - name
-                      - required:
-                        - namespace
-                    required:
-                    - external
-                  properties:
-                    external:
-                      description: A reference to an externally managed ComputeSubnetwork
-                        resource. Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
-                      type: string
-                    name:
-                      description: The name of a ComputeSubnetwork resource.
-                      type: string
-                    namespace:
-                      description: The namespace of a ComputeSubnetwork resource.
-                      type: string
-                  type: object
+                  type: string
                 type: array
             required:
             - location
@@ -268,80 +254,6 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
-                properties:
-                  connectionEndpoints:
-                    description: '[Output Only] An array of connections for all the
-                      producers connected to this network attachment.'
-                    items:
-                      properties:
-                        ipAddress:
-                          description: The IPv4 address assigned to the producer instance
-                            network interface. This value will be a range in case
-                            of Serverless.
-                          type: string
-                        ipv6Address:
-                          description: The IPv6 address assigned to the producer instance
-                            network interface. This is only assigned when the stack
-                            types of both the instance network interface and the consumer
-                            subnet are IPv4_IPv6.
-                          type: string
-                        projectIDOrNum:
-                          description: The project id or number of the interface to
-                            which the IP was assigned.
-                          type: string
-                        secondaryIPCIDRRanges:
-                          description: Alias IP ranges from the same subnetwork.
-                          items:
-                            type: string
-                          type: array
-                        status:
-                          description: The status of a connected endpoint to this
-                            network attachment. Check the Status enum for the list
-                            of possible values.
-                          type: string
-                        subnetwork:
-                          description: The subnetwork used to assign the IP to the
-                            producer instance network interface.
-                          type: string
-                        subnetworkCIDRRange:
-                          description: '[Output Only] The CIDR range of the subnet
-                            from which the IPv4 internal IP was allocated from.'
-                          type: string
-                      type: object
-                    type: array
-                  creationTimestamp:
-                    description: '[Output Only] Creation timestamp in RFC3339 text
-                      format.'
-                    type: string
-                  id:
-                    description: '[Output Only] The unique identifier for the resource
-                      type. The server generates this identifier.'
-                    format: int64
-                    type: integer
-                  kind:
-                    description: '[Output Only] Type of the resource.'
-                    type: string
-                  network:
-                    description: '[Output Only] The URL of the network which the Network
-                      Attachment belongs to. Practically it is inferred by fetching
-                      the network of the first subnetwork associated. Because it is
-                      required that all the subnetworks must be from the same network,
-                      it is assured that the Network Attachment belongs to the same
-                      network as all the subnetworks.'
-                    type: string
-                  region:
-                    description: '[Output Only] URL of the region where the network
-                      attachment resides. This field applies only to the region resource.
-                      You must specify this field as part of the HTTP request URL.
-                      It is not settable as a field in the request body.'
-                    type: string
-                  selfLink:
-                    description: '[Output Only] Server-defined URL for the resource.'
-                    type: string
-                  selfLinkWithID:
-                    description: '[Output Only] Server-defined URL for this resource''s
-                      resource id.'
-                    type: string
                 type: object
             type: object
         required:

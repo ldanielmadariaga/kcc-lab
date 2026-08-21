@@ -136,8 +136,13 @@ spec:
                                       value cannot be updated or deleted by the user.
                                       It can only be true for System defined attributes.
                                     type: boolean
+                                required:
+                                - displayName
+                                - id
                                 type: object
                               type: array
+                          required:
+                          - values
                           type: object
                         jsonValues:
                           description: The attribute values associated with a resource
@@ -149,6 +154,8 @@ spec:
                               items:
                                 type: string
                               type: array
+                          required:
+                          - values
                           type: object
                         stringValues:
                           description: The attribute values associated with a resource
@@ -160,6 +167,8 @@ spec:
                               items:
                                 type: string
                               type: array
+                          required:
+                          - values
                           type: object
                       type: object
                   required:

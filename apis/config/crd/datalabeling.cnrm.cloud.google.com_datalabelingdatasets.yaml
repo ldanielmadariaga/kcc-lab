@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpdatalabelingdataset
     - gcpdatalabelingdatasets
     singular: datalabelingdataset
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -65,9 +61,8 @@ spec:
             description: DataLabelingDatasetSpec defines the desired state of DataLabelingDataset
             properties:
               blockingResources:
-                description: |-
-                  Output only. The names of any related resources that are blocking changes
-                   to the dataset.
+                description: Output only. The names of any related resources that
+                  are blocking changes to the dataset.
                 items:
                   type: string
                 type: array
@@ -79,31 +74,28 @@ spec:
                 format: int64
                 type: integer
               description:
-                description: |-
-                  Optional. User-provided description of the annotation specification set.
-                   The description can be up to 10000 characters long.
+                description: Optional. User-provided description of the annotation
+                  specification set. The description can be up to 10000 characters
+                  long.
                 type: string
               displayName:
                 description: Required. The display name of the dataset. Maximum of
                   64 characters.
                 type: string
               inputConfigs:
-                description: |-
-                  Output only. This is populated with the original input configs
-                   where ImportData is called. It is available only after the clients
-                   import data to this dataset.
+                description: Output only. This is populated with the original input
+                  configs where ImportData is called. It is available only after the
+                  clients import data to this dataset.
                 items:
                   properties:
                     annotationType:
-                      description: |-
-                        Optional. The type of annotation to be performed on this data. You must
-                         specify this field if you are using this InputConfig in an
-                         [EvaluationJob][google.cloud.datalabeling.v1beta1.EvaluationJob].
+                      description: Optional. The type of annotation to be performed
+                        on this data. You must specify this field if you are using
+                        this InputConfig in an [EvaluationJob][google.cloud.datalabeling.v1beta1.EvaluationJob].
                       type: string
                     bigquerySource:
-                      description: |-
-                        Source located in BigQuery. You must specify this field if you are using
-                         this InputConfig in an [EvaluationJob][google.cloud.datalabeling.v1beta1.EvaluationJob].
+                      description: Source located in BigQuery. You must specify this
+                        field if you are using this InputConfig in an [EvaluationJob][google.cloud.datalabeling.v1beta1.EvaluationJob].
                       properties:
                         inputURI:
                           description: |-
@@ -124,10 +116,10 @@ spec:
                           type: string
                       type: object
                     classificationMetadata:
-                      description: |-
-                        Optional. Metadata about annotations for the input. You must specify this
-                         field if you are using this InputConfig in an [EvaluationJob][google.cloud.datalabeling.v1beta1.EvaluationJob] for a
-                         model version that performs classification.
+                      description: Optional. Metadata about annotations for the input.
+                        You must specify this field if you are using this InputConfig
+                        in an [EvaluationJob][google.cloud.datalabeling.v1beta1.EvaluationJob]
+                        for a model version that performs classification.
                       properties:
                         isMultiLabel:
                           description: Whether the classification task is multi-label
@@ -142,9 +134,8 @@ spec:
                       description: Source located in Cloud Storage.
                       properties:
                         inputURI:
-                          description: |-
-                            Required. The input URI of source file. This must be a Cloud Storage path
-                             (`gs://...`).
+                          description: Required. The input URI of source file. This
+                            must be a Cloud Storage path (`gs://...`).
                           type: string
                         mimeType:
                           description: Required. The format of the source file. Only
@@ -156,16 +147,28 @@ spec:
                         be specified.
                       properties:
                         languageCode:
-                          description: |-
-                            The language of this text, as a
-                             [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt).
-                             Default value is en-US.
+                          description: The language of this text, as a [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt).
+                            Default value is en-US.
                           type: string
                       type: object
                   type: object
                 type: array
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -194,9 +197,8 @@ spec:
               state of DataLabelingDataset
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -208,9 +210,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

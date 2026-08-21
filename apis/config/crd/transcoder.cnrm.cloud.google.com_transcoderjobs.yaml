@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,6 +21,7 @@ spec:
     - gcptranscoderjob
     - gcptranscoderjobs
     singular: transcoderjob
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
         description: TranscoderJob is the Schema for the TranscoderJob API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -65,58 +61,51 @@ spec:
             description: TranscoderJobSpec defines the desired state of TranscoderJob
             properties:
               batchModePriority:
-                description: |-
-                  The processing priority of a batch job.
-                  This field can only be set for batch mode jobs. The default value is 0.
-                  This value cannot be negative. Higher values correspond to higher
-                  priorities for the job.
+                description: The processing priority of a batch job. This field can
+                  only be set for batch mode jobs. The default value is 0. This value
+                  cannot be negative. Higher values correspond to higher priorities
+                  for the job.
                 format: int32
                 type: integer
               config:
                 description: The configuration for this job.
                 properties:
                   adBreaks:
-                    description: |-
-                      List of ad breaks. Specifies where to insert ad break tags in the output
-                       manifests.
+                    description: List of ad breaks. Specifies where to insert ad break
+                      tags in the output manifests.
                     items:
                       properties:
                         startTimeOffset:
-                          description: |-
-                            Start time in seconds for the ad break, relative to the output file
-                             timeline. The default is `0s`.
+                          description: Start time in seconds for the ad break, relative
+                            to the output file timeline. The default is `0s`.
                           type: string
                       type: object
                     type: array
                   editList:
-                    description: |-
-                      List of edit atoms. Defines the ultimate timeline of the resulting
-                       file or manifest.
+                    description: List of edit atoms. Defines the ultimate timeline
+                      of the resulting file or manifest.
                     items:
                       properties:
                         endTimeOffset:
-                          description: |-
-                            End time in seconds for the atom, relative to the input file timeline.
-                             When `end_time_offset` is not specified, the `inputs` are used until
-                             the end of the atom.
+                          description: End time in seconds for the atom, relative
+                            to the input file timeline. When `end_time_offset` is
+                            not specified, the `inputs` are used until the end of
+                            the atom.
                           type: string
                         inputs:
-                          description: |-
-                            List of [Input.key][google.cloud.video.transcoder.v1.Input.key] values
-                             identifying files that should be used in this atom. The listed `inputs`
-                             must have the same timeline.
+                          description: List of [Input.key][google.cloud.video.transcoder.v1.Input.key]
+                            values identifying files that should be used in this atom.
+                            The listed `inputs` must have the same timeline.
                           items:
                             type: string
                           type: array
                         key:
-                          description: |-
-                            A unique key for this atom. Must be specified when using advanced
-                             mapping.
+                          description: A unique key for this atom. Must be specified
+                            when using advanced mapping.
                           type: string
                         startTimeOffset:
-                          description: |-
-                            Start time in seconds for the atom, relative to the input file timeline.
-                             The default is `0s`.
+                          description: Start time in seconds for the atom, relative
+                            to the input file timeline. The default is `0s`.
                           type: string
                       type: object
                     type: array
@@ -128,9 +117,8 @@ spec:
                           description: Encoding of an audio stream.
                           properties:
                             bitrateBps:
-                              description: |-
-                                Required. Audio bitrate in bits per second. Must be between 1 and
-                                 10,000,000.
+                              description: Required. Audio bitrate in bits per second.
+                                Must be between 1 and 10,000,000.
                               format: int32
                               type: integer
                             channelCount:
@@ -170,36 +158,29 @@ spec:
                                  - `vorbis`
                               type: string
                             displayName:
-                              description: |-
-                                The name for this particular audio stream that
-                                 will be added to the HLS/DASH manifest. Not supported in MP4 files.
+                              description: The name for this particular audio stream
+                                that will be added to the HLS/DASH manifest. Not supported
+                                in MP4 files.
                               type: string
                             languageCode:
-                              description: |-
-                                The BCP-47 language code, such as `en-US` or `sr-Latn`. For more
-                                 information, see
-                                 https://www.unicode.org/reports/tr35/#Unicode_locale_identifier. Not
-                                 supported in MP4 files.
+                              description: The BCP-47 language code, such as `en-US`
+                                or `sr-Latn`. For more information, see https://www.unicode.org/reports/tr35/#Unicode_locale_identifier.
+                                Not supported in MP4 files.
                               type: string
                             mapping:
-                              description: |-
-                                The mapping for the
-                                 [JobConfig.edit_list][google.cloud.video.transcoder.v1.JobConfig.edit_list]
-                                 atoms with audio
-                                 [EditAtom.inputs][google.cloud.video.transcoder.v1.EditAtom.inputs].
+                              description: The mapping for the [JobConfig.edit_list][google.cloud.video.transcoder.v1.JobConfig.edit_list]
+                                atoms with audio [EditAtom.inputs][google.cloud.video.transcoder.v1.EditAtom.inputs].
                               items:
                                 properties:
                                   atomKey:
-                                    description: |-
-                                      Required. The
-                                       [EditAtom.key][google.cloud.video.transcoder.v1.EditAtom.key] that
-                                       references the atom with audio inputs in the
-                                       [JobConfig.edit_list][google.cloud.video.transcoder.v1.JobConfig.edit_list].
+                                    description: Required. The [EditAtom.key][google.cloud.video.transcoder.v1.EditAtom.key]
+                                      that references the atom with audio inputs in
+                                      the [JobConfig.edit_list][google.cloud.video.transcoder.v1.JobConfig.edit_list].
                                     type: string
                                   gainDb:
-                                    description: |-
-                                      Audio volume control in dB. Negative values decrease volume,
-                                       positive values increase. The default is 0.
+                                    description: Audio volume control in dB. Negative
+                                      values decrease volume, positive values increase.
+                                      The default is 0.
                                     type: number
                                   inputChannel:
                                     description: Required. The zero-based index of
@@ -207,9 +188,8 @@ spec:
                                     format: int32
                                     type: integer
                                   inputKey:
-                                    description: |-
-                                      Required. The [Input.key][google.cloud.video.transcoder.v1.Input.key]
-                                       that identifies the input file.
+                                    description: Required. The [Input.key][google.cloud.video.transcoder.v1.Input.key]
+                                      that identifies the input file.
                                     type: string
                                   inputTrack:
                                     description: Required. The zero-based index of
@@ -221,6 +201,12 @@ spec:
                                       the channel in the output audio stream.
                                     format: int32
                                     type: integer
+                                required:
+                                - atomKey
+                                - inputChannel
+                                - inputKey
+                                - inputTrack
+                                - outputChannel
                                 type: object
                               type: array
                             sampleRateHertz:
@@ -228,6 +214,8 @@ spec:
                                 is 48000 Hertz.
                               format: int32
                               type: integer
+                          required:
+                          - bitrateBps
                           type: object
                         key:
                           description: A unique key for this elementary stream.
@@ -249,42 +237,38 @@ spec:
                                  - `webvtt`
                               type: string
                             displayName:
-                              description: |-
-                                The name for this particular text stream that
-                                 will be added to the HLS/DASH manifest. Not supported in MP4 files.
+                              description: The name for this particular text stream
+                                that will be added to the HLS/DASH manifest. Not supported
+                                in MP4 files.
                               type: string
                             languageCode:
-                              description: |-
-                                The BCP-47 language code, such as `en-US` or `sr-Latn`. For more
-                                 information, see
-                                 https://www.unicode.org/reports/tr35/#Unicode_locale_identifier. Not
-                                 supported in MP4 files.
+                              description: The BCP-47 language code, such as `en-US`
+                                or `sr-Latn`. For more information, see https://www.unicode.org/reports/tr35/#Unicode_locale_identifier.
+                                Not supported in MP4 files.
                               type: string
                             mapping:
-                              description: |-
-                                The mapping for the
-                                 [JobConfig.edit_list][google.cloud.video.transcoder.v1.JobConfig.edit_list]
-                                 atoms with text
-                                 [EditAtom.inputs][google.cloud.video.transcoder.v1.EditAtom.inputs].
+                              description: The mapping for the [JobConfig.edit_list][google.cloud.video.transcoder.v1.JobConfig.edit_list]
+                                atoms with text [EditAtom.inputs][google.cloud.video.transcoder.v1.EditAtom.inputs].
                               items:
                                 properties:
                                   atomKey:
-                                    description: |-
-                                      Required. The
-                                       [EditAtom.key][google.cloud.video.transcoder.v1.EditAtom.key] that
-                                       references atom with text inputs in the
-                                       [JobConfig.edit_list][google.cloud.video.transcoder.v1.JobConfig.edit_list].
+                                    description: Required. The [EditAtom.key][google.cloud.video.transcoder.v1.EditAtom.key]
+                                      that references atom with text inputs in the
+                                      [JobConfig.edit_list][google.cloud.video.transcoder.v1.JobConfig.edit_list].
                                     type: string
                                   inputKey:
-                                    description: |-
-                                      Required. The [Input.key][google.cloud.video.transcoder.v1.Input.key]
-                                       that identifies the input file.
+                                    description: Required. The [Input.key][google.cloud.video.transcoder.v1.Input.key]
+                                      that identifies the input file.
                                     type: string
                                   inputTrack:
                                     description: Required. The zero-based index of
                                       the track in the input file.
                                     format: int32
                                     type: integer
+                                required:
+                                - atomKey
+                                - inputKey
+                                - inputTrack
                                 type: object
                               type: array
                           type: object
@@ -295,46 +279,46 @@ spec:
                               description: H264 codec settings.
                               properties:
                                 allowOpenGop:
-                                  description: |-
-                                    Specifies whether an open Group of Pictures (GOP) structure should be
-                                     allowed or not. The default is `false`.
+                                  description: Specifies whether an open Group of
+                                    Pictures (GOP) structure should be allowed or
+                                    not. The default is `false`.
                                   type: boolean
                                 aqStrength:
-                                  description: |-
-                                    Specify the intensity of the adaptive quantizer (AQ). Must be between 0
-                                     and 1, where 0 disables the quantizer and 1 maximizes the quantizer. A
-                                     higher value equals a lower bitrate but smoother image. The default is 0.
+                                  description: Specify the intensity of the adaptive
+                                    quantizer (AQ). Must be between 0 and 1, where
+                                    0 disables the quantizer and 1 maximizes the quantizer.
+                                    A higher value equals a lower bitrate but smoother
+                                    image. The default is 0.
                                   type: number
                                 bFrameCount:
-                                  description: |-
-                                    The number of consecutive B-frames. Must be greater than or equal to
-                                     zero. Must be less than
-                                     [H264CodecSettings.gop_frame_count][google.cloud.video.transcoder.v1.VideoStream.H264CodecSettings.gop_frame_count]
-                                     if set. The default is 0.
+                                  description: The number of consecutive B-frames.
+                                    Must be greater than or equal to zero. Must be
+                                    less than [H264CodecSettings.gop_frame_count][google.cloud.video.transcoder.v1.VideoStream.H264CodecSettings.gop_frame_count]
+                                    if set. The default is 0.
                                   format: int32
                                   type: integer
                                 bPyramid:
-                                  description: |-
-                                    Allow B-pyramid for reference frame selection. This may not be supported
-                                     on all decoders. The default is `false`.
+                                  description: Allow B-pyramid for reference frame
+                                    selection. This may not be supported on all decoders.
+                                    The default is `false`.
                                   type: boolean
                                 bitrateBps:
-                                  description: |-
-                                    Required. The video bitrate in bits per second. The minimum value is
-                                     1,000. The maximum value is 800,000,000.
+                                  description: Required. The video bitrate in bits
+                                    per second. The minimum value is 1,000. The maximum
+                                    value is 800,000,000.
                                   format: int32
                                   type: integer
                                 crfLevel:
-                                  description: |-
-                                    Target CRF level. Must be between 10 and 36, where 10 is the highest
-                                     quality and 36 is the most efficient compression. The default is 21.
+                                  description: Target CRF level. Must be between 10
+                                    and 36, where 10 is the highest quality and 36
+                                    is the most efficient compression. The default
+                                    is 21.
                                   format: int32
                                   type: integer
                                 enableTwoPass:
-                                  description: |-
-                                    Use two-pass encoding strategy to achieve better video quality.
-                                     [H264CodecSettings.rate_control_mode][google.cloud.video.transcoder.v1.VideoStream.H264CodecSettings.rate_control_mode]
-                                     must be `vbr`. The default is `false`.
+                                  description: Use two-pass encoding strategy to achieve
+                                    better video quality. [H264CodecSettings.rate_control_mode][google.cloud.video.transcoder.v1.VideoStream.H264CodecSettings.rate_control_mode]
+                                    must be `vbr`. The default is `false`.
                                   type: boolean
                                 entropyCoder:
                                   description: |-
@@ -346,27 +330,24 @@ spec:
                                      - `cabac`
                                   type: string
                                 frameRate:
-                                  description: |-
-                                    Required. The target video frame rate in frames per second (FPS). Must be
-                                     less than or equal to 120.
+                                  description: Required. The target video frame rate
+                                    in frames per second (FPS). Must be less than
+                                    or equal to 120.
                                   type: number
                                 frameRateConversionStrategy:
-                                  description: |-
-                                    Optional. Frame rate conversion strategy for desired frame rate. The
-                                     default is `DOWNSAMPLE`.
+                                  description: Optional. Frame rate conversion strategy
+                                    for desired frame rate. The default is `DOWNSAMPLE`.
                                   type: string
                                 gopDuration:
-                                  description: |-
-                                    Select the GOP size based on the specified duration. The default is
-                                     `3s`. Note that `gopDuration` must be less than or equal to
-                                     [`segmentDuration`](#SegmentSettings), and
-                                     [`segmentDuration`](#SegmentSettings) must be divisible by
-                                     `gopDuration`.
+                                  description: Select the GOP size based on the specified
+                                    duration. The default is `3s`. Note that `gopDuration`
+                                    must be less than or equal to [`segmentDuration`](#SegmentSettings),
+                                    and [`segmentDuration`](#SegmentSettings) must
+                                    be divisible by `gopDuration`.
                                   type: string
                                 gopFrameCount:
-                                  description: |-
-                                    Select the GOP size based on the specified frame count. Must be greater
-                                     than zero.
+                                  description: Select the GOP size based on the specified
+                                    frame count. Must be greater than zero.
                                   format: int32
                                   type: integer
                                 heightPixels:
@@ -402,13 +383,12 @@ spec:
                                      - `yuv444p12` 12-bit HDR pixel format
                                   type: string
                                 preset:
-                                  description: |-
-                                    Enforces the specified codec preset. The default is `veryfast`. The
-                                     available options are
-                                     [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.264#Preset).
-                                     Note that certain values for this field may cause the
-                                     transcoder to override other fields you set in the `H264CodecSettings`
-                                     message.
+                                  description: Enforces the specified codec preset.
+                                    The default is `veryfast`. The available options
+                                    are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.264#Preset).
+                                    Note that certain values for this field may cause
+                                    the transcoder to override other fields you set
+                                    in the `H264CodecSettings` message.
                                   type: string
                                 profile:
                                   description: |-
@@ -439,25 +419,22 @@ spec:
                                     for H264.
                                   type: object
                                 tune:
-                                  description: |-
-                                    Enforces the specified codec tune. The available options are
-                                     [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.264#Tune).
-                                     Note that certain values for this field may cause the
-                                     transcoder to override other fields you set in the `H264CodecSettings`
-                                     message.
+                                  description: Enforces the specified codec tune.
+                                    The available options are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.264#Tune).
+                                    Note that certain values for this field may cause
+                                    the transcoder to override other fields you set
+                                    in the `H264CodecSettings` message.
                                   type: string
                                 vbvFullnessBits:
-                                  description: |-
-                                    Initial fullness of the Video Buffering Verifier (VBV) buffer in bits.
-                                     Must be greater than zero. The default is equal to 90% of
-                                     [H264CodecSettings.vbv_size_bits][google.cloud.video.transcoder.v1.VideoStream.H264CodecSettings.vbv_size_bits].
+                                  description: Initial fullness of the Video Buffering
+                                    Verifier (VBV) buffer in bits. Must be greater
+                                    than zero. The default is equal to 90% of [H264CodecSettings.vbv_size_bits][google.cloud.video.transcoder.v1.VideoStream.H264CodecSettings.vbv_size_bits].
                                   format: int32
                                   type: integer
                                 vbvSizeBits:
-                                  description: |-
-                                    Size of the Video Buffering Verifier (VBV) buffer in bits. Must be
-                                     greater than zero. The default is equal to
-                                     [H264CodecSettings.bitrate_bps][google.cloud.video.transcoder.v1.VideoStream.H264CodecSettings.bitrate_bps].
+                                  description: Size of the Video Buffering Verifier
+                                    (VBV) buffer in bits. Must be greater than zero.
+                                    The default is equal to [H264CodecSettings.bitrate_bps][google.cloud.video.transcoder.v1.VideoStream.H264CodecSettings.bitrate_bps].
                                   format: int32
                                   type: integer
                                 widthPixels:
@@ -472,74 +449,74 @@ spec:
                                      and swaps the requested height and width for the output.
                                   format: int32
                                   type: integer
+                              required:
+                              - bitrateBps
+                              - frameRate
                               type: object
                             h265:
                               description: H265 codec settings.
                               properties:
                                 allowOpenGop:
-                                  description: |-
-                                    Specifies whether an open Group of Pictures (GOP) structure should be
-                                     allowed or not. The default is `false`.
+                                  description: Specifies whether an open Group of
+                                    Pictures (GOP) structure should be allowed or
+                                    not. The default is `false`.
                                   type: boolean
                                 aqStrength:
-                                  description: |-
-                                    Specify the intensity of the adaptive quantizer (AQ). Must be between 0
-                                     and 1, where 0 disables the quantizer and 1 maximizes the quantizer. A
-                                     higher value equals a lower bitrate but smoother image. The default is 0.
+                                  description: Specify the intensity of the adaptive
+                                    quantizer (AQ). Must be between 0 and 1, where
+                                    0 disables the quantizer and 1 maximizes the quantizer.
+                                    A higher value equals a lower bitrate but smoother
+                                    image. The default is 0.
                                   type: number
                                 bFrameCount:
-                                  description: |-
-                                    The number of consecutive B-frames. Must be greater than or equal to
-                                     zero. Must be less than
-                                     [H265CodecSettings.gop_frame_count][google.cloud.video.transcoder.v1.VideoStream.H265CodecSettings.gop_frame_count]
-                                     if set. The default is 0.
+                                  description: The number of consecutive B-frames.
+                                    Must be greater than or equal to zero. Must be
+                                    less than [H265CodecSettings.gop_frame_count][google.cloud.video.transcoder.v1.VideoStream.H265CodecSettings.gop_frame_count]
+                                    if set. The default is 0.
                                   format: int32
                                   type: integer
                                 bPyramid:
-                                  description: |-
-                                    Allow B-pyramid for reference frame selection. This may not be supported
-                                     on all decoders. The default is `false`.
+                                  description: Allow B-pyramid for reference frame
+                                    selection. This may not be supported on all decoders.
+                                    The default is `false`.
                                   type: boolean
                                 bitrateBps:
-                                  description: |-
-                                    Required. The video bitrate in bits per second. The minimum value is
-                                     1,000. The maximum value is 800,000,000.
+                                  description: Required. The video bitrate in bits
+                                    per second. The minimum value is 1,000. The maximum
+                                    value is 800,000,000.
                                   format: int32
                                   type: integer
                                 crfLevel:
-                                  description: |-
-                                    Target CRF level. Must be between 10 and 36, where 10 is the highest
-                                     quality and 36 is the most efficient compression. The default is 21.
+                                  description: Target CRF level. Must be between 10
+                                    and 36, where 10 is the highest quality and 36
+                                    is the most efficient compression. The default
+                                    is 21.
                                   format: int32
                                   type: integer
                                 enableTwoPass:
-                                  description: |-
-                                    Use two-pass encoding strategy to achieve better video quality.
-                                     [H265CodecSettings.rate_control_mode][google.cloud.video.transcoder.v1.VideoStream.H265CodecSettings.rate_control_mode]
-                                     must be `vbr`. The default is `false`.
+                                  description: Use two-pass encoding strategy to achieve
+                                    better video quality. [H265CodecSettings.rate_control_mode][google.cloud.video.transcoder.v1.VideoStream.H265CodecSettings.rate_control_mode]
+                                    must be `vbr`. The default is `false`.
                                   type: boolean
                                 frameRate:
-                                  description: |-
-                                    Required. The target video frame rate in frames per second (FPS). Must be
-                                     less than or equal to 120.
+                                  description: Required. The target video frame rate
+                                    in frames per second (FPS). Must be less than
+                                    or equal to 120.
                                   type: number
                                 frameRateConversionStrategy:
-                                  description: |-
-                                    Optional. Frame rate conversion strategy for desired frame rate. The
-                                     default is `DOWNSAMPLE`.
+                                  description: Optional. Frame rate conversion strategy
+                                    for desired frame rate. The default is `DOWNSAMPLE`.
                                   type: string
                                 gopDuration:
-                                  description: |-
-                                    Select the GOP size based on the specified duration. The default is
-                                     `3s`. Note that `gopDuration` must be less than or equal to
-                                     [`segmentDuration`](#SegmentSettings), and
-                                     [`segmentDuration`](#SegmentSettings) must be divisible by
-                                     `gopDuration`.
+                                  description: Select the GOP size based on the specified
+                                    duration. The default is `3s`. Note that `gopDuration`
+                                    must be less than or equal to [`segmentDuration`](#SegmentSettings),
+                                    and [`segmentDuration`](#SegmentSettings) must
+                                    be divisible by `gopDuration`.
                                   type: string
                                 gopFrameCount:
-                                  description: |-
-                                    Select the GOP size based on the specified frame count. Must be greater
-                                     than zero.
+                                  description: Select the GOP size based on the specified
+                                    frame count. Must be greater than zero.
                                   format: int32
                                   type: integer
                                 hdr10:
@@ -579,13 +556,12 @@ spec:
                                      - `yuv444p12` 12-bit HDR pixel format
                                   type: string
                                 preset:
-                                  description: |-
-                                    Enforces the specified codec preset. The default is `veryfast`. The
-                                     available options are
-                                     [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.265).
-                                     Note that certain values for this field may cause the
-                                     transcoder to override other fields you set in the `H265CodecSettings`
-                                     message.
+                                  description: Enforces the specified codec preset.
+                                    The default is `veryfast`. The available options
+                                    are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.265).
+                                    Note that certain values for this field may cause
+                                    the transcoder to override other fields you set
+                                    in the `H265CodecSettings` message.
                                   type: string
                                 profile:
                                   description: |-
@@ -631,24 +607,22 @@ spec:
                                     for H265.
                                   type: object
                                 tune:
-                                  description: |-
-                                    Enforces the specified codec tune. The available options are
-                                     [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.265).
-                                     Note that certain values for this field may cause the
-                                     transcoder to override other fields you set in the `H265CodecSettings`
-                                     message.
+                                  description: Enforces the specified codec tune.
+                                    The available options are [FFmpeg-compatible](https://trac.ffmpeg.org/wiki/Encode/H.265).
+                                    Note that certain values for this field may cause
+                                    the transcoder to override other fields you set
+                                    in the `H265CodecSettings` message.
                                   type: string
                                 vbvFullnessBits:
-                                  description: |-
-                                    Initial fullness of the Video Buffering Verifier (VBV) buffer in bits.
-                                     Must be greater than zero. The default is equal to 90% of
-                                     [H265CodecSettings.vbv_size_bits][google.cloud.video.transcoder.v1.VideoStream.H265CodecSettings.vbv_size_bits].
+                                  description: Initial fullness of the Video Buffering
+                                    Verifier (VBV) buffer in bits. Must be greater
+                                    than zero. The default is equal to 90% of [H265CodecSettings.vbv_size_bits][google.cloud.video.transcoder.v1.VideoStream.H265CodecSettings.vbv_size_bits].
                                   format: int32
                                   type: integer
                                 vbvSizeBits:
-                                  description: |-
-                                    Size of the Video Buffering Verifier (VBV) buffer in bits. Must be
-                                     greater than zero. The default is equal to `VideoStream.bitrate_bps`.
+                                  description: Size of the Video Buffering Verifier
+                                    (VBV) buffer in bits. Must be greater than zero.
+                                    The default is equal to `VideoStream.bitrate_bps`.
                                   format: int32
                                   type: integer
                                 widthPixels:
@@ -663,14 +637,17 @@ spec:
                                      and swaps the requested height and width for the output.
                                   format: int32
                                   type: integer
+                              required:
+                              - bitrateBps
+                              - frameRate
                               type: object
                             vp9:
                               description: VP9 codec settings.
                               properties:
                                 bitrateBps:
-                                  description: |-
-                                    Required. The video bitrate in bits per second. The minimum value is
-                                     1,000. The maximum value is 480,000,000.
+                                  description: Required. The video bitrate in bits
+                                    per second. The minimum value is 1,000. The maximum
+                                    value is 480,000,000.
                                   format: int32
                                   type: integer
                                 crfLevel:
@@ -682,27 +659,24 @@ spec:
                                   format: int32
                                   type: integer
                                 frameRate:
-                                  description: |-
-                                    Required. The target video frame rate in frames per second (FPS). Must be
-                                     less than or equal to 120.
+                                  description: Required. The target video frame rate
+                                    in frames per second (FPS). Must be less than
+                                    or equal to 120.
                                   type: number
                                 frameRateConversionStrategy:
-                                  description: |-
-                                    Optional. Frame rate conversion strategy for desired frame rate. The
-                                     default is `DOWNSAMPLE`.
+                                  description: Optional. Frame rate conversion strategy
+                                    for desired frame rate. The default is `DOWNSAMPLE`.
                                   type: string
                                 gopDuration:
-                                  description: |-
-                                    Select the GOP size based on the specified duration. The default is
-                                     `3s`. Note that `gopDuration` must be less than or equal to
-                                     [`segmentDuration`](#SegmentSettings), and
-                                     [`segmentDuration`](#SegmentSettings) must be divisible by
-                                     `gopDuration`.
+                                  description: Select the GOP size based on the specified
+                                    duration. The default is `3s`. Note that `gopDuration`
+                                    must be less than or equal to [`segmentDuration`](#SegmentSettings),
+                                    and [`segmentDuration`](#SegmentSettings) must
+                                    be divisible by `gopDuration`.
                                   type: string
                                 gopFrameCount:
-                                  description: |-
-                                    Select the GOP size based on the specified frame count. Must be greater
-                                     than zero.
+                                  description: Select the GOP size based on the specified
+                                    frame count. Must be greater than zero.
                                   format: int32
                                   type: integer
                                 heightPixels:
@@ -777,25 +751,27 @@ spec:
                                      and swaps the requested height and width for the output.
                                   format: int32
                                   type: integer
+                              required:
+                              - bitrateBps
+                              - frameRate
                               type: object
                           type: object
                       type: object
                     type: array
                   encryptions:
-                    description: |-
-                      List of encryption configurations for the content.
-                       Each configuration has an ID. Specify this ID in the
-                       [MuxStream.encryption_id][google.cloud.video.transcoder.v1.MuxStream.encryption_id]
-                       field to indicate the configuration to use for that `MuxStream` output.
+                    description: List of encryption configurations for the content.
+                      Each configuration has an ID. Specify this ID in the [MuxStream.encryption_id][google.cloud.video.transcoder.v1.MuxStream.encryption_id]
+                      field to indicate the configuration to use for that `MuxStream`
+                      output.
                     items:
                       properties:
                         aes128:
                           description: Configuration for AES-128 encryption.
                           type: object
                         drmSystems:
-                          description: |-
-                            Required. DRM system(s) to use; at least one must be specified. If a
-                             DRM system is omitted, it is considered disabled.
+                          description: Required. DRM system(s) to use; at least one
+                            must be specified. If a DRM system is omitted, it is considered
+                            disabled.
                           properties:
                             clearkey:
                               description: Clearkey configuration.
@@ -826,6 +802,8 @@ spec:
                                  - `cenc`
                                  - `cbcs`
                               type: string
+                          required:
+                          - scheme
                           type: object
                         sampleAes:
                           description: Configuration for SAMPLE-AES encryption.
@@ -842,7 +820,12 @@ spec:
                                  Note that only numbered versions are supported. Aliases like "latest" are
                                  not supported.
                               type: string
+                          required:
+                          - secretVersion
                           type: object
+                      required:
+                      - drmSystems
+                      - id
                       type: object
                     type: array
                   inputs:
@@ -858,20 +841,21 @@ spec:
                               items:
                                 properties:
                                   detectLanguages:
-                                    description: |-
-                                      Optional. Whether to automatically detect the languages present in the
-                                       track. If true, the system will attempt to identify all the languages
-                                       present in the track and populate the languages field.
+                                    description: Optional. Whether to automatically
+                                      detect the languages present in the track. If
+                                      true, the system will attempt to identify all
+                                      the languages present in the track and populate
+                                      the languages field.
                                     type: boolean
                                   inputTrack:
                                     description: The input track.
                                     format: int32
                                     type: integer
                                   languages:
-                                    description: |-
-                                      Optional. A list of languages spoken in the input asset, represented by a
-                                       BCP 47 language code, such as "en-US" or "sr-Latn". For more information,
-                                       see https://www.unicode.org/reports/tr35/#Unicode_locale_identifier.
+                                    description: Optional. A list of languages spoken
+                                      in the input asset, represented by a BCP 47
+                                      language code, such as "en-US" or "sr-Latn".
+                                      For more information, see https://www.unicode.org/reports/tr35/#Unicode_locale_identifier.
                                     items:
                                       type: string
                                     type: array
@@ -879,9 +863,8 @@ spec:
                               type: array
                           type: object
                         key:
-                          description: |-
-                            A unique key for this input. Must be specified when using advanced
-                             mapping and edit lists.
+                          description: A unique key for this input. Must be specified
+                            when using advanced mapping and edit lists.
                           type: string
                         preprocessingConfig:
                           description: Preprocessing configurations.
@@ -920,22 +903,22 @@ spec:
                               description: Color preprocessing configuration.
                               properties:
                                 brightness:
-                                  description: |-
-                                    Control brightness of the video. Enter a value between -1 and 1, where -1
-                                     is minimum brightness and 1 is maximum brightness. 0 is no change. The
-                                     default is 0.
+                                  description: Control brightness of the video. Enter
+                                    a value between -1 and 1, where -1 is minimum
+                                    brightness and 1 is maximum brightness. 0 is no
+                                    change. The default is 0.
                                   type: number
                                 contrast:
-                                  description: |-
-                                    Control black and white contrast of the video. Enter a value between -1
-                                     and 1, where -1 is minimum contrast and 1 is maximum contrast. 0 is no
-                                     change. The default is 0.
+                                  description: Control black and white contrast of
+                                    the video. Enter a value between -1 and 1, where
+                                    -1 is minimum contrast and 1 is maximum contrast.
+                                    0 is no change. The default is 0.
                                   type: number
                                 saturation:
-                                  description: |-
-                                    Control color saturation of the video. Enter a value between -1 and 1,
-                                     where -1 is fully desaturated and 1 is maximum saturation. 0 is no
-                                     change. The default is 0.
+                                  description: Control color saturation of the video.
+                                    Enter a value between -1 and 1, where -1 is fully
+                                    desaturated and 1 is maximum saturation. 0 is
+                                    no change. The default is 0.
                                   type: number
                               type: object
                             crop:
@@ -969,10 +952,10 @@ spec:
                                   description: Enable deblocker. The default is `false`.
                                   type: boolean
                                 strength:
-                                  description: |-
-                                    Set strength of the deblocker. Enter a value between 0 and 1. The higher
-                                     the value, the stronger the block removal. 0 is no deblocking. The
-                                     default is 0.
+                                  description: Set strength of the deblocker. Enter
+                                    a value between 0 and 1. The higher the value,
+                                    the stronger the block removal. 0 is no deblocking.
+                                    The default is 0.
                                   type: number
                               type: object
                             deinterlace:
@@ -983,9 +966,9 @@ spec:
                                     Filter Configuration.
                                   properties:
                                     deinterlaceAllFrames:
-                                      description: |-
-                                        Deinterlace all frames rather than just the frames identified as
-                                         interlaced. The default is `false`.
+                                      description: Deinterlace all frames rather than
+                                        just the frames identified as interlaced.
+                                        The default is `false`.
                                       type: boolean
                                     mode:
                                       description: |-
@@ -1012,14 +995,13 @@ spec:
                                     Filter Configuration.
                                   properties:
                                     deinterlaceAllFrames:
-                                      description: |-
-                                        Deinterlace all frames rather than just the frames identified as
-                                         interlaced. The default is `false`.
+                                      description: Deinterlace all frames rather than
+                                        just the frames identified as interlaced.
+                                        The default is `false`.
                                       type: boolean
                                     disableSpatialInterlacing:
-                                      description: |-
-                                        Disable spacial interlacing.
-                                         The default is `false`.
+                                      description: Disable spacial interlacing. The
+                                        default is `false`.
                                       type: boolean
                                     mode:
                                       description: |-
@@ -1046,9 +1028,10 @@ spec:
                               description: Denoise preprocessing configuration.
                               properties:
                                 strength:
-                                  description: |-
-                                    Set strength of the denoise. Enter a value between 0 and 1. The higher
-                                     the value, the smoother the image. 0 is no denoising. The default is 0.
+                                  description: Set strength of the denoise. Enter
+                                    a value between 0 and 1. The higher the value,
+                                    the smoother the image. 0 is no denoising. The
+                                    default is 0.
                                   type: number
                                 tune:
                                   description: |-
@@ -1086,13 +1069,11 @@ spec:
                               type: object
                           type: object
                         uri:
-                          description: |-
-                            URI of the media. Input files must be at least 5 seconds in duration and
-                             stored in Cloud Storage (for example, `gs://bucket/inputs/file.mp4`).
-                             If empty, the value is populated from
-                             [Job.input_uri][google.cloud.video.transcoder.v1.Job.input_uri]. See
-                             [Supported input and output
-                             formats](https://cloud.google.com/transcoder/docs/concepts/supported-input-and-output-formats).
+                          description: URI of the media. Input files must be at least
+                            5 seconds in duration and stored in Cloud Storage (for
+                            example, `gs://bucket/inputs/file.mp4`). If empty, the
+                            value is populated from [Job.input_uri][google.cloud.video.transcoder.v1.Job.input_uri].
+                            See [Supported input and output formats](https://cloud.google.com/transcoder/docs/concepts/supported-input-and-output-formats).
                           type: string
                       type: object
                     type: array
@@ -1104,16 +1085,14 @@ spec:
                           description: '`DASH` manifest configuration.'
                           properties:
                             segmentReferenceScheme:
-                              description: |-
-                                The segment reference scheme for a `DASH` manifest. The default is
-                                 `SEGMENT_LIST`.
+                              description: The segment reference scheme for a `DASH`
+                                manifest. The default is `SEGMENT_LIST`.
                               type: string
                           type: object
                         fileName:
-                          description: |-
-                            The name of the generated file. The default is `manifest` with the
-                             extension suffix corresponding to the
-                             [Manifest.type][google.cloud.video.transcoder.v1.Manifest.type].
+                          description: The name of the generated file. The default
+                            is `manifest` with the extension suffix corresponding
+                            to the [Manifest.type][google.cloud.video.transcoder.v1.Manifest.type].
                           type: string
                         muxStreams:
                           description: |-
@@ -1131,6 +1110,9 @@ spec:
                         type:
                           description: Required. Type of the manifest.
                           type: string
+                      required:
+                      - muxStreams
+                      - type
                       type: object
                     type: array
                   muxStreams:
@@ -1158,17 +1140,14 @@ spec:
                              formats](https://cloud.google.com/transcoder/docs/concepts/supported-input-and-output-formats)
                           type: string
                         elementaryStreams:
-                          description: |-
-                            List of
-                             [ElementaryStream.key][google.cloud.video.transcoder.v1.ElementaryStream.key]
-                             values multiplexed in this stream.
+                          description: List of [ElementaryStream.key][google.cloud.video.transcoder.v1.ElementaryStream.key]
+                            values multiplexed in this stream.
                           items:
                             type: string
                           type: array
                         encryptionID:
-                          description: |-
-                            Identifier of the encryption configuration to use. If omitted, output will
-                             be unencrypted.
+                          description: Identifier of the encryption configuration
+                            to use. If omitted, output will be unencrypted.
                           type: string
                         fileName:
                           description: |-
@@ -1205,12 +1184,13 @@ spec:
                                 file. The default is `false`.
                               type: boolean
                             segmentDuration:
-                              description: |-
-                                Duration of the segments in seconds. The default is `6.0s`. Note that
-                                 `segmentDuration` must be greater than or equal to
-                                 [`gopDuration`](#videostream), and `segmentDuration` must be divisible by
-                                 [`gopDuration`](#videostream).
+                              description: Duration of the segments in seconds. The
+                                default is `6.0s`. Note that `segmentDuration` must
+                                be greater than or equal to [`gopDuration`](#videostream),
+                                and `segmentDuration` must be divisible by [`gopDuration`](#videostream).
                               type: string
+                          required:
+                          - individualSegments
                           type: object
                       type: object
                     type: array
@@ -1218,12 +1198,10 @@ spec:
                     description: Output configuration.
                     properties:
                       uri:
-                        description: |-
-                          URI for the output file(s). For example, `gs://my-bucket/outputs/`. Must be
-                           a directory and not a top-level bucket. If empty, the value is populated
-                           from [Job.output_uri][google.cloud.video.transcoder.v1.Job.output_uri]. See
-                           [Supported input and output
-                           formats](https://cloud.google.com/transcoder/docs/concepts/supported-input-and-output-formats).
+                        description: URI for the output file(s). For example, `gs://my-bucket/outputs/`.
+                          Must be a directory and not a top-level bucket. If empty,
+                          the value is populated from [Job.output_uri][google.cloud.video.transcoder.v1.Job.output_uri].
+                          See [Supported input and output formats](https://cloud.google.com/transcoder/docs/concepts/supported-input-and-output-formats).
                         type: string
                     type: object
                   overlays:
@@ -1232,9 +1210,8 @@ spec:
                     items:
                       properties:
                         animations:
-                          description: |-
-                            List of animations. The list should be chronological, without any time
-                             overlap.
+                          description: List of animations. The list should be chronological,
+                            without any time overlap.
                           items:
                             properties:
                               animationEnd:
@@ -1249,9 +1226,8 @@ spec:
                                 description: Display overlay object with fade animation.
                                 properties:
                                   endTimeOffset:
-                                    description: |-
-                                      The time to end the fade animation, in seconds. Default:
-                                       `start_time_offset` + 1s
+                                    description: 'The time to end the fade animation,
+                                      in seconds. Default: `start_time_offset` + 1s'
                                     type: string
                                   fadeType:
                                     description: 'Required. Type of fade animation:
@@ -1262,12 +1238,13 @@ spec:
                                       in seconds. Default: 0'
                                     type: string
                                   xy:
-                                    description: |-
-                                      Normalized coordinates based on output video resolution. Valid
-                                       values: `0.0`–`1.0`. `xy` is the upper-left coordinate of the overlay
-                                       object. For example, use the x and y coordinates {0,0} to position the
-                                       top-left corner of the overlay animation in the top-left corner of the
-                                       output video.
+                                    description: 'Normalized coordinates based on
+                                      output video resolution. Valid values: `0.0`–`1.0`.
+                                      `xy` is the upper-left coordinate of the overlay
+                                      object. For example, use the x and y coordinates
+                                      {0,0} to position the top-left corner of the
+                                      overlay animation in the top-left corner of
+                                      the output video.'
                                     properties:
                                       x:
                                         description: Normalized x coordinate.
@@ -1276,6 +1253,8 @@ spec:
                                         description: Normalized y coordinate.
                                         type: number
                                     type: object
+                                required:
+                                - fadeType
                                 type: object
                               animationStatic:
                                 description: Display static overlay object.
@@ -1285,12 +1264,13 @@ spec:
                                       overlay object, in seconds. Default: 0'
                                     type: string
                                   xy:
-                                    description: |-
-                                      Normalized coordinates based on output video resolution. Valid
-                                       values: `0.0`–`1.0`. `xy` is the upper-left coordinate of the overlay
-                                       object. For example, use the x and y coordinates {0,0} to position the
-                                       top-left corner of the overlay animation in the top-left corner of the
-                                       output video.
+                                    description: 'Normalized coordinates based on
+                                      output video resolution. Valid values: `0.0`–`1.0`.
+                                      `xy` is the upper-left coordinate of the overlay
+                                      object. For example, use the x and y coordinates
+                                      {0,0} to position the top-left corner of the
+                                      overlay animation in the top-left corner of
+                                      the output video.'
                                     properties:
                                       x:
                                         description: Normalized x coordinate.
@@ -1306,16 +1286,16 @@ spec:
                           description: Image overlay.
                           properties:
                             alpha:
-                              description: |-
-                                Target image opacity. Valid values are from  `1.0` (solid, default) to
-                                 `0.0` (transparent), exclusive. Set this to a value greater than `0.0`.
+                              description: Target image opacity. Valid values are
+                                from  `1.0` (solid, default) to `0.0` (transparent),
+                                exclusive. Set this to a value greater than `0.0`.
                               type: number
                             resolution:
-                              description: |-
-                                Normalized image resolution, based on output video resolution. Valid
-                                 values: `0.0`–`1.0`. To respect the original image aspect ratio, set
-                                 either `x` or `y` to `0.0`. To use the original image resolution, set
-                                 both `x` and `y` to `0.0`.
+                              description: 'Normalized image resolution, based on
+                                output video resolution. Valid values: `0.0`–`1.0`.
+                                To respect the original image aspect ratio, set either
+                                `x` or `y` to `0.0`. To use the original image resolution,
+                                set both `x` and `y` to `0.0`.'
                               properties:
                                 x:
                                   description: Normalized x coordinate.
@@ -1325,10 +1305,12 @@ spec:
                                   type: number
                               type: object
                             uri:
-                              description: |-
-                                Required. URI of the image in Cloud Storage. For example,
-                                 `gs://bucket/inputs/image.png`. Only PNG and JPEG images are supported.
+                              description: Required. URI of the image in Cloud Storage.
+                                For example, `gs://bucket/inputs/image.png`. Only
+                                PNG and JPEG images are supported.
                               type: string
+                          required:
+                          - uri
                           type: object
                       type: object
                     type: array
@@ -1337,6 +1319,20 @@ spec:
                     properties:
                       topicRef:
                         description: TopicRef is a reference to a PubSubTopic.
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
                         properties:
                           external:
                             description: A reference to an externally managed PubSubTopic
@@ -1351,22 +1347,21 @@ spec:
                         type: object
                     type: object
                   spriteSheets:
-                    description: |-
-                      List of output sprite sheets.
-                       Spritesheets require at least one VideoStream in the Jobconfig.
+                    description: List of output sprite sheets. Spritesheets require
+                      at least one VideoStream in the Jobconfig.
                     items:
                       properties:
                         columnCount:
-                          description: |-
-                            The maximum number of sprites per row in a sprite sheet. The default is 0,
-                             which indicates no maximum limit.
+                          description: The maximum number of sprites per row in a
+                            sprite sheet. The default is 0, which indicates no maximum
+                            limit.
                           format: int32
                           type: integer
                         endTimeOffset:
-                          description: |-
-                            End time in seconds, relative to the output file timeline. When
-                             `end_time_offset` is not specified, the sprites are generated until the end
-                             of the output file.
+                          description: End time in seconds, relative to the output
+                            file timeline. When `end_time_offset` is not specified,
+                            the sprites are generated until the end of the output
+                            file.
                           type: string
                         filePrefix:
                           description: |-
@@ -1384,23 +1379,21 @@ spec:
                              - `jpeg`
                           type: string
                         interval:
-                          description: |-
-                            Starting from `0s`, create sprites at regular intervals. Specify the
-                             interval value in seconds.
+                          description: Starting from `0s`, create sprites at regular
+                            intervals. Specify the interval value in seconds.
                           type: string
                         quality:
-                          description: |-
-                            The quality of the generated sprite sheet. Enter a value between 1
-                             and 100, where 1 is the lowest quality and 100 is the highest quality.
-                             The default is 100. A high quality value corresponds to a low image data
-                             compression ratio.
+                          description: The quality of the generated sprite sheet.
+                            Enter a value between 1 and 100, where 1 is the lowest
+                            quality and 100 is the highest quality. The default is
+                            100. A high quality value corresponds to a low image data
+                            compression ratio.
                           format: int32
                           type: integer
                         rowCount:
-                          description: |-
-                            The maximum number of rows per sprite sheet. When the sprite sheet is full,
-                             a new sprite sheet is created. The default is 0, which indicates no maximum
-                             limit.
+                          description: The maximum number of rows per sprite sheet.
+                            When the sprite sheet is full, a new sprite sheet is created.
+                            The default is 0, which indicates no maximum limit.
                           format: int32
                           type: integer
                         spriteHeightPixels:
@@ -1436,31 +1429,32 @@ spec:
                           format: int32
                           type: integer
                         startTimeOffset:
-                          description: |-
-                            Start time in seconds, relative to the output file timeline. Determines the
-                             first sprite to pick. The default is `0s`.
+                          description: Start time in seconds, relative to the output
+                            file timeline. Determines the first sprite to pick. The
+                            default is `0s`.
                           type: string
                         totalCount:
-                          description: |-
-                            Total number of sprites. Create the specified number of sprites
-                             distributed evenly across the timeline of the output media. The default
-                             is 100.
+                          description: Total number of sprites. Create the specified
+                            number of sprites distributed evenly across the timeline
+                            of the output media. The default is 100.
                           format: int32
                           type: integer
+                      required:
+                      - filePrefix
+                      - spriteHeightPixels
+                      - spriteWidthPixels
                       type: object
                     type: array
                 type: object
               fillContentGaps:
-                description: |-
-                  Optional. Insert silence and duplicate frames when timestamp gaps are
-                  detected in a given stream.
+                description: Optional. Insert silence and duplicate frames when timestamp
+                  gaps are detected in a given stream.
                 type: boolean
               inputURI:
-                description: |-
-                  Input only. Specify the `input_uri` to populate empty `uri` fields in each
-                  element of `Job.config.inputs` or `JobTemplate.config.inputs` when using
-                  template. URI of the media. Input files must be at least 5 seconds in
-                  duration and stored in Cloud Storage (for example,
+                description: Input only. Specify the `input_uri` to populate empty
+                  `uri` fields in each element of `Job.config.inputs` or `JobTemplate.config.inputs`
+                  when using template. URI of the media. Input files must be at least
+                  5 seconds in duration and stored in Cloud Storage (for example,
                   `gs://bucket/inputs/file.mp4`). See [Supported input and output
                   formats](https://cloud.google.com/transcoder/docs/concepts/supported-input-and-output-formats).
                 type: string
@@ -1468,25 +1462,34 @@ spec:
                 description: The location of this resource.
                 type: string
               mode:
-                description: |-
-                  The processing mode of the job.
-                  The default is `PROCESSING_MODE_INTERACTIVE`.
+                description: The processing mode of the job. The default is `PROCESSING_MODE_INTERACTIVE`.
                 type: string
               optimization:
-                description: |-
-                  Optional. The optimization strategy of the job. The default is
-                  `AUTODETECT`.
+                description: Optional. The optimization strategy of the job. The default
+                  is `AUTODETECT`.
                 type: string
               outputURI:
-                description: |-
-                  Input only. Specify the `output_uri` to populate an empty
-                  `Job.config.output.uri` or `JobTemplate.config.output.uri` when using
-                  template. URI for the output file(s). For example,
-                  `gs://my-bucket/outputs/`. See [Supported input and output
-                  formats](https://cloud.google.com/transcoder/docs/concepts/supported-input-and-output-formats).
+                description: Input only. Specify the `output_uri` to populate an empty
+                  `Job.config.output.uri` or `JobTemplate.config.output.uri` when
+                  using template. URI for the output file(s). For example, `gs://my-bucket/outputs/`.
+                  See [Supported input and output formats](https://cloud.google.com/transcoder/docs/concepts/supported-input-and-output-formats).
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -1515,10 +1518,9 @@ spec:
                   User defined JobTemplate: `{job_template_id}`
                 type: string
               ttlAfterCompletionDays:
-                description: |-
-                  Job time to live value in days, which will be effective after job
-                  completion. Job should be deleted automatically after the given TTL. Enter
-                  a value between 1 and 90. The default is 30.
+                description: Job time to live value in days, which will be effective
+                  after job completion. Job should be deleted automatically after
+                  the given TTL. Enter a value between 1 and 90. The default is 30.
                 format: int32
                 type: integer
             required:
@@ -1530,9 +1532,8 @@ spec:
               state of TranscoderJob
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -1544,9 +1545,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -1589,12 +1589,13 @@ spec:
                                   items:
                                     properties:
                                       detectedLanguages:
-                                        description: |-
-                                          Output only. A list of languages detected in the input asset, represented
-                                           by a BCP 47 language code, such as "en-US" or "sr-Latn". For more
-                                           information, see
-                                           https://www.unicode.org/reports/tr35/#Unicode_locale_identifier.
-                                           This field is only populated if the detect_languages field is set to true.
+                                        description: Output only. A list of languages
+                                          detected in the input asset, represented
+                                          by a BCP 47 language code, such as "en-US"
+                                          or "sr-Latn". For more information, see
+                                          https://www.unicode.org/reports/tr35/#Unicode_locale_identifier.
+                                          This field is only populated if the detect_languages
+                                          field is set to true.
                                         items:
                                           type: string
                                         type: array
@@ -1611,24 +1612,20 @@ spec:
                     description: Output only. The time the transcoding finished.
                     type: string
                   error:
-                    description: |-
-                      Output only. An error object that describes the reason for the failure.
-                      This property is always present when
-                      [ProcessingState][google.cloud.video.transcoder.v1.Job.ProcessingState] is
-                      `FAILED`.
+                    description: Output only. An error object that describes the reason
+                      for the failure. This property is always present when [ProcessingState][google.cloud.video.transcoder.v1.Job.ProcessingState]
+                      is `FAILED`.
                     properties:
                       code:
-                        description: |-
-                          The status code, which should be an enum value of
-                           [google.rpc.Code][google.rpc.Code].
+                        description: The status code, which should be an enum value
+                          of [google.rpc.Code][google.rpc.Code].
                         format: int32
                         type: integer
                       message:
-                        description: |-
-                          A developer-facing error message, which should be in English. Any
-                           user-facing error message should be localized and sent in the
-                           [google.rpc.Status.details][google.rpc.Status.details] field, or localized
-                           by the client.
+                        description: A developer-facing error message, which should
+                          be in English. Any user-facing error message should be localized
+                          and sent in the [google.rpc.Status.details][google.rpc.Status.details]
+                          field, or localized by the client.
                         type: string
                     type: object
                   startTime:

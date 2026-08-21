@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpcomputeautoscaler
     - gcpcomputeautoscalers
     singular: computeautoscaler
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -44,19 +45,14 @@ spec:
         description: ComputeAutoscaler is the Schema for the ComputeAutoscaler API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -90,9 +86,14 @@ spec:
                       a managed instance group.
                     properties:
                       predictiveMethod:
-                        description: |-
-                          Indicates whether predictive autoscaling based on CPU metric is enabled. Valid values are: * NONE (default). No predictive method is used. The autoscaler scales the group to meet current demand based on real-time metrics. * OPTIMIZE_AVAILABILITY. Predictive autoscaling improves availability by monitoring daily and weekly load patterns and scaling out ahead of anticipated demand.
-                           Check the PredictiveMethod enum for the list of possible values.
+                        description: 'Indicates whether predictive autoscaling based
+                          on CPU metric is enabled. Valid values are: * NONE (default).
+                          No predictive method is used. The autoscaler scales the
+                          group to meet current demand based on real-time metrics.
+                          * OPTIMIZE_AVAILABILITY. Predictive autoscaling improves
+                          availability by monitoring daily and weekly load patterns
+                          and scaling out ahead of anticipated demand. Check the PredictiveMethod
+                          enum for the list of possible values.'
                         type: string
                       utilizationTarget:
                         description: The target CPU utilization that the autoscaler
@@ -174,9 +175,10 @@ spec:
                             of the instances.
                           type: number
                         utilizationTargetType:
-                          description: |-
-                            Defines how target utilization value is expressed for a Stackdriver Monitoring metric. Either GAUGE, DELTA_PER_SECOND, or DELTA_PER_MINUTE.
-                             Check the UtilizationTargetType enum for the list of possible values.
+                          description: Defines how target utilization value is expressed
+                            for a Stackdriver Monitoring metric. Either GAUGE, DELTA_PER_SECOND,
+                            or DELTA_PER_MINUTE. Check the UtilizationTargetType enum
+                            for the list of possible values.
                           type: string
                       type: object
                     type: array
@@ -206,9 +208,13 @@ spec:
                     format: int32
                     type: integer
                   mode:
-                    description: |-
-                      Defines the operating mode for this policy. The following modes are available: - OFF: Disables the autoscaler but maintains its configuration. - ONLY_SCALE_OUT: Restricts the autoscaler to add VM instances only. - ON: Enables all autoscaler activities according to its policy. For more information, see "Turning off or restricting an autoscaler"
-                       Check the Mode enum for the list of possible values.
+                    description: 'Defines the operating mode for this policy. The
+                      following modes are available: - OFF: Disables the autoscaler
+                      but maintains its configuration. - ONLY_SCALE_OUT: Restricts
+                      the autoscaler to add VM instances only. - ON: Enables all autoscaler
+                      activities according to its policy. For more information, see
+                      "Turning off or restricting an autoscaler" Check the Mode enum
+                      for the list of possible values.'
                     type: string
                   scaleInControl:
                     properties:
@@ -316,6 +322,20 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -352,9 +372,14 @@ spec:
                 description: '[Output Only] Server-defined URL for the resource.'
                 type: string
               status:
-                description: |-
-                  [Output Only] The status of the autoscaler configuration. Current set of possible values: - PENDING: Autoscaler backend hasn't read new/updated configuration. - DELETING: Configuration is being deleted. - ACTIVE: Configuration is acknowledged to be effective. Some warnings might be present in the statusDetails field. - ERROR: Configuration has errors. Actionable for users. Details are present in the statusDetails field. New values might be added in the future.
-                   Check the Status enum for the list of possible values.
+                description: '[Output Only] The status of the autoscaler configuration.
+                  Current set of possible values: - PENDING: Autoscaler backend hasn''t
+                  read new/updated configuration. - DELETING: Configuration is being
+                  deleted. - ACTIVE: Configuration is acknowledged to be effective.
+                  Some warnings might be present in the statusDetails field. - ERROR:
+                  Configuration has errors. Actionable for users. Details are present
+                  in the statusDetails field. New values might be added in the future.
+                  Check the Status enum for the list of possible values.'
                 type: string
               statusDetails:
                 description: '[Output Only] Human-readable details about the current
@@ -366,9 +391,45 @@ spec:
                       description: The status message.
                       type: string
                     type:
-                      description: |-
-                        The type of error, warning, or notice returned. Current set of possible values: - ALL_INSTANCES_UNHEALTHY (WARNING): All instances in the instance group are unhealthy (not in RUNNING state). - BACKEND_SERVICE_DOES_NOT_EXIST (ERROR): There is no backend service attached to the instance group. - CAPPED_AT_MAX_NUM_REPLICAS (WARNING): Autoscaler recommends a size greater than maxNumReplicas. - CUSTOM_METRIC_DATA_POINTS_TOO_SPARSE (WARNING): The custom metric samples are not exported often enough to be a credible base for autoscaling. - CUSTOM_METRIC_INVALID (ERROR): The custom metric that was specified does not exist or does not have the necessary labels. - MIN_EQUALS_MAX (WARNING): The minNumReplicas is equal to maxNumReplicas. This means the autoscaler cannot add or remove instances from the instance group. - MISSING_CUSTOM_METRIC_DATA_POINTS (WARNING): The autoscaler did not receive any data from the custom metric configured for autoscaling. - MISSING_LOAD_BALANCING_DATA_POINTS (WARNING): The autoscaler is configured to scale based on a load balancing signal but the instance group has not received any requests from the load balancer. - MODE_OFF (WARNING): Autoscaling is turned off. The number of instances in the group won't change automatically. The autoscaling configuration is preserved. - MODE_ONLY_UP (WARNING): Autoscaling is in the "Autoscale only out" mode. The autoscaler can add instances but not remove any. - MORE_THAN_ONE_BACKEND_SERVICE (ERROR): The instance group cannot be autoscaled because it has more than one backend service attached to it. - NOT_ENOUGH_QUOTA_AVAILABLE (ERROR): There is insufficient quota for the necessary resources, such as CPU or number of instances. - REGION_RESOURCE_STOCKOUT (ERROR): Shown only for regional autoscalers: there is a resource stockout in the chosen region. - SCALING_TARGET_DOES_NOT_EXIST (ERROR): The target to be scaled does not exist. - UNSUPPORTED_MAX_RATE_LOAD_BALANCING_CONFIGURATION (ERROR): Autoscaling does not work with an HTTP/S load balancer that has been configured for maxRate. - ZONE_RESOURCE_STOCKOUT (ERROR): For zonal autoscalers: there is a resource stockout in the chosen zone. For regional autoscalers: in at least one of the zones you're using there is a resource stockout. New values might be added in the future. Some of the values might not be available in all API versions.
-                         Check the Type enum for the list of possible values.
+                      description: 'The type of error, warning, or notice returned.
+                        Current set of possible values: - ALL_INSTANCES_UNHEALTHY
+                        (WARNING): All instances in the instance group are unhealthy
+                        (not in RUNNING state). - BACKEND_SERVICE_DOES_NOT_EXIST (ERROR):
+                        There is no backend service attached to the instance group.
+                        - CAPPED_AT_MAX_NUM_REPLICAS (WARNING): Autoscaler recommends
+                        a size greater than maxNumReplicas. - CUSTOM_METRIC_DATA_POINTS_TOO_SPARSE
+                        (WARNING): The custom metric samples are not exported often
+                        enough to be a credible base for autoscaling. - CUSTOM_METRIC_INVALID
+                        (ERROR): The custom metric that was specified does not exist
+                        or does not have the necessary labels. - MIN_EQUALS_MAX (WARNING):
+                        The minNumReplicas is equal to maxNumReplicas. This means
+                        the autoscaler cannot add or remove instances from the instance
+                        group. - MISSING_CUSTOM_METRIC_DATA_POINTS (WARNING): The
+                        autoscaler did not receive any data from the custom metric
+                        configured for autoscaling. - MISSING_LOAD_BALANCING_DATA_POINTS
+                        (WARNING): The autoscaler is configured to scale based on
+                        a load balancing signal but the instance group has not received
+                        any requests from the load balancer. - MODE_OFF (WARNING):
+                        Autoscaling is turned off. The number of instances in the
+                        group won''t change automatically. The autoscaling configuration
+                        is preserved. - MODE_ONLY_UP (WARNING): Autoscaling is in
+                        the "Autoscale only out" mode. The autoscaler can add instances
+                        but not remove any. - MORE_THAN_ONE_BACKEND_SERVICE (ERROR):
+                        The instance group cannot be autoscaled because it has more
+                        than one backend service attached to it. - NOT_ENOUGH_QUOTA_AVAILABLE
+                        (ERROR): There is insufficient quota for the necessary resources,
+                        such as CPU or number of instances. - REGION_RESOURCE_STOCKOUT
+                        (ERROR): Shown only for regional autoscalers: there is a resource
+                        stockout in the chosen region. - SCALING_TARGET_DOES_NOT_EXIST
+                        (ERROR): The target to be scaled does not exist. - UNSUPPORTED_MAX_RATE_LOAD_BALANCING_CONFIGURATION
+                        (ERROR): Autoscaling does not work with an HTTP/S load balancer
+                        that has been configured for maxRate. - ZONE_RESOURCE_STOCKOUT
+                        (ERROR): For zonal autoscalers: there is a resource stockout
+                        in the chosen zone. For regional autoscalers: in at least
+                        one of the zones you''re using there is a resource stockout.
+                        New values might be added in the future. Some of the values
+                        might not be available in all API versions. Check the Type
+                        enum for the list of possible values.'
                       type: string
                   type: object
                 type: array
@@ -388,9 +449,8 @@ spec:
               state of ComputeAutoscaler
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -402,9 +462,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

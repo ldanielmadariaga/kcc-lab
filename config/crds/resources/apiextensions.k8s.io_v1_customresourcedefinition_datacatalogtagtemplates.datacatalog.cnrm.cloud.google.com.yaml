@@ -141,6 +141,8 @@ spec:
                                        (_), dashes (-), spaces ( ), and can't start or end with spaces. The
                                        maximum length is 200 characters.
                                     type: string
+                                required:
+                                - displayName
                                 type: object
                               type: array
                           type: object
@@ -148,6 +150,8 @@ spec:
                           description: Primitive types, such as string, boolean, etc.
                           type: string
                       type: object
+                  required:
+                  - type
                   type: object
                 description: Fields used to create a Tag
                 type: object

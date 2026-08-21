@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpgkemulticloudattachedcluster
     - gcpgkemulticloudattachedclusters
     singular: gkemulticloudattachedcluster
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -122,15 +118,13 @@ spec:
                   cluster.
                 properties:
                   evaluationMode:
-                    description: |-
-                      Mode of operation for binauthz policy evaluation. If unspecified, defaults
-                       to DISABLED.
+                    description: Mode of operation for binauthz policy evaluation.
+                      If unspecified, defaults to DISABLED.
                     type: string
                 type: object
               description:
-                description: |-
-                  Optional. A human readable description of this cluster.
-                   Cannot be longer than 255 UTF-8 encoded bytes.
+                description: Optional. A human readable description of this cluster.
+                  Cannot be longer than 255 UTF-8 encoded bytes.
                 type: string
               distribution:
                 description: |-
@@ -180,14 +174,12 @@ spec:
                 description: Optional. Monitoring configuration for this cluster.
                 properties:
                   cloudMonitoringConfig:
-                    description: |-
-                      Optionally enable GKE metrics.
-                       Only for Attached Clusters.
+                    description: Optionally enable GKE metrics. Only for Attached
+                      Clusters.
                     properties:
                       enabled:
-                        description: |-
-                          Enable GKE-native logging and metrics.
-                           Only for Attached Clusters.
+                        description: Enable GKE-native logging and metrics. Only for
+                          Attached Clusters.
                         type: boolean
                     type: object
                   managedPrometheusConfig:
@@ -229,6 +221,20 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -249,14 +255,11 @@ spec:
                 description: Optional. Proxy configuration for outbound HTTP(S) traffic.
                 properties:
                   kubernetesSecret:
-                    description: |-
-                      The Kubernetes Secret resource that contains the HTTP(S) proxy
-                       configuration. The secret must be a JSON encoded proxy configuration
-                       as described in
-                       https://cloud.google.com/kubernetes-engine/multi-cloud/docs/attached/eks/how-to/use-a-proxy#configure-proxy-support
-                       for EKS clusters and
-                       https://cloud.google.com/kubernetes-engine/multi-cloud/docs/attached/aks/how-to/use-a-proxy#configure-proxy-support
-                       for AKS clusters.
+                    description: The Kubernetes Secret resource that contains the
+                      HTTP(S) proxy configuration. The secret must be a JSON encoded
+                      proxy configuration as described in https://cloud.google.com/kubernetes-engine/multi-cloud/docs/attached/eks/how-to/use-a-proxy#configure-proxy-support
+                      for EKS clusters and https://cloud.google.com/kubernetes-engine/multi-cloud/docs/attached/aks/how-to/use-a-proxy#configure-proxy-support
+                      for AKS clusters.
                     properties:
                       name:
                         description: Name of the kubernetes secret.
@@ -308,9 +311,8 @@ spec:
               machine state of GKEMulticloudAttachedCluster
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -322,9 +324,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -404,9 +405,8 @@ spec:
                     description: Output only. Workload Identity settings.
                     properties:
                       identityProvider:
-                        description: |-
-                          The ID of the OIDC Identity Provider (IdP) associated to the Workload
-                           Identity Pool.
+                        description: The ID of the OIDC Identity Provider (IdP) associated
+                          to the Workload Identity Pool.
                         type: string
                       issuerURI:
                         description: The OIDC issuer URL for this cluster.

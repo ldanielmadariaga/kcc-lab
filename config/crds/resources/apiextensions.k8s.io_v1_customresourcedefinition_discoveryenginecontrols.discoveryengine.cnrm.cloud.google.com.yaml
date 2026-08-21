@@ -403,6 +403,8 @@ spec:
                           to promote. Must be set for site search. For other verticals,
                           this is optional.
                         type: string
+                    required:
+                    - title
                     type: object
                 type: object
               redirectAction:
@@ -416,6 +418,8 @@ spec:
                        URI must have length equal or less than 2000 characters.
                        Otherwise an INVALID ARGUMENT error is thrown.
                     type: string
+                required:
+                - redirectURI
                 type: object
               resourceID:
                 description: The DiscoveryEngineControl name. If not given, the metadata.name

@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpdocumentaiprocessor
     - gcpdocumentaiprocessors
     singular: documentaiprocessor
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -71,15 +67,28 @@ spec:
                 description: The display name of the processor.
                 type: string
               kmsKeyName:
-                description: |-
-                  The [KMS key](https://cloud.google.com/security-key-management) used for
-                   encryption and decryption in CMEK scenarios.
+                description: The [KMS key](https://cloud.google.com/security-key-management)
+                  used for encryption and decryption in CMEK scenarios.
                 type: string
               location:
                 description: The location of this resource.
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -101,10 +110,8 @@ spec:
                   will be used.
                 type: string
               type:
-                description: |-
-                  The processor type, such as: `OCR_PROCESSOR`, `INVOICE_PROCESSOR`.
-                   To get a list of processor types, see
-                   [FetchProcessorTypes][google.cloud.documentai.v1.DocumentProcessorService.FetchProcessorTypes].
+                description: 'The processor type, such as: `OCR_PROCESSOR`, `INVOICE_PROCESSOR`.
+                  To get a list of processor types, see [FetchProcessorTypes][google.cloud.documentai.v1.DocumentProcessorService.FetchProcessorTypes].'
                 type: string
             required:
             - location
@@ -115,9 +122,8 @@ spec:
               state of DocumentAIProcessor
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -129,9 +135,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -162,9 +167,8 @@ spec:
                     description: Output only. The time the processor was created.
                     type: string
                   processEndpoint:
-                    description: |-
-                      Output only. Immutable. The http endpoint that can be called to invoke
-                       processing.
+                    description: Output only. Immutable. The http endpoint that can
+                      be called to invoke processing.
                     type: string
                   processorVersionAliases:
                     description: Output only. The processor version aliases.

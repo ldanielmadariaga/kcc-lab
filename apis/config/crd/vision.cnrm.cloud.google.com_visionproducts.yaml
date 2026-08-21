@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpvisionproduct
     - gcpvisionproducts
     singular: visionproduct
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -44,19 +45,14 @@ spec:
         description: VisionProduct is the Schema for the VisionProduct API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -64,25 +60,22 @@ spec:
             description: VisionProductSpec defines the desired state of VisionProduct
             properties:
               description:
-                description: |-
-                  User-provided metadata to be stored with this product. Must be at most 4096
-                   characters long.
+                description: User-provided metadata to be stored with this product.
+                  Must be at most 4096 characters long.
                 type: string
               displayName:
-                description: |-
-                  The user-provided name for this Product. Must not be empty. Must be at most
-                   4096 characters long.
+                description: The user-provided name for this Product. Must not be
+                  empty. Must be at most 4096 characters long.
                 type: string
               location:
                 description: The location of this resource.
                 type: string
               productCategory:
-                description: |-
-                  Immutable. The category for the product identified by the reference image.
-                   This should be one of "homegoods-v2", "apparel-v2", "toys-v2",
-                   "packagedgoods-v1" or "general-v1". The legacy categories "homegoods",
-                   "apparel", and "toys" are still supported, but these should not be used for
-                   new products.
+                description: Immutable. The category for the product identified by
+                  the reference image. This should be one of "homegoods-v2", "apparel-v2",
+                  "toys-v2", "packagedgoods-v1" or "general-v1". The legacy categories
+                  "homegoods", "apparel", and "toys" are still supported, but these
+                  should not be used for new products.
                 type: string
               productLabels:
                 description: |-
@@ -102,19 +95,31 @@ spec:
                 items:
                   properties:
                     key:
-                      description: |-
-                        The key of the label attached to the product. Cannot be empty and cannot
-                         exceed 128 bytes.
+                      description: The key of the label attached to the product. Cannot
+                        be empty and cannot exceed 128 bytes.
                       type: string
                     value:
-                      description: |-
-                        The value of the label attached to the product. Cannot be empty and
-                         cannot exceed 128 bytes.
+                      description: The value of the label attached to the product.
+                        Cannot be empty and cannot exceed 128 bytes.
                       type: string
                   type: object
                 type: array
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -144,9 +149,8 @@ spec:
               state of VisionProduct
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -158,9 +162,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

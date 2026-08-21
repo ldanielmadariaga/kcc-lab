@@ -80,6 +80,9 @@ spec:
                               down to.
                             format: int32
                             type: integer
+                        required:
+                        - maxServeNodes
+                        - minServeNodes
                         type: object
                       autoscalingTargets:
                         description: Required. Autoscaling targets for this cluster.
@@ -104,6 +107,9 @@ spec:
                             format: int32
                             type: integer
                         type: object
+                    required:
+                    - autoscalingLimits
+                    - autoscalingTargets
                     type: object
                 type: object
               defaultStorageType:

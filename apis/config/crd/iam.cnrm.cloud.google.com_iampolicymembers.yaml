@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpiampolicymember
     - gcpiampolicymembers
     singular: iampolicymember
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -43,24 +44,24 @@ spec:
         description: IAMPolicyMember is the Schema for the iampolicies API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
           spec:
             description: IAMPolicyMemberSpec defines the desired state of IAMPolicyMember
+            oneOf:
+            - required:
+              - member
+            - required:
+              - memberFrom
             properties:
               condition:
                 description: Immutable. Optional. The condition under which the binding
@@ -80,25 +81,34 @@ spec:
                 - message: condition is immutable
                   rule: self == oldSelf
               member:
-                description: |-
-                  Immutable. The IAM identity to be bound to the role. Exactly one of
-                  'member' or 'memberFrom' must be used.
+                description: Immutable. The IAM identity to be bound to the role.
+                  Exactly one of 'member' or 'memberFrom' must be used.
                 type: string
                 x-kubernetes-validations:
                 - message: member is immutable
                   rule: self == oldSelf
               memberFrom:
-                description: |-
-                  Immutable. The IAM identity to be bound to the role. Exactly one of
-                  'member' or 'memberFrom' must be used, and only one subfield within
-                  'memberFrom' can be used.
+                description: Immutable. The IAM identity to be bound to the role.
+                  Exactly one of 'member' or 'memberFrom' must be used, and only one
+                  subfield within 'memberFrom' can be used.
+                oneOf:
+                - required:
+                  - bigQueryConnectionConnectionRef
+                - required:
+                  - logSinkRef
+                - required:
+                  - serviceAccountRef
+                - required:
+                  - serviceIdentityRef
+                - required:
+                  - sqlInstanceRef
                 properties:
                   bigQueryConnectionConnectionRef:
-                    description: |-
-                      BigQueryConnectionConnection whose service account is to be bound to the role.
-                      Use the Type field to specify the connection type.
-                      For "spark" connection, the service account is in `status.observedState.spark.serviceAccountID`.
-                      For "cloudSQL" connection, the service account is in `status.observedState.cloudSQL.serviceAccountID`.
+                    description: BigQueryConnectionConnection whose service account
+                      is to be bound to the role. Use the Type field to specify the
+                      connection type. For "spark" connection, the service account
+                      is in `status.observedState.spark.serviceAccountID`. For "cloudSQL"
+                      connection, the service account is in `status.observedState.cloudSQL.serviceAccountID`.
                       For "cloudResource" connection, the service account is in `status.observedState.cloudResource.serviceAccountID`.
                     properties:
                       name:
@@ -119,8 +129,7 @@ spec:
                     - type
                     type: object
                   logSinkRef:
-                    description: |-
-                      The LoggingLogSink whose writer identity (i.e. its
+                    description: The LoggingLogSink whose writer identity (i.e. its
                       'status.writerIdentity') is to be bound to the role.
                     properties:
                       name:
@@ -141,9 +150,8 @@ spec:
                     - name
                     type: object
                   serviceIdentityRef:
-                    description: |-
-                      The ServiceIdentity whose service account (i.e., its
-                      'status.email') is to be bound to the role.
+                    description: The ServiceIdentity whose service account (i.e.,
+                      its 'status.email') is to be bound to the role.
                     properties:
                       name:
                         type: string
@@ -153,9 +161,8 @@ spec:
                     - name
                     type: object
                   sqlInstanceRef:
-                    description: |-
-                      The SQLInstance whose service account (i.e. its
-                      'status.serviceAccountEmailAddress') is to be bound to the role.
+                    description: The SQLInstance whose service account (i.e. its 'status.serviceAccountEmailAddress')
+                      is to be bound to the role.
                     properties:
                       name:
                         type: string
@@ -169,9 +176,32 @@ spec:
                 - message: memberFrom is immutable
                   rule: self == oldSelf
               resourceRef:
-                description: |-
-                  Immutable. Required. The GCP resource to set the IAM policy on (e.g.
-                  organization, project...)
+                description: Immutable. Required. The GCP resource to set the IAM
+                  policy on (e.g. organization, project...)
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                    - required:
+                      - apiVersion
+                    - required:
+                      - external
                 properties:
                   apiVersion:
                     description: APIVersion of the referenced resource
@@ -208,9 +238,8 @@ spec:
             description: IAMPolicyMemberStatus defines the observed state of IAMPolicyMember
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the IAM
-                  policy's current state.
+                description: Conditions represent the latest available observations
+                  of the IAM policy's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -222,9 +251,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -236,9 +264,11 @@ spec:
                   type: object
                 type: array
               observedGeneration:
-                description: |-
-                  ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller.
-                  If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
+                description: ObservedGeneration is the generation of the resource
+                  that was most recently observed by the Config Connector controller.
+                  If this is equal to metadata.generation, then that means that the
+                  current reported status reflects the most recent desired state of
+                  the resource.
                 format: int64
                 type: integer
             type: object

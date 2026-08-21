@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: stable
@@ -22,6 +22,7 @@ spec:
     - gcpcomputerouterinterface
     - gcpcomputerouterinterfaces
     singular: computerouterinterface
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -47,19 +48,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -68,6 +64,20 @@ spec:
             properties:
               interconnectAttachmentRef:
                 description: The InterconnectAttachment this interface belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: 'Allowed value: The `name` field of a `ComputeInterconnectAttachment`
@@ -81,18 +91,30 @@ spec:
                     type: string
                 type: object
               ipRange:
-                description: |-
-                  Immutable. The IP address and range of the interface.
+                description: Immutable. The IP address and range of the interface.
                   The IP range must be in the RFC3927 link-local IP space. Changing
                   this forces a new interface to be created.
                 type: string
               privateIpAddressRef:
                 description: The private IP address assigned to this interface.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeAddress resource.
-                      Should be in the format "projects/{{projectID}}/global/addresses/{{addressID}}"
+                    description: A reference to an externally managed ComputeAddress
+                      resource. Should be in the format "projects/{{projectID}}/global/addresses/{{addressID}}"
                       or "projects/{{projectID}}/regions/{{region}}/addresses/{{addressID}}".
                     type: string
                   name:
@@ -104,11 +126,24 @@ spec:
                 type: object
               redundantInterfaceRef:
                 description: The interface the BGP peer is associated with.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeRouterInterface resource.
-                      Should be in the format "projects/{{projectID}}/regions/{{region}}/routers/{{routerID}}/interfaces/{{interfaceID}}".
+                    description: A reference to an externally managed ComputeRouterInterface
+                      resource. Should be in the format "projects/{{projectID}}/regions/{{region}}/routers/{{routerID}}/interfaces/{{interfaceID}}".
                     type: string
                   name:
                     description: The name of a ComputeRouterInterface resource.
@@ -118,8 +153,7 @@ spec:
                     type: string
                 type: object
               region:
-                description: |-
-                  Immutable. The region this interface's router sits in.
+                description: Immutable. The region this interface's router sits in.
                   If not specified, the project region will be used. Changing this
                   forces a new interface to be created.
                 type: string
@@ -130,11 +164,24 @@ spec:
                 type: string
               routerRef:
                 description: The router this interface belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeRouter resource.
-                      Should be in the format "projects/{{projectID}}/regions/{{region}}/routers/{{routerID}}".
+                    description: A reference to an externally managed ComputeRouter
+                      resource. Should be in the format "projects/{{projectID}}/regions/{{region}}/routers/{{routerID}}".
                     type: string
                   name:
                     description: The name of a ComputeRouter resource.
@@ -145,11 +192,24 @@ spec:
                 type: object
               subnetworkRef:
                 description: The subnetwork this interface belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeSubnetwork resource.
-                      Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
+                    description: A reference to an externally managed ComputeSubnetwork
+                      resource. Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
                     type: string
                   name:
                     description: The name of a ComputeSubnetwork resource.
@@ -160,6 +220,20 @@ spec:
                 type: object
               vpnTunnelRef:
                 description: The VPNTunnel this interface belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: 'Allowed value: The `selfLink` field of a `ComputeVPNTunnel`
@@ -181,9 +255,8 @@ spec:
               machine state of ComputeRouterInterface
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -195,9 +268,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

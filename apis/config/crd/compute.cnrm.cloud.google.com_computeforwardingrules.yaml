@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: stable
@@ -22,6 +22,7 @@ spec:
     - gcpcomputeforwardingrule
     - gcpcomputeforwardingrules
     singular: computeforwardingrule
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,19 +47,14 @@ spec:
         description: ComputeForwardingRule is the Schema for the compute API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -99,9 +95,22 @@ spec:
                   whether the PSC endpoint can be accessed from another region.
                 type: boolean
               backendServiceRef:
-                description: |-
-                  A ComputeBackendService to receive the matched traffic. This is
-                  used only for internal load balancing.
+                description: A ComputeBackendService to receive the matched traffic.
+                  This is used only for internal load balancing.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The value of an externally managed ComputeBackendService
@@ -115,9 +124,8 @@ spec:
                     type: string
                 type: object
               description:
-                description: |-
-                  Immutable. An optional description of this resource. Provide this property when
-                  you create the resource.
+                description: Immutable. An optional description of this resource.
+                  Provide this property when you create the resource.
                 type: string
               ipAddress:
                 description: |-
@@ -143,11 +151,24 @@ spec:
                 properties:
                   addressRef:
                     description: ComputeAddressRef is a reference to a GCP ComputeAddress.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
-                        description: |-
-                          A reference to an externally managed ComputeAddress resource.
-                          Should be in the format "projects/{{projectID}}/global/addresses/{{addressID}}"
+                        description: A reference to an externally managed ComputeAddress
+                          resource. Should be in the format "projects/{{projectID}}/global/addresses/{{addressID}}"
                           or "projects/{{projectID}}/regions/{{region}}/addresses/{{addressID}}".
                         type: string
                       name:
@@ -236,14 +257,12 @@ spec:
                       items:
                         properties:
                           name:
-                            description: |-
-                              Immutable. Name of the metadata label. The length must be between
-                              1 and 1024 characters, inclusive.
+                            description: Immutable. Name of the metadata label. The
+                              length must be between 1 and 1024 characters, inclusive.
                             type: string
                           value:
-                            description: |-
-                              Immutable. The value that the label must match. The value has a maximum
-                              length of 1024 characters.
+                            description: Immutable. The value that the label must
+                              match. The value has a maximum length of 1024 characters.
                             type: string
                         required:
                         - name
@@ -266,16 +285,28 @@ spec:
                   type: object
                 type: array
               networkRef:
-                description: |-
-                  This field is not used for external load balancing. For internal
-                  load balancing, this field identifies the network that the load
-                  balanced IP should belong to for this forwarding rule. If this
-                  field is not specified, the default network will be used.
+                description: This field is not used for external load balancing. For
+                  internal load balancing, this field identifies the network that
+                  the load balanced IP should belong to for this forwarding rule.
+                  If this field is not specified, the default network will be used.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeNetwork resource.
-                      Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                    description: A reference to an externally managed ComputeNetwork
+                      resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
                     type: string
                   name:
                     description: The name of a ComputeNetwork resource.
@@ -410,11 +441,24 @@ spec:
                   If the network specified is in auto subnet mode, this field is
                   optional. However, if the network is in custom subnet mode, a
                   subnetwork must be specified.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed ComputeSubnetwork resource.
-                      Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
+                    description: A reference to an externally managed ComputeSubnetwork
+                      resource. Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
                     type: string
                   name:
                     description: The name of a ComputeSubnetwork resource.
@@ -424,10 +468,9 @@ spec:
                     type: string
                 type: object
               target:
-                description: |-
-                  The target resource to receive the matched traffic. The forwarded
-                  traffic must be of a type appropriate to the target object. For
-                  INTERNAL_SELF_MANAGED load balancing, only HTTP and HTTPS targets
+                description: The target resource to receive the matched traffic. The
+                  forwarded traffic must be of a type appropriate to the target object.
+                  For INTERNAL_SELF_MANAGED load balancing, only HTTP and HTTPS targets
                   are valid.
                 properties:
                   googleAPIsBundle:
@@ -437,19 +480,32 @@ spec:
                       Valkey instance.
                     properties:
                       connectionType:
-                        description: |-
-                          The connection type of the serviceAttachment.
-                          A memorystore instance has multiple serviceAttachments, each with a different connection type.
-                          Use connectionType to control which serviceAttachment to target.
-                          The empty value matches a serviceAttachment with an empty connectionType.
+                        description: The connection type of the serviceAttachment.
+                          A memorystore instance has multiple serviceAttachments,
+                          each with a different connection type. Use connectionType
+                          to control which serviceAttachment to target. The empty
+                          value matches a serviceAttachment with an empty connectionType.
                         type: string
                       memorystoreInstanceRef:
                         description: A reference to a MemorystoreInstance resource.
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
                         properties:
                           external:
-                            description: |-
-                              A reference to an externally managed MemorystoreInstance resource.
-                              Should be in the format "projects/{{projectID}}/locations/{{location}}/instances/{{instanceID}}".
+                            description: A reference to an externally managed MemorystoreInstance
+                              resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/instances/{{instanceID}}".
                             type: string
                           name:
                             description: The name of a MemorystoreInstance resource.
@@ -465,19 +521,32 @@ spec:
                     description: Target a serviceAttachment for a Redis Cluster.
                     properties:
                       connectionType:
-                        description: |-
-                          The connection type of the serviceAttachment.
-                          A redis cluster has multiple serviceAttachments, each with a different connection type.
-                          Use connectionType to control which serviceAttachment to target.
-                          The empty value matches a serviceAttachment with an empty connectionType.
+                        description: The connection type of the serviceAttachment.
+                          A redis cluster has multiple serviceAttachments, each with
+                          a different connection type. Use connectionType to control
+                          which serviceAttachment to target. The empty value matches
+                          a serviceAttachment with an empty connectionType.
                         type: string
                       redisClusterRef:
                         description: A reference to a RedisCluster resource.
+                        oneOf:
+                        - not:
+                            required:
+                            - external
+                          required:
+                          - name
+                        - not:
+                            anyOf:
+                            - required:
+                              - name
+                            - required:
+                              - namespace
+                          required:
+                          - external
                         properties:
                           external:
-                            description: |-
-                              A reference to an externally managed RedisCluster resource.
-                              Should be in the format "projects/{{projectID}}/locations/{{location}}/clusters/{{clusterID}}".
+                            description: A reference to an externally managed RedisCluster
+                              resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/clusters/{{clusterID}}".
                             type: string
                           name:
                             description: The name of a RedisCluster resource.
@@ -490,6 +559,20 @@ spec:
                     - redisClusterRef
                     type: object
                   serviceAttachmentRef:
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
                         description: The ComputeServiceAttachment selflink in the
@@ -506,6 +589,20 @@ spec:
                         type: string
                     type: object
                   targetGRPCProxyRef:
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
                         description: The ComputeTargetGrpcProxy selflink in the form
@@ -522,6 +619,20 @@ spec:
                         type: string
                     type: object
                   targetHTTPProxyRef:
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
                         description: The ComputeTargetHTTPProxy selflink in the form
@@ -539,6 +650,20 @@ spec:
                         type: string
                     type: object
                   targetHTTPSProxyRef:
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
                         description: The ComputeTargetHTTPSProxy selflink in the form
@@ -556,6 +681,20 @@ spec:
                         type: string
                     type: object
                   targetSSLProxyRef:
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
                         description: The ComputeTargetSSLProxy selflink in the form
@@ -572,6 +711,20 @@ spec:
                         type: string
                     type: object
                   targetTCPProxyRef:
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
                         description: The ComputeTargetTCPProxy selflink in the form
@@ -589,6 +742,20 @@ spec:
                         type: string
                     type: object
                   targetVPNGatewayRef:
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
                         description: The ComputeTargetVPNGateway selflink in the form
@@ -618,9 +785,8 @@ spec:
                   if the current Forwarding Rule does not have sourceIPRanges specified.'
                 type: string
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -632,9 +798,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -653,8 +818,7 @@ spec:
                   in GCP.
                 type: string
               labelFingerprint:
-                description: |-
-                  The fingerprint used for optimistic locking of this resource.  Used
+                description: The fingerprint used for optimistic locking of this resource.  Used
                   internally during updates.
                 type: string
               observedGeneration:
@@ -676,9 +840,8 @@ spec:
               selfLink:
                 type: string
               serviceName:
-                description: |-
-                  The internal fully qualified service name for this Forwarding Rule.
-                  This field is only used for INTERNAL load balancing.
+                description: The internal fully qualified service name for this Forwarding
+                  Rule. This field is only used for INTERNAL load balancing.
                 type: string
               target:
                 description: The target resource to receive the matched traffic.

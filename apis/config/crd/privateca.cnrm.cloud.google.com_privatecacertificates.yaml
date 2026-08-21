@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/dcl2crd: "true"
     cnrm.cloud.google.com/managed-by-kcc: "true"
@@ -22,6 +22,7 @@ spec:
     - gcpprivatecacertificate
     - gcpprivatecacertificates
     singular: privatecacertificate
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -47,19 +48,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -69,11 +65,24 @@ spec:
               caPoolRef:
                 description: Immutable. Required. The PrivateCACAPool that includes
                   this Certificate.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed PrivateCACAPool resource.
-                      Should be in the format "projects/{{projectID}}/locations/{{location}}/caPools/{{caPoolID}}".
+                    description: A reference to an externally managed PrivateCACAPool
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/caPools/{{caPoolID}}".
                     type: string
                   name:
                     description: The name of a PrivateCACAPool resource.
@@ -85,11 +94,24 @@ spec:
               certificateAuthorityRef:
                 description: Immutable. Optional. The PrivateCACertificateAuthority
                   that issued this Certificate.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed PrivateCACertificateAuthority resource.
-                      Should be in the format "projects/{{projectID}}/locations/{{location}}/caPools/{{caPool}}/certificateAuthorities/{{certificateAuthorityID}}".
+                    description: A reference to an externally managed PrivateCACertificateAuthority
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/caPools/{{caPool}}/certificateAuthorities/{{certificateAuthorityID}}".
                     type: string
                   name:
                     description: The name of a PrivateCACertificateAuthority resource.
@@ -102,11 +124,24 @@ spec:
               certificateTemplateRef:
                 description: Immutable. Optional. The PrivateCACertificateTemplate
                   used to issue this Certificate.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      A reference to an externally managed PrivateCACertificateTemplate resource.
-                      Should be in the format "projects/{{projectID}}/locations/{{location}}/certificateTemplates/{{certificateTemplateID}}".
+                    description: A reference to an externally managed PrivateCACertificateTemplate
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/certificateTemplates/{{certificateTemplateID}}".
                     type: string
                   name:
                     description: The name of a PrivateCACertificateTemplate resource.
@@ -411,6 +446,20 @@ spec:
               projectRef:
                 description: Immutable. Required. The Project that this resource belongs
                   to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -778,9 +827,8 @@ spec:
                     type: object
                 type: object
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  PrivateCACertificate's current state.
+                description: Conditions represent the latest available observations
+                  of the PrivateCACertificate's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -792,9 +840,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

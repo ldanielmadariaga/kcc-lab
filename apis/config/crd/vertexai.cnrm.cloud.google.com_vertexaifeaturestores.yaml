@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpvertexaifeaturestore
     - gcpvertexaifeaturestores
     singular: vertexaifeaturestore
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -65,20 +61,32 @@ spec:
             description: VertexAIFeaturestoreSpec defines the desired state of VertexAIFeaturestore
             properties:
               encryptionSpec:
-                description: |-
-                  Optional. Customer-managed encryption key spec for data storage. If set,
-                   both of the online and offline data storage will be secured by this key.
+                description: Optional. Customer-managed encryption key spec for data
+                  storage. If set, both of the online and offline data storage will
+                  be secured by this key.
                 properties:
                   kmsKeyRef:
-                    description: |-
-                      Required. The Cloud KMS resource identifier of the customer managed
-                       encryption key used to protect a resource.
-                       The key needs to be in the same region as where the compute resource is
-                       created.
+                    description: Required. The Cloud KMS resource identifier of the
+                      customer managed encryption key used to protect a resource.
+                      The key needs to be in the same region as where the compute
+                      resource is created.
+                    oneOf:
+                    - not:
+                        required:
+                        - external
+                      required:
+                      - name
+                    - not:
+                        anyOf:
+                        - required:
+                          - name
+                        - required:
+                          - namespace
+                      required:
+                      - external
                     properties:
                       external:
-                        description: |-
-                          A reference to an externally managed KMSCryptoKey.
+                        description: A reference to an externally managed KMSCryptoKey.
                           Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
                         type: string
                       name:
@@ -112,63 +120,75 @@ spec:
                 description: The location for the resource.
                 type: string
               onlineServingConfig:
-                description: |-
-                  Optional. Config for online storage resources. The field should not
-                   co-exist with the field of `OnlineStoreReplicationConfig`. If both of it
-                   and OnlineStoreReplicationConfig are unset, the feature store will not have
-                   an online store and cannot be used for online serving.
+                description: Optional. Config for online storage resources. The field
+                  should not co-exist with the field of `OnlineStoreReplicationConfig`.
+                  If both of it and OnlineStoreReplicationConfig are unset, the feature
+                  store will not have an online store and cannot be used for online
+                  serving.
                 properties:
                   fixedNodeCount:
-                    description: |-
-                      The number of nodes for the online store. The number of nodes doesn't
-                       scale automatically, but you can manually update the number of
-                       nodes. If set to 0, the featurestore will not have an
-                       online store and cannot be used for online serving.
+                    description: The number of nodes for the online store. The number
+                      of nodes doesn't scale automatically, but you can manually update
+                      the number of nodes. If set to 0, the featurestore will not
+                      have an online store and cannot be used for online serving.
                     format: int32
                     type: integer
                   scaling:
-                    description: |-
-                      Online serving scaling configuration.
-                       Only one of `fixed_node_count` and `scaling` can be set. Setting one will
-                       reset the other.
+                    description: Online serving scaling configuration. Only one of
+                      `fixed_node_count` and `scaling` can be set. Setting one will
+                      reset the other.
                     properties:
                       cpuUtilizationTarget:
-                        description: |-
-                          Optional. The cpu utilization that the Autoscaler should be trying to
-                           achieve. This number is on a scale from 0 (no utilization) to 100
-                           (total utilization), and is limited between 10 and 80. When a cluster's
-                           CPU utilization exceeds the target that you have set, Bigtable
-                           immediately adds nodes to the cluster. When CPU utilization is
-                           substantially lower than the target, Bigtable removes nodes. If not set
-                           or set to 0, default to 50.
+                        description: Optional. The cpu utilization that the Autoscaler
+                          should be trying to achieve. This number is on a scale from
+                          0 (no utilization) to 100 (total utilization), and is limited
+                          between 10 and 80. When a cluster's CPU utilization exceeds
+                          the target that you have set, Bigtable immediately adds
+                          nodes to the cluster. When CPU utilization is substantially
+                          lower than the target, Bigtable removes nodes. If not set
+                          or set to 0, default to 50.
                         format: int32
                         type: integer
                       maxNodeCount:
-                        description: |-
-                          The maximum number of nodes to scale up to. Must be greater than
-                           min_node_count, and less than or equal to 10 times of 'min_node_count'.
+                        description: The maximum number of nodes to scale up to. Must
+                          be greater than min_node_count, and less than or equal to
+                          10 times of 'min_node_count'.
                         format: int32
                         type: integer
                       minNodeCount:
-                        description: |-
-                          Required. The minimum number of nodes to scale down to. Must be greater
-                           than or equal to 1.
+                        description: Required. The minimum number of nodes to scale
+                          down to. Must be greater than or equal to 1.
                         format: int32
                         type: integer
+                    required:
+                    - minNodeCount
                     type: object
                 type: object
               onlineStorageTTLDays:
-                description: |-
-                  Optional. TTL in days for feature values that will be stored in online
-                   serving storage. The Feature Store online storage periodically removes
-                   obsolete feature values older than `online_storage_ttl_days` since the
-                   feature generation time. Note that `online_storage_ttl_days` should be less
-                   than or equal to `offline_storage_ttl_days` for each EntityType under a
-                   featurestore. If not set, default to 4000 days
+                description: Optional. TTL in days for feature values that will be
+                  stored in online serving storage. The Feature Store online storage
+                  periodically removes obsolete feature values older than `online_storage_ttl_days`
+                  since the feature generation time. Note that `online_storage_ttl_days`
+                  should be less than or equal to `offline_storage_ttl_days` for each
+                  EntityType under a featurestore. If not set, default to 4000 days
                 format: int32
                 type: integer
               projectRef:
                 description: The Project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -198,9 +218,8 @@ spec:
               state of VertexAIFeaturestore
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -212,9 +231,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpcomputeinterconnect
     - gcpcomputeinterconnects
     singular: computeinterconnect
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -92,9 +88,9 @@ spec:
                               format: int32
                               type: integer
                             trafficClass:
-                              description: |-
-                                TrafficClass whose bandwidth percentage is being specified.
-                                 Check the TrafficClass enum for the list of possible values.
+                              description: TrafficClass whose bandwidth percentage
+                                is being specified. Check the TrafficClass enum for
+                                the list of possible values.
                               type: string
                           type: object
                         type: array
@@ -115,9 +111,9 @@ spec:
                           format: int32
                           type: integer
                         trafficClass:
-                          description: |-
-                            TrafficClass whose bandwidth percentage is being specified.
-                             Check the TrafficClass enum for the list of possible values.
+                          description: TrafficClass whose bandwidth percentage is
+                            being specified. Check the TrafficClass enum for the list
+                            of possible values.
                           type: string
                       type: object
                     type: array
@@ -125,9 +121,13 @@ spec:
                     type: object
                 type: object
               availableFeatures:
-                description: |-
-                  [Output only] List of features available for this Interconnect connection, which can take one of the following values: - IF_MACSEC If present then the Interconnect connection is provisioned on MACsec capable hardware ports. If not present then the Interconnect connection is provisioned on non-MACsec capable ports and MACsec isn't supported and enabling MACsec fails.
-                   Check the AvailableFeatures enum for the list of possible values.
+                description: '[Output only] List of features available for this Interconnect
+                  connection, which can take one of the following values: - IF_MACSEC
+                  If present then the Interconnect connection is provisioned on MACsec
+                  capable hardware ports. If not present then the Interconnect connection
+                  is provisioned on non-MACsec capable ports and MACsec isn''t supported
+                  and enabling MACsec fails. Check the AvailableFeatures enum for
+                  the list of possible values.'
                 items:
                   type: string
                 type: array
@@ -180,17 +180,24 @@ spec:
                       format: int64
                       type: integer
                     issueType:
-                      description: |-
-                        Form this outage is expected to take, which can take one of the following values: - OUTAGE: The Interconnect may be completely out of service for some or all of the specified window. - PARTIAL_OUTAGE: Some circuits comprising the Interconnect as a whole should remain up, but with reduced bandwidth. Note that the versions of this enum prefixed with "IT_" have been deprecated in favor of the unprefixed values.
-                         Check the IssueType enum for the list of possible values.
+                      description: 'Form this outage is expected to take, which can
+                        take one of the following values: - OUTAGE: The Interconnect
+                        may be completely out of service for some or all of the specified
+                        window. - PARTIAL_OUTAGE: Some circuits comprising the Interconnect
+                        as a whole should remain up, but with reduced bandwidth. Note
+                        that the versions of this enum prefixed with "IT_" have been
+                        deprecated in favor of the unprefixed values. Check the IssueType
+                        enum for the list of possible values.'
                       type: string
                     name:
                       description: Unique identifier for this outage notification.
                       type: string
                     source:
-                      description: |-
-                        The party that generated this notification, which can take the following value: - GOOGLE: this notification as generated by Google. Note that the value of NSRC_GOOGLE has been deprecated in favor of GOOGLE.
-                         Check the Source enum for the list of possible values.
+                      description: 'The party that generated this notification, which
+                        can take the following value: - GOOGLE: this notification
+                        as generated by Google. Note that the value of NSRC_GOOGLE
+                        has been deprecated in favor of GOOGLE. Check the Source enum
+                        for the list of possible values.'
                       type: string
                     startTime:
                       description: Scheduled start time for the outage (milliseconds
@@ -198,9 +205,16 @@ spec:
                       format: int64
                       type: integer
                     state:
-                      description: |-
-                        State of this notification, which can take one of the following values: - ACTIVE: This outage notification is active. The event could be in the past, present, or future. See start_time and end_time for scheduling. - CANCELLED: The outage associated with this notification was cancelled before the outage was due to start. - COMPLETED: The outage associated with this notification is complete. Note that the versions of this enum prefixed with "NS_" have been deprecated in favor of the unprefixed values.
-                         Check the State enum for the list of possible values.
+                      description: 'State of this notification, which can take one
+                        of the following values: - ACTIVE: This outage notification
+                        is active. The event could be in the past, present, or future.
+                        See start_time and end_time for scheduling. - CANCELLED: The
+                        outage associated with this notification was cancelled before
+                        the outage was due to start. - COMPLETED: The outage associated
+                        with this notification is complete. Note that the versions
+                        of this enum prefixed with "NS_" have been deprecated in favor
+                        of the unprefixed values. Check the State enum for the list
+                        of possible values.'
                       type: string
                   type: object
                 type: array
@@ -231,9 +245,12 @@ spec:
                   type: string
                 type: array
               interconnectType:
-                description: |-
-                  Type of interconnect, which can take one of the following values: - PARTNER: A partner-managed interconnection shared between customers though a partner. - DEDICATED: A dedicated physical interconnection with the customer. Note that a value IT_PRIVATE has been deprecated in favor of DEDICATED.
-                   Check the InterconnectType enum for the list of possible values.
+                description: 'Type of interconnect, which can take one of the following
+                  values: - PARTNER: A partner-managed interconnection shared between
+                  customers though a partner. - DEDICATED: A dedicated physical interconnection
+                  with the customer. Note that a value IT_PRIVATE has been deprecated
+                  in favor of DEDICATED. Check the InterconnectType enum for the list
+                  of possible values.'
                 type: string
               kind:
                 description: '[Output Only] Type of the resource. Always compute#interconnect
@@ -257,9 +274,13 @@ spec:
                   comply with RFC1035. Label values may be empty.
                 type: object
               linkType:
-                description: |-
-                  Type of link requested, which can take one of the following values: - LINK_TYPE_ETHERNET_10G_LR: A 10G Ethernet with LR optics - LINK_TYPE_ETHERNET_100G_LR: A 100G Ethernet with LR optics. - LINK_TYPE_ETHERNET_400G_LR4: A 400G Ethernet with LR4 optics. Note that this field indicates the speed of each of the links in the bundle, not the speed of the entire bundle.
-                   Check the LinkType enum for the list of possible values.
+                description: 'Type of link requested, which can take one of the following
+                  values: - LINK_TYPE_ETHERNET_10G_LR: A 10G Ethernet with LR optics
+                  - LINK_TYPE_ETHERNET_100G_LR: A 100G Ethernet with LR optics. -
+                  LINK_TYPE_ETHERNET_400G_LR4: A 400G Ethernet with LR4 optics. Note
+                  that this field indicates the speed of each of the links in the
+                  bundle, not the speed of the entire bundle. Check the LinkType enum
+                  for the list of possible values.'
                 type: string
               location:
                 description: URL of the InterconnectLocation object that represents
@@ -322,9 +343,15 @@ spec:
                   using workforce identity federation.
                 type: string
               operationalStatus:
-                description: |-
-                  [Output Only] The current status of this Interconnect's functionality, which can take one of the following values: - OS_ACTIVE: A valid Interconnect, which is turned up and is ready to use. Attachments may be provisioned on this Interconnect. - OS_UNPROVISIONED: An Interconnect that has not completed turnup. No attachments may be provisioned on this Interconnect. - OS_UNDER_MAINTENANCE: An Interconnect that is undergoing internal maintenance. No attachments may be provisioned or updated on this Interconnect.
-                   Check the OperationalStatus enum for the list of possible values.
+                description: '[Output Only] The current status of this Interconnect''s
+                  functionality, which can take one of the following values: - OS_ACTIVE:
+                  A valid Interconnect, which is turned up and is ready to use. Attachments
+                  may be provisioned on this Interconnect. - OS_UNPROVISIONED: An
+                  Interconnect that has not completed turnup. No attachments may be
+                  provisioned on this Interconnect. - OS_UNDER_MAINTENANCE: An Interconnect
+                  that is undergoing internal maintenance. No attachments may be provisioned
+                  or updated on this Interconnect. Check the OperationalStatus enum
+                  for the list of possible values.'
                 type: string
               peerIPAddress:
                 description: '[Output Only] IP address configured on the customer
@@ -334,6 +361,20 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -361,9 +402,14 @@ spec:
                   interconnect is connected to.
                 type: string
               requestedFeatures:
-                description: |-
-                  Optional. List of features requested for this Interconnect connection, which can take one of the following values: - IF_MACSEC If specified then the connection is created on MACsec capable hardware ports. If not specified, the default value is false, which allocates non-MACsec capable ports first if available. This parameter can be provided only with Interconnect INSERT. It isn't valid for Interconnect PATCH.
-                   Check the RequestedFeatures enum for the list of possible values.
+                description: 'Optional. List of features requested for this Interconnect
+                  connection, which can take one of the following values: - IF_MACSEC
+                  If specified then the connection is created on MACsec capable hardware
+                  ports. If not specified, the default value is false, which allocates
+                  non-MACsec capable ports first if available. This parameter can
+                  be provided only with Interconnect INSERT. It isn''t valid for Interconnect
+                  PATCH. Check the RequestedFeatures enum for the list of possible
+                  values.'
                 items:
                   type: string
                 type: array
@@ -383,9 +429,14 @@ spec:
                 description: '[Output Only] Server-defined URL for the resource.'
                 type: string
               state:
-                description: |-
-                  [Output Only] The current state of Interconnect functionality, which can take one of the following values: - ACTIVE: The Interconnect is valid, turned up and ready to use. Attachments may be provisioned on this Interconnect. - UNPROVISIONED: The Interconnect has not completed turnup. No attachments may be provisioned on this Interconnect. - UNDER_MAINTENANCE: The Interconnect is undergoing internal maintenance. No attachments may be provisioned or updated on this Interconnect.
-                   Check the State enum for the list of possible values.
+                description: '[Output Only] The current state of Interconnect functionality,
+                  which can take one of the following values: - ACTIVE: The Interconnect
+                  is valid, turned up and ready to use. Attachments may be provisioned
+                  on this Interconnect. - UNPROVISIONED: The Interconnect has not
+                  completed turnup. No attachments may be provisioned on this Interconnect.
+                  - UNDER_MAINTENANCE: The Interconnect is undergoing internal maintenance.
+                  No attachments may be provisioned or updated on this Interconnect.
+                  Check the State enum for the list of possible values.'
                 type: string
             required:
             - location
@@ -396,9 +447,8 @@ spec:
               state of ComputeInterconnect
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -410,9 +460,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

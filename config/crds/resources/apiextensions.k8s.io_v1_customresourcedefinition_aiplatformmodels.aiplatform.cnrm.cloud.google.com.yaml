@@ -77,6 +77,8 @@ spec:
                       baseModelURI:
                         description: Required. The public base model URI.
                         type: string
+                    required:
+                    - baseModelURI
                     type: object
                   modelGardenSource:
                     description: Source information of Model Garden models.
@@ -93,6 +95,8 @@ spec:
                         description: Optional. The model garden source model version
                           ID.
                         type: string
+                    required:
+                    - publicModelName
                     type: object
                 type: object
               containerSpec:
@@ -233,6 +237,9 @@ spec:
                             references will never be expanded, regardless of whether
                             the variable exists or not.'
                           type: string
+                      required:
+                      - name
+                      - value
                       type: object
                     type: array
                   grpcPorts:
@@ -783,6 +790,8 @@ spec:
                         format: int32
                         type: integer
                     type: object
+                required:
+                - imageURI
                 type: object
               dataStats:
                 description: |-
@@ -935,23 +944,7 @@ spec:
                                  If a scalar is provided, Vertex AI broadcasts to the same shape as the
                                  encoded tensor.
                               items:
-                                properties:
-                                  boolValue:
-                                    description: Represents a boolean value.
-                                    type: boolean
-                                  nullValue:
-                                    description: Represents a null value.
-                                    type: string
-                                  numberValue:
-                                    description: Represents a double value.
-                                    type: number
-                                  stringValue:
-                                    description: Represents a string value.
-                                    type: string
-                                  structValue:
-                                    description: Represents a structured value.
-                                    x-kubernetes-preserve-unknown-fields: true
-                                type: object
+                                x-kubernetes-preserve-unknown-fields: true
                               type: array
                             encodedTensorName:
                               description: |-
@@ -1038,23 +1031,7 @@ spec:
                                  [PredictSchemata's][google.cloud.aiplatform.v1.Model.predict_schemata]
                                  [instance_schema_uri][google.cloud.aiplatform.v1.PredictSchemata.instance_schema_uri].
                               items:
-                                properties:
-                                  boolValue:
-                                    description: Represents a boolean value.
-                                    type: boolean
-                                  nullValue:
-                                    description: Represents a null value.
-                                    type: string
-                                  numberValue:
-                                    description: Represents a double value.
-                                    type: number
-                                  stringValue:
-                                    description: Represents a string value.
-                                    type: string
-                                  structValue:
-                                    description: Represents a structured value.
-                                    x-kubernetes-preserve-unknown-fields: true
-                                type: object
+                                x-kubernetes-preserve-unknown-fields: true
                               type: array
                             inputTensorName:
                               description: Name of the input tensor for this feature.
@@ -1168,23 +1145,7 @@ spec:
                                  [Attribution.output_display_name][google.cloud.aiplatform.v1.Attribution.output_display_name]
                                  is populated by locating in the mapping with
                                  [Attribution.output_index][google.cloud.aiplatform.v1.Attribution.output_index].
-                              properties:
-                                boolValue:
-                                  description: Represents a boolean value.
-                                  type: boolean
-                                nullValue:
-                                  description: Represents a null value.
-                                  type: string
-                                numberValue:
-                                  description: Represents a double value.
-                                  type: number
-                                stringValue:
-                                  description: Represents a string value.
-                                  type: string
-                                structValue:
-                                  description: Represents a structured value.
-                                  x-kubernetes-preserve-unknown-fields: true
-                              type: object
+                              x-kubernetes-preserve-unknown-fields: true
                             outputTensorName:
                               description: Name of the output tensor. Required and
                                 is only applicable to Vertex AI provided images for
@@ -1230,29 +1191,15 @@ spec:
                                     items:
                                       type: string
                                     type: array
+                                required:
+                                - uris
                                 type: object
                             type: object
                           nearestNeighborSearchConfig:
                             description: The full configuration for the generated
                               index, the semantics are the same as [metadata][google.cloud.aiplatform.v1.Index.metadata]
                               and should match [NearestNeighborSearchConfig](https://cloud.google.com/vertex-ai/docs/explainable-ai/configuring-explanations-example-based#nearest-neighbor-search-config).
-                            properties:
-                              boolValue:
-                                description: Represents a boolean value.
-                                type: boolean
-                              nullValue:
-                                description: Represents a null value.
-                                type: string
-                              numberValue:
-                                description: Represents a double value.
-                                type: number
-                              stringValue:
-                                description: Represents a string value.
-                                type: string
-                              structValue:
-                                description: Represents a structured value.
-                                x-kubernetes-preserve-unknown-fields: true
-                            type: object
+                            x-kubernetes-preserve-unknown-fields: true
                           neighborCount:
                             description: The number of neighbors to return when querying
                               for examples.
@@ -1375,6 +1322,8 @@ spec:
                                Valid range of its value is [1, 100], inclusively.
                             format: int32
                             type: integer
+                        required:
+                        - stepCount
                         type: object
                       sampledShapleyAttribution:
                         description: 'An attribution method that approximates Shapley
@@ -1391,6 +1340,8 @@ spec:
                                Valid range of its value is [1, 50], inclusively.
                             format: int32
                             type: integer
+                        required:
+                        - pathCount
                         type: object
                       topK:
                         description: If populated, returns attributions for top K
@@ -1503,8 +1454,12 @@ spec:
                                Valid range of its value is [1, 100], inclusively.
                             format: int32
                             type: integer
+                        required:
+                        - stepCount
                         type: object
                     type: object
+                required:
+                - parameters
                 type: object
               labels:
                 additionalProperties:

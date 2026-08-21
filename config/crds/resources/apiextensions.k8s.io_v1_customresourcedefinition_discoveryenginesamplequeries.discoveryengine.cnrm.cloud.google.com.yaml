@@ -133,6 +133,8 @@ spec:
                           type: string
                       type: object
                     type: array
+                required:
+                - query
                 type: object
               resourceID:
                 description: The DiscoveryEngineSampleQuery name. If not given, the

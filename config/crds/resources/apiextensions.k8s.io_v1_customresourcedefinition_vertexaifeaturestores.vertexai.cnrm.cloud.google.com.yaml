@@ -162,6 +162,8 @@ spec:
                           down to. Must be greater than or equal to 1.
                         format: int32
                         type: integer
+                    required:
+                    - minNodeCount
                     type: object
                 type: object
               onlineStorageTTLDays:

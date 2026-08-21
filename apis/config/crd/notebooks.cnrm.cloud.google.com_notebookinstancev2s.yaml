@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpnotebookinstancev2
     - gcpnotebookinstancev2s
     singular: notebookinstancev2
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -44,19 +45,14 @@ spec:
         description: NotebookInstanceV2 is the Schema for the NotebookInstanceV2 API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -64,11 +60,9 @@ spec:
             description: NotebookInstanceV2Spec defines the desired state of NotebookInstanceV2
             properties:
               acceleratorConfig:
-                description: |-
-                  The hardware accelerator used on this instance. If you use
-                   accelerators, make sure that your configuration has
-                   [enough vCPUs and memory to support the `machine_type` you have
-                   selected](https://cloud.google.com/compute/docs/gpus/#gpus-list).
+                description: The hardware accelerator used on this instance. If you
+                  use accelerators, make sure that your configuration has [enough
+                  vCPUs and memory to support the `machine_type` you have selected](https://cloud.google.com/compute/docs/gpus/#gpus-list).
                 properties:
                   coreCount:
                     description: Count of cores of this accelerator.
@@ -79,65 +73,59 @@ spec:
                     type: string
                 type: object
               bootDiskSizeGB:
-                description: |-
-                  Input only. The size of the boot disk in GB attached to this instance, up to a maximum
-                   of 64000 GB (64 TB). The minimum recommended value is 100 GB. If not
-                   specified, this defaults to 100.
+                description: Input only. The size of the boot disk in GB attached
+                  to this instance, up to a maximum of 64000 GB (64 TB). The minimum
+                  recommended value is 100 GB. If not specified, this defaults to
+                  100.
                 format: int64
                 type: integer
               bootDiskType:
-                description: |-
-                  Input only. The type of the boot disk attached to this instance, defaults to
-                   standard persistent disk (`PD_STANDARD`).
+                description: Input only. The type of the boot disk attached to this
+                  instance, defaults to standard persistent disk (`PD_STANDARD`).
                 type: string
               canIPForward:
-                description: |-
-                  Optional. Flag to enable ip forwarding or not, default false/off.
-                   https://cloud.google.com/vpc/docs/using-routes#canipforward
+                description: Optional. Flag to enable ip forwarding or not, default
+                  false/off. https://cloud.google.com/vpc/docs/using-routes#canipforward
                 type: boolean
               containerImage:
                 description: Use a container image to start the notebook instance.
                 properties:
                   repository:
-                    description: |-
-                      Required. The path to the container image repository. For example:
-                       `gcr.io/{project_id}/{image_name}`
+                    description: 'Required. The path to the container image repository.
+                      For example: `gcr.io/{project_id}/{image_name}`'
                     type: string
                   tag:
-                    description: |-
-                      The tag of the container image. If not specified, this defaults
-                       to the latest tag.
+                    description: The tag of the container image. If not specified,
+                      this defaults to the latest tag.
                     type: string
                 required:
                 - repository
                 type: object
               customGpuDriverPath:
-                description: |-
-                  Specify a custom Cloud Storage path where the GPU driver is stored.
-                   If not specified, we'll automatically choose from official GPU drivers.
+                description: Specify a custom Cloud Storage path where the GPU driver
+                  is stored. If not specified, we'll automatically choose from official
+                  GPU drivers.
                 type: string
               dataDiskSizeGB:
-                description: |-
-                  Input only. The size of the data disk in GB attached to this instance, up to a maximum
-                   of 64000 GB (64 TB). You can choose the size of the data disk based on how
-                   big your notebooks and data are. If not specified, this defaults to 100.
+                description: Input only. The size of the data disk in GB attached
+                  to this instance, up to a maximum of 64000 GB (64 TB). You can choose
+                  the size of the data disk based on how big your notebooks and data
+                  are. If not specified, this defaults to 100.
                 format: int64
                 type: integer
               dataDiskType:
-                description: |-
-                  Input only. The type of the data disk attached to this instance, defaults to
-                   standard persistent disk (`PD_STANDARD`).
+                description: Input only. The type of the data disk attached to this
+                  instance, defaults to standard persistent disk (`PD_STANDARD`).
                 type: string
               diskEncryption:
                 description: Input only. Disk encryption method used on the boot and
                   data disks, defaults to GMEK.
                 type: string
               installGpuDriver:
-                description: |-
-                  Whether the end user authorizes Google Cloud to install GPU driver
-                   on this instance.
-                   If this field is empty or set to false, the GPU driver won't be installed.
-                   Only applicable to instances with GPUs.
+                description: Whether the end user authorizes Google Cloud to install
+                  GPU driver on this instance. If this field is empty or set to false,
+                  the GPU driver won't be installed. Only applicable to instances
+                  with GPUs.
                 type: boolean
               instanceOwners:
                 description: |-
@@ -161,18 +149,15 @@ spec:
               labels:
                 additionalProperties:
                   type: string
-                description: |-
-                  Labels to apply to this instance.
-                   These can be later modified by the setLabels method.
+                description: Labels to apply to this instance. These can be later
+                  modified by the setLabels method.
                 type: object
               location:
                 description: The location of this resource.
                 type: string
               machineType:
-                description: |-
-                  Required. The [Compute Engine machine
-                   type](https://cloud.google.com/compute/docs/machine-types) of this
-                   instance.
+                description: Required. The [Compute Engine machine type](https://cloud.google.com/compute/docs/machine-types)
+                  of this instance.
                 type: string
               metadata:
                 additionalProperties:
@@ -180,15 +165,12 @@ spec:
                 description: Custom metadata to apply to this instance.
                 type: object
               network:
-                description: |-
-                  The name of the VPC that this instance is in.
-                   Format:
-                   `projects/{project_id}/global/networks/{network_id}`
+                description: 'The name of the VPC that this instance is in. Format:
+                  `projects/{project_id}/global/networks/{network_id}`'
                 type: string
               nicType:
-                description: |-
-                  Optional. The type of vNIC to be used on this interface. This may be gVNIC or
-                   VirtioNet.
+                description: Optional. The type of vNIC to be used on this interface.
+                  This may be gVNIC or VirtioNet.
                 type: string
               noProxyAccess:
                 description: If true, the notebook instance will not register with
@@ -202,13 +184,26 @@ spec:
                   when deleting the instance.
                 type: boolean
               postStartupScript:
-                description: |-
-                  Path to a Bash script that automatically runs after a notebook instance
-                   fully boots up. The path must be a URL or
-                   Cloud Storage path (`gs://path-to-file/file-name`).
+                description: Path to a Bash script that automatically runs after a
+                  notebook instance fully boots up. The path must be a URL or Cloud
+                  Storage path (`gs://path-to-file/file-name`).
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -226,11 +221,9 @@ spec:
                     type: string
                 type: object
               reservationAffinity:
-                description: |-
-                  Optional. The optional reservation affinity. Setting this field will apply
-                   the specified [Zonal Compute
-                   Reservation](https://cloud.google.com/compute/docs/instances/reserving-zonal-resources)
-                   to this notebook instance.
+                description: Optional. The optional reservation affinity. Setting
+                  this field will apply the specified [Zonal Compute Reservation](https://cloud.google.com/compute/docs/instances/reserving-zonal-resources)
+                  to this notebook instance.
                 properties:
                   consumeReservationType:
                     description: Optional. Type of reservation to consume
@@ -277,10 +270,8 @@ spec:
                   type: string
                 type: array
               shieldedInstanceConfig:
-                description: |-
-                  Optional. Shielded VM configuration.
-                   [Images using supported Shielded VM
-                   features](https://cloud.google.com/compute/docs/instances/modifying-shielded-vm).
+                description: Optional. Shielded VM configuration. [Images using supported
+                  Shielded VM features](https://cloud.google.com/compute/docs/instances/modifying-shielded-vm).
                 properties:
                   enableIntegrityMonitoring:
                     description: |-
@@ -305,15 +296,12 @@ spec:
                     type: boolean
                 type: object
               subnet:
-                description: |-
-                  The name of the subnet that this instance is in.
-                   Format:
-                   `projects/{project_id}/regions/{region}/subnetworks/{subnetwork_id}`
+                description: 'The name of the subnet that this instance is in. Format:
+                  `projects/{project_id}/regions/{region}/subnetworks/{subnetwork_id}`'
                 type: string
               tags:
-                description: |-
-                  Optional. The Compute Engine tags to add to runtime (see [Tagging
-                   instances](https://cloud.google.com/compute/docs/label-or-tag-resources#tags)).
+                description: Optional. The Compute Engine tags to add to runtime (see
+                  [Tagging instances](https://cloud.google.com/compute/docs/label-or-tag-resources#tags)).
                 items:
                   type: string
                 type: array
@@ -360,17 +348,15 @@ spec:
                 description: Use a Compute Engine VM image to start the notebook instance.
                 properties:
                   imageFamily:
-                    description: |-
-                      Use this VM image family to find the image; the newest image in this
-                       family will be used.
+                    description: Use this VM image family to find the image; the newest
+                      image in this family will be used.
                     type: string
                   imageName:
                     description: Use VM image name to find the image.
                     type: string
                   project:
-                    description: |-
-                      Required. The name of the Google Cloud project that this VM image belongs to.
-                       Format: `{project_id}`
+                    description: 'Required. The name of the Google Cloud project that
+                      this VM image belongs to. Format: `{project_id}`'
                     type: string
                 required:
                 - project
@@ -385,9 +371,8 @@ spec:
               state of NotebookInstanceV2
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -399,9 +384,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -440,14 +424,14 @@ spec:
                     items:
                       properties:
                         autoDelete:
-                          description: |-
-                            Indicates whether the disk will be auto-deleted when the instance is
-                             deleted (but not when the disk is detached from the instance).
+                          description: Indicates whether the disk will be auto-deleted
+                            when the instance is deleted (but not when the disk is
+                            detached from the instance).
                           type: boolean
                         boot:
-                          description: |-
-                            Indicates that this is a boot disk. The virtual machine will use the
-                             first partition of the disk for its root filesystem.
+                          description: Indicates that this is a boot disk. The virtual
+                            machine will use the first partition of the disk for its
+                            root filesystem.
                           type: boolean
                         deviceName:
                           description: |-
@@ -465,10 +449,10 @@ spec:
                           format: int64
                           type: integer
                         guestOSFeatures:
-                          description: |-
-                            Indicates a list of features to enable on the guest operating system.
-                             Applicable only for bootable images. Read  Enabling guest operating
-                             system features to see a list of available options.
+                          description: Indicates a list of features to enable on the
+                            guest operating system. Applicable only for bootable images.
+                            Read  Enabling guest operating system features to see
+                            a list of available options.
                           items:
                             properties:
                               type:
@@ -487,10 +471,9 @@ spec:
                             type: object
                           type: array
                         index:
-                          description: |-
-                            A zero-based index to this disk, where 0 is reserved for the
-                             boot disk. If you have many disks attached to an instance, each disk
-                             would have a unique index number.
+                          description: A zero-based index to this disk, where 0 is
+                            reserved for the boot disk. If you have many disks attached
+                            to an instance, each disk would have a unique index number.
                           format: int64
                           type: integer
                         interface:
@@ -507,15 +490,13 @@ spec:
                              * `SCSI`
                           type: string
                         kind:
-                          description: |-
-                            Type of the resource. Always compute#attachedDisk for attached
-                             disks.
+                          description: Type of the resource. Always compute#attachedDisk
+                            for attached disks.
                           type: string
                         licenses:
-                          description: |-
-                            A list of publicly visible licenses. Reserved for Google's use.
-                             A License represents billing and aggregate usage data for public
-                             and marketplace images.
+                          description: A list of publicly visible licenses. Reserved
+                            for Google's use. A License represents billing and aggregate
+                            usage data for public and marketplace images.
                           items:
                             type: string
                           type: array
@@ -529,9 +510,8 @@ spec:
                              * `READ_WRITE`
                           type: string
                         source:
-                          description: |-
-                            Indicates a valid partial or full URL to an existing Persistent Disk
-                             resource.
+                          description: Indicates a valid partial or full URL to an
+                            existing Persistent Disk resource.
                           type: string
                         type:
                           description: |-

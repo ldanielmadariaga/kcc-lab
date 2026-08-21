@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpdialogflowsecuritysettings
     - gcpdialogflowsecuritysettingss
     singular: dialogflowsecuritysettings
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -89,28 +85,23 @@ spec:
                     description: Filename pattern for exported audio.
                     type: string
                   audioFormat:
-                    description: |-
-                      File format for exported audio file. Currently only in telephony
-                       recordings.
+                    description: File format for exported audio file. Currently only
+                      in telephony recordings.
                     type: string
                   enableAudioRedaction:
-                    description: |-
-                      Enable audio redaction if it is true.
-                       Note that this only redacts end-user audio data;
-                       Synthesised audio from the virtual agent is not redacted.
+                    description: Enable audio redaction if it is true. Note that this
+                      only redacts end-user audio data; Synthesised audio from the
+                      virtual agent is not redacted.
                     type: boolean
                   gcsBucket:
-                    description: |-
-                      Cloud Storage bucket to export audio record to.
-                       Setting this field would grant the Storage Object Creator role to
-                       the Dialogflow Service Agent.
-                       API caller that tries to modify this field should have the permission of
-                       storage.buckets.setIamPolicy.
+                    description: Cloud Storage bucket to export audio record to. Setting
+                      this field would grant the Storage Object Creator role to the
+                      Dialogflow Service Agent. API caller that tries to modify this
+                      field should have the permission of storage.buckets.setIamPolicy.
                     type: string
                   storeTtsAudio:
-                    description: |-
-                      Whether to store TTS audio. By default, TTS audio from the virtual agent
-                       is not exported.
+                    description: Whether to store TTS audio. By default, TTS audio
+                      from the virtual agent is not exported.
                     type: boolean
                 type: object
               deidentifyTemplate:
@@ -134,9 +125,8 @@ spec:
                    `SecuritySettings`.
                 type: string
               displayName:
-                description: |-
-                  Required. The human-readable name of the security settings, unique within
-                   the location.
+                description: Required. The human-readable name of the security settings,
+                  unique within the location.
                 type: string
               insightsExportSettings:
                 description: |-
@@ -149,9 +139,8 @@ spec:
                    what you configure here.
                 properties:
                   enableInsightsExport:
-                    description: |-
-                      If enabled, we will automatically exports
-                       conversations to Insights and Insights runs its analyzers.
+                    description: If enabled, we will automatically exports conversations
+                      to Insights and Insights runs its analyzers.
                     type: boolean
                 type: object
               inspectTemplate:
@@ -179,6 +168,20 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -202,10 +205,9 @@ spec:
                   type: string
                 type: array
               redactionScope:
-                description: |-
-                  Defines the data for which Dialogflow applies redaction. Dialogflow does
-                   not redact data that it does not have access to – for example, Cloud
-                   logging.
+                description: Defines the data for which Dialogflow applies redaction.
+                  Dialogflow does not redact data that it does not have access to
+                  – for example, Cloud logging.
                 type: string
               redactionStrategy:
                 description: Strategy that defines how we do redaction.
@@ -215,20 +217,17 @@ spec:
                   metadata.name will be used.
                 type: string
               retentionStrategy:
-                description: |-
-                  Specifies the retention behavior defined by
-                   [SecuritySettings.RetentionStrategy][google.cloud.dialogflow.cx.v3.SecuritySettings.RetentionStrategy].
+                description: Specifies the retention behavior defined by [SecuritySettings.RetentionStrategy][google.cloud.dialogflow.cx.v3.SecuritySettings.RetentionStrategy].
                 type: string
               retentionWindowDays:
-                description: |-
-                  Retains the data for the specified number of days.
-                   User must set a value lower than Dialogflow's default 365d TTL (30 days
-                   for Agent Assist traffic), higher value will be ignored and use default.
-                   Setting a value higher than that has no effect. A missing value or
-                   setting to 0 also means we use default TTL.
-                   When data retention configuration is changed, it only applies to the data
-                   created after the change; the TTL of existing data created before the
-                   change stays intact.
+                description: Retains the data for the specified number of days. User
+                  must set a value lower than Dialogflow's default 365d TTL (30 days
+                  for Agent Assist traffic), higher value will be ignored and use
+                  default. Setting a value higher than that has no effect. A missing
+                  value or setting to 0 also means we use default TTL. When data retention
+                  configuration is changed, it only applies to the data created after
+                  the change; the TTL of existing data created before the change stays
+                  intact.
                 format: int32
                 type: integer
             required:
@@ -241,9 +240,8 @@ spec:
               machine state of DialogflowSecuritySettings
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -255,9 +253,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

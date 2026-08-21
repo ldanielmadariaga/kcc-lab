@@ -61,6 +61,16 @@ spec:
           spec:
             description: DataLineageProcessSpec defines the desired state of DataLineageProcess
             properties:
+              attributes:
+                additionalProperties:
+                  x-kubernetes-preserve-unknown-fields: true
+                description: |-
+                  Optional. The attributes of the process. Should only be used for the
+                   purpose of non-semantic management (classifying, describing or labeling the
+                   process).
+
+                   Up to 100 attributes are allowed.
+                type: object
               displayName:
                 description: Optional. A human-readable name you can set to display
                   in a user interface. Must be not longer than 200 characters and

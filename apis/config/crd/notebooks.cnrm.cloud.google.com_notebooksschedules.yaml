@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpnotebooksschedule
     - gcpnotebooksschedules
     singular: notebooksschedule
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -44,19 +45,14 @@ spec:
         description: NotebooksSchedule is the Schema for the NotebooksSchedule API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -64,11 +60,9 @@ spec:
             description: NotebooksScheduleSpec defines the desired state of NotebooksSchedule
             properties:
               cronSchedule:
-                description: |-
-                  Cron-tab formatted schedule by which the job will execute.
-                   Format: minute, hour, day of month, month, day of week,
-                   e.g. `0 0 * * WED` = every Wednesday
-                   More examples: https://crontab.guru/examples.html
+                description: 'Cron-tab formatted schedule by which the job will execute.
+                  Format: minute, hour, day of month, month, day of week, e.g. `0
+                  0 * * WED` = every Wednesday More examples: https://crontab.guru/examples.html'
                 type: string
               description:
                 description: A brief description of this environment.
@@ -77,9 +71,8 @@ spec:
                 description: Notebook Execution Template corresponding to this schedule.
                 properties:
                   acceleratorConfig:
-                    description: |-
-                      Configuration (count and accelerator type) for hardware running notebook
-                       execution.
+                    description: Configuration (count and accelerator type) for hardware
+                      running notebook execution.
                     properties:
                       coreCount:
                         description: Count of cores of this accelerator.
@@ -90,46 +83,37 @@ spec:
                         type: string
                     type: object
                   containerImageURI:
-                    description: |-
-                      Container Image URI to a DLVM
-                       Example: 'gcr.io/deeplearning-platform-release/base-cu100'
-                       More examples can be found at:
-                       https://cloud.google.com/ai-platform/deep-learning-containers/docs/choosing-container
+                    description: 'Container Image URI to a DLVM Example: ''gcr.io/deeplearning-platform-release/base-cu100''
+                      More examples can be found at: https://cloud.google.com/ai-platform/deep-learning-containers/docs/choosing-container'
                     type: string
                   dataprocParameters:
                     description: Parameters used in Dataproc JobType executions.
                     properties:
                       cluster:
-                        description: |-
-                          URI for cluster used to run Dataproc execution.
-                           Format: `projects/{PROJECT_ID}/regions/{REGION}/clusters/{CLUSTER_NAME}`
+                        description: 'URI for cluster used to run Dataproc execution.
+                          Format: `projects/{PROJECT_ID}/regions/{REGION}/clusters/{CLUSTER_NAME}`'
                         type: string
                     type: object
                   inputNotebookFile:
-                    description: |-
-                      Path to the notebook file to execute.
-                       Must be in a Google Cloud Storage bucket.
-                       Format: `gs://{bucket_name}/{folder}/{notebook_file_name}`
-                       Ex: `gs://notebook_user/scheduled_notebooks/sentiment_notebook.ipynb`
+                    description: 'Path to the notebook file to execute. Must be in
+                      a Google Cloud Storage bucket. Format: `gs://{bucket_name}/{folder}/{notebook_file_name}`
+                      Ex: `gs://notebook_user/scheduled_notebooks/sentiment_notebook.ipynb`'
                     type: string
                   jobType:
                     description: The type of Job to be used on this execution.
                     type: string
                   kernelSpec:
-                    description: |-
-                      Name of the kernel spec to use. This must be specified if the
-                       kernel spec name on the execution target does not match the name in the
-                       input notebook file.
+                    description: Name of the kernel spec to use. This must be specified
+                      if the kernel spec name on the execution target does not match
+                      the name in the input notebook file.
                     type: string
                   labels:
                     additionalProperties:
                       type: string
-                    description: |-
-                      Labels for execution.
-                       If execution is scheduled, a field included will be 'nbs-scheduled'.
-                       Otherwise, it is an immediate execution, and an included field will be
-                       'nbs-immediate'. Use fields to efficiently index between various types of
-                       executions.
+                    description: Labels for execution. If execution is scheduled,
+                      a field included will be 'nbs-scheduled'. Otherwise, it is an
+                      immediate execution, and an included field will be 'nbs-immediate'.
+                      Use fields to efficiently index between various types of executions.
                     type: object
                   masterType:
                     description: |-
@@ -181,41 +165,33 @@ spec:
                        TPU](https://cloud.google.com/ai-platform/training/docs/using-tpus#configuring_a_custom_tpu_machine).
                     type: string
                   outputNotebookFolder:
-                    description: |-
-                      Path to the notebook folder to write to.
-                       Must be in a Google Cloud Storage bucket path.
-                       Format: `gs://{bucket_name}/{folder}`
-                       Ex: `gs://notebook_user/scheduled_notebooks`
+                    description: 'Path to the notebook folder to write to. Must be
+                      in a Google Cloud Storage bucket path. Format: `gs://{bucket_name}/{folder}`
+                      Ex: `gs://notebook_user/scheduled_notebooks`'
                     type: string
                   parameters:
                     description: Parameters used within the 'input_notebook_file'
                       notebook.
                     type: string
                   paramsYamlFile:
-                    description: |-
-                      Parameters to be overridden in the notebook during execution.
-                       Ref https://papermill.readthedocs.io/en/latest/usage-parameterize.html on
-                       how to specifying parameters in the input notebook and pass them here
-                       in an YAML file.
-                       Ex: `gs://notebook_user/scheduled_notebooks/sentiment_notebook_params.yaml`
+                    description: 'Parameters to be overridden in the notebook during
+                      execution. Ref https://papermill.readthedocs.io/en/latest/usage-parameterize.html
+                      on how to specifying parameters in the input notebook and pass
+                      them here in an YAML file. Ex: `gs://notebook_user/scheduled_notebooks/sentiment_notebook_params.yaml`'
                     type: string
                   scaleTier:
-                    description: |-
-                      Required. Scale tier of the hardware used for notebook execution.
-                       DEPRECATED Will be discontinued. As right now only CUSTOM is supported.
+                    description: Required. Scale tier of the hardware used for notebook
+                      execution. DEPRECATED Will be discontinued. As right now only
+                      CUSTOM is supported.
                     type: string
                   serviceAccount:
-                    description: |-
-                      The email address of a service account to use when running the execution.
-                       You must have the `iam.serviceAccounts.actAs` permission for the specified
-                       service account.
+                    description: The email address of a service account to use when
+                      running the execution. You must have the `iam.serviceAccounts.actAs`
+                      permission for the specified service account.
                     type: string
                   tensorboard:
-                    description: |-
-                      The name of a Vertex AI [Tensorboard] resource to which this execution
-                       will upload Tensorboard logs.
-                       Format:
-                       `projects/{project}/locations/{location}/tensorboards/{tensorboard}`
+                    description: 'The name of a Vertex AI [Tensorboard] resource to
+                      which this execution will upload Tensorboard logs. Format: `projects/{project}/locations/{location}/tensorboards/{tensorboard}`'
                     type: string
                   vertexAiParameters:
                     description: Parameters used in Vertex AI JobType executions.
@@ -223,10 +199,8 @@ spec:
                       env:
                         additionalProperties:
                           type: string
-                        description: |-
-                          Environment variables.
-                           At most 100 environment variables can be specified and unique.
-                           Example: `GCP_BUCKET=gs://my-bucket/samples/`
+                        description: 'Environment variables. At most 100 environment
+                          variables can be specified and unique. Example: `GCP_BUCKET=gs://my-bucket/samples/`'
                         type: object
                       network:
                         description: |-
@@ -251,6 +225,20 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -293,9 +281,8 @@ spec:
               state of NotebooksSchedule
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -307,9 +294,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -340,15 +326,13 @@ spec:
                     description: Output only. Time the schedule was created.
                     type: string
                   displayName:
-                    description: |-
-                      Output only. Display name used for UI purposes.
-                       Name can only contain alphanumeric characters, hyphens `-`,
-                       and underscores `_`.
+                    description: Output only. Display name used for UI purposes. Name
+                      can only contain alphanumeric characters, hyphens `-`, and underscores
+                      `_`.
                     type: string
                   recentExecutions:
-                    description: |-
-                      Output only. The most recent execution names triggered from this schedule and their
-                       corresponding states.
+                    description: Output only. The most recent execution names triggered
+                      from this schedule and their corresponding states.
                     items:
                       properties:
                         createTime:
@@ -358,18 +342,17 @@ spec:
                           description: A brief description of this execution.
                           type: string
                         displayName:
-                          description: |-
-                            Output only. Name used for UI purposes.
-                             Name can only contain alphanumeric characters and underscores '_'.
+                          description: Output only. Name used for UI purposes. Name
+                            can only contain alphanumeric characters and underscores
+                            '_'.
                           type: string
                         executionTemplate:
                           description: execute metadata including name, hardware spec,
                             region, labels, etc.
                           properties:
                             acceleratorConfig:
-                              description: |-
-                                Configuration (count and accelerator type) for hardware running notebook
-                                 execution.
+                              description: Configuration (count and accelerator type)
+                                for hardware running notebook execution.
                               properties:
                                 coreCount:
                                   description: Count of cores of this accelerator.
@@ -380,46 +363,41 @@ spec:
                                   type: string
                               type: object
                             containerImageURI:
-                              description: |-
-                                Container Image URI to a DLVM
-                                 Example: 'gcr.io/deeplearning-platform-release/base-cu100'
-                                 More examples can be found at:
-                                 https://cloud.google.com/ai-platform/deep-learning-containers/docs/choosing-container
+                              description: 'Container Image URI to a DLVM Example:
+                                ''gcr.io/deeplearning-platform-release/base-cu100''
+                                More examples can be found at: https://cloud.google.com/ai-platform/deep-learning-containers/docs/choosing-container'
                               type: string
                             dataprocParameters:
                               description: Parameters used in Dataproc JobType executions.
                               properties:
                                 cluster:
-                                  description: |-
-                                    URI for cluster used to run Dataproc execution.
-                                     Format: `projects/{PROJECT_ID}/regions/{REGION}/clusters/{CLUSTER_NAME}`
+                                  description: 'URI for cluster used to run Dataproc
+                                    execution. Format: `projects/{PROJECT_ID}/regions/{REGION}/clusters/{CLUSTER_NAME}`'
                                   type: string
                               type: object
                             inputNotebookFile:
-                              description: |-
-                                Path to the notebook file to execute.
-                                 Must be in a Google Cloud Storage bucket.
-                                 Format: `gs://{bucket_name}/{folder}/{notebook_file_name}`
-                                 Ex: `gs://notebook_user/scheduled_notebooks/sentiment_notebook.ipynb`
+                              description: 'Path to the notebook file to execute.
+                                Must be in a Google Cloud Storage bucket. Format:
+                                `gs://{bucket_name}/{folder}/{notebook_file_name}`
+                                Ex: `gs://notebook_user/scheduled_notebooks/sentiment_notebook.ipynb`'
                               type: string
                             jobType:
                               description: The type of Job to be used on this execution.
                               type: string
                             kernelSpec:
-                              description: |-
-                                Name of the kernel spec to use. This must be specified if the
-                                 kernel spec name on the execution target does not match the name in the
-                                 input notebook file.
+                              description: Name of the kernel spec to use. This must
+                                be specified if the kernel spec name on the execution
+                                target does not match the name in the input notebook
+                                file.
                               type: string
                             labels:
                               additionalProperties:
                                 type: string
-                              description: |-
-                                Labels for execution.
-                                 If execution is scheduled, a field included will be 'nbs-scheduled'.
-                                 Otherwise, it is an immediate execution, and an included field will be
-                                 'nbs-immediate'. Use fields to efficiently index between various types of
-                                 executions.
+                              description: Labels for execution. If execution is scheduled,
+                                a field included will be 'nbs-scheduled'. Otherwise,
+                                it is an immediate execution, and an included field
+                                will be 'nbs-immediate'. Use fields to efficiently
+                                index between various types of executions.
                               type: object
                             masterType:
                               description: |-
@@ -471,41 +449,35 @@ spec:
                                  TPU](https://cloud.google.com/ai-platform/training/docs/using-tpus#configuring_a_custom_tpu_machine).
                               type: string
                             outputNotebookFolder:
-                              description: |-
-                                Path to the notebook folder to write to.
-                                 Must be in a Google Cloud Storage bucket path.
-                                 Format: `gs://{bucket_name}/{folder}`
-                                 Ex: `gs://notebook_user/scheduled_notebooks`
+                              description: 'Path to the notebook folder to write to.
+                                Must be in a Google Cloud Storage bucket path. Format:
+                                `gs://{bucket_name}/{folder}` Ex: `gs://notebook_user/scheduled_notebooks`'
                               type: string
                             parameters:
                               description: Parameters used within the 'input_notebook_file'
                                 notebook.
                               type: string
                             paramsYamlFile:
-                              description: |-
-                                Parameters to be overridden in the notebook during execution.
-                                 Ref https://papermill.readthedocs.io/en/latest/usage-parameterize.html on
-                                 how to specifying parameters in the input notebook and pass them here
-                                 in an YAML file.
-                                 Ex: `gs://notebook_user/scheduled_notebooks/sentiment_notebook_params.yaml`
+                              description: 'Parameters to be overridden in the notebook
+                                during execution. Ref https://papermill.readthedocs.io/en/latest/usage-parameterize.html
+                                on how to specifying parameters in the input notebook
+                                and pass them here in an YAML file. Ex: `gs://notebook_user/scheduled_notebooks/sentiment_notebook_params.yaml`'
                               type: string
                             scaleTier:
-                              description: |-
-                                Required. Scale tier of the hardware used for notebook execution.
-                                 DEPRECATED Will be discontinued. As right now only CUSTOM is supported.
+                              description: Required. Scale tier of the hardware used
+                                for notebook execution. DEPRECATED Will be discontinued.
+                                As right now only CUSTOM is supported.
                               type: string
                             serviceAccount:
-                              description: |-
-                                The email address of a service account to use when running the execution.
-                                 You must have the `iam.serviceAccounts.actAs` permission for the specified
-                                 service account.
+                              description: The email address of a service account
+                                to use when running the execution. You must have the
+                                `iam.serviceAccounts.actAs` permission for the specified
+                                service account.
                               type: string
                             tensorboard:
-                              description: |-
-                                The name of a Vertex AI [Tensorboard] resource to which this execution
-                                 will upload Tensorboard logs.
-                                 Format:
-                                 `projects/{project}/locations/{location}/tensorboards/{tensorboard}`
+                              description: 'The name of a Vertex AI [Tensorboard]
+                                resource to which this execution will upload Tensorboard
+                                logs. Format: `projects/{project}/locations/{location}/tensorboards/{tensorboard}`'
                               type: string
                             vertexAiParameters:
                               description: Parameters used in Vertex AI JobType executions.
@@ -513,10 +485,9 @@ spec:
                                 env:
                                   additionalProperties:
                                     type: string
-                                  description: |-
-                                    Environment variables.
-                                     At most 100 environment variables can be specified and unique.
-                                     Example: `GCP_BUCKET=gs://my-bucket/samples/`
+                                  description: 'Environment variables. At most 100
+                                    environment variables can be specified and unique.
+                                    Example: `GCP_BUCKET=gs://my-bucket/samples/`'
                                   type: object
                                 network:
                                   description: |-
@@ -539,9 +510,8 @@ spec:
                             to execute the notebook.
                           type: string
                         name:
-                          description: |-
-                            Output only. The resource name of the execute. Format:
-                             `projects/{project_id}/locations/{location}/executions/{execution_id}`
+                          description: 'Output only. The resource name of the execute.
+                            Format: `projects/{project_id}/locations/{location}/executions/{execution_id}`'
                           type: string
                         outputNotebookFile:
                           description: Output notebook file generated by this execution

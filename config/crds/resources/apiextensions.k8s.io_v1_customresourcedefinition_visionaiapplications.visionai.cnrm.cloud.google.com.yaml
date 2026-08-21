@@ -316,6 +316,8 @@ spec:
                                             description: Optional. An regular expression
                                               hint.
                                             type: string
+                                        required:
+                                        - entityClass
                                         type: object
                                       type: array
                                   type: object
@@ -428,6 +430,8 @@ spec:
                                               provided.
                                             format: int32
                                             type: integer
+                                        required:
+                                        - metricName
                                         type: object
                                       type: array
                                     machineSpec:
@@ -488,6 +492,9 @@ spec:
                                          replicas may be freed.
                                       format: int32
                                       type: integer
+                                  required:
+                                  - machineSpec
+                                  - minReplicaCount
                                   type: object
                                 dynamicConfigInputTopic:
                                   description: 'Optional. By setting the configuration_input_topic,
@@ -735,6 +742,8 @@ spec:
                           description: Processor name refer to the chosen processor
                             resource.
                           type: string
+                      required:
+                      - name
                       type: object
                     type: array
                 type: object

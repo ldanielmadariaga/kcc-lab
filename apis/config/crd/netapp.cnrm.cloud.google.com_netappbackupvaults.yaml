@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpnetappbackupvault
     - gcpnetappbackupvaults
     singular: netappbackupvault
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -44,19 +45,14 @@ spec:
         description: NetAppBackupVault is the Schema for the NetAppBackupVault API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -64,51 +60,48 @@ spec:
             description: NetAppBackupVaultSpec defines the desired state of NetAppBackupVault
             properties:
               backupRegion:
-                description: |-
-                  Optional. Region where the backups are stored.
-                   Format: `projects/{project_id}/locations/{location}`
+                description: 'Optional. Region where the backups are stored. Format:
+                  `projects/{project_id}/locations/{location}`'
                 type: string
               backupRetentionPolicy:
                 description: Optional. Backup retention policy defining the retenton
                   of backups.
                 properties:
                   backupMinimumEnforcedRetentionDays:
-                    description: |-
-                      Required. Minimum retention duration in days for backups in the backup
-                       vault.
+                    description: Required. Minimum retention duration in days for
+                      backups in the backup vault.
                     format: int32
                     type: integer
                   dailyBackupImmutable:
-                    description: |-
-                      Optional. Indicates if the daily backups are immutable.
-                       Atleast one of daily_backup_immutable, weekly_backup_immutable,
-                       monthly_backup_immutable and manual_backup_immutable must be true.
+                    description: Optional. Indicates if the daily backups are immutable.
+                      Atleast one of daily_backup_immutable, weekly_backup_immutable,
+                      monthly_backup_immutable and manual_backup_immutable must be
+                      true.
                     type: boolean
                   manualBackupImmutable:
-                    description: |-
-                      Optional. Indicates if the manual backups are immutable.
-                       Atleast one of daily_backup_immutable, weekly_backup_immutable,
-                       monthly_backup_immutable and manual_backup_immutable must be true.
+                    description: Optional. Indicates if the manual backups are immutable.
+                      Atleast one of daily_backup_immutable, weekly_backup_immutable,
+                      monthly_backup_immutable and manual_backup_immutable must be
+                      true.
                     type: boolean
                   monthlyBackupImmutable:
-                    description: |-
-                      Optional. Indicates if the monthly backups are immutable.
-                       Atleast one of daily_backup_immutable, weekly_backup_immutable,
-                       monthly_backup_immutable and manual_backup_immutable must be true.
+                    description: Optional. Indicates if the monthly backups are immutable.
+                      Atleast one of daily_backup_immutable, weekly_backup_immutable,
+                      monthly_backup_immutable and manual_backup_immutable must be
+                      true.
                     type: boolean
                   weeklyBackupImmutable:
-                    description: |-
-                      Optional. Indicates if the weekly backups are immutable.
-                       Atleast one of daily_backup_immutable, weekly_backup_immutable,
-                       monthly_backup_immutable and manual_backup_immutable must be true.
+                    description: Optional. Indicates if the weekly backups are immutable.
+                      Atleast one of daily_backup_immutable, weekly_backup_immutable,
+                      monthly_backup_immutable and manual_backup_immutable must be
+                      true.
                     type: boolean
                 required:
                 - backupMinimumEnforcedRetentionDays
                 type: object
               backupVaultType:
-                description: |-
-                  Optional. Type of backup vault to be created.
-                   Default is IN_REGION.
+                description: Optional. Type of backup vault to be created. Default
+                  is IN_REGION.
                 type: string
               description:
                 description: Description of the backup vault.
@@ -123,6 +116,20 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -152,9 +159,8 @@ spec:
               state of NetAppBackupVault
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -166,9 +172,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -199,21 +204,16 @@ spec:
                     description: Output only. Create time of the backup vault.
                     type: string
                   destinationBackupVault:
-                    description: |-
-                      Output only. Name of the Backup vault created in backup region.
-                       Format:
-                       `projects/{project_id}/locations/{location}/backupVaults/{backup_vault_id}`
+                    description: 'Output only. Name of the Backup vault created in
+                      backup region. Format: `projects/{project_id}/locations/{location}/backupVaults/{backup_vault_id}`'
                     type: string
                   sourceBackupVault:
-                    description: |-
-                      Output only. Name of the Backup vault created in source region.
-                       Format:
-                       `projects/{project_id}/locations/{location}/backupVaults/{backup_vault_id}`
+                    description: 'Output only. Name of the Backup vault created in
+                      source region. Format: `projects/{project_id}/locations/{location}/backupVaults/{backup_vault_id}`'
                     type: string
                   sourceRegion:
-                    description: |-
-                      Output only. Region in which the backup vault is created.
-                       Format: `projects/{project_id}/locations/{location}`
+                    description: 'Output only. Region in which the backup vault is
+                      created. Format: `projects/{project_id}/locations/{location}`'
                     type: string
                   state:
                     description: Output only. The backup vault state.

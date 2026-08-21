@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpworkflowsworkflow
     - gcpworkflowsworkflows
     singular: workflowsworkflow
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -44,19 +45,14 @@ spec:
         description: WorkflowsWorkflow is the Schema for the WorkflowsWorkflow API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -64,11 +60,10 @@ spec:
             description: WorkflowsWorkflowSpec defines the desired state of WorkflowsWorkflow
             properties:
               callLogLevel:
-                description: |-
-                  Optional. Describes the level of platform logging to apply to calls and
-                   call responses during executions of this workflow. If both the workflow and
-                   the execution specify a logging level, the execution level takes
-                   precedence.
+                description: Optional. Describes the level of platform logging to
+                  apply to calls and call responses during executions of this workflow.
+                  If both the workflow and the execution specify a logging level,
+                  the execution level takes precedence.
                 type: string
               cryptoKeyName:
                 description: |-
@@ -85,10 +80,9 @@ spec:
                    CMEK-encrypted.
                 type: string
               description:
-                description: |-
-                  Description of the workflow provided by the user.
-                   Must be at most 1000 Unicode characters long.
-                   This is a workflow-wide field and is not tied to a specific revision.
+                description: Description of the workflow provided by the user. Must
+                  be at most 1000 Unicode characters long. This is a workflow-wide
+                  field and is not tied to a specific revision.
                 type: string
               executionHistoryLevel:
                 description: Optional. Describes the execution history level to apply
@@ -97,19 +91,32 @@ spec:
               labels:
                 additionalProperties:
                   type: string
-                description: |-
-                  Labels associated with this workflow.
-                   Labels can contain at most 64 entries. Keys and values can be no longer
-                   than 63 characters and can only contain lowercase letters, numeric
-                   characters, underscores, and dashes. Label keys must start with a letter.
-                   International characters are allowed.
-                   This is a workflow-wide field and is not tied to a specific revision.
+                description: Labels associated with this workflow. Labels can contain
+                  at most 64 entries. Keys and values can be no longer than 63 characters
+                  and can only contain lowercase letters, numeric characters, underscores,
+                  and dashes. Label keys must start with a letter. International characters
+                  are allowed. This is a workflow-wide field and is not tied to a
+                  specific revision.
                 type: object
               location:
                 description: The location of this resource.
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -157,11 +164,10 @@ spec:
               userEnvVars:
                 additionalProperties:
                   type: string
-                description: |-
-                  Optional. User-defined environment variables associated with this workflow
-                   revision. This map has a maximum length of 20. Each string can take up to
-                   4KiB. Keys cannot be empty strings and cannot start with "GOOGLE" or
-                   "WORKFLOWS".
+                description: Optional. User-defined environment variables associated
+                  with this workflow revision. This map has a maximum length of 20.
+                  Each string can take up to 4KiB. Keys cannot be empty strings and
+                  cannot start with "GOOGLE" or "WORKFLOWS".
                 type: object
             required:
             - location
@@ -172,9 +178,8 @@ spec:
               state of WorkflowsWorkflow
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -186,9 +191,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -216,23 +220,21 @@ spec:
                   observed in GCP.
                 properties:
                   allKMSKeys:
-                    description: |-
-                      Output only. A list of all KMS crypto keys used to encrypt or decrypt the
-                       data associated with the workflow.
+                    description: Output only. A list of all KMS crypto keys used to
+                      encrypt or decrypt the data associated with the workflow.
                     items:
                       type: string
                     type: array
                   allKMSKeysVersions:
-                    description: |-
-                      Output only. A list of all KMS crypto key versions used to encrypt or
-                       decrypt the data associated with the workflow.
+                    description: Output only. A list of all KMS crypto key versions
+                      used to encrypt or decrypt the data associated with the workflow.
                     items:
                       type: string
                     type: array
                   createTime:
-                    description: |-
-                      Output only. The timestamp for when the workflow was created.
-                       This is a workflow-wide field and is not tied to a specific revision.
+                    description: Output only. The timestamp for when the workflow
+                      was created. This is a workflow-wide field and is not tied to
+                      a specific revision.
                     type: string
                   cryptoKeyVersion:
                     description: |-
@@ -243,9 +245,8 @@ spec:
                        projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{cryptoKey}/cryptoKeyVersions/{cryptoKeyVersion}
                     type: string
                   revisionCreateTime:
-                    description: |-
-                      Output only. The timestamp for the latest revision of the workflow's
-                       creation.
+                    description: Output only. The timestamp for the latest revision
+                      of the workflow's creation.
                     type: string
                   revisionID:
                     description: |-
@@ -265,10 +266,9 @@ spec:
                     description: Output only. State of the workflow deployment.
                     type: string
                   stateError:
-                    description: |-
-                      Output only. Error regarding the state of the workflow. For example, this
-                       field will have error details if the execution data is unavailable due to
-                       revoked KMS key permissions.
+                    description: Output only. Error regarding the state of the workflow.
+                      For example, this field will have error details if the execution
+                      data is unavailable due to revoked KMS key permissions.
                     properties:
                       details:
                         description: Provides specifics about the error.
@@ -278,9 +278,9 @@ spec:
                         type: string
                     type: object
                   updateTime:
-                    description: |-
-                      Output only. The timestamp for when the workflow was last updated.
-                       This is a workflow-wide field and is not tied to a specific revision.
+                    description: Output only. The timestamp for when the workflow
+                      was last updated. This is a workflow-wide field and is not tied
+                      to a specific revision.
                     type: string
                 type: object
             type: object

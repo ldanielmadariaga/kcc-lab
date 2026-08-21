@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpiamdenypolicy
     - gcpiamdenypolicies
     singular: iamdenypolicy
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -44,19 +45,14 @@ spec:
         description: IAMDenyPolicy is the Schema for the IAMDenyPolicy API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -64,27 +60,38 @@ spec:
             description: IAMDenyPolicySpec defines the desired state of IAMDenyPolicy
             properties:
               displayName:
-                description: |-
-                  A user-specified description of the `Policy`. This value can be up to 63
-                   characters.
+                description: A user-specified description of the `Policy`. This value
+                  can be up to 63 characters.
                 type: string
               folderRef:
                 description: The folder that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
-                    description: |-
-                      The 'name' field of a folder, when not managed by Config Connector.
-                      This field must be set when 'name' field is not set.
+                    description: The 'name' field of a folder, when not managed by
+                      Config Connector. This field must be set when 'name' field is
+                      not set.
                     type: string
                   name:
-                    description: |-
-                      The 'name' field of a 'Folder' resource.
-                      This field must be set when 'external' field is not set.
+                    description: The 'name' field of a 'Folder' resource. This field
+                      must be set when 'external' field is not set.
                     type: string
                   namespace:
-                    description: |-
-                      The 'namespace' field of a 'Folder' resource.
-                      If unset, the namespace is defaulted to the namespace of the referencer
+                    description: The 'namespace' field of a 'Folder' resource. If
+                      unset, the namespace is defaulted to the namespace of the referencer
                       resource.
                     type: string
                 type: object
@@ -100,6 +107,20 @@ spec:
                 type: object
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -121,9 +142,8 @@ spec:
                   will be used.
                 type: string
               rules:
-                description: |-
-                  A list of rules that specify the behavior of the `Policy`. All of the rules
-                   should be of the `kind` specified in the `Policy`.
+                description: A list of rules that specify the behavior of the `Policy`.
+                  All of the rules should be of the `kind` specified in the `Policy`.
                 items:
                   properties:
                     denyRule:
@@ -144,33 +164,30 @@ spec:
                              functions and operators are not supported.
                           properties:
                             description:
-                              description: |-
-                                Optional. Description of the expression. This is a longer text which
-                                 describes the expression, e.g. when hovered over it in a UI.
+                              description: Optional. Description of the expression.
+                                This is a longer text which describes the expression,
+                                e.g. when hovered over it in a UI.
                               type: string
                             expression:
-                              description: |-
-                                Textual representation of an expression in Common Expression Language
-                                 syntax.
+                              description: Textual representation of an expression
+                                in Common Expression Language syntax.
                               type: string
                             location:
-                              description: |-
-                                Optional. String indicating the location of the expression for error
-                                 reporting, e.g. a file name and a position in the file.
+                              description: Optional. String indicating the location
+                                of the expression for error reporting, e.g. a file
+                                name and a position in the file.
                               type: string
                             title:
-                              description: |-
-                                Optional. Title for the expression, i.e. a short string describing
-                                 its purpose. This can be used e.g. in UIs which allow to enter the
-                                 expression.
+                              description: Optional. Title for the expression, i.e.
+                                a short string describing its purpose. This can be
+                                used e.g. in UIs which allow to enter the expression.
                               type: string
                           type: object
                         deniedPermissions:
-                          description: |-
-                            The permissions that are explicitly denied by this rule. Each permission
-                             uses the format `{service_fqdn}/{resource}.{verb}`, where `{service_fqdn}`
-                             is the fully qualified domain name for the service. For example,
-                             `iam.googleapis.com/roles.list`.
+                          description: The permissions that are explicitly denied
+                            by this rule. Each permission uses the format `{service_fqdn}/{resource}.{verb}`,
+                            where `{service_fqdn}` is the fully qualified domain name
+                            for the service. For example, `iam.googleapis.com/roles.list`.
                           items:
                             type: string
                           type: array
@@ -246,9 +263,8 @@ spec:
                           type: array
                       type: object
                     description:
-                      description: |-
-                        A user-specified description of the rule. This value can be up to 256
-                         characters.
+                      description: A user-specified description of the rule. This
+                        value can be up to 256 characters.
                       type: string
                   type: object
                 type: array
@@ -258,9 +274,8 @@ spec:
               state of IAMDenyPolicy
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -272,9 +287,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

@@ -211,6 +211,101 @@ failure, and upstream hit it too: `recursive_types.go` declares both types with 
 field commented out "due to CRD instability". The generator now declines these as map values, which
 drops the field visibly into the queue instead of producing a tree that cannot generate CRDs.
 
+## Re-run, after the map and JSON well-known type work
+
+The same experiment, run again once three more generation changes had landed: the Location fix,
+`map<string, Message>`, and `Value`/`ListValue`/`Struct` mapped to `apiextensionsv1.JSON`. The
+reference-hint seeder and the judgement queue also landed in between, but those change only what the
+queue reports and cannot move a CRD field, so they were expected to show nothing here.
+
+**Like for like, on the same 98 resources scored the first time.** This is the only comparison that
+controls for the measured set shifting underneath the run.
+
+| bucket | before | after | clean before | clean after |
+|---|---|---|---|---|
+| spec | 73.7% | **75.0%** | 37/98 | 39/98 |
+| required | 82.8% | **83.0%** | 59/98 | 60/98 |
+| status.observedState | 91.4% | **91.4%** | 71/98 | 71/98 |
+
+Five of those 98 sit in services whose CRDs are stale this run, so their rows are carried over rather
+than re-measured. Dropping them gives 93 fully comparable resources, where spec moves 75.2% to
+**76.6%** and the other two buckets behave the same way.
+
+**The movement is three resources, and all three are maps.**
+
+| resource | spec fields missing, before → after |
+|---|---|
+| `BigQueryMigrationMigrationWorkflow` | 36 → 0 |
+| `NetworkServicesWasmPlugin` | 8 → 0 |
+| `DataLineageProcess` | 1 → 0 |
+
+That is the whole of the +1.3. It is a small number for a change that recovered 40 fields across 18
+services, and the reason is that the measured 98 is a sample: only three of them had a
+`map<string, Message>` field at all. The benefit is real but lands mostly outside the sample, which
+is worth remembering before reading this rate as a measure of overall generator quality.
+
+**The Location fix moved nothing measurable.** No resource in the comparable set changed its spec
+count because of it. That is not evidence it is wrong, only that the resources it affects are not in
+this sample.
+
+### The metric penalises the JSON well-known type fix
+
+Two resources went the other way, `AIPlatformModel` and `VertexAITrainingPipeline`, each gaining 20
+missing spec fields. Every one of them is a `Value` union arm:
+
+```
+spec.explanationSpec.metadata.inputs.KEY.inputBaselines[].boolValue   (boolean)
+spec.explanationSpec.metadata.inputs.KEY.inputBaselines[].nullValue   (string)
+spec.explanationSpec.metadata.inputs.KEY.inputBaselines[].numberValue (number)
+spec.explanationSpec.metadata.inputs.KEY.inputBaselines[].stringValue (string)
+spec.explanationSpec.metadata.inputs.KEY.inputBaselines[].structValue (json)
+```
+
+The baseline is upstream's hand-written `Value` struct, whose `list_value` arm is commented out
+because it destabilises the CRD. Scoring against it rewards reproducing that shape. The change
+replaces it with `x-kubernetes-preserve-unknown-fields`, which is what the field actually is, and is
+what fixed KCC sending Vertex AI a double-encoded `trainingTaskInputs`. So the score drops because
+the output got better.
+
+Neither resource is in the comparable 98, so the headline is unaffected — but the effect is
+structural, not a one-off. **Any change that corrects a shape upstream got wrong will read as a
+regression here.** The score answers "how close are we to what upstream wrote", which is the right
+question for replication and the wrong one for correctness.
+
+### Exclusions moved, in both directions
+
+| service | before | after | why |
+|---|---|---|---|
+| `ces` | excluded | **scores** | its exclusion was `undefined: apiextensionsv1`, the orphaned-import bug the `prunetypes` fix addresses |
+| `compute` | excluded | **scores** | per-service CRD generation succeeds now; previously it failed and left CRDs identical to baseline, scoring a false 100% |
+| `notebooks` | scored | **excluded** | regression from this session's own fix, below |
+| `networksecurity` | excluded | excluded | `zz_generated.deepcopy.go` is still truncated |
+| `backupdr` | excluded | excluded | `v1beta1` references `v1alpha1.Parent` |
+
+`compute` returning is why the full measured set now reads differently from the 98: its resources
+previously scored a false 100% by not being regenerated at all, and now score honestly.
+
+**The `notebooks` regression is self-inflicted and worth recording.** Qualifying
+`NotebookInstanceV2` to `notebooks.v2.Instance` recovered the 39 fields it had been losing to the v1
+proto — but both versions now generate into one package, and message names common to both collide:
+`ContainerImage` and `VMImage` are each declared twice, so the package does not compile. Fixing the
+proto ambiguity created a Go name ambiguity. Two resources drop out of the measured set as a result.
+
+### Method
+
+Identical to the first run, and checked rather than assumed: the analyser reproduces the published
+73.7 / 82.8 / 91.4 and 37 / 59 / 71 exactly from the preserved `data-239/score239.txt` before being
+pointed at the new scores. Given that three figures in this document's drafts turned out to be
+measurement bugs, pinning the tooling against a known answer first is cheap insurance.
+
+One operational note that cost a full false start: `apis/<svc>/generate.sh` calls
+`dev/tasks/generate-crds`, which runs `controller-gen` tree-wide, so one unloadable package panics
+the CRD step for **every** service. All 92 failed identically until the run was split into
+`SKIP_GENERATE_CRDS=1` for types and mappers, then `controller-gen` per service. That is this
+document's own recorded lesson from the first run, and it still had to be learned twice.
+
+Inputs preserved in [data-239-rerun/](data-239-rerun/).
+
 ## Lessons for the evaluation framework
 
 These cost more time than the generator defects did.

@@ -1,9 +1,9 @@
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.5
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,6 +20,7 @@ spec:
     - gcpdatalabelinginstruction
     - gcpdatalabelinginstructions
     singular: datalabelinginstruction
+  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,19 +46,14 @@ spec:
           API
         properties:
           apiVersion:
-            description: |-
-              APIVersion defines the versioned schema of this representation of an object.
-              Servers should convert recognized schemas to the latest internal value, and
-              may reject unrecognized values.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: |-
-              Kind is a string value representing the REST resource this object represents.
-              Servers may infer this from the endpoint the client submits requests to.
-              Cannot be updated.
-              In CamelCase.
-              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
             type: object
@@ -66,9 +62,8 @@ spec:
               DataLabelingInstruction
             properties:
               blockingResources:
-                description: |-
-                  Output only. The names of any related resources that are blocking changes
-                   to the instruction.
+                description: Output only. The names of any related resources that
+                  are blocking changes to the instruction.
                 items:
                   type: string
                 type: array
@@ -92,18 +87,16 @@ spec:
                 description: Required. The data type of this instruction.
                 type: string
               description:
-                description: |-
-                  Optional. User-provided description of the instruction.
-                   The description can be up to 10000 characters long.
+                description: Optional. User-provided description of the instruction.
+                  The description can be up to 10000 characters long.
                 type: string
               displayName:
                 description: Required. The display name of the instruction. Maximum
                   of 64 characters.
                 type: string
               pdfInstruction:
-                description: |-
-                  Instruction from a PDF document. The PDF should be in a Cloud Storage
-                   bucket.
+                description: Instruction from a PDF document. The PDF should be in
+                  a Cloud Storage bucket.
                 properties:
                   gcsFileURI:
                     description: PDF file for the instruction. Only gcs path is allowed.
@@ -111,6 +104,20 @@ spec:
                 type: object
               projectRef:
                 description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -142,9 +149,8 @@ spec:
               machine state of DataLabelingInstruction
             properties:
               conditions:
-                description: |-
-                  Conditions represent the latest available observations of the
-                  object's current state.
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -156,9 +162,8 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: |-
-                        Unique, one-word, CamelCase reason for the condition's last
-                        transition.
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

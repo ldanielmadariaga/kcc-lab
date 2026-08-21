@@ -35,24 +35,6 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
-func ContainerImage_v1alpha1_FromProto(mapCtx *direct.MapContext, in *notebookspb.ContainerImage) *krmnotebooksv1alpha1.ContainerImage {
-	if in == nil {
-		return nil
-	}
-	out := &krmnotebooksv1alpha1.ContainerImage{}
-	out.Repository = direct.LazyPtr(in.GetRepository())
-	out.Tag = direct.LazyPtr(in.GetTag())
-	return out
-}
-func ContainerImage_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnotebooksv1alpha1.ContainerImage) *notebookspb.ContainerImage {
-	if in == nil {
-		return nil
-	}
-	out := &notebookspb.ContainerImage{}
-	out.Repository = direct.ValueOf(in.Repository)
-	out.Tag = direct.ValueOf(in.Tag)
-	return out
-}
 func ContainerImage_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ContainerImage) *krmnotebooksv1alpha1.ContainerImage {
 	if in == nil {
 		return nil
@@ -67,6 +49,24 @@ func ContainerImage_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnotebooks
 		return nil
 	}
 	out := &pb.ContainerImage{}
+	out.Repository = direct.ValueOf(in.Repository)
+	out.Tag = direct.ValueOf(in.Tag)
+	return out
+}
+func ContainerImage_v1alpha1_FromProto(mapCtx *direct.MapContext, in *notebookspb.ContainerImage) *krmnotebooksv1alpha1.ContainerImage {
+	if in == nil {
+		return nil
+	}
+	out := &krmnotebooksv1alpha1.ContainerImage{}
+	out.Repository = direct.LazyPtr(in.GetRepository())
+	out.Tag = direct.LazyPtr(in.GetTag())
+	return out
+}
+func ContainerImage_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnotebooksv1alpha1.ContainerImage) *notebookspb.ContainerImage {
+	if in == nil {
+		return nil
+	}
+	out := &notebookspb.ContainerImage{}
 	out.Repository = direct.ValueOf(in.Repository)
 	out.Tag = direct.ValueOf(in.Tag)
 	return out
