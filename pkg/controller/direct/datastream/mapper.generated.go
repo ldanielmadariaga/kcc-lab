@@ -53,8 +53,9 @@ func DatastreamPrivateConnectionObservedState_FromProto(mapCtx *direct.MapContex
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.Error = Error_FromProto(mapCtx, in.GetError())
-	out.SatisfiesPzs = in.SatisfiesPzs
-	out.SatisfiesPzi = in.SatisfiesPzi
+	// MISSING: SatisfiesPzs
+	// MISSING: SatisfiesPzi
+	// MISSING: PSCInterfaceConfig
 	return out
 }
 func DatastreamPrivateConnectionObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DatastreamPrivateConnectionObservedState) *pb.PrivateConnection {
@@ -67,8 +68,9 @@ func DatastreamPrivateConnectionObservedState_ToProto(mapCtx *direct.MapContext,
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.State = direct.Enum_ToProto[pb.PrivateConnection_State](mapCtx, in.State)
 	out.Error = Error_ToProto(mapCtx, in.Error)
-	out.SatisfiesPzs = in.SatisfiesPzs
-	out.SatisfiesPzi = in.SatisfiesPzi
+	// MISSING: SatisfiesPzs
+	// MISSING: SatisfiesPzi
+	// MISSING: PSCInterfaceConfig
 	return out
 }
 func DatastreamRouteObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Route) *krm.DatastreamRouteObservedState {
@@ -131,144 +133,6 @@ func GCSProfile_ToProto(mapCtx *direct.MapContext, in *krm.GCSProfile) *pb.GcsPr
 	out := &pb.GcsProfile{}
 	out.Bucket = direct.ValueOf(in.Bucket)
 	out.RootPath = direct.ValueOf(in.RootPath)
-	return out
-}
-func HostAddress_FromProto(mapCtx *direct.MapContext, in *pb.HostAddress) *krm.HostAddress {
-	if in == nil {
-		return nil
-	}
-	out := &krm.HostAddress{}
-	out.Hostname = direct.LazyPtr(in.GetHostname())
-	out.Port = direct.LazyPtr(in.GetPort())
-	return out
-}
-func HostAddress_ToProto(mapCtx *direct.MapContext, in *krm.HostAddress) *pb.HostAddress {
-	if in == nil {
-		return nil
-	}
-	out := &pb.HostAddress{}
-	out.Hostname = direct.ValueOf(in.Hostname)
-	out.Port = direct.ValueOf(in.Port)
-	return out
-}
-func MongodbProfile_FromProto(mapCtx *direct.MapContext, in *pb.MongodbProfile) *krm.MongodbProfile {
-	if in == nil {
-		return nil
-	}
-	out := &krm.MongodbProfile{}
-	out.HostAddresses = direct.Slice_FromProto(mapCtx, in.HostAddresses, HostAddress_FromProto)
-	out.ReplicaSet = direct.LazyPtr(in.GetReplicaSet())
-	out.Username = direct.LazyPtr(in.GetUsername())
-	out.Password = direct.LazyPtr(in.GetPassword())
-	out.SecretManagerStoredPassword = direct.LazyPtr(in.GetSecretManagerStoredPassword())
-	out.SSLConfig = MongodbSSLConfig_FromProto(mapCtx, in.GetSslConfig())
-	out.SrvConnectionFormat = SrvConnectionFormat_FromProto(mapCtx, in.GetSrvConnectionFormat())
-	out.StandardConnectionFormat = StandardConnectionFormat_FromProto(mapCtx, in.GetStandardConnectionFormat())
-	return out
-}
-func MongodbProfile_ToProto(mapCtx *direct.MapContext, in *krm.MongodbProfile) *pb.MongodbProfile {
-	if in == nil {
-		return nil
-	}
-	out := &pb.MongodbProfile{}
-	out.HostAddresses = direct.Slice_ToProto(mapCtx, in.HostAddresses, HostAddress_ToProto)
-	out.ReplicaSet = direct.ValueOf(in.ReplicaSet)
-	out.Username = direct.ValueOf(in.Username)
-	out.Password = direct.ValueOf(in.Password)
-	out.SecretManagerStoredPassword = direct.ValueOf(in.SecretManagerStoredPassword)
-	out.SslConfig = MongodbSSLConfig_ToProto(mapCtx, in.SSLConfig)
-	if oneof := SrvConnectionFormat_ToProto(mapCtx, in.SrvConnectionFormat); oneof != nil {
-		out.MongodbConnectionFormat = &pb.MongodbProfile_SrvConnectionFormat{SrvConnectionFormat: oneof}
-	}
-	if oneof := StandardConnectionFormat_ToProto(mapCtx, in.StandardConnectionFormat); oneof != nil {
-		out.MongodbConnectionFormat = &pb.MongodbProfile_StandardConnectionFormat{StandardConnectionFormat: oneof}
-	}
-	return out
-}
-func MongodbProfileObservedState_FromProto(mapCtx *direct.MapContext, in *pb.MongodbProfile) *krm.MongodbProfileObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.MongodbProfileObservedState{}
-	// MISSING: HostAddresses
-	// MISSING: ReplicaSet
-	// MISSING: Username
-	// MISSING: Password
-	// MISSING: SecretManagerStoredPassword
-	out.SSLConfig = MongodbSSLConfigObservedState_FromProto(mapCtx, in.GetSslConfig())
-	// MISSING: SrvConnectionFormat
-	// MISSING: StandardConnectionFormat
-	return out
-}
-func MongodbProfileObservedState_ToProto(mapCtx *direct.MapContext, in *krm.MongodbProfileObservedState) *pb.MongodbProfile {
-	if in == nil {
-		return nil
-	}
-	out := &pb.MongodbProfile{}
-	// MISSING: HostAddresses
-	// MISSING: ReplicaSet
-	// MISSING: Username
-	// MISSING: Password
-	// MISSING: SecretManagerStoredPassword
-	out.SslConfig = MongodbSSLConfigObservedState_ToProto(mapCtx, in.SSLConfig)
-	// MISSING: SrvConnectionFormat
-	// MISSING: StandardConnectionFormat
-	return out
-}
-func MongodbSSLConfig_FromProto(mapCtx *direct.MapContext, in *pb.MongodbSslConfig) *krm.MongodbSSLConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.MongodbSSLConfig{}
-	out.ClientKey = direct.LazyPtr(in.GetClientKey())
-	// MISSING: ClientKeySet
-	out.ClientCertificate = direct.LazyPtr(in.GetClientCertificate())
-	// MISSING: ClientCertificateSet
-	out.CACertificate = direct.LazyPtr(in.GetCaCertificate())
-	// MISSING: CACertificateSet
-	out.SecretManagerStoredClientKey = direct.LazyPtr(in.GetSecretManagerStoredClientKey())
-	return out
-}
-func MongodbSSLConfig_ToProto(mapCtx *direct.MapContext, in *krm.MongodbSSLConfig) *pb.MongodbSslConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.MongodbSslConfig{}
-	out.ClientKey = direct.ValueOf(in.ClientKey)
-	// MISSING: ClientKeySet
-	out.ClientCertificate = direct.ValueOf(in.ClientCertificate)
-	// MISSING: ClientCertificateSet
-	out.CaCertificate = direct.ValueOf(in.CACertificate)
-	// MISSING: CACertificateSet
-	out.SecretManagerStoredClientKey = direct.ValueOf(in.SecretManagerStoredClientKey)
-	return out
-}
-func MongodbSSLConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.MongodbSslConfig) *krm.MongodbSSLConfigObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.MongodbSSLConfigObservedState{}
-	// MISSING: ClientKey
-	out.ClientKeySet = direct.LazyPtr(in.GetClientKeySet())
-	// MISSING: ClientCertificate
-	out.ClientCertificateSet = direct.LazyPtr(in.GetClientCertificateSet())
-	// MISSING: CACertificate
-	out.CACertificateSet = direct.LazyPtr(in.GetCaCertificateSet())
-	// MISSING: SecretManagerStoredClientKey
-	return out
-}
-func MongodbSSLConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.MongodbSSLConfigObservedState) *pb.MongodbSslConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.MongodbSslConfig{}
-	// MISSING: ClientKey
-	out.ClientKeySet = direct.ValueOf(in.ClientKeySet)
-	// MISSING: ClientCertificate
-	out.ClientCertificateSet = direct.ValueOf(in.ClientCertificateSet)
-	// MISSING: CACertificate
-	out.CaCertificateSet = direct.ValueOf(in.CACertificateSet)
-	// MISSING: SecretManagerStoredClientKey
 	return out
 }
 func MysqlProfileObservedState_FromProto(mapCtx *direct.MapContext, in *pb.MysqlProfile) *krm.MysqlProfileObservedState {
@@ -349,36 +213,6 @@ func MysqlSSLConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Mysq
 	out.CaCertificateSet = direct.ValueOf(in.CACertificateSet)
 	return out
 }
-func OracleAsmConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.OracleAsmConfig) *krm.OracleAsmConfigObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.OracleAsmConfigObservedState{}
-	// MISSING: Hostname
-	// MISSING: Port
-	// MISSING: Username
-	// MISSING: Password
-	// MISSING: AsmService
-	// MISSING: ConnectionAttributes
-	out.OracleSSLConfig = OracleSSLConfigObservedState_FromProto(mapCtx, in.GetOracleSslConfig())
-	// MISSING: SecretManagerStoredPassword
-	return out
-}
-func OracleAsmConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.OracleAsmConfigObservedState) *pb.OracleAsmConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.OracleAsmConfig{}
-	// MISSING: Hostname
-	// MISSING: Port
-	// MISSING: Username
-	// MISSING: Password
-	// MISSING: AsmService
-	// MISSING: ConnectionAttributes
-	out.OracleSslConfig = OracleSSLConfigObservedState_ToProto(mapCtx, in.OracleSSLConfig)
-	// MISSING: SecretManagerStoredPassword
-	return out
-}
 func OracleProfileObservedState_FromProto(mapCtx *direct.MapContext, in *pb.OracleProfile) *krm.OracleProfileObservedState {
 	if in == nil {
 		return nil
@@ -391,7 +225,7 @@ func OracleProfileObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Orac
 	// MISSING: DatabaseService
 	// MISSING: ConnectionAttributes
 	out.OracleSSLConfig = OracleSSLConfigObservedState_FromProto(mapCtx, in.GetOracleSslConfig())
-	out.OracleAsmConfig = OracleAsmConfigObservedState_FromProto(mapCtx, in.GetOracleAsmConfig())
+	// MISSING: OracleAsmConfig
 	// MISSING: SecretManagerStoredPassword
 	return out
 }
@@ -407,7 +241,7 @@ func OracleProfileObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Oracl
 	// MISSING: DatabaseService
 	// MISSING: ConnectionAttributes
 	out.OracleSslConfig = OracleSSLConfigObservedState_ToProto(mapCtx, in.OracleSSLConfig)
-	out.OracleAsmConfig = OracleAsmConfigObservedState_ToProto(mapCtx, in.OracleAsmConfig)
+	// MISSING: OracleAsmConfig
 	// MISSING: SecretManagerStoredPassword
 	return out
 }
@@ -451,188 +285,14 @@ func OracleSSLConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Ora
 	// MISSING: ServerCertificateDistinguishedName
 	return out
 }
-func PSCInterfaceConfig_FromProto(mapCtx *direct.MapContext, in *pb.PscInterfaceConfig) *krm.PSCInterfaceConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.PSCInterfaceConfig{}
-	out.NetworkAttachment = direct.LazyPtr(in.GetNetworkAttachment())
-	return out
-}
-func PSCInterfaceConfig_ToProto(mapCtx *direct.MapContext, in *krm.PSCInterfaceConfig) *pb.PscInterfaceConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.PscInterfaceConfig{}
-	out.NetworkAttachment = direct.ValueOf(in.NetworkAttachment)
-	return out
-}
-func PostgresqlSSLConfig_FromProto(mapCtx *direct.MapContext, in *pb.PostgresqlSslConfig) *krm.PostgresqlSSLConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.PostgresqlSSLConfig{}
-	out.ServerVerification = PostgresqlSSLConfig_ServerVerification_FromProto(mapCtx, in.GetServerVerification())
-	out.ServerAndClientVerification = PostgresqlSSLConfig_ServerAndClientVerification_FromProto(mapCtx, in.GetServerAndClientVerification())
-	return out
-}
-func PostgresqlSSLConfig_ToProto(mapCtx *direct.MapContext, in *krm.PostgresqlSSLConfig) *pb.PostgresqlSslConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.PostgresqlSslConfig{}
-	if oneof := PostgresqlSSLConfig_ServerVerification_ToProto(mapCtx, in.ServerVerification); oneof != nil {
-		out.EncryptionSetting = &pb.PostgresqlSslConfig_ServerVerification_{ServerVerification: oneof}
-	}
-	if oneof := PostgresqlSSLConfig_ServerAndClientVerification_ToProto(mapCtx, in.ServerAndClientVerification); oneof != nil {
-		out.EncryptionSetting = &pb.PostgresqlSslConfig_ServerAndClientVerification_{ServerAndClientVerification: oneof}
-	}
-	return out
-}
-func PostgresqlSSLConfig_ServerAndClientVerification_FromProto(mapCtx *direct.MapContext, in *pb.PostgresqlSslConfig_ServerAndClientVerification) *krm.PostgresqlSSLConfig_ServerAndClientVerification {
-	if in == nil {
-		return nil
-	}
-	out := &krm.PostgresqlSSLConfig_ServerAndClientVerification{}
-	out.ClientCertificate = direct.LazyPtr(in.GetClientCertificate())
-	out.ClientKey = direct.LazyPtr(in.GetClientKey())
-	out.CACertificate = direct.LazyPtr(in.GetCaCertificate())
-	out.ServerCertificateHostname = direct.LazyPtr(in.GetServerCertificateHostname())
-	return out
-}
-func PostgresqlSSLConfig_ServerAndClientVerification_ToProto(mapCtx *direct.MapContext, in *krm.PostgresqlSSLConfig_ServerAndClientVerification) *pb.PostgresqlSslConfig_ServerAndClientVerification {
-	if in == nil {
-		return nil
-	}
-	out := &pb.PostgresqlSslConfig_ServerAndClientVerification{}
-	out.ClientCertificate = direct.ValueOf(in.ClientCertificate)
-	out.ClientKey = direct.ValueOf(in.ClientKey)
-	out.CaCertificate = direct.ValueOf(in.CACertificate)
-	out.ServerCertificateHostname = direct.ValueOf(in.ServerCertificateHostname)
-	return out
-}
-func PostgresqlSSLConfig_ServerVerification_FromProto(mapCtx *direct.MapContext, in *pb.PostgresqlSslConfig_ServerVerification) *krm.PostgresqlSSLConfig_ServerVerification {
-	if in == nil {
-		return nil
-	}
-	out := &krm.PostgresqlSSLConfig_ServerVerification{}
-	out.CACertificate = direct.LazyPtr(in.GetCaCertificate())
-	out.ServerCertificateHostname = direct.LazyPtr(in.GetServerCertificateHostname())
-	return out
-}
-func PostgresqlSSLConfig_ServerVerification_ToProto(mapCtx *direct.MapContext, in *krm.PostgresqlSSLConfig_ServerVerification) *pb.PostgresqlSslConfig_ServerVerification {
-	if in == nil {
-		return nil
-	}
-	out := &pb.PostgresqlSslConfig_ServerVerification{}
-	out.CaCertificate = direct.ValueOf(in.CACertificate)
-	out.ServerCertificateHostname = direct.ValueOf(in.ServerCertificateHostname)
-	return out
-}
 func PrivateConnectivity_ToProto(mapCtx *direct.MapContext, in *krm.PrivateConnectivity) *pb.PrivateConnectivity {
 	if in == nil {
 		return nil
 	}
 	out := &pb.PrivateConnectivity{}
-	out.PrivateConnection = direct.ValueOf(in.PrivateConnection)
-	return out
-}
-func SalesforceProfile_FromProto(mapCtx *direct.MapContext, in *pb.SalesforceProfile) *krm.SalesforceProfile {
-	if in == nil {
-		return nil
+	if in.PrivateConnectionRef != nil {
+		out.PrivateConnection = in.PrivateConnectionRef.External
 	}
-	out := &krm.SalesforceProfile{}
-	out.Domain = direct.LazyPtr(in.GetDomain())
-	out.UserCredentials = SalesforceProfile_UserCredentials_FromProto(mapCtx, in.GetUserCredentials())
-	out.OAUTH2ClientCredentials = SalesforceProfile_OAUTH2ClientCredentials_FromProto(mapCtx, in.GetOauth2ClientCredentials())
-	return out
-}
-func SalesforceProfile_ToProto(mapCtx *direct.MapContext, in *krm.SalesforceProfile) *pb.SalesforceProfile {
-	if in == nil {
-		return nil
-	}
-	out := &pb.SalesforceProfile{}
-	out.Domain = direct.ValueOf(in.Domain)
-	if oneof := SalesforceProfile_UserCredentials_ToProto(mapCtx, in.UserCredentials); oneof != nil {
-		out.Credentials = &pb.SalesforceProfile_UserCredentials_{UserCredentials: oneof}
-	}
-	if oneof := SalesforceProfile_OAUTH2ClientCredentials_ToProto(mapCtx, in.OAUTH2ClientCredentials); oneof != nil {
-		out.Credentials = &pb.SalesforceProfile_Oauth2ClientCredentials_{Oauth2ClientCredentials: oneof}
-	}
-	return out
-}
-func SalesforceProfile_OAUTH2ClientCredentials_FromProto(mapCtx *direct.MapContext, in *pb.SalesforceProfile_Oauth2ClientCredentials) *krm.SalesforceProfile_OAUTH2ClientCredentials {
-	if in == nil {
-		return nil
-	}
-	out := &krm.SalesforceProfile_OAUTH2ClientCredentials{}
-	out.ClientID = direct.LazyPtr(in.GetClientId())
-	out.ClientSecret = direct.LazyPtr(in.GetClientSecret())
-	out.SecretManagerStoredClientSecret = direct.LazyPtr(in.GetSecretManagerStoredClientSecret())
-	return out
-}
-func SalesforceProfile_OAUTH2ClientCredentials_ToProto(mapCtx *direct.MapContext, in *krm.SalesforceProfile_OAUTH2ClientCredentials) *pb.SalesforceProfile_Oauth2ClientCredentials {
-	if in == nil {
-		return nil
-	}
-	out := &pb.SalesforceProfile_Oauth2ClientCredentials{}
-	out.ClientId = direct.ValueOf(in.ClientID)
-	out.ClientSecret = direct.ValueOf(in.ClientSecret)
-	out.SecretManagerStoredClientSecret = direct.ValueOf(in.SecretManagerStoredClientSecret)
-	return out
-}
-func SalesforceProfile_UserCredentials_FromProto(mapCtx *direct.MapContext, in *pb.SalesforceProfile_UserCredentials) *krm.SalesforceProfile_UserCredentials {
-	if in == nil {
-		return nil
-	}
-	out := &krm.SalesforceProfile_UserCredentials{}
-	out.Username = direct.LazyPtr(in.GetUsername())
-	out.Password = direct.LazyPtr(in.GetPassword())
-	out.SecurityToken = direct.LazyPtr(in.GetSecurityToken())
-	out.SecretManagerStoredPassword = direct.LazyPtr(in.GetSecretManagerStoredPassword())
-	out.SecretManagerStoredSecurityToken = direct.LazyPtr(in.GetSecretManagerStoredSecurityToken())
-	return out
-}
-func SalesforceProfile_UserCredentials_ToProto(mapCtx *direct.MapContext, in *krm.SalesforceProfile_UserCredentials) *pb.SalesforceProfile_UserCredentials {
-	if in == nil {
-		return nil
-	}
-	out := &pb.SalesforceProfile_UserCredentials{}
-	out.Username = direct.ValueOf(in.Username)
-	out.Password = direct.ValueOf(in.Password)
-	out.SecurityToken = direct.ValueOf(in.SecurityToken)
-	out.SecretManagerStoredPassword = direct.ValueOf(in.SecretManagerStoredPassword)
-	out.SecretManagerStoredSecurityToken = direct.ValueOf(in.SecretManagerStoredSecurityToken)
-	return out
-}
-func SrvConnectionFormat_FromProto(mapCtx *direct.MapContext, in *pb.SrvConnectionFormat) *krm.SrvConnectionFormat {
-	if in == nil {
-		return nil
-	}
-	out := &krm.SrvConnectionFormat{}
-	return out
-}
-func SrvConnectionFormat_ToProto(mapCtx *direct.MapContext, in *krm.SrvConnectionFormat) *pb.SrvConnectionFormat {
-	if in == nil {
-		return nil
-	}
-	out := &pb.SrvConnectionFormat{}
-	return out
-}
-func StandardConnectionFormat_FromProto(mapCtx *direct.MapContext, in *pb.StandardConnectionFormat) *krm.StandardConnectionFormat {
-	if in == nil {
-		return nil
-	}
-	out := &krm.StandardConnectionFormat{}
-	out.DirectConnection = direct.LazyPtr(in.GetDirectConnection())
-	return out
-}
-func StandardConnectionFormat_ToProto(mapCtx *direct.MapContext, in *krm.StandardConnectionFormat) *pb.StandardConnectionFormat {
-	if in == nil {
-		return nil
-	}
-	out := &pb.StandardConnectionFormat{}
-	out.DirectConnection = direct.ValueOf(in.DirectConnection)
 	return out
 }
 func StaticServiceIPConnectivity_FromProto(mapCtx *direct.MapContext, in *pb.StaticServiceIpConnectivity) *krm.StaticServiceIPConnectivity {
@@ -647,23 +307,5 @@ func StaticServiceIPConnectivity_ToProto(mapCtx *direct.MapContext, in *krm.Stat
 		return nil
 	}
 	out := &pb.StaticServiceIpConnectivity{}
-	return out
-}
-func VPCPeeringConfig_FromProto(mapCtx *direct.MapContext, in *pb.VpcPeeringConfig) *krm.VPCPeeringConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.VPCPeeringConfig{}
-	out.VPC = direct.LazyPtr(in.GetVpc())
-	out.Subnet = direct.LazyPtr(in.GetSubnet())
-	return out
-}
-func VPCPeeringConfig_ToProto(mapCtx *direct.MapContext, in *krm.VPCPeeringConfig) *pb.VpcPeeringConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.VpcPeeringConfig{}
-	out.Vpc = direct.ValueOf(in.VPC)
-	out.Subnet = direct.ValueOf(in.Subnet)
 	return out
 }

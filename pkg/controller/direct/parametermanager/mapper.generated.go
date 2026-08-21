@@ -26,6 +26,7 @@ package parametermanager
 import (
 	pb "cloud.google.com/go/parametermanager/apiv1/parametermanagerpb"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/parametermanager/v1alpha1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -34,9 +35,10 @@ func ParameterManagerParameterObservedState_FromProto(mapCtx *direct.MapContext,
 		return nil
 	}
 	out := &krm.ParameterManagerParameterObservedState{}
-	// MISSING: Name
+	out.Name = direct.LazyPtr(in.GetName())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	// MISSING: Labels
 	out.PolicyMember = ResourcePolicyMemberObservedState_FromProto(mapCtx, in.GetPolicyMember())
 	return out
 }
@@ -45,9 +47,10 @@ func ParameterManagerParameterObservedState_ToProto(mapCtx *direct.MapContext, i
 		return nil
 	}
 	out := &pb.Parameter{}
-	// MISSING: Name
+	out.Name = direct.ValueOf(in.Name)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	// MISSING: Labels
 	out.PolicyMember = ResourcePolicyMemberObservedState_ToProto(mapCtx, in.PolicyMember)
 	return out
 }
@@ -56,10 +59,11 @@ func ParameterManagerParameterSpec_FromProto(mapCtx *direct.MapContext, in *pb.P
 		return nil
 	}
 	out := &krm.ParameterManagerParameterSpec{}
-	// MISSING: Name
-	out.Labels = in.Labels
+	// MISSING: Labels
 	out.Format = direct.Enum_FromProto(mapCtx, in.GetFormat())
-	out.KMSKey = in.KmsKey
+	if in.GetKmsKey() != "" {
+		out.KMSKeyRef = &refsv1beta1.KMSCryptoKeyRef{External: in.GetKmsKey()}
+	}
 	return out
 }
 func ParameterManagerParameterVersionObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ParameterVersion) *krm.ParameterManagerParameterVersionObservedState {

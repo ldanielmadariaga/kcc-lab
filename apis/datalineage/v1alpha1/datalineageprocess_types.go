@@ -17,6 +17,7 @@ package v1alpha1
 import (
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -39,7 +40,13 @@ type DataLineageProcessSpec struct {
 	// +kcc:proto:field=google.cloud.datacatalog.lineage.v1.Process.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
-	// TODO: attributes: recursive map value google.protobuf.Value: no CRD schema is possible
+	// Optional. The attributes of the process. Should only be used for the
+	//  purpose of non-semantic management (classifying, describing or labeling the
+	//  process).
+	//
+	//  Up to 100 attributes are allowed.
+	// +kcc:proto:field=google.cloud.datacatalog.lineage.v1.Process.attributes
+	Attributes map[string]apiextensionsv1.JSON `json:"attributes,omitempty"`
 
 	// Optional. The origin of this process and its runs and lineage events.
 	// +kcc:proto:field=google.cloud.datacatalog.lineage.v1.Process.origin

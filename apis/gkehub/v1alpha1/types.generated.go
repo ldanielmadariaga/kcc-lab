@@ -76,29 +76,6 @@ type DefaultClusterConfig struct {
 	CompliancePostureConfig *CompliancePostureConfig `json:"compliancePostureConfig,omitempty"`
 }
 
-/* unreachable type Fleet
-// +kcc:proto=google.cloud.gkehub.v1.Fleet
-type Fleet struct {
-
-	// Optional. A user-assigned display name of the Fleet.
-	//  When present, it must be between 4 to 30 characters.
-	//  Allowed characters are: lowercase and uppercase letters, numbers,
-	//  hyphen, single-quote, double-quote, space, and exclamation point.
-	//
-	//  Example: `Production Fleet`
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.display_name
-	DisplayName *string `json:"displayName,omitempty"`
-
-	// Optional. The default cluster configurations to apply across the fleet.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.default_cluster_config
-	DefaultClusterConfig *DefaultClusterConfig `json:"defaultClusterConfig,omitempty"`
-
-	// Optional. Labels for this Fleet.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.labels
-	Labels map[string]string `json:"labels,omitempty"`
-}
-*/
-
 /* unreachable type FleetLifecycleState
 // +kcc:proto=google.cloud.gkehub.v1.FleetLifecycleState
 type FleetLifecycleState struct {
@@ -115,41 +92,6 @@ type SecurityPostureConfig struct {
 	// +kcc:proto:field=google.cloud.gkehub.v1.SecurityPostureConfig.vulnerability_mode
 	VulnerabilityMode *string `json:"vulnerabilityMode,omitempty"`
 }
-
-/* unreachable type FleetObservedState
-// +kcc:observedstate:proto=google.cloud.gkehub.v1.Fleet
-type FleetObservedState struct {
-	// Output only. The full, unique resource name of this fleet in the format of
-	//  `projects/{project}/locations/{location}/fleets/{fleet}`.
-	//
-	//  Each Google Cloud project can have at most one fleet resource, named
-	//  "default".
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.name
-	Name *string `json:"name,omitempty"`
-
-	// Output only. When the Fleet was created.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. When the Fleet was last updated.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. When the Fleet was deleted.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.delete_time
-	DeleteTime *string `json:"deleteTime,omitempty"`
-
-	// Output only. Google-generated UUID for this resource. This is unique across
-	//  all Fleet resources. If a Fleet resource is deleted and another resource
-	//  with the same name is created, it gets a different uid.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.uid
-	Uid *string `json:"uid,omitempty"`
-
-	// Output only. State of the namespace resource.
-	// +kcc:proto:field=google.cloud.gkehub.v1.Fleet.state
-	State *FleetLifecycleStateObservedState `json:"state,omitempty"`
-}
-*/
 
 // +kcc:observedstate:proto=google.cloud.gkehub.v1.FleetLifecycleState
 type FleetLifecycleStateObservedState struct {

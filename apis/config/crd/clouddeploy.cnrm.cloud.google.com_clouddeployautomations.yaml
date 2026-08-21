@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpclouddeployautomation
     - gcpclouddeployautomations
     singular: clouddeployautomation
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -63,31 +67,20 @@ spec:
               annotations:
                 additionalProperties:
                   type: string
-                description: Optional. User annotations. These attributes can only
-                  be set and used by the user, and not by Cloud Deploy. See https://google.aip.dev/128#annotations
-                  for more details such as format and size limitations.
+                description: |-
+                  Optional. User annotations. These attributes can only be set and used by
+                  the user, and not by Cloud Deploy. See
+                  https://google.aip.dev/128#annotations for more details such as format and
+                  size limitations.
                 type: object
               deliveryPipelineRef:
                 description: Immutable. Required. The DeliveryPipeline that this automation
                   belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
-                    description: A reference to an externally managed DeployDeliveryPipeline
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/deliverypipelines/{{deliverypipelineID}}".
+                    description: |-
+                      A reference to an externally managed DeployDeliveryPipeline resource.
+                      Should be in the format "projects/{{projectID}}/locations/{{location}}/deliverypipelines/{{deliverypipelineID}}".
                     type: string
                   name:
                     description: The name of a DeployDeliveryPipeline resource.
@@ -105,20 +98,6 @@ spec:
                 type: string
               projectRef:
                 description: The Project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -145,8 +124,9 @@ spec:
                 items:
                   properties:
                     advanceRolloutRule:
-                      description: Optional. The `AdvanceRolloutRule` will automatically
-                        advance a successful Rollout.
+                      description: |-
+                        Optional. The `AdvanceRolloutRule` will automatically advance a
+                         successful Rollout.
                       properties:
                         id:
                           description: Required. ID of the rule.
@@ -165,34 +145,24 @@ spec:
                       - id
                       type: object
                     promoteReleaseRule:
-                      description: Optional. `PromoteReleaseRule` will automatically
-                        promote a release from the current target to a specified target.
+                      description: |-
+                        Optional. `PromoteReleaseRule` will automatically promote a release from
+                         the current target to a specified target.
                       properties:
                         destinationPhase:
-                          description: Optional. The starting phase of the rollout
-                            created by this operation. Default to the first phase.
+                          description: |-
+                            Optional. The starting phase of the rollout created by this operation.
+                             Default to the first phase.
                           type: string
                         destinationTargetRef:
-                          description: Optional. The ID of the stage in the pipeline
-                            to which this `Release` is deploying.
-                          oneOf:
-                          - not:
-                              required:
-                              - external
-                            required:
-                            - name
-                          - not:
-                              anyOf:
-                              - required:
-                                - name
-                              - required:
-                                - namespace
-                            required:
-                            - external
+                          description: |-
+                            Optional. The ID of the stage in the pipeline to which this `Release` is
+                             deploying.
                           properties:
                             external:
-                              description: A reference to an externally managed CloudDeployTarget
-                                resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/targets/{{targetID}}".
+                              description: |-
+                                A reference to an externally managed CloudDeployTarget resource.
+                                Should be in the format "projects/{{projectID}}/locations/{{location}}/targets/{{targetID}}".
                               type: string
                             name:
                               description: The name of a CloudDeployTarget resource.
@@ -205,15 +175,17 @@ spec:
                           description: Required. ID of the rule.
                           type: string
                         wait:
-                          description: Optional. How long the release need to be paused
-                            until being promoted to the next target.
+                          description: |-
+                            Optional. How long the release need to be paused until being promoted to
+                             the next target.
                           type: string
                       required:
                       - id
                       type: object
                     repairRolloutRule:
-                      description: Optional. The `RepairRolloutRule` will automatically
-                        repair a failed rollout.
+                      description: |-
+                        Optional. The `RepairRolloutRule` will automatically repair a failed
+                         rollout.
                       properties:
                         id:
                           description: Required. ID of the rule.
@@ -224,8 +196,9 @@ spec:
                             type: string
                           type: array
                         phases:
-                          description: Optional. Phases within which jobs are subject
-                            to automatic repair actions on failure.
+                          description: |-
+                            Optional. Phases within which jobs are subject to automatic repair actions
+                             on failure.
                           items:
                             type: string
                           type: array
@@ -260,9 +233,9 @@ spec:
                                       the `Rollout`.
                                     type: string
                                   disableRollbackIfRolloutPending:
-                                    description: Optional. If pending rollout exists
-                                      on the target, the rollback operation will be
-                                      aborted.
+                                    description: |-
+                                      Optional. If pending rollout exists on the target, the rollback operation
+                                       will be aborted.
                                     type: boolean
                                 type: object
                             type: object
@@ -272,35 +245,24 @@ spec:
                       - repairPhases
                       type: object
                     timedPromoteReleaseRule:
-                      description: Optional. The `TimedPromoteReleaseRule` will automatically
-                        promote a release from the current target(s) to the specified
-                        target(s) on a configured schedule.
+                      description: |-
+                        Optional. The `TimedPromoteReleaseRule` will automatically promote a
+                         release from the current target(s) to the specified target(s) on a
+                         configured schedule.
                       properties:
                         destinationPhase:
                           description: Optional. The starting phase of the rollout
                             created by this rule.
                           type: string
                         destinationTargetRef:
-                          description: Optional. The ID of the stage in the pipeline
-                            to which this `Release` is deploying.
-                          oneOf:
-                          - not:
-                              required:
-                              - external
-                            required:
-                            - name
-                          - not:
-                              anyOf:
-                              - required:
-                                - name
-                              - required:
-                                - namespace
-                            required:
-                            - external
+                          description: |-
+                            Optional. The ID of the stage in the pipeline to which this `Release` is
+                             deploying.
                           properties:
                             external:
-                              description: A reference to an externally managed CloudDeployTarget
-                                resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/targets/{{targetID}}".
+                              description: |-
+                                A reference to an externally managed CloudDeployTarget resource.
+                                Should be in the format "projects/{{projectID}}/locations/{{location}}/targets/{{targetID}}".
                               type: string
                             name:
                               description: The name of a CloudDeployTarget resource.
@@ -340,24 +302,11 @@ spec:
                           type: object
                         targetRef:
                           description: Optional. The Target to which the rule applies.
-                          oneOf:
-                          - not:
-                              required:
-                              - external
-                            required:
-                            - name
-                          - not:
-                              anyOf:
-                              - required:
-                                - name
-                              - required:
-                                - namespace
-                            required:
-                            - external
                           properties:
                             external:
-                              description: A reference to an externally managed CloudDeployTarget
-                                resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/targets/{{targetID}}".
+                              description: |-
+                                A reference to an externally managed CloudDeployTarget resource.
+                                Should be in the format "projects/{{projectID}}/locations/{{location}}/targets/{{targetID}}".
                               type: string
                             name:
                               description: The name of a CloudDeployTarget resource.
@@ -370,22 +319,9 @@ spec:
                     type: array
                 type: object
               serviceAccountRef:
-                description: Required. Email address of the user-managed IAM service
-                  account that creates Cloud Deploy release and rollout resources.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
+                description: |-
+                  Required. Email address of the user-managed IAM service account that
+                   creates Cloud Deploy release and rollout resources.
                 properties:
                   external:
                     description: The `email` field of an `IAMServiceAccount` resource.
@@ -414,8 +350,9 @@ spec:
               machine state of CloudDeployAutomation
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -427,8 +364,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -467,8 +405,9 @@ spec:
                     items:
                       properties:
                         advanceRolloutRule:
-                          description: Optional. The `AdvanceRolloutRule` will automatically
-                            advance a successful Rollout.
+                          description: |-
+                            Optional. The `AdvanceRolloutRule` will automatically advance a
+                             successful Rollout.
                           properties:
                             condition:
                               description: Output only. Information around the state
@@ -493,9 +432,9 @@ spec:
                                       type: string
                                   type: object
                                 timedPromoteReleaseCondition:
-                                  description: Optional. TimedPromoteReleaseCondition
-                                    contains rule conditions specific to a an Automation
-                                    with a timed promote release rule defined.
+                                  description: |-
+                                    Optional. TimedPromoteReleaseCondition contains rule conditions specific
+                                     to a an Automation with a timed promote release rule defined.
                                   properties:
                                     nextPromotionTime:
                                       description: Output only. When the next scheduled
@@ -520,9 +459,9 @@ spec:
                               type: object
                           type: object
                         promoteReleaseRule:
-                          description: Optional. `PromoteReleaseRule` will automatically
-                            promote a release from the current target to a specified
-                            target.
+                          description: |-
+                            Optional. `PromoteReleaseRule` will automatically promote a release from
+                             the current target to a specified target.
                           properties:
                             condition:
                               description: Output only. Information around the state
@@ -547,9 +486,9 @@ spec:
                                       type: string
                                   type: object
                                 timedPromoteReleaseCondition:
-                                  description: Optional. TimedPromoteReleaseCondition
-                                    contains rule conditions specific to a an Automation
-                                    with a timed promote release rule defined.
+                                  description: |-
+                                    Optional. TimedPromoteReleaseCondition contains rule conditions specific
+                                     to a an Automation with a timed promote release rule defined.
                                   properties:
                                     nextPromotionTime:
                                       description: Output only. When the next scheduled
@@ -574,8 +513,9 @@ spec:
                               type: object
                           type: object
                         repairRolloutRule:
-                          description: Optional. The `RepairRolloutRule` will automatically
-                            repair a failed rollout.
+                          description: |-
+                            Optional. The `RepairRolloutRule` will automatically repair a failed
+                             rollout.
                           properties:
                             condition:
                               description: Output only. Information around the state
@@ -600,9 +540,9 @@ spec:
                                       type: string
                                   type: object
                                 timedPromoteReleaseCondition:
-                                  description: Optional. TimedPromoteReleaseCondition
-                                    contains rule conditions specific to a an Automation
-                                    with a timed promote release rule defined.
+                                  description: |-
+                                    Optional. TimedPromoteReleaseCondition contains rule conditions specific
+                                     to a an Automation with a timed promote release rule defined.
                                   properties:
                                     nextPromotionTime:
                                       description: Output only. When the next scheduled
@@ -627,9 +567,10 @@ spec:
                               type: object
                           type: object
                         timedPromoteReleaseRule:
-                          description: Optional. The `TimedPromoteReleaseRule` will
-                            automatically promote a release from the current target(s)
-                            to the specified target(s) on a configured schedule.
+                          description: |-
+                            Optional. The `TimedPromoteReleaseRule` will automatically promote a
+                             release from the current target(s) to the specified target(s) on a
+                             configured schedule.
                           properties:
                             condition:
                               description: Output only. Information around the state
@@ -654,9 +595,9 @@ spec:
                                       type: string
                                   type: object
                                 timedPromoteReleaseCondition:
-                                  description: Optional. TimedPromoteReleaseCondition
-                                    contains rule conditions specific to a an Automation
-                                    with a timed promote release rule defined.
+                                  description: |-
+                                    Optional. TimedPromoteReleaseCondition contains rule conditions specific
+                                     to a an Automation with a timed promote release rule defined.
                                   properties:
                                     nextPromotionTime:
                                       description: Output only. When the next scheduled

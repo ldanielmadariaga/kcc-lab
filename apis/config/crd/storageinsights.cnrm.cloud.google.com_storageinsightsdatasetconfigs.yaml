@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,7 +21,6 @@ spec:
     - gcpstorageinsightsdatasetconfig
     - gcpstorageinsightsdatasetconfigs
     singular: storageinsightsdatasetconfig
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -47,14 +46,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -77,24 +81,11 @@ spec:
                 properties:
                   bucketRef:
                     description: Optional. Reference to a StorageBucket.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
                     properties:
                       external:
-                        description: A reference to an externally managed StorageBucket
-                          resource. Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
+                        description: |-
+                          A reference to an externally managed StorageBucket resource.
+                          Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
                         type: string
                       name:
                         description: The name of a StorageBucket resource.
@@ -108,8 +99,9 @@ spec:
                     type: string
                 type: object
               description:
-                description: 'Optional. A user-provided description for the dataset
-                  configuration. Maximum length: 256 characters.'
+                description: |-
+                  Optional. A user-provided description for the dataset configuration.
+                  Maximum length: 256 characters.
                 type: string
               excludeCloudStorageBuckets:
                 description: Optional. Cloud Storage buckets to exclude.
@@ -119,30 +111,17 @@ spec:
                     items:
                       properties:
                         bucketPrefixRegex:
-                          description: Optional. A regex pattern for bucket names
-                            matching the regex. Regex should follow the syntax specified
-                            in `google/re2` on GitHub.
+                          description: |-
+                            Optional. A regex pattern for bucket names matching the regex. Regex should
+                            follow the syntax specified in `google/re2` on GitHub.
                           type: string
                         bucketRef:
                           description: Optional. Reference to a StorageBucket.
-                          oneOf:
-                          - not:
-                              required:
-                              - external
-                            required:
-                            - name
-                          - not:
-                              anyOf:
-                              - required:
-                                - name
-                              - required:
-                                - namespace
-                            required:
-                            - external
                           properties:
                             external:
-                              description: A reference to an externally managed StorageBucket
-                                resource. Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
+                              description: |-
+                                A reference to an externally managed StorageBucket resource.
+                                Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
                               type: string
                             name:
                               description: The name of a StorageBucket resource.
@@ -178,30 +157,17 @@ spec:
                     items:
                       properties:
                         bucketPrefixRegex:
-                          description: Optional. A regex pattern for bucket names
-                            matching the regex. Regex should follow the syntax specified
-                            in `google/re2` on GitHub.
+                          description: |-
+                            Optional. A regex pattern for bucket names matching the regex. Regex should
+                            follow the syntax specified in `google/re2` on GitHub.
                           type: string
                         bucketRef:
                           description: Optional. Reference to a StorageBucket.
-                          oneOf:
-                          - not:
-                              required:
-                              - external
-                            required:
-                            - name
-                          - not:
-                              anyOf:
-                              - required:
-                                - name
-                              - required:
-                                - namespace
-                            required:
-                            - external
                           properties:
                             external:
-                              description: A reference to an externally managed StorageBucket
-                                resource. Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
+                              description: |-
+                                A reference to an externally managed StorageBucket resource.
+                                Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
                               type: string
                             name:
                               description: The name of a StorageBucket resource.
@@ -223,9 +189,9 @@ spec:
                     type: array
                 type: object
               includeNewlyCreatedBuckets:
-                description: Optional. If set to `true`, the request includes all
-                  the newly created buckets in the dataset that meet the inclusion
-                  and exclusion rules.
+                description: |-
+                  Optional. If set to `true`, the request includes all the newly created buckets in the
+                  dataset that meet the inclusion and exclusion rules.
                 type: boolean
               labels:
                 additionalProperties:
@@ -239,9 +205,10 @@ spec:
                 - message: Location field is immutable
                   rule: self == oldSelf
               organizationNumber:
-                description: Optional. Organization resource ID that the source projects
-                  should belong to. Projects that do not belong to the provided organization
-                  are not considered when creating the dataset.
+                description: |-
+                  Optional. Organization resource ID that the source projects should belong
+                  to. Projects that do not belong to the provided organization are not
+                  considered when creating the dataset.
                 format: int64
                 type: integer
               organizationScope:
@@ -250,20 +217,6 @@ spec:
                 type: boolean
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -289,11 +242,11 @@ spec:
                 format: int32
                 type: integer
               skipVerificationAndIngest:
-                description: Optional. If set to `false`, then all the permission
-                  checks must be successful before the system can start ingesting
-                  data. This field can only be updated before the system ingests data
-                  for the first time. Any attempt to modify the field after data ingestion
-                  starts results in an error.
+                description: |-
+                  Optional. If set to `false`, then all the permission checks must be
+                  successful before the system can start ingesting data. This field can only
+                  be updated before the system ingests data for the first time. Any attempt
+                  to modify the field after data ingestion starts results in an error.
                 type: boolean
               sourceFolders:
                 description: Optional. Defines the options for providing source folders
@@ -328,8 +281,9 @@ spec:
               machine state of StorageInsightsDatasetConfig
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -341,8 +295,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -370,8 +325,9 @@ spec:
                   observed in GCP.
                 properties:
                   createTime:
-                    description: Output only. The UTC time at which the dataset configuration
-                      was created. This is auto-populated.
+                    description: |-
+                      Output only. The UTC time at which the dataset configuration was created.
+                      This is auto-populated.
                     type: string
                   datasetConfigState:
                     description: Output only. State of the `datasetConfig`.
@@ -397,15 +353,17 @@ spec:
                     description: Output only. Status of the `datasetConfig`.
                     properties:
                       code:
-                        description: The status code, which should be an enum value
-                          of [google.rpc.Code][google.rpc.Code].
+                        description: |-
+                          The status code, which should be an enum value of
+                           [google.rpc.Code][google.rpc.Code].
                         format: int32
                         type: integer
                       message:
-                        description: A developer-facing error message, which should
-                          be in English. Any user-facing error message should be localized
-                          and sent in the [google.rpc.Status.details][google.rpc.Status.details]
-                          field, or localized by the client.
+                        description: |-
+                          A developer-facing error message, which should be in English. Any
+                           user-facing error message should be localized and sent in the
+                           [google.rpc.Status.details][google.rpc.Status.details] field, or localized
+                           by the client.
                         type: string
                     type: object
                   uid:
@@ -413,8 +371,9 @@ spec:
                       the resource.
                     type: string
                   updateTime:
-                    description: Output only. The UTC time at which the dataset configuration
-                      was last updated. This is auto-populated.
+                    description: |-
+                      Output only. The UTC time at which the dataset configuration was last
+                      updated. This is auto-populated.
                     type: string
                 type: object
             type: object

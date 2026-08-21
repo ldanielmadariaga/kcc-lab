@@ -21,7 +21,8 @@
 
 package v1alpha1
 
-/* unreachable type MapConfig
+/* found existing non-generated go type with proto tag "google.maps.mapmanagement.v2beta.MapConfig", skipping
+
 // +kcc:proto=google.maps.mapmanagement.v2beta.MapConfig
 type MapConfig struct {
 
@@ -60,7 +61,8 @@ type MapFeatures struct {
 	PoiBoostLevel *int32 `json:"poiBoostLevel,omitempty"`
 }
 
-/* unreachable type MapConfigObservedState
+/* found existing non-generated go type with proto tag "google.maps.mapmanagement.v2beta.MapConfig", skipping
+
 // +kcc:observedstate:proto=google.maps.mapmanagement.v2beta.MapConfig
 type MapConfigObservedState struct {
 	// Output only. Identifier. Resource name of this MapConfig.

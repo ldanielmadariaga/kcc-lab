@@ -29,7 +29,6 @@ import (
 	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
 )
 
-/* unreachable type AuthorizedView_FamilySubsets
 // +kcc:proto=google.bigtable.admin.v2.AuthorizedView.FamilySubsets
 type AuthorizedView_FamilySubsets struct {
 	// Individual exact column qualifiers to be included in the AuthorizedView.
@@ -44,7 +43,6 @@ type AuthorizedView_FamilySubsets struct {
 	// +kcc:proto:field=google.bigtable.admin.v2.AuthorizedView.FamilySubsets.qualifier_prefixes
 	QualifierPrefixes [][]byte `json:"qualifierPrefixes,omitempty"`
 }
-*/
 
 // +kcc:proto=google.bigtable.admin.v2.AuthorizedView.SubsetView
 type AuthorizedView_SubsetView struct {
@@ -53,18 +51,22 @@ type AuthorizedView_SubsetView struct {
 	// +kcc:proto:field=google.bigtable.admin.v2.AuthorizedView.SubsetView.row_prefixes
 	RowPrefixes [][]byte `json:"rowPrefixes,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Map from column family name to the columns in this family to be included
+	//  in the AuthorizedView.
+	// +kcc:proto:field=google.bigtable.admin.v2.AuthorizedView.SubsetView.family_subsets
+	FamilySubsets map[string]AuthorizedView_FamilySubsets `json:"familySubsets,omitempty"`
 }
 
 // +kcc:proto=google.bigtable.admin.v2.AutoscalingLimits
 type AutoscalingLimits struct {
 	// Required. Minimum number of nodes to scale down to.
 	// +kcc:proto:field=google.bigtable.admin.v2.AutoscalingLimits.min_serve_nodes
+	// +required
 	MinServeNodes *int32 `json:"minServeNodes,omitempty"`
 
 	// Required. Maximum number of nodes to scale up to.
 	// +kcc:proto:field=google.bigtable.admin.v2.AutoscalingLimits.max_serve_nodes
+	// +required
 	MaxServeNodes *int32 `json:"maxServeNodes,omitempty"`
 }
 
@@ -72,10 +74,12 @@ type AutoscalingLimits struct {
 type Cluster_ClusterAutoscalingConfig struct {
 	// Required. Autoscaling limits for this cluster.
 	// +kcc:proto:field=google.bigtable.admin.v2.Cluster.ClusterAutoscalingConfig.autoscaling_limits
+	// +required
 	AutoscalingLimits *AutoscalingLimits `json:"autoscalingLimits,omitempty"`
 
 	// Required. Autoscaling targets for this cluster.
 	// +kcc:proto:field=google.bigtable.admin.v2.Cluster.ClusterAutoscalingConfig.autoscaling_targets
+	// +required
 	AutoscalingTargets *AutoscalingTargets `json:"autoscalingTargets,omitempty"`
 }
 

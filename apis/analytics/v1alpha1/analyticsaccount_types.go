@@ -28,7 +28,6 @@ type AnalyticsAccountSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-
 	// The AnalyticsAccount name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. Human-readable display name for this account.

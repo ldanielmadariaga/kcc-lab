@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpcodedeploydeploypolicy
     - gcpcodedeploydeploypolicies
     singular: clouddeploydeploypolicy
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -72,20 +76,6 @@ spec:
                   rule: self == oldSelf
               projectRef:
                 description: The Project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -114,19 +104,21 @@ spec:
                       description: Optional. Rollout restrictions.
                       properties:
                         actions:
-                          description: Optional. Rollout actions to be restricted
-                            as part of the policy. If left empty, all actions will
-                            be restricted.
+                          description: |-
+                            Optional. Rollout actions to be restricted as part of the policy. If left
+                             empty, all actions will be restricted.
                           items:
                             type: string
                           type: array
                         id:
-                          description: Required. Restriction rule ID. Required and
-                            must be unique within a DeployPolicy. The format is `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`.
+                          description: |-
+                            Required. Restriction rule ID. Required and must be unique within a
+                             DeployPolicy. The format is `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`.
                           type: string
                         invokers:
-                          description: Optional. What invoked the action. If left
-                            empty, all invoker types will be restricted.
+                          description: |-
+                            Optional. What invoked the action. If left empty, all invoker types will be
+                             restricted.
                           items:
                             type: string
                           type: array
@@ -143,22 +135,22 @@ spec:
                                     description: Required. End date.
                                     properties:
                                       day:
-                                        description: Day of a month. Must be from
-                                          1 to 31 and valid for the year and month,
-                                          or 0 to specify a year by itself or a year
-                                          and month where the day isn't significant.
+                                        description: |-
+                                          Day of a month. Must be from 1 to 31 and valid for the year and month, or 0
+                                           to specify a year by itself or a year and month where the day isn't
+                                           significant.
                                         format: int32
                                         type: integer
                                       month:
-                                        description: Month of a year. Must be from
-                                          1 to 12, or 0 to specify a year without
-                                          a month and day.
+                                        description: |-
+                                          Month of a year. Must be from 1 to 12, or 0 to specify a year without a
+                                           month and day.
                                         format: int32
                                         type: integer
                                       year:
-                                        description: Year of the date. Must be from
-                                          1 to 9999, or 0 to specify a date without
-                                          a year.
+                                        description: |-
+                                          Year of the date. Must be from 1 to 9999, or 0 to specify a date without
+                                           a year.
                                         format: int32
                                         type: integer
                                     type: object
@@ -167,10 +159,9 @@ spec:
                                       may use 24:00 for the end of the day.
                                     properties:
                                       hours:
-                                        description: Hours of day in 24 hour format.
-                                          Should be from 0 to 23. An API may choose
-                                          to allow the value "24:00:00" for scenarios
-                                          like business closing time.
+                                        description: |-
+                                          Hours of day in 24 hour format. Should be from 0 to 23. An API may choose
+                                           to allow the value "24:00:00" for scenarios like business closing time.
                                         format: int32
                                         type: integer
                                       minutes:
@@ -184,9 +175,9 @@ spec:
                                         format: int32
                                         type: integer
                                       seconds:
-                                        description: Seconds of minutes of the time.
-                                          Must normally be from 0 to 59. An API may
-                                          allow the value 60 if it allows leap-seconds.
+                                        description: |-
+                                          Seconds of minutes of the time. Must normally be from 0 to 59. An API may
+                                           allow the value 60 if it allows leap-seconds.
                                         format: int32
                                         type: integer
                                     type: object
@@ -194,22 +185,22 @@ spec:
                                     description: Required. Start date.
                                     properties:
                                       day:
-                                        description: Day of a month. Must be from
-                                          1 to 31 and valid for the year and month,
-                                          or 0 to specify a year by itself or a year
-                                          and month where the day isn't significant.
+                                        description: |-
+                                          Day of a month. Must be from 1 to 31 and valid for the year and month, or 0
+                                           to specify a year by itself or a year and month where the day isn't
+                                           significant.
                                         format: int32
                                         type: integer
                                       month:
-                                        description: Month of a year. Must be from
-                                          1 to 12, or 0 to specify a year without
-                                          a month and day.
+                                        description: |-
+                                          Month of a year. Must be from 1 to 12, or 0 to specify a year without a
+                                           month and day.
                                         format: int32
                                         type: integer
                                       year:
-                                        description: Year of the date. Must be from
-                                          1 to 9999, or 0 to specify a date without
-                                          a year.
+                                        description: |-
+                                          Year of the date. Must be from 1 to 9999, or 0 to specify a date without
+                                           a year.
                                         format: int32
                                         type: integer
                                     type: object
@@ -218,10 +209,9 @@ spec:
                                       Use 00:00 for the beginning of the day.
                                     properties:
                                       hours:
-                                        description: Hours of day in 24 hour format.
-                                          Should be from 0 to 23. An API may choose
-                                          to allow the value "24:00:00" for scenarios
-                                          like business closing time.
+                                        description: |-
+                                          Hours of day in 24 hour format. Should be from 0 to 23. An API may choose
+                                           to allow the value "24:00:00" for scenarios like business closing time.
                                         format: int32
                                         type: integer
                                       minutes:
@@ -235,18 +225,23 @@ spec:
                                         format: int32
                                         type: integer
                                       seconds:
-                                        description: Seconds of minutes of the time.
-                                          Must normally be from 0 to 59. An API may
-                                          allow the value 60 if it allows leap-seconds.
+                                        description: |-
+                                          Seconds of minutes of the time. Must normally be from 0 to 59. An API may
+                                           allow the value 60 if it allows leap-seconds.
                                         format: int32
                                         type: integer
                                     type: object
+                                required:
+                                - endDate
+                                - endTime
+                                - startDate
+                                - startTime
                                 type: object
                               type: array
                             timeZone:
-                              description: Required. The time zone in IANA format
-                                [IANA Time Zone Database](https://www.iana.org/time-zones)
-                                (e.g. America/New_York).
+                              description: |-
+                                Required. The time zone in IANA format [IANA Time Zone
+                                 Database](https://www.iana.org/time-zones) (e.g. America/New_York).
                               type: string
                             weeklyWindows:
                               description: Optional. Recurring weekly windows within
@@ -254,23 +249,22 @@ spec:
                               items:
                                 properties:
                                   daysOfWeek:
-                                    description: Optional. Days of week. If left empty,
-                                      all days of the week will be included.
+                                    description: |-
+                                      Optional. Days of week. If left empty, all days of the week will be
+                                       included.
                                     items:
                                       type: string
                                     type: array
                                   endTime:
-                                    description: Optional. End time (exclusive). Use
-                                      24:00 to indicate midnight. If you specify end_time
-                                      you must also specify start_time. If left empty,
-                                      this will block for the entire day for the days
-                                      specified in days_of_week.
+                                    description: |-
+                                      Optional. End time (exclusive). Use 24:00 to indicate midnight. If you
+                                       specify end_time you must also specify start_time. If left empty, this will
+                                       block for the entire day for the days specified in days_of_week.
                                     properties:
                                       hours:
-                                        description: Hours of day in 24 hour format.
-                                          Should be from 0 to 23. An API may choose
-                                          to allow the value "24:00:00" for scenarios
-                                          like business closing time.
+                                        description: |-
+                                          Hours of day in 24 hour format. Should be from 0 to 23. An API may choose
+                                           to allow the value "24:00:00" for scenarios like business closing time.
                                         format: int32
                                         type: integer
                                       minutes:
@@ -284,24 +278,22 @@ spec:
                                         format: int32
                                         type: integer
                                       seconds:
-                                        description: Seconds of minutes of the time.
-                                          Must normally be from 0 to 59. An API may
-                                          allow the value 60 if it allows leap-seconds.
+                                        description: |-
+                                          Seconds of minutes of the time. Must normally be from 0 to 59. An API may
+                                           allow the value 60 if it allows leap-seconds.
                                         format: int32
                                         type: integer
                                     type: object
                                   startTime:
-                                    description: Optional. Start time (inclusive).
-                                      Use 00:00 for the beginning of the day. If you
-                                      specify start_time you must also specify end_time.
-                                      If left empty, this will block for the entire
-                                      day for the days specified in days_of_week.
+                                    description: |-
+                                      Optional. Start time (inclusive). Use 00:00 for the beginning of the day.
+                                       If you specify start_time you must also specify end_time. If left empty,
+                                       this will block for the entire day for the days specified in days_of_week.
                                     properties:
                                       hours:
-                                        description: Hours of day in 24 hour format.
-                                          Should be from 0 to 23. An API may choose
-                                          to allow the value "24:00:00" for scenarios
-                                          like business closing time.
+                                        description: |-
+                                          Hours of day in 24 hour format. Should be from 0 to 23. An API may choose
+                                           to allow the value "24:00:00" for scenarios like business closing time.
                                         format: int32
                                         type: integer
                                       minutes:
@@ -315,24 +307,29 @@ spec:
                                         format: int32
                                         type: integer
                                       seconds:
-                                        description: Seconds of minutes of the time.
-                                          Must normally be from 0 to 59. An API may
-                                          allow the value 60 if it allows leap-seconds.
+                                        description: |-
+                                          Seconds of minutes of the time. Must normally be from 0 to 59. An API may
+                                           allow the value 60 if it allows leap-seconds.
                                         format: int32
                                         type: integer
                                     type: object
                                 type: object
                               type: array
+                          required:
+                          - timeZone
                           type: object
+                      required:
+                      - id
+                      - timeWindows
                       type: object
                   type: object
                 type: array
               selectors:
-                description: Required. Selected resources to which the policy will
-                  be applied. At least one selector is required. If one selector matches
-                  the resource the policy applies. For example, if there are two selectors
-                  and the action being attempted matches one of them, the policy will
-                  apply to that action.
+                description: |-
+                  Required. Selected resources to which the policy will be applied. At least
+                   one selector is required. If one selector matches the resource the policy
+                   applies. For example, if there are two selectors and the action being
+                   attempted matches one of them, the policy will apply to that action.
                 items:
                   properties:
                     deliveryPipeline:
@@ -363,24 +360,11 @@ spec:
                           type: object
                         targetRef:
                           description: Optional. The Target to which the rule applies.
-                          oneOf:
-                          - not:
-                              required:
-                              - external
-                            required:
-                            - name
-                          - not:
-                              anyOf:
-                              - required:
-                                - name
-                              - required:
-                                - namespace
-                            required:
-                            - external
                           properties:
                             external:
-                              description: A reference to an externally managed CloudDeployTarget
-                                resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/targets/{{targetID}}".
+                              description: |-
+                                A reference to an externally managed CloudDeployTarget resource.
+                                Should be in the format "projects/{{projectID}}/locations/{{location}}/targets/{{targetID}}".
                               type: string
                             name:
                               description: The name of a CloudDeployTarget resource.
@@ -393,8 +377,9 @@ spec:
                   type: object
                 type: array
               suspended:
-                description: When suspended, the policy will not prevent actions from
-                  occurring, even if the action violates the policy.
+                description: |-
+                  When suspended, the policy will not prevent actions from occurring, even
+                   if the action violates the policy.
                 type: boolean
             required:
             - location
@@ -405,8 +390,9 @@ spec:
               of DeployDeployPolicy
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -418,8 +404,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -451,9 +438,10 @@ spec:
                       created.
                     type: string
                   name:
-                    description: Output only. Name of the `DeployPolicy`. Format is
-                      `projects/{project}/locations/{location}/deployPolicies/{deployPolicy}`.
-                      The `deployPolicy` component must match `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`
+                    description: |-
+                      Output only. Name of the `DeployPolicy`. Format is
+                       `projects/{project}/locations/{location}/deployPolicies/{deployPolicy}`.
+                       The `deployPolicy` component must match `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`
                     type: string
                   uid:
                     description: Output only. Unique identifier of the `DeployPolicy`.

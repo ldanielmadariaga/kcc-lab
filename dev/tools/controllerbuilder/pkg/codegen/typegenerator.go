@@ -529,17 +529,13 @@ func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool)
 			// FindDependenciesForField already recurses through the map entry into
 			// the value, so it is visited and written without new machinery here.
 			// A CRD expresses this as additionalProperties with an object schema.
+			// A message with a special-cased Go type takes that type here too,
+			// rather than the struct name it does not have. google.protobuf.Struct
+			// and Value both land on apiextensionsv1.JSON, which is what upstream
+			// writes by hand for Firestore's Document.fields, a map<string, Value>.
 			valueName := string(valueField.Message().FullName())
-			if _, skip := protoMessagesNotMappedToGoStruct[valueName]; skip {
-				return "", fmt.Errorf("unsupported map type with key %v and value %v",
-					keyField.Kind(), valueField.Kind())
-			}
-			// Declining here drops the field, which is the lesser harm: a map of
-			// one of these makes it reachable from the CRD, and controller-gen
-			// then fails on the whole package rather than on this one field.
-			if protoMessagesRecursiveInCRD[valueName] {
-				return "", fmt.Errorf(
-					"recursive map value %s: no CRD schema is possible", valueName)
+			if goType, ok := protoMessagesNotMappedToGoStruct[valueName]; ok {
+				return "map[string]" + goType, nil
 			}
 			return "map[string]" + GoNameForProtoMessage(valueField.Message()), nil
 		default:

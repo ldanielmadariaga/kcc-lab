@@ -17,7 +17,6 @@ package lint
 import (
 	"bufio"
 	"fmt"
-	"github.com/GoogleCloudPlatform/k8s-config-connector/tests/apichecks/refs"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -28,6 +27,8 @@ import (
 	"strings"
 	"testing"
 	"unicode"
+
+	"github.com/GoogleCloudPlatform/k8s-config-connector/tests/apichecks/refs"
 
 	"github.com/google/go-cmp/cmp"
 

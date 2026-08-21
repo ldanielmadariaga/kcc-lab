@@ -6,9 +6,3 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=DataLineageProcess group=datalineage.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=DataLineageProcess group=datalineage.cnrm.cloud.google.com: field ".spec.attributes" reason=unsupported-field-type (recursive map value google.protobuf.Value: no CRD schema is possible)
-
-# Fields dropped because the generator could not produce a Go type for
-# them. They are absent from the CRD. Shared nested messages, so they are
-# listed per service rather than against one Kind.
-# dropped: google.cloud.datacatalog.lineage.v1.Process.attributes reason=recursive map value google.protobuf.Value: no CRD schema is possible

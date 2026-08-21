@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpcertificatemanagercertificateissuanceconfig
     - gcpcertificatemanagercertificateissuanceconfigs
     singular: certificatemanagercertificateissuanceconfig
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           the CertificateManagerCertificateIssuanceConfig API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -62,17 +66,18 @@ spec:
               desired state of CertificateManagerCertificateIssuanceConfig
             properties:
               certificateAuthorityConfig:
-                description: Required. The CA that issues the workload certificate.
-                  It includes the CA address, type, authentication to CA service,
-                  etc.
+                description: |-
+                  Required. The CA that issues the workload certificate. It includes the CA
+                   address, type, authentication to CA service, etc.
                 properties:
                   certificateAuthorityServiceConfig:
                     description: Defines a CertificateAuthorityServiceConfig.
                     properties:
                       caPool:
-                        description: Required. A CA pool resource used to issue a
-                          certificate. The CA pool string has a relative resource
-                          path following the form "projects/{project}/locations/{location}/caPools/{ca_pool}".
+                        description: |-
+                          Required. A CA pool resource used to issue a certificate.
+                           The CA pool string has a relative resource path following the form
+                           "projects/{project}/locations/{location}/caPools/{ca_pool}".
                         type: string
                     required:
                     - caPool
@@ -98,20 +103,6 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -133,9 +124,10 @@ spec:
                   If not given, the metadata.name will be used.
                 type: string
               rotationWindowPercentage:
-                description: Required. Specifies the percentage of elapsed time of
-                  the certificate lifetime to wait before renewing the certificate.
-                  Must be a number between 1-99, inclusive.
+                description: |-
+                  Required. Specifies the percentage of elapsed time of the certificate
+                   lifetime to wait before renewing the certificate. Must be a number between
+                   1-99, inclusive.
                 format: int32
                 type: integer
             required:
@@ -151,8 +143,9 @@ spec:
               the config connector machine state of CertificateManagerCertificateIssuanceConfig
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -164,8 +157,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

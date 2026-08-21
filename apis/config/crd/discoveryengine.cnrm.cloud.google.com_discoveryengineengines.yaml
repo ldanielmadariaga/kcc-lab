@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpdiscoveryengineengine
     - gcpdiscoveryengineengines
     singular: discoveryengineengine
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -61,7 +65,8 @@ spec:
             description: DiscoveryEngineEngineSpec defines the desired state of DiscoveryEngineEngine
             properties:
               chatEngineConfig:
-                description: Configurations for the Chat Engine. Only applicable if
+                description: |-
+                  Configurations for the Chat Engine. Only applicable if
                   solution_type is SOLUTION_TYPE_CHAT.
                 properties:
                   agentCreationConfig:
@@ -77,26 +82,32 @@ spec:
                        API after engine creation.
                     properties:
                       business:
-                        description: Name of the company, organization or other entity
-                          that the agent represents. Used for knowledge connector
-                          LLM prompt and for knowledge search.
+                        description: |-
+                          Name of the company, organization or other entity that the agent
+                           represents. Used for knowledge connector LLM prompt and for knowledge
+                           search.
                         type: string
                       defaultLanguageCode:
-                        description: Required. The default language of the agent as
-                          a language tag. See [Language Support](https://cloud.google.com/dialogflow/docs/reference/language)
-                          for a list of the currently supported language codes.
+                        description: |-
+                          Required. The default language of the agent as a language tag.
+                           See [Language
+                           Support](https://cloud.google.com/dialogflow/docs/reference/language)
+                           for a list of the currently supported language codes.
                         type: string
                       location:
-                        description: 'Agent location for Agent creation, supported
-                          values: global/us/eu. If not provided, us Engine will create
-                          Agent using us-central-1 by default; eu Engine will create
-                          Agent using eu-west-1 by default.'
+                        description: |-
+                          Agent location for Agent creation, supported values: global/us/eu.
+                           If not provided, us Engine will create Agent using us-central-1 by
+                           default; eu Engine will create Agent using eu-west-1 by default.
                         type: string
                       timeZone:
-                        description: Required. The time zone of the agent from the
-                          [time zone database](https://www.iana.org/time-zones), e.g.,
-                          America/New_York, Europe/Paris.
+                        description: |-
+                          Required. The time zone of the agent from the [time zone
+                           database](https://www.iana.org/time-zones), e.g., America/New_York,
+                           Europe/Paris.
                         type: string
+                    required:
+                    - timeZone
                     type: object
                   allowCrossRegion:
                     description: |-
@@ -140,38 +151,27 @@ spec:
                   engine.
                 properties:
                   companyName:
-                    description: The name of the company, business or entity that
-                      is associated with the engine. Setting this may help improve
-                      LLM related features.
+                    description: |-
+                      The name of the company, business or entity that is associated with the
+                       engine. Setting this may help improve LLM related features.
                     type: string
                 type: object
               dataStoreRefs:
-                description: The data stores associated with this engine. For SOLUTION_TYPE_SEARCH
-                  and SOLUTION_TYPE_RECOMMENDATION type of engines, they can only
-                  associate with at most one data store. If solution_type is SOLUTION_TYPE_CHAT,
-                  multiple DataStores in the same Collection can be associated here.
+                description: |-
+                  The data stores associated with this engine.
+                  For SOLUTION_TYPE_SEARCH and SOLUTION_TYPE_RECOMMENDATION type of
+                  engines, they can only associate with at most one data store.
+                  If solution_type is SOLUTION_TYPE_CHAT, multiple DataStores in the
+                  same Collection can be associated here.
                   Note that when used in CreateEngineRequest, one DataStore must be
                   provided as the system will use it for necessary initializations.
                 items:
                   description: DiscoveryEngineDataStoreRef is a reference to a DiscoveryEngineDataStore.
-                  oneOf:
-                  - not:
-                      required:
-                      - external
-                    required:
-                    - name
-                  - not:
-                      anyOf:
-                      - required:
-                        - name
-                      - required:
-                        - namespace
-                    required:
-                    - external
                   properties:
                     external:
-                      description: A reference to an externally managed DiscoveryEngineDataStore
-                        resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/datastores/{{datastoreID}}".
+                      description: |-
+                        A reference to an externally managed DiscoveryEngineDataStore resource.
+                        Should be in the format "projects/{{projectID}}/locations/{{location}}/datastores/{{datastoreID}}".
                       type: string
                     name:
                       description: The name of a DiscoveryEngineDataStore resource.
@@ -182,38 +182,27 @@ spec:
                   type: object
                 type: array
               disableAnalytics:
-                description: Optional. Whether to disable analytics for searches performed
-                  on this engine.
+                description: |-
+                  Optional. Whether to disable analytics for searches performed on this
+                   engine.
                 type: boolean
               displayName:
-                description: Required. The display name of the engine. Should be human
-                  readable. UTF-8 encoded string with limit of 1024 characters.
+                description: |-
+                  Required. The display name of the engine. Should be human readable. UTF-8
+                  encoded string with limit of 1024 characters.
                 type: string
               industryVertical:
-                description: 'The industry vertical that the engine registers. The
-                  restriction of the Engine industry vertical is based on DataStore:
-                  If unspecified, default to `GENERIC`. Vertical on Engine has to
-                  match vertical of the DataStore linked to the engine.'
+                description: |-
+                  The industry vertical that the engine registers.
+                  The restriction of the Engine industry vertical is based on
+                  DataStore: If unspecified, default to `GENERIC`. Vertical on Engine
+                  has to match vertical of the DataStore linked to the engine.
                 type: string
               location:
                 description: Immutable. Location of the resource.
                 type: string
               projectRef:
                 description: Immutable. The Project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -231,12 +220,14 @@ spec:
                     type: string
                 type: object
               resourceID:
-                description: Immutable. The DiscoveryEngineChatEngine name. If not
-                  given, the metadata.name will be used.
+                description: |-
+                  Immutable.
+                  The DiscoveryEngineChatEngine name. If not given, the metadata.name will be used.
                 type: string
               searchEngineConfig:
-                description: Configurations for the Search Engine. Only applicable
-                  if solution_type is SOLUTION_TYPE_SEARCH.
+                description: |-
+                  Configurations for the Search Engine. Only applicable if
+                  solution_type is SOLUTION_TYPE_SEARCH.
                 properties:
                   searchAddOns:
                     description: The add-on that this search engine enables.
@@ -270,8 +261,9 @@ spec:
               machine state of DiscoveryEngineEngine
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -283,8 +275,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

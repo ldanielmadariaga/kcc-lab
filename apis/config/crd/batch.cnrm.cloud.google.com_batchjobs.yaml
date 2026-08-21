@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpbatchjob
     - gcpbatchjobs
     singular: batchjob
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,14 +44,19 @@ spec:
         description: BatchJob is the Schema for the BatchJob API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -64,8 +68,9 @@ spec:
                   Job.
                 properties:
                   instances:
-                    description: Describe instances that can be created by this AllocationPolicy.
-                      Only instances[0] is supported now.
+                    description: |-
+                      Describe instances that can be created by this AllocationPolicy.
+                       Only instances[0] is supported now.
                     items:
                       properties:
                         blockProjectSSHKeys:
@@ -100,8 +105,9 @@ spec:
                              https://github.com/GoogleCloudPlatform/compute-gpu-installation/blob/main/linux/install_gpu_driver.py.
                           type: boolean
                         installOpsAgent:
-                          description: Optional. Set this field true if you want Batch
-                            to install Ops Agent on your behalf. Default is false.
+                          description: |-
+                            Optional. Set this field true if you want Batch to install Ops Agent on
+                             your behalf. Default is false.
                           type: boolean
                         instanceTemplate:
                           description: |-
@@ -140,24 +146,25 @@ spec:
                                       instead.'
                                     type: boolean
                                   type:
-                                    description: The accelerator type. For example,
-                                      "nvidia-tesla-t4". See `gcloud compute accelerator-types
-                                      list`.
+                                    description: |-
+                                      The accelerator type. For example, "nvidia-tesla-t4".
+                                       See `gcloud compute accelerator-types list`.
                                     type: string
                                 type: object
                               type: array
                             bootDisk:
-                              description: Boot disk to be created and attached to
-                                each VM by this InstancePolicy. Boot disk will be
-                                deleted when the VM is deleted. Batch API now only
-                                supports booting from image.
+                              description: |-
+                                Boot disk to be created and attached to each VM by this InstancePolicy.
+                                 Boot disk will be deleted when the VM is deleted.
+                                 Batch API now only supports booting from image.
                               properties:
                                 diskInterface:
-                                  description: Local SSDs are available through both
-                                    "SCSI" and "NVMe" interfaces. If not indicated,
-                                    "NVMe" will be the default one for local ssds.
-                                    This field is ignored for persistent disks as
-                                    the interface is chosen automatically. See https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.
+                                  description: |-
+                                    Local SSDs are available through both "SCSI" and "NVMe" interfaces.
+                                     If not indicated, "NVMe" will be the default one for local ssds.
+                                     This field is ignored for persistent disks as the interface is chosen
+                                     automatically. See
+                                     https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.
                                   type: string
                                 imageRef:
                                   description: |-
@@ -168,26 +175,11 @@ spec:
                                      projects/{project}/global/images/family/{image_family}
                                      * Specify the image version:
                                      projects/{project}/global/images/{image_version}
-                                  oneOf:
-                                  - not:
-                                      required:
-                                      - external
-                                    required:
-                                    - name
-                                  - not:
-                                      anyOf:
-                                      - required:
-                                        - name
-                                      - required:
-                                        - namespace
-                                    required:
-                                    - external
                                   properties:
                                     external:
-                                      description: A reference to an externally managed
-                                        ComputeImage resource. Should be in the format
-                                        "projects/{{project}}/global/images/{{name}}"
-                                        or "projects/{{project}}/global/images/family/{{family}}".
+                                      description: |-
+                                        A reference to an externally managed ComputeImage resource.
+                                        Should be in the format "projects/{{project}}/global/images/{{name}}" or "projects/{{project}}/global/images/family/{{family}}".
                                       type: string
                                     name:
                                       description: The name of a ComputeImage resource.
@@ -221,36 +213,35 @@ spec:
                                   format: int64
                                   type: integer
                                 snapshot:
-                                  description: Name of a snapshot used as the data
-                                    source. Snapshot is not supported as boot disk
-                                    now.
+                                  description: |-
+                                    Name of a snapshot used as the data source.
+                                     Snapshot is not supported as boot disk now.
                                   type: string
                                 type:
-                                  description: Disk type as shown in `gcloud compute
-                                    disk-types list`. For example, local SSD uses
-                                    type "local-ssd". Persistent disks and boot disks
-                                    use "pd-balanced", "pd-extreme", "pd-ssd" or "pd-standard".
-                                    If not specified, "pd-standard" will be used as
-                                    the default type for non-boot disks, "pd-balanced"
-                                    will be used as the default type for boot disks.
+                                  description: |-
+                                    Disk type as shown in `gcloud compute disk-types list`.
+                                     For example, local SSD uses type "local-ssd".
+                                     Persistent disks and boot disks use "pd-balanced", "pd-extreme", "pd-ssd"
+                                     or "pd-standard". If not specified, "pd-standard" will be used as the
+                                     default type for non-boot disks, "pd-balanced" will be used as the
+                                     default type for boot disks.
                                   type: string
                               type: object
                             disks:
-                              description: Non-boot disks to be attached for each
-                                VM created by this InstancePolicy. New disks will
-                                be deleted when the VM is deleted. A non-boot disk
-                                is a disk that can be of a device with a file system
-                                or a raw storage drive that is not ready for data
-                                storage and accessing.
+                              description: |-
+                                Non-boot disks to be attached for each VM created by this InstancePolicy.
+                                 New disks will be deleted when the VM is deleted.
+                                 A non-boot disk is a disk that can be of a device with a
+                                 file system or a raw storage drive that is not ready for data
+                                 storage and accessing.
                               items:
                                 properties:
                                   deviceName:
-                                    description: Device name that the guest operating
-                                      system will see. It is used by Runnable.volumes
-                                      field to mount disks. So please specify the
-                                      device_name if you want Batch to help mount
-                                      the disk, and it should match the device_name
-                                      field in volumes.
+                                    description: |-
+                                      Device name that the guest operating system will see.
+                                       It is used by Runnable.volumes field to mount disks. So please specify
+                                       the device_name if you want Batch to help mount the disk, and it should
+                                       match the device_name field in volumes.
                                     type: string
                                   existingDisk:
                                     description: Name of an existing PD.
@@ -258,12 +249,12 @@ spec:
                                   newDisk:
                                     properties:
                                       diskInterface:
-                                        description: Local SSDs are available through
-                                          both "SCSI" and "NVMe" interfaces. If not
-                                          indicated, "NVMe" will be the default one
-                                          for local ssds. This field is ignored for
-                                          persistent disks as the interface is chosen
-                                          automatically. See https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.
+                                        description: |-
+                                          Local SSDs are available through both "SCSI" and "NVMe" interfaces.
+                                           If not indicated, "NVMe" will be the default one for local ssds.
+                                           This field is ignored for persistent disks as the interface is chosen
+                                           automatically. See
+                                           https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.
                                         type: string
                                       imageRef:
                                         description: |-
@@ -274,26 +265,11 @@ spec:
                                            projects/{project}/global/images/family/{image_family}
                                            * Specify the image version:
                                            projects/{project}/global/images/{image_version}
-                                        oneOf:
-                                        - not:
-                                            required:
-                                            - external
-                                          required:
-                                          - name
-                                        - not:
-                                            anyOf:
-                                            - required:
-                                              - name
-                                            - required:
-                                              - namespace
-                                          required:
-                                          - external
                                         properties:
                                           external:
-                                            description: A reference to an externally
-                                              managed ComputeImage resource. Should
-                                              be in the format "projects/{{project}}/global/images/{{name}}"
-                                              or "projects/{{project}}/global/images/family/{{family}}".
+                                            description: |-
+                                              A reference to an externally managed ComputeImage resource.
+                                              Should be in the format "projects/{{project}}/global/images/{{name}}" or "projects/{{project}}/global/images/family/{{family}}".
                                             type: string
                                           name:
                                             description: The name of a ComputeImage
@@ -328,19 +304,18 @@ spec:
                                         format: int64
                                         type: integer
                                       snapshot:
-                                        description: Name of a snapshot used as the
-                                          data source. Snapshot is not supported as
-                                          boot disk now.
+                                        description: |-
+                                          Name of a snapshot used as the data source.
+                                           Snapshot is not supported as boot disk now.
                                         type: string
                                       type:
-                                        description: Disk type as shown in `gcloud
-                                          compute disk-types list`. For example, local
-                                          SSD uses type "local-ssd". Persistent disks
-                                          and boot disks use "pd-balanced", "pd-extreme",
-                                          "pd-ssd" or "pd-standard". If not specified,
-                                          "pd-standard" will be used as the default
-                                          type for non-boot disks, "pd-balanced" will
-                                          be used as the default type for boot disks.
+                                        description: |-
+                                          Disk type as shown in `gcloud compute disk-types list`.
+                                           For example, local SSD uses type "local-ssd".
+                                           Persistent disks and boot disks use "pd-balanced", "pd-extreme", "pd-ssd"
+                                           or "pd-standard". If not specified, "pd-standard" will be used as the
+                                           default type for non-boot disks, "pd-balanced" will be used as the
+                                           default type for boot disks.
                                         type: string
                                     type: object
                                 type: object
@@ -349,17 +324,20 @@ spec:
                               description: The Compute Engine machine type.
                               type: string
                             minCPUPlatform:
-                              description: The minimum CPU platform. See https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform.
+                              description: |-
+                                The minimum CPU platform.
+                                 See
+                                 https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform.
                               type: string
                             provisioningModel:
                               description: The provisioning model.
                               type: string
                             reservation:
-                              description: Optional. If not specified (default), VMs
-                                will consume any applicable reservation. If "NO_RESERVATION"
-                                is specified, VMs will not consume any reservation.
-                                Otherwise, if specified, VMs will consume only the
-                                specified reservation.
+                              description: |-
+                                Optional. If not specified (default), VMs will consume any applicable
+                                 reservation. If "NO_RESERVATION" is specified, VMs will not consume any
+                                 reservation. Otherwise, if specified, VMs will consume only the specified
+                                 reservation.
                               type: string
                           type: object
                       type: object
@@ -426,25 +404,11 @@ spec:
                                  * https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}
                                  * projects/{project}/global/networks/{network}
                                  * global/networks/{network}
-                              oneOf:
-                              - not:
-                                  required:
-                                  - external
-                                required:
-                                - name
-                              - not:
-                                  anyOf:
-                                  - required:
-                                    - name
-                                  - required:
-                                    - namespace
-                                required:
-                                - external
                               properties:
                                 external:
-                                  description: A reference to an externally managed
-                                    ComputeNetwork resource. Should be in the format
-                                    "projects/{{projectID}}/global/networks/{{networkID}}".
+                                  description: |-
+                                    A reference to an externally managed ComputeNetwork resource.
+                                    Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
                                   type: string
                                 name:
                                   description: The name of a ComputeNetwork resource.
@@ -454,13 +418,14 @@ spec:
                                   type: string
                               type: object
                             noExternalIPAddress:
-                              description: Default is false (with an external IP address).
-                                Required if no external public IP address is attached
-                                to the VM. If no external public IP address, additional
-                                configuration is required to allow the VM to access
-                                Google Services. See https://cloud.google.com/vpc/docs/configure-private-google-access
-                                and https://cloud.google.com/nat/docs/gce-example#create-nat
-                                for more information.
+                              description: |-
+                                Default is false (with an external IP address). Required if
+                                 no external public IP address is attached to the VM. If no external
+                                 public IP address, additional configuration is required to allow the VM
+                                 to access Google Services. See
+                                 https://cloud.google.com/vpc/docs/configure-private-google-access and
+                                 https://cloud.google.com/nat/docs/gce-example#create-nat for more
+                                 information.
                               type: boolean
                             subnetworkRef:
                               description: |-
@@ -472,25 +437,11 @@ spec:
                                  * https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/subnetworks/{subnetwork}
                                  * projects/{project}/regions/{region}/subnetworks/{subnetwork}
                                  * regions/{region}/subnetworks/{subnetwork}
-                              oneOf:
-                              - not:
-                                  required:
-                                  - external
-                                required:
-                                - name
-                              - not:
-                                  anyOf:
-                                  - required:
-                                    - name
-                                  - required:
-                                    - namespace
-                                required:
-                                - external
                               properties:
                                 external:
-                                  description: A reference to an externally managed
-                                    ComputeSubnetwork resource. Should be in the format
-                                    "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
+                                  description: |-
+                                    A reference to an externally managed ComputeSubnetwork resource.
+                                    Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
                                   type: string
                                 name:
                                   description: The name of a ComputeSubnetwork resource.
@@ -507,18 +458,19 @@ spec:
                     description: The placement policy.
                     properties:
                       collocation:
-                        description: UNSPECIFIED vs. COLLOCATED (default UNSPECIFIED).
-                          Use COLLOCATED when you want VMs to be located close to
-                          each other for low network latency between the VMs. No placement
-                          policy will be generated when collocation is UNSPECIFIED.
+                        description: |-
+                          UNSPECIFIED vs. COLLOCATED (default UNSPECIFIED). Use COLLOCATED when you
+                           want VMs to be located close to each other for low network latency
+                           between the VMs. No placement policy will be generated when collocation
+                           is UNSPECIFIED.
                         type: string
                       maxDistance:
-                        description: When specified, causes the job to fail if more
-                          than max_distance logical switches are required between
-                          VMs. Batch uses the most compact possible placement of VMs
-                          even when max_distance is not specified. An explicit max_distance
-                          makes that level of compactness a strict requirement. Not
-                          yet implemented
+                        description: |-
+                          When specified, causes the job to fail if more than max_distance logical
+                           switches are required between VMs. Batch uses the most compact possible
+                           placement of VMs even when max_distance is not specified. An explicit
+                           max_distance makes that level of compactness a strict requirement.
+                           Not yet implemented
                         format: int64
                         type: integer
                     type: object
@@ -535,20 +487,6 @@ spec:
                         Compute Engine service account is used.
                         * scopes: Additional OAuth scopes to grant the service account, beyond the
                         default cloud-platform scope. (list of strings)
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
                     properties:
                       external:
                         description: The `email` field of an `IAMServiceAccount` resource.
@@ -581,32 +519,35 @@ spec:
                 description: Log preservation policy for the Job.
                 properties:
                   cloudLoggingOption:
-                    description: Optional. When `destination` is set to `CLOUD_LOGGING`,
-                      you can optionally set this field to configure additional settings
-                      for Cloud Logging.
+                    description: |-
+                      Optional. When `destination` is set to `CLOUD_LOGGING`, you can optionally
+                       set this field to configure additional settings for Cloud Logging.
                     properties:
                       useGenericTaskMonitoredResource:
-                        description: Optional. Set this field to `true` to change
-                          the [monitored resource type](https://cloud.google.com/monitoring/api/resources)
-                          for Cloud Logging logs generated by this Batch job from
-                          the [`batch.googleapis.com/Job`](https://cloud.google.com/monitoring/api/resources#tag_batch.googleapis.com/Job)
-                          type to the formerly used [`generic_task`](https://cloud.google.com/monitoring/api/resources#tag_generic_task)
-                          type.
+                        description: |-
+                          Optional. Set this field to `true` to change the [monitored resource
+                           type](https://cloud.google.com/monitoring/api/resources) for
+                           Cloud Logging logs generated by this Batch job from
+                           the
+                           [`batch.googleapis.com/Job`](https://cloud.google.com/monitoring/api/resources#tag_batch.googleapis.com/Job)
+                           type to the formerly used
+                           [`generic_task`](https://cloud.google.com/monitoring/api/resources#tag_generic_task)
+                           type.
                         type: boolean
                     type: object
                   destination:
                     description: If and where logs should be saved.
                     type: string
                   logsPath:
-                    description: When `destination` is set to `PATH`, you must set
-                      this field to the path where you want logs to be saved. This
-                      path can point to a local directory on the VM or (if congifured)
-                      a directory under the mount path of any Cloud Storage bucket,
-                      network file system (NFS), or writable persistent disk that
-                      is mounted to the job. For example, if the job has a bucket
-                      with `mountPath` set to `/mnt/disks/my-bucket`, you can write
-                      logs to the root directory of the `remotePath` of that bucket
-                      by setting this field to `/mnt/disks/my-bucket/`.
+                    description: |-
+                      When `destination` is set to `PATH`, you must set this field to the path
+                       where you want logs to be saved. This path can point to a local directory
+                       on the VM or (if congifured) a directory under the mount path of any
+                       Cloud Storage bucket, network file system (NFS), or writable persistent
+                       disk that is mounted to the job. For example, if the job has a bucket with
+                       `mountPath` set to `/mnt/disks/my-bucket`, you can write logs to the
+                       root directory of the `remotePath` of that bucket by setting this field to
+                       `/mnt/disks/my-bucket/`.
                     type: string
                 type: object
               notifications:
@@ -614,9 +555,9 @@ spec:
                 items:
                   properties:
                     message:
-                      description: The attribute requirements of messages to be sent
-                        to this Pub/Sub topic. Without this field, no message will
-                        be sent.
+                      description: |-
+                        The attribute requirements of messages to be sent to this Pub/Sub topic.
+                         Without this field, no message will be sent.
                       properties:
                         newJobState:
                           description: The new job state.
@@ -643,20 +584,6 @@ spec:
                          For more information about configuring Pub/Sub notifications for
                          a job, see
                          https://cloud.google.com/batch/docs/enable-notifications.
-                      oneOf:
-                      - not:
-                          required:
-                          - external
-                        required:
-                        - name
-                      - not:
-                          anyOf:
-                          - required:
-                            - name
-                          - required:
-                            - namespace
-                        required:
-                        - external
                       properties:
                         external:
                           description: A reference to an externally managed PubSubTopic
@@ -672,28 +599,16 @@ spec:
                   type: object
                 type: array
               priority:
-                description: Priority of the Job. The valid value range is [0, 100).
-                  Default value is 0. Higher value indicates higher priority. A job
-                  with higher priority value is more likely to run earlier if all
-                  other requirements are satisfied.
+                description: |-
+                  Priority of the Job.
+                   The valid value range is [0, 100). Default value is 0.
+                   Higher value indicates higher priority.
+                   A job with higher priority value is more likely to run earlier if all other
+                   requirements are satisfied.
                 format: int64
                 type: integer
               projectRef:
                 description: The Project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -720,42 +635,48 @@ spec:
                 items:
                   properties:
                     parallelism:
-                      description: 'Max number of tasks that can run in parallel.
-                        Default to min(task_count, parallel tasks per job limit).
-                        See: [Job Limits](https://cloud.google.com/batch/quotas#job_limits).
-                        Field parallelism must be 1 if the scheduling_policy is IN_ORDER.'
+                      description: |-
+                        Max number of tasks that can run in parallel.
+                         Default to min(task_count, parallel tasks per job limit).
+                         See: [Job Limits](https://cloud.google.com/batch/quotas#job_limits).
+                         Field parallelism must be 1 if the scheduling_policy is IN_ORDER.
                       format: int64
                       type: integer
                     permissiveSSH:
-                      description: When true, Batch will configure SSH to allow passwordless
-                        login between VMs running the Batch tasks in the same TaskGroup.
+                      description: |-
+                        When true, Batch will configure SSH to allow passwordless login between
+                         VMs running the Batch tasks in the same TaskGroup.
                       type: boolean
                     requireHostsFile:
-                      description: When true, Batch will populate a file with a list
-                        of all VMs assigned to the TaskGroup and set the BATCH_HOSTS_FILE
-                        environment variable to the path of that file. Defaults to
-                        false. The host file supports up to 1000 VMs.
+                      description: |-
+                        When true, Batch will populate a file with a list of all VMs assigned to
+                         the TaskGroup and set the BATCH_HOSTS_FILE environment variable to the path
+                         of that file. Defaults to false. The host file supports up to 1000 VMs.
                       type: boolean
                     runAsNonRoot:
-                      description: Optional. If not set or set to false, Batch uses
-                        the root user to execute runnables. If set to true, Batch
-                        runs the runnables using a non-root user. Currently, the non-root
-                        user Batch used is generated by OS Login. For more information,
-                        see [About OS Login](https://cloud.google.com/compute/docs/oslogin).
+                      description: |-
+                        Optional. If not set or set to false, Batch uses the root user to execute
+                         runnables. If set to true, Batch runs the runnables using a non-root user.
+                         Currently, the non-root user Batch used is generated by OS Login. For more
+                         information, see [About OS
+                         Login](https://cloud.google.com/compute/docs/oslogin).
                       type: boolean
                     schedulingPolicy:
-                      description: Scheduling policy for Tasks in the TaskGroup. The
-                        default value is AS_SOON_AS_POSSIBLE.
+                      description: |-
+                        Scheduling policy for Tasks in the TaskGroup.
+                         The default value is AS_SOON_AS_POSSIBLE.
                       type: string
                     taskCount:
-                      description: Number of Tasks in the TaskGroup. Default is 1.
+                      description: |-
+                        Number of Tasks in the TaskGroup.
+                         Default is 1.
                       format: int64
                       type: integer
                     taskCountPerNode:
-                      description: Max number of tasks that can be run on a VM at
-                        the same time. If not specified, the system will decide a
-                        value based on available compute resources on a VM and task
-                        requirements.
+                      description: |-
+                        Max number of tasks that can be run on a VM at the same time.
+                         If not specified, the system will decide a value based on available
+                         compute resources on a VM and task requirements.
                       format: int64
                       type: integer
                     taskEnvironments:
@@ -772,9 +693,9 @@ spec:
                       items:
                         properties:
                           encryptedVariables:
-                            description: An encrypted JSON dictionary where the key/value
-                              pairs correspond to environment variable names and their
-                              values.
+                            description: |-
+                              An encrypted JSON dictionary where the key/value pairs correspond to
+                               environment variable names and their values.
                             properties:
                               cipherText:
                                 description: The value of the cipherText response
@@ -783,24 +704,11 @@ spec:
                               kmsKeyRef:
                                 description: The name of the KMS key that will be
                                   used to decrypt the cipher text.
-                                oneOf:
-                                - not:
-                                    required:
-                                    - external
-                                  required:
-                                  - name
-                                - not:
-                                    anyOf:
-                                    - required:
-                                      - name
-                                    - required:
-                                      - namespace
-                                  required:
-                                  - external
                                 properties:
                                   external:
-                                    description: A reference to an externally managed
-                                      KMSCryptoKey. Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
+                                    description: |-
+                                      A reference to an externally managed KMSCryptoKey.
+                                      Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
                                     type: string
                                   name:
                                     description: The `name` of a `KMSCryptoKey` resource.
@@ -814,9 +722,10 @@ spec:
                           secretVariables:
                             additionalProperties:
                               type: string
-                            description: A map of environment variable names to Secret
-                              Manager secret names. The VM will access the named secrets
-                              to set the value of each environment variable.
+                            description: |-
+                              A map of environment variable names to Secret Manager secret names.
+                               The VM will access the named secrets to set the value of each environment
+                               variable.
                             type: object
                           variables:
                             additionalProperties:
@@ -884,9 +793,9 @@ spec:
                             the Task.
                           properties:
                             encryptedVariables:
-                              description: An encrypted JSON dictionary where the
-                                key/value pairs correspond to environment variable
-                                names and their values.
+                              description: |-
+                                An encrypted JSON dictionary where the key/value pairs correspond to
+                                 environment variable names and their values.
                               properties:
                                 cipherText:
                                   description: The value of the cipherText response
@@ -895,24 +804,11 @@ spec:
                                 kmsKeyRef:
                                   description: The name of the KMS key that will be
                                     used to decrypt the cipher text.
-                                  oneOf:
-                                  - not:
-                                      required:
-                                      - external
-                                    required:
-                                    - name
-                                  - not:
-                                      anyOf:
-                                      - required:
-                                        - name
-                                      - required:
-                                        - namespace
-                                    required:
-                                    - external
                                   properties:
                                     external:
-                                      description: A reference to an externally managed
-                                        KMSCryptoKey. Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
+                                      description: |-
+                                        A reference to an externally managed KMSCryptoKey.
+                                        Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
                                       type: string
                                     name:
                                       description: The `name` of a `KMSCryptoKey`
@@ -927,10 +823,10 @@ spec:
                             secretVariables:
                               additionalProperties:
                                 type: string
-                              description: A map of environment variable names to
-                                Secret Manager secret names. The VM will access the
-                                named secrets to set the value of each environment
-                                variable.
+                              description: |-
+                                A map of environment variable names to Secret Manager secret names.
+                                 The VM will access the named secrets to set the value of each environment
+                                 variable.
                               type: object
                             variables:
                               additionalProperties:
@@ -946,35 +842,35 @@ spec:
                             instead.'
                           type: object
                         lifecyclePolicies:
-                          description: Lifecycle management schema when any task in
-                            a task group is failed. Currently we only support one
-                            lifecycle policy. When the lifecycle policy condition
-                            is met, the action in the policy will execute. If task
-                            execution result does not meet with the defined lifecycle
-                            policy, we consider it as the default policy. Default
-                            policy means if the exit code is 0, exit task. If task
-                            ends with non-zero exit code, retry the task with max_retry_count.
+                          description: |-
+                            Lifecycle management schema when any task in a task group is failed.
+                             Currently we only support one lifecycle policy.
+                             When the lifecycle policy condition is met,
+                             the action in the policy will execute.
+                             If task execution result does not meet with the defined lifecycle
+                             policy, we consider it as the default policy.
+                             Default policy means if the exit code is 0, exit task.
+                             If task ends with non-zero exit code, retry the task with max_retry_count.
                           items:
                             properties:
                               action:
-                                description: Action to execute when ActionCondition
-                                  is true. When RETRY_TASK is specified, we will retry
-                                  failed tasks if we notice any exit code match and
-                                  fail tasks if no match is found. Likewise, when
-                                  FAIL_TASK is specified, we will fail tasks if we
-                                  notice any exit code match and retry tasks if no
-                                  match is found.
+                                description: |-
+                                  Action to execute when ActionCondition is true.
+                                   When RETRY_TASK is specified, we will retry failed tasks
+                                   if we notice any exit code match and fail tasks if no match is found.
+                                   Likewise, when FAIL_TASK is specified, we will fail tasks
+                                   if we notice any exit code match and retry tasks if no match is found.
                                 type: string
                               actionCondition:
                                 description: Conditions that decide why a task failure
                                   is dealt with a specific action.
                                 properties:
                                   exitCodes:
-                                    description: Exit codes of a task execution. If
-                                      there are more than 1 exit codes, when task
-                                      executes with any of the exit code in the list,
-                                      the condition is met and the action will be
-                                      executed.
+                                    description: |-
+                                      Exit codes of a task execution.
+                                       If there are more than 1 exit codes,
+                                       when task executes with any of the exit code in the list,
+                                       the condition is met and the action will be executed.
                                     items:
                                       format: int32
                                       type: integer
@@ -983,20 +879,23 @@ spec:
                             type: object
                           type: array
                         maxRetryCount:
-                          description: Maximum number of retries on failures. The
-                            default, 0, which means never retry. The valid value range
-                            is [0, 10].
+                          description: |-
+                            Maximum number of retries on failures.
+                             The default, 0, which means never retry.
+                             The valid value range is [0, 10].
                           format: int32
                           type: integer
                         maxRunDuration:
-                          description: Maximum duration the task should run before
-                            being automatically retried (if enabled) or automatically
-                            failed. Format the value of this field as a time limit
-                            in seconds followed by `s`&mdash;for example, `3600s`
-                            for 1 hour. The field accepts any value between 0 and
-                            the maximum listed for the `Duration` field type at https://protobuf.dev/reference/protobuf/google.protobuf/#duration;
-                            however, the actual maximum run time for a job will be
-                            limited to the maximum run time for a job listed at https://cloud.google.com/batch/quotas#max-job-duration.
+                          description: |-
+                            Maximum duration the task should run before being automatically retried
+                             (if enabled) or automatically failed. Format the value of this field
+                             as a time limit in seconds followed by `s`&mdash;for example, `3600s`
+                             for 1 hour. The field accepts any value between 0 and the maximum listed
+                             for the `Duration` field type at
+                             https://protobuf.dev/reference/protobuf/google.protobuf/#duration; however,
+                             the actual maximum run time for a job will be limited to the maximum run
+                             time for a job listed at
+                             https://cloud.google.com/batch/quotas#max-job-duration.
                           type: string
                         runnables:
                           description: |-
@@ -1039,29 +938,27 @@ spec:
                                 description: Barrier runnable.
                                 properties:
                                   name:
-                                    description: Barriers are identified by their
-                                      index in runnable list. Names are not required,
-                                      but if present should be an identifier.
+                                    description: |-
+                                      Barriers are identified by their index in runnable list.
+                                       Names are not required, but if present should be an identifier.
                                     type: string
                                 type: object
                               container:
                                 description: Container runnable.
                                 properties:
                                   blockExternalNetwork:
-                                    description: If set to true, external network
-                                      access to and from container will be blocked,
-                                      containers that are with block_external_network
-                                      as true can still communicate with each other,
-                                      network cannot be specified in the `container.options`
-                                      field.
+                                    description: |-
+                                      If set to true, external network access to and from container will be
+                                       blocked, containers that are with block_external_network as true can
+                                       still communicate with each other, network cannot be specified in the
+                                       `container.options` field.
                                     type: boolean
                                   commands:
-                                    description: Required for some container images.
-                                      Overrides the `CMD` specified in the container.
-                                      If there is an `ENTRYPOINT` (either in the container
-                                      image or with the `entrypoint` field below)
-                                      then these commands are appended as arguments
-                                      to the `ENTRYPOINT`.
+                                    description: |-
+                                      Required for some container images. Overrides the `CMD` specified in the
+                                       container. If there is an `ENTRYPOINT` (either in the container image or
+                                       with the `entrypoint` field below) then these commands are appended as
+                                       arguments to the `ENTRYPOINT`.
                                     items:
                                       type: string
                                     type: array
@@ -1086,20 +983,20 @@ spec:
                                        GitHub](https://github.com/GoogleCloudPlatform/batch-samples/tree/main/api-samples/image-streaming).
                                     type: boolean
                                   entrypoint:
-                                    description: Required for some container images.
-                                      Overrides the `ENTRYPOINT` specified in the
-                                      container.
+                                    description: |-
+                                      Required for some container images. Overrides the `ENTRYPOINT` specified
+                                       in the container.
                                     type: string
                                   imageURI:
                                     description: Required. The URI to pull the container
                                       image from.
                                     type: string
                                   options:
-                                    description: Required for some container images.
-                                      Arbitrary additional options to include in the
-                                      `docker run` command when running this container&mdash;for
-                                      example, `--network host`. For the `--volume`
-                                      option, use the `volumes` field for the container.
+                                    description: |-
+                                      Required for some container images. Arbitrary additional options to
+                                       include in the `docker run` command when running this container&mdash;for
+                                       example, `--network host`. For the `--volume` option, use the `volumes`
+                                       field for the container.
                                     type: string
                                   username:
                                     description: |-
@@ -1138,21 +1035,21 @@ spec:
                                     type: array
                                 type: object
                               displayName:
-                                description: Optional. DisplayName is an optional
-                                  field that can be provided by the caller. If provided,
-                                  it will be used in logs and other outputs to identify
-                                  the script, making it easier for users to understand
-                                  the logs. If not provided the index of the runnable
-                                  will be used for outputs.
+                                description: |-
+                                  Optional. DisplayName is an optional field that can be provided by the
+                                   caller. If provided, it will be used in logs and other outputs to identify
+                                   the script, making it easier for users to understand the logs. If not
+                                   provided the index of the runnable will be used for outputs.
                                 type: string
                               environment:
-                                description: Environment variables for this Runnable
-                                  (overrides variables set for the whole Task or TaskGroup).
+                                description: |-
+                                  Environment variables for this Runnable (overrides variables set for the
+                                   whole Task or TaskGroup).
                                 properties:
                                   encryptedVariables:
-                                    description: An encrypted JSON dictionary where
-                                      the key/value pairs correspond to environment
-                                      variable names and their values.
+                                    description: |-
+                                      An encrypted JSON dictionary where the key/value pairs correspond to
+                                       environment variable names and their values.
                                     properties:
                                       cipherText:
                                         description: The value of the cipherText response
@@ -1161,25 +1058,11 @@ spec:
                                       kmsKeyRef:
                                         description: The name of the KMS key that
                                           will be used to decrypt the cipher text.
-                                        oneOf:
-                                        - not:
-                                            required:
-                                            - external
-                                          required:
-                                          - name
-                                        - not:
-                                            anyOf:
-                                            - required:
-                                              - name
-                                            - required:
-                                              - namespace
-                                          required:
-                                          - external
                                         properties:
                                           external:
-                                            description: A reference to an externally
-                                              managed KMSCryptoKey. Should be in the
-                                              format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
+                                            description: |-
+                                              A reference to an externally managed KMSCryptoKey.
+                                              Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
                                             type: string
                                           name:
                                             description: The `name` of a `KMSCryptoKey`
@@ -1194,10 +1077,10 @@ spec:
                                   secretVariables:
                                     additionalProperties:
                                       type: string
-                                    description: A map of environment variable names
-                                      to Secret Manager secret names. The VM will
-                                      access the named secrets to set the value of
-                                      each environment variable.
+                                    description: |-
+                                      A map of environment variable names to Secret Manager secret names.
+                                       The VM will access the named secrets to set the value of each environment
+                                       variable.
                                     type: object
                                   variables:
                                     additionalProperties:
@@ -1207,11 +1090,11 @@ spec:
                                     type: object
                                 type: object
                               ignoreExitStatus:
-                                description: Normally, a runnable that returns a non-zero
-                                  exit status fails and causes the task to fail. However,
-                                  you can set this field to `true` to allow the task
-                                  to continue executing its other runnables even if
-                                  this runnable fails.
+                                description: |-
+                                  Normally, a runnable that returns a non-zero exit status fails and causes
+                                   the task to fail. However, you can set this field to `true` to allow the
+                                   task to continue executing its other runnables even if this runnable
+                                   fails.
                                 type: boolean
                               labels:
                                 additionalProperties:
@@ -1257,18 +1140,20 @@ spec:
                           items:
                             properties:
                               deviceName:
-                                description: Device name of an attached disk volume,
-                                  which should align with a device_name specified
-                                  by job.allocation_policy.instances[0].policy.disks[i].device_name
-                                  or defined by the given instance template in job.allocation_policy.instances[0].instance_template.
+                                description: |-
+                                  Device name of an attached disk volume, which should align with a
+                                   device_name specified by
+                                   job.allocation_policy.instances[0].policy.disks[i].device_name or
+                                   defined by the given instance template in
+                                   job.allocation_policy.instances[0].instance_template.
                                 type: string
                               gcs:
                                 description: A Google Cloud Storage (GCS) volume.
                                 properties:
                                   remotePath:
-                                    description: 'Remote path, either a bucket name
-                                      or a subdirectory of a bucket, e.g.: bucket_name,
-                                      bucket_name/subdirectory/'
+                                    description: |-
+                                      Remote path, either a bucket name or a subdirectory of a bucket, e.g.:
+                                       bucket_name, bucket_name/subdirectory/
                                     type: string
                                 type: object
                               mountOptions:
@@ -1293,8 +1178,9 @@ spec:
                                 description: The mount path for the volume, e.g. /mnt/disks/share.
                                 type: string
                               nfs:
-                                description: A Network File System (NFS) volume. For
-                                  example, a Filestore file share.
+                                description: |-
+                                  A Network File System (NFS) volume. For example, a
+                                   Filestore file share.
                                 properties:
                                   remotePath:
                                     description: Remote source path exported from
@@ -1307,6 +1193,8 @@ spec:
                             type: object
                           type: array
                       type: object
+                  required:
+                  - taskSpec
                   type: object
                 type: array
             required:
@@ -1318,8 +1206,9 @@ spec:
               of BatchJob
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -1331,8 +1220,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -1362,7 +1252,9 @@ spec:
                     description: Output only. When the Job was created.
                     type: string
                   name:
-                    description: 'Output only. Job name. For example: "projects/123456/locations/us-central1/jobs/job01".'
+                    description: |-
+                      Output only. Job name.
+                       For example: "projects/123456/locations/us-central1/jobs/job01".
                     type: string
                   status:
                     description: Output only. Job status. It is read only for users.
@@ -1385,8 +1277,10 @@ spec:
                               description: The time this event occurred.
                               type: string
                             taskExecution:
-                              description: Task Execution. This field is only defined
-                                for task-level status events where the task fails.
+                              description: |-
+                                Task Execution.
+                                 This field is only defined for task-level status events where the task
+                                 fails.
                               properties:
                                 exitCode:
                                   description: |-
@@ -1405,14 +1299,121 @@ spec:
                                   type: integer
                               type: object
                             taskState:
-                              description: Task State. This field is only defined
-                                for task-level status events.
+                              description: |-
+                                Task State.
+                                 This field is only defined for task-level status events.
                               type: string
                             type:
                               description: Type of the event.
                               type: string
                           type: object
                         type: array
+                      taskGroups:
+                        additionalProperties:
+                          properties:
+                            counts:
+                              additionalProperties:
+                                format: int64
+                                type: integer
+                              description: |-
+                                Count of task in each state in the TaskGroup.
+                                 The map key is task state name.
+                              type: object
+                            instances:
+                              description: Status of instances allocated for the TaskGroup.
+                              items:
+                                properties:
+                                  bootDisk:
+                                    description: The VM boot disk.
+                                    properties:
+                                      diskInterface:
+                                        description: |-
+                                          Local SSDs are available through both "SCSI" and "NVMe" interfaces.
+                                           If not indicated, "NVMe" will be the default one for local ssds.
+                                           This field is ignored for persistent disks as the interface is chosen
+                                           automatically. See
+                                           https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.
+                                        type: string
+                                      imageRef:
+                                        description: |-
+                                          URL for a VM image to use as the data source for this disk.
+                                           For example, the following are all valid URLs:
+
+                                           * Specify the image by its family name:
+                                           projects/{project}/global/images/family/{image_family}
+                                           * Specify the image version:
+                                           projects/{project}/global/images/{image_version}
+                                        properties:
+                                          external:
+                                            description: |-
+                                              A reference to an externally managed ComputeImage resource.
+                                              Should be in the format "projects/{{project}}/global/images/{{name}}" or "projects/{{project}}/global/images/family/{{family}}".
+                                            type: string
+                                          name:
+                                            description: The name of a ComputeImage
+                                              resource.
+                                            type: string
+                                          namespace:
+                                            description: The namespace of a ComputeImage
+                                              resource.
+                                            type: string
+                                        type: object
+                                      sizeGB:
+                                        description: |-
+                                          Disk size in GB.
+
+                                           **Non-Boot Disk**:
+                                           If the `type` specifies a persistent disk, this field
+                                           is ignored if `data_source` is set as `image` or `snapshot`.
+                                           If the `type` specifies a local SSD, this field should be a multiple of
+                                           375 GB, otherwise, the final size will be the next greater multiple of
+                                           375 GB.
+
+                                           **Boot Disk**:
+                                           Batch will calculate the boot disk size based on source
+                                           image and task requirements if you do not speicify the size.
+                                           If both this field and the `boot_disk_mib` field in task spec's
+                                           `compute_resource` are defined, Batch will only honor this field.
+                                           Also, this field should be no smaller than the source disk's
+                                           size when the `data_source` is set as `snapshot` or `image`.
+                                           For example, if you set an image as the `data_source` field and the
+                                           image's default disk size 30 GB, you can only use this field to make the
+                                           disk larger or equal to 30 GB.
+                                        format: int64
+                                        type: integer
+                                      snapshot:
+                                        description: |-
+                                          Name of a snapshot used as the data source.
+                                           Snapshot is not supported as boot disk now.
+                                        type: string
+                                      type:
+                                        description: |-
+                                          Disk type as shown in `gcloud compute disk-types list`.
+                                           For example, local SSD uses type "local-ssd".
+                                           Persistent disks and boot disks use "pd-balanced", "pd-extreme", "pd-ssd"
+                                           or "pd-standard". If not specified, "pd-standard" will be used as the
+                                           default type for non-boot disks, "pd-balanced" will be used as the
+                                           default type for boot disks.
+                                        type: string
+                                    type: object
+                                  machineType:
+                                    description: The Compute Engine machine type.
+                                    type: string
+                                  provisioningModel:
+                                    description: The VM instance provisioning model.
+                                    type: string
+                                  taskPack:
+                                    description: The max number of tasks can be assigned
+                                      to this instance type.
+                                    format: int64
+                                    type: integer
+                                type: object
+                              type: array
+                          type: object
+                        description: |-
+                          Aggregated task status for each TaskGroup in the Job.
+                           The map key is TaskGroup ID.
+                        type: object
                     type: object
                   taskGroups:
                     description: Required. TaskGroups in the Job. Only one TaskGroup
@@ -1420,8 +1421,11 @@ spec:
                     items:
                       properties:
                         name:
-                          description: 'Output only. TaskGroup name. The system generates
-                            this field based on parent Job name. For example: "projects/123456/locations/us-west1/jobs/job01/taskGroups/group01".'
+                          description: |-
+                            Output only. TaskGroup name.
+                             The system generates this field based on parent Job name.
+                             For example:
+                             "projects/123456/locations/us-west1/jobs/job01/taskGroups/group01".
                           type: string
                       type: object
                     type: array

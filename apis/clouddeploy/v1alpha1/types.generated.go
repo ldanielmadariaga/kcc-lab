@@ -40,6 +40,7 @@ type CloudRunLocation struct {
 	// Required. The location for the Cloud Run Service. Format must be
 	//  `projects/{project}/locations/{location}`.
 	// +kcc:proto:field=google.cloud.deploy.v1.CloudRunLocation.location
+	// +required
 	Location *string `json:"location,omitempty"`
 }
 
@@ -53,6 +54,7 @@ type CustomTargetSkaffoldActions struct {
 
 	// Required. The Skaffold custom action responsible for deploy operations.
 	// +kcc:proto:field=google.cloud.deploy.v1.CustomTargetSkaffoldActions.deploy_action
+	// +required
 	DeployAction *string `json:"deployAction,omitempty"`
 
 	// Optional. List of Skaffold modules Cloud Deploy will include in the
@@ -91,18 +93,22 @@ type DeployPolicyResourceSelector struct {
 type OneTimeWindow struct {
 	// Required. Start date.
 	// +kcc:proto:field=google.cloud.deploy.v1.OneTimeWindow.start_date
+	// +required
 	StartDate *Date `json:"startDate,omitempty"`
 
 	// Required. Start time (inclusive). Use 00:00 for the beginning of the day.
 	// +kcc:proto:field=google.cloud.deploy.v1.OneTimeWindow.start_time
+	// +required
 	StartTime *TimeOfDay `json:"startTime,omitempty"`
 
 	// Required. End date.
 	// +kcc:proto:field=google.cloud.deploy.v1.OneTimeWindow.end_date
+	// +required
 	EndDate *Date `json:"endDate,omitempty"`
 
 	// Required. End time (exclusive). You may use 24:00 for the end of the day.
 	// +kcc:proto:field=google.cloud.deploy.v1.OneTimeWindow.end_time
+	// +required
 	EndTime *TimeOfDay `json:"endTime,omitempty"`
 }
 
@@ -118,6 +124,7 @@ type RolloutRestriction struct {
 	// Required. Restriction rule ID. Required and must be unique within a
 	//  DeployPolicy. The format is `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`.
 	// +kcc:proto:field=google.cloud.deploy.v1.RolloutRestriction.id
+	// +required
 	ID *string `json:"id,omitempty"`
 
 	// Optional. What invoked the action. If left empty, all invoker types will be
@@ -132,6 +139,7 @@ type RolloutRestriction struct {
 
 	// Required. Time window within which actions are restricted.
 	// +kcc:proto:field=google.cloud.deploy.v1.RolloutRestriction.time_windows
+	// +required
 	TimeWindows *TimeWindows `json:"timeWindows,omitempty"`
 }
 
@@ -161,6 +169,7 @@ type SkaffoldModules_SkaffoldGCSSource struct {
 	//  providing "gs://my-bucket/dir/configs/*" will result in Skaffold copying
 	//  all files within the "dir/configs" directory in the bucket "my-bucket".
 	// +kcc:proto:field=google.cloud.deploy.v1.SkaffoldModules.SkaffoldGCSSource.source
+	// +required
 	Source *string `json:"source,omitempty"`
 
 	// Optional. Relative path from the source to the Skaffold file.
@@ -172,6 +181,7 @@ type SkaffoldModules_SkaffoldGCSSource struct {
 type SkaffoldModules_SkaffoldGitSource struct {
 	// Required. Git repository the package should be cloned from.
 	// +kcc:proto:field=google.cloud.deploy.v1.SkaffoldModules.SkaffoldGitSource.repo
+	// +required
 	Repo *string `json:"repo,omitempty"`
 
 	// Optional. Relative path from the repository root to the Skaffold file.
@@ -188,6 +198,7 @@ type TimeWindows struct {
 	// Required. The time zone in IANA format [IANA Time Zone
 	//  Database](https://www.iana.org/time-zones) (e.g. America/New_York).
 	// +kcc:proto:field=google.cloud.deploy.v1.TimeWindows.time_zone
+	// +required
 	TimeZone *string `json:"timeZone,omitempty"`
 
 	// Optional. One-time windows within which actions are restricted.

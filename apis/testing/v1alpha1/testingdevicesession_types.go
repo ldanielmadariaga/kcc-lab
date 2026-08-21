@@ -28,7 +28,6 @@ type TestingDeviceSessionSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-
 	// The TestingDeviceSession name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. The amount of time that a device will be initially allocated

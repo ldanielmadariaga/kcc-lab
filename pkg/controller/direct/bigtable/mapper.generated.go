@@ -27,6 +27,7 @@ import (
 	pb "cloud.google.com/go/bigtable/admin/apiv2/adminpb"
 	krmbigtablev1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/bigtable/v1alpha1"
 	krmbigtablev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/bigtable/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -82,13 +83,38 @@ func AppProfile_StandardIsolation_v1beta1_ToProto(mapCtx *direct.MapContext, in 
 	out.Priority = direct.Enum_ToProto[pb.AppProfile_Priority](mapCtx, in.Priority)
 	return out
 }
+func AuthorizedView_FamilySubsets_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AuthorizedView_FamilySubsets) *krmbigtablev1alpha1.AuthorizedView_FamilySubsets {
+	if in == nil {
+		return nil
+	}
+	out := &krmbigtablev1alpha1.AuthorizedView_FamilySubsets{}
+	out.Qualifiers = in.Qualifiers
+	out.QualifierPrefixes = in.QualifierPrefixes
+	return out
+}
+func AuthorizedView_FamilySubsets_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigtablev1alpha1.AuthorizedView_FamilySubsets) *pb.AuthorizedView_FamilySubsets {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AuthorizedView_FamilySubsets{}
+	out.Qualifiers = in.Qualifiers
+	out.QualifierPrefixes = in.QualifierPrefixes
+	return out
+}
 func AuthorizedView_SubsetView_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AuthorizedView_SubsetView) *krmbigtablev1alpha1.AuthorizedView_SubsetView {
 	if in == nil {
 		return nil
 	}
 	out := &krmbigtablev1alpha1.AuthorizedView_SubsetView{}
 	out.RowPrefixes = in.RowPrefixes
-	// MISSING: FamilySubsets
+	if in.FamilySubsets != nil {
+		out.FamilySubsets = make(map[string]krmbigtablev1alpha1.AuthorizedView_FamilySubsets, len(in.FamilySubsets))
+		for k, v := range in.FamilySubsets {
+			if c := AuthorizedView_FamilySubsets_v1alpha1_FromProto(mapCtx, v); c != nil {
+				out.FamilySubsets[k] = *c
+			}
+		}
+	}
 	return out
 }
 func AuthorizedView_SubsetView_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigtablev1alpha1.AuthorizedView_SubsetView) *pb.AuthorizedView_SubsetView {
@@ -97,7 +123,12 @@ func AuthorizedView_SubsetView_v1alpha1_ToProto(mapCtx *direct.MapContext, in *k
 	}
 	out := &pb.AuthorizedView_SubsetView{}
 	out.RowPrefixes = in.RowPrefixes
-	// MISSING: FamilySubsets
+	if in.FamilySubsets != nil {
+		out.FamilySubsets = make(map[string]*pb.AuthorizedView_FamilySubsets, len(in.FamilySubsets))
+		for k, v := range in.FamilySubsets {
+			out.FamilySubsets[k] = AuthorizedView_FamilySubsets_v1alpha1_ToProto(mapCtx, &v)
+		}
+	}
 	return out
 }
 func AutoscalingLimits_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AutoscalingLimits) *krmbigtablev1alpha1.AutoscalingLimits {
@@ -124,7 +155,8 @@ func AutoscalingTargets_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Aut
 	}
 	out := &krmbigtablev1alpha1.AutoscalingTargets{}
 	out.CPUUtilizationPercent = direct.LazyPtr(in.GetCpuUtilizationPercent())
-	out.StorageUtilizationGibPerNode = direct.LazyPtr(in.GetStorageUtilizationGibPerNode())
+	// MISSING: StorageUtilizationGibPerNode
+	// (near miss): "StorageUtilizationGibPerNode" vs "StorageUtilizationGiBPerNode"
 	return out
 }
 func AutoscalingTargets_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigtablev1alpha1.AutoscalingTargets) *pb.AutoscalingTargets {
@@ -133,7 +165,8 @@ func AutoscalingTargets_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigta
 	}
 	out := &pb.AutoscalingTargets{}
 	out.CpuUtilizationPercent = direct.ValueOf(in.CPUUtilizationPercent)
-	out.StorageUtilizationGibPerNode = direct.ValueOf(in.StorageUtilizationGibPerNode)
+	// MISSING: StorageUtilizationGibPerNode
+	// (near miss): "StorageUtilizationGibPerNode" vs "StorageUtilizationGiBPerNode"
 	return out
 }
 func BackupInfo_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.BackupInfo) *krmbigtablev1beta1.BackupInfo {
@@ -186,6 +219,7 @@ func BigtableAuthorizedViewObservedState_v1alpha1_FromProto(mapCtx *direct.MapCo
 	}
 	out := &krmbigtablev1alpha1.BigtableAuthorizedViewObservedState{}
 	// MISSING: Name
+	// MISSING: Etag
 	return out
 }
 func BigtableAuthorizedViewObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigtablev1alpha1.BigtableAuthorizedViewObservedState) *pb.AuthorizedView {
@@ -194,6 +228,7 @@ func BigtableAuthorizedViewObservedState_v1alpha1_ToProto(mapCtx *direct.MapCont
 	}
 	out := &pb.AuthorizedView{}
 	// MISSING: Name
+	// MISSING: Etag
 	return out
 }
 func BigtableAuthorizedViewSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AuthorizedView) *krmbigtablev1alpha1.BigtableAuthorizedViewSpec {
@@ -203,7 +238,7 @@ func BigtableAuthorizedViewSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in
 	out := &krmbigtablev1alpha1.BigtableAuthorizedViewSpec{}
 	// MISSING: Name
 	out.SubsetView = AuthorizedView_SubsetView_v1alpha1_FromProto(mapCtx, in.GetSubsetView())
-	out.Etag = direct.LazyPtr(in.GetEtag())
+	// MISSING: Etag
 	out.DeletionProtection = direct.LazyPtr(in.GetDeletionProtection())
 	return out
 }
@@ -216,7 +251,7 @@ func BigtableAuthorizedViewSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *
 	if oneof := AuthorizedView_SubsetView_v1alpha1_ToProto(mapCtx, in.SubsetView); oneof != nil {
 		out.AuthorizedView = &pb.AuthorizedView_SubsetView_{SubsetView: oneof}
 	}
-	out.Etag = direct.ValueOf(in.Etag)
+	// MISSING: Etag
 	out.DeletionProtection = direct.ValueOf(in.DeletionProtection)
 	return out
 }
@@ -254,7 +289,9 @@ func BigtableBackupSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Bac
 	}
 	out := &krmbigtablev1alpha1.BigtableBackupSpec{}
 	// MISSING: Name
-	out.SourceTable = direct.LazyPtr(in.GetSourceTable())
+	if in.GetSourceTable() != "" {
+		out.SourceTableRef = &krmbigtablev1beta1.TableRef{External: in.GetSourceTable()}
+	}
 	out.ExpireTime = direct.StringTimestamp_FromProto(mapCtx, in.GetExpireTime())
 	out.BackupType = direct.Enum_FromProto(mapCtx, in.GetBackupType())
 	out.HotToStandardTime = direct.StringTimestamp_FromProto(mapCtx, in.GetHotToStandardTime())
@@ -266,7 +303,9 @@ func BigtableBackupSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigta
 	}
 	out := &pb.Backup{}
 	// MISSING: Name
-	out.SourceTable = direct.ValueOf(in.SourceTable)
+	if in.SourceTableRef != nil {
+		out.SourceTable = in.SourceTableRef.External
+	}
 	out.ExpireTime = direct.StringTimestamp_ToProto(mapCtx, in.ExpireTime)
 	out.BackupType = direct.Enum_ToProto[pb.Backup_BackupType](mapCtx, in.BackupType)
 	out.HotToStandardTime = direct.StringTimestamp_ToProto(mapCtx, in.HotToStandardTime)
@@ -358,6 +397,7 @@ func BigtableLogicalViewObservedState_v1alpha1_FromProto(mapCtx *direct.MapConte
 	}
 	out := &krmbigtablev1alpha1.BigtableLogicalViewObservedState{}
 	// MISSING: Name
+	// MISSING: Etag
 	return out
 }
 func BigtableLogicalViewObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigtablev1alpha1.BigtableLogicalViewObservedState) *pb.LogicalView {
@@ -366,6 +406,7 @@ func BigtableLogicalViewObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext
 	}
 	out := &pb.LogicalView{}
 	// MISSING: Name
+	// MISSING: Etag
 	return out
 }
 func BigtableLogicalViewSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.LogicalView) *krmbigtablev1alpha1.BigtableLogicalViewSpec {
@@ -375,7 +416,7 @@ func BigtableLogicalViewSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *p
 	out := &krmbigtablev1alpha1.BigtableLogicalViewSpec{}
 	// MISSING: Name
 	out.Query = direct.LazyPtr(in.GetQuery())
-	out.Etag = direct.LazyPtr(in.GetEtag())
+	// MISSING: Etag
 	out.DeletionProtection = direct.LazyPtr(in.GetDeletionProtection())
 	return out
 }
@@ -386,7 +427,7 @@ func BigtableLogicalViewSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krm
 	out := &pb.LogicalView{}
 	// MISSING: Name
 	out.Query = direct.ValueOf(in.Query)
-	out.Etag = direct.ValueOf(in.Etag)
+	// MISSING: Etag
 	out.DeletionProtection = direct.ValueOf(in.DeletionProtection)
 	return out
 }
@@ -396,6 +437,7 @@ func BigtableMaterializedViewObservedState_v1alpha1_FromProto(mapCtx *direct.Map
 	}
 	out := &krmbigtablev1alpha1.BigtableMaterializedViewObservedState{}
 	// MISSING: Name
+	// MISSING: Etag
 	return out
 }
 func BigtableMaterializedViewObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigtablev1alpha1.BigtableMaterializedViewObservedState) *pb.MaterializedView {
@@ -404,6 +446,7 @@ func BigtableMaterializedViewObservedState_v1alpha1_ToProto(mapCtx *direct.MapCo
 	}
 	out := &pb.MaterializedView{}
 	// MISSING: Name
+	// MISSING: Etag
 	return out
 }
 func BigtableMaterializedViewSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.MaterializedView) *krmbigtablev1alpha1.BigtableMaterializedViewSpec {
@@ -413,7 +456,7 @@ func BigtableMaterializedViewSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, 
 	out := &krmbigtablev1alpha1.BigtableMaterializedViewSpec{}
 	// MISSING: Name
 	out.Query = direct.LazyPtr(in.GetQuery())
-	out.Etag = direct.LazyPtr(in.GetEtag())
+	// MISSING: Etag
 	out.DeletionProtection = direct.LazyPtr(in.GetDeletionProtection())
 	return out
 }
@@ -424,7 +467,7 @@ func BigtableMaterializedViewSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in
 	out := &pb.MaterializedView{}
 	// MISSING: Name
 	out.Query = direct.ValueOf(in.Query)
-	out.Etag = direct.ValueOf(in.Etag)
+	// MISSING: Etag
 	out.DeletionProtection = direct.ValueOf(in.DeletionProtection)
 	return out
 }
@@ -483,7 +526,9 @@ func Cluster_EncryptionConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *
 		return nil
 	}
 	out := &krmbigtablev1alpha1.Cluster_EncryptionConfig{}
-	out.KMSKeyName = direct.LazyPtr(in.GetKmsKeyName())
+	if in.GetKmsKeyName() != "" {
+		out.KMSKeyNameRef = &refsv1beta1.KMSCryptoKeyRef{External: in.GetKmsKeyName()}
+	}
 	return out
 }
 func Cluster_EncryptionConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigtablev1alpha1.Cluster_EncryptionConfig) *pb.Cluster_EncryptionConfig {
@@ -491,7 +536,9 @@ func Cluster_EncryptionConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *kr
 		return nil
 	}
 	out := &pb.Cluster_EncryptionConfig{}
-	out.KmsKeyName = direct.ValueOf(in.KMSKeyName)
+	if in.KMSKeyNameRef != nil {
+		out.KmsKeyName = in.KMSKeyNameRef.External
+	}
 	return out
 }
 func EncryptionInfo_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.EncryptionInfo) *krmbigtablev1beta1.EncryptionInfo {

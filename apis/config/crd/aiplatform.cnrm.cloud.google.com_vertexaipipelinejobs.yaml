@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,7 +21,6 @@ spec:
     - gcpvertexaipipelinejob
     - gcpvertexaipipelinejobs
     singular: vertexaipipelinejob
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -47,14 +46,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -62,38 +66,28 @@ spec:
             description: VertexAIPipelineJobSpec defines the desired state of VertexAIPipelineJob
             properties:
               displayName:
-                description: The display name of the Pipeline. The name can be up
-                  to 128 characters long and can consist of any UTF-8 characters.
+                description: |-
+                  The display name of the Pipeline.
+                   The name can be up to 128 characters long and can consist of any UTF-8
+                   characters.
                 type: string
               encryptionSpec:
-                description: Customer-managed encryption key spec for a pipelineJob.
-                  If set, this PipelineJob and all of its sub-resources will be secured
-                  by this key.
+                description: |-
+                  Customer-managed encryption key spec for a pipelineJob. If set, this
+                   PipelineJob and all of its sub-resources will be secured by this key.
                 properties:
                   kmsKeyRef:
-                    description: 'Required. The Cloud KMS resource identifier of the
-                      customer managed encryption key used to protect a resource.
-                      Has the form: `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
-                      The key needs to be in the same region as where the compute
-                      resource is created.'
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
+                    description: |-
+                      Required. The Cloud KMS resource identifier of the customer managed
+                       encryption key used to protect a resource. Has the form:
+                       `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
+                       The key needs to be in the same region as where the compute resource is
+                       created.
                     properties:
                       external:
-                        description: A reference to an externally managed KMSCryptoKey
-                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
+                        description: |-
+                          A reference to an externally managed KMSCryptoKey resource.
+                          Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
                         type: string
                       name:
                         description: The name of a KMSCryptoKey resource.
@@ -113,24 +107,11 @@ spec:
                 type: string
               networkRef:
                 description: Reference to a ComputeNetwork.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
-                    description: A reference to an externally managed ComputeNetwork
-                      resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                    description: |-
+                      A reference to an externally managed ComputeNetwork resource.
+                      Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
                     type: string
                   name:
                     description: The name of a ComputeNetwork resource.
@@ -148,20 +129,6 @@ spec:
                 type: boolean
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -193,24 +160,11 @@ spec:
                         targetNetworkRef:
                           description: Required. The VPC network name in the target_project
                             where the DNS zone specified by 'domain' is visible.
-                          oneOf:
-                          - not:
-                              required:
-                              - external
-                            required:
-                            - name
-                          - not:
-                              anyOf:
-                              - required:
-                                - name
-                              - required:
-                                - namespace
-                            required:
-                            - external
                           properties:
                             external:
-                              description: A reference to an externally managed ComputeNetwork
-                                resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                              description: |-
+                                A reference to an externally managed ComputeNetwork resource.
+                                Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
                               type: string
                             name:
                               description: The name of a ComputeNetwork resource.
@@ -229,24 +183,11 @@ spec:
                     description: Optional. The name of the Compute Engine network
                       attachment to attach to the resource within the region and user
                       project.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
                     properties:
                       external:
-                        description: A reference to an externally managed ComputeNetworkAttachment
-                          resource. Should be in the format "projects/{{projectID}}/regions/{{region}}/networkAttachments/{{networkattachmentID}}".
+                        description: |-
+                          A reference to an externally managed ComputeNetworkAttachment resource.
+                          Should be in the format "projects/{{projectID}}/regions/{{region}}/networkAttachments/{{networkattachmentID}}".
                         type: string
                       name:
                         description: The name of a ComputeNetworkAttachment resource.
@@ -257,8 +198,9 @@ spec:
                     type: object
                 type: object
               reservedIPRanges:
-                description: A list of names for the reserved ip ranges under the
-                  VPC network that can be used for this Pipeline Job's workload.
+                description: |-
+                  A list of names for the reserved ip ranges under the VPC network
+                   that can be used for this Pipeline Job's workload.
                 items:
                   type: string
                 type: array
@@ -273,26 +215,13 @@ spec:
                     description: Represents the failure policy of a pipeline.
                     type: string
                   gcsOutputDirectory:
-                    description: Required. A path in a Cloud Storage bucket, which
-                      will be treated as the root output directory of the pipeline.
+                    description: |-
+                      Required. A path in a Cloud Storage bucket, which will be treated as the
+                       root output directory of the pipeline.
                     type: string
                 type: object
               serviceAccountRef:
                 description: The service account that the pipeline workload runs as.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `email` field of an `IAMServiceAccount` resource.
@@ -317,8 +246,9 @@ spec:
               state of VertexAIPipelineJob
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -330,8 +260,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -365,20 +296,22 @@ spec:
                     description: Output only. Pipeline end time.
                     type: string
                   error:
-                    description: Output only. The error that occurred during pipeline
-                      execution. Only populated when the pipeline's state is FAILED
-                      or CANCELLED.
+                    description: |-
+                      Output only. The error that occurred during pipeline execution.
+                       Only populated when the pipeline's state is FAILED or CANCELLED.
                     properties:
                       code:
-                        description: The status code, which should be an enum value
-                          of [google.rpc.Code][google.rpc.Code].
+                        description: |-
+                          The status code, which should be an enum value of
+                           [google.rpc.Code][google.rpc.Code].
                         format: int32
                         type: integer
                       message:
-                        description: A developer-facing error message, which should
-                          be in English. Any user-facing error message should be localized
-                          and sent in the [google.rpc.Status.details][google.rpc.Status.details]
-                          field, or localized by the client.
+                        description: |-
+                          A developer-facing error message, which should be in English. Any
+                           user-facing error message should be localized and sent in the
+                           [google.rpc.Status.details][google.rpc.Status.details] field, or localized
+                           by the client.
                         type: string
                     type: object
                   jobDetail:
@@ -396,12 +329,14 @@ spec:
                             description: Description of the Context
                             type: string
                           displayName:
-                            description: User provided display name of the Context.
-                              May be up to 128 Unicode characters.
+                            description: |-
+                              User provided display name of the Context.
+                               May be up to 128 Unicode characters.
                             type: string
                           etag:
-                            description: An eTag used to perform consistent read-modify-write
-                              updates. If not set, a blind "overwrite" update happens.
+                            description: |-
+                              An eTag used to perform consistent read-modify-write updates. If not set, a
+                               blind "overwrite" update happens.
                             type: string
                           labels:
                             additionalProperties:
@@ -445,12 +380,14 @@ spec:
                             description: Description of the Context
                             type: string
                           displayName:
-                            description: User provided display name of the Context.
-                              May be up to 128 Unicode characters.
+                            description: |-
+                              User provided display name of the Context.
+                               May be up to 128 Unicode characters.
                             type: string
                           etag:
-                            description: An eTag used to perform consistent read-modify-write
-                              updates. If not set, a blind "overwrite" update happens.
+                            description: |-
+                              An eTag used to perform consistent read-modify-write updates. If not set, a
+                               blind "overwrite" update happens.
                             type: string
                           labels:
                             additionalProperties:
@@ -498,15 +435,17 @@ spec:
                                 task execution.
                               properties:
                                 code:
-                                  description: The status code, which should be an
-                                    enum value of [google.rpc.Code][google.rpc.Code].
+                                  description: |-
+                                    The status code, which should be an enum value of
+                                     [google.rpc.Code][google.rpc.Code].
                                   format: int32
                                   type: integer
                                 message:
-                                  description: A developer-facing error message, which
-                                    should be in English. Any user-facing error message
-                                    should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details]
-                                    field, or localized by the client.
+                                  description: |-
+                                    A developer-facing error message, which should be in English. Any
+                                     user-facing error message should be localized and sent in the
+                                     [google.rpc.Status.details][google.rpc.Status.details] field, or localized
+                                     by the client.
                                   type: string
                               type: object
                             execution:
@@ -614,16 +553,17 @@ spec:
                                       during the state.
                                     properties:
                                       code:
-                                        description: The status code, which should
-                                          be an enum value of [google.rpc.Code][google.rpc.Code].
+                                        description: |-
+                                          The status code, which should be an enum value of
+                                           [google.rpc.Code][google.rpc.Code].
                                         format: int32
                                         type: integer
                                       message:
-                                        description: A developer-facing error message,
-                                          which should be in English. Any user-facing
-                                          error message should be localized and sent
-                                          in the [google.rpc.Status.details][google.rpc.Status.details]
-                                          field, or localized by the client.
+                                        description: |-
+                                          A developer-facing error message, which should be in English. Any
+                                           user-facing error message should be localized and sent in the
+                                           [google.rpc.Status.details][google.rpc.Status.details] field, or localized
+                                           by the client.
                                         type: string
                                     type: object
                                   state:
@@ -660,8 +600,9 @@ spec:
                     description: Output only. The resource name of the PipelineJob.
                     type: string
                   scheduleName:
-                    description: Output only. The schedule resource name. Only returned
-                      if the Pipeline is created by Schedule API.
+                    description: |-
+                      Output only. The schedule resource name.
+                       Only returned if the Pipeline is created by Schedule API.
                     type: string
                   startTime:
                     description: Output only. Pipeline start time.
@@ -670,9 +611,10 @@ spec:
                     description: Output only. The detailed state of the job.
                     type: string
                   templateMetadata:
-                    description: Output only. Pipeline template metadata. Will fill
-                      up fields if [PipelineJob.template_uri][google.cloud.aiplatform.v1.PipelineJob.template_uri]
-                      is from supported template registry.
+                    description: |-
+                      Output only. Pipeline template metadata. Will fill up fields if
+                       [PipelineJob.template_uri][google.cloud.aiplatform.v1.PipelineJob.template_uri]
+                       is from supported template registry.
                     properties:
                       version:
                         description: The version_name in artifact registry.

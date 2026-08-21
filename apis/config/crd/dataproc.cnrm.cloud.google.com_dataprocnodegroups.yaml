@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpdataprocnodegroup
     - gcpdataprocnodegroups
     singular: dataprocnodegroup
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,14 +44,19 @@ spec:
         description: DataprocNodeGroup is the Schema for the DataprocNodeGroup API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -79,8 +83,9 @@ spec:
                 description: Optional. The node group instance group configuration.
                 properties:
                   accelerators:
-                    description: Optional. The Compute Engine accelerator configuration
-                      for these instances.
+                    description: |-
+                      Optional. The Compute Engine accelerator configuration for these
+                       instances.
                     items:
                       properties:
                         acceleratorCount:
@@ -113,18 +118,18 @@ spec:
                     description: Optional. Disk option config settings.
                     properties:
                       bootDiskProvisionedIOPs:
-                        description: 'Optional. Indicates how many IOPS to provision
-                          for the disk. This sets the number of I/O operations per
-                          second that the disk can handle. Note: This field is only
-                          supported if boot_disk_type is hyperdisk-balanced.'
+                        description: |-
+                          Optional. Indicates how many IOPS to provision for the disk. This sets the
+                           number of I/O operations per second that the disk can handle. Note: This
+                           field is only supported if boot_disk_type is hyperdisk-balanced.
                         format: int64
                         type: integer
                       bootDiskProvisionedThroughput:
-                        description: 'Optional. Indicates how much throughput to provision
-                          for the disk. This sets the number of throughput mb per
-                          second that the disk can handle. Values must be greater
-                          than or equal to 1. Note: This field is only supported if
-                          boot_disk_type is hyperdisk-balanced.'
+                        description: |-
+                          Optional. Indicates how much throughput to provision for the disk. This
+                           sets the number of throughput mb per second that the disk can handle.
+                           Values must be greater than or equal to 1. Note: This field is only
+                           supported if boot_disk_type is hyperdisk-balanced.
                         format: int64
                         type: integer
                       bootDiskSizeGB:
@@ -133,17 +138,20 @@ spec:
                         format: int32
                         type: integer
                       bootDiskType:
-                        description: 'Optional. Type of the boot disk (default is
-                          "pd-standard"). Valid values: "pd-balanced" (Persistent
-                          Disk Balanced Solid State Drive), "pd-ssd" (Persistent Disk
-                          Solid State Drive), or "pd-standard" (Persistent Disk Hard
-                          Disk Drive). See [Disk types](https://cloud.google.com/compute/docs/disks#disk-types).'
+                        description: |-
+                          Optional. Type of the boot disk (default is "pd-standard").
+                           Valid values: "pd-balanced" (Persistent Disk Balanced Solid State Drive),
+                           "pd-ssd" (Persistent Disk Solid State Drive),
+                           or "pd-standard" (Persistent Disk Hard Disk Drive).
+                           See [Disk types](https://cloud.google.com/compute/docs/disks#disk-types).
                         type: string
                       localSSDInterface:
-                        description: 'Optional. Interface type of local SSDs (default
-                          is "scsi"). Valid values: "scsi" (Small Computer System
-                          Interface), "nvme" (Non-Volatile Memory Express). See [local
-                          SSD performance](https://cloud.google.com/compute/docs/disks/local-ssd#performance).'
+                        description: |-
+                          Optional. Interface type of local SSDs (default is "scsi").
+                           Valid values: "scsi" (Small Computer System Interface),
+                           "nvme" (Non-Volatile Memory Express).
+                           See [local SSD
+                           performance](https://cloud.google.com/compute/docs/disks/local-ssd#performance).
                         type: string
                       numLocalSSDs:
                         description: |-
@@ -181,12 +189,14 @@ spec:
                        `SoftwareConfig.image_version` or the system default.
                     type: string
                   instanceFlexibilityPolicy:
-                    description: Optional. Instance flexibility Policy allowing a
-                      mixture of VM shapes and provisioning models.
+                    description: |-
+                      Optional. Instance flexibility Policy allowing a mixture of VM shapes and
+                       provisioning models.
                     properties:
                       instanceSelectionList:
-                        description: Optional. List of instance selection options
-                          that the group will use when creating new VMs.
+                        description: |-
+                          Optional. List of instance selection options that the group will use when
+                           creating new VMs.
                         items:
                           properties:
                             machineTypes:
@@ -196,41 +206,41 @@ spec:
                                 type: string
                               type: array
                             rank:
-                              description: Optional. Preference of this instance selection.
-                                Lower number means higher preference. Dataproc will
-                                first try to create a VM based on the machine-type
-                                with priority rank and fallback to next rank based
-                                on availability. Machine types and instance selections
-                                with the same priority have the same preference.
+                              description: |-
+                                Optional. Preference of this instance selection. Lower number means
+                                 higher preference. Dataproc will first try to create a VM based on the
+                                 machine-type with priority rank and fallback to next rank based on
+                                 availability. Machine types and instance selections with the same
+                                 priority have the same preference.
                               format: int32
                               type: integer
                           type: object
                         type: array
                       provisioningModelMix:
-                        description: Optional. Defines how the Group selects the provisioning
-                          model to ensure required reliability.
+                        description: |-
+                          Optional. Defines how the Group selects the provisioning model to ensure
+                           required reliability.
                         properties:
                           standardCapacityBase:
-                            description: Optional. The base capacity that will always
-                              use Standard VMs to avoid risk of more preemption than
-                              the minimum capacity you need. Dataproc will create
-                              only standard VMs until it reaches standard_capacity_base,
-                              then it will start using standard_capacity_percent_above_base
-                              to mix Spot with Standard VMs. eg. If 15 instances are
-                              requested and standard_capacity_base is 5, Dataproc
-                              will create 5 standard VMs and then start mixing spot
-                              and standard VMs for remaining 10 instances.
+                            description: |-
+                              Optional. The base capacity that will always use Standard VMs to avoid
+                               risk of more preemption than the minimum capacity you need. Dataproc will
+                               create only standard VMs until it reaches standard_capacity_base, then it
+                               will start using standard_capacity_percent_above_base to mix Spot with
+                               Standard VMs. eg. If 15 instances are requested and
+                               standard_capacity_base is 5, Dataproc will create 5 standard VMs and then
+                               start mixing spot and standard VMs for remaining 10 instances.
                             format: int32
                             type: integer
                           standardCapacityPercentAboveBase:
-                            description: Optional. The percentage of target capacity
-                              that should use Standard VM. The remaining percentage
-                              will use Spot VMs. The percentage applies only to the
-                              capacity above standard_capacity_base. eg. If 15 instances
-                              are requested and standard_capacity_base is 5 and standard_capacity_percent_above_base
-                              is 30, Dataproc will create 5 standard VMs and then
-                              start mixing spot and standard VMs for remaining 10
-                              instances. The mix will be 30% standard and 70% spot.
+                            description: |-
+                              Optional. The percentage of target capacity that should use Standard VM.
+                               The remaining percentage will use Spot VMs. The percentage applies only
+                               to the capacity above standard_capacity_base. eg. If 15 instances are
+                               requested and standard_capacity_base is 5 and
+                               standard_capacity_percent_above_base is 30, Dataproc will create 5
+                               standard VMs and then start mixing spot and standard VMs for remaining 10
+                               instances. The mix will be 30% standard and 70% spot.
                             format: int32
                             type: integer
                         type: object
@@ -252,8 +262,10 @@ spec:
                        resource, for example, `n1-standard-2`.
                     type: string
                   minCPUPlatform:
-                    description: Optional. Specifies the minimum cpu platform for
-                      the Instance Group. See [Dataproc -> Minimum CPU Platform](https://cloud.google.com/dataproc/docs/concepts/compute/dataproc-min-cpu).
+                    description: |-
+                      Optional. Specifies the minimum cpu platform for the Instance Group.
+                       See [Dataproc -> Minimum CPU
+                       Platform](https://cloud.google.com/dataproc/docs/concepts/compute/dataproc-min-cpu).
                     type: string
                   minNumInstances:
                     description: |-
@@ -274,11 +286,13 @@ spec:
                     format: int32
                     type: integer
                   numInstances:
-                    description: Optional. The number of VM instances in the instance
-                      group. For [HA cluster](/dataproc/docs/concepts/configuring-clusters/high-availability)
-                      [master_config](#FIELDS.master_config) groups, **must be set
-                      to 3**. For standard cluster [master_config](#FIELDS.master_config)
-                      groups, **must be set to 1**.
+                    description: |-
+                      Optional. The number of VM instances in the instance group.
+                       For [HA
+                       cluster](/dataproc/docs/concepts/configuring-clusters/high-availability)
+                       [master_config](#FIELDS.master_config) groups, **must be set to 3**.
+                       For standard cluster [master_config](#FIELDS.master_config) groups,
+                       **must be set to 1**.
                     format: int32
                     type: integer
                   preemptibility:
@@ -292,36 +306,23 @@ spec:
                        `PREEMPTIBLE`.
                     type: string
                   startupConfig:
-                    description: Optional. Configuration to handle the startup of
-                      instances during cluster create and update process.
+                    description: |-
+                      Optional. Configuration to handle the startup of instances during cluster
+                       create and update process.
                     properties:
                       requiredRegistrationFraction:
-                        description: Optional. The config setting to enable cluster
-                          creation/ updation to be successful only after required_registration_fraction
-                          of instances are up and running. This configuration is applicable
-                          to only secondary workers for now. The cluster will fail
-                          if required_registration_fraction of instances are not available.
-                          This will include instance creation, agent registration,
-                          and service registration (if enabled).
+                        description: |-
+                          Optional. The config setting to enable cluster creation/ updation to be
+                           successful only after required_registration_fraction of instances are up
+                           and running. This configuration is applicable to only secondary workers for
+                           now. The cluster will fail if required_registration_fraction of instances
+                           are not available. This will include instance creation, agent registration,
+                           and service registration (if enabled).
                         type: number
                     type: object
                 type: object
               projectRef:
                 description: Required.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -353,8 +354,9 @@ spec:
               state of DataprocNodeGroup
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -366,8 +368,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -398,8 +401,9 @@ spec:
                     description: Optional. The node group instance group configuration.
                     properties:
                       instanceFlexibilityPolicy:
-                        description: Optional. Instance flexibility Policy allowing
-                          a mixture of VM shapes and provisioning models.
+                        description: |-
+                          Optional. Instance flexibility Policy allowing a mixture of VM shapes and
+                           provisioning models.
                         properties:
                           instanceSelectionResults:
                             description: Output only. A list of instance selection
@@ -419,9 +423,9 @@ spec:
                             type: array
                         type: object
                       instanceNames:
-                        description: Output only. The list of instance names. Dataproc
-                          derives the names from `cluster_name`, `num_instances`,
-                          and the instance group.
+                        description: |-
+                          Output only. The list of instance names. Dataproc derives the names
+                           from `cluster_name`, `num_instances`, and the instance group.
                         items:
                           type: string
                         type: array
@@ -449,25 +453,29 @@ spec:
                           type: object
                         type: array
                       isPreemptible:
-                        description: Output only. Specifies that this instance group
-                          contains preemptible instances.
+                        description: |-
+                          Output only. Specifies that this instance group contains preemptible
+                           instances.
                         type: boolean
                       managedGroupConfig:
-                        description: Output only. The config for Compute Engine Instance
-                          Group Manager that manages this group. This is only used
-                          for preemptible instance groups.
+                        description: |-
+                          Output only. The config for Compute Engine Instance Group
+                           Manager that manages this group.
+                           This is only used for preemptible instance groups.
                         properties:
                           instanceGroupManagerName:
                             description: Output only. The name of the Instance Group
                               Manager for this group.
                             type: string
                           instanceGroupManagerURI:
-                            description: Output only. The partial URI to the instance
-                              group manager for this group. E.g. projects/my-project/regions/us-central1/instanceGroupManagers/my-igm.
+                            description: |-
+                              Output only. The partial URI to the instance group manager for this group.
+                               E.g. projects/my-project/regions/us-central1/instanceGroupManagers/my-igm.
                             type: string
                           instanceTemplateName:
-                            description: Output only. The name of the Instance Template
-                              used for the Managed Instance Group.
+                            description: |-
+                              Output only. The name of the Instance Template used for the Managed
+                               Instance Group.
                             type: string
                         type: object
                     type: object

@@ -954,7 +954,6 @@ func NetworkServicesWasmPluginObservedState_v1alpha1_FromProto(mapCtx *direct.Ma
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Versions
 	out.UsedBy = direct.Slice_FromProto(mapCtx, in.UsedBy, WasmPlugin_UsedByObservedState_v1alpha1_FromProto)
 	return out
 }
@@ -969,7 +968,6 @@ func NetworkServicesWasmPluginObservedState_v1alpha1_ToProto(mapCtx *direct.MapC
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Versions
 	out.UsedBy = direct.Slice_ToProto(mapCtx, in.UsedBy, WasmPlugin_UsedByObservedState_v1alpha1_ToProto)
 	return out
 }
@@ -986,7 +984,14 @@ func NetworkServicesWasmPluginSpec_v1alpha1_FromProto(mapCtx *direct.MapContext,
 	out.Labels = in.Labels
 	out.MainVersionID = direct.LazyPtr(in.GetMainVersionId())
 	out.LogConfig = WasmPlugin_LogConfig_v1alpha1_FromProto(mapCtx, in.GetLogConfig())
-	// MISSING: Versions
+	if in.Versions != nil {
+		out.Versions = make(map[string]krmnetworkservicesv1alpha1.WasmPlugin_VersionDetails, len(in.Versions))
+		for k, v := range in.Versions {
+			if c := WasmPlugin_VersionDetails_v1alpha1_FromProto(mapCtx, v); c != nil {
+				out.Versions[k] = *c
+			}
+		}
+	}
 	return out
 }
 */
@@ -1004,7 +1009,12 @@ found existing non-generated mapping function "NetworkServicesWasmPluginSpec_v1a
 		out.Labels = in.Labels
 		out.MainVersionId = direct.ValueOf(in.MainVersionID)
 		out.LogConfig = WasmPlugin_LogConfig_v1alpha1_ToProto(mapCtx, in.LogConfig)
-		// MISSING: Versions
+		if in.Versions != nil {
+			out.Versions = make(map[string]*pb.WasmPlugin_VersionDetails, len(in.Versions))
+			for k, v := range in.Versions {
+				out.Versions[k] = WasmPlugin_VersionDetails_v1alpha1_ToProto(mapCtx, &v)
+			}
+		}
 		return out
 	}
 */
@@ -1044,3 +1054,63 @@ func WasmPlugin_UsedByObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, 
 	out.Name = direct.ValueOf(in.Name)
 	return out
 }
+
+/* found existing non-generated mapping function "WasmPlugin_VersionDetails_v1alpha1_FromProto", skipping
+func WasmPlugin_VersionDetails_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.WasmPlugin_VersionDetails) *krmnetworkservicesv1alpha1.WasmPlugin_VersionDetails {
+	if in == nil {
+		return nil
+	}
+	out := &krmnetworkservicesv1alpha1.WasmPlugin_VersionDetails{}
+	out.PluginConfigData = in.GetPluginConfigData()
+	out.PluginConfigURI = direct.LazyPtr(in.GetPluginConfigUri())
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.Labels = in.Labels
+	out.ImageURI = direct.LazyPtr(in.GetImageUri())
+	// MISSING: ImageDigest
+	// MISSING: PluginConfigDigest
+	return out
+}
+*/
+
+/* found existing non-generated mapping function "WasmPlugin_VersionDetails_v1alpha1_ToProto", skipping
+func WasmPlugin_VersionDetails_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnetworkservicesv1alpha1.WasmPlugin_VersionDetails) *pb.WasmPlugin_VersionDetails {
+	if in == nil {
+		return nil
+	}
+	out := &pb.WasmPlugin_VersionDetails{}
+	if oneof := WasmPlugin_VersionDetails_PluginConfigData_ToProto(mapCtx, in.PluginConfigData); oneof != nil {
+		out.PluginConfigSource = oneof
+	}
+	if oneof := WasmPlugin_VersionDetails_PluginConfigUri_ToProto(mapCtx, in.PluginConfigURI); oneof != nil {
+		out.PluginConfigSource = oneof
+	}
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	out.Description = direct.ValueOf(in.Description)
+	out.Labels = in.Labels
+	out.ImageUri = direct.ValueOf(in.ImageURI)
+	// MISSING: ImageDigest
+	// MISSING: PluginConfigDigest
+	return out
+}
+*/
+
+/* found existing non-generated mapping function "WasmPlugin_VersionDetails_PluginConfigData_ToProto", skipping
+func WasmPlugin_VersionDetails_PluginConfigData_ToProto(mapCtx *direct.MapContext, in []byte) *pb.WasmPlugin_VersionDetails_PluginConfigData {
+	if in == nil {
+		return nil
+	}
+	return &pb.WasmPlugin_VersionDetails_PluginConfigData{PluginConfigData: *in}
+}
+*/
+
+/* found existing non-generated mapping function "WasmPlugin_VersionDetails_PluginConfigUri_ToProto", skipping
+func WasmPlugin_VersionDetails_PluginConfigUri_ToProto(mapCtx *direct.MapContext, in *string) *pb.WasmPlugin_VersionDetails_PluginConfigUri {
+	if in == nil {
+		return nil
+	}
+	return &pb.WasmPlugin_VersionDetails_PluginConfigUri{PluginConfigUri: *in}
+}
+*/

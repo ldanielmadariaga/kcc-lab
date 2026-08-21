@@ -38,11 +38,13 @@ func DataformFolderObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, i
 	}
 	out := &krmdataformv1alpha1.DataformFolderObservedState{}
 	// MISSING: Name
-	out.TeamFolderName = direct.LazyPtr(in.GetTeamFolderName())
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.InternalMetadata = in.InternalMetadata
-	out.CreatorIAMPrincipal = in.CreatorIamPrincipal
+	// MISSING: DisplayName
+	// MISSING: ContainingFolder
+	// MISSING: TeamFolderName
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: InternalMetadata
+	// MISSING: CreatorIAMPrincipal
 	return out
 }
 func DataformFolderObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataformv1alpha1.DataformFolderObservedState) *dataformpb.Folder {
@@ -51,11 +53,13 @@ func DataformFolderObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in 
 	}
 	out := &dataformpb.Folder{}
 	// MISSING: Name
-	out.TeamFolderName = direct.ValueOf(in.TeamFolderName)
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	out.InternalMetadata = in.InternalMetadata
-	out.CreatorIamPrincipal = in.CreatorIAMPrincipal
+	// MISSING: DisplayName
+	// MISSING: ContainingFolder
+	// MISSING: TeamFolderName
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: InternalMetadata
+	// MISSING: CreatorIAMPrincipal
 	return out
 }
 func DataformFolderSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *dataformpb.Folder) *krmdataformv1alpha1.DataformFolderSpec {
@@ -64,8 +68,13 @@ func DataformFolderSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *datafo
 	}
 	out := &krmdataformv1alpha1.DataformFolderSpec{}
 	// MISSING: Name
-	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	out.ContainingFolder = direct.LazyPtr(in.GetContainingFolder())
+	// MISSING: DisplayName
+	// MISSING: ContainingFolder
+	// MISSING: TeamFolderName
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: InternalMetadata
+	// MISSING: CreatorIAMPrincipal
 	return out
 }
 func DataformFolderSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataformv1alpha1.DataformFolderSpec) *dataformpb.Folder {
@@ -74,8 +83,13 @@ func DataformFolderSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataf
 	}
 	out := &dataformpb.Folder{}
 	// MISSING: Name
-	out.DisplayName = direct.ValueOf(in.DisplayName)
-	out.ContainingFolder = direct.ValueOf(in.ContainingFolder)
+	// MISSING: DisplayName
+	// MISSING: ContainingFolder
+	// MISSING: TeamFolderName
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: InternalMetadata
+	// MISSING: CreatorIAMPrincipal
 	return out
 }
 func DataformRepositoryObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *dataformpb.Repository) *krmdataformv1beta1.DataformRepositoryObservedState {

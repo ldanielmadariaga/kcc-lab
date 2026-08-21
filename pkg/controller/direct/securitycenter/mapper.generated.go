@@ -25,6 +25,7 @@ package securitycenter
 
 import (
 	pb "cloud.google.com/go/securitycenter/apiv1/securitycenterpb"
+	krmbigqueryv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/bigquery/v1beta1"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/securitycenter/v1alpha1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
@@ -61,7 +62,9 @@ func SecurityCenterBigQueryExportSpec_FromProto(mapCtx *direct.MapContext, in *p
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.Filter = direct.LazyPtr(in.GetFilter())
-	out.Dataset = direct.LazyPtr(in.GetDataset())
+	if in.GetDataset() != "" {
+		out.DatasetRef = &krmbigqueryv1beta1.DatasetRef{External: in.GetDataset()}
+	}
 	return out
 }
 func SecurityCenterBigQueryExportSpec_ToProto(mapCtx *direct.MapContext, in *krm.SecurityCenterBigQueryExportSpec) *pb.BigQueryExport {
@@ -72,7 +75,9 @@ func SecurityCenterBigQueryExportSpec_ToProto(mapCtx *direct.MapContext, in *krm
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
 	out.Filter = direct.ValueOf(in.Filter)
-	out.Dataset = direct.ValueOf(in.Dataset)
+	if in.DatasetRef != nil {
+		out.Dataset = in.DatasetRef.External
+	}
 	return out
 }
 func SecurityCenterMuteConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.MuteConfig) *krm.SecurityCenterMuteConfigObservedState {
@@ -81,6 +86,7 @@ func SecurityCenterMuteConfigObservedState_FromProto(mapCtx *direct.MapContext, 
 	}
 	out := &krm.SecurityCenterMuteConfigObservedState{}
 	// MISSING: Name
+	// MISSING: DisplayName
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.MostRecentEditor = direct.LazyPtr(in.GetMostRecentEditor())
@@ -92,6 +98,7 @@ func SecurityCenterMuteConfigObservedState_ToProto(mapCtx *direct.MapContext, in
 	}
 	out := &pb.MuteConfig{}
 	// MISSING: Name
+	// MISSING: DisplayName
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.MostRecentEditor = direct.ValueOf(in.MostRecentEditor)
@@ -103,7 +110,7 @@ func SecurityCenterMuteConfigSpec_FromProto(mapCtx *direct.MapContext, in *pb.Mu
 	}
 	out := &krm.SecurityCenterMuteConfigSpec{}
 	// MISSING: Name
-	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	// MISSING: DisplayName
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.Filter = direct.LazyPtr(in.GetFilter())
 	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
@@ -116,7 +123,7 @@ func SecurityCenterMuteConfigSpec_ToProto(mapCtx *direct.MapContext, in *krm.Sec
 	}
 	out := &pb.MuteConfig{}
 	// MISSING: Name
-	out.DisplayName = direct.ValueOf(in.DisplayName)
+	// MISSING: DisplayName
 	out.Description = direct.ValueOf(in.Description)
 	out.Filter = direct.ValueOf(in.Filter)
 	out.Type = direct.Enum_ToProto[pb.MuteConfig_MuteConfigType](mapCtx, in.Type)

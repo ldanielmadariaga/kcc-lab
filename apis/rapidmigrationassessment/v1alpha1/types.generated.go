@@ -21,7 +21,8 @@
 
 package v1alpha1
 
-/* unreachable type Collector
+/* found existing non-generated go type with proto tag "google.cloud.rapidmigrationassessment.v1.Collector", skipping
+
 // +kcc:proto=google.cloud.rapidmigrationassessment.v1.Collector
 type Collector struct {
 	// name of resource.
@@ -72,7 +73,8 @@ type VSphereScan struct {
 	CoreSource *string `json:"coreSource,omitempty"`
 }
 
-/* unreachable type CollectorObservedState
+/* found existing non-generated go type with proto tag "google.cloud.rapidmigrationassessment.v1.Collector", skipping
+
 // +kcc:observedstate:proto=google.cloud.rapidmigrationassessment.v1.Collector
 type CollectorObservedState struct {
 	// Output only. Create time stamp.

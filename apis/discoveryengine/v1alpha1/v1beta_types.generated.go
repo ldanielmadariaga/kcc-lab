@@ -83,6 +83,7 @@ type EmbeddingConfig struct {
 type SampleQuery_QueryEntry struct {
 	// Required. The query.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.SampleQuery.QueryEntry.query
+	// +required
 	Query *string `json:"query,omitempty"`
 
 	// List of targets for the query.

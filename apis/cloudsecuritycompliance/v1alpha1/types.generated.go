@@ -27,6 +27,7 @@ package v1alpha1
 type AllowedValues struct {
 	// Required. List of allowed values for the parameter.
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.AllowedValues.values
+	// +required
 	Values []ParamValue `json:"values,omitempty"`
 }
 
@@ -49,6 +50,7 @@ type CelExpression struct {
 	// Required. Logic expression in CEL language.
 	//  The max length of the condition is 1000 characters.
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CELExpression.expression
+	// +required
 	Expression *string `json:"expression,omitempty"`
 }
 
@@ -60,6 +62,7 @@ type CloudControl struct {
 	//  Format:
 	//  organizations/{organization}/locations/{location}/cloudControls/{cloud_control_id}
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControl.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. A description of the cloud control. The maximum length is 2000
@@ -117,10 +120,12 @@ type CloudControlDetails struct {
 	//  “organizations/{organization}/locations/{location}/
 	//  cloudControls/{cloud-control}”
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlDetails.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Required. Major revision of cloudcontrol
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlDetails.major_revision_id
+	// +required
 	MajorRevisionID *int64 `json:"majorRevisionID,omitempty"`
 
 	// Optional. Parameters is a key-value pair that is required by the
@@ -139,6 +144,7 @@ type CloudControlGroup struct {
 	//  “organizations/{organization}/locations/{location}/
 	//  cloudControlGroups/{cloud-control-group}”
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. The description of the cloud control group.The maximum length is
@@ -154,6 +160,7 @@ type CloudControlGroup struct {
 	// Required. The details of the cloud controls to be referred to in the
 	//  framework.
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup.cloud_control_details
+	// +required
 	CloudControlDetails []CloudControlDetails `json:"cloudControlDetails,omitempty"`
 
 	// Optional. Major revision of the cloud control group.
@@ -176,6 +183,7 @@ type Framework struct {
 	//  Format:
 	//  organizations/{organization}/locations/{location}/frameworks/{framework_id}
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. Display name of the framework. The maximum length is 200
@@ -215,10 +223,12 @@ type Framework_CloudControlGroupDetails struct {
 type IntRange struct {
 	// Required. Minimum allowed value for the numeric parameter (inclusive).
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.IntRange.min
+	// +required
 	Min *int64 `json:"min,omitempty"`
 
 	// Required. Maximum allowed value for the numeric parameter (inclusive).
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.IntRange.max
+	// +required
 	Max *int64 `json:"max,omitempty"`
 }
 
@@ -254,10 +264,12 @@ type ParamValue struct {
 type Parameter struct {
 	// Required. The name of the parameter.
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Parameter.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Required. The value of the parameter
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Parameter.parameter_value
+	// +required
 	ParameterValue *ParamValue `json:"parameterValue,omitempty"`
 }
 */
@@ -268,6 +280,7 @@ type Parameter struct {
 type ParameterSpec struct {
 	// Required. The name of the parameter.
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.ParameterSpec.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. The display name of the parameter. The maximum length is 200
@@ -282,10 +295,12 @@ type ParameterSpec struct {
 
 	// Required. if the parameter is required
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.ParameterSpec.is_required
+	// +required
 	IsRequired *bool `json:"isRequired,omitempty"`
 
 	// Required. Parameter value type.
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.ParameterSpec.value_type
+	// +required
 	ValueType *string `json:"valueType,omitempty"`
 
 	// Optional. The default value of the parameter.
@@ -328,6 +343,7 @@ type PlaceholderSubstitutionRule struct {
 type RegexpPattern struct {
 	// Required. Regex Pattern to match the value(s) of parameter.
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.RegexpPattern.pattern
+	// +required
 	Pattern *string `json:"pattern,omitempty"`
 }
 
@@ -343,6 +359,7 @@ type Rule struct {
 
 	// Required. The functionality enabled by the Rule.
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Rule.rule_action_types
+	// +required
 	RuleActionTypes []string `json:"ruleActionTypes,omitempty"`
 }
 
@@ -350,6 +367,7 @@ type Rule struct {
 type StringList struct {
 	// Required. The strings in the list.
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.StringList.values
+	// +required
 	Values []string `json:"values,omitempty"`
 }
 

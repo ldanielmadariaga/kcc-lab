@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,7 +21,6 @@ spec:
     - gcpapihubexternalapi
     - gcpapihubexternalapis
     singular: apihubexternalapi
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
         description: APIHubExternalAPI is the Schema for the APIHubExternalAPI API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -61,28 +65,14 @@ spec:
             description: APIHubExternalAPISpec defines the desired state of APIHubExternalAPI
             properties:
               attributeRefs:
-                description: 'Optional. The list of user defined attributes associated
-                  with the Version resource. The key is the attribute name. It will
-                  be of the format: `projects/{project}/locations/{location}/attributes/{attribute}`.
-                  The value is the attribute values associated with the resource.'
+                description: |-
+                  Optional. The list of user defined attributes associated with the Version resource.
+                  The key is the attribute name. It will be of the format: `projects/{project}/locations/{location}/attributes/{attribute}`.
+                  The value is the attribute values associated with the resource.
                 items:
                   properties:
                     attributeRef:
                       description: Reference to the attribute.
-                      oneOf:
-                      - not:
-                          required:
-                          - external
-                        required:
-                        - name
-                      - not:
-                          anyOf:
-                          - required:
-                            - name
-                          - required:
-                            - namespace
-                        required:
-                        - external
                       properties:
                         external:
                           description: The `id` of a `APIHubAttribute` resource, when
@@ -100,8 +90,9 @@ spec:
                       description: The value of the attribute.
                       properties:
                         enumValues:
-                          description: The attribute values associated with a resource
-                            in case attribute data type is enum.
+                          description: |-
+                            The attribute values associated with a resource in case attribute data
+                             type is enum.
                           properties:
                             values:
                               description: Required. The attribute values in case
@@ -130,34 +121,47 @@ spec:
                                        are /[a-z][0-9]-/.
                                     type: string
                                   immutable:
-                                    description: Optional. When set to true, the allowed
-                                      value cannot be updated or deleted by the user.
-                                      It can only be true for System defined attributes.
+                                    description: |-
+                                      Optional. When set to true, the allowed value cannot be updated or
+                                       deleted by the user. It can only be true for System defined attributes.
                                     type: boolean
+                                required:
+                                - displayName
+                                - id
                                 type: object
                               type: array
+                          required:
+                          - values
                           type: object
                         jsonValues:
-                          description: The attribute values associated with a resource
-                            in case attribute data type is JSON.
+                          description: |-
+                            The attribute values associated with a resource in case attribute data
+                             type is JSON.
                           properties:
                             values:
-                              description: Required. The attribute values in case
-                                attribute data type is string or JSON.
+                              description: |-
+                                Required. The attribute values in case attribute data type is string or
+                                 JSON.
                               items:
                                 type: string
                               type: array
+                          required:
+                          - values
                           type: object
                         stringValues:
-                          description: The attribute values associated with a resource
-                            in case attribute data type is string.
+                          description: |-
+                            The attribute values associated with a resource in case attribute data
+                             type is string.
                           properties:
                             values:
-                              description: Required. The attribute values in case
-                                attribute data type is string or JSON.
+                              description: |-
+                                Required. The attribute values in case attribute data type is string or
+                                 JSON.
                               items:
                                 type: string
                               type: array
+                          required:
+                          - values
                           type: object
                       type: object
                   required:
@@ -195,20 +199,6 @@ spec:
                 type: array
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -239,8 +229,9 @@ spec:
               state of APIHubExternalAPI
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -252,8 +243,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

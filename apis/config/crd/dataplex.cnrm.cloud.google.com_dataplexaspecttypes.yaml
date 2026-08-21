@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpdataplexaspecttype
     - gcpdataplexaspecttypes
     singular: dataplexaspecttype
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,14 +44,19 @@ spec:
         description: DataplexAspectType is the Schema for the DataplexAspectType API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -63,9 +67,10 @@ spec:
                 description: Immutable. Defines the Authorization for this type.
                 properties:
                   alternateUsePermission:
-                    description: Immutable. The IAM permission grantable on the EntryGroup
-                      to allow access to instantiate Aspects of Dataplex owned AspectTypes,
-                      only settable for Dataplex owned Types.
+                    description: |-
+                      Immutable. The IAM permission grantable on the EntryGroup to allow access
+                       to instantiate Aspects of Dataplex owned AspectTypes, only settable for
+                       Dataplex owned Types.
                     type: string
                 type: object
               description:
@@ -75,9 +80,9 @@ spec:
                 description: Optional. User friendly display name.
                 type: string
               etag:
-                description: The service computes this checksum. The client may send
-                  it on update and delete requests to ensure it has an up-to-date
-                  value before proceeding.
+                description: |-
+                  The service computes this checksum. The client may send it on update and
+                   delete requests to ensure it has an up-to-date value before proceeding.
                 type: string
               labels:
                 additionalProperties:
@@ -91,8 +96,9 @@ spec:
                     description: Optional. Specifies annotations on this field.
                     properties:
                       deprecated:
-                        description: Optional. Marks a field as deprecated. You can
-                          include a deprecation message.
+                        description: |-
+                          Optional. Marks a field as deprecated. You can include a deprecation
+                           message.
                         type: string
                       description:
                         description: Optional. Description for a field.
@@ -101,8 +107,9 @@ spec:
                         description: Optional. Display name for a field.
                         type: string
                       displayOrder:
-                        description: Optional. Display order for a field. You can
-                          use this to reorder where a field is rendered.
+                        description: |-
+                          Optional. Display order for a field. You can use this to reorder where
+                           a field is rendered.
                         format: int32
                         type: integer
                       stringType:
@@ -115,19 +122,20 @@ spec:
                            * resource: A service qualified resource reference.
                         type: string
                       stringValues:
-                        description: Optional. Suggested hints for string fields.
-                          You can use them to suggest values to users through console.
+                        description: |-
+                          Optional. Suggested hints for string fields. You can use them to
+                           suggest values to users through console.
                         items:
                           type: string
                         type: array
                     type: object
                   arrayItems:
-                    description: Optional. If the type is array, set array_items.
-                      array_items can refer to a primitive field or a complex (record
-                      only) field. To specify a primitive field, you only need to
-                      set name and type in the nested MetadataTemplate. The recommended
-                      value for the name field is item, as this isn't used in the
-                      actual payload.
+                    description: |-
+                      Optional. If the type is array, set array_items. array_items can refer
+                       to a primitive field or a complex (record only) field. To specify a
+                       primitive field, you only need to set name and type in the nested
+                       MetadataTemplate. The recommended value for the name field is item, as
+                       this isn't used in the actual payload.
                   constraints:
                     description: Optional. Specifies the constraints on this field.
                     properties:
@@ -136,13 +144,15 @@ spec:
                         type: boolean
                     type: object
                   enumValues:
-                    description: Optional. The list of values for an enum type. You
-                      must define it if the type is enum.
+                    description: |-
+                      Optional. The list of values for an enum type. You must define it if the
+                       type is enum.
                     items:
                       properties:
                         deprecated:
-                          description: Optional. You can set this message if you need
-                            to deprecate an enum value.
+                          description: |-
+                            Optional. You can set this message if you need to deprecate an enum
+                             value.
                           type: string
                         index:
                           description: Required. Index for the enum value. It can't
@@ -150,8 +160,9 @@ spec:
                           format: int32
                           type: integer
                         name:
-                          description: Required. Name of the enumvalue. This is the
-                            actual value that the aspect can contain.
+                          description: |-
+                            Required. Name of the enumvalue. This is the actual value that the
+                             aspect can contain.
                           type: string
                       required:
                       - index
@@ -159,27 +170,29 @@ spec:
                       type: object
                     type: array
                   index:
-                    description: Optional. Index is used to encode Template messages.
-                      The value of index can range between 1 and 2,147,483,647. Index
-                      must be unique within all fields in a Template. (Nested Templates
-                      can reuse indexes). Once a Template is defined, the index cannot
-                      be changed, because it identifies the field in the actual storage
-                      format. Index is a mandatory field, but it is optional for top
-                      level fields, and map/array "values" definitions.
+                    description: |-
+                      Optional. Index is used to encode Template messages. The value of index
+                       can range between 1 and 2,147,483,647. Index must be unique within all
+                       fields in a Template. (Nested Templates can reuse indexes). Once a
+                       Template is defined, the index cannot be changed, because it identifies
+                       the field in the actual storage format. Index is a mandatory field, but
+                       it is optional for top level fields, and map/array "values" definitions.
                     format: int32
                     type: integer
                   mapItems:
-                    description: Optional. If the type is map, set map_items. map_items
-                      can refer to a primitive field or a complex (record only) field.
-                      To specify a primitive field, you only need to set name and
-                      type in the nested MetadataTemplate. The recommended value for
-                      the name field is item, as this isn't used in the actual payload.
+                    description: |-
+                      Optional. If the type is map, set map_items. map_items can refer to a
+                       primitive field or a complex (record only) field. To specify a primitive
+                       field, you only need to set name and type in the nested
+                       MetadataTemplate. The recommended value for the name field is item, as
+                       this isn't used in the actual payload.
                   name:
                     description: Required. The name of the field.
                     type: string
                   recordFields:
-                    description: Optional. Field definition. You must specify it if
-                      the type is record. It defines the nested fields.
+                    description: |-
+                      Optional. Field definition. You must specify it if the type is record. It
+                       defines the nested fields.
                     items: {}
                     type: array
                   type:
@@ -203,16 +216,17 @@ spec:
                        * record
                     type: string
                   typeID:
-                    description: Optional. You can use type id if this definition
-                      of the field needs to be reused later. The type id must be unique
-                      across the entire template. You can only specify it if the field
-                      type is record.
+                    description: |-
+                      Optional. You can use type id if this definition of the field needs to be
+                       reused later. The type id must be unique across the entire template. You
+                       can only specify it if the field type is record.
                     type: string
                   typeRef:
-                    description: Optional. A reference to another field definition
-                      (not an inline definition). The value must be equal to the value
-                      of an id field defined elsewhere in the MetadataTemplate. Only
-                      fields with record type can refer to other fields.
+                    description: |-
+                      Optional. A reference to another field definition (not an inline
+                       definition). The value must be equal to the value of an id field defined
+                       elsewhere in the MetadataTemplate. Only fields with record type can
+                       refer to other fields.
                     type: string
                 required:
                 - name
@@ -220,20 +234,6 @@ spec:
                 type: object
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -263,8 +263,9 @@ spec:
               state of DataplexAspectType
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -276,8 +277,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -308,14 +310,15 @@ spec:
                     description: Output only. The time when the AspectType was created.
                     type: string
                   transferStatus:
-                    description: Output only. Denotes the transfer status of the Aspect
-                      Type. It is unspecified for Aspect Types created from Dataplex
-                      API.
+                    description: |-
+                      Output only. Denotes the transfer status of the Aspect Type. It is
+                       unspecified for Aspect Types created from Dataplex API.
                     type: string
                   uid:
-                    description: Output only. System generated globally unique ID
-                      for the AspectType. If you delete and recreate the AspectType
-                      with the same name, then this ID will be different.
+                    description: |-
+                      Output only. System generated globally unique ID for the AspectType.
+                       If you delete and recreate the AspectType with the same name, then this ID
+                       will be different.
                     type: string
                   updateTime:
                     description: Output only. The time when the AspectType was last

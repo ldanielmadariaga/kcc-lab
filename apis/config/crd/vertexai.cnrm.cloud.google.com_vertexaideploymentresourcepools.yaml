@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,7 +21,6 @@ spec:
     - gcpvertexaideploymentresourcepool
     - gcpvertexaideploymentresourcepools
     singular: vertexaideploymentresourcepool
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -47,14 +46,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -63,8 +67,9 @@ spec:
               of VertexAIDeploymentResourcePool
             properties:
               dedicatedResources:
-                description: Required. The underlying DedicatedResources that the
-                  DeploymentResourcePool uses.
+                description: |-
+                  Required. The underlying DedicatedResources that the DeploymentResourcePool
+                   uses.
                 properties:
                   autoscalingMetricSpecs:
                     description: |-
@@ -106,28 +111,32 @@ spec:
                         monitoredResourceLabels:
                           additionalProperties:
                             type: string
-                          description: Optional. The Cloud Monitoring monitored resource
-                            labels as key value pairs used for metrics filtering.
-                            See Cloud Monitoring Labels https://cloud.google.com/monitoring/api/v3/metric-model#generic-label-info
+                          description: |-
+                            Optional. The Cloud Monitoring monitored resource labels as key value pairs
+                             used for metrics filtering. See Cloud Monitoring Labels
+                             https://cloud.google.com/monitoring/api/v3/metric-model#generic-label-info
                           type: object
                         target:
-                          description: The target resource utilization in percentage
-                            (1% - 100%) for the given metric; once the real usage
-                            deviates from the target by a certain percentage, the
-                            machine replicas change. The default value is 60 (representing
-                            60%) if not provided.
+                          description: |-
+                            The target resource utilization in percentage (1% - 100%) for the given
+                             metric; once the real usage deviates from the target by a certain
+                             percentage, the machine replicas change. The default value is 60
+                             (representing 60%) if not provided.
                           format: int32
                           type: integer
                       type: object
                     type: array
                   flexStart:
-                    description: 'Optional. Immutable. If set, use DWS resource to
-                      schedule the deployment workload. reference: (https://cloud.google.com/blog/products/compute/introducing-dynamic-workload-scheduler)'
+                    description: |-
+                      Optional. Immutable. If set, use DWS resource to schedule the deployment
+                       workload. reference:
+                       (https://cloud.google.com/blog/products/compute/introducing-dynamic-workload-scheduler)
                     properties:
                       maxRuntimeDuration:
-                        description: The max duration of the deployment is max_runtime_duration.
-                          The deployment will be terminated after the duration. The
-                          max_runtime_duration can be set up to 7 days.
+                        description: |-
+                          The max duration of the deployment is max_runtime_duration. The
+                           deployment will be terminated after the duration. The
+                           max_runtime_duration can be set up to 7 days.
                         type: string
                     type: object
                   machineSpec:
@@ -139,8 +148,10 @@ spec:
                         format: int32
                         type: integer
                       acceleratorType:
-                        description: Immutable. The type of accelerator(s) that may
-                          be attached to the machine as per [accelerator_count][google.cloud.aiplatform.v1beta1.MachineSpec.accelerator_count].
+                        description: |-
+                          Immutable. The type of accelerator(s) that may be attached to the machine
+                           as per
+                           [accelerator_count][google.cloud.aiplatform.v1beta1.MachineSpec.accelerator_count].
                         type: string
                       gpuPartitionSize:
                         description: |-
@@ -176,37 +187,39 @@ spec:
                            this field is required.
                         type: string
                       multihostGpuNodeCount:
-                        description: Optional. Immutable. The number of nodes per
-                          replica for multihost GPU deployments.
+                        description: |-
+                          Optional. Immutable. The number of nodes per replica for multihost GPU
+                           deployments.
                         format: int32
                         type: integer
                       reservationAffinity:
-                        description: Optional. Immutable. Configuration controlling
-                          how this resource pool consumes reservation.
+                        description: |-
+                          Optional. Immutable. Configuration controlling how this resource pool
+                           consumes reservation.
                         properties:
                           key:
-                            description: Optional. Corresponds to the label key of
-                              a reservation resource. To target a SPECIFIC_RESERVATION
-                              by name, use `compute.googleapis.com/reservation-name`
-                              as the key and specify the name of your reservation
-                              as its value.
+                            description: |-
+                              Optional. Corresponds to the label key of a reservation resource. To target
+                               a SPECIFIC_RESERVATION by name, use
+                               `compute.googleapis.com/reservation-name` as the key and specify the name
+                               of your reservation as its value.
                             type: string
                           reservationAffinityType:
                             description: Required. Specifies the reservation affinity
                               type.
                             type: string
                           values:
-                            description: Optional. Corresponds to the label values
-                              of a reservation resource. This must be the full resource
-                              name of the reservation.
+                            description: |-
+                              Optional. Corresponds to the label values of a reservation resource. This
+                               must be the full resource name of the reservation.
                             items:
                               type: string
                             type: array
                         type: object
                       tpuTopology:
-                        description: 'Immutable. The topology of the TPUs. Corresponds
-                          to the TPU topologies available from GKE. (Example: tpu_topology:
-                          "2x2x1").'
+                        description: |-
+                          Immutable. The topology of the TPUs. Corresponds to the TPU topologies
+                           available from GKE. (Example: tpu_topology: "2x2x1").
                         type: string
                     type: object
                   maxReplicaCount:
@@ -236,52 +249,43 @@ spec:
                     format: int32
                     type: integer
                   requiredReplicaCount:
-                    description: Optional. Number of required available replicas for
-                      the deployment to succeed. This field is only needed when partial
-                      deployment/mutation is desired. If set, the deploy/mutate operation
-                      will succeed once available_replica_count reaches required_replica_count,
-                      and the rest of the replicas will be retried. If not set, the
-                      default required_replica_count will be min_replica_count.
+                    description: |-
+                      Optional. Number of required available replicas for the deployment to
+                       succeed. This field is only needed when partial deployment/mutation is
+                       desired. If set, the deploy/mutate operation will succeed once
+                       available_replica_count reaches required_replica_count, and the rest of
+                       the replicas will be retried. If not set, the default
+                       required_replica_count will be min_replica_count.
                     format: int32
                     type: integer
                   spot:
-                    description: Optional. If true, schedule the deployment workload
-                      on [spot VMs](https://cloud.google.com/kubernetes-engine/docs/concepts/spot-vms).
+                    description: |-
+                      Optional. If true, schedule the deployment workload on [spot
+                       VMs](https://cloud.google.com/kubernetes-engine/docs/concepts/spot-vms).
                     type: boolean
                 type: object
               disableContainerLogging:
-                description: If the DeploymentResourcePool is deployed with custom-trained
-                  Models or AutoML Tabular Models, the container(s) of the DeploymentResourcePool
-                  will send `stderr` and `stdout` streams to Cloud Logging by default.
+                description: |-
+                  If the DeploymentResourcePool is deployed with custom-trained Models or
+                   AutoML Tabular Models, the container(s) of the DeploymentResourcePool will
+                   send `stderr` and `stdout` streams to Cloud Logging by default.
                 type: boolean
               encryptionSpec:
-                description: Customer-managed encryption key spec for a DeploymentResourcePool.
-                  If set, this DeploymentResourcePool will be secured by this key.
-                  Endpoints and the DeploymentResourcePool they deploy in need to
-                  have the same EncryptionSpec.
+                description: |-
+                  Customer-managed encryption key spec for a DeploymentResourcePool. If set,
+                   this DeploymentResourcePool will be secured by this key. Endpoints and the
+                   DeploymentResourcePool they deploy in need to have the same EncryptionSpec.
                 properties:
                   kmsKeyRef:
-                    description: Required. The Cloud KMS resource identifier of the
-                      customer managed encryption key used to protect a resource.
-                      The key needs to be in the same region as where the compute
-                      resource is created.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
+                    description: |-
+                      Required. The Cloud KMS resource identifier of the customer managed
+                       encryption key used to protect a resource.
+                       The key needs to be in the same region as where the compute resource is
+                       created.
                     properties:
                       external:
-                        description: A reference to an externally managed KMSCryptoKey.
+                        description: |-
+                          A reference to an externally managed KMSCryptoKey.
                           Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
                         type: string
                       name:
@@ -299,20 +303,6 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -336,20 +326,6 @@ spec:
               serviceAccountRef:
                 description: The service account that the DeploymentResourcePool's
                   container(s) run as.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `email` field of an `IAMServiceAccount` resource.
@@ -370,8 +346,9 @@ spec:
               machine state of VertexAIDeploymentResourcePool
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -383,8 +360,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

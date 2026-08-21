@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpbillingaccount
     - gcpbillingaccounts
     singular: billingaccount
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,14 +44,19 @@ spec:
         description: BillingAccount is the Schema for the BillingAccount API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -72,30 +76,17 @@ spec:
                    currency of an existing billing account.
                 type: string
               displayName:
-                description: The display name given to the billing account, such as
-                  `My Billing Account`. This name is displayed in the Google Cloud
-                  Console.
+                description: |-
+                  The display name given to the billing account, such as `My Billing
+                   Account`. This name is displayed in the Google Cloud Console.
                 type: string
               parentRef:
                 description: Optional. The billing account's parent resource.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
-                    description: A reference to an externally managed BillingAccount
-                      resource. Should be in the format "billingAccounts/{billingAccountID}".
+                    description: |-
+                      A reference to an externally managed BillingAccount resource.
+                      Should be in the format "billingAccounts/{billingAccountID}".
                     type: string
                   name:
                     description: The name of a BillingAccount resource.
@@ -114,8 +105,9 @@ spec:
               state of BillingAccount
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -127,8 +119,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -156,26 +149,31 @@ spec:
                   observed in GCP.
                 properties:
                   currencyCode:
-                    description: Optional. The currency in which the billing account
-                      is billed and charged, represented as an ISO 4217 code such
-                      as `USD`.
+                    description: |-
+                      Optional. The currency in which the billing account is billed and charged,
+                       represented as an ISO 4217 code such as `USD`.
                     type: string
                   masterBillingAccount:
-                    description: If this account is a [subaccount](https://cloud.google.com/billing/docs/concepts),
-                      then this will be the resource name of the parent billing account
-                      that it is being resold through. Otherwise this will be empty.
+                    description: |-
+                      If this account is a
+                       [subaccount](https://cloud.google.com/billing/docs/concepts), then this
+                       will be the resource name of the parent billing account that it is being
+                       resold through.
+                       Otherwise this will be empty.
                     type: string
                   name:
-                    description: Output only. The resource name of the billing account.
-                      The resource name has the form `billingAccounts/{billing_account_id}`.
-                      For example, `billingAccounts/012345-567890-ABCDEF` would be
-                      the resource name for billing account `012345-567890-ABCDEF`.
+                    description: |-
+                      Output only. The resource name of the billing account. The resource name
+                       has the form `billingAccounts/{billing_account_id}`. For example,
+                       `billingAccounts/012345-567890-ABCDEF` would be the resource name for
+                       billing account `012345-567890-ABCDEF`.
                     type: string
                   open:
-                    description: Output only. True if the billing account is open,
-                      and will therefore be charged for any usage on associated projects.
-                      False if the billing account is closed, and therefore projects
-                      associated with it are unable to use paid services.
+                    description: |-
+                      Output only. True if the billing account is open, and will therefore be
+                       charged for any usage on associated projects. False if the billing account
+                       is closed, and therefore projects associated with it are unable to use paid
+                       services.
                     type: boolean
                 type: object
             type: object

@@ -1318,42 +1318,6 @@ type ScannedData_IncrementalField struct {
 	End *string `json:"end,omitempty"`
 }
 
-/* unreachable type Task
-// +kcc:proto=google.cloud.dataplex.v1.Task
-type Task struct {
-
-	// Optional. Description of the task.
-	// +kcc:proto:field=google.cloud.dataplex.v1.Task.description
-	Description *string `json:"description,omitempty"`
-
-	// Optional. User friendly display name.
-	// +kcc:proto:field=google.cloud.dataplex.v1.Task.display_name
-	DisplayName *string `json:"displayName,omitempty"`
-
-	// Optional. User-defined labels for the task.
-	// +kcc:proto:field=google.cloud.dataplex.v1.Task.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// Required. Spec related to how often and when a task should be triggered.
-	// +kcc:proto:field=google.cloud.dataplex.v1.Task.trigger_spec
-	// +required
-	TriggerSpec *Task_TriggerSpec `json:"triggerSpec,omitempty"`
-
-	// Required. Spec related to how a task is executed.
-	// +kcc:proto:field=google.cloud.dataplex.v1.Task.execution_spec
-	// +required
-	ExecutionSpec *Task_ExecutionSpec `json:"executionSpec,omitempty"`
-
-	// Config related to running custom Spark tasks.
-	// +kcc:proto:field=google.cloud.dataplex.v1.Task.spark
-	Spark *Task_SparkTaskConfig `json:"spark,omitempty"`
-
-	// Config related to running scheduled Notebooks.
-	// +kcc:proto:field=google.cloud.dataplex.v1.Task.notebook
-	Notebook *Task_NotebookTaskConfig `json:"notebook,omitempty"`
-}
-*/
-
 // +kcc:proto=google.cloud.dataplex.v1.Task.ExecutionSpec
 type Task_ExecutionSpec struct {
 	// Optional. The arguments to pass to the task.
@@ -2127,38 +2091,6 @@ type MetadataJob_StatusObservedState struct {
 	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.Status.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
-
-/* unreachable type TaskObservedState
-// +kcc:observedstate:proto=google.cloud.dataplex.v1.Task
-type TaskObservedState struct {
-	// Output only. The relative resource name of the task, of the form:
-	//  projects/{project_number}/locations/{location_id}/lakes/{lake_id}/
-	//  tasks/{task_id}.
-	// +kcc:proto:field=google.cloud.dataplex.v1.Task.name
-	Name *string `json:"name,omitempty"`
-
-	// Output only. System generated globally unique ID for the task. This ID will
-	//  be different if the task is deleted and re-created with the same name.
-	// +kcc:proto:field=google.cloud.dataplex.v1.Task.uid
-	Uid *string `json:"uid,omitempty"`
-
-	// Output only. The time when the task was created.
-	// +kcc:proto:field=google.cloud.dataplex.v1.Task.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. The time when the task was last updated.
-	// +kcc:proto:field=google.cloud.dataplex.v1.Task.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. Current state of the task.
-	// +kcc:proto:field=google.cloud.dataplex.v1.Task.state
-	State *string `json:"state,omitempty"`
-
-	// Output only. Status of the latest task executions.
-	// +kcc:proto:field=google.cloud.dataplex.v1.Task.execution_status
-	ExecutionStatus *Task_ExecutionStatusObservedState `json:"executionStatus,omitempty"`
-}
-*/
 
 // +kcc:observedstate:proto=google.cloud.dataplex.v1.Task.ExecutionSpec
 type Task_ExecutionSpecObservedState struct {

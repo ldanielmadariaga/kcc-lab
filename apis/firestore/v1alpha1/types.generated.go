@@ -63,6 +63,7 @@ type Index_IndexField_VectorConfig struct {
 	//  The resulting index will only include vectors of this dimension, and
 	//  can be used for vector search with the same dimension.
 	// +kcc:proto:field=google.firestore.admin.v1.Index.IndexField.VectorConfig.dimension
+	// +required
 	Dimension *int32 `json:"dimension,omitempty"`
 
 	// Indicates the vector index is a flat index.
@@ -95,9 +96,14 @@ type ArrayValue struct {
 /* unreachable type MapValue
 // +kcc:proto=google.firestore.v1.MapValue
 type MapValue struct {
-
-	// TODO: unsupported map type with key string and value message
-
+	// The map's fields.
+	//
+	//  The map keys represent field names. Field names matching the regular
+	//  expression `__.*__` are reserved. Reserved field names are forbidden except
+	//  in certain documented contexts. The map keys, represented as UTF-8, must
+	//  not exceed 1,500 bytes and cannot be empty.
+	// +kcc:proto:field=google.firestore.v1.MapValue.fields
+	Fields map[string]Value `json:"fields,omitempty"`
 }
 */
 

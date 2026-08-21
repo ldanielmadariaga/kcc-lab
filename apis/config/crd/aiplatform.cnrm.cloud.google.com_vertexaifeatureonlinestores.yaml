@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpvertexaifeatureonlinestore
     - gcpvertexaifeatureonlinestores
     singular: vertexaifeatureonlinestore
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -62,87 +66,81 @@ spec:
               of VertexAIFeatureOnlineStore
             properties:
               bigtable:
-                description: Contains settings for the Cloud Bigtable instance that
-                  will be created to serve featureValues for all FeatureViews under
-                  this FeatureOnlineStore.
+                description: |-
+                  Contains settings for the Cloud Bigtable instance that will be created
+                  to serve featureValues for all FeatureViews under this
+                  FeatureOnlineStore.
                 properties:
                   autoScaling:
                     description: Required. Autoscaling config applied to Bigtable
                       Instance.
                     properties:
                       cpuUtilizationTarget:
-                        description: Optional. A percentage of the cluster's CPU capacity.
-                          Can be from 10% to 80%. When a cluster's CPU utilization
-                          exceeds the target that you have set, Bigtable immediately
-                          adds nodes to the cluster. When CPU utilization is substantially
-                          lower than the target, Bigtable removes nodes. If not set
-                          will default to 50%.
+                        description: |-
+                          Optional. A percentage of the cluster's CPU capacity. Can be from 10%
+                           to 80%. When a cluster's CPU utilization exceeds the target that you
+                           have set, Bigtable immediately adds nodes to the cluster. When CPU
+                           utilization is substantially lower than the target, Bigtable removes
+                           nodes. If not set will default to 50%.
                         format: int32
                         type: integer
                       maxNodeCount:
-                        description: Required. The maximum number of nodes to scale
-                          up to. Must be greater than or equal to min_node_count,
-                          and less than or equal to 10 times of 'min_node_count'.
+                        description: |-
+                          Required. The maximum number of nodes to scale up to. Must be greater
+                           than or equal to min_node_count, and less than or equal to 10 times of
+                           'min_node_count'.
                         format: int32
                         type: integer
                       minNodeCount:
-                        description: Required. The minimum number of nodes to scale
-                          down to. Must be greater than or equal to 1.
+                        description: |-
+                          Required. The minimum number of nodes to scale down to. Must be greater
+                           than or equal to 1.
                         format: int32
                         type: integer
                     type: object
                 type: object
               dedicatedServingEndpoint:
-                description: Optional. The dedicated serving endpoint for this FeatureOnlineStore,
-                  which is different from common Vertex service endpoint.
+                description: |-
+                  Optional. The dedicated serving endpoint for this FeatureOnlineStore, which
+                  is different from common Vertex service endpoint.
                 properties:
                   privateServiceConnectConfig:
-                    description: Optional. Private service connect config. The private
-                      service connection is available only for Optimized storage type,
-                      not for embedding management now. If [PrivateServiceConnectConfig.enable_private_service_connect][google.cloud.aiplatform.v1.PrivateServiceConnectConfig.enable_private_service_connect]
-                      set to true, customers will use private service connection to
-                      send request. Otherwise, the connection will set to public endpoint.
+                    description: |-
+                      Optional. Private service connect config. The private service connection
+                       is available only for Optimized storage type, not for embedding
+                       management now. If
+                       [PrivateServiceConnectConfig.enable_private_service_connect][google.cloud.aiplatform.v1.PrivateServiceConnectConfig.enable_private_service_connect]
+                       set to true, customers will use private service connection to send
+                       request. Otherwise, the connection will set to public endpoint.
                     properties:
                       enablePrivateServiceConnect:
                         description: Required. If true, expose the IndexEndpoint via
                           private service connect.
                         type: boolean
                       projectAllowlist:
-                        description: A list of Projects from which the forwarding
-                          rule will target the service attachment.
+                        description: |-
+                          A list of Projects from which the forwarding rule will target the service
+                           attachment.
                         items:
                           type: string
                         type: array
                       pscAutomationConfigs:
-                        description: Optional. List of projects and networks where
-                          the PSC endpoints will be created. This field is used by
-                          Online Inference(Prediction) only.
+                        description: |-
+                          Optional. List of projects and networks where the PSC endpoints will be
+                           created. This field is used by Online Inference(Prediction) only.
                         items:
                           properties:
                             networkRef:
-                              description: 'Required. The full name of the Google
-                                Compute Engine [network](https://cloud.google.com/compute/docs/networks-and-firewalls#networks).
-                                [Format](https://cloud.google.com/compute/docs/reference/rest/v1/networks/get):
-                                `projects/{project}/global/networks/{network}`.'
-                              oneOf:
-                              - not:
-                                  required:
-                                  - external
-                                required:
-                                - name
-                              - not:
-                                  anyOf:
-                                  - required:
-                                    - name
-                                  - required:
-                                    - namespace
-                                required:
-                                - external
+                              description: |-
+                                Required. The full name of the Google Compute Engine
+                                 [network](https://cloud.google.com/compute/docs/networks-and-firewalls#networks).
+                                 [Format](https://cloud.google.com/compute/docs/reference/rest/v1/networks/get):
+                                 `projects/{project}/global/networks/{network}`.
                               properties:
                                 external:
-                                  description: A reference to an externally managed
-                                    ComputeNetwork resource. Should be in the format
-                                    "projects/{{projectID}}/global/networks/{{networkID}}".
+                                  description: |-
+                                    A reference to an externally managed ComputeNetwork resource.
+                                    Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
                                   type: string
                                 name:
                                   description: The name of a ComputeNetwork resource.
@@ -160,33 +158,22 @@ spec:
                     type: object
                 type: object
               encryptionSpec:
-                description: Optional. Customer-managed encryption key spec for data
-                  storage. If set, online store will be secured by this key.
+                description: |-
+                  Optional. Customer-managed encryption key spec for data storage. If set,
+                  online store will be secured by this key.
                 properties:
                   kmsKeyRef:
-                    description: 'Required. The Cloud KMS resource identifier of the
-                      customer managed encryption key used to protect a resource.
-                      Has the form: `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
-                      The key needs to be in the same region as where the compute
-                      resource is created.'
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
+                    description: |-
+                      Required. The Cloud KMS resource identifier of the customer managed
+                       encryption key used to protect a resource. Has the form:
+                       `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
+                       The key needs to be in the same region as where the compute resource is
+                       created.
                     properties:
                       external:
-                        description: A reference to an externally managed KMSCryptoKey
-                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
+                        description: |-
+                          A reference to an externally managed KMSCryptoKey resource.
+                          Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
                         type: string
                       name:
                         description: The name of a KMSCryptoKey resource.
@@ -199,35 +186,24 @@ spec:
               labels:
                 additionalProperties:
                   type: string
-                description: Optional. The labels with user-defined metadata to organize
-                  your FeatureOnlineStore.
+                description: |-
+                  Optional. The labels with user-defined metadata to organize your
+                  FeatureOnlineStore.
                 type: object
               location:
                 description: The location of this resource.
                 type: string
               optimized:
-                description: Contains settings for the Optimized store that will be
-                  created to serve featureValues for all FeatureViews under this FeatureOnlineStore.
-                  When choose Optimized storage type, need to set [PrivateServiceConnectConfig.enable_private_service_connect][google.cloud.aiplatform.v1.PrivateServiceConnectConfig.enable_private_service_connect]
+                description: |-
+                  Contains settings for the Optimized store that will be created
+                  to serve featureValues for all FeatureViews under this
+                  FeatureOnlineStore. When choose Optimized storage type, need to set
+                  [PrivateServiceConnectConfig.enable_private_service_connect][google.cloud.aiplatform.v1.PrivateServiceConnectConfig.enable_private_service_connect]
                   to use private endpoint. Otherwise will use public endpoint by default.
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -257,8 +233,9 @@ spec:
               machine state of VertexAIFeatureOnlineStore
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -270,8 +247,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -303,8 +281,9 @@ spec:
                       was created.
                     type: string
                   etag:
-                    description: Optional. Used to perform consistent read-modify-write
-                      updates. If not set, a blind "overwrite" update happens.
+                    description: |-
+                      Optional. Used to perform consistent read-modify-write updates. If not set,
+                      a blind "overwrite" update happens.
                     type: string
                   satisfiesPzi:
                     description: Output only. Reserved for future use.

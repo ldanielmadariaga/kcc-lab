@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,7 +21,6 @@ spec:
     - gcpvertexaiextension
     - gcpvertexaiextensions
     singular: vertexaiextension
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
         description: VertexAIExtension is the Schema for the VertexAIExtension API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -64,8 +68,10 @@ spec:
                 description: Optional. The description of the Extension.
                 type: string
               displayName:
-                description: Required. The display name of the Extension. The name
-                  can be up to 128 characters long and can consist of any UTF-8 characters.
+                description: |-
+                  Required. The display name of the Extension.
+                  The name can be up to 128 characters long and can consist of any UTF-8
+                  characters.
                 type: string
               location:
                 description: The location of this resource.
@@ -101,20 +107,6 @@ spec:
                               granted to Vertex AI Extension Service Agent
                               (https://cloud.google.com/vertex-ai/docs/general/access-control#service-agents)
                               on the specified resource.
-                            oneOf:
-                            - not:
-                                required:
-                                - external
-                              required:
-                              - name
-                            - not:
-                                anyOf:
-                                - required:
-                                  - name
-                                - required:
-                                  - namespace
-                              required:
-                              - external
                             properties:
                               external:
                                 description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
@@ -132,9 +124,10 @@ spec:
                             description: Required. The location of the API key.
                             type: string
                           name:
-                            description: Required. The parameter name of the API key.
-                              E.g. If the API request is "https://example.com/act?api_key=<API
-                              KEY>", "api_key" would be the parameter name.
+                            description: |-
+                              Required. The parameter name of the API key.
+                              E.g. If the API request is "https://example.com/act?api_key=<API KEY>",
+                              "api_key" would be the parameter name.
                             type: string
                         type: object
                       authType:
@@ -156,20 +149,6 @@ spec:
 
                               - If not specified, the Vertex AI Extension Service Agent
                               will be used to execute the Extension.
-                            oneOf:
-                            - not:
-                                required:
-                                - external
-                              required:
-                              - name
-                            - not:
-                                anyOf:
-                                - required:
-                                  - name
-                                - required:
-                                  - namespace
-                              required:
-                              - external
                             properties:
                               external:
                                 description: The `email` field of an `IAMServiceAccount`
@@ -197,20 +176,6 @@ spec:
                               granted to Vertex AI Extension Service Agent
                               (https://cloud.google.com/vertex-ai/docs/general/access-control#service-agents)
                               on the specified resource.
-                            oneOf:
-                            - not:
-                                required:
-                                - external
-                              required:
-                              - name
-                            - not:
-                                anyOf:
-                                - required:
-                                  - name
-                                - required:
-                                  - namespace
-                              required:
-                              - external
                             properties:
                               external:
                                 description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
@@ -229,9 +194,10 @@ spec:
                         description: Config for user oauth.
                         properties:
                           accessToken:
-                            description: Access token for extension endpoint. Only
-                              used to propagate token from [[ExecuteExtensionRequest.runtime_auth_config]]
-                              at request time.
+                            description: |-
+                              Access token for extension endpoint.
+                              Only used to propagate token from
+                              [[ExecuteExtensionRequest.runtime_auth_config]] at request time.
                             type: string
                           serviceAccountRef:
                             description: |-
@@ -243,20 +209,6 @@ spec:
                               to Vertex AI Extension Service Agent
                               (https://cloud.google.com/vertex-ai/docs/general/access-control#service-agents)
                               on the provided service account.
-                            oneOf:
-                            - not:
-                                required:
-                                - external
-                              required:
-                              - name
-                            - not:
-                                anyOf:
-                                - required:
-                                  - name
-                                - required:
-                                  - namespace
-                              required:
-                              - external
                             properties:
                               external:
                                 description: The `email` field of an `IAMServiceAccount`
@@ -275,9 +227,10 @@ spec:
                         description: Config for user OIDC auth.
                         properties:
                           idToken:
-                            description: OpenID Connect formatted ID token for extension
-                              endpoint. Only used to propagate token from [[ExecuteExtensionRequest.runtime_auth_config]]
-                              at request time.
+                            description: |-
+                              OpenID Connect formatted ID token for extension endpoint.
+                              Only used to propagate token from
+                              [[ExecuteExtensionRequest.runtime_auth_config]] at request time.
                             type: string
                           serviceAccountRef:
                             description: |-
@@ -293,20 +246,6 @@ spec:
                               `iam.serviceAccounts.getOpenIdToken` permission to Vertex AI Extension
                               Service Agent
                               (https://cloud.google.com/vertex-ai/docs/general/access-control#service-agents).
-                            oneOf:
-                            - not:
-                                required:
-                                - external
-                              required:
-                              - name
-                            - not:
-                                anyOf:
-                                - required:
-                                  - name
-                                - required:
-                                  - namespace
-                              required:
-                              - external
                             properties:
                               external:
                                 description: The `email` field of an `IAMServiceAccount`
@@ -323,16 +262,22 @@ spec:
                         type: object
                     type: object
                   description:
-                    description: Required. The natural language description shown
-                      to the LLM. It should describe the usage of the extension, and
-                      is essential for the LLM to perform reasoning. e.g., if the
-                      extension is a data store, you can let the LLM know what data
-                      it contains.
+                    description: |-
+                      Required. The natural language description shown to the LLM.
+                       It should describe the usage of the extension, and is essential for the LLM
+                       to perform reasoning. e.g., if the extension is a data store, you can let
+                       the LLM know what data it contains.
                     type: string
                   name:
-                    description: Required. Extension name shown to the LLM. The name
-                      can be up to 128 characters long.
+                    description: |-
+                      Required. Extension name shown to the LLM.
+                       The name can be up to 128 characters long.
                     type: string
+                required:
+                - apiSpec
+                - authConfig
+                - description
+                - name
                 type: object
               privateServiceConnectConfig:
                 description: Optional. The Private Service Connect config of the Extension.
@@ -347,24 +292,11 @@ spec:
                       (https://cloud.google.com/vertex-ai/docs/general/access-control#service-agents)
                       should be granted `servicedirectory.viewer` and
                       `servicedirectory.pscAuthorizedService` roles on the resource.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
                     properties:
                       external:
-                        description: A reference to an externally managed ServiceDirectoryService
-                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/namespaces/{{namespaceID}}/services/{{serviceID}}".
+                        description: |-
+                          A reference to an externally managed ServiceDirectoryService resource.
+                          Should be in the format "projects/{{projectID}}/locations/{{location}}/namespaces/{{namespaceID}}/services/{{serviceID}}".
                         type: string
                       name:
                         description: The name of a ServiceDirectoryService resource.
@@ -376,20 +308,6 @@ spec:
                 type: object
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -418,30 +336,18 @@ spec:
                       extension.
                     properties:
                       fileInputGCSBucketRef:
-                        description: Optional. The Cloud Storage bucket for file input
-                          of this Extension. If specified, support input from the
-                          Cloud Storage bucket. Vertex Extension Custom Code Service
-                          Agent should be granted file reader to this bucket. If not
-                          specified, the extension will only accept file contents
-                          from request body and reject Cloud Storage file inputs.
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
+                        description: |-
+                          Optional. The Cloud Storage bucket for file input of this Extension.
+                          If specified, support input from the Cloud Storage bucket.
+                          Vertex Extension Custom Code Service Agent should be granted
+                          file reader to this bucket.
+                          If not specified, the extension will only accept file contents from
+                          request body and reject Cloud Storage file inputs.
                         properties:
                           external:
-                            description: A reference to an externally managed StorageBucket
-                              resource. Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
+                            description: |-
+                              A reference to an externally managed StorageBucket resource.
+                              Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
                             type: string
                           name:
                             description: The name of a StorageBucket resource.
@@ -451,30 +357,17 @@ spec:
                             type: string
                         type: object
                       fileOutputGCSBucketRef:
-                        description: Optional. The Cloud Storage bucket for file output
-                          of this Extension. If specified, write all output files
-                          to the Cloud Storage bucket. Vertex Extension Custom Code
-                          Service Agent should be granted file writer to this bucket.
-                          If not specified, the file content will be output in response
-                          body.
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
+                        description: |-
+                          Optional. The Cloud Storage bucket for file output of this Extension.
+                          If specified, write all output files to the Cloud Storage bucket.
+                          Vertex Extension Custom Code Service Agent should be granted
+                          file writer to this bucket.
+                          If not specified, the file content will be output in response body.
                         properties:
                           external:
-                            description: A reference to an externally managed StorageBucket
-                              resource. Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
+                            description: |-
+                              A reference to an externally managed StorageBucket resource.
+                              Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
                             type: string
                           name:
                             description: The name of a StorageBucket resource.
@@ -499,24 +392,27 @@ spec:
                     description: Runtime configuration for Vertex AI Search extension.
                     properties:
                       engineRef:
-                        description: Optional. Vertex AI Search engine ID. This is
-                          used to construct the search request. By setting this engine_id,
-                          API will construct the serving config using the default
-                          value to call search API for the user. The engine_id and
-                          serving_config_name cannot both be empty at the same time.
+                        description: |-
+                          Optional. Vertex AI Search engine ID. This is used to construct the
+                          search request. By setting this engine_id, API will construct the serving
+                          config using the default value to call search API for the user. The
+                          engine_id and serving_config_name cannot both be empty at the same time.
                         properties:
                           external:
-                            description: A reference to an externally managed AgentSearchEngine
-                              resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/collections/{{collectionID}}/engines/{{engineID}}".
+                            description: |-
+                              A reference to an externally managed AgentSearchEngine resource.
+                              Should be in the format "projects/{{projectID}}/locations/{{location}}/collections/{{collectionID}}/engines/{{engineID}}".
                             type: string
                         type: object
                       servingConfigRef:
-                        description: 'Optional. Vertex AI Search serving config name.
-                          Format: `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}/servingConfigs/{serving_config}`'
+                        description: |-
+                          Optional. Vertex AI Search serving config name. Format:
+                          `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}/servingConfigs/{serving_config}`
                         properties:
                           external:
-                            description: A reference to an externally managed AgentSearchServingConfig
-                              resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/collections/{{collectionID}}/engines/{{engineID}}/servingConfigs/{{servingConfigID}}".
+                            description: |-
+                              A reference to an externally managed AgentSearchServingConfig resource.
+                              Should be in the format "projects/{{projectID}}/locations/{{location}}/collections/{{collectionID}}/engines/{{engineID}}/servingConfigs/{{servingConfigID}}".
                             type: string
                         type: object
                     type: object
@@ -537,6 +433,8 @@ spec:
                         operationID:
                           description: Required. Operation ID of the extension.
                           type: string
+                      required:
+                      - operationID
                       type: object
                     functionName:
                       description: Function name to call.
@@ -553,6 +451,9 @@ spec:
                     responseSummary:
                       description: Summary of the tool response to the user query.
                       type: string
+                  required:
+                  - displayName
+                  - query
                   type: object
                 type: array
             required:
@@ -566,8 +467,9 @@ spec:
               state of VertexAIExtension
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -579,8 +481,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -619,19 +522,21 @@ spec:
                     items:
                       properties:
                         functionDeclaration:
-                          description: Output only. Structured representation of a
-                            function declaration as defined by the OpenAPI Spec.
+                          description: |-
+                            Output only. Structured representation of a function declaration as defined
+                             by the OpenAPI Spec.
                           properties:
                             description:
-                              description: Optional. Description and purpose of the
-                                function. Model uses it to decide how and whether
-                                to call the function.
+                              description: |-
+                                Optional. Description and purpose of the function.
+                                Model uses it to decide how and whether to call the function.
                               type: string
                             name:
-                              description: Required. The name of the function to call.
-                                Must start with a letter or an underscore. Must be
-                                a-z, A-Z, 0-9, or contain underscores, dots and dashes,
-                                with a maximum length of 64.
+                              description: |-
+                                Required. The name of the function to call.
+                                Must start with a letter or an underscore.
+                                Must be a-z, A-Z, 0-9, or contain underscores, dots and dashes, with a
+                                maximum length of 64.
                               type: string
                           type: object
                         operationID:

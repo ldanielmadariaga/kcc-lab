@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,7 +21,6 @@ spec:
     - gcpvectorsearchcollection
     - gcpvectorsearchcollections
     singular: vectorsearchcollection
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -47,14 +46,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -62,8 +66,10 @@ spec:
             description: VectorSearchCollectionSpec defines the desired state of VectorSearchCollection
             properties:
               dataSchema:
-                description: Optional. JSON Schema for data. Field names must contain
-                  only alphanumeric characters, underscores, and hyphens.
+                description: |-
+                  Optional. JSON Schema for data.
+                   Field names must contain only alphanumeric characters,
+                   underscores, and hyphens.
                 x-kubernetes-preserve-unknown-fields: true
               description:
                 description: Optional. User-specified description of the collection
@@ -81,20 +87,6 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -126,24 +118,25 @@ spec:
                           format: int32
                           type: integer
                         vertexEmbeddingConfig:
-                          description: Optional. Configuration for generating embeddings
-                            for the vector field. If not specified, the embedding
-                            field must be populated in the DataObject.
+                          description: |-
+                            Optional. Configuration for generating embeddings for the vector field. If
+                             not specified, the embedding field must be populated in the DataObject.
                           properties:
                             modelID:
-                              description: 'Required. Required: ID of the embedding
-                                model to use. See https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models#embeddings-models
-                                for the list of supported models.'
+                              description: |-
+                                Required. Required: ID of the embedding model to use. See
+                                 https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models#embeddings-models
+                                 for the list of supported models.
                               type: string
                             taskType:
                               description: 'Required. Required: Task type for the
                                 embeddings.'
                               type: string
                             textTemplate:
-                              description: 'Required. Required: Text template for
-                                the input to the model. The template must contain
-                                one or more references to fields in the DataObject,
-                                e.g.: "Movie Title: {title} ---- Movie Plot: {plot}".'
+                              description: |-
+                                Required. Required: Text template for the input to the model. The template
+                                 must contain one or more references to fields in the DataObject, e.g.:
+                                 "Movie Title: {title} ---- Movie Plot: {plot}".
                               type: string
                           required:
                           - modelID
@@ -156,9 +149,10 @@ spec:
                       type: object
                       x-kubernetes-preserve-unknown-fields: true
                   type: object
-                description: Optional. Schema for vector fields. Only vector fields
-                  in this schema will be searchable. Field names must contain only
-                  alphanumeric characters, underscores, and hyphens.
+                description: |-
+                  Optional. Schema for vector fields. Only vector fields in this schema will
+                   be searchable. Field names must contain only alphanumeric characters,
+                   underscores, and hyphens.
                 type: object
             required:
             - location
@@ -169,8 +163,9 @@ spec:
               machine state of VectorSearchCollection
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -182,8 +177,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

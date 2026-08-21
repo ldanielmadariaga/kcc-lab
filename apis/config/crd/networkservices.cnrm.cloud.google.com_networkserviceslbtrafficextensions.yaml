@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpnetworkserviceslbtrafficextension
     - gcpnetworkserviceslbtrafficextensions
     singular: networkserviceslbtrafficextension
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -65,20 +69,23 @@ spec:
                 description: Optional. A human-readable description of the resource.
                 type: string
               extensionChains:
-                description: Required. A set of ordered extension chains that contain
-                  the match conditions and extensions to execute. Match conditions
-                  for each extension chain are evaluated in sequence for a given request.
-                  The first extension chain that has a condition that matches the
-                  request is executed. Any subsequent extension chains do not execute.
-                  Limited to 5 extension chains per resource.
+                description: |-
+                  Required. A set of ordered extension chains that contain the match
+                   conditions and extensions to execute. Match conditions for each extension
+                   chain are evaluated in sequence for a given request. The first extension
+                   chain that has a condition that matches the request is executed.
+                   Any subsequent extension chains do not execute.
+                   Limited to 5 extension chains per resource.
                 items:
                   properties:
                     extensions:
-                      description: Required. A set of extensions to execute for the
-                        matching request. At least one extension is required. Up to
-                        3 extensions can be defined for each extension chain for `LbTrafficExtension`
-                        resource. `LbRouteExtension` and `LbEdgeExtension` chains
-                        are limited to 1 extension per extension chain.
+                      description: |-
+                        Required. A set of extensions to execute for the matching request.
+                         At least one extension is required.
+                         Up to 3 extensions can be defined for each extension chain
+                         for `LbTrafficExtension` resource.
+                         `LbRouteExtension` and `LbEdgeExtension` chains are limited to 1 extension
+                         per extension chain.
                       items:
                         properties:
                           authority:
@@ -108,10 +115,10 @@ spec:
                                downstream client is reset.
                             type: boolean
                           forwardHeaders:
-                            description: Optional. List of the HTTP headers to forward
-                              to the extension (from the client or backend). If omitted,
-                              all headers are sent. Each element is a string indicating
-                              the header name.
+                            description: |-
+                              Optional. List of the HTTP headers to forward to the extension
+                               (from the client or backend). If omitted, all headers are sent.
+                               Each element is a string indicating the header name.
                             items:
                               type: string
                             type: array
@@ -147,12 +154,13 @@ spec:
                                * All values must be strings.
                             x-kubernetes-preserve-unknown-fields: true
                           name:
-                            description: Required. The name for this extension. The
-                              name is logged as part of the HTTP request logs. The
-                              name must conform with RFC-1034, is restricted to lower-cased
-                              letters, numbers and hyphens, and can have a maximum
-                              length of 63 characters. Additionally, the first character
-                              must be a letter and the last a letter or a number.
+                            description: |-
+                              Required. The name for this extension.
+                               The name is logged as part of the HTTP request logs.
+                               The name must conform with RFC-1034, is restricted to lower-cased
+                               letters, numbers and hyphens, and can have a maximum length of 63
+                               characters. Additionally, the first character must be a letter and the
+                               last a letter or a number.
                             type: string
                           service:
                             description: |-
@@ -224,12 +232,13 @@ spec:
                       - celExpression
                       type: object
                     name:
-                      description: Required. The name for this extension chain. The
-                        name is logged as part of the HTTP request logs. The name
-                        must conform with RFC-1034, is restricted to lower-cased letters,
-                        numbers and hyphens, and can have a maximum length of 63 characters.
-                        Additionally, the first character must be a letter and the
-                        last a letter or a number.
+                      description: |-
+                        Required. The name for this extension chain.
+                         The name is logged as part of the HTTP request logs.
+                         The name must conform with RFC-1034, is restricted to lower-cased letters,
+                         numbers and hyphens, and can have a maximum length of 63 characters.
+                         Additionally, the first character must be a letter and the last a letter or
+                         a number.
                       type: string
                   required:
                   - extensions
@@ -238,10 +247,11 @@ spec:
                   type: object
                 type: array
               forwardingRules:
-                description: Optional. A list of references to the forwarding rules
-                  to which this service extension is attached. At least one forwarding
-                  rule is required. Only one `LbTrafficExtension` resource can be
-                  associated with a forwarding rule.
+                description: |-
+                  Optional. A list of references to the forwarding rules to which this
+                   service extension is attached. At least one forwarding rule is required.
+                   Only one `LbTrafficExtension` resource can be associated with a forwarding
+                   rule.
                 items:
                   type: string
                 type: array
@@ -256,10 +266,12 @@ spec:
                    for Google Cloud resources.
                 type: object
               loadBalancingScheme:
-                description: 'Required. All backend services and forwarding rules
-                  referenced by this extension must share the same load balancing
-                  scheme. Supported values: `INTERNAL_MANAGED` and `EXTERNAL_MANAGED`.
-                  For more information, refer to [Backend services overview](https://cloud.google.com/load-balancing/docs/backend-service).'
+                description: |-
+                  Required. All backend services and forwarding rules referenced by this
+                   extension must share the same load balancing scheme. Supported values:
+                   `INTERNAL_MANAGED` and `EXTERNAL_MANAGED`. For more information, refer to
+                   [Backend services
+                   overview](https://cloud.google.com/load-balancing/docs/backend-service).
                 type: string
               metadata:
                 description: |-
@@ -287,20 +299,6 @@ spec:
                 x-kubernetes-preserve-unknown-fields: true
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -331,8 +329,9 @@ spec:
               connector machine state of NetworkServicesLBTrafficExtension
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -344,8 +343,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

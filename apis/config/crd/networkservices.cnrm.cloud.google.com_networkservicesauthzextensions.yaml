@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpnetworkservicesauthzextension
     - gcpnetworkservicesauthzextensions
     singular: networkservicesauthzextension
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -62,8 +66,9 @@ spec:
               of NetworkServicesAuthzExtension
             properties:
               authority:
-                description: Required. The `:authority` header in the gRPC request
-                  sent from Envoy to the extension service.
+                description: |-
+                  Required. The `:authority` header in the gRPC request sent from Envoy
+                   to the extension service.
                 type: string
               description:
                 description: Optional. A human-readable description of the resource.
@@ -86,9 +91,10 @@ spec:
                    downstream client is reset.
                 type: boolean
               forwardHeaders:
-                description: Optional. List of the HTTP headers to forward to the
-                  extension (from the client). If omitted, all headers are sent. Each
-                  element is a string indicating the header name.
+                description: |-
+                  Optional. List of the HTTP headers to forward to the extension
+                   (from the client). If omitted, all headers are sent.
+                   Each element is a string indicating the header name.
                 items:
                   type: string
                 type: array
@@ -104,10 +110,12 @@ spec:
                    resources.
                 type: object
               loadBalancingScheme:
-                description: 'Required. All backend services and forwarding rules
-                  referenced by this extension must share the same load balancing
-                  scheme. Supported values: `INTERNAL_MANAGED`, `EXTERNAL_MANAGED`.
-                  For more information, refer to [Backend services overview](https://cloud.google.com/load-balancing/docs/backend-service).'
+                description: |-
+                  Required. All backend services and forwarding rules referenced by this
+                   extension must share the same load balancing scheme. Supported values:
+                   `INTERNAL_MANAGED`, `EXTERNAL_MANAGED`. For more information, refer to
+                   [Backend services
+                   overview](https://cloud.google.com/load-balancing/docs/backend-service).
                 type: string
               metadata:
                 description: |-
@@ -123,20 +131,6 @@ spec:
                 x-kubernetes-preserve-unknown-fields: true
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -171,13 +165,14 @@ spec:
                    `https://www.googleapis.com/compute/v1/projects/{project}/global/backendServices/{backendService}`.
                 type: string
               timeout:
-                description: Required. Specifies the timeout for each individual message
-                  on the stream. The timeout must be between 10-10000 milliseconds.
+                description: |-
+                  Required. Specifies the timeout for each individual message on the stream.
+                   The timeout must be between 10-10000 milliseconds.
                 type: string
               wireFormat:
-                description: Optional. The format of communication supported by the
-                  callout extension. If not specified, the default value `EXT_PROC_GRPC`
-                  is used.
+                description: |-
+                  Optional. The format of communication supported by the callout extension.
+                   If not specified, the default value `EXT_PROC_GRPC` is used.
                 type: string
             required:
             - authority
@@ -191,8 +186,9 @@ spec:
               machine state of NetworkServicesAuthzExtension
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -204,8 +200,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

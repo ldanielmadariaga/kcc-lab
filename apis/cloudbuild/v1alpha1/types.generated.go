@@ -89,7 +89,8 @@ type BitbucketDataCenterConfig struct {
 	SSLCA *string `json:"sslCA,omitempty"`
 }
 
-/* unreachable type Connection
+/* found existing non-generated go type with proto tag "google.devtools.cloudbuild.v2.Connection", skipping
+
 // +kcc:proto=google.devtools.cloudbuild.v2.Connection
 type Connection struct {
 	// Immutable. The resource name of the connection, in the format
@@ -300,7 +301,8 @@ type BitbucketDataCenterConfigObservedState struct {
 	ServerVersion *string `json:"serverVersion,omitempty"`
 }
 
-/* unreachable type ConnectionObservedState
+/* found existing non-generated go type with proto tag "google.devtools.cloudbuild.v2.Connection", skipping
+
 // +kcc:observedstate:proto=google.devtools.cloudbuild.v2.Connection
 type ConnectionObservedState struct {
 	// Output only. Server assigned timestamp for when the connection was created.

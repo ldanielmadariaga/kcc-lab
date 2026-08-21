@@ -78,6 +78,7 @@ type App struct {
 
 	// Required. Display name of the app.
 	// +kcc:proto:field=google.cloud.ces.v1beta.App.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Optional. Human-readable description of the app.
@@ -189,22 +190,35 @@ type App_VariableDeclaration struct {
 	// Required. The name of the variable. The name must start with a letter or
 	//  underscore and contain only letters, numbers, or underscores.
 	// +kcc:proto:field=google.cloud.ces.v1beta.App.VariableDeclaration.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Required. The description of the variable.
 	// +kcc:proto:field=google.cloud.ces.v1beta.App.VariableDeclaration.description
+	// +required
 	Description *string `json:"description,omitempty"`
 
 	// Required. The schema of the variable.
 	// +kcc:proto:field=google.cloud.ces.v1beta.App.VariableDeclaration.schema
+	// +required
 	Schema *Schema `json:"schema,omitempty"`
 }
 */
 
 // +kcc:proto=google.cloud.ces.v1beta.AudioProcessingConfig
 type AudioProcessingConfig struct {
-
-	// TODO: unsupported map type with key string and value message
+	// Optional. Configuration of how the agent response should be synthesized,
+	//  mapping from the language code to
+	//  [SynthesizeSpeechConfig][google.cloud.ces.v1beta.SynthesizeSpeechConfig].
+	//
+	//  If the configuration for the specified language code is not found, the
+	//  configuration for the root language code will be used. For example, if the
+	//  map contains "en-us" and "en", and the specified language code is "en-gb",
+	//  then "en" configuration will be used.
+	//
+	//  Note: Language code is case-insensitive.
+	// +kcc:proto:field=google.cloud.ces.v1beta.AudioProcessingConfig.synthesize_speech_configs
+	SynthesizeSpeechConfigs map[string]SynthesizeSpeechConfig `json:"synthesizeSpeechConfigs,omitempty"`
 
 	// Optional. Configures the agent behavior for the user barge-in activities.
 	// +kcc:proto:field=google.cloud.ces.v1beta.AudioProcessingConfig.barge_in_config
@@ -387,12 +401,14 @@ type ClientCertificateSettings struct {
 	// Required. The TLS certificate encoded in PEM format. This string must
 	//  include the begin header and end footer lines.
 	// +kcc:proto:field=google.cloud.ces.v1beta.ClientCertificateSettings.tls_certificate
+	// +required
 	TLSCertificate *string `json:"tlsCertificate,omitempty"`
 
 	// Required. The name of the SecretManager secret version resource storing the
 	//  private key encoded in PEM format.
 	//  Format: `projects/{project}/secrets/{secret}/versions/{version}`
 	// +kcc:proto:field=google.cloud.ces.v1beta.ClientCertificateSettings.private_key
+	// +required
 	PrivateKey *string `json:"privateKey,omitempty"`
 
 	// Optional. The name of the SecretManager secret version resource storing the
@@ -627,6 +643,7 @@ type EvaluationPersona struct {
 	//  Format:
 	//  `projects/{project}/locations/{location}/apps/{app}/evaluationPersonas/{evaluationPersona}`
 	// +kcc:proto:field=google.cloud.ces.v1beta.EvaluationPersona.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. The description of the persona.
@@ -635,10 +652,12 @@ type EvaluationPersona struct {
 
 	// Required. The display name of the persona. Unique within an app.
 	// +kcc:proto:field=google.cloud.ces.v1beta.EvaluationPersona.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Required. An instruction for the agent on how to behave in the evaluation.
 	// +kcc:proto:field=google.cloud.ces.v1beta.EvaluationPersona.personality
+	// +required
 	Personality *string `json:"personality,omitempty"`
 
 	// Optional. Configuration for how the persona sounds (TTS settings).
@@ -834,10 +853,12 @@ type RedactionConfig struct {
 type Schema struct {
 	// Required. The type of the data.
 	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.type
+	// +required
 	Type *string `json:"type,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Optional. Properties of Type.OBJECT.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.properties
+	Properties map[string]Schema `json:"properties,omitempty"`
 
 	// Optional. Required properties of Type.OBJECT.
 	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.required
@@ -885,7 +906,7 @@ type Schema struct {
 
 	// Optional. Default value of the data.
 	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.default
-	Default *Value `json:"default,omitempty"`
+	Default apiextensionsv1.JSON `json:"default,omitempty"`
 
 	// Optional. Allows indirect references between schema nodes. The value should
 	//  be a valid reference to a child of the root `defs`.
@@ -913,8 +934,10 @@ type Schema struct {
 	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.ref
 	Ref *string `json:"ref,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Optional. A map of definitions for use by `ref`. Only allowed at the root
+	//  of the schema.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.defs
+	Defs map[string]Schema `json:"defs,omitempty"`
 
 	// Optional. The title of the schema.
 	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.title
@@ -938,7 +961,6 @@ type Schema struct {
 }
 */
 
-/* unreachable type SynthesizeSpeechConfig
 // +kcc:proto=google.cloud.ces.v1beta.SynthesizeSpeechConfig
 type SynthesizeSpeechConfig struct {
 	// Optional. The name of the voice. If not set, the service will choose a
@@ -957,7 +979,6 @@ type SynthesizeSpeechConfig struct {
 	// +kcc:proto:field=google.cloud.ces.v1beta.SynthesizeSpeechConfig.speaking_rate
 	SpeakingRate *float64 `json:"speakingRate,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.ces.v1beta.TimeZoneSettings
 type TimeZoneSettings struct {
@@ -978,44 +999,6 @@ type VPCScSettings struct {
 	//  not yet apply to Python tools that may make direct HTTP calls.
 	// +kcc:proto:field=google.cloud.ces.v1beta.VpcScSettings.allowed_origins
 	AllowedOrigins []string `json:"allowedOrigins,omitempty"`
-}
-*/
-
-/* unreachable type ListValue
-// +kcc:proto=google.protobuf.ListValue
-type ListValue struct {
-	// Repeated field of dynamically typed values.
-	// +kcc:proto:field=google.protobuf.ListValue.values
-	Values []Value `json:"values,omitempty"`
-}
-*/
-
-/* unreachable type Value
-// +kcc:proto=google.protobuf.Value
-type Value struct {
-	// Represents a null value.
-	// +kcc:proto:field=google.protobuf.Value.null_value
-	NullValue *string `json:"nullValue,omitempty"`
-
-	// Represents a double value.
-	// +kcc:proto:field=google.protobuf.Value.number_value
-	NumberValue *float64 `json:"numberValue,omitempty"`
-
-	// Represents a string value.
-	// +kcc:proto:field=google.protobuf.Value.string_value
-	StringValue *string `json:"stringValue,omitempty"`
-
-	// Represents a boolean value.
-	// +kcc:proto:field=google.protobuf.Value.bool_value
-	BoolValue *bool `json:"boolValue,omitempty"`
-
-	// Represents a structured value.
-	// +kcc:proto:field=google.protobuf.Value.struct_value
-	StructValue apiextensionsv1.JSON `json:"structValue,omitempty"`
-
-	// Represents a repeated `Value`.
-	// +kcc:proto:field=google.protobuf.Value.list_value
-	ListValue *ListValue `json:"listValue,omitempty"`
 }
 */
 

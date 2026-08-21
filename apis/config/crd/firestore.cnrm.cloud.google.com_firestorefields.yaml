@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpfirestorefield
     - gcpfirestorefields
     singular: firestorefield
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,14 +44,19 @@ spec:
         description: FirestoreField is the Schema for the FirestoreField API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -65,24 +69,11 @@ spec:
               databaseRef:
                 description: The FirestoreDatabase containing the collection group
                   for this field.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
-                    description: A reference to an externally managed Firestore database
-                      resource. Should be in the format "projects/{{projectID}}/databases/{{databaseID}}".
+                    description: |-
+                      A reference to an externally managed Firestore database resource.
+                      Should be in the format "projects/{{projectID}}/databases/{{databaseID}}".
                     type: string
                   name:
                     description: The name of a FirestoreDatabase resource.
@@ -92,10 +83,11 @@ spec:
                     type: string
                 type: object
               indexConfig:
-                description: The index configuration for this field. If unset, field
-                  indexing will revert to the configuration defined by the `ancestor_field`.
-                  To explicitly remove all indexes for this field, specify an index
-                  config with an empty list of indexes.
+                description: |-
+                  The index configuration for this field. If unset, field indexing will
+                   revert to the configuration defined by the `ancestor_field`. To
+                   explicitly remove all indexes for this field, specify an index config
+                   with an empty list of indexes.
                 properties:
                   indexes:
                     description: The indexes supported for this field.
@@ -128,18 +120,20 @@ spec:
                                   on `array_value`s.
                                 type: string
                               fieldPath:
-                                description: Can be __name__. For single field indexes,
-                                  this must match the name of the field or may be
-                                  omitted.
+                                description: |-
+                                  Can be __name__.
+                                   For single field indexes, this must match the name of the field or may
+                                   be omitted.
                                 type: string
                               order:
-                                description: Indicates that this field supports ordering
-                                  by the specified order or comparing using =, !=,
-                                  <, <=, >, >=.
+                                description: |-
+                                  Indicates that this field supports ordering by the specified order or
+                                   comparing using =, !=, <, <=, >, >=.
                                 type: string
                               vectorConfig:
-                                description: Indicates that this field supports nearest
-                                  neighbor and distance operations on vector.
+                                description: |-
+                                  Indicates that this field supports nearest neighbor and distance
+                                   operations on vector.
                                 properties:
                                   dimension:
                                     description: |-
@@ -153,6 +147,8 @@ spec:
                                     description: Indicates the vector index is a flat
                                       index.
                                     type: object
+                                required:
+                                - dimension
                                 type: object
                             type: object
                           type: array
@@ -205,8 +201,9 @@ spec:
               state of FirestoreField
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -218,8 +215,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -250,21 +248,22 @@ spec:
                     description: The index state for this field.
                     properties:
                       ancestorField:
-                        description: Output only. Specifies the resource name of the
-                          `Field` from which this field's index configuration is set
-                          (when `uses_ancestor_config` is true), or from which it
-                          *would* be set if this field had no index configuration
-                          (when `uses_ancestor_config` is false).
+                        description: |-
+                          Output only. Specifies the resource name of the `Field` from which this
+                           field's index configuration is set (when `uses_ancestor_config` is true),
+                           or from which it *would* be set if this field had no index configuration
+                           (when `uses_ancestor_config` is false).
                         type: string
                       indexes:
                         description: The indexes supported for this field.
                         items:
                           properties:
                             name:
-                              description: 'Output only. A server defined name for
-                                this index. The form of this name for composite indexes
-                                will be: `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}/indexes/{composite_index_id}`
-                                For single field indexes, this field will be empty.'
+                              description: |-
+                                Output only. A server defined name for this index.
+                                 The form of this name for composite indexes will be:
+                                 `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}/indexes/{composite_index_id}`
+                                 For single field indexes, this field will be empty.
                               type: string
                             state:
                               description: Output only. The serving state of the index.
@@ -272,17 +271,18 @@ spec:
                           type: object
                         type: array
                       reverting:
-                        description: Output only When true, the `Field`'s index configuration
-                          is in the process of being reverted. Once complete, the
-                          index config will transition to the same state as the field
-                          specified by `ancestor_field`, at which point `uses_ancestor_config`
-                          will be `true` and `reverting` will be `false`.
+                        description: |-
+                          Output only
+                           When true, the `Field`'s index configuration is in the process of being
+                           reverted. Once complete, the index config will transition to the same
+                           state as the field specified by `ancestor_field`, at which point
+                           `uses_ancestor_config` will be `true` and `reverting` will be `false`.
                         type: boolean
                       usesAncestorConfig:
-                        description: Output only. When true, the `Field`'s index configuration
-                          is set from the configuration specified by the `ancestor_field`.
-                          When false, the `Field`'s index configuration is defined
-                          explicitly.
+                        description: |-
+                          Output only. When true, the `Field`'s index configuration is set from the
+                           configuration specified by the `ancestor_field`.
+                           When false, the `Field`'s index configuration is defined explicitly.
                         type: boolean
                     type: object
                   ttlConfig:

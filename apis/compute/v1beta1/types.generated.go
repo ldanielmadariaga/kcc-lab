@@ -3531,9 +3531,9 @@ type InstanceGroupManagerAutoHealingPolicy struct {
 /* unreachable type InstanceGroupManagerInstanceFlexibilityPolicy
 // +kcc:proto=google.cloud.compute.v1.InstanceGroupManagerInstanceFlexibilityPolicy
 type InstanceGroupManagerInstanceFlexibilityPolicy struct {
-
-	// TODO: unsupported map type with key string and value message
-
+	// Named instance selections configuring properties that the group will use when creating new VMs.
+	// +kcc:proto:field=google.cloud.compute.v1.InstanceGroupManagerInstanceFlexibilityPolicy.instance_selections
+	InstanceSelections map[string]InstanceGroupManagerInstanceFlexibilityPolicyInstanceSelection `json:"instanceSelections,omitempty"`
 }
 */
 
@@ -6992,9 +6992,9 @@ type ServiceAttachmentConsumerProjectLimit struct {
 
 // +kcc:proto=google.cloud.compute.v1.ShareSettings
 type ShareSettings struct {
-
-	// TODO: unsupported map type with key string and value message
-
+	// A map of project id and project config. This is only valid when share_type's value is SPECIFIC_PROJECTS.
+	// +kcc:proto:field=google.cloud.compute.v1.ShareSettings.project_map
+	ProjectMap map[string]ShareSettingsProjectConfig `json:"projectMap,omitempty"`
 
 	// Type of sharing for this shared-reservation
 	//  Check the ShareType enum for the list of possible values.
@@ -7362,13 +7362,17 @@ type StatefulPolicy struct {
 /* unreachable type StatefulPolicyPreservedState
 // +kcc:proto=google.cloud.compute.v1.StatefulPolicyPreservedState
 type StatefulPolicyPreservedState struct {
+	// Disks created on the instances that will be preserved on instance delete, update, etc. This map is keyed with the device names of the disks.
+	// +kcc:proto:field=google.cloud.compute.v1.StatefulPolicyPreservedState.disks
+	Disks map[string]StatefulPolicyPreservedStateDiskDevice `json:"disks,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// External network IPs assigned to the instances that will be preserved on instance delete, update, etc. This map is keyed with the network interface name.
+	// +kcc:proto:field=google.cloud.compute.v1.StatefulPolicyPreservedState.external_i_ps
+	ExternalIPs map[string]StatefulPolicyPreservedStateNetworkIP `json:"externalIPs,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
-	// TODO: unsupported map type with key string and value message
-
+	// Internal network IPs assigned to the instances that will be preserved on instance delete, update, etc. This map is keyed with the network interface name.
+	// +kcc:proto:field=google.cloud.compute.v1.StatefulPolicyPreservedState.internal_i_ps
+	InternalIPs map[string]StatefulPolicyPreservedStateNetworkIP `json:"internalIPs,omitempty"`
 }
 */
 

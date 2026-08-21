@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpdatacatalogentrygroup
     - gcpdatacatalogentrygroups
     singular: datacatalogentrygroup
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,46 +45,39 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
           spec:
             properties:
               description:
-                description: Entry group description. Can consist of several sentences
-                  or paragraphs that describe the entry group contents. Default value
-                  is an empty string.
+                description: |-
+                  Entry group description. Can consist of several sentences or
+                   paragraphs that describe the entry group contents.
+                   Default value is an empty string.
                 type: string
               displayName:
-                description: A short name to identify the entry group, for example,
-                  "analytics data - jan 2011". Default value is an empty string.
+                description: |-
+                  A short name to identify the entry group, for example,
+                   "analytics data - jan 2011". Default value is an empty string.
                 type: string
               location:
                 type: string
               projectRef:
                 description: The Project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -107,11 +99,12 @@ spec:
                   will be used.
                 type: string
               transferredToDataplex:
-                description: Optional. When set to [true], it means DataCatalog EntryGroup
-                  was transferred to Dataplex Catalog Service. It makes EntryGroup
-                  and its Entries to be read-only in DataCatalog. However, new Tags
-                  on EntryGroup and its Entries can be created. After setting the
-                  flag to [true] it cannot be unset.
+                description: |-
+                  Optional. When set to [true], it means DataCatalog EntryGroup was
+                   transferred to Dataplex Catalog Service. It makes EntryGroup and its
+                   Entries to be read-only in DataCatalog. However, new Tags on EntryGroup and
+                   its Entries can be created. After setting the flag to [true] it cannot be
+                   unset.
                 type: boolean
             required:
             - location
@@ -123,8 +116,9 @@ spec:
               machine state of DataCatalogEntryGroup
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -136,8 +130,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

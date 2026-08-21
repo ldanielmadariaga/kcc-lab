@@ -37,27 +37,6 @@ type Connection_ErrorDetails struct {
 }
 */
 
-/* unreachable type SipTrunk
-// +kcc:proto=google.cloud.dialogflow.v2beta1.SipTrunk
-type SipTrunk struct {
-	// Identifier. The unique identifier of the SIP trunk.
-	//  Format: `projects/<Project ID>/locations/<Location ID>/sipTrunks/<SipTrunk
-	//  ID>`.
-	// +kcc:proto:field=google.cloud.dialogflow.v2beta1.SipTrunk.name
-	Name *string `json:"name,omitempty"`
-
-	// Required. The expected hostnames in the peer certificate from partner that
-	//  is used for TLS authentication.
-	// +kcc:proto:field=google.cloud.dialogflow.v2beta1.SipTrunk.expected_hostname
-	// +required
-	ExpectedHostname []string `json:"expectedHostname,omitempty"`
-
-	// Optional. Human readable alias for this trunk.
-	// +kcc:proto:field=google.cloud.dialogflow.v2beta1.SipTrunk.display_name
-	DisplayName *string `json:"displayName,omitempty"`
-}
-*/
-
 // +kcc:observedstate:proto=google.cloud.dialogflow.v2beta1.Connection
 type ConnectionObservedState struct {
 	// Output only. The unique identifier of the SIP Trunk connection.
@@ -88,12 +67,3 @@ type Connection_ErrorDetailsObservedState struct {
 	// +kcc:proto:field=google.cloud.dialogflow.v2beta1.Connection.ErrorDetails.error_message
 	ErrorMessage *string `json:"errorMessage,omitempty"`
 }
-
-/* unreachable type SipTrunkObservedState
-// +kcc:observedstate:proto=google.cloud.dialogflow.v2beta1.SipTrunk
-type SipTrunkObservedState struct {
-	// Output only. Connections of the SIP trunk.
-	// +kcc:proto:field=google.cloud.dialogflow.v2beta1.SipTrunk.connections
-	Connections []ConnectionObservedState `json:"connections,omitempty"`
-}
-*/

@@ -32,6 +32,8 @@
 
 package v1alpha1
 
+/* found existing non-generated go type "AcceleratorConfig", skipping
+
 // +kcc:proto=google.cloud.compute.v1.AcceleratorConfig
 type AcceleratorConfig struct {
 	// The number of the guest accelerator cards exposed to this instance.
@@ -42,6 +44,7 @@ type AcceleratorConfig struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AcceleratorConfig.accelerator_type
 	AcceleratorType *string `json:"acceleratorType,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.compute.v1.AccessConfig
 type AccessConfig struct {
@@ -288,7 +291,8 @@ type AttachedDiskInitializeParams struct {
 	StoragePool *string `json:"storagePool,omitempty"`
 }
 
-/* unreachable type Autoscaler
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Autoscaler", skipping
+
 // +kcc:proto=google.cloud.compute.v1.Autoscaler
 type Autoscaler struct {
 	// The configuration parameters for the autoscaling algorithm. You can define one or more signals for an autoscaler: cpuUtilization, customMetricUtilizations, and loadBalancingUtilization. If none of these are specified, the default will be to autoscale based on cpuUtilization to 0.6 or 60%.
@@ -323,7 +327,9 @@ type Autoscaler struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.region
 	Region *string `json:"region,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// [Output Only] Status information of existing scaling schedules.
+	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.scaling_schedule_status
+	ScalingScheduleStatus map[string]ScalingScheduleStatus `json:"scalingScheduleStatus,omitempty"`
 
 	// [Output Only] Server-defined URL for the resource.
 	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.self_link
@@ -394,8 +400,9 @@ type AutoscalingPolicy struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AutoscalingPolicy.scale_in_control
 	ScaleInControl *AutoscalingPolicyScaleInControl `json:"scaleInControl,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Scaling schedules defined for an autoscaler. Multiple schedules can be set on an autoscaler, and they can overlap. During overlapping periods the greatest min_required_replicas of all scaling schedules is applied. Up to 128 scaling schedules are allowed.
+	// +kcc:proto:field=google.cloud.compute.v1.AutoscalingPolicy.scaling_schedules
+	ScalingSchedules map[string]AutoscalingPolicyScalingSchedule `json:"scalingSchedules,omitempty"`
 }
 
 // +kcc:proto=google.cloud.compute.v1.AutoscalingPolicyCpuUtilization
@@ -452,7 +459,6 @@ type AutoscalingPolicyScaleInControl struct {
 	TimeWindowSec *int32 `json:"timeWindowSec,omitempty"`
 }
 
-/* unreachable type AutoscalingPolicyScalingSchedule
 // +kcc:proto=google.cloud.compute.v1.AutoscalingPolicyScalingSchedule
 type AutoscalingPolicyScalingSchedule struct {
 	// A description of a scaling schedule.
@@ -479,7 +485,6 @@ type AutoscalingPolicyScalingSchedule struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AutoscalingPolicyScalingSchedule.time_zone
 	TimeZone *string `json:"timeZone,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.compute.v1.ConfidentialInstanceConfig
 type ConfidentialInstanceConfig struct {
@@ -527,6 +532,8 @@ type Data struct {
 	Value *string `json:"value,omitempty"`
 }
 
+/* found existing non-generated go type "Duration", skipping
+
 // +kcc:proto=google.cloud.compute.v1.Duration
 type Duration struct {
 	// Span of time that's a fraction of a second at nanosecond resolution. Durations less than one second are represented with a 0 `seconds` field and a positive `nanos` field. Must be from 0 to 999,999,999 inclusive.
@@ -537,6 +544,7 @@ type Duration struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Duration.seconds
 	Seconds *int64 `json:"seconds,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.compute.v1.Expr
 type Expr struct {
@@ -700,7 +708,8 @@ type InstanceProperties struct {
 	Tags *Tags `json:"tags,omitempty"`
 }
 
-/* unreachable type Interconnect
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Interconnect", skipping
+
 // +kcc:proto=google.cloud.compute.v1.Interconnect
 type Interconnect struct {
 	// Enable or disable the application awareness feature on this Cloud Interconnect.
@@ -883,6 +892,8 @@ type InterconnectApplicationAwareInterconnectBandwidthPercentagePolicy struct {
 type InterconnectApplicationAwareInterconnectStrictPriorityPolicy struct {
 }
 
+/* found existing non-generated go type "InterconnectCircuitInfo", skipping
+
 // +kcc:proto=google.cloud.compute.v1.InterconnectCircuitInfo
 type InterconnectCircuitInfo struct {
 	// Customer-side demarc ID for this circuit.
@@ -897,6 +908,9 @@ type InterconnectCircuitInfo struct {
 	// +kcc:proto:field=google.cloud.compute.v1.InterconnectCircuitInfo.google_demarc_id
 	GoogleDemarcID *string `json:"googleDemarcID,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "InterconnectMacsec", skipping
 
 // +kcc:proto=google.cloud.compute.v1.InterconnectMacsec
 type InterconnectMacsec struct {
@@ -908,6 +922,9 @@ type InterconnectMacsec struct {
 	// +kcc:proto:field=google.cloud.compute.v1.InterconnectMacsec.pre_shared_keys
 	PreSharedKeys []InterconnectMacsecPreSharedKey `json:"preSharedKeys,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "InterconnectMacsecPreSharedKey", skipping
 
 // +kcc:proto=google.cloud.compute.v1.InterconnectMacsecPreSharedKey
 type InterconnectMacsecPreSharedKey struct {
@@ -919,6 +936,9 @@ type InterconnectMacsecPreSharedKey struct {
 	// +kcc:proto:field=google.cloud.compute.v1.InterconnectMacsecPreSharedKey.start_time
 	StartTime *string `json:"startTime,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "InterconnectOutageNotification", skipping
 
 // +kcc:proto=google.cloud.compute.v1.InterconnectOutageNotification
 type InterconnectOutageNotification struct {
@@ -957,6 +977,7 @@ type InterconnectOutageNotification struct {
 	// +kcc:proto:field=google.cloud.compute.v1.InterconnectOutageNotification.state
 	State *string `json:"state,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.compute.v1.Items
 type Items struct {
@@ -969,7 +990,8 @@ type Items struct {
 	Value *string `json:"value,omitempty"`
 }
 
-/* unreachable type MachineImage
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.MachineImage", skipping
+
 // +kcc:proto=google.cloud.compute.v1.MachineImage
 type MachineImage struct {
 	// [Output Only] The creation timestamp for this machine image in RFC3339 text format.
@@ -1070,7 +1092,8 @@ type Metadata struct {
 	Kind *string `json:"kind,omitempty"`
 }
 
-/* unreachable type NetworkAttachment
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.NetworkAttachment", skipping
+
 // +kcc:proto=google.cloud.compute.v1.NetworkAttachment
 type NetworkAttachment struct {
 	// [Output Only] An array of connections for all the producers connected to this network attachment.
@@ -1135,6 +1158,8 @@ type NetworkAttachment struct {
 }
 */
 
+/* found existing non-generated go type "NetworkAttachmentConnectedEndpoint", skipping
+
 // +kcc:proto=google.cloud.compute.v1.NetworkAttachmentConnectedEndpoint
 type NetworkAttachmentConnectedEndpoint struct {
 	// The IPv4 address assigned to the producer instance network interface. This value will be a range in case of Serverless.
@@ -1166,8 +1191,10 @@ type NetworkAttachmentConnectedEndpoint struct {
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachmentConnectedEndpoint.subnetwork_cidr_range
 	SubnetworkCIDRRange *string `json:"subnetworkCIDRRange,omitempty"`
 }
+*/
 
-/* unreachable type NetworkEdgeSecurityService
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.NetworkEdgeSecurityService", skipping
+
 // +kcc:proto=google.cloud.compute.v1.NetworkEdgeSecurityService
 type NetworkEdgeSecurityService struct {
 	// [Output Only] Creation timestamp in RFC3339 text format.
@@ -1212,7 +1239,8 @@ type NetworkEdgeSecurityService struct {
 }
 */
 
-/* unreachable type NetworkEndpoint
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.NetworkEndpoint", skipping
+
 // +kcc:proto=google.cloud.compute.v1.NetworkEndpoint
 type NetworkEndpoint struct {
 	// Optional metadata defined as annotations on the network endpoint.
@@ -1322,7 +1350,8 @@ type NetworkPerformanceConfig struct {
 	TotalEgressBandwidthTier *string `json:"totalEgressBandwidthTier,omitempty"`
 }
 
-/* unreachable type PerInstanceConfig
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.PerInstanceConfig", skipping
+
 // +kcc:proto=google.cloud.compute.v1.PerInstanceConfig
 type PerInstanceConfig struct {
 	// Fingerprint of this per-instance config. This field can be used in optimistic locking. It is ignored when inserting a per-instance config. An up-to-date fingerprint must be provided in order to update an existing per-instance configuration or the field needs to be unset.
@@ -1346,19 +1375,23 @@ type PerInstanceConfig struct {
 
 // +kcc:proto=google.cloud.compute.v1.PreservedState
 type PreservedState struct {
+	// Preserved disks defined for this instance. This map is keyed with the device names of the disks.
+	// +kcc:proto:field=google.cloud.compute.v1.PreservedState.disks
+	Disks map[string]PreservedStatePreservedDisk `json:"disks,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// Preserved external IPs defined for this instance. This map is keyed with the name of the network interface.
+	// +kcc:proto:field=google.cloud.compute.v1.PreservedState.external_i_ps
+	ExternalIPs map[string]PreservedStatePreservedNetworkIP `json:"externalIPs,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
-	// TODO: unsupported map type with key string and value message
+	// Preserved internal IPs defined for this instance. This map is keyed with the name of the network interface.
+	// +kcc:proto:field=google.cloud.compute.v1.PreservedState.internal_i_ps
+	InternalIPs map[string]PreservedStatePreservedNetworkIP `json:"internalIPs,omitempty"`
 
 	// Preserved metadata defined for this instance.
 	// +kcc:proto:field=google.cloud.compute.v1.PreservedState.metadata
 	Metadata map[string]string `json:"metadata,omitempty"`
 }
 
-/* unreachable type PreservedStatePreservedDisk
 // +kcc:proto=google.cloud.compute.v1.PreservedStatePreservedDisk
 type PreservedStatePreservedDisk struct {
 	// These stateful disks will never be deleted during autohealing, update, instance recreate operations. This flag is used to configure if the disk should be deleted after it is no longer used by the group, e.g. when the given instance or the whole MIG is deleted. Note: disks attached in READ_ONLY mode cannot be auto-deleted.
@@ -1375,9 +1408,7 @@ type PreservedStatePreservedDisk struct {
 	// +kcc:proto:field=google.cloud.compute.v1.PreservedStatePreservedDisk.source
 	Source *string `json:"source,omitempty"`
 }
-*/
 
-/* unreachable type PreservedStatePreservedNetworkIP
 // +kcc:proto=google.cloud.compute.v1.PreservedStatePreservedNetworkIp
 type PreservedStatePreservedNetworkIP struct {
 	// These stateful IPs will never be released during autohealing, update or VM instance recreate operations. This flag is used to configure if the IP reservation should be deleted after it is no longer used by the group, e.g. when the given instance or the whole group is deleted.
@@ -1389,9 +1420,7 @@ type PreservedStatePreservedNetworkIP struct {
 	// +kcc:proto:field=google.cloud.compute.v1.PreservedStatePreservedNetworkIp.ip_address
 	IPAddress *PreservedStatePreservedNetworkIPIPAddress `json:"ipAddress,omitempty"`
 }
-*/
 
-/* unreachable type PreservedStatePreservedNetworkIPIPAddress
 // +kcc:proto=google.cloud.compute.v1.PreservedStatePreservedNetworkIpIpAddress
 type PreservedStatePreservedNetworkIPIPAddress struct {
 	// The URL of the reservation for this IP address.
@@ -1402,7 +1431,6 @@ type PreservedStatePreservedNetworkIPIPAddress struct {
 	// +kcc:proto:field=google.cloud.compute.v1.PreservedStatePreservedNetworkIpIpAddress.literal
 	Literal *string `json:"literal,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.compute.v1.ReservationAffinity
 type ReservationAffinity struct {
@@ -1516,7 +1544,6 @@ type SavedDisk struct {
 	StorageBytesStatus *string `json:"storageBytesStatus,omitempty"`
 }
 
-/* unreachable type ScalingScheduleStatus
 // +kcc:proto=google.cloud.compute.v1.ScalingScheduleStatus
 type ScalingScheduleStatus struct {
 	// [Output Only] The last time the scaling schedule became active. Note: this is a timestamp when a schedule actually became active, not when it was planned to do so. The timestamp is in RFC3339 text format.
@@ -1532,7 +1559,6 @@ type ScalingScheduleStatus struct {
 	// +kcc:proto:field=google.cloud.compute.v1.ScalingScheduleStatus.state
 	State *string `json:"state,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.compute.v1.Scheduling
 type Scheduling struct {
@@ -1618,7 +1644,8 @@ type SchedulingOnInstanceStopAction struct {
 	DiscardLocalSsd *bool `json:"discardLocalSsd,omitempty"`
 }
 
-/* unreachable type SecurityPolicy
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.SecurityPolicy", skipping
+
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicy
 type SecurityPolicy struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.adaptive_protection_config
@@ -2126,7 +2153,8 @@ type ShieldedInstanceConfig struct {
 	EnableVTPM *bool `json:"enableVTPM,omitempty"`
 }
 
-/* unreachable type SignedURLKey
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.SignedUrlKey", skipping
+
 // +kcc:proto=google.cloud.compute.v1.SignedUrlKey
 type SignedURLKey struct {
 	// Name of the key. The name must be 1-63 characters long, and comply with RFC1035. Specifically, the name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase letter, and all following characters must be a dash, lowercase letter, or digit, except the last character, which cannot be a dash.
@@ -2210,7 +2238,8 @@ type SourceInstanceProperties struct {
 	Tags *Tags `json:"tags,omitempty"`
 }
 
-/* unreachable type SSLPolicy
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.SslPolicy", skipping
+
 // +kcc:proto=google.cloud.compute.v1.SslPolicy
 type SSLPolicy struct {
 	// [Output Only] Creation timestamp in RFC3339 text format.
@@ -2296,6 +2325,8 @@ type Warnings struct {
 	Message *string `json:"message,omitempty"`
 }
 
+/* found existing non-generated go type "AcceleratorConfig", skipping
+
 // +kcc:proto=google.cloud.compute.v1beta.AcceleratorConfig
 type AcceleratorConfig struct {
 	// The number of the guest accelerator cards exposed to this instance.
@@ -2306,6 +2337,7 @@ type AcceleratorConfig struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.AcceleratorConfig.accelerator_type
 	AcceleratorType *string `json:"acceleratorType,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.compute.v1beta.AllocationAggregateReservation
 type AllocationAggregateReservation struct {
@@ -2328,12 +2360,17 @@ type AllocationAggregateReservation struct {
 	WorkloadType *string `json:"workloadType,omitempty"`
 }
 
+/* found existing non-generated go type "AllocationAggregateReservationReservedResourceInfo", skipping
+
 // +kcc:proto=google.cloud.compute.v1beta.AllocationAggregateReservationReservedResourceInfo
 type AllocationAggregateReservationReservedResourceInfo struct {
 	// Properties of accelerator resources in this reservation.
 	// +kcc:proto:field=google.cloud.compute.v1beta.AllocationAggregateReservationReservedResourceInfo.accelerator
 	Accelerator *AllocationAggregateReservationReservedResourceInfoAccelerator `json:"accelerator,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "AllocationAggregateReservationReservedResourceInfoAccelerator", skipping
 
 // +kcc:proto=google.cloud.compute.v1beta.AllocationAggregateReservationReservedResourceInfoAccelerator
 type AllocationAggregateReservationReservedResourceInfoAccelerator struct {
@@ -2345,6 +2382,9 @@ type AllocationAggregateReservationReservedResourceInfoAccelerator struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.AllocationAggregateReservationReservedResourceInfoAccelerator.accelerator_type
 	AcceleratorType *string `json:"acceleratorType,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "AllocationSpecificSkuAllocationAllocatedInstancePropertiesReservedDisk", skipping
 
 // +kcc:proto=google.cloud.compute.v1beta.AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk
 type AllocationSpecificSkuAllocationAllocatedInstancePropertiesReservedDisk struct {
@@ -2357,6 +2397,9 @@ type AllocationSpecificSkuAllocationAllocatedInstancePropertiesReservedDisk stru
 	// +kcc:proto:field=google.cloud.compute.v1beta.AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk.interface
 	Interface *string `json:"interface,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "AllocationSpecificSkuAllocationReservedInstanceProperties", skipping
 
 // +kcc:proto=google.cloud.compute.v1beta.AllocationSpecificSKUAllocationReservedInstanceProperties
 type AllocationSpecificSkuAllocationReservedInstanceProperties struct {
@@ -2389,6 +2432,9 @@ type AllocationSpecificSkuAllocationReservedInstanceProperties struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.AllocationSpecificSKUAllocationReservedInstanceProperties.min_cpu_platform
 	MinCPUPlatform *string `json:"minCPUPlatform,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "Duration", skipping
 
 // +kcc:proto=google.cloud.compute.v1beta.Duration
 type Duration struct {
@@ -2400,8 +2446,10 @@ type Duration struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.Duration.seconds
 	Seconds *int64 `json:"seconds,omitempty"`
 }
+*/
 
-/* unreachable type FutureReservation
+/* found existing non-generated go type "FutureReservation", skipping
+
 // +kcc:proto=google.cloud.compute.v1beta.FutureReservation
 type FutureReservation struct {
 	// Aggregate reservation details for the future reservation.
@@ -2510,6 +2558,8 @@ type FutureReservation struct {
 }
 */
 
+/* found existing non-generated go type "FutureReservationCommitmentInfo", skipping
+
 // +kcc:proto=google.cloud.compute.v1beta.FutureReservationCommitmentInfo
 type FutureReservationCommitmentInfo struct {
 	// name of the commitment where capacity is being delivered to.
@@ -2526,6 +2576,9 @@ type FutureReservationCommitmentInfo struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservationCommitmentInfo.previous_commitment_terms
 	PreviousCommitmentTerms *string `json:"previousCommitmentTerms,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "FutureReservationSpecificSkuProperties", skipping
 
 // +kcc:proto=google.cloud.compute.v1beta.FutureReservationSpecificSKUProperties
 type FutureReservationSpecificSkuProperties struct {
@@ -2541,6 +2594,9 @@ type FutureReservationSpecificSkuProperties struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservationSpecificSKUProperties.total_count
 	TotalCount *int64 `json:"totalCount,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "FutureReservationStatus", skipping
 
 // +kcc:proto=google.cloud.compute.v1beta.FutureReservationStatus
 type FutureReservationStatus struct {
@@ -2577,6 +2633,9 @@ type FutureReservationStatus struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservationStatus.specific_sku_properties
 	SpecificSkuProperties *FutureReservationStatusSpecificSkuProperties `json:"specificSkuProperties,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "FutureReservationStatusExistingMatchingUsageInfo", skipping
 
 // +kcc:proto=google.cloud.compute.v1beta.FutureReservationStatusExistingMatchingUsageInfo
 type FutureReservationStatusExistingMatchingUsageInfo struct {
@@ -2588,6 +2647,9 @@ type FutureReservationStatusExistingMatchingUsageInfo struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservationStatusExistingMatchingUsageInfo.timestamp
 	Timestamp *string `json:"timestamp,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "FutureReservationStatusLastKnownGoodState", skipping
 
 // +kcc:proto=google.cloud.compute.v1beta.FutureReservationStatusLastKnownGoodState
 type FutureReservationStatusLastKnownGoodState struct {
@@ -2615,6 +2677,7 @@ type FutureReservationStatusLastKnownGoodState struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservationStatusLastKnownGoodState.procurement_status
 	ProcurementStatus *string `json:"procurementStatus,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.compute.v1beta.FutureReservationStatusLastKnownGoodStateFutureReservationSpecs
 type FutureReservationStatusLastKnownGoodStateFutureReservationSpecs struct {
@@ -2631,12 +2694,17 @@ type FutureReservationStatusLastKnownGoodStateFutureReservationSpecs struct {
 	TimeWindow *FutureReservationTimeWindow `json:"timeWindow,omitempty"`
 }
 
+/* found existing non-generated go type "FutureReservationStatusSpecificSkuProperties", skipping
+
 // +kcc:proto=google.cloud.compute.v1beta.FutureReservationStatusSpecificSKUProperties
 type FutureReservationStatusSpecificSkuProperties struct {
 	// ID of the instance template used to populate the Future Reservation properties.
 	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservationStatusSpecificSKUProperties.source_instance_template_id
 	SourceInstanceTemplateID *string `json:"sourceInstanceTemplateID,omitempty"`
 }
+*/
+
+/* found existing non-generated go type "FutureReservationTimeWindow", skipping
 
 // +kcc:proto=google.cloud.compute.v1beta.FutureReservationTimeWindow
 type FutureReservationTimeWindow struct {
@@ -2650,11 +2718,13 @@ type FutureReservationTimeWindow struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservationTimeWindow.start_time
 	StartTime *string `json:"startTime,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.compute.v1beta.ShareSettings
 type ShareSettings struct {
-
-	// TODO: unsupported map type with key string and value message
+	// A map of project id and project config. This is only valid when share_type's value is SPECIFIC_PROJECTS.
+	// +kcc:proto:field=google.cloud.compute.v1beta.ShareSettings.project_map
+	ProjectMap map[string]ShareSettingsProjectConfig `json:"projectMap,omitempty"`
 
 	// A List of Project names to specify consumer projects for this shared-reservation. This is only valid when share_type's value is SPECIFIC_PROJECTS.
 	// +kcc:proto:field=google.cloud.compute.v1beta.ShareSettings.projects
@@ -2666,11 +2736,9 @@ type ShareSettings struct {
 	ShareType *string `json:"shareType,omitempty"`
 }
 
-/* unreachable type ShareSettingsProjectConfig
 // +kcc:proto=google.cloud.compute.v1beta.ShareSettingsProjectConfig
 type ShareSettingsProjectConfig struct {
 	// The project ID, should be same as the key of this project config in the parent map.
 	// +kcc:proto:field=google.cloud.compute.v1beta.ShareSettingsProjectConfig.project_id
 	ProjectID *string `json:"projectID,omitempty"`
 }
-*/

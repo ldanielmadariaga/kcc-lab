@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpvmwareenginenetwork
     - gcpvmwareenginenetworks
     singular: vmwareenginenetwork
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -71,20 +75,6 @@ spec:
                   rule: self == oldSelf
               projectRef:
                 description: The Project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -118,8 +108,9 @@ spec:
               state of VMwareEngineNetwork
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -131,8 +122,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -173,19 +165,22 @@ spec:
                     description: Output only. Last update time of this resource.
                     type: string
                   vpcNetworks:
-                    description: Output only. VMware Engine service VPC networks that
-                      provide connectivity from a private cloud to customer projects,
-                      the internet, and other Google Cloud services.
+                    description: |-
+                      Output only. VMware Engine service VPC networks that provide connectivity
+                       from a private cloud to customer projects, the internet, and other Google
+                       Cloud services.
                     items:
                       properties:
                         network:
-                          description: 'Output only. The relative resource name of
-                            the service VPC network this VMware Engine network is
-                            attached to. For example: `projects/123123/global/networks/my-network`'
+                          description: |-
+                            Output only. The relative resource name of the service VPC network this
+                             VMware Engine network is attached to. For example:
+                             `projects/123123/global/networks/my-network`
                           type: string
                         type:
-                          description: Output only. Type of VPC network (INTRANET,
-                            INTERNET, or GOOGLE_CLOUD)
+                          description: |-
+                            Output only. Type of VPC network (INTRANET, INTERNET, or
+                             GOOGLE_CLOUD)
                           type: string
                       type: object
                     type: array

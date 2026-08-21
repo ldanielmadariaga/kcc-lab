@@ -48,63 +48,6 @@ type Fleet_LabelSelector struct {
 	MatchLabels map[string]string `json:"matchLabels,omitempty"`
 }
 
-/* unreachable type FleetPackage
-// +kcc:proto=google.cloud.configdelivery.v1.FleetPackage
-type FleetPackage struct {
-	// Identifier. Name of the `FleetPackage`. Format is
-	//  `projects/{project}/locations/{location}/fleetPackages/{fleetPackage}`.
-	//  The `fleetPackage` component must match
-	//  `[a-z][a-z0-9\-]{0,62}`
-	// +kcc:proto:field=google.cloud.configdelivery.v1.FleetPackage.name
-	Name *string `json:"name,omitempty"`
-
-	// Optional. Labels are attributes that can be set and used by both the
-	//  user and by Config Delivery. Labels must meet the following constraints:
-	//
-	//  * Keys and values can contain only lowercase letters, numeric characters,
-	//  underscores, and dashes.
-	//  * All characters must use UTF-8 encoding, and international characters are
-	//  allowed.
-	//  * Keys must start with a lowercase letter or international character.
-	//  * Each resource is limited to a maximum of 64 labels.
-	//
-	//  Both keys and values are additionally constrained to be <= 128 bytes.
-	// +kcc:proto:field=google.cloud.configdelivery.v1.FleetPackage.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// Required. Information specifying the source of kubernetes configuration to
-	//  deploy.
-	// +kcc:proto:field=google.cloud.configdelivery.v1.FleetPackage.resource_bundle_selector
-	// +required
-	ResourceBundleSelector *FleetPackage_ResourceBundleSelector `json:"resourceBundleSelector,omitempty"`
-
-	// Optional. Configuration to select target clusters to deploy kubernetes
-	//  configuration to.
-	// +kcc:proto:field=google.cloud.configdelivery.v1.FleetPackage.target
-	Target *FleetPackage_Target `json:"target,omitempty"`
-
-	// Optional. The strategy to use to deploy kubernetes configuration to
-	//  clusters.
-	// +kcc:proto:field=google.cloud.configdelivery.v1.FleetPackage.rollout_strategy
-	RolloutStrategy *RolloutStrategy `json:"rolloutStrategy,omitempty"`
-
-	// Required. Information specifying how to map a `ResourceBundle` variant to a
-	//  target cluster.
-	// +kcc:proto:field=google.cloud.configdelivery.v1.FleetPackage.variant_selector
-	// +required
-	VariantSelector *FleetPackage_VariantSelector `json:"variantSelector,omitempty"`
-
-	// Optional. Information around how to handle kubernetes resources at the
-	//  target clusters when the `FleetPackage` is deleted.
-	// +kcc:proto:field=google.cloud.configdelivery.v1.FleetPackage.deletion_propagation_policy
-	DeletionPropagationPolicy *string `json:"deletionPropagationPolicy,omitempty"`
-
-	// Optional. The desired state of the fleet package.
-	// +kcc:proto:field=google.cloud.configdelivery.v1.FleetPackage.state
-	State *string `json:"state,omitempty"`
-}
-*/
-
 // +kcc:proto=google.cloud.configdelivery.v1.FleetPackage.CloudBuildRepository
 type FleetPackage_CloudBuildRepository struct {
 	// Optional. variants_pattern is a glob pattern that will be used to find
@@ -229,24 +172,6 @@ type RolloutStrategy struct {
 	// +kcc:proto:field=google.cloud.configdelivery.v1.RolloutStrategy.rolling
 	Rolling *RollingStrategy `json:"rolling,omitempty"`
 }
-
-/* unreachable type FleetPackageObservedState
-// +kcc:observedstate:proto=google.cloud.configdelivery.v1.FleetPackage
-type FleetPackageObservedState struct {
-	// Output only. Time at which the `FleetPackage` was created.
-	// +kcc:proto:field=google.cloud.configdelivery.v1.FleetPackage.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. Most recent time at which the `FleetPackage` was updated.
-	// +kcc:proto:field=google.cloud.configdelivery.v1.FleetPackage.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. Information containing the rollout status of the
-	//  `FleetPackage` across all the target clusters.
-	// +kcc:proto:field=google.cloud.configdelivery.v1.FleetPackage.info
-	Info *FleetPackageInfoObservedState `json:"info,omitempty"`
-}
-*/
 
 // +kcc:observedstate:proto=google.cloud.configdelivery.v1.FleetPackageInfo
 type FleetPackageInfoObservedState struct {

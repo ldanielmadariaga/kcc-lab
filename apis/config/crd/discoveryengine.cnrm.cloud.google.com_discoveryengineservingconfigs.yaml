@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,7 +21,6 @@ spec:
     - gcpdiscoveryengineservingconfig
     - gcpdiscoveryengineservingconfigs
     singular: discoveryengineservingconfig
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -47,14 +46,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -89,24 +93,11 @@ spec:
                 type: object
               engineRef:
                 description: Immutable. The Engine this serving config belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
-                    description: A reference to an externally managed DiscoveryEngineEngine
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/engines/{{engineID}}".
+                    description: |-
+                      A reference to an externally managed DiscoveryEngineEngine resource.
+                      Should be in the format "projects/{{projectID}}/locations/{{location}}/engines/{{engineID}}".
                     type: string
                   name:
                     description: The name of a DiscoveryEngineEngine resource.
@@ -124,30 +115,37 @@ spec:
                 description: The GenericConfig of the serving configuration.
                 properties:
                   contentSearchSpec:
-                    description: Specifies the expected behavior of content search.
-                      Only valid for content-search enabled data store.
+                    description: |-
+                      Specifies the expected behavior of content search.
+                       Only valid for content-search enabled data store.
                     properties:
                       chunkSpec:
-                        description: Specifies the chunk spec to be returned from
-                          the search response. Only available if the [SearchRequest.ContentSearchSpec.search_result_mode][google.cloud.discoveryengine.v1beta.SearchRequest.ContentSearchSpec.search_result_mode]
-                          is set to [CHUNKS][google.cloud.discoveryengine.v1beta.SearchRequest.ContentSearchSpec.SearchResultMode.CHUNKS]
+                        description: |-
+                          Specifies the chunk spec to be returned from the search response.
+                           Only available if the
+                           [SearchRequest.ContentSearchSpec.search_result_mode][google.cloud.discoveryengine.v1beta.SearchRequest.ContentSearchSpec.search_result_mode]
+                           is set to
+                           [CHUNKS][google.cloud.discoveryengine.v1beta.SearchRequest.ContentSearchSpec.SearchResultMode.CHUNKS]
                         properties:
                           numNextChunks:
-                            description: The number of next chunks to be returned
-                              of the current chunk. The maximum allowed value is 3.
-                              If not specified, no next chunks will be returned.
+                            description: |-
+                              The number of next chunks to be returned of the current chunk. The
+                               maximum allowed value is 3.
+                               If not specified, no next chunks will be returned.
                             format: int32
                             type: integer
                           numPreviousChunks:
-                            description: The number of previous chunks to be returned
-                              of the current chunk. The maximum allowed value is 3.
-                              If not specified, no previous chunks will be returned.
+                            description: |-
+                              The number of previous chunks to be returned of the current chunk. The
+                               maximum allowed value is 3.
+                               If not specified, no previous chunks will be returned.
                             format: int32
                             type: integer
                         type: object
                       extractiveContentSpec:
-                        description: If there is no extractive_content_spec provided,
-                          there will be no extractive answer in the search response.
+                        description: |-
+                          If there is no extractive_content_spec provided, there will be no
+                           extractive answer in the search response.
                         properties:
                           maxExtractiveAnswerCount:
                             description: |-
@@ -188,53 +186,60 @@ spec:
                             format: int32
                             type: integer
                           numNextSegments:
-                            description: Return at most `num_next_segments` segments
-                              after each selected segments.
+                            description: |-
+                              Return at most `num_next_segments` segments after each selected
+                               segments.
                             format: int32
                             type: integer
                           numPreviousSegments:
-                            description: Specifies whether to also include the adjacent
-                              from each selected segments. Return at most `num_previous_segments`
-                              segments before each selected segments.
+                            description: |-
+                              Specifies whether to also include the adjacent from each selected
+                               segments.
+                               Return at most `num_previous_segments` segments before each selected
+                               segments.
                             format: int32
                             type: integer
                           returnExtractiveSegmentScore:
-                            description: Specifies whether to return the confidence
-                              score from the extractive segments in each search result.
-                              This feature is available only for new or allowlisted
-                              data stores. To allowlist your data store, contact your
-                              Customer Engineer. The default value is `false`.
+                            description: |-
+                              Specifies whether to return the confidence score from the extractive
+                               segments in each search result. This feature is available only for new
+                               or allowlisted data stores. To allowlist your data store,
+                               contact your Customer Engineer. The default value is `false`.
                             type: boolean
                         type: object
                       searchResultMode:
-                        description: Specifies the search result mode. If unspecified,
-                          the search result mode defaults to `DOCUMENTS`.
+                        description: |-
+                          Specifies the search result mode. If unspecified, the
+                           search result mode defaults to `DOCUMENTS`.
                         type: string
                       snippetSpec:
-                        description: If `snippetSpec` is not specified, snippets are
-                          not included in the search response.
+                        description: |-
+                          If `snippetSpec` is not specified, snippets are not included in the
+                           search response.
                         properties:
                           maxSnippetCount:
-                            description: '[DEPRECATED] This field is deprecated. To
-                              control snippet return, use `return_snippet` field.
-                              For backwards compatibility, we will return snippet
-                              if max_snippet_count > 0.'
+                            description: |-
+                              [DEPRECATED] This field is deprecated. To control snippet return, use
+                               `return_snippet` field. For backwards compatibility, we will return
+                               snippet if max_snippet_count > 0.
                             format: int32
                             type: integer
                           referenceOnly:
-                            description: '[DEPRECATED] This field is deprecated and
-                              will have no affect on the snippet.'
+                            description: |-
+                              [DEPRECATED] This field is deprecated and will have no affect on the
+                               snippet.
                             type: boolean
                           returnSnippet:
-                            description: If `true`, then return snippet. If no snippet
-                              can be generated, we return "No snippet is available
-                              for this page." A `snippet_status` with `SUCCESS` or
-                              `NO_SNIPPET_AVAILABLE` will also be returned.
+                            description: |-
+                              If `true`, then return snippet. If no snippet can be generated, we
+                               return "No snippet is available for this page." A `snippet_status` with
+                               `SUCCESS` or `NO_SNIPPET_AVAILABLE` will also be returned.
                             type: boolean
                         type: object
                       summarySpec:
-                        description: If `summarySpec` is not specified, summaries
-                          are not included in the search response.
+                        description: |-
+                          If `summarySpec` is not specified, summaries are not included in the
+                           search response.
                         properties:
                           ignoreAdversarialQuery:
                             description: |-
@@ -307,23 +312,26 @@ spec:
                                to both the second and third search results.
                             type: boolean
                           languageCode:
-                            description: 'Language code for Summary. Use language
-                              tags defined by [BCP47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt).
-                              Note: This is an experimental feature.'
+                            description: |-
+                              Language code for Summary. Use language tags defined by
+                               [BCP47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt).
+                               Note: This is an experimental feature.
                             type: string
                           modelPromptSpec:
-                            description: If specified, the spec will be used to modify
-                              the prompt provided to the LLM.
+                            description: |-
+                              If specified, the spec will be used to modify the prompt provided to
+                               the LLM.
                             properties:
                               preamble:
-                                description: Text at the beginning of the prompt that
-                                  instructs the assistant. Examples are available
-                                  in the user guide.
+                                description: |-
+                                  Text at the beginning of the prompt that instructs the assistant.
+                                   Examples are available in the user guide.
                                 type: string
                             type: object
                           modelSpec:
-                            description: If specified, the spec will be used to modify
-                              the model specification provided to the LLM.
+                            description: |-
+                              If specified, the spec will be used to modify the model specification
+                               provided to the LLM.
                             properties:
                               version:
                                 description: |-
@@ -363,13 +371,13 @@ spec:
                             format: int32
                             type: integer
                           useSemanticChunks:
-                            description: If true, answer will be generated from most
-                              relevant chunks from top search results. This feature
-                              will improve summary quality. Note that with this feature
-                              enabled, not all top search results will be referenced
-                              and included in the reference list, so the citation
-                              source index only points to the search results listed
-                              in the reference list.
+                            description: |-
+                              If true, answer will be generated from most relevant chunks from top
+                               search results. This feature will improve summary quality.
+                               Note that with this feature enabled, not all top search results
+                               will be referenced and included in the reference list, so the citation
+                               source index only points to the search results listed in the reference
+                               list.
                             type: boolean
                         type: object
                     type: object
@@ -386,23 +394,25 @@ spec:
                 description: The MediaConfig of the serving configuration.
                 properties:
                   contentFreshnessCutoffDays:
-                    description: Specifies the content freshness used for recommendation
-                      result. Contents will be demoted if contents were published
-                      for more than content freshness cutoff days.
+                    description: |-
+                      Specifies the content freshness used for recommendation result.
+                       Contents will be demoted if contents were published for more than content
+                       freshness cutoff days.
                     format: int32
                     type: integer
                   contentWatchedPercentageThreshold:
-                    description: Specifies the content watched percentage threshold
-                      for demotion. Threshold value must be between [0, 1.0] inclusive.
+                    description: |-
+                      Specifies the content watched percentage threshold for demotion.
+                       Threshold value must be between [0, 1.0] inclusive.
                     type: number
                   contentWatchedSecondsThreshold:
                     description: Specifies the content watched minutes threshold for
                       demotion.
                     type: number
                   demoteContentWatchedPastDays:
-                    description: Optional. Specifies the number of days to look back
-                      for demoting watched content. If set to zero or unset, defaults
-                      to the maximum of 365 days.
+                    description: |-
+                      Optional. Specifies the number of days to look back for demoting watched
+                       content. If set to zero or unset, defaults to the maximum of 365 days.
                     format: int32
                     type: integer
                   demotionEventType:
@@ -431,26 +441,14 @@ spec:
                 description: The specification for personalization spec.
                 properties:
                   mode:
-                    description: The personalization mode of the search request. Defaults
-                      to [Mode.AUTO][google.cloud.discoveryengine.v1beta.SearchRequest.PersonalizationSpec.Mode.AUTO].
+                    description: |-
+                      The personalization mode of the search request.
+                       Defaults to
+                       [Mode.AUTO][google.cloud.discoveryengine.v1beta.SearchRequest.PersonalizationSpec.Mode.AUTO].
                     type: string
                 type: object
               projectRef:
                 description: Immutable. The Project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -482,8 +480,9 @@ spec:
                   type: string
                 type: array
               resourceID:
-                description: Immutable. The DiscoveryEngineServingConfig name. If
-                  not given, the metadata.name will be used.
+                description: |-
+                  Immutable.
+                  The DiscoveryEngineServingConfig name. If not given, the metadata.name will be used.
                 type: string
               solutionType:
                 description: Required. Immutable. Specifies the solution type that
@@ -506,8 +505,9 @@ spec:
               machine state of DiscoveryEngineServingConfig
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -519,8 +519,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

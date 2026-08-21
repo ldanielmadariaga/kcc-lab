@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpdatalabelingevaluationjob
     - gcpdatalabelingevaluationjobs
     singular: datalabelingevaluationjob
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -71,8 +75,9 @@ spec:
                    "projects/<var>{project_id}</var>/annotationSpecSets/<var>{annotation_spec_set_id}</var>"
                 type: string
               attempts:
-                description: Output only. Every time the evaluation job runs and an
-                  error occurs, the failed attempt is appended to this array.
+                description: |-
+                  Output only. Every time the evaluation job runs and an error occurs, the
+                   failed attempt is appended to this array.
                 items:
                   properties:
                     attemptTime:
@@ -82,15 +87,17 @@ spec:
                       items:
                         properties:
                           code:
-                            description: The status code, which should be an enum
-                              value of [google.rpc.Code][google.rpc.Code].
+                            description: |-
+                              The status code, which should be an enum value of
+                               [google.rpc.Code][google.rpc.Code].
                             format: int32
                             type: integer
                           message:
-                            description: A developer-facing error message, which should
-                              be in English. Any user-facing error message should
-                              be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details]
-                              field, or localized by the client.
+                            description: |-
+                              A developer-facing error message, which should be in English. Any
+                               user-facing error message should be localized and sent in the
+                               [google.rpc.Status.details][google.rpc.Status.details] field, or localized
+                               by the client.
                             type: string
                         type: object
                       type: array
@@ -101,8 +108,9 @@ spec:
                   created.
                 type: string
               description:
-                description: Required. Description of the job. The description can
-                  be up to 25,000 characters long.
+                description: |-
+                  Required. Description of the job. The description can be up to 25,000
+                   characters long.
                 type: string
               evaluationJobConfig:
                 description: Required. Configuration details for the evaluation job.
@@ -150,16 +158,18 @@ spec:
                     - annotationSpecSet
                     type: object
                   evaluationConfig:
-                    description: Required. Details for calculating evaluation metrics
-                      and creating [Evaulations][google.cloud.datalabeling.v1beta1.Evaluation].
-                      If your model version performs image object detection, you must
-                      specify the `boundingBoxEvaluationOptions` field within this
-                      configuration. Otherwise, provide an empty object for this configuration.
+                    description: |-
+                      Required. Details for calculating evaluation metrics and creating
+                       [Evaulations][google.cloud.datalabeling.v1beta1.Evaluation]. If your model version performs image object
+                       detection, you must specify the `boundingBoxEvaluationOptions` field within
+                       this configuration. Otherwise, provide an empty object for this
+                       configuration.
                     properties:
                       boundingBoxEvaluationOptions:
-                        description: Only specify this field if the related model
-                          performs image object detection (`IMAGE_BOUNDING_BOX_ANNOTATION`).
-                          Describes how to evaluate bounding boxes.
+                        description: |-
+                          Only specify this field if the related model performs image object
+                           detection (`IMAGE_BOUNDING_BOX_ANNOTATION`). Describes how to evaluate
+                           bounding boxes.
                         properties:
                           iouThreshold:
                             description: |-
@@ -173,37 +183,37 @@ spec:
                         type: object
                     type: object
                   evaluationJobAlertConfig:
-                    description: Optional. Configuration details for evaluation job
-                      alerts. Specify this field if you want to receive email alerts
-                      if the evaluation job finds that your predictions have low mean
-                      average precision during a run.
+                    description: |-
+                      Optional. Configuration details for evaluation job alerts. Specify this
+                       field if you want to receive email alerts if the evaluation job finds that
+                       your predictions have low mean average precision during a run.
                     properties:
                       email:
                         description: Required. An email address to send alerts to.
                         type: string
                       minAcceptableMeanAveragePrecision:
-                        description: Required. A number between 0 and 1 that describes
-                          a minimum mean average precision threshold. When the evaluation
-                          job runs, if it calculates that your model version's predictions
-                          from the recent interval have [meanAveragePrecision][google.cloud.datalabeling.v1beta1.PrCurve.mean_average_precision]
-                          below this threshold, then it sends an alert to your specified
-                          email.
+                        description: |-
+                          Required. A number between 0 and 1 that describes a minimum mean average
+                           precision threshold. When the evaluation job runs, if it calculates that
+                           your model version's predictions from the recent interval have
+                           [meanAveragePrecision][google.cloud.datalabeling.v1beta1.PrCurve.mean_average_precision] below this
+                           threshold, then it sends an alert to your specified email.
                         type: number
                     type: object
                   exampleCount:
-                    description: 'Required. The maximum number of predictions to sample
-                      and save to BigQuery during each [evaluation interval][google.cloud.datalabeling.v1beta1.EvaluationJob.schedule].
-                      This limit overrides `example_sample_percentage`: even if the
-                      service has not sampled enough predictions to fulfill `example_sample_perecentage`
-                      during an interval, it stops sampling predictions when it meets
-                      this limit.'
+                    description: |-
+                      Required. The maximum number of predictions to sample and save to BigQuery
+                       during each [evaluation interval][google.cloud.datalabeling.v1beta1.EvaluationJob.schedule]. This limit
+                       overrides `example_sample_percentage`: even if the service has not sampled
+                       enough predictions to fulfill `example_sample_perecentage` during an
+                       interval, it stops sampling predictions when it meets this limit.
                     format: int32
                     type: integer
                   exampleSamplePercentage:
-                    description: Required. Fraction of predictions to sample and save
-                      to BigQuery during each [evaluation interval][google.cloud.datalabeling.v1beta1.EvaluationJob.schedule].
-                      For example, 0.1 means 10% of predictions served by your model
-                      version get saved to BigQuery.
+                    description: |-
+                      Required. Fraction of predictions to sample and save to BigQuery during
+                       each [evaluation interval][google.cloud.datalabeling.v1beta1.EvaluationJob.schedule]. For example, 0.1 means
+                       10% of predictions served by your model version get saved to BigQuery.
                     type: number
                   humanAnnotationConfig:
                     description: |-
@@ -217,19 +227,23 @@ spec:
                        `instruction` field within this configuration.
                     properties:
                       annotatedDatasetDescription:
-                        description: Optional. A human-readable description for AnnotatedDataset.
-                          The description can be up to 10000 characters long.
+                        description: |-
+                          Optional. A human-readable description for AnnotatedDataset.
+                           The description can be up to 10000 characters long.
                         type: string
                       annotatedDatasetDisplayName:
-                        description: Required. A human-readable name for AnnotatedDataset
-                          defined by users. Maximum of 64 characters .
+                        description: |-
+                          Required. A human-readable name for AnnotatedDataset defined by
+                           users. Maximum of 64 characters
+                           .
                         type: string
                       contributorEmails:
-                        description: 'Optional. If you want your own labeling contributors
-                          to manage and work on this labeling request, you can set
-                          these contributors here. We will give them access to the
-                          question types in crowdcompute. Note that these emails must
-                          be registered in crowdcompute worker UI: https://crowd-compute.appspot.com/'
+                        description: |-
+                          Optional. If you want your own labeling contributors to manage and work on
+                           this labeling request, you can set these contributors here. We will give
+                           them access to the question types in crowdcompute. Note that these
+                           emails must be registered in crowdcompute worker UI:
+                           https://crowd-compute.appspot.com/
                         items:
                           type: string
                         type: array
@@ -237,32 +251,35 @@ spec:
                         description: Required. Instruction resource name.
                         type: string
                       labelGroup:
-                        description: Optional. A human-readable label used to logically
-                          group labeling tasks. This string must match the regular
-                          expression `[a-zA-Z\\d_-]{0,128}`.
+                        description: |-
+                          Optional. A human-readable label used to logically group labeling tasks.
+                           This string must match the regular expression `[a-zA-Z\\d_-]{0,128}`.
                         type: string
                       languageCode:
-                        description: Optional. The Language of this question, as a
-                          [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt).
-                          Default value is en-US. Only need to set this when task
-                          is language related. For example, French text classification.
+                        description: |-
+                          Optional. The Language of this question, as a
+                           [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt).
+                           Default value is en-US.
+                           Only need to set this when task is language related. For example, French
+                           text classification.
                         type: string
                       questionDuration:
-                        description: Optional. Maximum duration for contributors to
-                          answer a question. Maximum is 3600 seconds. Default is 3600
-                          seconds.
+                        description: |-
+                          Optional. Maximum duration for contributors to answer a question. Maximum
+                           is 3600 seconds. Default is 3600 seconds.
                         type: string
                       replicaCount:
-                        description: Optional. Replication of questions. Each question
-                          will be sent to up to this number of contributors to label.
-                          Aggregated answers will be returned. Default is set to 1.
-                          For image related labeling, valid values are 1, 3, 5.
+                        description: |-
+                          Optional. Replication of questions. Each question will be sent to up to
+                           this number of contributors to label. Aggregated answers will be returned.
+                           Default is set to 1.
+                           For image related labeling, valid values are 1, 3, 5.
                         format: int32
                         type: integer
                       userEmailAddress:
-                        description: Email of the user who started the labeling task
-                          and should be notified by email. If empty no notification
-                          will be sent.
+                        description: |-
+                          Email of the user who started the labeling task and should be notified by
+                           email. If empty no notification will be sent.
                         type: string
                     required:
                     - annotatedDatasetDisplayName
@@ -279,8 +296,9 @@ spec:
                        `classificationMetadata.isMultiLabel` in [input_config][google.cloud.datalabeling.v1beta1.EvaluationJobConfig.input_config].
                     properties:
                       allowMultiLabel:
-                        description: Optional. If allow_multi_label is true, contributors
-                          are able to choose multiple labels for one image.
+                        description: |-
+                          Optional. If allow_multi_label is true, contributors are able to choose
+                           multiple labels for one image.
                         type: boolean
                       annotationSpecSet:
                         description: Required. Annotation spec set resource name.
@@ -305,13 +323,15 @@ spec:
                        * You must specify `bigquerySource` (not `gcsSource`).
                     properties:
                       annotationType:
-                        description: Optional. The type of annotation to be performed
-                          on this data. You must specify this field if you are using
-                          this InputConfig in an [EvaluationJob][google.cloud.datalabeling.v1beta1.EvaluationJob].
+                        description: |-
+                          Optional. The type of annotation to be performed on this data. You must
+                           specify this field if you are using this InputConfig in an
+                           [EvaluationJob][google.cloud.datalabeling.v1beta1.EvaluationJob].
                         type: string
                       bigquerySource:
-                        description: Source located in BigQuery. You must specify
-                          this field if you are using this InputConfig in an [EvaluationJob][google.cloud.datalabeling.v1beta1.EvaluationJob].
+                        description: |-
+                          Source located in BigQuery. You must specify this field if you are using
+                           this InputConfig in an [EvaluationJob][google.cloud.datalabeling.v1beta1.EvaluationJob].
                         properties:
                           inputURI:
                             description: |-
@@ -332,10 +352,10 @@ spec:
                             type: string
                         type: object
                       classificationMetadata:
-                        description: Optional. Metadata about annotations for the
-                          input. You must specify this field if you are using this
-                          InputConfig in an [EvaluationJob][google.cloud.datalabeling.v1beta1.EvaluationJob]
-                          for a model version that performs classification.
+                        description: |-
+                          Optional. Metadata about annotations for the input. You must specify this
+                           field if you are using this InputConfig in an [EvaluationJob][google.cloud.datalabeling.v1beta1.EvaluationJob] for a
+                           model version that performs classification.
                         properties:
                           isMultiLabel:
                             description: Whether the classification task is multi-label
@@ -350,8 +370,9 @@ spec:
                         description: Source located in Cloud Storage.
                         properties:
                           inputURI:
-                            description: Required. The input URI of source file. This
-                              must be a Cloud Storage path (`gs://...`).
+                            description: |-
+                              Required. The input URI of source file. This must be a Cloud Storage path
+                               (`gs://...`).
                             type: string
                           mimeType:
                             description: Required. The format of the source file.
@@ -363,8 +384,10 @@ spec:
                           be specified.
                         properties:
                           languageCode:
-                            description: The language of this text, as a [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt).
-                              Default value is en-US.
+                            description: |-
+                              The language of this text, as a
+                               [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt).
+                               Default value is en-US.
                             type: string
                         type: object
                     type: object
@@ -378,8 +401,9 @@ spec:
                        `classificationMetadata.isMultiLabel` in [input_config][google.cloud.datalabeling.v1beta1.EvaluationJobConfig.input_config].
                     properties:
                       allowMultiLabel:
-                        description: Optional. If allow_multi_label is true, contributors
-                          are able to choose multiple labels for one text segment.
+                        description: |-
+                          Optional. If allow_multi_label is true, contributors are able to choose
+                           multiple labels for one text segment.
                         type: boolean
                       annotationSpecSet:
                         description: Required. Annotation spec set resource name.
@@ -388,10 +412,10 @@ spec:
                         description: Optional. Configs for sentiment selection.
                         properties:
                           enableLabelSentimentSelection:
-                            description: If set to true, contributors will have the
-                              option to select sentiment of the label they selected,
-                              to mark it as negative or positive label. Default is
-                              false.
+                            description: |-
+                              If set to true, contributors will have the option to select sentiment of
+                               the label they selected, to mark it as negative or positive label. Default
+                               is false.
                             type: boolean
                         type: object
                     required:
@@ -399,11 +423,12 @@ spec:
                     type: object
                 type: object
               labelMissingGroundTruth:
-                description: Required. Whether you want Data Labeling Service to provide
-                  ground truth labels for prediction input. If you want the service
-                  to assign human labelers to annotate your data, set this to `true`.
-                  If you want to provide your own ground truth labels in the evaluation
-                  job's BigQuery table, set this to `false`.
+                description: |-
+                  Required. Whether you want Data Labeling Service to provide ground truth
+                   labels for prediction input. If you want the service to assign human
+                   labelers to annotate your data, set this to `true`. If you want to provide
+                   your own ground truth labels in the evaluation job's BigQuery table, set
+                   this to `false`.
                 type: boolean
               modelVersion:
                 description: |-
@@ -418,20 +443,6 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -477,8 +488,9 @@ spec:
               machine state of DataLabelingEvaluationJob
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -490,8 +502,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,

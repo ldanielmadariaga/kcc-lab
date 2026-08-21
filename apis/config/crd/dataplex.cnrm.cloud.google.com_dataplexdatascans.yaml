@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpdataplexdatascan
     - gcpdataplexdatascans
     singular: dataplexdatascan
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,14 +44,19 @@ spec:
         description: DataplexDataScan is the Schema for the DataplexDataScan API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -63,15 +67,17 @@ spec:
                 description: Required. The data source for DataScan.
                 properties:
                   entity:
-                    description: 'Immutable. The Dataplex entity that represents the
-                      data source (e.g. BigQuery table) for DataScan, of the form:
-                      `projects/{project_number}/locations/{location_id}/lakes/{lake_id}/zones/{zone_id}/entities/{entity_id}`.'
+                    description: |-
+                      Immutable. The Dataplex entity that represents the data source (e.g.
+                       BigQuery table) for DataScan, of the form:
+                       `projects/{project_number}/locations/{location_id}/lakes/{lake_id}/zones/{zone_id}/entities/{entity_id}`.
                     type: string
                   resource:
-                    description: 'Immutable. The service-qualified full resource name
-                      of the cloud resource for a DataScan job to scan against. The
-                      field could be: BigQuery table of type "TABLE" for DataProfileScan/DataQualityScan
-                      Format: //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID'
+                    description: |-
+                      Immutable. The service-qualified full resource name of the cloud resource
+                       for a DataScan job to scan against. The field could be: BigQuery table of
+                       type "TABLE" for DataProfileScan/DataQualityScan Format:
+                       //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
                     type: string
                 type: object
               dataDiscoverySpec:
@@ -81,8 +87,10 @@ spec:
                     description: Optional. Configuration for metadata publishing.
                     properties:
                       connection:
-                        description: Optional. The BigQuery connection used to create
-                          BigLake tables. Must be in the form `projects/{project_id}/locations/{location_id}/connections/{connection_id}`
+                        description: |-
+                          Optional. The BigQuery connection used to create BigLake tables.
+                           Must be in the form
+                           `projects/{project_id}/locations/{location_id}/connections/{connection_id}`
                         type: string
                       location:
                         description: |-
@@ -109,9 +117,9 @@ spec:
                            https://cloud.google.com/bigquery/docs/locations#supported_locations.
                         type: string
                       tableType:
-                        description: Optional. Determines whether to  publish discovered
-                          tables as BigLake external tables or non-BigLake external
-                          tables.
+                        description: |-
+                          Optional. Determines whether to  publish discovered tables as BigLake
+                           external tables or non-BigLake external tables.
                         type: string
                     type: object
                   storageConfig:
@@ -121,49 +129,50 @@ spec:
                         description: Optional. Configuration for CSV data.
                         properties:
                           delimiter:
-                            description: Optional. The delimiter that is used to separate
-                              values. The default is `,` (comma).
+                            description: |-
+                              Optional. The delimiter that is used to separate values. The default is
+                               `,` (comma).
                             type: string
                           encoding:
                             description: Optional. The character encoding of the data.
                               The default is UTF-8.
                             type: string
                           headerRows:
-                            description: Optional. The number of rows to interpret
-                              as header rows that should be skipped when reading data
-                              rows.
+                            description: |-
+                              Optional. The number of rows to interpret as header rows that should be
+                               skipped when reading data rows.
                             format: int32
                             type: integer
                           quote:
-                            description: Optional. The character used to quote column
-                              values. Accepts `"` (double quotation mark) or `'` (single
-                              quotation mark). If unspecified, defaults to `"` (double
-                              quotation mark).
+                            description: |-
+                              Optional. The character used to quote column values. Accepts `"`
+                               (double quotation mark) or `'` (single quotation mark). If unspecified,
+                               defaults to `"` (double quotation mark).
                             type: string
                           typeInferenceDisabled:
-                            description: Optional. Whether to disable the inference
-                              of data types for CSV data. If true, all columns are
-                              registered as strings.
+                            description: |-
+                              Optional. Whether to disable the inference of data types for CSV data.
+                               If true, all columns are registered as strings.
                             type: boolean
                         type: object
                       excludePatterns:
-                        description: Optional. Defines the data to exclude during
-                          discovery. Provide a list of patterns that identify the
-                          data to exclude. For Cloud Storage bucket assets, these
-                          patterns are interpreted as glob patterns used to match
-                          object names. For BigQuery dataset assets, these patterns
-                          are interpreted as patterns to match table names.
+                        description: |-
+                          Optional. Defines the data to exclude during discovery. Provide a list of
+                           patterns that identify the data to exclude. For Cloud Storage bucket
+                           assets, these patterns are interpreted as glob patterns used to match
+                           object names. For BigQuery dataset assets, these patterns are interpreted
+                           as patterns to match table names.
                         items:
                           type: string
                         type: array
                       includePatterns:
-                        description: Optional. Defines the data to include during
-                          discovery when only a subset of the data should be considered.
-                          Provide a list of patterns that identify the data to include.
-                          For Cloud Storage bucket assets, these patterns are interpreted
-                          as glob patterns used to match object names. For BigQuery
-                          dataset assets, these patterns are interpreted as patterns
-                          to match table names.
+                        description: |-
+                          Optional. Defines the data to include during discovery when only a subset
+                           of the data should be considered. Provide a list of patterns that
+                           identify the data to include. For Cloud Storage bucket assets, these
+                           patterns are interpreted as glob patterns used to match object names. For
+                           BigQuery dataset assets, these patterns are interpreted as patterns to
+                           match table names.
                         items:
                           type: string
                         type: array
@@ -175,10 +184,10 @@ spec:
                               The default is UTF-8.
                             type: string
                           typeInferenceDisabled:
-                            description: Optional. Whether to disable the inference
-                              of data types for JSON data. If true, all columns are
-                              registered as their primitive types (strings, number,
-                              or boolean).
+                            description: |-
+                              Optional. Whether to disable the inference of data types for JSON data.
+                               If true, all columns are registered as their primitive types
+                               (strings, number, or boolean).
                             type: boolean
                         type: object
                     type: object
@@ -230,13 +239,17 @@ spec:
                     description: Optional. Actions to take upon job completion..
                     properties:
                       bigqueryExport:
-                        description: Optional. If set, results will be exported to
-                          the provided BigQuery table.
+                        description: |-
+                          Optional. If set, results will be exported to the provided BigQuery
+                           table.
                         properties:
                           resultsTable:
-                            description: 'Optional. The BigQuery table to export DataProfileScan
-                              results to. Format: //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
-                              or projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID'
+                            description: |-
+                              Optional. The BigQuery table to export DataProfileScan results to.
+                               Format:
+                               //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
+                               or
+                               projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
                             type: string
                         type: object
                     type: object
@@ -267,18 +280,23 @@ spec:
                     description: Optional. Actions to take upon job completion.
                     properties:
                       bigqueryExport:
-                        description: Optional. If set, results will be exported to
-                          the provided BigQuery table.
+                        description: |-
+                          Optional. If set, results will be exported to the provided BigQuery
+                           table.
                         properties:
                           resultsTable:
-                            description: 'Optional. The BigQuery table to export DataQualityScan
-                              results to. Format: //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
-                              or projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID'
+                            description: |-
+                              Optional. The BigQuery table to export DataQualityScan results to.
+                               Format:
+                               //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
+                               or
+                               projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
                             type: string
                         type: object
                       notificationReport:
-                        description: Optional. If set, results will be sent to the
-                          provided notification receipts upon triggers.
+                        description: |-
+                          Optional. If set, results will be sent to the provided notification
+                           receipts upon triggers.
                         properties:
                           jobEndTrigger:
                             description: Optional. If set, report will be sent when
@@ -293,8 +311,9 @@ spec:
                               the notification report.
                             properties:
                               emails:
-                                description: Optional. The email recipients who will
-                                  receive the DataQualityScan results report.
+                                description: |-
+                                  Optional. The email recipients who will receive the DataQualityScan
+                                   results report.
                                 items:
                                   type: string
                                 type: array
@@ -321,8 +340,9 @@ spec:
                        Example: col1 >= 0 AND col2 < 10
                     type: string
                   rules:
-                    description: Required. The list of rules to evaluate against a
-                      data source. At least one rule is required.
+                    description: |-
+                      Required. The list of rules to evaluate against a data source. At least one
+                       rule is required.
                     items:
                       properties:
                         column:
@@ -336,10 +356,11 @@ spec:
                              * The maximum length is 1,024 characters.
                           type: string
                         dimension:
-                          description: Required. The dimension a rule belongs to.
-                            Results are also aggregated at the dimension level. Supported
-                            dimensions are **["COMPLETENESS", "ACCURACY", "CONSISTENCY",
-                            "VALIDITY", "UNIQUENESS", "FRESHNESS", "VOLUME"]**
+                          description: |-
+                            Required. The dimension a rule belongs to. Results are also aggregated at
+                             the dimension level. Supported dimensions are **["COMPLETENESS",
+                             "ACCURACY", "CONSISTENCY", "VALIDITY", "UNIQUENESS", "FRESHNESS",
+                             "VOLUME"]**
                           type: string
                         ignoreNull:
                           description: |-
@@ -369,18 +390,21 @@ spec:
                             column value is null.
                           type: object
                         rangeExpectation:
-                          description: Row-level rule which evaluates whether each
-                            column value lies between a specified range.
+                          description: |-
+                            Row-level rule which evaluates whether each column value lies between a
+                             specified range.
                           properties:
                             maxValue:
-                              description: Optional. The maximum column value allowed
-                                for a row to pass this validation. At least one of
-                                `min_value` and `max_value` need to be provided.
+                              description: |-
+                                Optional. The maximum column value allowed for a row to pass this
+                                 validation. At least one of `min_value` and `max_value` need to be
+                                 provided.
                               type: string
                             minValue:
-                              description: Optional. The minimum column value allowed
-                                for a row to pass this validation. At least one of
-                                `min_value` and `max_value` need to be provided.
+                              description: |-
+                                Optional. The minimum column value allowed for a row to pass this
+                                 validation. At least one of `min_value` and `max_value` need to be
+                                 provided.
                               type: string
                             strictMaxEnabled:
                               description: |-
@@ -398,8 +422,9 @@ spec:
                               type: boolean
                           type: object
                         regexExpectation:
-                          description: Row-level rule which evaluates whether each
-                            column value matches a specified regex.
+                          description: |-
+                            Row-level rule which evaluates whether each column value matches a
+                             specified regex.
                           properties:
                             regex:
                               description: Optional. A regular expression the column
@@ -407,16 +432,18 @@ spec:
                               type: string
                           type: object
                         rowConditionExpectation:
-                          description: Row-level rule which evaluates whether each
-                            row in a table passes the specified condition.
+                          description: |-
+                            Row-level rule which evaluates whether each row in a table passes the
+                             specified condition.
                           properties:
                             sqlExpression:
                               description: Optional. The SQL expression.
                               type: string
                           type: object
                         setExpectation:
-                          description: Row-level rule which evaluates whether each
-                            column value is contained by a specified set.
+                          description: |-
+                            Row-level rule which evaluates whether each column value is contained by
+                             a specified set.
                           properties:
                             values:
                               description: Optional. Expected values for the column
@@ -426,17 +453,18 @@ spec:
                               type: array
                           type: object
                         sqlAssertion:
-                          description: Aggregate rule which evaluates the number of
-                            rows returned for the provided statement. If any rows
-                            are returned, this rule fails.
+                          description: |-
+                            Aggregate rule which evaluates the number of rows returned for the
+                             provided statement. If any rows are returned, this rule fails.
                           properties:
                             sqlStatement:
                               description: Optional. The SQL statement.
                               type: string
                           type: object
                         statisticRangeExpectation:
-                          description: Aggregate rule which evaluates whether the
-                            column aggregate statistic lies between a specified range.
+                          description: |-
+                            Aggregate rule which evaluates whether the column aggregate
+                             statistic lies between a specified range.
                           properties:
                             maxValue:
                               description: |-
@@ -471,12 +499,14 @@ spec:
                               type: boolean
                           type: object
                         suspended:
-                          description: Optional. Whether the Rule is active or suspended.
-                            Default is false.
+                          description: |-
+                            Optional. Whether the Rule is active or suspended.
+                             Default is false.
                           type: boolean
                         tableConditionExpectation:
-                          description: Aggregate rule which evaluates whether the
-                            provided expression is true for a table.
+                          description: |-
+                            Aggregate rule which evaluates whether the provided expression is true
+                             for a table.
                           properties:
                             sqlExpression:
                               description: Optional. The SQL expression.
@@ -580,20 +610,6 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -624,8 +640,9 @@ spec:
               state of DataplexDataScan
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -637,8 +654,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -769,106 +787,93 @@ spec:
                                     field.
                                   properties:
                                     distinctRatio:
-                                      description: Ratio of rows with distinct values
-                                        against total scanned rows. Not available
-                                        for complex non-groupable field type, including
-                                        RECORD, ARRAY, GEOGRAPHY, and JSON, as well
-                                        as fields with REPEATABLE mode.
+                                      description: |-
+                                        Ratio of rows with distinct values against total scanned rows.
+                                         Not available for complex non-groupable field type, including RECORD,
+                                         ARRAY, GEOGRAPHY, and JSON, as well as fields with REPEATABLE mode.
                                       type: number
                                     doubleProfile:
                                       description: Double type field information.
                                       properties:
                                         average:
-                                          description: Average of non-null values
-                                            in the scanned data. NaN, if the field
-                                            has a NaN.
+                                          description: |-
+                                            Average of non-null values in the scanned data. NaN, if the field
+                                             has a NaN.
                                           type: number
                                         max:
-                                          description: Maximum of non-null values
-                                            in the scanned data. NaN, if the field
-                                            has a NaN.
+                                          description: |-
+                                            Maximum of non-null values in the scanned data. NaN, if the field
+                                             has a NaN.
                                           type: number
                                         min:
-                                          description: Minimum of non-null values
-                                            in the scanned data. NaN, if the field
-                                            has a NaN.
+                                          description: |-
+                                            Minimum of non-null values in the scanned data. NaN, if the field
+                                             has a NaN.
                                           type: number
                                         quartiles:
-                                          description: 'A quartile divides the number
-                                            of data points into four parts, or quarters,
-                                            of more-or-less equal size. Three main
-                                            quartiles used are: The first quartile
-                                            (Q1) splits off the lowest 25% of data
-                                            from the highest 75%. It is also known
-                                            as the lower or 25th empirical quartile,
-                                            as 25% of the data is below this point.
-                                            The second quartile (Q2) is the median
-                                            of a data set. So, 50% of the data lies
-                                            below this point. The third quartile (Q3)
-                                            splits off the highest 25% of data from
-                                            the lowest 75%. It is known as the upper
-                                            or 75th empirical quartile, as 75% of
-                                            the data lies below this point. Here,
-                                            the quartiles is provided as an ordered
-                                            list of quartile values for the scanned
-                                            data, occurring in order Q1, median, Q3.'
+                                          description: |-
+                                            A quartile divides the number of data points into four parts, or
+                                             quarters, of more-or-less equal size. Three main quartiles used
+                                             are: The first quartile (Q1) splits off the lowest 25% of data from
+                                             the highest 75%. It is also known as the lower or 25th empirical
+                                             quartile, as 25% of the data is below this point. The second
+                                             quartile (Q2) is the median of a data set. So, 50% of the data lies
+                                             below this point. The third quartile (Q3) splits off the highest
+                                             25% of data from the lowest 75%. It is known as the upper or 75th
+                                             empirical quartile, as 75% of the data lies below this point.
+                                             Here, the quartiles is provided as an ordered list of quartile
+                                             values for the scanned data, occurring in order Q1, median, Q3.
                                           items:
                                             type: number
                                           type: array
                                         standardDeviation:
-                                          description: Standard deviation of non-null
-                                            values in the scanned data. NaN, if the
-                                            field has a NaN.
+                                          description: |-
+                                            Standard deviation of non-null values in the scanned data. NaN, if
+                                             the field has a NaN.
                                           type: number
                                       type: object
                                     integerProfile:
                                       description: Integer type field information.
                                       properties:
                                         average:
-                                          description: Average of non-null values
-                                            in the scanned data. NaN, if the field
-                                            has a NaN.
+                                          description: |-
+                                            Average of non-null values in the scanned data. NaN, if the field
+                                             has a NaN.
                                           type: number
                                         max:
-                                          description: Maximum of non-null values
-                                            in the scanned data. NaN, if the field
-                                            has a NaN.
+                                          description: |-
+                                            Maximum of non-null values in the scanned data. NaN, if the field
+                                             has a NaN.
                                           format: int64
                                           type: integer
                                         min:
-                                          description: Minimum of non-null values
-                                            in the scanned data. NaN, if the field
-                                            has a NaN.
+                                          description: |-
+                                            Minimum of non-null values in the scanned data. NaN, if the field
+                                             has a NaN.
                                           format: int64
                                           type: integer
                                         quartiles:
-                                          description: 'A quartile divides the number
-                                            of data points into four parts, or quarters,
-                                            of more-or-less equal size. Three main
-                                            quartiles used are: The first quartile
-                                            (Q1) splits off the lowest 25% of data
-                                            from the highest 75%. It is also known
-                                            as the lower or 25th empirical quartile,
-                                            as 25% of the data is below this point.
-                                            The second quartile (Q2) is the median
-                                            of a data set. So, 50% of the data lies
-                                            below this point. The third quartile (Q3)
-                                            splits off the highest 25% of data from
-                                            the lowest 75%. It is known as the upper
-                                            or 75th empirical quartile, as 75% of
-                                            the data lies below this point. Here,
-                                            the quartiles is provided as an ordered
-                                            list of approximate quartile values for
-                                            the scanned data, occurring in order Q1,
-                                            median, Q3.'
+                                          description: |-
+                                            A quartile divides the number of data points into four parts, or
+                                             quarters, of more-or-less equal size. Three main quartiles used
+                                             are: The first quartile (Q1) splits off the lowest 25% of data from
+                                             the highest 75%. It is also known as the lower or 25th empirical
+                                             quartile, as 25% of the data is below this point. The second
+                                             quartile (Q2) is the median of a data set. So, 50% of the data lies
+                                             below this point. The third quartile (Q3) splits off the highest
+                                             25% of data from the lowest 75%. It is known as the upper or 75th
+                                             empirical quartile, as 75% of the data lies below this point.
+                                             Here, the quartiles is provided as an ordered list of approximate
+                                             quartile values for the scanned data, occurring in order Q1,
+                                             median, Q3.
                                           items:
                                             format: int64
                                             type: integer
                                           type: array
                                         standardDeviation:
-                                          description: Standard deviation of non-null
-                                            values in the scanned data. NaN, if the
-                                            field has a NaN.
+                                          description: |-
+                                            Standard deviation of non-null values in the scanned data. NaN, if
+                                             the field has a NaN.
                                           type: number
                                       type: object
                                     nullRatio:
@@ -894,14 +899,12 @@ spec:
                                           type: integer
                                       type: object
                                     topNValues:
-                                      description: The list of top N non-null values,
-                                        frequency and ratio with which they occur
-                                        in the scanned data. N is 10 or equal to the
-                                        number of distinct values in the field, whichever
-                                        is smaller. Not available for complex non-groupable
-                                        field type, including RECORD, ARRAY, GEOGRAPHY,
-                                        and JSON, as well as fields with REPEATABLE
-                                        mode.
+                                      description: |-
+                                        The list of top N non-null values, frequency and ratio with which
+                                         they occur in the scanned data. N is 10 or equal to the number of
+                                         distinct values in the field, whichever is smaller. Not available for
+                                         complex non-groupable field type, including RECORD, ARRAY, GEOGRAPHY,
+                                         and JSON, as well as fields with REPEATABLE mode.
                                       items:
                                         properties:
                                           count:
@@ -910,9 +913,9 @@ spec:
                                             format: int64
                                             type: integer
                                           ratio:
-                                            description: Ratio of the corresponding
-                                              value in the field against the total
-                                              number of rows in the scanned data.
+                                            description: |-
+                                              Ratio of the corresponding value in the field against the total
+                                               number of rows in the scanned data.
                                             type: number
                                           value:
                                             description: String value of a top N non-null
@@ -922,10 +925,12 @@ spec:
                                       type: array
                                   type: object
                                 type:
-                                  description: The data type retrieved from the schema
-                                    of the data source. For instance, for a BigQuery
-                                    native table, it is the [BigQuery Table Schema](https://cloud.google.com/bigquery/docs/reference/rest/v2/tables#tablefieldschema).
-                                    For a Dataplex Entity, it is the [Entity Schema](https://cloud.google.com/dataplex/docs/reference/rpc/google.cloud.dataplex.v1#type_3).
+                                  description: |-
+                                    The data type retrieved from the schema of the data source. For
+                                     instance, for a BigQuery native table, it is the [BigQuery Table
+                                     Schema](https://cloud.google.com/bigquery/docs/reference/rest/v2/tables#tablefieldschema).
+                                     For a Dataplex Entity, it is the [Entity
+                                     Schema](https://cloud.google.com/dataplex/docs/reference/rpc/google.cloud.dataplex.v1#type_3).
                                   type: string
                               type: object
                             type: array
@@ -945,9 +950,9 @@ spec:
                                 description: Value that marks the end of the range.
                                 type: string
                               field:
-                                description: The field that contains values which
-                                  monotonically increases over time (e.g. a timestamp
-                                  column).
+                                description: |-
+                                  The field that contains values which monotonically increases over time
+                                   (e.g. a timestamp column).
                                 type: string
                               start:
                                 description: Value that marks the start of the range.
@@ -993,10 +998,9 @@ spec:
                                 in the DataQualitySpec, as is.
                               properties:
                                 name:
-                                  description: Optional. The dimension name a rule
-                                    belongs to. Custom dimension name is supported
-                                    with all uppercase letters and maximum length
-                                    of 30 characters.
+                                  description: |-
+                                    Optional. The dimension name a rule belongs to. Custom dimension name is
+                                     supported with all uppercase letters and maximum length of 30 characters.
                                   type: string
                               type: object
                             passed:
@@ -1112,11 +1116,11 @@ spec:
                                      * The maximum length is 1,024 characters.
                                   type: string
                                 dimension:
-                                  description: Required. The dimension a rule belongs
-                                    to. Results are also aggregated at the dimension
-                                    level. Supported dimensions are **["COMPLETENESS",
-                                    "ACCURACY", "CONSISTENCY", "VALIDITY", "UNIQUENESS",
-                                    "FRESHNESS", "VOLUME"]**
+                                  description: |-
+                                    Required. The dimension a rule belongs to. Results are also aggregated at
+                                     the dimension level. Supported dimensions are **["COMPLETENESS",
+                                     "ACCURACY", "CONSISTENCY", "VALIDITY", "UNIQUENESS", "FRESHNESS",
+                                     "VOLUME"]**
                                   type: string
                                 ignoreNull:
                                   description: |-
@@ -1146,20 +1150,21 @@ spec:
                                     each column value is null.
                                   type: object
                                 rangeExpectation:
-                                  description: Row-level rule which evaluates whether
-                                    each column value lies between a specified range.
+                                  description: |-
+                                    Row-level rule which evaluates whether each column value lies between a
+                                     specified range.
                                   properties:
                                     maxValue:
-                                      description: Optional. The maximum column value
-                                        allowed for a row to pass this validation.
-                                        At least one of `min_value` and `max_value`
-                                        need to be provided.
+                                      description: |-
+                                        Optional. The maximum column value allowed for a row to pass this
+                                         validation. At least one of `min_value` and `max_value` need to be
+                                         provided.
                                       type: string
                                     minValue:
-                                      description: Optional. The minimum column value
-                                        allowed for a row to pass this validation.
-                                        At least one of `min_value` and `max_value`
-                                        need to be provided.
+                                      description: |-
+                                        Optional. The minimum column value allowed for a row to pass this
+                                         validation. At least one of `min_value` and `max_value` need to be
+                                         provided.
                                       type: string
                                     strictMaxEnabled:
                                       description: |-
@@ -1177,8 +1182,9 @@ spec:
                                       type: boolean
                                   type: object
                                 regexExpectation:
-                                  description: Row-level rule which evaluates whether
-                                    each column value matches a specified regex.
+                                  description: |-
+                                    Row-level rule which evaluates whether each column value matches a
+                                     specified regex.
                                   properties:
                                     regex:
                                       description: Optional. A regular expression
@@ -1186,17 +1192,18 @@ spec:
                                       type: string
                                   type: object
                                 rowConditionExpectation:
-                                  description: Row-level rule which evaluates whether
-                                    each row in a table passes the specified condition.
+                                  description: |-
+                                    Row-level rule which evaluates whether each row in a table passes the
+                                     specified condition.
                                   properties:
                                     sqlExpression:
                                       description: Optional. The SQL expression.
                                       type: string
                                   type: object
                                 setExpectation:
-                                  description: Row-level rule which evaluates whether
-                                    each column value is contained by a specified
-                                    set.
+                                  description: |-
+                                    Row-level rule which evaluates whether each column value is contained by
+                                     a specified set.
                                   properties:
                                     values:
                                       description: Optional. Expected values for the
@@ -1206,18 +1213,18 @@ spec:
                                       type: array
                                   type: object
                                 sqlAssertion:
-                                  description: Aggregate rule which evaluates the
-                                    number of rows returned for the provided statement.
-                                    If any rows are returned, this rule fails.
+                                  description: |-
+                                    Aggregate rule which evaluates the number of rows returned for the
+                                     provided statement. If any rows are returned, this rule fails.
                                   properties:
                                     sqlStatement:
                                       description: Optional. The SQL statement.
                                       type: string
                                   type: object
                                 statisticRangeExpectation:
-                                  description: Aggregate rule which evaluates whether
-                                    the column aggregate statistic lies between a
-                                    specified range.
+                                  description: |-
+                                    Aggregate rule which evaluates whether the column aggregate
+                                     statistic lies between a specified range.
                                   properties:
                                     maxValue:
                                       description: |-
@@ -1253,12 +1260,14 @@ spec:
                                       type: boolean
                                   type: object
                                 suspended:
-                                  description: Optional. Whether the Rule is active
-                                    or suspended. Default is false.
+                                  description: |-
+                                    Optional. Whether the Rule is active or suspended.
+                                     Default is false.
                                   type: boolean
                                 tableConditionExpectation:
-                                  description: Aggregate rule which evaluates whether
-                                    the provided expression is true for a table.
+                                  description: |-
+                                    Aggregate rule which evaluates whether the provided expression is true
+                                     for a table.
                                   properties:
                                     sqlExpression:
                                       description: Optional. The SQL expression.
@@ -1291,9 +1300,9 @@ spec:
                                 description: Value that marks the end of the range.
                                 type: string
                               field:
-                                description: The field that contains values which
-                                  monotonically increases over time (e.g. a timestamp
-                                  column).
+                                description: |-
+                                  The field that contains values which monotonically increases over time
+                                   (e.g. a timestamp column).
                                 type: string
                               start:
                                 description: Value that marks the start of the range.
@@ -1330,9 +1339,9 @@ spec:
                     description: Output only. The type of DataScan.
                     type: string
                   uid:
-                    description: Output only. System generated globally unique ID
-                      for the scan. This ID will be different if the scan is deleted
-                      and re-created with the same name.
+                    description: |-
+                      Output only. System generated globally unique ID for the scan. This ID will
+                       be different if the scan is deleted and re-created with the same name.
                     type: string
                   updateTime:
                     description: Output only. The time when the scan was last updated.

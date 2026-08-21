@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpnetworkmanagementconnectivitytest
     - gcpnetworkmanagementconnectivitytests
     singular: networkmanagementconnectivitytest
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -66,8 +70,9 @@ spec:
                   value is false.
                 type: boolean
               description:
-                description: The user-supplied description of the Connectivity Test.
-                  Maximum of 512 characters.
+                description: |-
+                  The user-supplied description of the Connectivity Test.
+                   Maximum of 512 characters.
                 type: string
               destination:
                 description: |-
@@ -81,19 +86,22 @@ spec:
                    destination that you don't intend to test.
                 properties:
                   appEngineVersion:
-                    description: An [App Engine](https://cloud.google.com/appengine)
-                      [service version](https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions).
-                      Applicable only to source endpoint.
+                    description: |-
+                      An [App Engine](https://cloud.google.com/appengine) [service
+                       version](https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions).
+                       Applicable only to source endpoint.
                     properties:
                       uri:
-                        description: An [App Engine](https://cloud.google.com/appengine)
-                          [service version](https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions)
-                          name.
+                        description: |-
+                          An [App Engine](https://cloud.google.com/appengine) [service
+                           version](https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions)
+                           name.
                         type: string
                     type: object
                   cloudFunction:
-                    description: A [Cloud Function](https://cloud.google.com/functions).
-                      Applicable only to source endpoint.
+                    description: |-
+                      A [Cloud Function](https://cloud.google.com/functions). Applicable only to
+                       source endpoint.
                     properties:
                       uri:
                         description: A [Cloud Function](https://cloud.google.com/functions)
@@ -101,13 +109,17 @@ spec:
                         type: string
                     type: object
                   cloudRunRevision:
-                    description: A [Cloud Run](https://cloud.google.com/run) [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)
-                      Applicable only to source endpoint.
+                    description: |-
+                      A [Cloud Run](https://cloud.google.com/run)
+                       [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)
+                       Applicable only to source endpoint.
                     properties:
                       uri:
-                        description: 'A [Cloud Run](https://cloud.google.com/run)
-                          [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)
-                          URI. The format is: `projects/{project}/locations/{location}/revisions/{revision}`'
+                        description: |-
+                          A [Cloud Run](https://cloud.google.com/run)
+                           [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)
+                           URI. The format is:
+                           `projects/{project}/locations/{location}/revisions/{revision}`
                         type: string
                     type: object
                   cloudSQLInstance:
@@ -115,23 +127,26 @@ spec:
                       URI.
                     type: string
                   forwardingRule:
-                    description: 'A forwarding rule and its corresponding IP address
-                      represent the frontend configuration of a Google Cloud load
-                      balancer. Forwarding rules are also used for protocol forwarding,
-                      Private Service Connect and other network services to provide
-                      forwarding information in the control plane. Applicable only
-                      to destination endpoint. Format: `projects/{project}/global/forwardingRules/{id}`
-                      or `projects/{project}/regions/{region}/forwardingRules/{id}`'
+                    description: |-
+                      A forwarding rule and its corresponding IP address represent the frontend
+                       configuration of a Google Cloud load balancer. Forwarding rules are also
+                       used for protocol forwarding, Private Service Connect and other network
+                       services to provide forwarding information in the control plane. Applicable
+                       only to destination endpoint. Format:
+                        `projects/{project}/global/forwardingRules/{id}` or
+                        `projects/{project}/regions/{region}/forwardingRules/{id}`
                     type: string
                   fqdn:
-                    description: DNS endpoint of [Google Kubernetes Engine cluster
-                      control plane](https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-architecture).
-                      Requires gke_master_cluster to be set, can't be used simultaneoulsly
-                      with ip_address or network. Applicable only to destination endpoint.
+                    description: |-
+                      DNS endpoint of [Google Kubernetes Engine cluster control
+                       plane](https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-architecture).
+                       Requires gke_master_cluster to be set, can't be used simultaneoulsly with
+                       ip_address or network. Applicable only to destination endpoint.
                     type: string
                   gkeMasterCluster:
-                    description: A cluster URI for [Google Kubernetes Engine cluster
-                      control plane](https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-architecture).
+                    description: |-
+                      A cluster URI for [Google Kubernetes Engine cluster control
+                       plane](https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-architecture).
                     type: string
                   instance:
                     description: A Compute Engine instance URI.
@@ -144,32 +159,38 @@ spec:
                     description: A VPC network URI.
                     type: string
                   networkType:
-                    description: Type of the network where the endpoint is located.
-                      Applicable only to source endpoint, as destination network type
-                      can be inferred from the source.
+                    description: |-
+                      Type of the network where the endpoint is located.
+                       Applicable only to source endpoint, as destination network type can be
+                       inferred from the source.
                     type: string
                   port:
-                    description: The IP protocol port of the endpoint. Only applicable
-                      when protocol is TCP or UDP.
+                    description: |-
+                      The IP protocol port of the endpoint.
+                       Only applicable when protocol is TCP or UDP.
                     format: int32
                     type: integer
                   projectID:
-                    description: 'Project ID where the endpoint is located. The project
-                      ID can be derived from the URI if you provide a endpoint or
-                      network URI. The following are two cases where you may need
-                      to provide the project ID: 1. Only the IP address is specified,
-                      and the IP address is within a Google Cloud project. 2. When
-                      you are using Shared VPC and the IP address that you provide
-                      is from the service project. In this case, the network that
-                      the IP address resides in is defined in the host project.'
+                    description: |-
+                      Project ID where the endpoint is located.
+                       The project ID can be derived from the URI if you provide a endpoint or
+                       network URI.
+                       The following are two cases where you may need to provide the project ID:
+                       1. Only the IP address is specified, and the IP address is within a Google
+                       Cloud project.
+                       2. When you are using Shared VPC and the IP address that you provide is
+                       from the service project. In this case, the network that the IP address
+                       resides in is defined in the host project.
                     type: string
                   redisCluster:
-                    description: A [Redis Cluster](https://cloud.google.com/memorystore/docs/cluster)
-                      URI. Applicable only to destination endpoint.
+                    description: |-
+                      A [Redis Cluster](https://cloud.google.com/memorystore/docs/cluster) URI.
+                       Applicable only to destination endpoint.
                     type: string
                   redisInstance:
-                    description: A [Redis Instance](https://cloud.google.com/memorystore/docs/redis)
-                      URI. Applicable only to destination endpoint.
+                    description: |-
+                      A [Redis Instance](https://cloud.google.com/memorystore/docs/redis) URI.
+                       Applicable only to destination endpoint.
                     type: string
                 type: object
               labels:
@@ -182,20 +203,6 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -217,9 +224,9 @@ spec:
                   assumed.
                 type: string
               relatedProjects:
-                description: Other projects that may be relevant for reachability
-                  analysis. This is applicable to scenarios where a test can cross
-                  project boundaries.
+                description: |-
+                  Other projects that may be relevant for reachability analysis.
+                   This is applicable to scenarios where a test can cross project boundaries.
                 items:
                   type: string
                 type: array
@@ -228,8 +235,9 @@ spec:
                   the metadata.name will be used.
                 type: string
               roundTrip:
-                description: Whether run analysis for the return path from destination
-                  to source. Default value is false.
+                description: |-
+                  Whether run analysis for the return path from destination to source.
+                   Default value is false.
                 type: boolean
               source:
                 description: |-
@@ -243,19 +251,22 @@ spec:
                    that you don't intend to test.
                 properties:
                   appEngineVersion:
-                    description: An [App Engine](https://cloud.google.com/appengine)
-                      [service version](https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions).
-                      Applicable only to source endpoint.
+                    description: |-
+                      An [App Engine](https://cloud.google.com/appengine) [service
+                       version](https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions).
+                       Applicable only to source endpoint.
                     properties:
                       uri:
-                        description: An [App Engine](https://cloud.google.com/appengine)
-                          [service version](https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions)
-                          name.
+                        description: |-
+                          An [App Engine](https://cloud.google.com/appengine) [service
+                           version](https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.services.versions)
+                           name.
                         type: string
                     type: object
                   cloudFunction:
-                    description: A [Cloud Function](https://cloud.google.com/functions).
-                      Applicable only to source endpoint.
+                    description: |-
+                      A [Cloud Function](https://cloud.google.com/functions). Applicable only to
+                       source endpoint.
                     properties:
                       uri:
                         description: A [Cloud Function](https://cloud.google.com/functions)
@@ -263,13 +274,17 @@ spec:
                         type: string
                     type: object
                   cloudRunRevision:
-                    description: A [Cloud Run](https://cloud.google.com/run) [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)
-                      Applicable only to source endpoint.
+                    description: |-
+                      A [Cloud Run](https://cloud.google.com/run)
+                       [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)
+                       Applicable only to source endpoint.
                     properties:
                       uri:
-                        description: 'A [Cloud Run](https://cloud.google.com/run)
-                          [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)
-                          URI. The format is: `projects/{project}/locations/{location}/revisions/{revision}`'
+                        description: |-
+                          A [Cloud Run](https://cloud.google.com/run)
+                           [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)
+                           URI. The format is:
+                           `projects/{project}/locations/{location}/revisions/{revision}`
                         type: string
                     type: object
                   cloudSQLInstance:
@@ -277,23 +292,26 @@ spec:
                       URI.
                     type: string
                   forwardingRule:
-                    description: 'A forwarding rule and its corresponding IP address
-                      represent the frontend configuration of a Google Cloud load
-                      balancer. Forwarding rules are also used for protocol forwarding,
-                      Private Service Connect and other network services to provide
-                      forwarding information in the control plane. Applicable only
-                      to destination endpoint. Format: `projects/{project}/global/forwardingRules/{id}`
-                      or `projects/{project}/regions/{region}/forwardingRules/{id}`'
+                    description: |-
+                      A forwarding rule and its corresponding IP address represent the frontend
+                       configuration of a Google Cloud load balancer. Forwarding rules are also
+                       used for protocol forwarding, Private Service Connect and other network
+                       services to provide forwarding information in the control plane. Applicable
+                       only to destination endpoint. Format:
+                        `projects/{project}/global/forwardingRules/{id}` or
+                        `projects/{project}/regions/{region}/forwardingRules/{id}`
                     type: string
                   fqdn:
-                    description: DNS endpoint of [Google Kubernetes Engine cluster
-                      control plane](https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-architecture).
-                      Requires gke_master_cluster to be set, can't be used simultaneoulsly
-                      with ip_address or network. Applicable only to destination endpoint.
+                    description: |-
+                      DNS endpoint of [Google Kubernetes Engine cluster control
+                       plane](https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-architecture).
+                       Requires gke_master_cluster to be set, can't be used simultaneoulsly with
+                       ip_address or network. Applicable only to destination endpoint.
                     type: string
                   gkeMasterCluster:
-                    description: A cluster URI for [Google Kubernetes Engine cluster
-                      control plane](https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-architecture).
+                    description: |-
+                      A cluster URI for [Google Kubernetes Engine cluster control
+                       plane](https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-architecture).
                     type: string
                   instance:
                     description: A Compute Engine instance URI.
@@ -306,32 +324,38 @@ spec:
                     description: A VPC network URI.
                     type: string
                   networkType:
-                    description: Type of the network where the endpoint is located.
-                      Applicable only to source endpoint, as destination network type
-                      can be inferred from the source.
+                    description: |-
+                      Type of the network where the endpoint is located.
+                       Applicable only to source endpoint, as destination network type can be
+                       inferred from the source.
                     type: string
                   port:
-                    description: The IP protocol port of the endpoint. Only applicable
-                      when protocol is TCP or UDP.
+                    description: |-
+                      The IP protocol port of the endpoint.
+                       Only applicable when protocol is TCP or UDP.
                     format: int32
                     type: integer
                   projectID:
-                    description: 'Project ID where the endpoint is located. The project
-                      ID can be derived from the URI if you provide a endpoint or
-                      network URI. The following are two cases where you may need
-                      to provide the project ID: 1. Only the IP address is specified,
-                      and the IP address is within a Google Cloud project. 2. When
-                      you are using Shared VPC and the IP address that you provide
-                      is from the service project. In this case, the network that
-                      the IP address resides in is defined in the host project.'
+                    description: |-
+                      Project ID where the endpoint is located.
+                       The project ID can be derived from the URI if you provide a endpoint or
+                       network URI.
+                       The following are two cases where you may need to provide the project ID:
+                       1. Only the IP address is specified, and the IP address is within a Google
+                       Cloud project.
+                       2. When you are using Shared VPC and the IP address that you provide is
+                       from the service project. In this case, the network that the IP address
+                       resides in is defined in the host project.
                     type: string
                   redisCluster:
-                    description: A [Redis Cluster](https://cloud.google.com/memorystore/docs/cluster)
-                      URI. Applicable only to destination endpoint.
+                    description: |-
+                      A [Redis Cluster](https://cloud.google.com/memorystore/docs/cluster) URI.
+                       Applicable only to destination endpoint.
                     type: string
                   redisInstance:
-                    description: A [Redis Instance](https://cloud.google.com/memorystore/docs/redis)
-                      URI. Applicable only to destination endpoint.
+                    description: |-
+                      A [Redis Instance](https://cloud.google.com/memorystore/docs/redis) URI.
+                       Applicable only to destination endpoint.
                     type: string
                 type: object
             required:
@@ -345,8 +369,9 @@ spec:
               connector machine state of NetworkManagementConnectivityTest
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -358,8 +383,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -401,12 +427,16 @@ spec:
                        destination that you don't intend to test.
                     properties:
                       cloudRunRevision:
-                        description: A [Cloud Run](https://cloud.google.com/run) [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)
-                          Applicable only to source endpoint.
+                        description: |-
+                          A [Cloud Run](https://cloud.google.com/run)
+                           [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)
+                           Applicable only to source endpoint.
                         properties:
                           serviceURI:
-                            description: 'Output only. The URI of the Cloud Run service
-                              that the revision belongs to. The format is: `projects/{project}/locations/{location}/services/{service}`'
+                            description: |-
+                              Output only. The URI of the Cloud Run service that the revision belongs
+                               to. The format is:
+                               `projects/{project}/locations/{location}/services/{service}`
                             type: string
                         type: object
                       forwardingRuleTarget:
@@ -414,9 +444,9 @@ spec:
                           of the forwarding rule.
                         type: string
                       loadBalancerID:
-                        description: Output only. ID of the load balancer the forwarding
-                          rule points to. Empty for forwarding rules not related to
-                          load balancers.
+                        description: |-
+                          Output only. ID of the load balancer the forwarding rule points to. Empty
+                           for forwarding rules not related to load balancers.
                         type: string
                       loadBalancerType:
                         description: Output only. Type of the load balancer the forwarding
@@ -427,29 +457,32 @@ spec:
                     description: Output only. The display name of a Connectivity Test.
                     type: string
                   probingDetails:
-                    description: Output only. The probing details of this test from
-                      the latest run, present for applicable tests only. The details
-                      are updated when creating a new test, updating an existing test,
-                      or triggering a one-time rerun of an existing test.
+                    description: |-
+                      Output only. The probing details of this test from the latest run, present
+                       for applicable tests only. The details are updated when creating a new
+                       test, updating an existing test, or triggering a one-time rerun of an
+                       existing test.
                     properties:
                       abortCause:
                         description: The reason probing was aborted.
                         type: string
                       destinationEgressLocation:
-                        description: The EdgeLocation from which a packet destined
-                          for/originating from the internet will egress/ingress the
-                          Google network. This will only be populated for a connectivity
-                          test which has an internet destination/source address. The
-                          absence of this field *must not* be used as an indication
-                          that the destination/source is part of the Google network.
+                        description: |-
+                          The EdgeLocation from which a packet destined for/originating from the
+                           internet will egress/ingress the Google network.
+                           This will only be populated for a connectivity test which has an internet
+                           destination/source address.
+                           The absence of this field *must not* be used as an indication that the
+                           destination/source is part of the Google network.
                         properties:
                           metropolitanArea:
                             description: Name of the metropolitan area.
                             type: string
                         type: object
                       endpointInfo:
-                        description: The source and destination endpoints derived
-                          from the test input and used for active probing.
+                        description: |-
+                          The source and destination endpoints derived from the test input and used
+                           for active probing.
                         properties:
                           destinationIP:
                             description: Destination IP address.
@@ -489,30 +522,33 @@ spec:
                           of active probing.
                         properties:
                           code:
-                            description: The status code, which should be an enum
-                              value of [google.rpc.Code][google.rpc.Code].
+                            description: |-
+                              The status code, which should be an enum value of
+                               [google.rpc.Code][google.rpc.Code].
                             format: int32
                             type: integer
                           message:
-                            description: A developer-facing error message, which should
-                              be in English. Any user-facing error message should
-                              be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details]
-                              field, or localized by the client.
+                            description: |-
+                              A developer-facing error message, which should be in English. Any
+                               user-facing error message should be localized and sent in the
+                               [google.rpc.Status.details][google.rpc.Status.details] field, or localized
+                               by the client.
                             type: string
                         type: object
                       probingLatency:
-                        description: 'Latency as measured by active probing in one
-                          direction: from the source to the destination endpoint.'
+                        description: |-
+                          Latency as measured by active probing in one direction:
+                           from the source to the destination endpoint.
                         properties:
                           latencyPercentiles:
                             description: Representative latency percentiles.
                             items:
                               properties:
                                 latencyMicros:
-                                  description: percent-th percentile of latency observed,
-                                    in microseconds. Fraction of percent/100 of samples
-                                    have latency lower or equal to the value of this
-                                    field.
+                                  description: |-
+                                    percent-th percentile of latency observed, in microseconds.
+                                     Fraction of percent/100 of samples have latency lower or
+                                     equal to the value of this field.
                                   format: int64
                                   type: integer
                                 percent:
@@ -540,25 +576,27 @@ spec:
                         type: string
                     type: object
                   reachabilityDetails:
-                    description: Output only. The reachability details of this test
-                      from the latest run. The details are updated when creating a
-                      new test, updating an existing test, or triggering a one-time
-                      rerun of an existing test.
+                    description: |-
+                      Output only. The reachability details of this test from the latest run.
+                       The details are updated when creating a new test, updating an
+                       existing test, or triggering a one-time rerun of an existing test.
                     properties:
                       error:
                         description: The details of a failure or a cancellation of
                           reachability analysis.
                         properties:
                           code:
-                            description: The status code, which should be an enum
-                              value of [google.rpc.Code][google.rpc.Code].
+                            description: |-
+                              The status code, which should be an enum value of
+                               [google.rpc.Code][google.rpc.Code].
                             format: int32
                             type: integer
                           message:
-                            description: A developer-facing error message, which should
-                              be in English. Any user-facing error message should
-                              be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details]
-                              field, or localized by the client.
+                            description: |-
+                              A developer-facing error message, which should be in English. Any
+                               user-facing error message should be localized and sent in the
+                               [google.rpc.Status.details][google.rpc.Status.details] field, or localized
+                               by the client.
                             type: string
                         type: object
                       result:
@@ -566,17 +604,18 @@ spec:
                           analysis.
                         type: string
                       traces:
-                        description: Result may contain a list of traces if a test
-                          has multiple possible paths in the network, such as when
-                          destination endpoint is a load balancer with multiple backends.
+                        description: |-
+                          Result may contain a list of traces if a test has multiple possible
+                           paths in the network, such as when destination endpoint is a load balancer
+                           with multiple backends.
                         items:
                           properties:
                             endpointInfo:
-                              description: Derived from the source and destination
-                                endpoints definition specified by user request, and
-                                validated by the data plane model. If there are multiple
-                                traces starting from different source locations, then
-                                the endpoint_info may be different between traces.
+                              description: |-
+                                Derived from the source and destination endpoints definition specified by
+                                 user request, and validated by the data plane model.
+                                 If there are multiple traces starting from different source locations, then
+                                 the endpoint_info may be different between traces.
                               properties:
                                 destinationIP:
                                   description: Destination IP address.
@@ -612,11 +651,10 @@ spec:
                                   type: integer
                               type: object
                             forwardTraceID:
-                              description: ID of trace. For forward traces, this ID
-                                is unique for each trace. For return traces, it matches
-                                ID of associated forward trace. A single forward trace
-                                can be associated with none, one or more than one
-                                return trace.
+                              description: |-
+                                ID of trace. For forward traces, this ID is unique for each trace. For
+                                 return traces, it matches ID of associated forward trace. A single forward
+                                 trace can be associated with none, one or more than one return trace.
                               format: int32
                               type: integer
                             steps:
@@ -640,10 +678,9 @@ spec:
                                         description: IP address that caused the abort.
                                         type: string
                                       projectsMissingPermission:
-                                        description: List of project IDs the user
-                                          specified in the request but lacks access
-                                          to. In this case, analysis is aborted with
-                                          the PERMISSION_DENIED cause.
+                                        description: |-
+                                          List of project IDs the user specified in the request but lacks access to.
+                                           In this case, analysis is aborted with the PERMISSION_DENIED cause.
                                         items:
                                           type: string
                                         type: array
@@ -728,9 +765,9 @@ spec:
                                           SQL instance.
                                         type: string
                                       networkURI:
-                                        description: URI of a Cloud SQL instance network
-                                          or empty string if the instance does not
-                                          have one.
+                                        description: |-
+                                          URI of a Cloud SQL instance network or empty string if the instance does
+                                           not have one.
                                         type: string
                                       region:
                                         description: Region in which the Cloud SQL
@@ -757,8 +794,9 @@ spec:
                                           packet is delivered to.
                                         type: string
                                       storageBucket:
-                                        description: Name of the Cloud Storage Bucket
-                                          the packet is delivered to (if applicable).
+                                        description: |-
+                                          Name of the Cloud Storage Bucket the packet is delivered to (if
+                                           applicable).
                                         type: string
                                       target:
                                         description: Target type where the packet
@@ -816,11 +854,11 @@ spec:
                                         type: string
                                     type: object
                                   endpoint:
-                                    description: Display information of the source
-                                      and destination under analysis. The endpoint
-                                      information in an intermediate state may differ
-                                      with the initial input, as it might be modified
-                                      by state like NAT, or Connection Proxy.
+                                    description: |-
+                                      Display information of the source and destination under analysis.
+                                       The endpoint information in an intermediate state may differ with the
+                                       initial input, as it might be modified by state like NAT,
+                                       or Connection Proxy.
                                     properties:
                                       destinationIP:
                                         description: Destination IP address.
@@ -867,30 +905,29 @@ spec:
                                         description: 'Possible values: INGRESS, EGRESS'
                                         type: string
                                       displayName:
-                                        description: The display name of the firewall
-                                          rule. This field might be empty for firewall
-                                          policy rules.
+                                        description: |-
+                                          The display name of the firewall rule. This field might be empty for
+                                           firewall policy rules.
                                         type: string
                                       firewallRuleType:
                                         description: The firewall rule's type.
                                         type: string
                                       networkURI:
-                                        description: The URI of the VPC network that
-                                          the firewall rule is associated with. This
-                                          field is not applicable to hierarchical
-                                          firewall policy rules.
+                                        description: |-
+                                          The URI of the VPC network that the firewall rule is associated with.
+                                           This field is not applicable to hierarchical firewall policy rules.
                                         type: string
                                       policy:
-                                        description: The name of the firewall policy
-                                          that this rule is associated with. This
-                                          field is not applicable to VPC firewall
-                                          rules and implied VPC firewall rules.
+                                        description: |-
+                                          The name of the firewall policy that this rule is associated with.
+                                           This field is not applicable to VPC firewall rules and implied VPC firewall
+                                           rules.
                                         type: string
                                       policyURI:
-                                        description: The URI of the firewall policy
-                                          that this rule is associated with. This
-                                          field is not applicable to VPC firewall
-                                          rules and implied VPC firewall rules.
+                                        description: |-
+                                          The URI of the firewall policy that this rule is associated with.
+                                           This field is not applicable to VPC firewall rules and implied VPC firewall
+                                           rules.
                                         type: string
                                       priority:
                                         description: The priority of the firewall
@@ -904,16 +941,16 @@ spec:
                                           type: string
                                         type: array
                                       targetTags:
-                                        description: The target tags defined by the
-                                          VPC firewall rule. This field is not applicable
-                                          to firewall policy rules.
+                                        description: |-
+                                          The target tags defined by the VPC firewall rule. This field is not
+                                           applicable to firewall policy rules.
                                         items:
                                           type: string
                                         type: array
                                       uri:
-                                        description: The URI of the firewall rule.
-                                          This field is not applicable to implied
-                                          VPC firewall rules.
+                                        description: |-
+                                          The URI of the firewall rule. This field is not applicable to implied
+                                           VPC firewall rules.
                                         type: string
                                     type: object
                                   forward:
@@ -941,10 +978,9 @@ spec:
                                         description: Name of the forwarding rule.
                                         type: string
                                       loadBalancerName:
-                                        description: Name of the load balancer the
-                                          forwarding rule belongs to. Empty for forwarding
-                                          rules not related to load balancers (like
-                                          PSC forwarding rules).
+                                        description: |-
+                                          Name of the load balancer the forwarding rule belongs to. Empty for
+                                           forwarding rules not related to load balancers (like PSC forwarding rules).
                                         type: string
                                       matchedPortRange:
                                         description: Port range defined in the forwarding
@@ -962,8 +998,9 @@ spec:
                                           rule targets (if applicable).
                                         type: string
                                       pscServiceAttachmentURI:
-                                        description: URI of the PSC service attachment
-                                          this forwarding rule targets (if applicable).
+                                        description: |-
+                                          URI of the PSC service attachment this forwarding rule targets (if
+                                           applicable).
                                         type: string
                                       region:
                                         description: Region of the forwarding rule.
@@ -1054,9 +1091,9 @@ spec:
                                         type: string
                                     type: object
                                   loadBalancer:
-                                    description: Display information of the load balancers.
-                                      Deprecated in favor of the `load_balancer_backend_info`
-                                      field, not used in new tests.
+                                    description: |-
+                                      Display information of the load balancers. Deprecated in favor of the
+                                       `load_balancer_backend_info` field, not used in new tests.
                                     properties:
                                       backendType:
                                         description: Type of load balancer's backend
@@ -1099,10 +1136,10 @@ spec:
                                           type: object
                                         type: array
                                       healthCheckURI:
-                                        description: URI of the health check for the
-                                          load balancer. Deprecated and no longer
-                                          populated as different load balancer backends
-                                          might have different health checks.
+                                        description: |-
+                                          URI of the health check for the load balancer. Deprecated and no longer
+                                           populated as different load balancer backends might have different health
+                                           checks.
                                         type: string
                                       loadBalancerType:
                                         description: Type of the load balancer.
@@ -1121,15 +1158,13 @@ spec:
                                           backend belongs to (if applicable).
                                         type: string
                                       healthCheckFirewallsConfigState:
-                                        description: 'Output only. Health check firewalls
-                                          configuration state for the backend. This
-                                          is a result of the static firewall analysis
-                                          (verifying that health check traffic from
-                                          required IP ranges to the backend is allowed
-                                          or not). The backend might still be unhealthy
-                                          even if these firewalls are configured.
-                                          Please refer to the documentation for more
-                                          information: https://cloud.google.com/load-balancing/docs/firewall-rules'
+                                        description: |-
+                                          Output only. Health check firewalls configuration state for the backend.
+                                           This is a result of the static firewall analysis (verifying that health
+                                           check traffic from required IP ranges to the backend is allowed or not).
+                                           The backend might still be unhealthy even if these firewalls are
+                                           configured. Please refer to the documentation for more information:
+                                           https://cloud.google.com/load-balancing/docs/firewall-rules
                                         type: string
                                       healthCheckURI:
                                         description: URI of the health check attached
@@ -1140,16 +1175,15 @@ spec:
                                           backend belongs to (if applicable).
                                         type: string
                                       instanceURI:
-                                        description: URI of the backend instance (if
-                                          applicable). Populated for instance group
-                                          backends, and zonal NEG backends.
+                                        description: |-
+                                          URI of the backend instance (if applicable). Populated for instance group
+                                           backends, and zonal NEG backends.
                                         type: string
                                       name:
-                                        description: Display name of the backend.
-                                          For example, it might be an instance name
-                                          for the instance group backends, or an IP
-                                          address and port for zonal network endpoint
-                                          group backends.
+                                        description: |-
+                                          Display name of the backend. For example, it might be an instance name for
+                                           the instance group backends, or an IP address and port for zonal network
+                                           endpoint group backends.
                                         type: string
                                       networkEndpointGroupURI:
                                         description: URI of the network endpoint group
@@ -1160,8 +1194,9 @@ spec:
                                           NEG backend targets (if applicable).
                                         type: string
                                       pscServiceAttachmentURI:
-                                        description: URI of the PSC service attachment
-                                          this PSC NEG backend targets (if applicable).
+                                        description: |-
+                                          URI of the PSC service attachment this PSC NEG backend targets (if
+                                           applicable).
                                         type: string
                                     type: object
                                   nat:
@@ -1180,8 +1215,9 @@ spec:
                                           NAT translation.
                                         type: string
                                       newDestinationPort:
-                                        description: Destination port after NAT translation.
-                                          Only valid when protocol is TCP or UDP.
+                                        description: |-
+                                          Destination port after NAT translation. Only valid when protocol is TCP or
+                                           UDP.
                                         format: int32
                                         type: integer
                                       newSourceIP:
@@ -1197,8 +1233,9 @@ spec:
                                           NAT translation.
                                         type: string
                                       oldDestinationPort:
-                                        description: Destination port before NAT translation.
-                                          Only valid when protocol is TCP or UDP.
+                                        description: |-
+                                          Destination port before NAT translation. Only valid when protocol is TCP or
+                                           UDP.
                                         format: int32
                                         type: integer
                                       oldSourceIP:
@@ -1261,8 +1298,9 @@ spec:
                                           connection.
                                         type: string
                                       newDestinationPort:
-                                        description: Destination port of a new connection.
-                                          Only valid when protocol is TCP or UDP.
+                                        description: |-
+                                          Destination port of a new connection. Only valid when protocol is TCP or
+                                           UDP.
                                         format: int32
                                         type: integer
                                       newSourceIP:
@@ -1278,9 +1316,9 @@ spec:
                                           original connection
                                         type: string
                                       oldDestinationPort:
-                                        description: Destination port of an original
-                                          connection. Only valid when protocol is
-                                          TCP or UDP.
+                                        description: |-
+                                          Destination port of an original connection. Only valid when protocol is TCP
+                                           or UDP.
                                         format: int32
                                         type: integer
                                       oldSourceIP:
@@ -1288,8 +1326,9 @@ spec:
                                           connection.
                                         type: string
                                       oldSourcePort:
-                                        description: Source port of an original connection.
-                                          Only valid when protocol is TCP or UDP.
+                                        description: |-
+                                          Source port of an original connection. Only valid when protocol is TCP or
+                                           UDP.
                                         format: int32
                                         type: integer
                                       protocol:
@@ -1311,20 +1350,23 @@ spec:
                                         description: Name of a Redis Cluster.
                                         type: string
                                       location:
-                                        description: Name of the region in which the
-                                          Redis Cluster is defined. For example, "us-central1".
+                                        description: |-
+                                          Name of the region in which the Redis Cluster is defined. For example,
+                                           "us-central1".
                                         type: string
                                       networkURI:
-                                        description: URI of the network containing
-                                          the Redis Cluster endpoints in format "projects/{project_id}/global/networks/{network_id}".
+                                        description: |-
+                                          URI of the network containing the Redis Cluster endpoints in format
+                                           "projects/{project_id}/global/networks/{network_id}".
                                         type: string
                                       secondaryEndpointIPAddress:
                                         description: Secondary endpoint IP address
                                           of a Redis Cluster.
                                         type: string
                                       uri:
-                                        description: URI of a Redis Cluster in format
-                                          "projects/{project_id}/locations/{location}/clusters/{cluster_id}"
+                                        description: |-
+                                          URI of a Redis Cluster in format
+                                           "projects/{project_id}/locations/{location}/clusters/{cluster_id}"
                                         type: string
                                     type: object
                                   redisInstance:
@@ -1358,18 +1400,17 @@ spec:
                                       Engine route.
                                     properties:
                                       advertisedRouteNextHopURI:
-                                        description: For ADVERTISED routes, the URI
-                                          of their next hop, i.e. the URI of the hybrid
-                                          endpoint (VPN tunnel, Interconnect attachment,
-                                          NCC router appliance) the advertised prefix
-                                          is advertised through, or URI of the source
-                                          peered network. Deprecated in favor of the
-                                          next_hop_uri field, not used in new tests.
+                                        description: |-
+                                          For ADVERTISED routes, the URI of their next hop, i.e. the URI of the
+                                           hybrid endpoint (VPN tunnel, Interconnect attachment, NCC router appliance)
+                                           the advertised prefix is advertised through, or URI of the source peered
+                                           network. Deprecated in favor of the next_hop_uri field, not used in new
+                                           tests.
                                         type: string
                                       advertisedRouteSourceRouterURI:
-                                        description: For ADVERTISED dynamic routes,
-                                          the URI of the Cloud Router that advertised
-                                          the corresponding IP prefix.
+                                        description: |-
+                                          For ADVERTISED dynamic routes, the URI of the Cloud Router that advertised
+                                           the corresponding IP prefix.
                                         type: string
                                       destIPRange:
                                         description: Destination IP range of the route.
@@ -1389,30 +1430,29 @@ spec:
                                           type: string
                                         type: array
                                       nccHubRouteURI:
-                                        description: For PEERING_SUBNET and PEERING_DYNAMIC
-                                          routes that are advertised by NCC Hub, the
-                                          URI of the corresponding route in NCC Hub's
-                                          routing table.
+                                        description: |-
+                                          For PEERING_SUBNET and PEERING_DYNAMIC routes that are advertised by NCC
+                                           Hub, the URI of the corresponding route in NCC Hub's routing table.
                                         type: string
                                       nccHubURI:
-                                        description: URI of the NCC Hub the route
-                                          is advertised by. PEERING_SUBNET and PEERING_DYNAMIC
-                                          routes that are advertised by NCC Hub only.
+                                        description: |-
+                                          URI of the NCC Hub the route is advertised by. PEERING_SUBNET and
+                                           PEERING_DYNAMIC routes that are advertised by NCC Hub only.
                                         type: string
                                       nccSpokeURI:
-                                        description: URI of the destination NCC Spoke.
-                                          PEERING_SUBNET and PEERING_DYNAMIC routes
-                                          that are advertised by NCC Hub only.
+                                        description: |-
+                                          URI of the destination NCC Spoke. PEERING_SUBNET and PEERING_DYNAMIC routes
+                                           that are advertised by NCC Hub only.
                                         type: string
                                       networkURI:
                                         description: URI of a VPC network where route
                                           is located.
                                         type: string
                                       nextHop:
-                                        description: String type of the next hop of
-                                          the route (for example, "VPN tunnel"). Deprecated
-                                          in favor of the next_hop_type and next_hop_uri
-                                          fields, not used in new tests.
+                                        description: |-
+                                          String type of the next hop of the route (for example, "VPN tunnel").
+                                           Deprecated in favor of the next_hop_type and next_hop_uri fields, not used
+                                           in new tests.
                                         type: string
                                       nextHopNetworkURI:
                                         description: URI of a VPC network where the
@@ -1425,14 +1465,14 @@ spec:
                                         description: URI of the next hop resource.
                                         type: string
                                       originatingRouteDisplayName:
-                                        description: For PEERING_SUBNET, PEERING_STATIC
-                                          and PEERING_DYNAMIC routes, the name of
-                                          the originating SUBNET/STATIC/DYNAMIC route.
+                                        description: |-
+                                          For PEERING_SUBNET, PEERING_STATIC and PEERING_DYNAMIC routes, the name of
+                                           the originating SUBNET/STATIC/DYNAMIC route.
                                         type: string
                                       originatingRouteURI:
-                                        description: For PEERING_SUBNET and PEERING_STATIC
-                                          routes, the URI of the originating SUBNET/STATIC
-                                          route.
+                                        description: |-
+                                          For PEERING_SUBNET and PEERING_STATIC routes, the URI of the originating
+                                           SUBNET/STATIC route.
                                         type: string
                                       priority:
                                         description: Priority of the route.
@@ -1445,16 +1485,15 @@ spec:
                                           type: string
                                         type: array
                                       region:
-                                        description: Region of the route. DYNAMIC,
-                                          PEERING_DYNAMIC, POLICY_BASED and ADVERTISED
-                                          routes only. If set for POLICY_BASED route,
-                                          this is a region of VLAN attachments for
-                                          Cloud Interconnect the route applies to.
+                                        description: |-
+                                          Region of the route. DYNAMIC, PEERING_DYNAMIC, POLICY_BASED and ADVERTISED
+                                           routes only. If set for POLICY_BASED route, this is a region of VLAN
+                                           attachments for Cloud Interconnect the route applies to.
                                         type: string
                                       routeScope:
-                                        description: Indicates where route is applicable.
-                                          Deprecated, routes with NCC_HUB scope are
-                                          not included in the trace in new tests.
+                                        description: |-
+                                          Indicates where route is applicable. Deprecated, routes with NCC_HUB scope
+                                           are not included in the trace in new tests.
                                         type: string
                                       routeType:
                                         description: Type of route.
@@ -1470,9 +1509,9 @@ spec:
                                           type: string
                                         type: array
                                       uri:
-                                        description: URI of a route. SUBNET, STATIC,
-                                          PEERING_SUBNET (only for peering network)
-                                          and POLICY_BASED routes only.
+                                        description: |-
+                                          URI of a route. SUBNET, STATIC, PEERING_SUBNET (only for peering network)
+                                           and POLICY_BASED routes only.
                                         type: string
                                     type: object
                                   serverlessExternalConnection:
@@ -1485,9 +1524,9 @@ spec:
                                         type: string
                                     type: object
                                   serverlessNeg:
-                                    description: Display information of a Serverless
-                                      network endpoint group backend. Used only for
-                                      return traces.
+                                    description: |-
+                                      Display information of a Serverless network endpoint group backend. Used
+                                       only for return traces.
                                     properties:
                                       negURI:
                                         description: URI of the serverless network
@@ -1542,11 +1581,10 @@ spec:
                                         description: URI of a VPN gateway.
                                         type: string
                                       vpnTunnelURI:
-                                        description: A VPN tunnel that is associated
-                                          with this VPN gateway. There may be multiple
-                                          VPN tunnels configured on a VPN gateway,
-                                          and only the one relevant to the test is
-                                          displayed.
+                                        description: |-
+                                          A VPN tunnel that is associated with this VPN gateway.
+                                           There may be multiple VPN tunnels configured on a VPN gateway, and only
+                                           the one relevant to the test is displayed.
                                         type: string
                                     type: object
                                   vpnTunnel:
@@ -1594,25 +1632,28 @@ spec:
                         type: string
                     type: object
                   returnReachabilityDetails:
-                    description: Output only. The reachability details of this test
-                      from the latest run for the return path. The details are updated
-                      when creating a new test, updating an existing test, or triggering
-                      a one-time rerun of an existing test.
+                    description: |-
+                      Output only. The reachability details of this test from the latest run for
+                       the return path. The details are updated when creating a new test,
+                       updating an existing test, or triggering a one-time rerun of an existing
+                       test.
                     properties:
                       error:
                         description: The details of a failure or a cancellation of
                           reachability analysis.
                         properties:
                           code:
-                            description: The status code, which should be an enum
-                              value of [google.rpc.Code][google.rpc.Code].
+                            description: |-
+                              The status code, which should be an enum value of
+                               [google.rpc.Code][google.rpc.Code].
                             format: int32
                             type: integer
                           message:
-                            description: A developer-facing error message, which should
-                              be in English. Any user-facing error message should
-                              be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details]
-                              field, or localized by the client.
+                            description: |-
+                              A developer-facing error message, which should be in English. Any
+                               user-facing error message should be localized and sent in the
+                               [google.rpc.Status.details][google.rpc.Status.details] field, or localized
+                               by the client.
                             type: string
                         type: object
                       result:
@@ -1620,17 +1661,18 @@ spec:
                           analysis.
                         type: string
                       traces:
-                        description: Result may contain a list of traces if a test
-                          has multiple possible paths in the network, such as when
-                          destination endpoint is a load balancer with multiple backends.
+                        description: |-
+                          Result may contain a list of traces if a test has multiple possible
+                           paths in the network, such as when destination endpoint is a load balancer
+                           with multiple backends.
                         items:
                           properties:
                             endpointInfo:
-                              description: Derived from the source and destination
-                                endpoints definition specified by user request, and
-                                validated by the data plane model. If there are multiple
-                                traces starting from different source locations, then
-                                the endpoint_info may be different between traces.
+                              description: |-
+                                Derived from the source and destination endpoints definition specified by
+                                 user request, and validated by the data plane model.
+                                 If there are multiple traces starting from different source locations, then
+                                 the endpoint_info may be different between traces.
                               properties:
                                 destinationIP:
                                   description: Destination IP address.
@@ -1666,11 +1708,10 @@ spec:
                                   type: integer
                               type: object
                             forwardTraceID:
-                              description: ID of trace. For forward traces, this ID
-                                is unique for each trace. For return traces, it matches
-                                ID of associated forward trace. A single forward trace
-                                can be associated with none, one or more than one
-                                return trace.
+                              description: |-
+                                ID of trace. For forward traces, this ID is unique for each trace. For
+                                 return traces, it matches ID of associated forward trace. A single forward
+                                 trace can be associated with none, one or more than one return trace.
                               format: int32
                               type: integer
                             steps:
@@ -1694,10 +1735,9 @@ spec:
                                         description: IP address that caused the abort.
                                         type: string
                                       projectsMissingPermission:
-                                        description: List of project IDs the user
-                                          specified in the request but lacks access
-                                          to. In this case, analysis is aborted with
-                                          the PERMISSION_DENIED cause.
+                                        description: |-
+                                          List of project IDs the user specified in the request but lacks access to.
+                                           In this case, analysis is aborted with the PERMISSION_DENIED cause.
                                         items:
                                           type: string
                                         type: array
@@ -1782,9 +1822,9 @@ spec:
                                           SQL instance.
                                         type: string
                                       networkURI:
-                                        description: URI of a Cloud SQL instance network
-                                          or empty string if the instance does not
-                                          have one.
+                                        description: |-
+                                          URI of a Cloud SQL instance network or empty string if the instance does
+                                           not have one.
                                         type: string
                                       region:
                                         description: Region in which the Cloud SQL
@@ -1811,8 +1851,9 @@ spec:
                                           packet is delivered to.
                                         type: string
                                       storageBucket:
-                                        description: Name of the Cloud Storage Bucket
-                                          the packet is delivered to (if applicable).
+                                        description: |-
+                                          Name of the Cloud Storage Bucket the packet is delivered to (if
+                                           applicable).
                                         type: string
                                       target:
                                         description: Target type where the packet
@@ -1870,11 +1911,11 @@ spec:
                                         type: string
                                     type: object
                                   endpoint:
-                                    description: Display information of the source
-                                      and destination under analysis. The endpoint
-                                      information in an intermediate state may differ
-                                      with the initial input, as it might be modified
-                                      by state like NAT, or Connection Proxy.
+                                    description: |-
+                                      Display information of the source and destination under analysis.
+                                       The endpoint information in an intermediate state may differ with the
+                                       initial input, as it might be modified by state like NAT,
+                                       or Connection Proxy.
                                     properties:
                                       destinationIP:
                                         description: Destination IP address.
@@ -1921,30 +1962,29 @@ spec:
                                         description: 'Possible values: INGRESS, EGRESS'
                                         type: string
                                       displayName:
-                                        description: The display name of the firewall
-                                          rule. This field might be empty for firewall
-                                          policy rules.
+                                        description: |-
+                                          The display name of the firewall rule. This field might be empty for
+                                           firewall policy rules.
                                         type: string
                                       firewallRuleType:
                                         description: The firewall rule's type.
                                         type: string
                                       networkURI:
-                                        description: The URI of the VPC network that
-                                          the firewall rule is associated with. This
-                                          field is not applicable to hierarchical
-                                          firewall policy rules.
+                                        description: |-
+                                          The URI of the VPC network that the firewall rule is associated with.
+                                           This field is not applicable to hierarchical firewall policy rules.
                                         type: string
                                       policy:
-                                        description: The name of the firewall policy
-                                          that this rule is associated with. This
-                                          field is not applicable to VPC firewall
-                                          rules and implied VPC firewall rules.
+                                        description: |-
+                                          The name of the firewall policy that this rule is associated with.
+                                           This field is not applicable to VPC firewall rules and implied VPC firewall
+                                           rules.
                                         type: string
                                       policyURI:
-                                        description: The URI of the firewall policy
-                                          that this rule is associated with. This
-                                          field is not applicable to VPC firewall
-                                          rules and implied VPC firewall rules.
+                                        description: |-
+                                          The URI of the firewall policy that this rule is associated with.
+                                           This field is not applicable to VPC firewall rules and implied VPC firewall
+                                           rules.
                                         type: string
                                       priority:
                                         description: The priority of the firewall
@@ -1958,16 +1998,16 @@ spec:
                                           type: string
                                         type: array
                                       targetTags:
-                                        description: The target tags defined by the
-                                          VPC firewall rule. This field is not applicable
-                                          to firewall policy rules.
+                                        description: |-
+                                          The target tags defined by the VPC firewall rule. This field is not
+                                           applicable to firewall policy rules.
                                         items:
                                           type: string
                                         type: array
                                       uri:
-                                        description: The URI of the firewall rule.
-                                          This field is not applicable to implied
-                                          VPC firewall rules.
+                                        description: |-
+                                          The URI of the firewall rule. This field is not applicable to implied
+                                           VPC firewall rules.
                                         type: string
                                     type: object
                                   forward:
@@ -1995,10 +2035,9 @@ spec:
                                         description: Name of the forwarding rule.
                                         type: string
                                       loadBalancerName:
-                                        description: Name of the load balancer the
-                                          forwarding rule belongs to. Empty for forwarding
-                                          rules not related to load balancers (like
-                                          PSC forwarding rules).
+                                        description: |-
+                                          Name of the load balancer the forwarding rule belongs to. Empty for
+                                           forwarding rules not related to load balancers (like PSC forwarding rules).
                                         type: string
                                       matchedPortRange:
                                         description: Port range defined in the forwarding
@@ -2016,8 +2055,9 @@ spec:
                                           rule targets (if applicable).
                                         type: string
                                       pscServiceAttachmentURI:
-                                        description: URI of the PSC service attachment
-                                          this forwarding rule targets (if applicable).
+                                        description: |-
+                                          URI of the PSC service attachment this forwarding rule targets (if
+                                           applicable).
                                         type: string
                                       region:
                                         description: Region of the forwarding rule.
@@ -2108,9 +2148,9 @@ spec:
                                         type: string
                                     type: object
                                   loadBalancer:
-                                    description: Display information of the load balancers.
-                                      Deprecated in favor of the `load_balancer_backend_info`
-                                      field, not used in new tests.
+                                    description: |-
+                                      Display information of the load balancers. Deprecated in favor of the
+                                       `load_balancer_backend_info` field, not used in new tests.
                                     properties:
                                       backendType:
                                         description: Type of load balancer's backend
@@ -2153,10 +2193,10 @@ spec:
                                           type: object
                                         type: array
                                       healthCheckURI:
-                                        description: URI of the health check for the
-                                          load balancer. Deprecated and no longer
-                                          populated as different load balancer backends
-                                          might have different health checks.
+                                        description: |-
+                                          URI of the health check for the load balancer. Deprecated and no longer
+                                           populated as different load balancer backends might have different health
+                                           checks.
                                         type: string
                                       loadBalancerType:
                                         description: Type of the load balancer.
@@ -2175,15 +2215,13 @@ spec:
                                           backend belongs to (if applicable).
                                         type: string
                                       healthCheckFirewallsConfigState:
-                                        description: 'Output only. Health check firewalls
-                                          configuration state for the backend. This
-                                          is a result of the static firewall analysis
-                                          (verifying that health check traffic from
-                                          required IP ranges to the backend is allowed
-                                          or not). The backend might still be unhealthy
-                                          even if these firewalls are configured.
-                                          Please refer to the documentation for more
-                                          information: https://cloud.google.com/load-balancing/docs/firewall-rules'
+                                        description: |-
+                                          Output only. Health check firewalls configuration state for the backend.
+                                           This is a result of the static firewall analysis (verifying that health
+                                           check traffic from required IP ranges to the backend is allowed or not).
+                                           The backend might still be unhealthy even if these firewalls are
+                                           configured. Please refer to the documentation for more information:
+                                           https://cloud.google.com/load-balancing/docs/firewall-rules
                                         type: string
                                       healthCheckURI:
                                         description: URI of the health check attached
@@ -2194,16 +2232,15 @@ spec:
                                           backend belongs to (if applicable).
                                         type: string
                                       instanceURI:
-                                        description: URI of the backend instance (if
-                                          applicable). Populated for instance group
-                                          backends, and zonal NEG backends.
+                                        description: |-
+                                          URI of the backend instance (if applicable). Populated for instance group
+                                           backends, and zonal NEG backends.
                                         type: string
                                       name:
-                                        description: Display name of the backend.
-                                          For example, it might be an instance name
-                                          for the instance group backends, or an IP
-                                          address and port for zonal network endpoint
-                                          group backends.
+                                        description: |-
+                                          Display name of the backend. For example, it might be an instance name for
+                                           the instance group backends, or an IP address and port for zonal network
+                                           endpoint group backends.
                                         type: string
                                       networkEndpointGroupURI:
                                         description: URI of the network endpoint group
@@ -2214,8 +2251,9 @@ spec:
                                           NEG backend targets (if applicable).
                                         type: string
                                       pscServiceAttachmentURI:
-                                        description: URI of the PSC service attachment
-                                          this PSC NEG backend targets (if applicable).
+                                        description: |-
+                                          URI of the PSC service attachment this PSC NEG backend targets (if
+                                           applicable).
                                         type: string
                                     type: object
                                   nat:
@@ -2234,8 +2272,9 @@ spec:
                                           NAT translation.
                                         type: string
                                       newDestinationPort:
-                                        description: Destination port after NAT translation.
-                                          Only valid when protocol is TCP or UDP.
+                                        description: |-
+                                          Destination port after NAT translation. Only valid when protocol is TCP or
+                                           UDP.
                                         format: int32
                                         type: integer
                                       newSourceIP:
@@ -2251,8 +2290,9 @@ spec:
                                           NAT translation.
                                         type: string
                                       oldDestinationPort:
-                                        description: Destination port before NAT translation.
-                                          Only valid when protocol is TCP or UDP.
+                                        description: |-
+                                          Destination port before NAT translation. Only valid when protocol is TCP or
+                                           UDP.
                                         format: int32
                                         type: integer
                                       oldSourceIP:
@@ -2315,8 +2355,9 @@ spec:
                                           connection.
                                         type: string
                                       newDestinationPort:
-                                        description: Destination port of a new connection.
-                                          Only valid when protocol is TCP or UDP.
+                                        description: |-
+                                          Destination port of a new connection. Only valid when protocol is TCP or
+                                           UDP.
                                         format: int32
                                         type: integer
                                       newSourceIP:
@@ -2332,9 +2373,9 @@ spec:
                                           original connection
                                         type: string
                                       oldDestinationPort:
-                                        description: Destination port of an original
-                                          connection. Only valid when protocol is
-                                          TCP or UDP.
+                                        description: |-
+                                          Destination port of an original connection. Only valid when protocol is TCP
+                                           or UDP.
                                         format: int32
                                         type: integer
                                       oldSourceIP:
@@ -2342,8 +2383,9 @@ spec:
                                           connection.
                                         type: string
                                       oldSourcePort:
-                                        description: Source port of an original connection.
-                                          Only valid when protocol is TCP or UDP.
+                                        description: |-
+                                          Source port of an original connection. Only valid when protocol is TCP or
+                                           UDP.
                                         format: int32
                                         type: integer
                                       protocol:
@@ -2365,20 +2407,23 @@ spec:
                                         description: Name of a Redis Cluster.
                                         type: string
                                       location:
-                                        description: Name of the region in which the
-                                          Redis Cluster is defined. For example, "us-central1".
+                                        description: |-
+                                          Name of the region in which the Redis Cluster is defined. For example,
+                                           "us-central1".
                                         type: string
                                       networkURI:
-                                        description: URI of the network containing
-                                          the Redis Cluster endpoints in format "projects/{project_id}/global/networks/{network_id}".
+                                        description: |-
+                                          URI of the network containing the Redis Cluster endpoints in format
+                                           "projects/{project_id}/global/networks/{network_id}".
                                         type: string
                                       secondaryEndpointIPAddress:
                                         description: Secondary endpoint IP address
                                           of a Redis Cluster.
                                         type: string
                                       uri:
-                                        description: URI of a Redis Cluster in format
-                                          "projects/{project_id}/locations/{location}/clusters/{cluster_id}"
+                                        description: |-
+                                          URI of a Redis Cluster in format
+                                           "projects/{project_id}/locations/{location}/clusters/{cluster_id}"
                                         type: string
                                     type: object
                                   redisInstance:
@@ -2412,18 +2457,17 @@ spec:
                                       Engine route.
                                     properties:
                                       advertisedRouteNextHopURI:
-                                        description: For ADVERTISED routes, the URI
-                                          of their next hop, i.e. the URI of the hybrid
-                                          endpoint (VPN tunnel, Interconnect attachment,
-                                          NCC router appliance) the advertised prefix
-                                          is advertised through, or URI of the source
-                                          peered network. Deprecated in favor of the
-                                          next_hop_uri field, not used in new tests.
+                                        description: |-
+                                          For ADVERTISED routes, the URI of their next hop, i.e. the URI of the
+                                           hybrid endpoint (VPN tunnel, Interconnect attachment, NCC router appliance)
+                                           the advertised prefix is advertised through, or URI of the source peered
+                                           network. Deprecated in favor of the next_hop_uri field, not used in new
+                                           tests.
                                         type: string
                                       advertisedRouteSourceRouterURI:
-                                        description: For ADVERTISED dynamic routes,
-                                          the URI of the Cloud Router that advertised
-                                          the corresponding IP prefix.
+                                        description: |-
+                                          For ADVERTISED dynamic routes, the URI of the Cloud Router that advertised
+                                           the corresponding IP prefix.
                                         type: string
                                       destIPRange:
                                         description: Destination IP range of the route.
@@ -2443,30 +2487,29 @@ spec:
                                           type: string
                                         type: array
                                       nccHubRouteURI:
-                                        description: For PEERING_SUBNET and PEERING_DYNAMIC
-                                          routes that are advertised by NCC Hub, the
-                                          URI of the corresponding route in NCC Hub's
-                                          routing table.
+                                        description: |-
+                                          For PEERING_SUBNET and PEERING_DYNAMIC routes that are advertised by NCC
+                                           Hub, the URI of the corresponding route in NCC Hub's routing table.
                                         type: string
                                       nccHubURI:
-                                        description: URI of the NCC Hub the route
-                                          is advertised by. PEERING_SUBNET and PEERING_DYNAMIC
-                                          routes that are advertised by NCC Hub only.
+                                        description: |-
+                                          URI of the NCC Hub the route is advertised by. PEERING_SUBNET and
+                                           PEERING_DYNAMIC routes that are advertised by NCC Hub only.
                                         type: string
                                       nccSpokeURI:
-                                        description: URI of the destination NCC Spoke.
-                                          PEERING_SUBNET and PEERING_DYNAMIC routes
-                                          that are advertised by NCC Hub only.
+                                        description: |-
+                                          URI of the destination NCC Spoke. PEERING_SUBNET and PEERING_DYNAMIC routes
+                                           that are advertised by NCC Hub only.
                                         type: string
                                       networkURI:
                                         description: URI of a VPC network where route
                                           is located.
                                         type: string
                                       nextHop:
-                                        description: String type of the next hop of
-                                          the route (for example, "VPN tunnel"). Deprecated
-                                          in favor of the next_hop_type and next_hop_uri
-                                          fields, not used in new tests.
+                                        description: |-
+                                          String type of the next hop of the route (for example, "VPN tunnel").
+                                           Deprecated in favor of the next_hop_type and next_hop_uri fields, not used
+                                           in new tests.
                                         type: string
                                       nextHopNetworkURI:
                                         description: URI of a VPC network where the
@@ -2479,14 +2522,14 @@ spec:
                                         description: URI of the next hop resource.
                                         type: string
                                       originatingRouteDisplayName:
-                                        description: For PEERING_SUBNET, PEERING_STATIC
-                                          and PEERING_DYNAMIC routes, the name of
-                                          the originating SUBNET/STATIC/DYNAMIC route.
+                                        description: |-
+                                          For PEERING_SUBNET, PEERING_STATIC and PEERING_DYNAMIC routes, the name of
+                                           the originating SUBNET/STATIC/DYNAMIC route.
                                         type: string
                                       originatingRouteURI:
-                                        description: For PEERING_SUBNET and PEERING_STATIC
-                                          routes, the URI of the originating SUBNET/STATIC
-                                          route.
+                                        description: |-
+                                          For PEERING_SUBNET and PEERING_STATIC routes, the URI of the originating
+                                           SUBNET/STATIC route.
                                         type: string
                                       priority:
                                         description: Priority of the route.
@@ -2499,16 +2542,15 @@ spec:
                                           type: string
                                         type: array
                                       region:
-                                        description: Region of the route. DYNAMIC,
-                                          PEERING_DYNAMIC, POLICY_BASED and ADVERTISED
-                                          routes only. If set for POLICY_BASED route,
-                                          this is a region of VLAN attachments for
-                                          Cloud Interconnect the route applies to.
+                                        description: |-
+                                          Region of the route. DYNAMIC, PEERING_DYNAMIC, POLICY_BASED and ADVERTISED
+                                           routes only. If set for POLICY_BASED route, this is a region of VLAN
+                                           attachments for Cloud Interconnect the route applies to.
                                         type: string
                                       routeScope:
-                                        description: Indicates where route is applicable.
-                                          Deprecated, routes with NCC_HUB scope are
-                                          not included in the trace in new tests.
+                                        description: |-
+                                          Indicates where route is applicable. Deprecated, routes with NCC_HUB scope
+                                           are not included in the trace in new tests.
                                         type: string
                                       routeType:
                                         description: Type of route.
@@ -2524,9 +2566,9 @@ spec:
                                           type: string
                                         type: array
                                       uri:
-                                        description: URI of a route. SUBNET, STATIC,
-                                          PEERING_SUBNET (only for peering network)
-                                          and POLICY_BASED routes only.
+                                        description: |-
+                                          URI of a route. SUBNET, STATIC, PEERING_SUBNET (only for peering network)
+                                           and POLICY_BASED routes only.
                                         type: string
                                     type: object
                                   serverlessExternalConnection:
@@ -2539,9 +2581,9 @@ spec:
                                         type: string
                                     type: object
                                   serverlessNeg:
-                                    description: Display information of a Serverless
-                                      network endpoint group backend. Used only for
-                                      return traces.
+                                    description: |-
+                                      Display information of a Serverless network endpoint group backend. Used
+                                       only for return traces.
                                     properties:
                                       negURI:
                                         description: URI of the serverless network
@@ -2596,11 +2638,10 @@ spec:
                                         description: URI of a VPN gateway.
                                         type: string
                                       vpnTunnelURI:
-                                        description: A VPN tunnel that is associated
-                                          with this VPN gateway. There may be multiple
-                                          VPN tunnels configured on a VPN gateway,
-                                          and only the one relevant to the test is
-                                          displayed.
+                                        description: |-
+                                          A VPN tunnel that is associated with this VPN gateway.
+                                           There may be multiple VPN tunnels configured on a VPN gateway, and only
+                                           the one relevant to the test is displayed.
                                         type: string
                                     type: object
                                   vpnTunnel:
@@ -2659,12 +2700,16 @@ spec:
                        that you don't intend to test.
                     properties:
                       cloudRunRevision:
-                        description: A [Cloud Run](https://cloud.google.com/run) [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)
-                          Applicable only to source endpoint.
+                        description: |-
+                          A [Cloud Run](https://cloud.google.com/run)
+                           [revision](https://cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions/get)
+                           Applicable only to source endpoint.
                         properties:
                           serviceURI:
-                            description: 'Output only. The URI of the Cloud Run service
-                              that the revision belongs to. The format is: `projects/{project}/locations/{location}/services/{service}`'
+                            description: |-
+                              Output only. The URI of the Cloud Run service that the revision belongs
+                               to. The format is:
+                               `projects/{project}/locations/{location}/services/{service}`
                             type: string
                         type: object
                       forwardingRuleTarget:
@@ -2672,9 +2717,9 @@ spec:
                           of the forwarding rule.
                         type: string
                       loadBalancerID:
-                        description: Output only. ID of the load balancer the forwarding
-                          rule points to. Empty for forwarding rules not related to
-                          load balancers.
+                        description: |-
+                          Output only. ID of the load balancer the forwarding rule points to. Empty
+                           for forwarding rules not related to load balancers.
                         type: string
                       loadBalancerType:
                         description: Output only. Type of the load balancer the forwarding

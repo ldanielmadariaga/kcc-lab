@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpvmwareenginenetworkpolicy
     - gcpvmwareenginenetworkpolicies
     singular: vmwareenginenetworkpolicy
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -66,16 +70,17 @@ spec:
                   policy.
                 type: string
               edgeServicesCIDR:
-                description: Required. IP address range in CIDR notation used to create
-                  internet access and external IP access. An RFC 1918 CIDR block,
-                  with a "/26" prefix, is required. The range cannot overlap with
-                  any prefixes either in the consumer VPC network or in use by the
-                  private clouds attached to that VPC network.
+                description: |-
+                  Required. IP address range in CIDR notation used to create internet access
+                   and external IP access. An RFC 1918 CIDR block, with a "/26" prefix, is
+                   required. The range cannot overlap with any prefixes either in the consumer
+                   VPC network or in use by the private clouds attached to that VPC network.
                 type: string
               externalIP:
-                description: Network service that allows External IP addresses to
-                  be assigned to VMware workloads. This service can only be enabled
-                  when `internet_access` is also enabled.
+                description: |-
+                  Network service that allows External IP addresses to be assigned to VMware
+                   workloads. This service can only be enabled when `internet_access` is also
+                   enabled.
                 properties:
                   enabled:
                     description: True if the service is enabled; false otherwise.
@@ -97,20 +102,6 @@ spec:
                   rule: self == oldSelf
               projectRef:
                 description: The Project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -134,24 +125,11 @@ spec:
               vmwareEngineNetworkRef:
                 description: Optional. The relative resource name of the VMware Engine
                   network.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
-                    description: A reference to an externally managed VMwareEngineNetwork
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/vmwareEngineNetworks/{{vmwareenginenetworkID}}".
+                    description: |-
+                      A reference to an externally managed VMwareEngineNetwork resource.
+                      Should be in the format "projects/{{projectID}}/locations/{{location}}/vmwareEngineNetworks/{{vmwareenginenetworkID}}".
                     type: string
                   name:
                     description: The name of a VMwareEngineNetwork resource.
@@ -170,8 +148,9 @@ spec:
               machine state of VMwareEngineNetworkPolicy
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -183,8 +162,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -215,13 +195,15 @@ spec:
                     description: Output only. Creation time of this resource.
                     type: string
                   externalIP:
-                    description: Network service that allows External IP addresses
-                      to be assigned to VMware workloads. This service can only be
-                      enabled when `internet_access` is also enabled.
+                    description: |-
+                      Network service that allows External IP addresses to be assigned to VMware
+                       workloads. This service can only be enabled when `internet_access` is also
+                       enabled.
                     properties:
                       state:
-                        description: Output only. State of the service. New values
-                          may be added to this enum when appropriate.
+                        description: |-
+                          Output only. State of the service. New values may be added to this enum
+                           when appropriate.
                         type: string
                     type: object
                   internetAccess:
@@ -229,8 +211,9 @@ spec:
                       the internet.
                     properties:
                       state:
-                        description: Output only. State of the service. New values
-                          may be added to this enum when appropriate.
+                        description: |-
+                          Output only. State of the service. New values may be added to this enum
+                           when appropriate.
                         type: string
                     type: object
                   uid:
@@ -241,8 +224,9 @@ spec:
                     description: Output only. Last update time of this resource.
                     type: string
                   vmwareEngineNetworkCanonical:
-                    description: 'Output only. The canonical name of the VMware Engine
-                      network in the form: `projects/{project_number}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`'
+                    description: |-
+                      Output only. The canonical name of the VMware Engine network in the form:
+                       `projects/{project_number}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
                     type: string
                 type: object
             type: object

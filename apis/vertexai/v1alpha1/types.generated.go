@@ -61,6 +61,7 @@ type AutoscalingMetricSpec struct {
 	//  * `aiplatform.googleapis.com/prediction/online/cpu/utilization`
 	//  * `aiplatform.googleapis.com/prediction/online/request_count`
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.AutoscalingMetricSpec.metric_name
+	// +required
 	MetricName *string `json:"metricName,omitempty"`
 
 	// The target resource utilization in percentage (1% - 100%) for the given
@@ -84,6 +85,7 @@ type BigQuerySource struct {
 	//
 	//  *  BigQuery path. For example: `bq://projectId.bqDatasetId.bqTableId`.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.BigQuerySource.input_uri
+	// +required
 	InputURI *string `json:"inputURI,omitempty"`
 }
 
@@ -92,6 +94,7 @@ type ContainerSpec struct {
 	// Required. The URI of a container image in the Container Registry that is to
 	//  be run on each worker replica.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.ContainerSpec.image_uri
+	// +required
 	ImageURI *string `json:"imageURI,omitempty"`
 
 	// The command to be invoked when the container is started.
@@ -113,6 +116,7 @@ type ContainerSpec struct {
 type DedicatedResources struct {
 	// Required. Immutable. The specification of a single machine being used.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.DedicatedResources.machine_spec
+	// +required
 	MachineSpec *MachineSpec `json:"machineSpec,omitempty"`
 
 	// Required. Immutable. The minimum number of machine replicas that will be
@@ -121,6 +125,7 @@ type DedicatedResources struct {
 	//  If traffic increases, it may dynamically be deployed onto more replicas,
 	//  and as traffic decreases, some of these extra replicas may be freed.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.DedicatedResources.min_replica_count
+	// +required
 	MinReplicaCount *int32 `json:"minReplicaCount,omitempty"`
 
 	// Immutable. The maximum number of replicas that may be deployed on when the
@@ -205,18 +210,21 @@ type DNSPeeringConfig struct {
 	// Required. The DNS name suffix of the zone being peered to, e.g.,
 	//  "my-internal-domain.corp.". Must end with a dot.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.DnsPeeringConfig.domain
+	// +required
 	Domain *string `json:"domain,omitempty"`
 
 	// Required. The project ID hosting the Cloud DNS managed zone that
 	//  contains the 'domain'. The Vertex AI Service Agent requires the
 	//  dns.peer role on this project.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.DnsPeeringConfig.target_project
+	// +required
 	TargetProject *string `json:"targetProject,omitempty"`
 
 	// Required. The VPC network name
 	//  in the target_project where the DNS zone specified by 'domain' is
 	//  visible.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.DnsPeeringConfig.target_network
+	// +required
 	TargetNetwork *string `json:"targetNetwork,omitempty"`
 }
 
@@ -224,6 +232,7 @@ type DNSPeeringConfig struct {
 type EnvVar struct {
 	// Required. Name of the environment variable. Must be a valid C identifier.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.EnvVar.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Required. Variables that reference a $(VAR_NAME) are expanded
@@ -234,6 +243,7 @@ type EnvVar struct {
 	//  references will never be expanded, regardless of whether the variable
 	//  exists or not.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.EnvVar.value
+	// +required
 	Value *string `json:"value,omitempty"`
 }
 
@@ -247,6 +257,7 @@ type ExampleStoreConfig struct {
 	//  * "text-embedding-005"
 	//  * "text-multilingual-embedding-002"
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.ExampleStoreConfig.vertex_embedding_model
+	// +required
 	VertexEmbeddingModel *string `json:"vertexEmbeddingModel,omitempty"`
 }
 
@@ -255,6 +266,7 @@ type FeatureGroup_BigQuery struct {
 	// Required. Immutable. The BigQuery source URI that points to either a
 	//  BigQuery Table or View.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.FeatureGroup.BigQuery.big_query_source
+	// +required
 	BigQuerySource *BigQuerySource `json:"bigQuerySource,omitempty"`
 
 	// Optional. Columns to construct entity_id / row keys.
@@ -320,6 +332,7 @@ type Featurestore_OnlineServingConfig_Scaling struct {
 	// Required. The minimum number of nodes to scale down to. Must be greater
 	//  than or equal to 1.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Featurestore.OnlineServingConfig.Scaling.min_node_count
+	// +required
 	MinNodeCount *int32 `json:"minNodeCount,omitempty"`
 
 	// The maximum number of nodes to scale up to. Must be greater than
@@ -354,6 +367,7 @@ type GCSDestination struct {
 	//  '/', a '/' will be automatically appended. The directory is created if it
 	//  doesn't exist.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.GcsDestination.output_uri_prefix
+	// +required
 	OutputURIPrefix *string `json:"outputURIPrefix,omitempty"`
 }
 
@@ -437,17 +451,20 @@ type MetadataStore_MetadataStoreState struct {
 type NfsMount struct {
 	// Required. IP address of the NFS server.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.NfsMount.server
+	// +required
 	Server *string `json:"server,omitempty"`
 
 	// Required. Source path exported from NFS server.
 	//  Has to start with '/', and combined with the ip address, it indicates
 	//  the source mount path in the form of `server:path`
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.NfsMount.path
+	// +required
 	Path *string `json:"path,omitempty"`
 
 	// Required. Destination mount path. The NFS will be mounted for the user
 	//  under /mnt/nfs/<mount_point>
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.NfsMount.mount_point
+	// +required
 	MountPoint *string `json:"mountPoint,omitempty"`
 }
 
@@ -476,6 +493,7 @@ type PSCInterfaceConfig struct {
 type ReservationAffinity struct {
 	// Required. Specifies the reservation affinity type.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.ReservationAffinity.reservation_affinity_type
+	// +required
 	ReservationAffinityType *string `json:"reservationAffinityType,omitempty"`
 
 	// Optional. Corresponds to the label key of a reservation resource. To target
@@ -572,44 +590,6 @@ type WorkerPoolSpec struct {
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.WorkerPoolSpec.disk_spec
 	DiskSpec *DiskSpec `json:"diskSpec,omitempty"`
 }
-
-/* unreachable type ListValue
-// +kcc:proto=google.protobuf.ListValue
-type ListValue struct {
-	// Repeated field of dynamically typed values.
-	// +kcc:proto:field=google.protobuf.ListValue.values
-	Values []Value `json:"values,omitempty"`
-}
-*/
-
-/* unreachable type Value
-// +kcc:proto=google.protobuf.Value
-type Value struct {
-	// Represents a null value.
-	// +kcc:proto:field=google.protobuf.Value.null_value
-	NullValue *string `json:"nullValue,omitempty"`
-
-	// Represents a double value.
-	// +kcc:proto:field=google.protobuf.Value.number_value
-	NumberValue *float64 `json:"numberValue,omitempty"`
-
-	// Represents a string value.
-	// +kcc:proto:field=google.protobuf.Value.string_value
-	StringValue *string `json:"stringValue,omitempty"`
-
-	// Represents a boolean value.
-	// +kcc:proto:field=google.protobuf.Value.bool_value
-	BoolValue *bool `json:"boolValue,omitempty"`
-
-	// Represents a structured value.
-	// +kcc:proto:field=google.protobuf.Value.struct_value
-	StructValue apiextensionsv1.JSON `json:"structValue,omitempty"`
-
-	// Represents a repeated `Value`.
-	// +kcc:proto:field=google.protobuf.Value.list_value
-	ListValue *ListValue `json:"listValue,omitempty"`
-}
-*/
 
 // +kcc:proto=google.type.Money
 type Money struct {

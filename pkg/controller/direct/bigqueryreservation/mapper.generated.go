@@ -102,32 +102,6 @@ found existing non-generated mapping function "BigQueryReservationAssignmentSpec
 		return out
 	}
 */
-func BigQueryReservationCapacityCommitmentObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.CapacityCommitment) *krmbigqueryreservationv1alpha1.BigQueryReservationCapacityCommitmentObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krmbigqueryreservationv1alpha1.BigQueryReservationCapacityCommitmentObservedState{}
-	// MISSING: Name
-	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.CommitmentStartTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCommitmentStartTime())
-	out.CommitmentEndTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCommitmentEndTime())
-	out.FailureStatus = direct.Status_FromProto(mapCtx, in.GetFailureStatus())
-	out.IsFlatRate = direct.LazyPtr(in.GetIsFlatRate())
-	return out
-}
-func BigQueryReservationCapacityCommitmentObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigqueryreservationv1alpha1.BigQueryReservationCapacityCommitmentObservedState) *pb.CapacityCommitment {
-	if in == nil {
-		return nil
-	}
-	out := &pb.CapacityCommitment{}
-	// MISSING: Name
-	out.State = direct.Enum_ToProto[pb.CapacityCommitment_State](mapCtx, in.State)
-	out.CommitmentStartTime = direct.StringTimestamp_ToProto(mapCtx, in.CommitmentStartTime)
-	out.CommitmentEndTime = direct.StringTimestamp_ToProto(mapCtx, in.CommitmentEndTime)
-	out.FailureStatus = direct.Status_ToProto(mapCtx, in.FailureStatus)
-	out.IsFlatRate = direct.ValueOf(in.IsFlatRate)
-	return out
-}
 func BigQueryReservationCapacityCommitmentSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.CapacityCommitment) *krmbigqueryreservationv1alpha1.BigQueryReservationCapacityCommitmentSpec {
 	if in == nil {
 		return nil
@@ -136,9 +110,14 @@ func BigQueryReservationCapacityCommitmentSpec_v1alpha1_FromProto(mapCtx *direct
 	// MISSING: Name
 	out.SlotCount = direct.LazyPtr(in.GetSlotCount())
 	out.Plan = direct.Enum_FromProto(mapCtx, in.GetPlan())
+	// MISSING: State
+	// MISSING: CommitmentStartTime
+	// MISSING: CommitmentEndTime
+	// MISSING: FailureStatus
 	out.RenewalPlan = direct.Enum_FromProto(mapCtx, in.GetRenewalPlan())
-	out.MultiRegionAuxiliary = direct.LazyPtr(in.GetMultiRegionAuxiliary())
+	// MISSING: MultiRegionAuxiliary
 	out.Edition = direct.Enum_FromProto(mapCtx, in.GetEdition())
+	// MISSING: IsFlatRate
 	return out
 }
 func BigQueryReservationCapacityCommitmentSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigqueryreservationv1alpha1.BigQueryReservationCapacityCommitmentSpec) *pb.CapacityCommitment {
@@ -149,9 +128,50 @@ func BigQueryReservationCapacityCommitmentSpec_v1alpha1_ToProto(mapCtx *direct.M
 	// MISSING: Name
 	out.SlotCount = direct.ValueOf(in.SlotCount)
 	out.Plan = direct.Enum_ToProto[pb.CapacityCommitment_CommitmentPlan](mapCtx, in.Plan)
+	// MISSING: State
+	// MISSING: CommitmentStartTime
+	// MISSING: CommitmentEndTime
+	// MISSING: FailureStatus
 	out.RenewalPlan = direct.Enum_ToProto[pb.CapacityCommitment_CommitmentPlan](mapCtx, in.RenewalPlan)
-	out.MultiRegionAuxiliary = direct.ValueOf(in.MultiRegionAuxiliary)
+	// MISSING: MultiRegionAuxiliary
 	out.Edition = direct.Enum_ToProto[pb.Edition](mapCtx, in.Edition)
+	// MISSING: IsFlatRate
+	return out
+}
+func BigQueryReservationCapacityCommitmentStatus_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.CapacityCommitment) *krmbigqueryreservationv1alpha1.BigQueryReservationCapacityCommitmentStatus {
+	if in == nil {
+		return nil
+	}
+	out := &krmbigqueryreservationv1alpha1.BigQueryReservationCapacityCommitmentStatus{}
+	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: SlotCount
+	// MISSING: Plan
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.CommitmentStartTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCommitmentStartTime())
+	out.CommitmentEndTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCommitmentEndTime())
+	// MISSING: FailureStatus
+	// MISSING: RenewalPlan
+	// MISSING: MultiRegionAuxiliary
+	// MISSING: Edition
+	// MISSING: IsFlatRate
+	return out
+}
+func BigQueryReservationCapacityCommitmentStatus_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigqueryreservationv1alpha1.BigQueryReservationCapacityCommitmentStatus) *pb.CapacityCommitment {
+	if in == nil {
+		return nil
+	}
+	out := &pb.CapacityCommitment{}
+	out.Name = direct.ValueOf(in.Name)
+	// MISSING: SlotCount
+	// MISSING: Plan
+	out.State = direct.Enum_ToProto[pb.CapacityCommitment_State](mapCtx, in.State)
+	out.CommitmentStartTime = direct.StringTimestamp_ToProto(mapCtx, in.CommitmentStartTime)
+	out.CommitmentEndTime = direct.StringTimestamp_ToProto(mapCtx, in.CommitmentEndTime)
+	// MISSING: FailureStatus
+	// MISSING: RenewalPlan
+	// MISSING: MultiRegionAuxiliary
+	// MISSING: Edition
+	// MISSING: IsFlatRate
 	return out
 }
 

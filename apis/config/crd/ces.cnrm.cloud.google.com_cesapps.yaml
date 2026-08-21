@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,7 +21,6 @@ spec:
     - gcpcesapp
     - gcpcesapps
     singular: cesapp
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
         description: CESApp is the Schema for the CESApp API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -64,9 +68,9 @@ spec:
                 description: Optional. Audio processing configuration of the app.
                 properties:
                   ambientSoundConfig:
-                    description: Optional. Configuration for the ambient sound to
-                      be played with the synthesized agent response, to enhance the
-                      naturalness of the conversation.
+                    description: |-
+                      Optional. Configuration for the ambient sound to be played with the
+                       synthesized agent response, to enhance the naturalness of the conversation.
                     properties:
                       gcsURI:
                         description: |-
@@ -78,26 +82,38 @@ spec:
                            `storage.objects.get` permission to the Cloud Storage object.
                         type: string
                       prebuiltAmbientNoise:
-                        description: 'Optional. Deprecated: `prebuilt_ambient_noise`
-                          is deprecated in favor of `prebuilt_ambient_sound`.'
+                        description: |-
+                          Optional. Deprecated: `prebuilt_ambient_noise` is deprecated in favor of
+                           `prebuilt_ambient_sound`.
                         type: string
                       prebuiltAmbientSound:
-                        description: 'Optional. Name of the prebuilt ambient sound.
-                          Valid values are: - "coffee_shop" - "keyboard" - "keypad"
-                          - "hum" - "office_1" - "office_2" - "office_3" - "room_1"
-                          - "room_2" - "room_3" - "room_4" - "room_5" - "air_conditioner"'
+                        description: |-
+                          Optional. Name of the prebuilt ambient sound.
+                           Valid values are:
+                           - "coffee_shop"
+                           - "keyboard"
+                           - "keypad"
+                           - "hum"
+                           - "office_1"
+                           - "office_2"
+                           - "office_3"
+                           - "room_1"
+                           - "room_2"
+                           - "room_3"
+                           - "room_4"
+                           - "room_5"
+                           - "air_conditioner"
                         type: string
                       volumeGainDb:
-                        description: Optional. Volume gain (in dB) of the normal native
-                          volume supported by ambient noise, in the range [-96.0,
-                          16.0]. If unset, or set to a value of 0.0 (dB), will play
-                          at normal native signal amplitude. A value of -6.0 (dB)
-                          will play at approximately half the amplitude of the normal
-                          native signal amplitude. A value of +6.0 (dB) will play
-                          at approximately twice the amplitude of the normal native
-                          signal amplitude. We strongly recommend not to exceed +10
-                          (dB) as there's usually no effective increase in loudness
-                          for any value greater than that.
+                        description: |-
+                          Optional. Volume gain (in dB) of the normal native volume supported by
+                           ambient noise, in the range [-96.0, 16.0]. If unset, or set to a value of
+                           0.0 (dB), will play at normal native signal amplitude. A value of -6.0 (dB)
+                           will play at approximately half the amplitude of the normal native signal
+                           amplitude. A value of +6.0 (dB) will play at approximately twice the
+                           amplitude of the normal native signal amplitude. We strongly recommend not
+                           to exceed +10 (dB) as there's usually no effective increase in loudness for
+                           any value greater than that.
                         type: number
                     type: object
                   bargeInConfig:
@@ -105,11 +121,11 @@ spec:
                       barge-in activities.
                     properties:
                       bargeInAwareness:
-                        description: Optional. If enabled, the agent will adapt its
-                          next response based on the assumption that the user hasn't
-                          heard the full preceding agent message. This should not
-                          be used in scenarios where agent responses are displayed
-                          visually.
+                        description: |-
+                          Optional. If enabled, the agent will adapt its next response based on the
+                           assumption that the user hasn't heard the full preceding agent message.
+                           This should not be used in scenarios where agent responses are displayed
+                           visually.
                         type: boolean
                       disableBargeIn:
                         description: |-
@@ -122,30 +138,49 @@ spec:
                         type: boolean
                     type: object
                   inactivityTimeout:
-                    description: Optional. The duration of user inactivity (no speech
-                      or interaction) before the agent prompts the user for reengagement.
-                      If not set, the agent will not prompt the user for reengagement.
+                    description: |-
+                      Optional. The duration of user inactivity (no speech or interaction) before
+                       the agent prompts the user for reengagement. If not set, the agent will not
+                       prompt the user for reengagement.
                     type: string
+                  synthesizeSpeechConfigs:
+                    additionalProperties:
+                      properties:
+                        speakingRate:
+                          description: |-
+                            Optional. The speaking rate/speed in the range [0.25, 2.0]. 1.0 is the
+                             normal native speed supported by the specific voice. 2.0 is twice as fast,
+                             and 0.5 is half as fast. Values outside of the range [0.25, 2.0] will
+                             return an error.
+                          type: number
+                        voice:
+                          description: |-
+                            Optional. The name of the voice. If not set, the service will choose a
+                             voice based on the other parameters such as language_code.
+
+                             For the list of available voices, please refer to [Supported voices and
+                             languages](https://cloud.google.com/text-to-speech/docs/voices) from Cloud
+                             Text-to-Speech.
+                          type: string
+                      type: object
+                    description: |-
+                      Optional. Configuration of how the agent response should be synthesized,
+                       mapping from the language code to
+                       [SynthesizeSpeechConfig][google.cloud.ces.v1beta.SynthesizeSpeechConfig].
+
+                       If the configuration for the specified language code is not found, the
+                       configuration for the root language code will be used. For example, if the
+                       map contains "en-us" and "en", and the specified language code is "en-gb",
+                       then "en" configuration will be used.
+
+                       Note: Language code is case-insensitive.
+                    type: object
                 type: object
               clientCertificateSettings:
                 description: Optional. The default client certificate settings for
                   the app.
                 properties:
                   passphraseRef:
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
                     properties:
                       external:
                         description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
@@ -160,20 +195,6 @@ spec:
                         type: string
                     type: object
                   privateKeyRef:
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
                     properties:
                       external:
                         description: ' If provided must be in the format `projects/*/secrets/*/versions/*`.'
@@ -201,17 +222,19 @@ spec:
                     description: Optional. The type of the channel profile.
                     type: string
                   disableBargeInControl:
-                    description: 'Optional. Whether to disable user barge-in control
-                      in the conversation. - **true**: User interruptions are disabled
-                      while the agent is speaking. - **false**: The agent retains
-                      automatic control over when the user can interrupt.'
+                    description: |-
+                      Optional. Whether to disable user barge-in control in the conversation.
+                       - **true**: User interruptions are disabled while the agent is speaking.
+                       - **false**: The agent retains automatic control over when the user can
+                       interrupt.
                     type: boolean
                   disableDtmf:
                     description: Optional. Whether to disable DTMF (dual-tone multi-frequency).
                     type: boolean
                   noiseSuppressionLevel:
-                    description: Optional. The noise suppression level of the channel
-                      profile. Available values are "low", "moderate", "high", "very_high".
+                    description: |-
+                      Optional. The noise suppression level of the channel profile.
+                       Available values are "low", "moderate", "high", "very_high".
                     type: string
                   personaProperty:
                     description: Optional. The persona property of the channel profile.
@@ -233,31 +256,32 @@ spec:
                         description: Optional. The security settings of the web widget.
                         properties:
                           allowedOrigins:
-                            description: 'Optional. The origins that are allowed to
-                              host the web widget. An origin is defined by RFC 6454.
-                              If empty, all origins are allowed. A maximum of 100
-                              origins is allowed. Example: "https://example.com"'
+                            description: |-
+                              Optional. The origins that are allowed to host the web widget. An
+                               origin is defined by RFC 6454. If empty, all origins are allowed. A
+                               maximum of 100 origins is allowed. Example: "https://example.com"
                             items:
                               type: string
                             type: array
                           enableOriginCheck:
-                            description: Optional. Indicates whether origin check
-                              for the web widget is enabled. If `true`, the web widget
-                              will check the origin of the website that loads the
-                              web widget and only allow it to be loaded in the same
-                              origin or any of the allowed origins.
+                            description: |-
+                              Optional. Indicates whether origin check for the web widget is enabled.
+                               If `true`, the web widget will check the origin of the website that
+                               loads the web widget and only allow it to be loaded in the same origin
+                               or any of the allowed origins.
                             type: boolean
                           enablePublicAccess:
-                            description: Optional. Indicates whether public access
-                              to the web widget is enabled. If `true`, the web widget
-                              will be publicly accessible. If `false`, the web widget
-                              must be integrated with your own authentication and
-                              authorization system to return valid credentials for
-                              accessing the CES agent.
+                            description: |-
+                              Optional. Indicates whether public access to the web widget is enabled.
+                               If `true`, the web widget will be publicly accessible.
+                               If `false`, the web widget must be integrated with your own
+                               authentication and authorization system to return valid credentials for
+                               accessing the CES agent.
                             type: boolean
                           enableRecaptcha:
-                            description: Optional. Indicates whether reCAPTCHA verification
-                              for the web widget is enabled.
+                            description: |-
+                              Optional. Indicates whether reCAPTCHA verification for the web widget
+                               is enabled.
                             type: boolean
                         type: object
                       theme:
@@ -278,15 +302,19 @@ spec:
                 description: Optional. Error handling settings of the app.
                 properties:
                   endSessionConfig:
-                    description: Optional. Configuration for ending the session in
-                      case of system errors (e.g. LLM errors).
+                    description: |-
+                      Optional. Configuration for ending the session in case of system errors
+                       (e.g. LLM errors).
                     properties:
                       escalateSession:
-                        description: Optional. Whether to escalate the session in
-                          [EndSession][google.cloud.ces.v1beta.EndSession]. If session
-                          is escalated, [metadata in EndSession][google.cloud.ces.v1beta.EndSession.metadata]
-                          will contain `session_escalated = true`. See https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/deploy/google-telephony-platform#transfer_a_call_to_a_human_agent
-                          for details.
+                        description: |-
+                          Optional. Whether to escalate the session in
+                           [EndSession][google.cloud.ces.v1beta.EndSession]. If session is
+                           escalated, [metadata in
+                           EndSession][google.cloud.ces.v1beta.EndSession.metadata] will contain
+                           `session_escalated = true`. See
+                           https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/deploy/google-telephony-platform#transfer_a_call_to_a_human_agent
+                           for details.
                         type: boolean
                     type: object
                   errorHandlingStrategy:
@@ -298,14 +326,15 @@ spec:
                       customFallbackMessages:
                         additionalProperties:
                           type: string
-                        description: Optional. The fallback messages in case of system
-                          errors (e.g. LLM errors), mapped by [supported language
-                          code](https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/reference/language).
+                        description: |-
+                          Optional. The fallback messages in case of system errors (e.g. LLM
+                           errors), mapped by [supported language
+                           code](https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/reference/language).
                         type: object
                       maxFallbackAttempts:
-                        description: Optional. The maximum number of fallback attempts
-                          to make before the agent emitting [EndSession][google.cloud.ces.v1beta.EndSession]
-                          Signal.
+                        description: |-
+                          Optional. The maximum number of fallback attempts to make before the
+                           agent emitting [EndSession][google.cloud.ces.v1beta.EndSession] Signal.
                         format: int32
                         type: integer
                     type: object
@@ -320,37 +349,39 @@ spec:
                         description: Optional. The expectation level metrics thresholds.
                         properties:
                           toolInvocationParameterCorrectnessThreshold:
-                            description: Optional. The success threshold for individual
-                              tool invocation parameter correctness. Must be a float
-                              between 0 and 1. Default is 1.0.
+                            description: |-
+                              Optional. The success threshold for individual tool invocation
+                               parameter correctness. Must be a float between 0 and 1. Default is 1.0.
                             type: number
                         type: object
                       toolMatchingSettings:
-                        description: Optional. The tool matching settings. An extra
-                          tool call is a tool call that is present in the execution
-                          but does not match any tool call in the golden expectation.
+                        description: |-
+                          Optional. The tool matching settings. An
+                           extra tool call is a tool call that is present in the execution but does
+                           not match any tool call in the golden expectation.
                         properties:
                           extraToolCallBehavior:
-                            description: Optional. Behavior for extra tool calls.
-                              Defaults to FAIL.
+                            description: |-
+                              Optional. Behavior for extra tool calls.
+                               Defaults to FAIL.
                             type: string
                         type: object
                       turnLevelMetricsThresholds:
                         description: Optional. The turn level metrics thresholds.
                         properties:
                           overallToolInvocationCorrectnessThreshold:
-                            description: Optional. The success threshold for overall
-                              tool invocation correctness. Must be a float between
-                              0 and 1. Default is 1.0.
+                            description: |-
+                              Optional. The success threshold for overall tool invocation
+                               correctness. Must be a float between 0 and 1. Default is 1.0.
                             type: number
                           semanticSimilarityChannel:
                             description: Optional. The semantic similarity channel
                               to use for evaluation.
                             type: string
                           semanticSimilaritySuccessThreshold:
-                            description: Optional. The success threshold for semantic
-                              similarity. Must be an integer between 0 and 4. Default
-                              is >= 3.
+                            description: |-
+                              Optional. The success threshold for semantic similarity. Must be an
+                               integer between 0 and 4. Default is >= 3.
                             format: int32
                             type: integer
                         type: object
@@ -360,9 +391,9 @@ spec:
                       evaluations.
                     type: string
                   hallucinationMetricBehavior:
-                    description: 'Optional. Deprecated: Use `golden_hallucination_metric_behavior`
-                      instead. The hallucination metric behavior is currently used
-                      for golden evaluations.'
+                    description: |-
+                      Optional. Deprecated: Use `golden_hallucination_metric_behavior` instead.
+                       The hallucination metric behavior is currently used for golden evaluations.
                     type: string
                   scenarioHallucinationMetricBehavior:
                     description: Optional. The hallucination metric behavior for scenario
@@ -370,9 +401,10 @@ spec:
                     type: string
                 type: object
               evaluationPersonas:
-                description: Optional. The evaluation personas for the app. This field
-                  is used to define the personas that can be used for evaluation.
-                  Maximum of 30 personas can be defined.
+                description: |-
+                  Optional. The evaluation personas for the app. This field is used to define
+                   the personas that can be used for evaluation. Maximum of 30 personas can be
+                   defined.
                 items:
                   properties:
                     description:
@@ -384,20 +416,6 @@ spec:
                     nameRef:
                       description: CESEvaluationPersonaRef defines the resource reference
                         to CESEvaluationPersona.
-                      oneOf:
-                      - not:
-                          required:
-                          - external
-                        required:
-                        - name
-                      - not:
-                          anyOf:
-                          - required:
-                            - name
-                          - required:
-                            - namespace
-                        required:
-                        - external
                       properties:
                         external:
                           type: string
@@ -412,13 +430,14 @@ spec:
                 description: Optional. The evaluation settings for the app.
                 properties:
                   goldenEvaluationToolCallBehaviour:
-                    description: Optional. Configures the default tool call behaviour
-                      for golden evaluations.
+                    description: |-
+                      Optional. Configures the default tool call behaviour for golden
+                       evaluations.
                     type: string
                   goldenRunMethod:
-                    description: Optional. The default method used to run golden evaluations.
-                      This will be used if no golden_run_method is specified in the
-                      RunEvaluationRequest.
+                    description: |-
+                      Optional. The default method used to run golden evaluations. This will be
+                       used if no golden_run_method is specified in the RunEvaluationRequest.
                     type: string
                   metricsConfig:
                     description: Optional. Configures the default metrics for evaluations.
@@ -432,8 +451,9 @@ spec:
                               similarity metrics.
                             properties:
                               enableSemanticSimilarityMetrics:
-                                description: Optional. Whether to calculate semantic
-                                  similarity metrics for the evaluation.
+                                description: |-
+                                  Optional. Whether to calculate semantic similarity metrics for the
+                                   evaluation.
                                 type: boolean
                             type: object
                           stepToolCorrectnessMetricsConfig:
@@ -441,8 +461,9 @@ spec:
                               correctness metrics.
                             properties:
                               enableToolCorrectnessMetrics:
-                                description: Optional. Whether to calculate tool correctness
-                                  metrics for the evaluation.
+                                description: |-
+                                  Optional. Whether to calculate tool correctness metrics for the
+                                   evaluation.
                                 type: boolean
                             type: object
                           toolCorrectnessMetricsConfig:
@@ -450,8 +471,9 @@ spec:
                               correctness metrics.
                             properties:
                               enableToolCorrectnessMetrics:
-                                description: Optional. Whether to calculate tool correctness
-                                  metrics for the evaluation.
+                                description: |-
+                                  Optional. Whether to calculate tool correctness metrics for the
+                                   evaluation.
                                 type: boolean
                             type: object
                         type: object
@@ -464,8 +486,9 @@ spec:
                               metrics.
                             properties:
                               enableExpectationsMetMetrics:
-                                description: Optional. Whether to calculate the expectation
-                                  level metrics for the evaluation.
+                                description: |-
+                                  Optional. Whether to calculate the expectation level metrics for the
+                                   evaluation.
                                 type: boolean
                             type: object
                           userGoalMetMetricsConfig:
@@ -473,8 +496,9 @@ spec:
                               metrics.
                             properties:
                               enableUserGoalMetMetrics:
-                                description: Optional. Whether to calculate the user
-                                  goal met metrics for the evaluation.
+                                description: |-
+                                  Optional. Whether to calculate the user goal met metrics for the
+                                   evaluation.
                                 type: boolean
                             type: object
                         type: object
@@ -484,41 +508,34 @@ spec:
                       evaluation.
                     type: string
                   scenarioEvaluationToolCallBehaviour:
-                    description: Optional. Configures the default tool call behaviour
-                      for scenario evaluations.
+                    description: |-
+                      Optional. Configures the default tool call behaviour for scenario
+                       evaluations.
                     type: string
                   scenarioExecutionMode:
-                    description: Optional. The execution mode for scenario evaluations.
-                      If not provided, will default to QUALITY_OPTIMIZED.
+                    description: |-
+                      Optional. The execution mode for scenario evaluations. If not provided,
+                       will default to QUALITY_OPTIMIZED.
                     type: string
                 type: object
               globalInstruction:
-                description: Optional. Instructions for all the agents in the app.
-                  You can use this instruction to set up a stable identity or personality
-                  across all the agents.
+                description: |-
+                  Optional. Instructions for all the agents in the app.
+                   You can use this instruction to set up a stable identity or personality
+                   across all the agents.
                 type: string
               guardrailRefs:
-                description: 'Optional. List of guardrails for the app. Format: `projects/{project}/locations/{location}/apps/{app}/guardrails/{guardrail}`'
+                description: |-
+                  Optional. List of guardrails for the app.
+                   Format:
+                   `projects/{project}/locations/{location}/apps/{app}/guardrails/{guardrail}`
                 items:
                   description: CESGuardrailRef defines the resource reference to CESGuardrail.
-                  oneOf:
-                  - not:
-                      required:
-                      - external
-                    required:
-                    - name
-                  - not:
-                      anyOf:
-                      - required:
-                        - name
-                      - required:
-                        - namespace
-                    required:
-                    - external
                   properties:
                     external:
-                      description: 'A reference to an externally managed CES Guardrail.
-                        Format: `projects/{project}/locations/{location}/apps/{app}/guardrails/{guardrail}`'
+                      description: |-
+                        A reference to an externally managed CES Guardrail.
+                        Format: `projects/{project}/locations/{location}/apps/{app}/guardrails/{guardrail}`
                       type: string
                     name:
                       description: The `name` of a `CESGuardrail` resource.
@@ -535,9 +552,9 @@ spec:
                     description: Optional. The default language code of the app.
                     type: string
                   enableMultilingualSupport:
-                    description: Optional. Enables multilingual support. If true,
-                      agents in the app will use pre-built instructions to improve
-                      handling of multilingual input.
+                    description: |-
+                      Optional. Enables multilingual support. If true, agents in the app will use
+                       pre-built instructions to improve handling of multilingual input.
                     type: boolean
                   fallbackAction:
                     description: |-
@@ -556,8 +573,9 @@ spec:
                        terminate the conversation.
                     type: string
                   supportedLanguageCodes:
-                    description: Optional. List of languages codes supported by the
-                      app, in addition to the `default_language_code`.
+                    description: |-
+                      Optional. List of languages codes supported by the app, in addition to the
+                       `default_language_code`.
                     items:
                       type: string
                     type: array
@@ -566,17 +584,18 @@ spec:
                 description: The location of this resource.
                 type: string
               locked:
-                description: Optional. Indicates whether the app is locked for changes.
-                  If the app is locked, modifications to the app resources will be
-                  rejected.
+                description: |-
+                  Optional. Indicates whether the app is locked for changes. If the app is
+                   locked, modifications to the app resources will be rejected.
                 type: boolean
               loggingSettings:
                 description: Optional. Logging settings of the app.
                 properties:
                   audioRecordingConfig:
-                    description: Optional. Configuration for how audio interactions
-                      should be recorded. The audio is subject to redaction as configured
-                      in [RedactionConfig][google.cloud.ces.v1beta.LoggingSettings.redaction_config].
+                    description: |-
+                      Optional. Configuration for how audio interactions should be recorded. The
+                       audio is subject to redaction as configured in
+                       [RedactionConfig][google.cloud.ces.v1beta.LoggingSettings.redaction_config].
                     properties:
                       gcsBucket:
                         description: |-
@@ -607,9 +626,10 @@ spec:
                         type: string
                     type: object
                   bigqueryExportSettings:
-                    description: Optional. Configures the BigQuery export behaviors
-                      for the app. The conversation data is subject to redaction as
-                      configured in [RedactionConfig][google.cloud.ces.v1beta.LoggingSettings.redaction_config].
+                    description: |-
+                      Optional. Configures the BigQuery export behaviors for the app. The
+                       conversation data is subject to redaction as configured in
+                       [RedactionConfig][google.cloud.ces.v1beta.LoggingSettings.redaction_config].
                     properties:
                       dataset:
                         description: Optional. The BigQuery **dataset ID** to export
@@ -638,23 +658,25 @@ spec:
                         type: boolean
                     type: object
                   conversationLoggingSettings:
-                    description: Optional. Settings to describe the conversation logging
-                      behaviors for the app.
+                    description: |-
+                      Optional. Settings to describe the conversation logging behaviors for the
+                       app.
                     properties:
                       disableConversationLogging:
                         description: Optional. Whether to disable conversation logging
                           for the sessions.
                         type: boolean
                       retentionWindow:
-                        description: Optional. Controls the retention window for the
-                          conversation. If not set, the conversation will be retained
-                          for 365 days.
+                        description: |-
+                          Optional. Controls the retention window for the conversation.
+                           If not set, the conversation will be retained for 365 days.
                         type: string
                     type: object
                   evaluationAudioRecordingConfig:
-                    description: Optional. Configuration for how audio interactions
-                      should be recorded for the evaluation. By default, audio recording
-                      is not enabled for evaluation sessions.
+                    description: |-
+                      Optional. Configuration for how audio interactions should be recorded for
+                       the evaluation. By default, audio recording is not enabled for evaluation
+                       sessions.
                     properties:
                       gcsBucket:
                         description: |-
@@ -685,14 +707,15 @@ spec:
                         type: string
                     type: object
                   metricAnalysisSettings:
-                    description: Optional. Settings to describe the conversation data
-                      collection behaviors for the LLM analysis pipeline for the app.
+                    description: |-
+                      Optional. Settings to describe the conversation data collection behaviors
+                       for the LLM analysis pipeline for the app.
                     properties:
                       llmMetricsOptedOut:
-                        description: Optional. Whether to collect conversation data
-                          for llm analysis metrics. If true, conversation data will
-                          not be collected for llm analysis metrics; otherwise, conversation
-                          data will be collected.
+                        description: |-
+                          Optional. Whether to collect conversation data for llm analysis metrics. If
+                           true, conversation data will not be collected for llm analysis metrics;
+                           otherwise, conversation data will be collected.
                         type: boolean
                     type: object
                   redactionConfig:
@@ -700,24 +723,11 @@ spec:
                       be redacted.
                     properties:
                       deidentifyTemplateRef:
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
                         properties:
                           external:
-                            description: A reference to an externally managed DLP
-                              Deidentify Template. Should be in the format `projects/[project_id]/locations/[location]/deidentifyTemplates/[deidentify_template]`.
+                            description: |-
+                              A reference to an externally managed DLP Deidentify Template.
+                              Should be in the format `projects/[project_id]/locations/[location]/deidentifyTemplates/[deidentify_template]`.
                             type: string
                           name:
                             description: The `name` of a `DLPDeidentifyTemplate` resource.
@@ -730,24 +740,11 @@ spec:
                       enableRedaction:
                         type: boolean
                       inspectTemplateRef:
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
                         properties:
                           external:
-                            description: A reference to an externally managed DLP
-                              Inspect Template. Should be in the format `projects/[project_id]/locations/[location]/inspectTemplates/[inspect_template]`.
+                            description: |-
+                              A reference to an externally managed DLP Inspect Template.
+                              Should be in the format `projects/[project_id]/locations/[location]/inspectTemplates/[inspect_template]`.
                             type: string
                           name:
                             description: The `name` of a `DLPInspectTemplate` resource.
@@ -759,10 +756,11 @@ spec:
                         type: object
                     type: object
                   unredactedAudioRecordingConfig:
-                    description: Optional. Configures an additional recording of unredacted
-                      audio. This can be used to maintain a raw audio copy when audio
-                      redaction is [enabled][google.cloud.ces.v1beta.RedactionConfig.enable_redaction],
-                      typically for auditing or monitoring purposes.
+                    description: |-
+                      Optional. Configures an additional recording of unredacted audio. This can
+                       be used to maintain a raw audio copy when audio redaction is
+                       [enabled][google.cloud.ces.v1beta.RedactionConfig.enable_redaction],
+                       typically for auditing or monitoring purposes.
                     properties:
                       gcsBucket:
                         description: |-
@@ -796,26 +794,27 @@ spec:
               metadata:
                 additionalProperties:
                   type: string
-                description: Optional. Metadata about the app. This field can be used
-                  to store additional information relevant to the app's details or
-                  intended usages.
+                description: |-
+                  Optional. Metadata about the app. This field can be used to store
+                   additional information relevant to the app's details or intended usages.
                 type: object
               modelSettings:
-                description: Optional. The default LLM model settings for the app.
-                  Individual resources (e.g. agents, guardrails) can override these
-                  configurations as needed.
+                description: |-
+                  Optional. The default LLM model settings for the app.
+                   Individual resources (e.g. agents, guardrails) can override these
+                   configurations as needed.
                 properties:
                   model:
-                    description: Optional. The LLM model that the agent should use.
-                      If not set, the agent will inherit the model from its parent
-                      agent.
+                    description: |-
+                      Optional. The LLM model that the agent should use.
+                       If not set, the agent will inherit the model from its parent agent.
                     type: string
                   temperature:
-                    description: Optional. If set, this temperature will be used for
-                      the LLM model. Temperature controls the randomness of the model's
-                      responses. Lower temperatures produce responses that are more
-                      predictable. Higher temperatures produce responses that are
-                      more creative.
+                    description: |-
+                      Optional. If set, this temperature will be used for the LLM model.
+                       Temperature controls the randomness of the model's responses. Lower
+                       temperatures produce responses that are more predictable. Higher
+                       temperatures produce responses that are more creative.
                     type: number
                 type: object
               pinned:
@@ -823,20 +822,6 @@ spec:
                 type: boolean
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -858,26 +843,14 @@ spec:
                   be used.
                 type: string
               rootAgentRef:
-                description: 'Optional. The root agent is the entry point of the app.
-                  Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`'
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
+                description: |-
+                  Optional. The root agent is the entry point of the app.
+                   Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`
                 properties:
                   external:
-                    description: 'A reference to an externally managed CES Agent.
-                      Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`'
+                    description: |-
+                      A reference to an externally managed CES Agent.
+                      Format: `projects/{project}/locations/{location}/apps/{app}/agents/{agent}`
                     type: string
                   name:
                     description: The `name` of a `CESAgent` resource.
@@ -890,14 +863,16 @@ spec:
                 description: Optional. TimeZone settings of the app.
                 properties:
                   timeZone:
-                    description: Optional. The time zone of the app from the [time
-                      zone database](https://www.iana.org/time-zones), e.g., America/Los_Angeles,
-                      Europe/Paris.
+                    description: |-
+                      Optional. The time zone of the app from the [time zone
+                       database](https://www.iana.org/time-zones), e.g., America/Los_Angeles,
+                       Europe/Paris.
                     type: string
                 type: object
               toolExecutionMode:
-                description: Optional. The tool execution mode for the app. If not
-                  provided, will default to PARALLEL.
+                description: |-
+                  Optional. The tool execution mode for the app. If not provided, will
+                   default to PARALLEL.
                 type: string
               variableDeclarations:
                 description: Optional. The declarations of the variables.
@@ -907,9 +882,9 @@ spec:
                       description: Required. The description of the variable.
                       type: string
                     name:
-                      description: Required. The name of the variable. The name must
-                        start with a letter or underscore and contain only letters,
-                        numbers, or underscores.
+                      description: |-
+                        Required. The name of the variable. The name must start with a letter or
+                         underscore and contain only letters, numbers, or underscores.
                       type: string
                     schema:
                       description: Required. The schema of the variable.
@@ -926,8 +901,9 @@ spec:
               CESApp
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -939,8 +915,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -977,8 +954,10 @@ spec:
                         items:
                           properties:
                             name:
-                              description: 'Output only. The resource name of the
-                                engine. Format: `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}`'
+                              description: |-
+                                Output only. The resource name of the engine.
+                                 Format:
+                                 `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}`
                               type: string
                             type:
                               description: Output only. The type of the engine.
@@ -991,9 +970,10 @@ spec:
                     format: int32
                     type: integer
                   etag:
-                    description: Output only. Etag used to ensure the object hasn't
-                      changed during a read-modify-write operation. If the etag is
-                      empty, the update will overwrite any concurrent changes.
+                    description: |-
+                      Output only. Etag used to ensure the object hasn't changed during a
+                       read-modify-write operation. If the etag is empty, the update will
+                       overwrite any concurrent changes.
                     type: string
                   predefinedVariableDeclarations:
                     description: Output only. The declarations of predefined variables
@@ -1004,9 +984,9 @@ spec:
                           description: Required. The description of the variable.
                           type: string
                         name:
-                          description: Required. The name of the variable. The name
-                            must start with a letter or underscore and contain only
-                            letters, numbers, or underscores.
+                          description: |-
+                            Required. The name of the variable. The name must start with a letter or
+                             underscore and contain only letters, numbers, or underscores.
                           type: string
                         schema:
                           description: Required. The schema of the variable.

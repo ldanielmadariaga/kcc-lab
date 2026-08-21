@@ -128,6 +128,82 @@ func AliasIPRange_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1al
 	out.SubnetworkRangeName = in.SubnetworkRangeName
 	return out
 }
+func AllocationAggregateReservationReservedResourceInfo_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AllocationAggregateReservationReservedResourceInfo) *krmcomputev1alpha1.AllocationAggregateReservationReservedResourceInfo {
+	if in == nil {
+		return nil
+	}
+	out := &krmcomputev1alpha1.AllocationAggregateReservationReservedResourceInfo{}
+	out.Accelerator = AllocationAggregateReservationReservedResourceInfoAccelerator_v1alpha1_FromProto(mapCtx, in.GetAccelerator())
+	return out
+}
+func AllocationAggregateReservationReservedResourceInfo_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1alpha1.AllocationAggregateReservationReservedResourceInfo) *pb.AllocationAggregateReservationReservedResourceInfo {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AllocationAggregateReservationReservedResourceInfo{}
+	out.Accelerator = AllocationAggregateReservationReservedResourceInfoAccelerator_v1alpha1_ToProto(mapCtx, in.Accelerator)
+	return out
+}
+func AllocationAggregateReservationReservedResourceInfoAccelerator_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AllocationAggregateReservationReservedResourceInfoAccelerator) *krmcomputev1alpha1.AllocationAggregateReservationReservedResourceInfoAccelerator {
+	if in == nil {
+		return nil
+	}
+	out := &krmcomputev1alpha1.AllocationAggregateReservationReservedResourceInfoAccelerator{}
+	out.AcceleratorCount = in.AcceleratorCount
+	out.AcceleratorType = in.AcceleratorType
+	return out
+}
+func AllocationAggregateReservationReservedResourceInfoAccelerator_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1alpha1.AllocationAggregateReservationReservedResourceInfoAccelerator) *pb.AllocationAggregateReservationReservedResourceInfoAccelerator {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AllocationAggregateReservationReservedResourceInfoAccelerator{}
+	out.AcceleratorCount = in.AcceleratorCount
+	out.AcceleratorType = in.AcceleratorType
+	return out
+}
+func AllocationSpecificSkuAllocationAllocatedInstancePropertiesReservedDisk_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk) *krmcomputev1alpha1.AllocationSpecificSkuAllocationAllocatedInstancePropertiesReservedDisk {
+	if in == nil {
+		return nil
+	}
+	out := &krmcomputev1alpha1.AllocationSpecificSkuAllocationAllocatedInstancePropertiesReservedDisk{}
+	out.DiskSizeGB = in.DiskSizeGb
+	out.Interface = in.Interface
+	return out
+}
+func AllocationSpecificSkuAllocationAllocatedInstancePropertiesReservedDisk_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1alpha1.AllocationSpecificSkuAllocationAllocatedInstancePropertiesReservedDisk) *pb.AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AllocationSpecificSKUAllocationAllocatedInstancePropertiesReservedDisk{}
+	out.DiskSizeGb = in.DiskSizeGB
+	out.Interface = in.Interface
+	return out
+}
+func AllocationSpecificSkuAllocationReservedInstanceProperties_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AllocationSpecificSKUAllocationReservedInstanceProperties) *krmcomputev1alpha1.AllocationSpecificSkuAllocationReservedInstanceProperties {
+	if in == nil {
+		return nil
+	}
+	out := &krmcomputev1alpha1.AllocationSpecificSkuAllocationReservedInstanceProperties{}
+	out.GuestAccelerators = direct.Slice_FromProto(mapCtx, in.GuestAccelerators, AcceleratorConfig_v1alpha1_FromProto)
+	out.LocalSsds = direct.Slice_FromProto(mapCtx, in.LocalSsds, AllocationSpecificSkuAllocationAllocatedInstancePropertiesReservedDisk_v1alpha1_FromProto)
+	out.LocationHint = in.LocationHint
+	out.MachineType = in.MachineType
+	out.MinCPUPlatform = in.MinCpuPlatform
+	return out
+}
+func AllocationSpecificSkuAllocationReservedInstanceProperties_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1alpha1.AllocationSpecificSkuAllocationReservedInstanceProperties) *pb.AllocationSpecificSKUAllocationReservedInstanceProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AllocationSpecificSKUAllocationReservedInstanceProperties{}
+	out.GuestAccelerators = direct.Slice_ToProto(mapCtx, in.GuestAccelerators, AcceleratorConfig_v1alpha1_ToProto)
+	out.LocalSsds = direct.Slice_ToProto(mapCtx, in.LocalSsds, AllocationSpecificSkuAllocationAllocatedInstancePropertiesReservedDisk_v1alpha1_ToProto)
+	out.LocationHint = in.LocationHint
+	out.MachineType = in.MachineType
+	out.MinCpuPlatform = in.MinCPUPlatform
+	return out
+}
 func AttachedDisk_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AttachedDisk) *krmcomputev1alpha1.AttachedDisk {
 	if in == nil {
 		return nil
@@ -261,7 +337,14 @@ func AutoscalingPolicy_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Auto
 	out.MinNumReplicas = in.MinNumReplicas
 	out.Mode = in.Mode
 	out.ScaleInControl = AutoscalingPolicyScaleInControl_v1alpha1_FromProto(mapCtx, in.GetScaleInControl())
-	// MISSING: ScalingSchedules
+	if in.ScalingSchedules != nil {
+		out.ScalingSchedules = make(map[string]krmcomputev1alpha1.AutoscalingPolicyScalingSchedule, len(in.ScalingSchedules))
+		for k, v := range in.ScalingSchedules {
+			if c := AutoscalingPolicyScalingSchedule_v1alpha1_FromProto(mapCtx, v); c != nil {
+				out.ScalingSchedules[k] = *c
+			}
+		}
+	}
 	return out
 }
 func AutoscalingPolicy_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1alpha1.AutoscalingPolicy) *pb.AutoscalingPolicy {
@@ -277,7 +360,12 @@ func AutoscalingPolicy_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomput
 	out.MinNumReplicas = in.MinNumReplicas
 	out.Mode = in.Mode
 	out.ScaleInControl = AutoscalingPolicyScaleInControl_v1alpha1_ToProto(mapCtx, in.ScaleInControl)
-	// MISSING: ScalingSchedules
+	if in.ScalingSchedules != nil {
+		out.ScalingSchedules = make(map[string]*pb.AutoscalingPolicyScalingSchedule, len(in.ScalingSchedules))
+		for k, v := range in.ScalingSchedules {
+			out.ScalingSchedules[k] = AutoscalingPolicyScalingSchedule_v1alpha1_ToProto(mapCtx, &v)
+		}
+	}
 	return out
 }
 func AutoscalingPolicyCPUUtilization_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AutoscalingPolicyCpuUtilization) *krmcomputev1alpha1.AutoscalingPolicyCPUUtilization {
@@ -354,6 +442,32 @@ func AutoscalingPolicyScaleInControl_v1alpha1_ToProto(mapCtx *direct.MapContext,
 	out := &pb.AutoscalingPolicyScaleInControl{}
 	out.MaxScaledInReplicas = FixedOrPercent_v1alpha1_ToProto(mapCtx, in.MaxScaledInReplicas)
 	out.TimeWindowSec = in.TimeWindowSec
+	return out
+}
+func AutoscalingPolicyScalingSchedule_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AutoscalingPolicyScalingSchedule) *krmcomputev1alpha1.AutoscalingPolicyScalingSchedule {
+	if in == nil {
+		return nil
+	}
+	out := &krmcomputev1alpha1.AutoscalingPolicyScalingSchedule{}
+	out.Description = in.Description
+	out.Disabled = in.Disabled
+	out.DurationSec = in.DurationSec
+	out.MinRequiredReplicas = in.MinRequiredReplicas
+	out.Schedule = in.Schedule
+	out.TimeZone = in.TimeZone
+	return out
+}
+func AutoscalingPolicyScalingSchedule_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1alpha1.AutoscalingPolicyScalingSchedule) *pb.AutoscalingPolicyScalingSchedule {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AutoscalingPolicyScalingSchedule{}
+	out.Description = in.Description
+	out.Disabled = in.Disabled
+	out.DurationSec = in.DurationSec
+	out.MinRequiredReplicas = in.MinRequiredReplicas
+	out.Schedule = in.Schedule
+	out.TimeZone = in.TimeZone
 	return out
 }
 
@@ -7729,9 +7843,30 @@ func PreservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Preserv
 		return nil
 	}
 	out := &krmcomputev1alpha1.PreservedState{}
-	// MISSING: Disks
-	// MISSING: ExternalIPs
-	// MISSING: InternalIPs
+	if in.Disks != nil {
+		out.Disks = make(map[string]krmcomputev1alpha1.PreservedStatePreservedDisk, len(in.Disks))
+		for k, v := range in.Disks {
+			if c := PreservedStatePreservedDisk_v1alpha1_FromProto(mapCtx, v); c != nil {
+				out.Disks[k] = *c
+			}
+		}
+	}
+	if in.ExternalIPs != nil {
+		out.ExternalIPs = make(map[string]krmcomputev1alpha1.PreservedStatePreservedNetworkIP, len(in.ExternalIPs))
+		for k, v := range in.ExternalIPs {
+			if c := PreservedStatePreservedNetworkIP_v1alpha1_FromProto(mapCtx, v); c != nil {
+				out.ExternalIPs[k] = *c
+			}
+		}
+	}
+	if in.InternalIPs != nil {
+		out.InternalIPs = make(map[string]krmcomputev1alpha1.PreservedStatePreservedNetworkIP, len(in.InternalIPs))
+		for k, v := range in.InternalIPs {
+			if c := PreservedStatePreservedNetworkIP_v1alpha1_FromProto(mapCtx, v); c != nil {
+				out.InternalIPs[k] = *c
+			}
+		}
+	}
 	out.Metadata = in.Metadata
 	return out
 }
@@ -7740,10 +7875,81 @@ func PreservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1
 		return nil
 	}
 	out := &pb.PreservedState{}
-	// MISSING: Disks
-	// MISSING: ExternalIPs
-	// MISSING: InternalIPs
+	if in.Disks != nil {
+		out.Disks = make(map[string]*pb.PreservedStatePreservedDisk, len(in.Disks))
+		for k, v := range in.Disks {
+			out.Disks[k] = PreservedStatePreservedDisk_v1alpha1_ToProto(mapCtx, &v)
+		}
+	}
+	if in.ExternalIPs != nil {
+		out.ExternalIPs = make(map[string]*pb.PreservedStatePreservedNetworkIp, len(in.ExternalIPs))
+		for k, v := range in.ExternalIPs {
+			out.ExternalIPs[k] = PreservedStatePreservedNetworkIP_v1alpha1_ToProto(mapCtx, &v)
+		}
+	}
+	if in.InternalIPs != nil {
+		out.InternalIPs = make(map[string]*pb.PreservedStatePreservedNetworkIp, len(in.InternalIPs))
+		for k, v := range in.InternalIPs {
+			out.InternalIPs[k] = PreservedStatePreservedNetworkIP_v1alpha1_ToProto(mapCtx, &v)
+		}
+	}
 	out.Metadata = in.Metadata
+	return out
+}
+func PreservedStatePreservedDisk_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.PreservedStatePreservedDisk) *krmcomputev1alpha1.PreservedStatePreservedDisk {
+	if in == nil {
+		return nil
+	}
+	out := &krmcomputev1alpha1.PreservedStatePreservedDisk{}
+	out.AutoDelete = in.AutoDelete
+	out.Mode = in.Mode
+	out.Source = in.Source
+	return out
+}
+func PreservedStatePreservedDisk_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1alpha1.PreservedStatePreservedDisk) *pb.PreservedStatePreservedDisk {
+	if in == nil {
+		return nil
+	}
+	out := &pb.PreservedStatePreservedDisk{}
+	out.AutoDelete = in.AutoDelete
+	out.Mode = in.Mode
+	out.Source = in.Source
+	return out
+}
+func PreservedStatePreservedNetworkIP_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.PreservedStatePreservedNetworkIp) *krmcomputev1alpha1.PreservedStatePreservedNetworkIP {
+	if in == nil {
+		return nil
+	}
+	out := &krmcomputev1alpha1.PreservedStatePreservedNetworkIP{}
+	out.AutoDelete = in.AutoDelete
+	out.IPAddress = PreservedStatePreservedNetworkIPIPAddress_v1alpha1_FromProto(mapCtx, in.GetIpAddress())
+	return out
+}
+func PreservedStatePreservedNetworkIP_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1alpha1.PreservedStatePreservedNetworkIP) *pb.PreservedStatePreservedNetworkIp {
+	if in == nil {
+		return nil
+	}
+	out := &pb.PreservedStatePreservedNetworkIp{}
+	out.AutoDelete = in.AutoDelete
+	out.IpAddress = PreservedStatePreservedNetworkIPIPAddress_v1alpha1_ToProto(mapCtx, in.IPAddress)
+	return out
+}
+func PreservedStatePreservedNetworkIPIPAddress_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.PreservedStatePreservedNetworkIpIpAddress) *krmcomputev1alpha1.PreservedStatePreservedNetworkIPIPAddress {
+	if in == nil {
+		return nil
+	}
+	out := &krmcomputev1alpha1.PreservedStatePreservedNetworkIPIPAddress{}
+	out.Address = in.Address
+	out.Literal = in.Literal
+	return out
+}
+func PreservedStatePreservedNetworkIPIPAddress_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1alpha1.PreservedStatePreservedNetworkIPIPAddress) *pb.PreservedStatePreservedNetworkIpIpAddress {
+	if in == nil {
+		return nil
+	}
+	out := &pb.PreservedStatePreservedNetworkIpIpAddress{}
+	out.Address = in.Address
+	out.Literal = in.Literal
 	return out
 }
 func ReservationAffinity_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ReservationAffinity) *krmcomputev1alpha1.ReservationAffinity {
@@ -8304,6 +8510,26 @@ func SavedDisk_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1alpha
 	out.SourceDisk = in.SourceDisk
 	out.StorageBytes = in.StorageBytes
 	out.StorageBytesStatus = in.StorageBytesStatus
+	return out
+}
+func ScalingScheduleStatus_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ScalingScheduleStatus) *krmcomputev1alpha1.ScalingScheduleStatus {
+	if in == nil {
+		return nil
+	}
+	out := &krmcomputev1alpha1.ScalingScheduleStatus{}
+	out.LastStartTime = in.LastStartTime
+	out.NextStartTime = in.NextStartTime
+	out.State = in.State
+	return out
+}
+func ScalingScheduleStatus_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1alpha1.ScalingScheduleStatus) *pb.ScalingScheduleStatus {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ScalingScheduleStatus{}
+	out.LastStartTime = in.LastStartTime
+	out.NextStartTime = in.NextStartTime
+	out.State = in.State
 	return out
 }
 func Scheduling_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Scheduling) *krmcomputev1alpha1.Scheduling {

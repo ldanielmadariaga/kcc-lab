@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcplivestreamasset
     - gcplivestreamassets
     singular: livestreamasset
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,14 +44,19 @@ spec:
         description: LiveStreamAsset is the Schema for the LiveStreamAsset API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -60,17 +64,18 @@ spec:
             description: LiveStreamAssetSpec defines the desired state of LiveStreamAsset
             properties:
               crc32c:
-                description: Based64-encoded CRC32c checksum of the asset file. For
-                  more information, see the crc32c checksum of the [Cloud Storage
-                  Objects resource](https://cloud.google.com/storage/docs/json_api/v1/objects).
-                  If crc32c is omitted or left empty when the asset is created, this
-                  field is filled by the crc32c checksum of the Cloud Storage object
-                  indicated by [VideoAsset.uri][google.cloud.video.livestream.v1.Asset.VideoAsset.uri]
-                  or [ImageAsset.uri][google.cloud.video.livestream.v1.Asset.ImageAsset.uri].
-                  If crc32c is set, the asset can't be created if the crc32c value
-                  does not match with the crc32c checksum of the Cloud Storage object
-                  indicated by [VideoAsset.uri][google.cloud.video.livestream.v1.Asset.VideoAsset.uri]
-                  or [ImageAsset.uri][google.cloud.video.livestream.v1.Asset.ImageAsset.uri].
+                description: |-
+                  Based64-encoded CRC32c checksum of the asset file. For more information,
+                   see the crc32c checksum of the [Cloud Storage Objects
+                   resource](https://cloud.google.com/storage/docs/json_api/v1/objects).
+                   If crc32c is omitted or left empty when the asset is created, this field is
+                   filled by the crc32c checksum of the Cloud Storage object indicated by
+                   [VideoAsset.uri][google.cloud.video.livestream.v1.Asset.VideoAsset.uri] or
+                   [ImageAsset.uri][google.cloud.video.livestream.v1.Asset.ImageAsset.uri]. If
+                   crc32c is set, the asset can't be created if the crc32c value does not
+                   match with the crc32c checksum of the Cloud Storage object indicated by
+                   [VideoAsset.uri][google.cloud.video.livestream.v1.Asset.VideoAsset.uri] or
+                   [ImageAsset.uri][google.cloud.video.livestream.v1.Asset.ImageAsset.uri].
                 type: string
               image:
                 description: ImageAsset represents an image.
@@ -89,20 +94,6 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -139,8 +130,9 @@ spec:
               state of LiveStreamAsset
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -152,8 +144,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -184,19 +177,22 @@ spec:
                     description: Output only. The creation time.
                     type: string
                   error:
-                    description: Output only. Only present when `state` is `ERROR`.
-                      The reason for the error state of the asset.
+                    description: |-
+                      Output only. Only present when `state` is `ERROR`. The reason for the error
+                       state of the asset.
                     properties:
                       code:
-                        description: The status code, which should be an enum value
-                          of [google.rpc.Code][google.rpc.Code].
+                        description: |-
+                          The status code, which should be an enum value of
+                           [google.rpc.Code][google.rpc.Code].
                         format: int32
                         type: integer
                       message:
-                        description: A developer-facing error message, which should
-                          be in English. Any user-facing error message should be localized
-                          and sent in the [google.rpc.Status.details][google.rpc.Status.details]
-                          field, or localized by the client.
+                        description: |-
+                          A developer-facing error message, which should be in English. Any
+                           user-facing error message should be localized and sent in the
+                           [google.rpc.Status.details][google.rpc.Status.details] field, or localized
+                           by the client.
                         type: string
                     type: object
                   state:

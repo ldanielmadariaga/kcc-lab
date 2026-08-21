@@ -22,7 +22,8 @@
 
 package v1alpha1
 
-/* unreachable type BackupPolicy
+/* found existing non-generated go type with proto tag "google.cloud.netapp.v1.BackupPolicy", skipping
+
 // +kcc:proto=google.cloud.netapp.v1.BackupPolicy
 type BackupPolicy struct {
 	// Identifier. The resource name of the backup policy.
@@ -62,7 +63,8 @@ type BackupPolicy struct {
 }
 */
 
-/* unreachable type BackupVault
+/* found existing non-generated go type with proto tag "google.cloud.netapp.v1.BackupVault", skipping
+
 // +kcc:proto=google.cloud.netapp.v1.BackupVault
 type BackupVault struct {
 	// Identifier. The resource name of the backup vault.
@@ -128,7 +130,8 @@ type BackupVault_BackupRetentionPolicy struct {
 	ManualBackupImmutable *bool `json:"manualBackupImmutable,omitempty"`
 }
 
-/* unreachable type BackupPolicyObservedState
+/* found existing non-generated go type with proto tag "google.cloud.netapp.v1.BackupPolicy", skipping
+
 // +kcc:observedstate:proto=google.cloud.netapp.v1.BackupPolicy
 type BackupPolicyObservedState struct {
 	// Output only. The total number of volumes assigned by this backup policy.
@@ -145,7 +148,8 @@ type BackupPolicyObservedState struct {
 }
 */
 
-/* unreachable type BackupVaultObservedState
+/* found existing non-generated go type with proto tag "google.cloud.netapp.v1.BackupVault", skipping
+
 // +kcc:observedstate:proto=google.cloud.netapp.v1.BackupVault
 type BackupVaultObservedState struct {
 	// Output only. The backup vault state.

@@ -145,66 +145,6 @@ type ConfigVariable struct {
 	SecretValue *secretmanagerv1beta1.SecretRef `json:"secretValue,omitempty"`
 }
 
-/* unreachable type Connection
-// +kcc:proto=google.cloud.connectors.v1.Connection
-type Connection struct {
-
-	// Optional. Resource labels to represent user-provided metadata.
-	//  Refer to cloud documentation on labels for more details.
-	//  https://cloud.google.com/compute/docs/labeling-resources
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// Optional. Description of the resource.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.description
-	Description *string `json:"description,omitempty"`
-
-	// Required. Connector version on which the connection is created.
-	//  The format is:
-	//  projects/-*-/locations/-*-/providers/-*-/connectors/-*-/versions/-*
-	//  Only global location is supported for ConnectorVersion resource.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.connector_version
-	// +required
-	ConnectorVersion *string `json:"connectorVersion,omitempty"`
-
-	// Optional. Configuration for configuring the connection with an external
-	//  system.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.config_variables
-	ConfigVariables []ConfigVariable `json:"configVariables,omitempty"`
-
-	// Optional. Configuration for establishing the connection's authentication
-	//  with an external system.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.auth_config
-	AuthConfig *AuthConfig `json:"authConfig,omitempty"`
-
-	// Optional. Configuration that indicates whether or not the Connection can be
-	//  edited.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.lock_config
-	LockConfig *LockConfig `json:"lockConfig,omitempty"`
-
-	// Optional. Configuration of the Connector's destination. Only accepted for
-	//  Connectors that accepts user defined destination(s).
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.destination_configs
-	DestinationConfigs []DestinationConfig `json:"destinationConfigs,omitempty"`
-
-	// Optional. Service account needed for runtime plane to access GCP resources.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.service_account
-	ServiceAccount *string `json:"serviceAccount,omitempty"`
-
-	// Optional. Suspended indicates if a user has suspended a connection or not.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.suspended
-	Suspended *bool `json:"suspended,omitempty"`
-
-	// Optional. Node configuration for the connection.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.node_config
-	NodeConfig *NodeConfig `json:"nodeConfig,omitempty"`
-
-	// Optional. Ssl config of a connection
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.ssl_config
-	SSLConfig *SSLConfig `json:"sslConfig,omitempty"`
-}
-*/
-
 // +kcc:proto=google.cloud.connectors.v1.ConnectionStatus
 type ConnectionStatus struct {
 	// State.
@@ -312,42 +252,3 @@ type SSLConfig struct {
 	// +kcc:proto:field=google.cloud.connectors.v1.SslConfig.additional_variables
 	AdditionalVariables []ConfigVariable `json:"additionalVariables,omitempty"`
 }
-
-/* unreachable type ConnectionObservedState
-// +kcc:observedstate:proto=google.cloud.connectors.v1.Connection
-type ConnectionObservedState struct {
-	// Output only. Resource name of the Connection.
-	//  Format: projects/{project}/locations/{location}/connections/{connection}
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.name
-	Name *string `json:"name,omitempty"`
-
-	// Output only. Created time.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. Updated time.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. Current status of the connection.
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.status
-	Status *ConnectionStatus `json:"status,omitempty"`
-
-	// Output only. GCR location where the runtime image is stored.
-	//  formatted like: gcr.io/{bucketName}/{imageName}
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.image_location
-	ImageLocation *string `json:"imageLocation,omitempty"`
-
-	// Output only. The name of the Service Directory service name. Used for
-	//  Private Harpoon to resolve the ILB address.
-	//  e.g.
-	//  "projects/cloud-connectors-e2e-testing/locations/us-central1/namespaces/istio-system/services/istio-ingressgateway-connectors"
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.service_directory
-	ServiceDirectory *string `json:"serviceDirectory,omitempty"`
-
-	// Output only. GCR location where the envoy image is stored.
-	//  formatted like: gcr.io/{bucketName}/{imageName}
-	// +kcc:proto:field=google.cloud.connectors.v1.Connection.envoy_image_location
-	EnvoyImageLocation *string `json:"envoyImageLocation,omitempty"`
-}
-*/

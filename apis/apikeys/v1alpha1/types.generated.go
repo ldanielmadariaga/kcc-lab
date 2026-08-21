@@ -79,7 +79,8 @@ type IosKeyRestrictions struct {
 	AllowedBundleIDs []string `json:"allowedBundleIDs,omitempty"`
 }
 
-/* unreachable type Key
+/* found existing non-generated go type with proto tag "google.api.apikeys.v2.Key", skipping
+
 // +kcc:proto=google.api.apikeys.v2.Key
 type Key struct {
 
@@ -134,7 +135,8 @@ type ServerKeyRestrictions struct {
 	AllowedIPs []string `json:"allowedIPs,omitempty"`
 }
 
-/* unreachable type KeyObservedState
+/* found existing non-generated go type with proto tag "google.api.apikeys.v2.Key", skipping
+
 // +kcc:observedstate:proto=google.api.apikeys.v2.Key
 type KeyObservedState struct {
 	// Output only. The resource name of the key.

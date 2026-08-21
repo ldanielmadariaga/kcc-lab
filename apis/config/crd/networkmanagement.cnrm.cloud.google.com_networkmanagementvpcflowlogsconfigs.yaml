@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpnetworkmanagementvpcflowlogsconfig
     - gcpnetworkmanagementvpcflowlogsconfigs
     singular: networkmanagementvpcflowlogsconfig
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -62,27 +66,32 @@ spec:
               state of NetworkManagementVPCFlowLogsConfig
             properties:
               aggregationInterval:
-                description: Optional. The aggregation interval for the logs. Default
-                  value is INTERVAL_5_SEC.
+                description: |-
+                  Optional. The aggregation interval for the logs. Default value is
+                   INTERVAL_5_SEC.
                 type: string
               description:
-                description: Optional. The user-supplied description of the VPC Flow
-                  Logs configuration. Maximum of 512 characters.
+                description: |-
+                  Optional. The user-supplied description of the VPC Flow Logs configuration.
+                   Maximum of 512 characters.
                 type: string
               filterExpr:
-                description: Optional. Export filter used to define which VPC Flow
-                  Logs should be logged.
+                description: |-
+                  Optional. Export filter used to define which VPC Flow Logs should be
+                   logged.
                 type: string
               flowSampling:
-                description: Optional. The value of the field must be in (0, 1]. The
-                  sampling rate of VPC Flow Logs where 1.0 means all collected logs
-                  are reported. Setting the sampling rate to 0.0 is not allowed. If
-                  you want to disable VPC Flow Logs, use the state field instead.
-                  Default value is 1.0.
+                description: |-
+                  Optional. The value of the field must be in (0, 1]. The sampling rate of
+                   VPC Flow Logs where 1.0 means all collected logs are reported. Setting the
+                   sampling rate to 0.0 is not allowed. If you want to disable VPC Flow Logs,
+                   use the state field instead. Default value is 1.0.
                 type: number
               interconnectAttachment:
-                description: 'Traffic will be logged from the Interconnect Attachment.
-                  Format: projects/{project_id}/regions/{region}/interconnectAttachments/{name}'
+                description: |-
+                  Traffic will be logged from the Interconnect Attachment.
+                   Format:
+                   projects/{project_id}/regions/{region}/interconnectAttachments/{name}
                 type: string
               labels:
                 additionalProperties:
@@ -94,32 +103,20 @@ spec:
                 description: The location of this resource.
                 type: string
               metadata:
-                description: Optional. Configures whether all, none or a subset of
-                  metadata fields should be added to the reported VPC flow logs. Default
-                  value is INCLUDE_ALL_METADATA.
+                description: |-
+                  Optional. Configures whether all, none or a subset of metadata fields
+                   should be added to the reported VPC flow logs. Default value is
+                   INCLUDE_ALL_METADATA.
                 type: string
               metadataFields:
-                description: Optional. Custom metadata fields to include in the reported
-                  VPC flow logs. Can only be specified if "metadata" was set to CUSTOM_METADATA.
+                description: |-
+                  Optional. Custom metadata fields to include in the reported VPC flow logs.
+                   Can only be specified if "metadata" was set to CUSTOM_METADATA.
                 items:
                   type: string
                 type: array
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -141,13 +138,14 @@ spec:
                   the metadata.name will be used.
                 type: string
               state:
-                description: Optional. The state of the VPC Flow Log configuration.
-                  Default value is ENABLED. When creating a new configuration, it
-                  must be enabled.
+                description: |-
+                  Optional. The state of the VPC Flow Log configuration. Default value is
+                   ENABLED. When creating a new configuration, it must be enabled.
                 type: string
               vpnTunnel:
-                description: 'Traffic will be logged from the VPN Tunnel. Format:
-                  projects/{project_id}/regions/{region}/vpnTunnels/{name}'
+                description: |-
+                  Traffic will be logged from the VPN Tunnel.
+                   Format: projects/{project_id}/regions/{region}/vpnTunnels/{name}
                 type: string
             required:
             - location
@@ -158,8 +156,9 @@ spec:
               connector machine state of NetworkManagementVPCFlowLogsConfig
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -171,8 +170,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -203,8 +203,9 @@ spec:
                     description: Output only. The time the config was created.
                     type: string
                   targetResourceState:
-                    description: Output only. A diagnostic bit - describes the state
-                      of the configured target resource for diagnostic purposes.
+                    description: |-
+                      Output only. A diagnostic bit - describes the state of the configured
+                       target resource for diagnostic purposes.
                     type: string
                   updateTime:
                     description: Output only. The time the config was updated.

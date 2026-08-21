@@ -21,7 +21,9 @@ import (
 	"github.com/googleapis/gax-go/v2/apierror"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 func TestStringDuration_FromProto(t *testing.T) {
@@ -167,5 +169,117 @@ func TestIsNotFound(t *testing.T) {
 				t.Errorf("IsNotFound(%v) = %v, want %v", tc.err, got, tc.want)
 			}
 		})
+	}
+}
+
+// Value and ListValue round-trip through JSON, which is the whole reason they
+// map to apiextensionsv1.JSON rather than a generated struct: the struct form
+// is recursive (a Value may hold a ListValue of Values) and controller-gen
+// cannot build a terminating CRD schema for it.
+//
+// The cases below cover each arm of the Value union, including the two nested
+// ones that make the recursion, so a regression that flattens or drops a nested
+// value fails here rather than in a CRD somewhere.
+func TestValue_RoundTrip(t *testing.T) {
+	tests := []struct {
+		name string
+		in   any
+	}{
+		{name: "null", in: nil},
+		{name: "number", in: float64(42)},
+		{name: "string", in: "hello"},
+		{name: "bool", in: true},
+		{name: "struct", in: map[string]any{"a": "b", "n": float64(1)}},
+		{name: "list", in: []any{"a", float64(1), true, nil}},
+		{name: "nested", in: map[string]any{
+			"list": []any{map[string]any{"deep": []any{float64(1)}}},
+		}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			pb, err := structpb.NewValue(tt.in)
+			if err != nil {
+				t.Fatalf("building structpb.Value: %v", err)
+			}
+
+			mapCtx := &MapContext{}
+			krm := Value_FromProto(mapCtx, pb)
+			if err := mapCtx.Err(); err != nil {
+				t.Fatalf("Value_FromProto: %v", err)
+			}
+			if krm == nil {
+				t.Fatal("Value_FromProto returned nil")
+			}
+
+			back := Value_ToProto(mapCtx, krm)
+			if err := mapCtx.Err(); err != nil {
+				t.Fatalf("Value_ToProto: %v", err)
+			}
+			if !proto.Equal(pb, back) {
+				t.Errorf("round trip changed the value.\n got: %v\nwant: %v", back, pb)
+			}
+		})
+	}
+}
+
+// A nil input is not an error, it is an absent field, and both directions have
+// to say so rather than producing an empty JSON document or an empty message.
+func TestValue_Nil(t *testing.T) {
+	mapCtx := &MapContext{}
+	if got := Value_FromProto(mapCtx, nil); got != nil {
+		t.Errorf("Value_FromProto(nil) = %v, want nil", got)
+	}
+	if got := Value_ToProto(mapCtx, nil); got != nil {
+		t.Errorf("Value_ToProto(nil) = %v, want nil", got)
+	}
+	if got := ListValue_FromProto(mapCtx, nil); got != nil {
+		t.Errorf("ListValue_FromProto(nil) = %v, want nil", got)
+	}
+	if got := ListValue_ToProto(mapCtx, nil); got != nil {
+		t.Errorf("ListValue_ToProto(nil) = %v, want nil", got)
+	}
+	if err := mapCtx.Err(); err != nil {
+		t.Errorf("nil inputs recorded an error: %v", err)
+	}
+}
+
+func TestListValue_RoundTrip(t *testing.T) {
+	pb, err := structpb.NewList([]any{
+		"a", float64(1), true, nil,
+		map[string]any{"k": "v"},
+		[]any{float64(1), float64(2)},
+	})
+	if err != nil {
+		t.Fatalf("building structpb.ListValue: %v", err)
+	}
+
+	mapCtx := &MapContext{}
+	krm := ListValue_FromProto(mapCtx, pb)
+	if err := mapCtx.Err(); err != nil {
+		t.Fatalf("ListValue_FromProto: %v", err)
+	}
+	back := ListValue_ToProto(mapCtx, krm)
+	if err := mapCtx.Err(); err != nil {
+		t.Fatalf("ListValue_ToProto: %v", err)
+	}
+	if !proto.Equal(pb, back) {
+		t.Errorf("round trip changed the list.\n got: %v\nwant: %v", back, pb)
+	}
+}
+
+// An empty list is distinct from an absent one, and "[]" has to survive as an
+// empty ListValue rather than collapsing to nil.
+func TestListValue_Empty(t *testing.T) {
+	mapCtx := &MapContext{}
+	krm := ListValue_FromProto(mapCtx, &structpb.ListValue{})
+	if krm == nil || string(krm.Raw) != "[]" {
+		t.Fatalf("ListValue_FromProto(empty) = %v, want []", krm)
+	}
+	back := ListValue_ToProto(mapCtx, krm)
+	if back == nil || len(back.Values) != 0 {
+		t.Errorf("ListValue_ToProto([]) = %v, want an empty ListValue", back)
+	}
+	if err := mapCtx.Err(); err != nil {
+		t.Errorf("empty list recorded an error: %v", err)
 	}
 }

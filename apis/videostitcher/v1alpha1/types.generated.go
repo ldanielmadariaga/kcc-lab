@@ -28,33 +28,6 @@ type AkamaiCDNKey struct {
 	TokenKey []byte `json:"tokenKey,omitempty"`
 }
 
-/* unreachable type CDNKey
-// +kcc:proto=google.cloud.video.stitcher.v1.CdnKey
-type CDNKey struct {
-	// The configuration for a Google Cloud CDN key.
-	// +kcc:proto:field=google.cloud.video.stitcher.v1.CdnKey.google_cdn_key
-	GoogleCDNKey *GoogleCDNKey `json:"googleCDNKey,omitempty"`
-
-	// The configuration for an Akamai CDN key.
-	// +kcc:proto:field=google.cloud.video.stitcher.v1.CdnKey.akamai_cdn_key
-	AkamaiCDNKey *AkamaiCDNKey `json:"akamaiCDNKey,omitempty"`
-
-	// The configuration for a Media CDN key.
-	// +kcc:proto:field=google.cloud.video.stitcher.v1.CdnKey.media_cdn_key
-	MediaCDNKey *MediaCDNKey `json:"mediaCDNKey,omitempty"`
-
-	// The resource name of the CDN key, in the form of
-	//  `projects/{project}/locations/{location}/cdnKeys/{id}`.
-	//  The name is ignored when creating a CDN key.
-	// +kcc:proto:field=google.cloud.video.stitcher.v1.CdnKey.name
-	Name *string `json:"name,omitempty"`
-
-	// The hostname this key applies to.
-	// +kcc:proto:field=google.cloud.video.stitcher.v1.CdnKey.hostname
-	Hostname *string `json:"hostname,omitempty"`
-}
-*/
-
 // +kcc:proto=google.cloud.video.stitcher.v1.GoogleCdnKey
 type GoogleCDNKey struct {
 	// Input only. Secret for this Google Cloud CDN key.

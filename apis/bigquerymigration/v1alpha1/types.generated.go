@@ -142,31 +142,6 @@ type MigrationTaskOrchestrationResult struct {
 }
 */
 
-/* unreachable type MigrationWorkflow
-// +kcc:proto=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow
-type MigrationWorkflow struct {
-
-	// The display name of the workflow. This can be set to give a workflow
-	//  a descriptive name. There is no guarantee or enforcement of uniqueness.
-	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.display_name
-	DisplayName *string `json:"displayName,omitempty"`
-
-	// The tasks in a workflow in a named map. The name (i.e. key) has no
-	//  meaning and is merely a convenient way to address a specific task
-	//  in a workflow.
-	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.tasks
-	Tasks map[string]MigrationTask `json:"tasks,omitempty"`
-
-	// Time when the workflow was created.
-	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Time when the workflow was last updated.
-	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.last_update_time
-	LastUpdateTime *string `json:"lastUpdateTime,omitempty"`
-}
-*/
-
 // +kcc:proto=google.cloud.bigquery.migration.v2alpha.TeradataOptions
 type TeradataOptions struct {
 }
@@ -299,21 +274,5 @@ type ErrorInfo struct {
 	//  instances that can be created in a single (batch) request.
 	// +kcc:proto:field=google.rpc.ErrorInfo.metadata
 	Metadata map[string]string `json:"metadata,omitempty"`
-}
-*/
-
-/* unreachable type MigrationWorkflowObservedState
-// +kcc:observedstate:proto=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow
-type MigrationWorkflowObservedState struct {
-	// Output only. Immutable. The unique identifier for the migration workflow. The ID is
-	//  server-generated.
-	//
-	//  Example: `projects/123/locations/us/workflows/345`
-	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.name
-	Name *string `json:"name,omitempty"`
-
-	// Output only. That status of the workflow.
-	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.state
-	State *string `json:"state,omitempty"`
 }
 */

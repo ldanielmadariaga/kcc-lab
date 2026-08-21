@@ -89,7 +89,8 @@ type FirewallAction_SubstituteAction struct {
 	Path *string `json:"path,omitempty"`
 }
 
-/* unreachable type FirewallPolicy
+/* found existing non-generated go type with proto tag "google.cloud.recaptchaenterprise.v1.FirewallPolicy", skipping
+
 // +kcc:proto=google.cloud.recaptchaenterprise.v1.FirewallPolicy
 type FirewallPolicy struct {
 	// Identifier. The resource name for the FirewallPolicy in the format

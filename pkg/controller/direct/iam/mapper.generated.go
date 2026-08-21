@@ -69,10 +69,14 @@ func IAMDenyPolicyObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in
 	}
 	out := &krmiamv1alpha1.IAMDenyPolicyObservedState{}
 	// MISSING: Name
-	out.Kind = direct.LazyPtr(in.GetKind())
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
+	// MISSING: Uid
+	// MISSING: Kind
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ManagingAuthority
 	return out
 }
 func IAMDenyPolicyObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmiamv1alpha1.IAMDenyPolicyObservedState) *iampb.Policy {
@@ -81,10 +85,14 @@ func IAMDenyPolicyObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *
 	}
 	out := &iampb.Policy{}
 	// MISSING: Name
-	out.Kind = direct.ValueOf(in.Kind)
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
+	// MISSING: Uid
+	// MISSING: Kind
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ManagingAuthority
 	return out
 }
 func IAMDenyPolicySpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *iampb.Policy) *krmiamv1alpha1.IAMDenyPolicySpec {
@@ -93,12 +101,16 @@ func IAMDenyPolicySpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *iampb.P
 	}
 	out := &krmiamv1alpha1.IAMDenyPolicySpec{}
 	// MISSING: Name
-	out.Uid = direct.LazyPtr(in.GetUid())
+	// MISSING: Uid
+	// MISSING: Kind
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	out.Annotations = in.Annotations
-	out.Etag = direct.LazyPtr(in.GetEtag())
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
 	out.Rules = direct.Slice_FromProto(mapCtx, in.Rules, PolicyRule_v1alpha1_FromProto)
-	out.ManagingAuthority = direct.LazyPtr(in.GetManagingAuthority())
+	// MISSING: ManagingAuthority
 	return out
 }
 func IAMDenyPolicySpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmiamv1alpha1.IAMDenyPolicySpec) *iampb.Policy {
@@ -107,12 +119,16 @@ func IAMDenyPolicySpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmiamv1a
 	}
 	out := &iampb.Policy{}
 	// MISSING: Name
-	out.Uid = direct.ValueOf(in.Uid)
+	// MISSING: Uid
+	// MISSING: Kind
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	out.Annotations = in.Annotations
-	out.Etag = direct.ValueOf(in.Etag)
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
 	out.Rules = direct.Slice_ToProto(mapCtx, in.Rules, PolicyRule_v1alpha1_ToProto)
-	out.ManagingAuthority = direct.ValueOf(in.ManagingAuthority)
+	// MISSING: ManagingAuthority
 	return out
 }
 func IAMServiceAccountKeyObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.ServiceAccountKey) *krmiamv1beta1.IAMServiceAccountKeyObservedState {

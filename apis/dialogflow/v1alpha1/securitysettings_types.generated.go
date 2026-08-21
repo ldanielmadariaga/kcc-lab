@@ -21,7 +21,8 @@
 
 package v1alpha1
 
-/* unreachable type SecuritySettings
+/* found existing non-generated go type with proto tag "google.cloud.dialogflow.cx.v3.SecuritySettings", skipping
+
 // +kcc:proto=google.cloud.dialogflow.cx.v3.SecuritySettings
 type SecuritySettings struct {
 	// Resource name of the settings.

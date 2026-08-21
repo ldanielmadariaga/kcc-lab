@@ -103,6 +103,7 @@ type AutoscalingMetricSpec struct {
 	//  * `aiplatform.googleapis.com/prediction/online/accelerator/duty_cycle`
 	//  * `aiplatform.googleapis.com/prediction/online/cpu/utilization`
 	// +kcc:proto:field=google.cloud.visionai.v1.AutoscalingMetricSpec.metric_name
+	// +required
 	MetricName *string `json:"metricName,omitempty"`
 
 	// The target resource utilization in percentage (1% - 100%) for the given
@@ -171,6 +172,7 @@ type DedicatedResources struct {
 	// Required. Immutable. The specification of a single machine used by the
 	//  prediction.
 	// +kcc:proto:field=google.cloud.visionai.v1.DedicatedResources.machine_spec
+	// +required
 	MachineSpec *MachineSpec `json:"machineSpec,omitempty"`
 
 	// Required. Immutable. The minimum number of machine replicas this
@@ -181,6 +183,7 @@ type DedicatedResources struct {
 	//  deployed onto more replicas, and as traffic decreases, some of these extra
 	//  replicas may be freed.
 	// +kcc:proto:field=google.cloud.visionai.v1.DedicatedResources.min_replica_count
+	// +required
 	MinReplicaCount *int32 `json:"minReplicaCount,omitempty"`
 
 	// Immutable. The maximum number of replicas this DeployedModel may be
@@ -285,6 +288,7 @@ type Node struct {
 
 	// Required. A unique name for the node.
 	// +kcc:proto:field=google.cloud.visionai.v1.Node.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// A user friendly display name for the node.
@@ -567,6 +571,7 @@ type TagParsingConfig_EntityParsingConfig struct {
 	// Required. The tag entity class name. This should match the class name
 	//  produced by the tag entity detection model.
 	// +kcc:proto:field=google.cloud.visionai.v1.TagParsingConfig.EntityParsingConfig.entity_class
+	// +required
 	EntityClass *string `json:"entityClass,omitempty"`
 
 	// Optional. An regular expression hint.

@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpdatacatalogentry
     - gcpdatacatalogentries
     singular: datacatalogentry
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -45,14 +44,19 @@ spec:
         description: DataCatalogEntry is the Schema for the DataCatalogEntry API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -75,8 +79,9 @@ spec:
                                 Data Steward.
                               type: string
                             email:
-                              description: Email of the person in the format of `john.doe@xyz`,
-                                `<john.doe@xyz>`, or `John Doe<john.doe@xyz>`.
+                              description: |-
+                                Email of the person in the format of `john.doe@xyz`,
+                                 `<john.doe@xyz>`, or `John Doe<john.doe@xyz>`.
                               type: string
                           type: object
                         type: array
@@ -98,17 +103,20 @@ spec:
                     type: object
                 type: object
               cloudBigtableSystemSpec:
-                description: Specification that applies to Cloud Bigtable system.
-                  Only settable when `integrated_system` is equal to `CLOUD_BIGTABLE`
+                description: |-
+                  Specification that applies to Cloud Bigtable system. Only settable when
+                   `integrated_system` is equal to `CLOUD_BIGTABLE`
                 properties:
                   instanceDisplayName:
-                    description: Display name of the Instance. This is user specified
-                      and different from the resource name.
+                    description: |-
+                      Display name of the Instance. This is user specified and different from
+                       the resource name.
                     type: string
                 type: object
               dataSourceConnectionSpec:
-                description: Specification that applies to a data source connection.
-                  Valid only for entries with the `DATA_SOURCE_CONNECTION` type.
+                description: |-
+                  Specification that applies to a data source connection. Valid only
+                   for entries with the `DATA_SOURCE_CONNECTION` type.
                 properties:
                   bigqueryConnectionSpec:
                     description: Output only. Fields specific to BigQuery connections.
@@ -131,18 +139,21 @@ spec:
                         description: The type of the BigQuery connection.
                         type: string
                       hasCredential:
-                        description: True if there are credentials attached to the
-                          BigQuery connection; false otherwise.
+                        description: |-
+                          True if there are credentials attached to the BigQuery connection; false
+                           otherwise.
                         type: boolean
                     type: object
                 type: object
               databaseTableSpec:
-                description: Specification that applies to a table resource. Valid
-                  only for entries with the `TABLE` or `EXPLORE` type.
+                description: |-
+                  Specification that applies to a table resource. Valid only
+                   for entries with the `TABLE` or `EXPLORE` type.
                 properties:
                   databaseViewSpec:
-                    description: Spec what applies to tables that are actually views.
-                      Not set for "real" tables.
+                    description: |-
+                      Spec what applies to tables that are actually views.
+                       Not set for "real" tables.
                     properties:
                       baseTable:
                         description: Name of a singular table this view reflects one
@@ -166,8 +177,9 @@ spec:
                     description: Vertex AI Dataset specific fields
                     properties:
                       dataItemCount:
-                        description: The number of DataItems in this Dataset. Only
-                          apply for non-structured Dataset.
+                        description: |-
+                          The number of DataItems in this Dataset. Only apply for non-structured
+                           Dataset.
                         format: int64
                         type: integer
                       dataType:
@@ -195,24 +207,11 @@ spec:
                 type: string
               entryGroupRef:
                 description: Reference to the entry group that contains the entry.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
-                    description: A reference to an externally managed DataCatalogEntryGroup
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/entrygroups/{{entrygroupID}}".
+                    description: |-
+                      A reference to an externally managed DataCatalogEntryGroup resource.
+                      Should be in the format "projects/{{projectID}}/locations/{{location}}/entrygroups/{{entrygroupID}}".
                     type: string
                   name:
                     description: The name of a DataCatalogEntryGroup resource.
@@ -225,21 +224,23 @@ spec:
                 description: FeatureonlineStore spec for Vertex AI Feature Store.
                 type: object
               filesetSpec:
-                description: Specification that applies to a fileset resource. Valid
-                  only for entries with the `FILESET` type.
+                description: |-
+                  Specification that applies to a fileset resource. Valid only
+                   for entries with the `FILESET` type.
                 properties:
                   dataplexFileset:
-                    description: Fields specific to a Dataplex fileset and present
-                      only in the Dataplex fileset entries.
+                    description: |-
+                      Fields specific to a Dataplex fileset and present only in the Dataplex
+                       fileset entries.
                     properties:
                       dataplexSpec:
                         description: Common Dataplex fields.
                         properties:
                           asset:
-                            description: Fully qualified resource name of an asset
-                              in Dataplex, to which the underlying data source (Cloud
-                              Storage bucket or BigQuery dataset) of the entity is
-                              attached.
+                            description: |-
+                              Fully qualified resource name of an asset in Dataplex, to which the
+                               underlying data source (Cloud Storage bucket or BigQuery dataset) of the
+                               entity is attached.
                             type: string
                           compressionFormat:
                             description: Compression format of the data, e.g., zip,
@@ -280,17 +281,18 @@ spec:
                                 type: object
                             type: object
                           projectID:
-                            description: Project ID of the underlying Cloud Storage
-                              or BigQuery data. Note that this may not be the same
-                              project as the correspondingly Dataplex lake / zone
-                              / asset.
+                            description: |-
+                              Project ID of the underlying Cloud Storage or BigQuery data. Note that
+                               this may not be the same project as the correspondingly Dataplex lake /
+                               zone / asset.
                             type: string
                         type: object
                     type: object
                 type: object
               gcsFilesetSpec:
-                description: Specification that applies to a Cloud Storage fileset.
-                  Valid only for entries with the `FILESET` type.
+                description: |-
+                  Specification that applies to a Cloud Storage fileset. Valid only
+                   for entries with the `FILESET` type.
                 properties:
                   filePatterns:
                     description: |-
@@ -326,6 +328,8 @@ spec:
                     items:
                       type: string
                     type: array
+                required:
+                - filePatterns
                 type: object
               labels:
                 additionalProperties:
@@ -338,16 +342,18 @@ spec:
                    system.
                 type: object
               lookerSystemSpec:
-                description: Specification that applies to Looker sysstem. Only settable
-                  when `user_specified_system` is equal to `LOOKER`
+                description: |-
+                  Specification that applies to Looker sysstem. Only settable when
+                   `user_specified_system` is equal to `LOOKER`
                 properties:
                   parentInstanceDisplayName:
                     description: Name of the parent Looker Instance. Empty if it does
                       not exist.
                     type: string
                   parentInstanceID:
-                    description: 'ID of the parent Looker Instance. Empty if it does
-                      not exist. Example value: `someinstance.looker.com`'
+                    description: |-
+                      ID of the parent Looker Instance. Empty if it does not exist.
+                       Example value: `someinstance.looker.com`
                     type: string
                   parentModelDisplayName:
                     description: Name of the parent Model. Empty if it does not exist.
@@ -369,12 +375,14 @@ spec:
                     description: Specification for vertex model resources.
                     properties:
                       containerImageURI:
-                        description: URI of the Docker image to be used as the custom
-                          container for serving predictions.
+                        description: |-
+                          URI of the Docker image to be used as the custom container for serving
+                           predictions.
                         type: string
                       versionAliases:
-                        description: User provided version aliases so that a model
-                          version can be referenced via alias
+                        description: |-
+                          User provided version aliases so that a model version can be referenced via
+                           alias
                         items:
                           type: string
                         type: array
@@ -388,9 +396,10 @@ spec:
                         description: Source of a Vertex model.
                         properties:
                           copy:
-                            description: If this Model is copy of another Model. If
-                              true then [source_type][google.cloud.datacatalog.v1.VertexModelSourceInfo.source_type]
-                              pertains to the original.
+                            description: |-
+                              If this Model is copy of another Model. If true then
+                               [source_type][google.cloud.datacatalog.v1.VertexModelSourceInfo.source_type]
+                               pertains to the original.
                             type: boolean
                           sourceType:
                             description: Type of the model source.
@@ -403,8 +412,9 @@ spec:
                   will be used.
                 type: string
               routineSpec:
-                description: Specification that applies to a user-defined function
-                  or procedure. Valid only for entries with the `ROUTINE` type.
+                description: |-
+                  Specification that applies to a user-defined function or procedure. Valid
+                   only for entries with the `ROUTINE` type.
                 properties:
                   bigqueryRoutineSpec:
                     description: Fields specific for BigQuery routines.
@@ -427,8 +437,9 @@ spec:
                        * `JAVASCRIPT`
                     type: string
                   returnType:
-                    description: Return type of the argument. The exact value depends
-                      on the source system and the language.
+                    description: |-
+                      Return type of the argument. The exact value depends on the source system
+                       and the language.
                     type: string
                   routineArguments:
                     description: Arguments of the routine.
@@ -439,12 +450,14 @@ spec:
                             output.
                           type: string
                         name:
-                          description: The name of the argument. A return argument
-                            of a function might not have a name.
+                          description: |-
+                            The name of the argument. A return argument of a function might not have
+                             a name.
                           type: string
                         type:
-                          description: Type of the argument. The exact value depends
-                            on the source system and the language.
+                          description: |-
+                            Type of the argument. The exact value depends on the source system and
+                             the language.
                           type: string
                       type: object
                     type: array
@@ -482,9 +495,9 @@ spec:
                              bytes.
                           type: string
                         gcRule:
-                          description: Optional. Garbage collection policy for the
-                            column or column family. Applies to systems like Cloud
-                            Bigtable.
+                          description: |-
+                            Optional. Garbage collection policy for the column or column family.
+                             Applies to systems like Cloud Bigtable.
                           type: string
                         highestIndexingType:
                           description: Optional. Most important inclusion of this
@@ -510,19 +523,26 @@ spec:
                           format: int32
                           type: integer
                         rangeElementType:
-                          description: 'Optional. The subtype of the RANGE, if the
-                            type of this field is RANGE. If the type is RANGE, this
-                            field is required. Possible values for the field element
-                            type of a RANGE include: * DATE * DATETIME * TIMESTAMP'
+                          description: |-
+                            Optional. The subtype of the RANGE, if the type of this field is RANGE. If
+                             the type is RANGE, this field is required. Possible values for the field
+                             element type of a RANGE include:
+                             * DATE
+                             * DATETIME
+                             * TIMESTAMP
                           properties:
                             type:
-                              description: Required. The type of a field element.
-                                See [ColumnSchema.type][google.cloud.datacatalog.v1.ColumnSchema.type].
+                              description: |-
+                                Required. The type of a field element. See
+                                 [ColumnSchema.type][google.cloud.datacatalog.v1.ColumnSchema.type].
                               type: string
+                          required:
+                          - type
                           type: object
                         subcolumns:
-                          description: Optional. Schema of sub-columns. A column can
-                            have zero or more sub-columns.
+                          description: |-
+                            Optional. Schema of sub-columns. A column can have zero or more
+                             sub-columns.
                           x-kubernetes-preserve-unknown-fields: true
                         type:
                           description: |-
@@ -540,8 +560,9 @@ spec:
                 description: Specification that applies to a Service resource.
                 properties:
                   cloudBigtableInstanceSpec:
-                    description: Specification that applies to Instance entries of
-                      `CLOUD_BIGTABLE` system.
+                    description: |-
+                      Specification that applies to Instance entries of `CLOUD_BIGTABLE`
+                       system.
                     properties:
                       cloudBigtableClusterSpecs:
                         description: The list of clusters for the Instance.
@@ -591,21 +612,35 @@ spec:
                     type: string
                 type: object
               sqlDatabaseSystemSpec:
-                description: Specification that applies to a relational database system.
-                  Only settable when `user_specified_system` is equal to `SQL_DATABASE`
+                description: |-
+                  Specification that applies to a relational database system. Only settable
+                   when `user_specified_system` is equal to `SQL_DATABASE`
                 properties:
                   databaseVersion:
                     description: Version of the database engine.
                     type: string
                   instanceHost:
-                    description: Host of the SQL database enum InstanceHost { UNDEFINED
-                      = 0; SELF_HOSTED = 1; CLOUD_SQL = 2; AMAZON_RDS = 3; AZURE_SQL
-                      = 4; } Host of the enclousing database instance.
+                    description: |-
+                      Host of the SQL database
+                       enum InstanceHost {
+                        UNDEFINED = 0;
+                        SELF_HOSTED = 1;
+                        CLOUD_SQL = 2;
+                        AMAZON_RDS = 3;
+                        AZURE_SQL = 4;
+                       }
+                       Host of the enclousing database instance.
                     type: string
                   sqlEngine:
-                    description: SQL Database Engine. enum SqlEngine { UNDEFINED =
-                      0; MY_SQL = 1; POSTGRE_SQL = 2; SQL_SERVER = 3; } Engine of
-                      the enclosing database instance.
+                    description: |-
+                      SQL Database Engine.
+                       enum SqlEngine {
+                        UNDEFINED = 0;
+                        MY_SQL = 1;
+                        POSTGRE_SQL = 2;
+                        SQL_SERVER = 3;
+                       }
+                       Engine of the enclosing database instance.
                     type: string
                 type: object
               type:
@@ -617,6 +652,19 @@ spec:
               usageSignal:
                 description: Resource usage statistics.
                 properties:
+                  commonUsageWithinTimeRange:
+                    additionalProperties:
+                      properties:
+                        viewCount:
+                          description: View count in source system.
+                          format: int64
+                          type: integer
+                      type: object
+                    description: |-
+                      Common usage statistics over each of the predefined time ranges.
+
+                       Supported time ranges are `{"24H", "7D", "30D", "Lifetime"}`.
+                    type: object
                   favoriteCount:
                     description: Favorite count in the source system.
                     format: int64
@@ -661,8 +709,9 @@ spec:
               state of DataCatalogEntry
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -674,8 +723,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -735,15 +785,17 @@ spec:
                         type: string
                     type: object
                   bigqueryTableSpec:
-                    description: Output only. Specification that applies to a BigQuery
-                      table. Valid only for entries with the `TABLE` type.
+                    description: |-
+                      Output only. Specification that applies to a BigQuery table. Valid only
+                       for entries with the `TABLE` type.
                     properties:
                       tableSourceType:
                         description: Output only. The table source type.
                         type: string
                       tableSpec:
-                        description: Specification of a BigQuery table. Populated
-                          only if the `table_source_type` is `BIGQUERY_TABLE`.
+                        description: |-
+                          Specification of a BigQuery table. Populated only if
+                           the `table_source_type` is `BIGQUERY_TABLE`.
                         properties:
                           groupedEntry:
                             description: |-
@@ -757,8 +809,9 @@ spec:
                             type: string
                         type: object
                       viewSpec:
-                        description: Table view specification. Populated only if the
-                          `table_source_type` is `BIGQUERY_VIEW`.
+                        description: |-
+                          Table view specification. Populated only if
+                           the `table_source_type` is `BIGQUERY_VIEW`.
                         properties:
                           viewQuery:
                             description: Output only. The query that defines the table
@@ -815,21 +868,23 @@ spec:
                         type: object
                     type: object
                   databaseTableSpec:
-                    description: Specification that applies to a table resource. Valid
-                      only for entries with the `TABLE` or `EXPLORE` type.
+                    description: |-
+                      Specification that applies to a table resource. Valid only
+                       for entries with the `TABLE` or `EXPLORE` type.
                     properties:
                       dataplexTable:
-                        description: Output only. Fields specific to a Dataplex table
-                          and present only in the Dataplex table entries.
+                        description: |-
+                          Output only. Fields specific to a Dataplex table and present only in the
+                           Dataplex table entries.
                         properties:
                           dataplexSpec:
                             description: Common Dataplex fields.
                             properties:
                               asset:
-                                description: Fully qualified resource name of an asset
-                                  in Dataplex, to which the underlying data source
-                                  (Cloud Storage bucket or BigQuery dataset) of the
-                                  entity is attached.
+                                description: |-
+                                  Fully qualified resource name of an asset in Dataplex, to which the
+                                   underlying data source (Cloud Storage bucket or BigQuery dataset) of the
+                                   entity is attached.
                                 type: string
                               compressionFormat:
                                 description: Compression format of the data, e.g.,
@@ -871,10 +926,10 @@ spec:
                                     type: object
                                 type: object
                               projectID:
-                                description: Project ID of the underlying Cloud Storage
-                                  or BigQuery data. Note that this may not be the
-                                  same project as the correspondingly Dataplex lake
-                                  / zone / asset.
+                                description: |-
+                                  Project ID of the underlying Cloud Storage or BigQuery data. Note that
+                                   this may not be the same project as the correspondingly Dataplex lake /
+                                   zone / asset.
                                 type: string
                             type: object
                           externalTables:
@@ -918,21 +973,23 @@ spec:
                         type: string
                     type: object
                   gcsFilesetSpec:
-                    description: Specification that applies to a Cloud Storage fileset.
-                      Valid only for entries with the `FILESET` type.
+                    description: |-
+                      Specification that applies to a Cloud Storage fileset. Valid only
+                       for entries with the `FILESET` type.
                     properties:
                       sampleGCSFileSpecs:
-                        description: Output only. Sample files contained in this fileset,
-                          not all files contained in this fileset are represented
-                          here.
+                        description: |-
+                          Output only. Sample files contained in this fileset, not all files
+                           contained in this fileset are represented here.
                         items:
                           properties:
                             filePath:
                               description: 'Required. Full file path. Example: `gs://bucket_name/a/b.txt`.'
                               type: string
                             gcsTimestamps:
-                              description: Output only. Creation, modification, and
-                                expiration timestamps of a Cloud Storage file.
+                              description: |-
+                                Output only. Creation, modification, and expiration timestamps of a Cloud
+                                 Storage file.
                               properties:
                                 createTime:
                                   description: Creation timestamp of the resource
@@ -963,9 +1020,9 @@ spec:
                         type: array
                     type: object
                   integratedSystem:
-                    description: Output only. Indicates the entry's source system
-                      that Data Catalog integrates with, such as BigQuery, Pub/Sub,
-                      or Dataproc Metastore.
+                    description: |-
+                      Output only. Indicates the entry's source system that Data Catalog
+                       integrates with, such as BigQuery, Pub/Sub, or Dataproc Metastore.
                     type: string
                   linkedResource:
                     description: |-
@@ -986,8 +1043,9 @@ spec:
                        The maximum size is 200 bytes when encoded in UTF-8.
                     type: string
                   personalDetails:
-                    description: Output only. Additional information related to the
-                      entry. Private to the current user.
+                    description: |-
+                      Output only. Additional information related to the entry. Private to the
+                       current user.
                     properties:
                       starTime:
                         description: Set if the entry is starred; unset otherwise.
@@ -999,6 +1057,33 @@ spec:
                     type: object
                   usageSignal:
                     description: Resource usage statistics.
+                    properties:
+                      usageWithinTimeRange:
+                        additionalProperties:
+                          properties:
+                            totalCancellations:
+                              description: The number of cancelled attempts to use
+                                the underlying entry.
+                              type: number
+                            totalCompletions:
+                              description: The number of successful uses of the underlying
+                                entry.
+                              type: number
+                            totalExecutionTimeForCompletionsMillis:
+                              description: Total time spent only on successful uses,
+                                in milliseconds.
+                              type: number
+                            totalFailures:
+                              description: The number of failed attempts to use the
+                                underlying entry.
+                              type: number
+                          type: object
+                        description: |-
+                          Output only. BigQuery usage statistics over each of the predefined time
+                           ranges.
+
+                           Supported time ranges are `{"24H", "7D", "30D"}`.
+                        type: object
                     type: object
                 type: object
             type: object

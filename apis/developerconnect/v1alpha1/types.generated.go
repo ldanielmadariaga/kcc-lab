@@ -23,36 +23,6 @@
 
 package v1alpha1
 
-import (
-	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
-)
-
-// +kcc:proto=google.cloud.developerconnect.v1.AccountConnector
-type AccountConnector struct {
-	// Provider OAuth config.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.AccountConnector.provider_oauth_config
-	ProviderOauthConfig *ProviderOAuthConfig `json:"providerOauthConfig,omitempty"`
-
-	// Identifier. The resource name of the accountConnector, in the format
-	//  `projects/{project}/locations/{location}/accountConnectors/{account_connector_id}`.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.AccountConnector.name
-	Name *string `json:"name,omitempty"`
-
-	// Optional. Allows users to store small amounts of arbitrary data.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.AccountConnector.annotations
-	Annotations map[string]string `json:"annotations,omitempty"`
-
-	// Optional. This checksum is computed by the server based on the value of
-	//  other fields, and may be sent on update and delete requests to ensure the
-	//  client has an up-to-date value before proceeding.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.AccountConnector.etag
-	Etag *string `json:"etag,omitempty"`
-
-	// Optional. Labels as key value pairs
-	// +kcc:proto:field=google.cloud.developerconnect.v1.AccountConnector.labels
-	Labels map[string]string `json:"labels,omitempty"`
-}
-
 // +kcc:proto=google.cloud.developerconnect.v1.AppHubWorkload
 type AppHubWorkload struct {
 }
@@ -147,69 +117,6 @@ type BitbucketDataCenterConfig struct {
 	//  Bitbucket Data Center.
 	// +kcc:proto:field=google.cloud.developerconnect.v1.BitbucketDataCenterConfig.ssl_ca_certificate
 	SSLCACertificate *string `json:"sslCACertificate,omitempty"`
-}
-
-// +kcc:proto=google.cloud.developerconnect.v1.Connection
-type Connection struct {
-	// Configuration for connections to github.com.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.github_config
-	GithubConfig *GitHubConfig `json:"githubConfig,omitempty"`
-
-	// Configuration for connections to an instance of GitHub Enterprise.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.github_enterprise_config
-	GithubEnterpriseConfig *GitHubEnterpriseConfig `json:"githubEnterpriseConfig,omitempty"`
-
-	// Configuration for connections to gitlab.com.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.gitlab_config
-	GitlabConfig *GitLabConfig `json:"gitlabConfig,omitempty"`
-
-	// Configuration for connections to an instance of GitLab Enterprise.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.gitlab_enterprise_config
-	GitlabEnterpriseConfig *GitLabEnterpriseConfig `json:"gitlabEnterpriseConfig,omitempty"`
-
-	// Configuration for connections to an instance of Bitbucket Data Center.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.bitbucket_data_center_config
-	BitbucketDataCenterConfig *BitbucketDataCenterConfig `json:"bitbucketDataCenterConfig,omitempty"`
-
-	// Configuration for connections to an instance of Bitbucket Clouds.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.bitbucket_cloud_config
-	BitbucketCloudConfig *BitbucketCloudConfig `json:"bitbucketCloudConfig,omitempty"`
-
-	// Identifier. The resource name of the connection, in the format
-	//  `projects/{project}/locations/{location}/connections/{connection_id}`.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.name
-	Name *string `json:"name,omitempty"`
-
-	// Optional. Labels as key value pairs
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// Optional. If disabled is set to true, functionality is disabled for this
-	//  connection. Repository based API methods and webhooks processing for
-	//  repositories in this connection will be disabled.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.disabled
-	Disabled *bool `json:"disabled,omitempty"`
-
-	// Optional. Allows clients to store small amounts of arbitrary data.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.annotations
-	Annotations map[string]string `json:"annotations,omitempty"`
-
-	// Optional. This checksum is computed by the server based on the value of
-	//  other fields, and may be sent on update and delete requests to ensure the
-	//  client has an up-to-date value before proceeding.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.etag
-	Etag *string `json:"etag,omitempty"`
-
-	// Optional. The crypto key configuration. This field is used by the
-	//  Customer-Managed Encryption Keys (CMEK) feature.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.crypto_key_config
-	CryptoKeyConfig *CryptoKeyConfig `json:"cryptoKeyConfig,omitempty"`
-
-	// Optional. Configuration for the git proxy feature. Enabling the git proxy
-	//  allows clients to perform git operations on the repositories linked in the
-	//  connection.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.git_proxy_config
-	GitProxyConfig *GitProxyConfig `json:"gitProxyConfig,omitempty"`
 }
 
 // +kcc:proto=google.cloud.developerconnect.v1.CryptoKeyConfig
@@ -388,39 +295,6 @@ type GoogleArtifactRegistry struct {
 	ArtifactRegistryPackage *string `json:"artifactRegistryPackage,omitempty"`
 }
 
-// +kcc:proto=google.cloud.developerconnect.v1.InsightsConfig
-type InsightsConfig struct {
-	// Optional. The name of the App Hub Application.
-	//  Format:
-	//  projects/{project}/locations/{location}/applications/{application}
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.app_hub_application
-	AppHubApplication *string `json:"appHubApplication,omitempty"`
-
-	// Identifier. The name of the InsightsConfig.
-	//  Format:
-	//  projects/{project}/locations/{location}/insightsConfigs/{insightsConfig}
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.name
-	Name *string `json:"name,omitempty"`
-
-	// Optional. The artifact configurations of the artifacts that are deployed.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.artifact_configs
-	ArtifactConfigs []ArtifactConfig `json:"artifactConfigs,omitempty"`
-
-	// Optional. Output only. The state of the InsightsConfig.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.state
-	State *string `json:"state,omitempty"`
-
-	// Optional. User specified annotations. See
-	//  https://google.aip.dev/148#annotations for more details such as format and
-	//  size limitations.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.annotations
-	Annotations map[string]string `json:"annotations,omitempty"`
-
-	// Optional. Set of labels associated with an InsightsConfig.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.labels
-	Labels map[string]string `json:"labels,omitempty"`
-}
-
 // +kcc:proto=google.cloud.developerconnect.v1.InstallationState
 type InstallationState struct {
 }
@@ -479,21 +353,6 @@ type UserCredential struct {
 	UserTokenSecretVersion *string `json:"userTokenSecretVersion,omitempty"`
 }
 
-// +kcc:observedstate:proto=google.cloud.developerconnect.v1.AccountConnector
-type AccountConnectorObservedState struct {
-	// Output only. The timestamp when the accountConnector was created.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.AccountConnector.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. The timestamp when the accountConnector was updated.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.AccountConnector.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. Start OAuth flow by clicking on this URL.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.AccountConnector.oauth_start_uri
-	OauthStartURI *string `json:"oauthStartURI,omitempty"`
-}
-
 // +kcc:observedstate:proto=google.cloud.developerconnect.v1.AppHubWorkload
 type AppHubWorkloadObservedState struct {
 	// Required. Output only. Immutable. The name of the App Hub Workload.
@@ -544,58 +403,6 @@ type BitbucketDataCenterConfigObservedState struct {
 	//  `host_uri`.
 	// +kcc:proto:field=google.cloud.developerconnect.v1.BitbucketDataCenterConfig.server_version
 	ServerVersion *string `json:"serverVersion,omitempty"`
-}
-
-// +kcc:observedstate:proto=google.cloud.developerconnect.v1.Connection
-type ConnectionObservedState struct {
-	// Configuration for connections to github.com.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.github_config
-	GithubConfig *GitHubConfigObservedState `json:"githubConfig,omitempty"`
-
-	// Configuration for connections to an instance of GitHub Enterprise.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.github_enterprise_config
-	GithubEnterpriseConfig *GitHubEnterpriseConfigObservedState `json:"githubEnterpriseConfig,omitempty"`
-
-	// Configuration for connections to gitlab.com.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.gitlab_config
-	GitlabConfig *GitLabConfigObservedState `json:"gitlabConfig,omitempty"`
-
-	// Configuration for connections to an instance of GitLab Enterprise.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.gitlab_enterprise_config
-	GitlabEnterpriseConfig *GitLabEnterpriseConfigObservedState `json:"gitlabEnterpriseConfig,omitempty"`
-
-	// Configuration for connections to an instance of Bitbucket Data Center.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.bitbucket_data_center_config
-	BitbucketDataCenterConfig *BitbucketDataCenterConfigObservedState `json:"bitbucketDataCenterConfig,omitempty"`
-
-	// Configuration for connections to an instance of Bitbucket Clouds.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.bitbucket_cloud_config
-	BitbucketCloudConfig *BitbucketCloudConfigObservedState `json:"bitbucketCloudConfig,omitempty"`
-
-	// Output only. [Output only] Create timestamp
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. [Output only] Update timestamp
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. [Output only] Delete timestamp
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.delete_time
-	DeleteTime *string `json:"deleteTime,omitempty"`
-
-	// Output only. Installation state of the Connection.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.installation_state
-	InstallationState *InstallationStateObservedState `json:"installationState,omitempty"`
-
-	// Output only. Set to true when the connection is being set up or updated in
-	//  the background.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.reconciling
-	Reconciling *bool `json:"reconciling,omitempty"`
-
-	// Output only. A system-assigned unique identifier for the Connection.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.Connection.uid
-	Uid *string `json:"uid,omitempty"`
 }
 
 // +kcc:observedstate:proto=google.cloud.developerconnect.v1.GKEWorkload
@@ -680,36 +487,6 @@ type GitLabEnterpriseConfigObservedState struct {
 	//  `host_uri`.
 	// +kcc:proto:field=google.cloud.developerconnect.v1.GitLabEnterpriseConfig.server_version
 	ServerVersion *string `json:"serverVersion,omitempty"`
-}
-
-// +kcc:observedstate:proto=google.cloud.developerconnect.v1.InsightsConfig
-type InsightsConfigObservedState struct {
-	// Output only. [Output only] Create timestamp
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. [Output only] Update timestamp
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. The runtime configurations where the application is deployed.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.runtime_configs
-	RuntimeConfigs []RuntimeConfigObservedState `json:"runtimeConfigs,omitempty"`
-
-	// Output only. Reconciling (https://google.aip.dev/128#reconciliation).
-	//  Set to true if the current state of InsightsConfig does not match the
-	//  user's intended state, and the service is actively updating the resource to
-	//  reconcile them. This can happen due to user-triggered updates or
-	//  system actions like failover or maintenance.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.reconciling
-	Reconciling *bool `json:"reconciling,omitempty"`
-
-	// Output only. Any errors that occurred while setting up the InsightsConfig.
-	//  Each error will be in the format: `field_name: error_message`, e.g.
-	//  GetAppHubApplication: Permission denied while getting App Hub
-	//  application. Please grant permissions to the P4SA.
-	// +kcc:proto:field=google.cloud.developerconnect.v1.InsightsConfig.errors
-	Errors []common.Status `json:"errors,omitempty"`
 }
 
 // +kcc:observedstate:proto=google.cloud.developerconnect.v1.InstallationState

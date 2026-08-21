@@ -480,6 +480,7 @@ type Job struct {
 
 	// Required. TaskGroups in the Job. Only one TaskGroup is supported now.
 	// +kcc:proto:field=google.cloud.batch.v1.Job.task_groups
+	// +required
 	TaskGroups []TaskGroup `json:"taskGroups,omitempty"`
 
 	// Compute resource allocation for all TaskGroups in the Job.
@@ -563,14 +564,16 @@ type JobStatus struct {
 	// +kcc:proto:field=google.cloud.batch.v1.JobStatus.status_events
 	StatusEvents []StatusEvent `json:"statusEvents,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// Aggregated task status for each TaskGroup in the Job.
+	//  The map key is TaskGroup ID.
+	// +kcc:proto:field=google.cloud.batch.v1.JobStatus.task_groups
+	TaskGroups map[string]JobStatus_TaskGroupStatus `json:"taskGroups,omitempty"`
 
 	// The duration of time that the Job spent in status RUNNING.
 	// +kcc:proto:field=google.cloud.batch.v1.JobStatus.run_duration
 	RunDuration *string `json:"runDuration,omitempty"`
 }
 
-/* unreachable type JobStatus_InstanceStatus
 // +kcc:proto=google.cloud.batch.v1.JobStatus.InstanceStatus
 type JobStatus_InstanceStatus struct {
 	// The Compute Engine machine type.
@@ -589,9 +592,7 @@ type JobStatus_InstanceStatus struct {
 	// +kcc:proto:field=google.cloud.batch.v1.JobStatus.InstanceStatus.boot_disk
 	BootDisk *AllocationPolicy_Disk `json:"bootDisk,omitempty"`
 }
-*/
 
-/* unreachable type JobStatus_TaskGroupStatus
 // +kcc:proto=google.cloud.batch.v1.JobStatus.TaskGroupStatus
 type JobStatus_TaskGroupStatus struct {
 	// Count of task in each state in the TaskGroup.
@@ -603,7 +604,6 @@ type JobStatus_TaskGroupStatus struct {
 	// +kcc:proto:field=google.cloud.batch.v1.JobStatus.TaskGroupStatus.instances
 	Instances []JobStatus_InstanceStatus `json:"instances,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.batch.v1.LifecyclePolicy
 type LifecyclePolicy struct {
@@ -962,6 +962,7 @@ type TaskGroup struct {
 
 	// Required. Tasks in the group share the same task spec.
 	// +kcc:proto:field=google.cloud.batch.v1.TaskGroup.task_spec
+	// +required
 	TaskSpec *TaskSpec `json:"taskSpec,omitempty"`
 
 	// Number of Tasks in the TaskGroup.

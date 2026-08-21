@@ -125,15 +125,18 @@ type Answer_CitationSource struct {
 	ReferenceID *string `json:"referenceID,omitempty"`
 }
 
+/* unreachable type Answer_GroundingSupport
 // +kcc:proto=google.cloud.discoveryengine.v1.Answer.GroundingSupport
 type Answer_GroundingSupport struct {
 	// Required. Index indicates the start of the claim, measured in bytes
 	//  (UTF-8 unicode).
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Answer.GroundingSupport.start_index
+	// +required
 	StartIndex *int64 `json:"startIndex,omitempty"`
 
 	// Required. End of the claim, exclusive.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Answer.GroundingSupport.end_index
+	// +required
 	EndIndex *int64 `json:"endIndex,omitempty"`
 
 	// A score in the range of [0, 1] describing how grounded is a specific
@@ -155,6 +158,7 @@ type Answer_GroundingSupport struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Answer.GroundingSupport.sources
 	Sources []Answer_CitationSource `json:"sources,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.discoveryengine.v1.Answer.QueryUnderstandingInfo
 type Answer_QueryUnderstandingInfo struct {
@@ -401,6 +405,7 @@ type Answer_Step_Action_SearchAction struct {
 	Query *string `json:"query,omitempty"`
 }
 
+/* unreachable type AssistAnswer
 // +kcc:proto=google.cloud.discoveryengine.v1.AssistAnswer
 type AssistAnswer struct {
 	// Immutable. Resource name of the `AssistAnswer`.
@@ -424,14 +429,18 @@ type AssistAnswer struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistAnswer.assist_skipped_reasons
 	AssistSkippedReasons []string `json:"assistSkippedReasons,omitempty"`
 }
+*/
 
+/* unreachable type AssistAnswer_Reply
 // +kcc:proto=google.cloud.discoveryengine.v1.AssistAnswer.Reply
 type AssistAnswer_Reply struct {
 	// Possibly grounded response text or media from the assistant.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistAnswer.Reply.grounded_content
 	GroundedContent *AssistantGroundedContent `json:"groundedContent,omitempty"`
 }
+*/
 
+/* unreachable type AssistantContent
 // +kcc:proto=google.cloud.discoveryengine.v1.AssistantContent
 type AssistantContent struct {
 	// Inline text.
@@ -462,22 +471,29 @@ type AssistantContent struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.thought
 	Thought *bool `json:"thought,omitempty"`
 }
+*/
 
+/* unreachable type AssistantContent_Blob
 // +kcc:proto=google.cloud.discoveryengine.v1.AssistantContent.Blob
 type AssistantContent_Blob struct {
 	// Required. The media type (MIME type) of the generated data.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.Blob.mime_type
+	// +required
 	MimeType *string `json:"mimeType,omitempty"`
 
 	// Required. Raw bytes.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.Blob.data
+	// +required
 	Data []byte `json:"data,omitempty"`
 }
+*/
 
+/* unreachable type AssistantContent_CodeExecutionResult
 // +kcc:proto=google.cloud.discoveryengine.v1.AssistantContent.CodeExecutionResult
 type AssistantContent_CodeExecutionResult struct {
 	// Required. Outcome of the code execution.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.CodeExecutionResult.outcome
+	// +required
 	Outcome *string `json:"outcome,omitempty"`
 
 	// Optional. Contains stdout when code execution is successful, stderr or
@@ -485,25 +501,34 @@ type AssistantContent_CodeExecutionResult struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.CodeExecutionResult.output
 	Output *string `json:"output,omitempty"`
 }
+*/
 
+/* unreachable type AssistantContent_ExecutableCode
 // +kcc:proto=google.cloud.discoveryengine.v1.AssistantContent.ExecutableCode
 type AssistantContent_ExecutableCode struct {
 	// Required. The code content. Currently only supports Python.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.ExecutableCode.code
+	// +required
 	Code *string `json:"code,omitempty"`
 }
+*/
 
+/* unreachable type AssistantContent_File
 // +kcc:proto=google.cloud.discoveryengine.v1.AssistantContent.File
 type AssistantContent_File struct {
 	// Required. The media type (MIME type) of the file.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.File.mime_type
+	// +required
 	MimeType *string `json:"mimeType,omitempty"`
 
 	// Required. The file ID.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.File.file_id
+	// +required
 	FileID *string `json:"fileID,omitempty"`
 }
+*/
 
+/* unreachable type AssistantGroundedContent
 // +kcc:proto=google.cloud.discoveryengine.v1.AssistantGroundedContent
 type AssistantGroundedContent struct {
 	// Metadata for grounding based on text sources.
@@ -514,6 +539,7 @@ type AssistantGroundedContent struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantGroundedContent.content
 	Content *AssistantContent `json:"content,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.discoveryengine.v1.AssistantGroundedContent.TextGroundingMetadata
 type AssistantGroundedContent_TextGroundingMetadata struct {
@@ -594,6 +620,7 @@ type CmekConfig struct {
 	//  `projects/{project}/locations/{location}/cmekConfig` or
 	//  `projects/{project}/locations/{location}/cmekConfigs/{cmek_config}`.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.CmekConfig.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// KMS key resource name which will be used to encrypt resources
@@ -721,6 +748,7 @@ type Control_RedirectAction struct {
 	//  URI must have length equal or less than 2000 characters.
 	//  Otherwise an INVALID ARGUMENT error is thrown.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.RedirectAction.redirect_uri
+	// +required
 	RedirectURI *string `json:"redirectURI,omitempty"`
 }
 
@@ -805,8 +833,23 @@ type DocumentProcessingConfig struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.DocumentProcessingConfig.default_parsing_config
 	DefaultParsingConfig *DocumentProcessingConfig_ParsingConfig `json:"defaultParsingConfig,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Map from file type to override the default parsing configuration based on
+	//  the file type. Supported keys:
+	//
+	//  * `pdf`: Override parsing config for PDF files, either digital parsing, ocr
+	//  parsing or layout parsing is supported.
+	//  * `html`: Override parsing config for HTML files, only digital parsing and
+	//  layout parsing are supported.
+	//  * `docx`: Override parsing config for DOCX files, only digital parsing and
+	//  layout parsing are supported.
+	//  * `pptx`: Override parsing config for PPTX files, only digital parsing and
+	//  layout parsing are supported.
+	//  * `xlsm`: Override parsing config for XLSM files, only digital parsing and
+	//  layout parsing are supported.
+	//  * `xlsx`: Override parsing config for XLSX files, only digital parsing and
+	//  layout parsing are supported.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DocumentProcessingConfig.parsing_config_overrides
+	ParsingConfigOverrides map[string]DocumentProcessingConfig_ParsingConfig `json:"parsingConfigOverrides,omitempty"`
 }
 */
 
@@ -892,7 +935,7 @@ type DocumentProcessingConfig_ParsingConfig_LayoutParsingConfig struct {
 
 	// Optional. List of HTML ids to exclude from the parsed content.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.DocumentProcessingConfig.ParsingConfig.LayoutParsingConfig.exclude_html_ids
-	ExcludeHTMLIds []string `json:"excludeHTMLIds,omitempty"`
+	ExcludeHTMLIDs []string `json:"excludeHTMLIDs,omitempty"`
 }
 */
 
@@ -978,6 +1021,7 @@ type Engine_ChatEngineConfig_AgentCreationConfig struct {
 	//  database](https://www.iana.org/time-zones), e.g., America/New_York,
 	//  Europe/Paris.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.ChatEngineConfig.AgentCreationConfig.time_zone
+	// +required
 	TimeZone *string `json:"timeZone,omitempty"`
 
 	// Agent location for Agent creation, supported values: global/us/eu.
@@ -1020,6 +1064,7 @@ type Engine_MediaRecommendationEngineConfig struct {
 	//  Currently supported values: `recommended-for-you`, `others-you-may-like`,
 	//  `more-like-this`, `most-popular-items`.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.MediaRecommendationEngineConfig.type
+	// +required
 	Type *string `json:"type,omitempty"`
 
 	// The optimization objective. e.g., `cvr`.
@@ -1098,10 +1143,12 @@ type Engine_MediaRecommendationEngineConfig_OptimizationObjectiveConfig struct {
 	// Required. The name of the field to target. Currently supported
 	//  values: `watch-percentage`, `watch-time`.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.MediaRecommendationEngineConfig.OptimizationObjectiveConfig.target_field
+	// +required
 	TargetField *string `json:"targetField,omitempty"`
 
 	// Required. The threshold to be applied to the target (e.g., 0.5).
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.MediaRecommendationEngineConfig.OptimizationObjectiveConfig.target_field_value_float
+	// +required
 	TargetFieldValueFloat *float32 `json:"targetFieldValueFloat,omitempty"`
 }
 */
@@ -1217,6 +1264,7 @@ type SearchLinkPromotion struct {
 	// Required. The title of the promotion.
 	//  Maximum length: 160 characters.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.SearchLinkPromotion.title
+	// +required
 	Title *string `json:"title,omitempty"`
 
 	// Optional. The URL for the page the user wants to promote. Must be set for
@@ -1310,6 +1358,7 @@ type SearchResponse_Summary_Reference struct {
 	//  document. Full resource name of the referenced document, in the format
 	//  `projects/*/locations/*/collections/*/dataStores/*/branches/*/documents/*`.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.SearchResponse.Summary.Reference.document
+	// +required
 	Document *string `json:"document,omitempty"`
 
 	// Cloud Storage or HTTP uri for the document.
@@ -1388,6 +1437,7 @@ type SingleRegionKey struct {
 	//  encrypt resources
 	//  `projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{keyId}`.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.SingleRegionKey.kms_key
+	// +required
 	KMSKey *string `json:"kmsKey,omitempty"`
 }
 
@@ -1477,7 +1527,7 @@ type AnswerObservedState struct {
 
 	// Optional. Grounding supports.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Answer.grounding_supports
-	GroundingSupports []Answer_GroundingSupport `json:"groundingSupports,omitempty"`
+	GroundingSupports []Answer_GroundingSupportObservedState `json:"groundingSupports,omitempty"`
 
 	// References.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Answer.references
@@ -1511,6 +1561,37 @@ type AnswerObservedState struct {
 	// Optional. Safety ratings.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Answer.safety_ratings
 	SafetyRatings []SafetyRatingObservedState `json:"safetyRatings,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.Answer.GroundingSupport
+type Answer_GroundingSupportObservedState struct {
+	// Required. Index indicates the start of the claim, measured in bytes
+	//  (UTF-8 unicode).
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Answer.GroundingSupport.start_index
+	StartIndex *int64 `json:"startIndex,omitempty"`
+
+	// Required. End of the claim, exclusive.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Answer.GroundingSupport.end_index
+	EndIndex *int64 `json:"endIndex,omitempty"`
+
+	// A score in the range of [0, 1] describing how grounded is a specific
+	//  claim by the references.
+	//  Higher value means that the claim is better supported by the reference
+	//  chunks.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Answer.GroundingSupport.grounding_score
+	GroundingScore *float64 `json:"groundingScore,omitempty"`
+
+	// Indicates that this claim required grounding check. When the
+	//  system decided this claim didn't require attribution/grounding check,
+	//  this field is set to false. In that case, no grounding check was
+	//  done for the claim and therefore `grounding_score`, `sources` is not
+	//  returned.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Answer.GroundingSupport.grounding_check_required
+	GroundingCheckRequired *bool `json:"groundingCheckRequired,omitempty"`
+
+	// Optional. Citation sources for the claim.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Answer.GroundingSupport.sources
+	Sources []Answer_CitationSource `json:"sources,omitempty"`
 }
 
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1.Answer.Reference
@@ -1547,6 +1628,120 @@ type Answer_Reference_StructuredDocumentInfoObservedState struct {
 	URI *string `json:"uri,omitempty"`
 }
 
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.AssistAnswer
+type AssistAnswerObservedState struct {
+	// Immutable. Resource name of the `AssistAnswer`.
+	//  Format:
+	//  `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}/sessions/{session}/assistAnswers/{assist_answer}`
+	//
+	//  This field must be a UTF-8 encoded string with a length limit of 1024
+	//  characters.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistAnswer.name
+	Name *string `json:"name,omitempty"`
+
+	// State of the answer generation.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistAnswer.state
+	State *string `json:"state,omitempty"`
+
+	// Replies of the assistant.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistAnswer.replies
+	Replies []AssistAnswer_ReplyObservedState `json:"replies,omitempty"`
+
+	// Reasons for not answering the assist call.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistAnswer.assist_skipped_reasons
+	AssistSkippedReasons []string `json:"assistSkippedReasons,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.AssistAnswer.Reply
+type AssistAnswer_ReplyObservedState struct {
+	// Possibly grounded response text or media from the assistant.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistAnswer.Reply.grounded_content
+	GroundedContent *AssistantGroundedContentObservedState `json:"groundedContent,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.AssistantContent
+type AssistantContentObservedState struct {
+	// Inline text.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.text
+	Text *string `json:"text,omitempty"`
+
+	// Inline binary data.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.inline_data
+	InlineData *AssistantContent_BlobObservedState `json:"inlineData,omitempty"`
+
+	// A file, e.g., an audio summary.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.file
+	File *AssistantContent_FileObservedState `json:"file,omitempty"`
+
+	// Code generated by the model that is meant to be executed.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.executable_code
+	ExecutableCode *AssistantContent_ExecutableCodeObservedState `json:"executableCode,omitempty"`
+
+	// Result of executing an ExecutableCode.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.code_execution_result
+	CodeExecutionResult *AssistantContent_CodeExecutionResultObservedState `json:"codeExecutionResult,omitempty"`
+
+	// The producer of the content. Can be "model" or "user".
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.role
+	Role *string `json:"role,omitempty"`
+
+	// Optional. Indicates if the part is thought from the model.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.thought
+	Thought *bool `json:"thought,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.AssistantContent.Blob
+type AssistantContent_BlobObservedState struct {
+	// Required. The media type (MIME type) of the generated data.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.Blob.mime_type
+	MimeType *string `json:"mimeType,omitempty"`
+
+	// Required. Raw bytes.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.Blob.data
+	Data []byte `json:"data,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.AssistantContent.CodeExecutionResult
+type AssistantContent_CodeExecutionResultObservedState struct {
+	// Required. Outcome of the code execution.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.CodeExecutionResult.outcome
+	Outcome *string `json:"outcome,omitempty"`
+
+	// Optional. Contains stdout when code execution is successful, stderr or
+	//  other description otherwise.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.CodeExecutionResult.output
+	Output *string `json:"output,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.AssistantContent.ExecutableCode
+type AssistantContent_ExecutableCodeObservedState struct {
+	// Required. The code content. Currently only supports Python.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.ExecutableCode.code
+	Code *string `json:"code,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.AssistantContent.File
+type AssistantContent_FileObservedState struct {
+	// Required. The media type (MIME type) of the file.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.File.mime_type
+	MimeType *string `json:"mimeType,omitempty"`
+
+	// Required. The file ID.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantContent.File.file_id
+	FileID *string `json:"fileID,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.AssistantGroundedContent
+type AssistantGroundedContentObservedState struct {
+	// Metadata for grounding based on text sources.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantGroundedContent.text_grounding_metadata
+	TextGroundingMetadata *AssistantGroundedContent_TextGroundingMetadata `json:"textGroundingMetadata,omitempty"`
+
+	// The content.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.AssistantGroundedContent.content
+	Content *AssistantContentObservedState `json:"content,omitempty"`
+}
+
 /* unreachable type CmekConfigObservedState
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1.CmekConfig
 type CmekConfigObservedState struct {
@@ -1580,7 +1775,7 @@ type CmekConfigObservedState struct {
 
 	// Optional. Single-regional CMEKs that are required for some VAIS features.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.CmekConfig.single_region_keys
-	SingleRegionKeys []SingleRegionKey `json:"singleRegionKeys,omitempty"`
+	SingleRegionKeys []SingleRegionKeyObservedState `json:"singleRegionKeys,omitempty"`
 
 	// Output only. Whether the NotebookLM Corpus is ready to be used.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.CmekConfig.notebooklm_state
@@ -1655,5 +1850,16 @@ type Session_TurnObservedState struct {
 	//  is set to true, this field will be populated when getting assistant
 	//  session.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.Turn.detailed_assist_answer
-	DetailedAssistAnswer *AssistAnswer `json:"detailedAssistAnswer,omitempty"`
+	DetailedAssistAnswer *AssistAnswerObservedState `json:"detailedAssistAnswer,omitempty"`
 }
+
+/* unreachable type SingleRegionKeyObservedState
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.SingleRegionKey
+type SingleRegionKeyObservedState struct {
+	// Required. Single-regional kms key resource name which will be used to
+	//  encrypt resources
+	//  `projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{keyId}`.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.SingleRegionKey.kms_key
+	KMSKey *string `json:"kmsKey,omitempty"`
+}
+*/

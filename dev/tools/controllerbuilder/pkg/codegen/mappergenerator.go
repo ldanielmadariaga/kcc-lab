@@ -478,6 +478,23 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 						useSliceFromProtoFunction = ""
 					} else if keyKind == protoreflect.StringKind && valueKind == protoreflect.Int64Kind {
 						useSliceFromProtoFunction = ""
+					} else if fromProto, _, elemType, ok := mapValueConverters(protoField, krmField.Type, versionSpecifier); ok && keyKind == protoreflect.StringKind {
+						useSliceFromProtoFunction = ""
+						useCustomMethod = ""
+						krmValueGoType, krmValueIsPointer := krmMapValueType(elemType, krmField.Type, krmImportName)
+						fmt.Fprintf(out, "\tif in.%s != nil {\n", protoFieldName)
+						fmt.Fprintf(out, "\t\tout.%s = make(map[string]%s, len(in.%s))\n",
+							krmFieldName, krmValueGoType, protoFieldName)
+						fmt.Fprintf(out, "\t\tfor k, v := range in.%s {\n", protoFieldName)
+						if krmValueIsPointer {
+							fmt.Fprintf(out, "\t\t\tout.%s[k] = %s(mapCtx, v)\n", krmFieldName, fromProto)
+							fmt.Fprintf(out, "\t\t}\n\t}\n")
+						} else {
+							fmt.Fprintf(out, "\t\t\tif c := %s(mapCtx, v); c != nil {\n", fromProto)
+							fmt.Fprintf(out, "\t\t\t\tout.%s[k] = *c\n", krmFieldName)
+							fmt.Fprintf(out, "\t\t\t}\n\t\t}\n\t}\n")
+						}
+						continue
 					} else {
 						useSliceFromProtoFunction = ""
 						useCustomMethod = krmFieldName + "_FromProto"
@@ -527,7 +544,7 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 					functionName = krmFromProtoFunctionName(protoField, krmField.Name)
 				}
 
-				if functionName == "direct.Struct_FromProto" && !strings.HasPrefix(krmField.Type, "*") {
+				if krmIsUnpointeredJSON(protoField, krmField.Type) {
 					fmt.Fprintf(out, "\tif v := %s(mapCtx, in.%s); v != nil {\n", functionName, protoAccessor)
 					fmt.Fprintf(out, "\t\tout.%s = *v\n", krmFieldName)
 					fmt.Fprintf(out, "\t}\n")
@@ -788,6 +805,21 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 						useSliceToProtoFunction = ""
 					} else if keyKind == protoreflect.StringKind && valueKind == protoreflect.Int64Kind {
 						useSliceToProtoFunction = ""
+					} else if _, toProto, elemType, ok := mapValueConverters(protoField, krmField.Type, versionSpecifier); ok && keyKind == protoreflect.StringKind {
+						useSliceToProtoFunction = ""
+						useCustomMethod = ""
+						protoValueType := "pb." + protoNameForType(entryMsg.Fields().ByName("value").Message())
+						fmt.Fprintf(out, "\tif in.%s != nil {\n", krmFieldName)
+						fmt.Fprintf(out, "\t\tout.%s = make(map[string]*%s, len(in.%s))\n", protoFieldName, protoValueType, krmFieldName)
+						fmt.Fprintf(out, "\t\tfor k, v := range in.%s {\n", krmFieldName)
+						_, krmValueIsPointer := krmMapValueType(elemType, krmField.Type, krmImportName)
+						valueArg := "&v"
+						if krmValueIsPointer {
+							valueArg = "v"
+						}
+						fmt.Fprintf(out, "\t\t\tout.%s[k] = %s(mapCtx, %s)\n", protoFieldName, toProto, valueArg)
+						fmt.Fprintf(out, "\t\t}\n\t}\n")
+						continue
 					} else {
 						useSliceToProtoFunction = ""
 						useCustomMethod = krmFieldName + "_ToProto"
@@ -853,7 +885,7 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 					continue
 				}
 				valPrefix := ""
-				if functionName == "direct.Struct_ToProto" && !strings.HasPrefix(krmField.Type, "*") {
+				if krmIsUnpointeredJSON(protoField, krmField.Type) {
 					valPrefix = "&"
 				}
 				fmt.Fprintf(out, "\tout.%s = %s(mapCtx, %sin.%s)\n",
@@ -1124,6 +1156,90 @@ func sortIntoMessageSlice(messages protoreflect.MessageDescriptors) []protorefle
 	return out
 }
 
+// krmIsUnpointeredJSON reports whether a field is one the type generator
+// deliberately declared without a pointer.
+//
+// GoTypeForField rewrites "*apiextensionsv1.JSON" to "apiextensionsv1.JSON",
+// because that type is already a wrapper around a byte slice and carries its
+// own empty state. The converters in pkg/controller/direct still take and
+// return a pointer, so every call site has to bridge the difference:
+// dereference what comes back, and take the address of what goes in.
+//
+// This used to be spelled as a comparison against the literal name
+// "direct.Struct_FromProto", which silently failed to cover the other proto
+// messages that map to the same Go type, and covered neither in a oneof.
+func krmIsUnpointeredJSON(protoField protoreflect.FieldDescriptor, krmFieldType string) bool {
+	if protoField.Kind() != protoreflect.MessageKind {
+		return false
+	}
+	goType, ok := protoMessagesNotMappedToGoStruct[string(protoField.Message().FullName())]
+	if !ok || goType != "apiextensionsv1.JSON" {
+		return false
+	}
+	return !strings.HasPrefix(krmFieldType, "*")
+}
+
+// mapValueConverters names the two functions that convert a map's value type,
+// and reports whether the generator can write the loop itself.
+//
+// A map whose value is a message used to fall through to a hand-written
+// "<Field>_FromProto" helper that in practice nobody wrote, so the generated
+// mapper simply did not compile. Both shapes are expressible directly: a value
+// with a special-cased Go type uses that type's converter, and any other
+// message uses the converter for its own generated struct.
+func mapValueConverters(protoField protoreflect.FieldDescriptor, krmFieldType, versionSpecifier string) (fromProto, toProto, elemType string, ok bool) {
+	// The KRM side is not always a map. Some hand-written types model a proto map
+	// as a slice -- artifactregistry's Repository.cleanup_policies is a
+	// []CleanupPolicy -- and emitting a map loop for one of those does not
+	// compile. Leave those to the existing custom-method path.
+	if !strings.HasPrefix(krmFieldType, "map[string]") {
+		return "", "", "", false
+	}
+	entryMsg := protoField.Message()
+	valueField := entryMsg.Fields().ByName("value")
+	if valueField.Kind() != protoreflect.MessageKind {
+		return "", "", "", false
+	}
+	valueMsg := valueField.Message()
+	if goType, mapped := protoMessagesNotMappedToGoStruct[string(valueMsg.FullName())]; mapped {
+		return krmFromProtoFunctionName(valueField, ""), krmToProtoFunctionName(valueField, ""), goType, true
+	}
+	// The suffix matters: generated converters carry the version, as in
+	// CommonUsageStats_v1alpha1_FromProto, and the non-map path already appends
+	// it. The special-cased converters above live in the direct package and take
+	// no suffix.
+	name := GoNameForProtoMessage(valueMsg)
+	return name + versionSpecifier + "_FromProto", name + versionSpecifier + "_ToProto", name, true
+}
+
+// krmMapValueType renders a KRM map's value type as the mapper package must
+// spell it, and reports whether that value is a pointer.
+//
+// The element type comes from the proto, via elemType, not from parsing
+// krmFieldType. Both describe the same field, but the Go source can be a
+// generation behind -- billingbudgets' Filter.labels read as a stale
+// FilterLabels while the type generator was emitting apiextensionsv1.JSON for
+// it, which produced a mapper that named a type the loop never assigns. The
+// proto is the side both generators agree on.
+//
+// Pointer-ness is the one thing the proto cannot say, so that is still read
+// from the Go type. Both forms occur -- the corpus runs 16 value-form to 7
+// pointer -- and the converters always take and return a pointer, so the loop
+// dereferences for one and not the other. A generated struct name needs the krm
+// import alias; a type that already carries a qualifier, such as
+// apiextensionsv1.JSON, does not.
+func krmMapValueType(elemType, krmFieldType, krmImportName string) (goType string, isPointer bool) {
+	isPointer = strings.HasPrefix(strings.TrimPrefix(krmFieldType, "map[string]"), "*")
+	elem := elemType
+	if !strings.Contains(elem, ".") {
+		elem = krmImportName + "." + elem
+	}
+	if isPointer {
+		return "*" + elem, true
+	}
+	return elem, false
+}
+
 func krmFromProtoFunctionName(protoField protoreflect.FieldDescriptor, krmFieldName string) string {
 	fullname := string(protoField.Message().FullName())
 	switch fullname {
@@ -1131,6 +1247,10 @@ func krmFromProtoFunctionName(protoField protoreflect.FieldDescriptor, krmFieldN
 		return "direct.StringTimestamp_FromProto"
 	case "google.protobuf.Struct":
 		return "direct.Struct_FromProto"
+	case "google.protobuf.Value":
+		return "direct.Value_FromProto"
+	case "google.protobuf.ListValue":
+		return "direct.ListValue_FromProto"
 	case "google.protobuf.Duration":
 		return "direct.StringDuration_FromProto"
 	case "google.protobuf.Int64Value":
@@ -1165,6 +1285,10 @@ func krmToProtoFunctionName(protoField protoreflect.FieldDescriptor, krmFieldNam
 		return "direct.StringTimestamp_ToProto"
 	case "google.protobuf.Struct":
 		return "direct.Struct_ToProto"
+	case "google.protobuf.Value":
+		return "direct.Value_ToProto"
+	case "google.protobuf.ListValue":
+		return "direct.ListValue_ToProto"
 	case "google.protobuf.Duration":
 		return "direct.StringDuration_ToProto"
 	case "google.protobuf.Int64Value":

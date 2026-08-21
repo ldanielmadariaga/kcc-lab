@@ -25,7 +25,8 @@
 
 package v1alpha1
 
-/* unreachable type Channel
+/* found existing non-generated go type with proto tag "google.cloud.eventarc.v1.Channel", skipping
+
 // +kcc:proto=google.cloud.eventarc.v1.Channel
 type Channel struct {
 	// Required. The resource name of the channel. Must be unique within the
@@ -46,13 +47,14 @@ type Channel struct {
 	//  encrypt/decrypt their event data.
 	//
 	//  It must match the pattern
-	//  `projects/-*-/locations/-*-/keyRings/-*-/cryptoKeys/-*`.
+	//  `projects/* /locations/* /keyRings/* /cryptoKeys/*`.
 	// +kcc:proto:field=google.cloud.eventarc.v1.Channel.crypto_key_name
 	CryptoKeyName *string `json:"cryptoKeyName,omitempty"`
 }
 */
 
-/* unreachable type ChannelConnection
+/* found existing non-generated go type with proto tag "google.cloud.eventarc.v1.ChannelConnection", skipping
+
 // +kcc:proto=google.cloud.eventarc.v1.ChannelConnection
 type ChannelConnection struct {
 	// Required. The name of the connection.
@@ -76,7 +78,8 @@ type ChannelConnection struct {
 }
 */
 
-/* unreachable type Enrollment
+/* found existing non-generated go type with proto tag "google.cloud.eventarc.v1.Enrollment", skipping
+
 // +kcc:proto=google.cloud.eventarc.v1.Enrollment
 type Enrollment struct {
 	// Identifier. Resource name of the form
@@ -118,7 +121,8 @@ type Enrollment struct {
 }
 */
 
-/* unreachable type GoogleAPISource
+/* found existing non-generated go type with proto tag "google.cloud.eventarc.v1.GoogleApiSource", skipping
+
 // +kcc:proto=google.cloud.eventarc.v1.GoogleApiSource
 type GoogleAPISource struct {
 	// Identifier. Resource name of the form
@@ -150,7 +154,7 @@ type GoogleAPISource struct {
 	//  encrypt/decrypt their event data.
 	//
 	//  It must match the pattern
-	//  `projects/-*-/locations/-*-/keyRings/-*-/cryptoKeys/-*`.
+	//  `projects/* /locations/* /keyRings/* /cryptoKeys/*`.
 	// +kcc:proto:field=google.cloud.eventarc.v1.GoogleApiSource.crypto_key_name
 	CryptoKeyName *string `json:"cryptoKeyName,omitempty"`
 
@@ -160,7 +164,8 @@ type GoogleAPISource struct {
 }
 */
 
-/* unreachable type GoogleChannelConfig
+/* found existing non-generated go type with proto tag "google.cloud.eventarc.v1.GoogleChannelConfig", skipping
+
 // +kcc:proto=google.cloud.eventarc.v1.GoogleChannelConfig
 type GoogleChannelConfig struct {
 	// Required. The resource name of the config. Must be in the format of,
@@ -173,7 +178,7 @@ type GoogleChannelConfig struct {
 	//  encrypt/decrypt their event data.
 	//
 	//  It must match the pattern
-	//  `projects/-*-/locations/-*-/keyRings/-*-/cryptoKeys/-*`.
+	//  `projects/* /locations/* /keyRings/* /cryptoKeys/*`.
 	// +kcc:proto:field=google.cloud.eventarc.v1.GoogleChannelConfig.crypto_key_name
 	CryptoKeyName *string `json:"cryptoKeyName,omitempty"`
 }
@@ -188,7 +193,8 @@ type LoggingConfig struct {
 	LogSeverity *string `json:"logSeverity,omitempty"`
 }
 
-/* unreachable type ChannelObservedState
+/* found existing non-generated go type with proto tag "google.cloud.eventarc.v1.Channel", skipping
+
 // +kcc:observedstate:proto=google.cloud.eventarc.v1.Channel
 type ChannelObservedState struct {
 	// Output only. Server assigned unique identifier for the channel. The value
@@ -227,7 +233,8 @@ type ChannelObservedState struct {
 }
 */
 
-/* unreachable type ChannelConnectionObservedState
+/* found existing non-generated go type with proto tag "google.cloud.eventarc.v1.ChannelConnection", skipping
+
 // +kcc:observedstate:proto=google.cloud.eventarc.v1.ChannelConnection
 type ChannelConnectionObservedState struct {
 	// Output only. Server assigned ID of the resource.
@@ -245,7 +252,8 @@ type ChannelConnectionObservedState struct {
 }
 */
 
-/* unreachable type EnrollmentObservedState
+/* found existing non-generated go type with proto tag "google.cloud.eventarc.v1.Enrollment", skipping
+
 // +kcc:observedstate:proto=google.cloud.eventarc.v1.Enrollment
 type EnrollmentObservedState struct {
 	// Output only. Server assigned unique identifier for the channel. The value
@@ -270,7 +278,8 @@ type EnrollmentObservedState struct {
 }
 */
 
-/* unreachable type GoogleAPISourceObservedState
+/* found existing non-generated go type with proto tag "google.cloud.eventarc.v1.GoogleApiSource", skipping
+
 // +kcc:observedstate:proto=google.cloud.eventarc.v1.GoogleApiSource
 type GoogleAPISourceObservedState struct {
 	// Output only. Server assigned unique identifier for the channel. The value
@@ -295,7 +304,8 @@ type GoogleAPISourceObservedState struct {
 }
 */
 
-/* unreachable type GoogleChannelConfigObservedState
+/* found existing non-generated go type with proto tag "google.cloud.eventarc.v1.GoogleChannelConfig", skipping
+
 // +kcc:observedstate:proto=google.cloud.eventarc.v1.GoogleChannelConfig
 type GoogleChannelConfigObservedState struct {
 	// Output only. The last-modified time.

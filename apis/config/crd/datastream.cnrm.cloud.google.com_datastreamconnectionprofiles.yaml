@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpdatastreamconnectionprofile
     - gcpdatastreamconnectionprofiles
     singular: datastreamconnectionprofile
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -81,9 +85,9 @@ spec:
                     description: Input only. SSH private key.
                     type: string
                   secretRef:
-                    description: The Kubernetes Secret object that stores the "username"
-                      and "password" information for the SSH tunnel. The Secret type
-                      has to be `kubernetes.io/basic-auth`.
+                    description: |-
+                      The Kubernetes Secret object that stores the "username" and "password" information for the SSH tunnel.
+                      The Secret type has to be `kubernetes.io/basic-auth`.
                     properties:
                       name:
                         description: The `metadata.name` field of a Kubernetes `Secret`
@@ -133,9 +137,9 @@ spec:
                     format: int32
                     type: integer
                   secretRef:
-                    description: The Kubernetes Secret object that stores the "username"
-                      and "password" information for the MySQL connection. The Secret
-                      type has to be `kubernetes.io/basic-auth`.
+                    description: |-
+                      The Kubernetes Secret object that stores the "username" and "password" information for the MySQL connection.
+                      The Secret type has to be `kubernetes.io/basic-auth`.
                     properties:
                       name:
                         description: The `metadata.name` field of a Kubernetes `Secret`
@@ -151,20 +155,22 @@ spec:
                     description: SSL configuration for the MySQL connection.
                     properties:
                       caCertificate:
-                        description: Input only. PEM-encoded certificate of the CA
-                          that signed the source database server's certificate.
+                        description: |-
+                          Input only. PEM-encoded certificate of the CA that signed the source
+                           database server's certificate.
                         type: string
                       clientCertificate:
-                        description: Input only. PEM-encoded certificate that will
-                          be used by the replica to authenticate against the source
-                          database server. If this field is used then the 'client_key'
-                          and the 'ca_certificate' fields are mandatory.
+                        description: |-
+                          Optional. Input only. PEM-encoded certificate that will be used by the
+                           replica to authenticate against the source database server. If this field
+                           is used then the 'client_key' and the 'ca_certificate' fields are
+                           mandatory.
                         type: string
                       clientKey:
-                        description: Input only. PEM-encoded private key associated
-                          with the Client Certificate. If this field is used then
-                          the 'client_certificate' and the 'ca_certificate' fields
-                          are mandatory.
+                        description: |-
+                          Optional. Input only. PEM-encoded private key associated with the Client
+                           Certificate. If this field is used then the 'client_certificate' and the
+                           'ca_certificate' fields are mandatory.
                         type: string
                     type: object
                 required:
@@ -204,8 +210,17 @@ spec:
                         description: Optional. SSL configuration for the Oracle connection.
                         properties:
                           caCertificate:
-                            description: Input only. PEM-encoded certificate of the
-                              CA that signed the source database server's certificate.
+                            description: |-
+                              Input only. PEM-encoded certificate of the CA that signed the source
+                               database server's certificate.
+                            type: string
+                          serverCertificateDistinguishedName:
+                            description: |-
+                              Optional. The distinguished name (DN) mentioned in the server
+                               certificate. This corresponds to SSL_SERVER_CERT_DN sqlnet parameter.
+                               Refer
+                               https://docs.oracle.com/en/database/oracle/oracle-database/19/netrf/local-naming-parameters-in-tns-ora-file.html#GUID-70AB0695-A9AA-4A94-B141-4C605236EEB7
+                               If this field is not provided, the DN matching is not enforced.
                             type: string
                         type: object
                       port:
@@ -213,9 +228,9 @@ spec:
                         format: int32
                         type: integer
                       secretRef:
-                        description: The Kubernetes Secret object that stores the
-                          "username" and "password" information for the Oracle ASM
-                          connection. The Secret type has to be `kubernetes.io/basic-auth`.
+                        description: |-
+                          The Kubernetes Secret object that stores the "username" and "password" information for the Oracle ASM connection.
+                          The Secret type has to be `kubernetes.io/basic-auth`.
                         properties:
                           name:
                             description: The `metadata.name` field of a Kubernetes
@@ -238,8 +253,17 @@ spec:
                     description: Optional. SSL configuration for the Oracle connection.
                     properties:
                       caCertificate:
-                        description: Input only. PEM-encoded certificate of the CA
-                          that signed the source database server's certificate.
+                        description: |-
+                          Input only. PEM-encoded certificate of the CA that signed the source
+                           database server's certificate.
+                        type: string
+                      serverCertificateDistinguishedName:
+                        description: |-
+                          Optional. The distinguished name (DN) mentioned in the server
+                           certificate. This corresponds to SSL_SERVER_CERT_DN sqlnet parameter.
+                           Refer
+                           https://docs.oracle.com/en/database/oracle/oracle-database/19/netrf/local-naming-parameters-in-tns-ora-file.html#GUID-70AB0695-A9AA-4A94-B141-4C605236EEB7
+                           If this field is not provided, the DN matching is not enforced.
                         type: string
                     type: object
                   port:
@@ -248,23 +272,9 @@ spec:
                     format: int32
                     type: integer
                   secretManagerSecretRef:
-                    description: Optional. A reference to a Secret Manager resource
-                      name storing the Oracle connection password. Mutually exclusive
-                      with the `secretRef` field.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
+                    description: |-
+                      Optional. A reference to a Secret Manager resource name storing the Oracle
+                       connection password. Mutually exclusive with the `secretRef` field.
                     properties:
                       external:
                         description: ' If provided must be in the format `projects/*/secrets/*`.'
@@ -278,9 +288,9 @@ spec:
                         type: string
                     type: object
                   secretRef:
-                    description: The Kubernetes Secret object that stores the "username"
-                      and "password" information for the Oracle connection. The Secret
-                      type has to be `kubernetes.io/basic-auth`.
+                    description: |-
+                      The Kubernetes Secret object that stores the "username" and "password" information for the Oracle connection.
+                      The Secret type has to be `kubernetes.io/basic-auth`.
                     properties:
                       name:
                         description: The `metadata.name` field of a Kubernetes `Secret`
@@ -302,24 +312,11 @@ spec:
                 properties:
                   privateConnectionRef:
                     description: Required. A reference to a private connection resource.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
                     properties:
                       external:
-                        description: A reference to an externally managed DatastreamPrivateConnection
-                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/privateConnections/{{privateconnectionID}}".
+                        description: |-
+                          A reference to an externally managed DatastreamPrivateConnection resource.
+                          Should be in the format "projects/{{projectID}}/locations/{{location}}/privateConnections/{{privateconnectionID}}".
                         type: string
                       name:
                         description: The name of a DatastreamPrivateConnection resource.
@@ -334,20 +331,6 @@ spec:
                 type: object
               projectRef:
                 description: The Project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -383,9 +366,9 @@ spec:
                     format: int32
                     type: integer
                   secretRef:
-                    description: The Kubernetes Secret object that stores the "username"
-                      and "password" information for the SQLServer connection. The
-                      Secret type has to be `kubernetes.io/basic-auth`.
+                    description: |-
+                      The Kubernetes Secret object that stores the "username" and "password" information for the SQLServer connection.
+                      The Secret type has to be `kubernetes.io/basic-auth`.
                     properties:
                       name:
                         description: The `metadata.name` field of a Kubernetes `Secret`
@@ -415,8 +398,9 @@ spec:
               machine state of DatastreamConnectionProfile
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -428,8 +412,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -486,8 +471,9 @@ spec:
                         description: Optional. SSL configuration for the Oracle connection.
                         properties:
                           caCertificateSet:
-                            description: Output only. Indicates whether the ca_certificate
-                              field has been set for this Connection-Profile.
+                            description: |-
+                              Output only. Indicates whether the ca_certificate field has been set for
+                               this Connection-Profile.
                             type: boolean
                         type: object
                     type: object

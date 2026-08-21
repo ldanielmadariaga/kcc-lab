@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/stability-level: alpha
@@ -21,7 +21,6 @@ spec:
     - gcpvertexaicustomjob
     - gcpvertexaicustomjobs
     singular: vertexaicustomjob
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
         description: VertexAICustomJob is the Schema for the VertexAICustomJob API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -61,35 +65,24 @@ spec:
             description: VertexAICustomJobSpec defines the desired state of VertexAICustomJob
             properties:
               displayName:
-                description: Required. The display name of the CustomJob. The name
-                  can be up to 128 characters long and can consist of any UTF-8 characters.
+                description: |-
+                  Required. The display name of the CustomJob.
+                  The name can be up to 128 characters long and can consist of any UTF-8 characters.
                 type: string
               encryptionSpec:
                 description: Optional. Customer-managed encryption key options for
                   a CustomJob.
                 properties:
                   kmsKeyRef:
-                    description: Required. The Cloud KMS resource identifier of the
-                      customer managed encryption key used to protect a resource.
-                      The key needs to be in the same region as where the compute
-                      resource is created.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
+                    description: |-
+                      Required. The Cloud KMS resource identifier of the customer managed
+                       encryption key used to protect a resource.
+                       The key needs to be in the same region as where the compute resource is
+                       created.
                     properties:
                       external:
-                        description: A reference to an externally managed KMSCryptoKey.
+                        description: |-
+                          A reference to an externally managed KMSCryptoKey.
                           Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
                         type: string
                       name:
@@ -125,10 +118,11 @@ spec:
                          * AIP_TENSORBOARD_LOG_DIR = `<base_output_directory>/<trial_id>/logs/`
                     properties:
                       outputURIPrefix:
-                        description: Required. Google Cloud Storage URI to output
-                          directory. If the uri doesn't end with '/', a '/' will be
-                          automatically appended. The directory is created if it doesn't
-                          exist.
+                        description: |-
+                          Required. Google Cloud Storage URI to output directory. If the uri doesn't
+                           end with
+                           '/', a '/' will be automatically appended. The directory is created if it
+                           doesn't exist.
                         type: string
                     type: object
                   enableDashboardAccess:
@@ -153,26 +147,15 @@ spec:
                        [HyperparameterTuningJob.trials][google.cloud.aiplatform.v1beta1.HyperparameterTuningJob.trials]).
                     type: boolean
                   experimentRef:
-                    description: 'Optional. The Experiment associated with this job.
-                      Format: `projects/{project}/locations/{location}/metadataStores/{metadataStores}/contexts/{experiment-name}`'
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
+                    description: |-
+                      Optional. The Experiment associated with this job.
+                       Format:
+                       `projects/{project}/locations/{location}/metadataStores/{metadataStores}/contexts/{experiment-name}`
                     properties:
                       external:
-                        description: A reference to an externally managed VertexAIExperiment
-                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/metadataStores/{{metadataStore}}/contexts/{{experimentID}}".
+                        description: |-
+                          A reference to an externally managed VertexAIExperiment resource.
+                          Should be in the format "projects/{{projectID}}/locations/{{location}}/metadataStores/{{metadataStore}}/contexts/{{experimentID}}".
                         type: string
                       name:
                         description: The name of a VertexAIExperiment resource.
@@ -182,26 +165,15 @@ spec:
                         type: string
                     type: object
                   experimentRunRef:
-                    description: 'Optional. The Experiment Run associated with this
-                      job. Format: `projects/{project}/locations/{location}/metadataStores/{metadataStores}/contexts/{experiment-name}-{experiment-run-name}`'
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
+                    description: |-
+                      Optional. The Experiment Run associated with this job.
+                       Format:
+                       `projects/{project}/locations/{location}/metadataStores/{metadataStores}/contexts/{experiment-name}-{experiment-run-name}`
                     properties:
                       external:
-                        description: A reference to an externally managed VertexAIExperimentRun
-                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/metadataStores/{{metadataStore}}/contexts/{{experimentRunID}}".
+                        description: |-
+                          A reference to an externally managed VertexAIExperimentRun resource.
+                          Should be in the format "projects/{{projectID}}/locations/{{location}}/metadataStores/{{metadataStore}}/contexts/{{experimentRunID}}".
                         type: string
                       name:
                         description: The name of a VertexAIExperimentRun resource.
@@ -229,24 +201,11 @@ spec:
                        exactly one default version.
                     items:
                       description: AIPlatformModelRef is a reference to an AIPlatformModel.
-                      oneOf:
-                      - not:
-                          required:
-                          - external
-                        required:
-                        - name
-                      - not:
-                          anyOf:
-                          - required:
-                            - name
-                          - required:
-                            - namespace
-                        required:
-                        - external
                       properties:
                         external:
-                          description: A reference to an externally managed AIPlatformModel
-                            resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/models/{{modelID}}".
+                          description: |-
+                            A reference to an externally managed AIPlatformModel resource.
+                            Should be in the format "projects/{{projectID}}/locations/{{location}}/models/{{modelID}}".
                           type: string
                         name:
                           description: The name of an AIPlatformModel resource.
@@ -271,24 +230,11 @@ spec:
                        AI](https://cloud.google.com/vertex-ai/docs/general/vpc-peering).
 
                        If this field is left unspecified, the job is not peered with any network.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
                     properties:
                       external:
-                        description: A reference to an externally managed ComputeNetwork
-                          resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
+                        description: |-
+                          A reference to an externally managed ComputeNetwork resource.
+                          Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
                         type: string
                       name:
                         description: The name of a ComputeNetwork resource.
@@ -308,46 +254,52 @@ spec:
                        the PersistentResource, otherwise, the job will be rejected.
                     type: string
                   protectedArtifactLocationID:
-                    description: 'The ID of the location to store protected artifacts.
-                      e.g. us-central1. Populate only when the location is different
-                      than CustomJob location. List of supported locations: https://cloud.google.com/vertex-ai/docs/general/locations'
+                    description: |-
+                      The ID of the location to store protected artifacts. e.g. us-central1.
+                       Populate only when the location is different than CustomJob location.
+                       List of supported locations:
+                       https://cloud.google.com/vertex-ai/docs/general/locations
                     type: string
                   pscInterfaceConfig:
                     description: Optional. Configuration for PSC-I for CustomJob.
                     properties:
                       dnsPeeringConfigs:
-                        description: Optional. DNS peering configurations. When specified,
-                          Vertex AI will attempt to configure DNS peering zones in
-                          the tenant project VPC to resolve the specified domains
-                          using the target network's Cloud DNS. The user must grant
-                          the dns.peer role to the Vertex AI Service Agent on the
-                          target project.
+                        description: |-
+                          Optional. DNS peering configurations. When specified, Vertex AI will
+                           attempt to configure DNS peering zones in the tenant project VPC
+                           to resolve the specified domains using the target network's Cloud DNS.
+                           The user must grant the dns.peer role to the Vertex AI Service Agent
+                           on the target project.
                         items:
                           properties:
                             domain:
-                              description: Required. The DNS name suffix of the zone
-                                being peered to, e.g., "my-internal-domain.corp.".
-                                Must end with a dot.
+                              description: |-
+                                Required. The DNS name suffix of the zone being peered to, e.g.,
+                                 "my-internal-domain.corp.". Must end with a dot.
                               type: string
                             targetNetwork:
-                              description: Required. The VPC network name in the target_project
-                                where the DNS zone specified by 'domain' is visible.
+                              description: |-
+                                Required. The VPC network name
+                                 in the target_project where the DNS zone specified by 'domain' is
+                                 visible.
                               type: string
                             targetProject:
-                              description: Required. The project ID hosting the Cloud
-                                DNS managed zone that contains the 'domain'. The Vertex
-                                AI Service Agent requires the dns.peer role on this
-                                project.
+                              description: |-
+                                Required. The project ID hosting the Cloud DNS managed zone that
+                                 contains the 'domain'. The Vertex AI Service Agent requires the
+                                 dns.peer role on this project.
                               type: string
                           type: object
                         type: array
                       networkAttachment:
-                        description: Optional. The name of the Compute Engine [network
-                          attachment](https://cloud.google.com/vpc/docs/about-network-attachments)
-                          to attach to the resource within the region and user project.
-                          To specify this field, you must have already [created a
-                          network attachment] (https://cloud.google.com/vpc/docs/create-manage-network-attachments#create-network-attachments).
-                          This field is only used for resources using PSC-I.
+                        description: |-
+                          Optional. The name of the Compute Engine
+                           [network
+                           attachment](https://cloud.google.com/vpc/docs/about-network-attachments) to
+                           attach to the resource within the region and user project.
+                           To specify this field, you must have already [created a network attachment]
+                           (https://cloud.google.com/vpc/docs/create-manage-network-attachments#create-network-attachments).
+                           This field is only used for resources using PSC-I.
                         type: string
                     type: object
                   reservedIPRanges:
@@ -367,22 +319,23 @@ spec:
                     description: Scheduling options for a CustomJob.
                     properties:
                       disableRetries:
-                        description: Optional. Indicates if the job should retry for
-                          internal errors after the job starts running. If true, overrides
-                          `Scheduling.restart_job_on_worker_restart` to false.
+                        description: |-
+                          Optional. Indicates if the job should retry for internal errors after the
+                           job starts running. If true, overrides
+                           `Scheduling.restart_job_on_worker_restart` to false.
                         type: boolean
                       maxWaitDuration:
-                        description: Optional. This is the maximum duration that a
-                          job will wait for the requested resources to be provisioned
-                          if the scheduling strategy is set to [Strategy.DWS_FLEX_START].
-                          If set to 0, the job will wait indefinitely. The default
-                          is 24 hours.
+                        description: |-
+                          Optional. This is the maximum duration that a job will wait for the
+                           requested resources to be provisioned if the scheduling strategy is set to
+                           [Strategy.DWS_FLEX_START].
+                           If set to 0, the job will wait indefinitely. The default is 24 hours.
                         type: string
                       restartJobOnWorkerRestart:
-                        description: Restarts the entire CustomJob if a worker gets
-                          restarted. This feature can be used by distributed training
-                          jobs that are not resilient to workers leaving and joining
-                          a job.
+                        description: |-
+                          Restarts the entire CustomJob if a worker gets restarted.
+                           This feature can be used by distributed training jobs that are not
+                           resilient to workers leaving and joining a job.
                         type: boolean
                       strategy:
                         description: Optional. This determines which type of scheduling
@@ -394,25 +347,12 @@ spec:
                         type: string
                     type: object
                   serviceAccountRef:
-                    description: Specifies the service account for workload run-as
-                      account. Users submitting jobs must have act-as permission on
-                      this run-as account. If unspecified, the [Vertex AI Custom Code
-                      Service Agent](https://cloud.google.com/vertex-ai/docs/general/access-control#service-agents)
-                      for the CustomJob's project is used.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
+                    description: |-
+                      Specifies the service account for workload run-as account.
+                       Users submitting jobs must have act-as permission on this run-as account.
+                       If unspecified, the [Vertex AI Custom Code Service
+                       Agent](https://cloud.google.com/vertex-ai/docs/general/access-control#service-agents)
+                       for the CustomJob's project is used.
                     properties:
                       external:
                         description: The `email` field of an `IAMServiceAccount` resource.
@@ -425,27 +365,16 @@ spec:
                         type: string
                     type: object
                   tensorboardRef:
-                    description: 'Optional. The name of a Vertex AI [Tensorboard][google.cloud.aiplatform.v1beta1.Tensorboard]
-                      resource to which this CustomJob will upload Tensorboard logs.
-                      Format: `projects/{project}/locations/{location}/tensorboards/{tensorboard}`'
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
+                    description: |-
+                      Optional. The name of a Vertex AI
+                       [Tensorboard][google.cloud.aiplatform.v1beta1.Tensorboard] resource to
+                       which this CustomJob will upload Tensorboard logs. Format:
+                       `projects/{project}/locations/{location}/tensorboards/{tensorboard}`
                     properties:
                       external:
-                        description: A reference to an externally managed VertexAITensorboard
-                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/tensorboards/{{tensorboardID}}".
+                        description: |-
+                          A reference to an externally managed VertexAITensorboard resource.
+                          Should be in the format "projects/{{projectID}}/locations/{{location}}/tensorboards/{{tensorboardID}}".
                         type: string
                       name:
                         description: The name of a VertexAITensorboard resource.
@@ -455,9 +384,10 @@ spec:
                         type: string
                     type: object
                   workerPoolSpecs:
-                    description: Required. The spec of the worker pools including
-                      machine type and Docker image. All worker pools except the first
-                      one are optional and can be skipped by providing an empty value.
+                    description: |-
+                      Required. The spec of the worker pools including machine type and Docker
+                       image. All worker pools except the first one are optional and can be
+                       skipped by providing an empty value.
                     items:
                       properties:
                         containerSpec:
@@ -470,15 +400,16 @@ spec:
                                 type: string
                               type: array
                             command:
-                              description: The command to be invoked when the container
-                                is started. It overrides the entrypoint instruction
-                                in Dockerfile when provided.
+                              description: |-
+                                The command to be invoked when the container is started.
+                                 It overrides the entrypoint instruction in Dockerfile when provided.
                               items:
                                 type: string
                               type: array
                             env:
-                              description: Environment variables to be passed to the
-                                container. Maximum limit is 100.
+                              description: |-
+                                Environment variables to be passed to the container.
+                                 Maximum limit is 100.
                               items:
                                 properties:
                                   name:
@@ -486,23 +417,21 @@ spec:
                                       variable. Must be a valid C identifier.
                                     type: string
                                   value:
-                                    description: 'Required. Variables that reference
-                                      a $(VAR_NAME) are expanded using the previous
-                                      defined environment variables in the container
-                                      and any service environment variables. If a
-                                      variable cannot be resolved, the reference in
-                                      the input string will be unchanged. The $(VAR_NAME)
-                                      syntax can be escaped with a double $$, ie:
-                                      $$(VAR_NAME). Escaped references will never
-                                      be expanded, regardless of whether the variable
-                                      exists or not.'
+                                    description: |-
+                                      Required. Variables that reference a $(VAR_NAME) are expanded
+                                       using the previous defined environment variables in the container and
+                                       any service environment variables. If a variable cannot be resolved,
+                                       the reference in the input string will be unchanged. The $(VAR_NAME)
+                                       syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped
+                                       references will never be expanded, regardless of whether the variable
+                                       exists or not.
                                     type: string
                                 type: object
                               type: array
                             imageURI:
-                              description: Required. The URI of a container image
-                                in the Container Registry that is to be run on each
-                                worker replica.
+                              description: |-
+                                Required. The URI of a container image in the Container Registry that is to
+                                 be run on each worker replica.
                               type: string
                           type: object
                         diskSpec:
@@ -514,11 +443,11 @@ spec:
                               format: int32
                               type: integer
                             bootDiskType:
-                              description: 'Type of the boot disk. For non-A3U machines,
-                                the default value is "pd-ssd", for A3U machines, the
-                                default value is "hyperdisk-balanced". Valid values:
-                                "pd-ssd" (Persistent Disk Solid State Drive), "pd-standard"
-                                (Persistent Disk Hard Disk Drive) or "hyperdisk-balanced".'
+                              description: |-
+                                Type of the boot disk. For non-A3U machines, the default value is
+                                 "pd-ssd", for A3U machines, the default value is "hyperdisk-balanced".
+                                 Valid values: "pd-ssd" (Persistent Disk Solid State Drive),
+                                 "pd-standard" (Persistent Disk Hard Disk Drive) or "hyperdisk-balanced".
                               type: string
                           type: object
                         machineSpec:
@@ -531,8 +460,10 @@ spec:
                               format: int32
                               type: integer
                             acceleratorType:
-                              description: Immutable. The type of accelerator(s) that
-                                may be attached to the machine as per [accelerator_count][google.cloud.aiplatform.v1beta1.MachineSpec.accelerator_count].
+                              description: |-
+                                Immutable. The type of accelerator(s) that may be attached to the machine
+                                 as per
+                                 [accelerator_count][google.cloud.aiplatform.v1beta1.MachineSpec.accelerator_count].
                               type: string
                             gpuPartitionSize:
                               description: |-
@@ -568,37 +499,39 @@ spec:
                                  this field is required.
                               type: string
                             multihostGpuNodeCount:
-                              description: Optional. Immutable. The number of nodes
-                                per replica for multihost GPU deployments.
+                              description: |-
+                                Optional. Immutable. The number of nodes per replica for multihost GPU
+                                 deployments.
                               format: int32
                               type: integer
                             reservationAffinity:
-                              description: Optional. Immutable. Configuration controlling
-                                how this resource pool consumes reservation.
+                              description: |-
+                                Optional. Immutable. Configuration controlling how this resource pool
+                                 consumes reservation.
                               properties:
                                 key:
-                                  description: Optional. Corresponds to the label
-                                    key of a reservation resource. To target a SPECIFIC_RESERVATION
-                                    by name, use `compute.googleapis.com/reservation-name`
-                                    as the key and specify the name of your reservation
-                                    as its value.
+                                  description: |-
+                                    Optional. Corresponds to the label key of a reservation resource. To target
+                                     a SPECIFIC_RESERVATION by name, use
+                                     `compute.googleapis.com/reservation-name` as the key and specify the name
+                                     of your reservation as its value.
                                   type: string
                                 reservationAffinityType:
                                   description: Required. Specifies the reservation
                                     affinity type.
                                   type: string
                                 values:
-                                  description: Optional. Corresponds to the label
-                                    values of a reservation resource. This must be
-                                    the full resource name of the reservation.
+                                  description: |-
+                                    Optional. Corresponds to the label values of a reservation resource. This
+                                     must be the full resource name of the reservation.
                                   items:
                                     type: string
                                   type: array
                               type: object
                             tpuTopology:
-                              description: 'Immutable. The topology of the TPUs. Corresponds
-                                to the TPU topologies available from GKE. (Example:
-                                tpu_topology: "2x2x1").'
+                              description: |-
+                                Immutable. The topology of the TPUs. Corresponds to the TPU topologies
+                                 available from GKE. (Example: tpu_topology: "2x2x1").
                               type: string
                           type: object
                         nfsMounts:
@@ -606,14 +539,15 @@ spec:
                           items:
                             properties:
                               mountPoint:
-                                description: Required. Destination mount path. The
-                                  NFS will be mounted for the user under /mnt/nfs/<mount_point>
+                                description: |-
+                                  Required. Destination mount path. The NFS will be mounted for the user
+                                   under /mnt/nfs/<mount_point>
                                 type: string
                               path:
-                                description: Required. Source path exported from NFS
-                                  server. Has to start with '/', and combined with
-                                  the ip address, it indicates the source mount path
-                                  in the form of `server:path`
+                                description: |-
+                                  Required. Source path exported from NFS server.
+                                   Has to start with '/', and combined with the ip address, it indicates
+                                   the source mount path in the form of `server:path`
                                 type: string
                               server:
                                 description: Required. IP address of the NFS server.
@@ -630,17 +564,17 @@ spec:
                                 type: string
                               type: array
                             executorImageURI:
-                              description: Required. The URI of a container image
-                                in Artifact Registry that will run the provided Python
-                                package. Vertex AI provides a wide range of custom
-                                pre-built sub-containers to run custom training workloads.
-                                If set, Google Cloud Storage paths inside the pythonPackageSpec
-                                will be mapped to local paths within the partner container.
+                              description: |-
+                                Required. The URI of a container image in Artifact Registry that will run
+                                 the provided Python package. Vertex AI provides a wide range of custom
+                                 pre-built sub-containers to run custom training workloads. If set,
+                                 Google Cloud Storage paths inside the pythonPackageSpec will be mapped to
+                                 local paths within the partner container.
                               type: string
                             packageURIs:
-                              description: Required. The Google Cloud Storage URIs
-                                of the Python package files which are the training
-                                program and its dependent packages.
+                              description: |-
+                                Required. The Google Cloud Storage URIs of the Python package files which
+                                 are the training program and its dependent packages.
                               items:
                                 type: string
                               type: array
@@ -668,20 +602,6 @@ spec:
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -713,8 +633,9 @@ spec:
               state of VertexAICustomJob
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -726,8 +647,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -767,15 +689,17 @@ spec:
                       or `JOB_STATE_CANCELLED`.
                     properties:
                       code:
-                        description: The status code, which should be an enum value
-                          of [google.rpc.Code][google.rpc.Code].
+                        description: |-
+                          The status code, which should be an enum value of
+                           [google.rpc.Code][google.rpc.Code].
                         format: int32
                         type: integer
                       message:
-                        description: A developer-facing error message, which should
-                          be in English. Any user-facing error message should be localized
-                          and sent in the [google.rpc.Status.details][google.rpc.Status.details]
-                          field, or localized by the client.
+                        description: |-
+                          A developer-facing error message, which should be in English. Any
+                           user-facing error message should be localized and sent in the
+                           [google.rpc.Status.details][google.rpc.Status.details] field, or localized
+                           by the client.
                         type: string
                     type: object
                   name:

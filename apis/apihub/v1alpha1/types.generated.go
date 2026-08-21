@@ -39,10 +39,12 @@ type Attribute_AllowedValue struct {
 	//  This value should be 4-63 characters, and valid characters
 	//  are /[a-z][0-9]-/.
 	// +kcc:proto:field=google.cloud.apihub.v1.Attribute.AllowedValue.id
+	// +required
 	ID *string `json:"id,omitempty"`
 
 	// Required. The display name of the allowed value.
 	// +kcc:proto:field=google.cloud.apihub.v1.Attribute.AllowedValue.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Optional. The detailed description of the allowed value.
@@ -77,6 +79,7 @@ type AttributeValues struct {
 type AttributeValues_EnumAttributeValues struct {
 	// Required. The attribute values in case attribute data type is enum.
 	// +kcc:proto:field=google.cloud.apihub.v1.AttributeValues.EnumAttributeValues.values
+	// +required
 	Values []Attribute_AllowedValue `json:"values,omitempty"`
 }
 
@@ -85,6 +88,7 @@ type AttributeValues_StringAttributeValues struct {
 	// Required. The attribute values in case attribute data type is string or
 	//  JSON.
 	// +kcc:proto:field=google.cloud.apihub.v1.AttributeValues.StringAttributeValues.values
+	// +required
 	Values []string `json:"values,omitempty"`
 }
 
@@ -103,6 +107,7 @@ type Owner struct {
 
 	// Required. The email of the owner.
 	// +kcc:proto:field=google.cloud.apihub.v1.Owner.email
+	// +required
 	Email *string `json:"email,omitempty"`
 }
 

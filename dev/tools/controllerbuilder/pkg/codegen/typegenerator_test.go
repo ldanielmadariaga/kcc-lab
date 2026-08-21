@@ -591,6 +591,14 @@ func TestWriteMessage(t *testing.T) {
 						Type:     typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE),
 						TypeName: protoPtr(".google.protobuf.Timestamp"),
 					}),
+					{
+						Name: protoPtr("ByIndexEntry"),
+						Field: []*descriptorpb.FieldDescriptorProto{
+							{Name: protoPtr("key"), Number: protoPtr(int32(1)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_INT32)},
+							{Name: protoPtr("value"), Number: protoPtr(int32(2)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+						},
+						Options: &descriptorpb.MessageOptions{MapEntry: protoPtr(true)},
+					},
 				},
 				Field: []*descriptorpb.FieldDescriptorProto{
 					{
@@ -601,6 +609,7 @@ func TestWriteMessage(t *testing.T) {
 					mapField("labels", 2, "LabelsEntry"),
 					mapField("tasks", 3, "TasksEntry"),
 					mapField("seen", 4, "SeenEntry"),
+					mapField("by_index", 5, "ByIndexEntry"),
 				},
 			},
 		},
@@ -620,14 +629,12 @@ func TestWriteMessage(t *testing.T) {
 	WriteMessage(&buf, msg, WriteOptions{})
 
 	got := buf.String()
-	// labels and tasks are the two supported map shapes. seen is the rejected
-	// one: the generator special-cases Timestamp to a plain string in every other
-	// position but has no spelling for it as a map value, so the field is dropped
-	// and the TODO line is its only trace. Timestamp itself never appears as a
-	// map value in the Google API protos; the shapes that do hit this path are
-	// the JSON-ish ones, google.protobuf.Struct (8 fields), Value (88) and
-	// ListValue (4) out of 1002 map-of-message fields. All three want
-	// apiextensionsv1.JSON, which is the follow-up that would close them.
+	// labels, tasks and seen are the three supported map shapes: a scalar value, a
+	// message value, and a value whose message has a special-cased Go type.
+	// by_index is the one still declined, because a CRD keys additionalProperties
+	// by string and an int32 key has no spelling. Its TODO line is the field's
+	// only trace, which is the point of asserting on rendered output rather than
+	// on the type string.
 	expected := strings.Join([]string{
 		"",
 		"// +kcc:proto=google.cloud.test.v1.TestMessage",
@@ -641,7 +648,10 @@ func TestWriteMessage(t *testing.T) {
 		"\t// +kcc:proto:field=google.cloud.test.v1.TestMessage.tasks",
 		"\tTasks map[string]TargetMessage `json:\"tasks,omitempty\"`",
 		"",
-		"\t// TODO: seen: unsupported map type with key string and value message",
+		"\t// +kcc:proto:field=google.cloud.test.v1.TestMessage.seen",
+		"\tSeen map[string]string `json:\"seen,omitempty\"`",
+		"",
+		"\t// TODO: byIndex: unsupported map type with key int32 and value string",
 		"",
 		"}",
 		"",
@@ -911,7 +921,7 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 	fdp := &descriptorpb.FileDescriptorProto{
 		Name:       protoPtr("maps.proto"),
 		Package:    protoPtr("google.cloud.test.v1"),
-		Dependency: []string{"google/protobuf/struct.proto"},
+		Dependency: []string{"google/protobuf/struct.proto", "google/protobuf/timestamp.proto"},
 		MessageType: []*descriptorpb.DescriptorProto{
 			{Name: protoPtr("TargetMessage")},
 			{
@@ -921,6 +931,7 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 					mapEntry("Int64MapEntry", strKey(), val(descriptorpb.FieldDescriptorProto_TYPE_INT64, "")),
 					mapEntry("MessageMapEntry", strKey(), val(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, ".google.cloud.test.v1.TargetMessage")),
 					mapEntry("ValueMapEntry", strKey(), val(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, ".google.protobuf.Value")),
+					mapEntry("TimestampMapEntry", strKey(), val(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, ".google.protobuf.Timestamp")),
 					mapEntry("IntKeyMapEntry",
 						&descriptorpb.FieldDescriptorProto{Name: protoPtr("key"), Number: protoPtr(int32(1)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_INT32)},
 						val(descriptorpb.FieldDescriptorProto_TYPE_STRING, "")),
@@ -931,6 +942,7 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 					mapField("message_map", 3, "MessageMapEntry"),
 					mapField("value_map", 4, "ValueMapEntry"),
 					mapField("int_key_map", 5, "IntKeyMapEntry"),
+					mapField("timestamp_map", 6, "TimestampMapEntry"),
 				},
 			},
 		},
@@ -941,9 +953,13 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 	// than looking it up by path in the global registry, which only holds files
 	// some package has already linked in.
 	deps := new(protoregistry.Files)
-	structFile := (&structpb.Value{}).ProtoReflect().Descriptor().ParentFile()
-	if err := deps.RegisterFile(structFile); err != nil {
-		t.Fatalf("registering struct.proto: %v", err)
+	for _, f := range []protoreflect.FileDescriptor{
+		(&structpb.Value{}).ProtoReflect().Descriptor().ParentFile(),
+		timestamppb.Now().ProtoReflect().Descriptor().ParentFile(),
+	} {
+		if err := deps.RegisterFile(f); err != nil {
+			t.Fatalf("registering %s: %v", f.Path(), err)
+		}
 	}
 	fd, err := protodesc.NewFile(fdp, deps)
 	if err != nil {
@@ -969,10 +985,16 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 			why: "a CRD keys additionalProperties by string, so nothing else is expressible",
 		},
 		{
-			field: "value_map", wantErr: true,
-			why: "Value and ListValue are mutually recursive, so a map of one makes it " +
-				"reachable from the CRD and controller-gen fails on the whole package; " +
-				"lifting this needs the type mapped to apiextensionsv1.JSON first",
+			field: "value_map", want: "map[string]apiextensionsv1.JSON",
+			why: "a value type with a special-cased Go type takes that type, not the " +
+				"struct name it does not have; this is upstream's spelling for " +
+				"Firestore's Document.fields",
+		},
+		{
+			field: "timestamp_map", want: "map[string]string",
+			why: "the same rule for a scalar-valued special case, which used to be " +
+				"declined for no reason other than that the branch checked only " +
+				"whether the type was special-cased, not what it mapped to",
 		},
 	}
 

@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cnrm.cloud.google.com/version: 0.0.0-dev
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.16.5
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
     cnrm.cloud.google.com/system: "true"
@@ -20,7 +20,6 @@ spec:
     - gcpsaasservicemgmtrelease
     - gcpsaasservicemgmtreleases
     singular: saasservicemgmtrelease
-  preserveUnknownFields: false
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -46,14 +45,19 @@ spec:
           API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -72,12 +76,14 @@ spec:
                    More info: https://kubernetes.io/docs/user-guide/annotations
                 type: object
               blueprint:
-                description: Optional. Blueprints are OCI Images that contain all
-                  of the artifacts needed to provision a unit.
+                description: |-
+                  Optional. Blueprints are OCI Images that contain all of the artifacts
+                   needed to provision a unit.
                 properties:
                   package:
-                    description: Optional. Immutable. URI to a blueprint used by the
-                      Unit (required unless unitKind or release is set).
+                    description: |-
+                      Optional. Immutable. URI to a blueprint used by the Unit (required unless
+                       unitKind or release is set).
                     type: string
                 type: object
               inputVariableDefaults:
@@ -86,8 +92,9 @@ spec:
                 items:
                   properties:
                     type:
-                      description: Optional. Immutable. Name of a supported variable
-                        type. Supported types are string, int, bool.
+                      description: |-
+                        Optional. Immutable. Name of a supported variable type. Supported types are
+                         string, int, bool.
                       type: string
                     value:
                       description: Optional. String encoded value for the variable.
@@ -103,28 +110,15 @@ spec:
               labels:
                 additionalProperties:
                   type: string
-                description: Optional. The labels on the resource, which can be used
-                  for categorization. similar to Kubernetes resource labels.
+                description: |-
+                  Optional. The labels on the resource, which can be used for categorization.
+                   similar to Kubernetes resource labels.
                 type: object
               location:
                 description: The location of this resource.
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
                   external:
                     description: The `projectID` field of a project, when not managed
@@ -142,14 +136,16 @@ spec:
                     type: string
                 type: object
               releaseRequirements:
-                description: Optional. Set of requirements to be fulfilled on the
-                  Unit when using this Release.
+                description: |-
+                  Optional. Set of requirements to be fulfilled on the Unit when using this
+                   Release.
                 properties:
                   upgradeableFromReleases:
-                    description: Optional. A list of releases from which a unit can
-                      be upgraded to this one (optional). If left empty no constraints
-                      will be applied. When provided, unit upgrade requests to this
-                      release will check and enforce this constraint.
+                    description: |-
+                      Optional. A list of releases from which a unit can be upgraded to this
+                       one (optional). If left empty no constraints will be applied. When
+                       provided, unit upgrade requests to this release will check and enforce
+                       this constraint.
                     items:
                       type: string
                     type: array
@@ -159,8 +155,9 @@ spec:
                   will be used.
                 type: string
               unitKind:
-                description: Required. Immutable. Reference to the UnitKind this Release
-                  corresponds to (required and immutable once created).
+                description: |-
+                  Required. Immutable. Reference to the UnitKind this Release corresponds to
+                   (required and immutable once created).
                 type: string
             required:
             - location
@@ -172,8 +169,9 @@ spec:
               machine state of SaasServiceMgmtRelease
             properties:
               conditions:
-                description: Conditions represent the latest available observations
-                  of the object's current state.
+                description: |-
+                  Conditions represent the latest available observations of the
+                  object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -185,8 +183,9 @@ spec:
                         last transition.
                       type: string
                     reason:
-                      description: Unique, one-word, CamelCase reason for the condition's
-                        last transition.
+                      description: |-
+                        Unique, one-word, CamelCase reason for the condition's last
+                        transition.
                       type: string
                     status:
                       description: Status is the status of the condition. Can be True,
@@ -214,12 +213,14 @@ spec:
                   observed in GCP.
                 properties:
                   blueprint:
-                    description: Optional. Blueprints are OCI Images that contain
-                      all of the artifacts needed to provision a unit.
+                    description: |-
+                      Optional. Blueprints are OCI Images that contain all of the artifacts
+                       needed to provision a unit.
                     properties:
                       engine:
-                        description: Output only. Type of the engine used to actuate
-                          the blueprint. e.g. terraform, helm etc.
+                        description: |-
+                          Output only. Type of the engine used to actuate the blueprint. e.g.
+                           terraform, helm etc.
                         type: string
                       version:
                         description: Output only. Version metadata if present on the
@@ -231,20 +232,21 @@ spec:
                       created.
                     type: string
                   etag:
-                    description: Output only. An opaque value that uniquely identifies
-                      a version or generation of a resource. It can be used to confirm
-                      that the client and server agree on the ordering of a resource
-                      being written.
+                    description: |-
+                      Output only. An opaque value that uniquely identifies a version or
+                       generation of a resource. It can be used to confirm that the client
+                       and server agree on the ordering of a resource being written.
                     type: string
                   inputVariables:
-                    description: Optional. Output only. List of input variables declared
-                      on the blueprint and can be present with their values on the
-                      unit spec
+                    description: |-
+                      Optional. Output only. List of input variables declared on the blueprint
+                       and can be present with their values on the unit spec
                     items:
                       properties:
                         type:
-                          description: Optional. Immutable. Name of a supported variable
-                            type. Supported types are string, int, bool.
+                          description: |-
+                            Optional. Immutable. Name of a supported variable type. Supported types are
+                             string, int, bool.
                           type: string
                         value:
                           description: Optional. String encoded value for the variable.
@@ -256,14 +258,15 @@ spec:
                       type: object
                     type: array
                   outputVariables:
-                    description: Optional. Output only. List of output variables declared
-                      on the blueprint and can be present with their values on the
-                      unit status
+                    description: |-
+                      Optional. Output only. List of output variables declared on the blueprint
+                       and can be present with their values on the unit status
                     items:
                       properties:
                         type:
-                          description: Optional. Immutable. Name of a supported variable
-                            type. Supported types are string, int, bool.
+                          description: |-
+                            Optional. Immutable. Name of a supported variable type. Supported types are
+                             string, int, bool.
                           type: string
                         value:
                           description: Optional. String encoded value for the variable.
@@ -275,18 +278,18 @@ spec:
                       type: object
                     type: array
                   uid:
-                    description: Output only. The unique identifier of the resource.
-                      UID is unique in the time and space for this resource within
-                      the scope of the service. It is typically generated by the server
-                      on successful creation of a resource and must not be changed.
-                      UID is used to uniquely identify resources with resource name
-                      reuses. This should be a UUID4.
+                    description: |-
+                      Output only. The unique identifier of the resource. UID is unique in the
+                       time and space for this resource within the scope of the service. It is
+                       typically generated by the server on successful creation of a resource
+                       and must not be changed. UID is used to uniquely identify resources
+                       with resource name reuses. This should be a UUID4.
                     type: string
                   updateTime:
-                    description: Output only. The timestamp when the resource was
-                      last updated. Any change to the resource made by users must
-                      refresh this value. Changes to a resource made by the service
-                      should refresh this value.
+                    description: |-
+                      Output only. The timestamp when the resource was last updated. Any
+                       change to the resource made by users must refresh this value.
+                       Changes to a resource made by the service should refresh this value.
                     type: string
                 type: object
             type: object

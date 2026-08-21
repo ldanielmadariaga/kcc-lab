@@ -280,7 +280,8 @@ type CloudStorageResourceReference struct {
 	ProjectID *string `json:"projectID,omitempty"`
 }
 
-/* unreachable type Connection
+/* found existing non-generated go type with proto tag "google.privacy.dlp.v2.Connection", skipping
+
 // +kcc:proto=google.privacy.dlp.v2.Connection
 type Connection struct {
 
@@ -742,7 +743,8 @@ type DiscoveryCloudStorageGenerationCadence struct {
 	InspectTemplateModifiedCadence *DiscoveryInspectTemplateModifiedCadence `json:"inspectTemplateModifiedCadence,omitempty"`
 }
 
-/* unreachable type DiscoveryConfig
+/* found existing non-generated go type with proto tag "google.privacy.dlp.v2.DiscoveryConfig", skipping
+
 // +kcc:proto=google.privacy.dlp.v2.DiscoveryConfig
 type DiscoveryConfig struct {
 	// Unique resource name for the DiscoveryConfig, assigned by the service when
@@ -1287,7 +1289,8 @@ type VertexDatasetResourceReference struct {
 	DatasetResourceName *string `json:"datasetResourceName,omitempty"`
 }
 
-/* unreachable type ConnectionObservedState
+/* found existing non-generated go type with proto tag "google.privacy.dlp.v2.Connection", skipping
+
 // +kcc:observedstate:proto=google.privacy.dlp.v2.Connection
 type ConnectionObservedState struct {
 	// Output only. Name of the connection:
@@ -1315,7 +1318,8 @@ type DataSourceTypeObservedState struct {
 	DataSource *string `json:"dataSource,omitempty"`
 }
 
-/* unreachable type DiscoveryConfigObservedState
+/* found existing non-generated go type with proto tag "google.privacy.dlp.v2.DiscoveryConfig", skipping
+
 // +kcc:observedstate:proto=google.privacy.dlp.v2.DiscoveryConfig
 type DiscoveryConfigObservedState struct {
 	// Target to match against for determining what to scan and how frequently.

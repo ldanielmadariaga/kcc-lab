@@ -138,12 +138,14 @@ type ColumnSchema struct {
 	//  Must be a UTF-8 string without dots (.).
 	//  The maximum size is 64 bytes.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.column
+	// +required
 	Column *string `json:"column,omitempty"`
 
 	// Required. Type of the column.
 	//
 	//  Must be a UTF-8 string with the maximum size of 128 bytes.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.type
+	// +required
 	Type *string `json:"type,omitempty"`
 
 	// Optional. Description of the column. Default value is an empty string.
@@ -203,6 +205,7 @@ type ColumnSchema_FieldElementType struct {
 	// Required. The type of a field element. See
 	//  [ColumnSchema.type][google.cloud.datacatalog.v1.ColumnSchema.type].
 	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.FieldElementType.type
+	// +required
 	Type *string `json:"type,omitempty"`
 }
 
@@ -213,14 +216,12 @@ type ColumnSchema_LookerColumnSpec struct {
 	Type *string `json:"type,omitempty"`
 }
 
-/* unreachable type CommonUsageStats
 // +kcc:proto=google.cloud.datacatalog.v1.CommonUsageStats
 type CommonUsageStats struct {
 	// View count in source system.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.CommonUsageStats.view_count
 	ViewCount *int64 `json:"viewCount,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.datacatalog.v1.Contacts
 type Contacts struct {
@@ -626,6 +627,7 @@ type FieldType_EnumType_EnumValue struct {
 	//  (_), dashes (-), spaces ( ), and can't start or end with spaces. The
 	//  maximum length is 200 characters.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.FieldType.EnumType.EnumValue.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 }
 
@@ -642,6 +644,7 @@ type FilesetSpec struct {
 type GCSFileSpec struct {
 	// Required. Full file path. Example: `gs://bucket_name/a/b.txt`.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.GcsFileSpec.file_path
+	// +required
 	FilePath *string `json:"filePath,omitempty"`
 }
 */
@@ -678,6 +681,7 @@ type GCSFilesetSpec struct {
 	//
 	//  `gs://bucket_name/[a-m]??.j*g`
 	// +kcc:proto:field=google.cloud.datacatalog.v1.GcsFilesetSpec.file_patterns
+	// +required
 	FilePatterns []string `json:"filePatterns,omitempty"`
 }
 
@@ -955,6 +959,7 @@ type Tag struct {
 	//
 	//  This field cannot be modified after creation.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.Tag.template
+	// +required
 	Template *string `json:"template,omitempty"`
 
 	// Resources like entry can have schemas associated with them. This scope
@@ -965,8 +970,14 @@ type Tag struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.Tag.column
 	Column *string `json:"column,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Required. Maps the ID of a tag field to its value and additional
+	//  information about that field.
+	//
+	//  Tag template defines valid field IDs. A tag
+	//  must have at least 1 field and at most 500 fields.
+	// +kcc:proto:field=google.cloud.datacatalog.v1.Tag.fields
+	// +required
+	Fields map[string]TagField `json:"fields,omitempty"`
 }
 */
 
@@ -1041,8 +1052,20 @@ type TagTemplate struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.TagTemplate.is_publicly_readable
 	IsPubliclyReadable *bool `json:"isPubliclyReadable,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Required. Map of tag template field IDs to the settings for the field.
+	//  This map is an exhaustive list of the allowed fields. The map must contain
+	//  at least one field and at most 500 fields.
+	//
+	//  The keys to this map are tag template field IDs. The IDs have the
+	//  following limitations:
+	//
+	//  * Can contain uppercase and lowercase letters, numbers (0-9) and
+	//    underscores (_).
+	//  * Must be at least 1 character and at most 64 characters long.
+	//  * Must start with a letter or underscore.
+	// +kcc:proto:field=google.cloud.datacatalog.v1.TagTemplate.fields
+	// +required
+	Fields map[string]TagTemplateField `json:"fields,omitempty"`
 
 	// Optional. Transfer status of the TagTemplate
 	// +kcc:proto:field=google.cloud.datacatalog.v1.TagTemplate.dataplex_transfer_status
@@ -1076,6 +1099,7 @@ type TagTemplateField struct {
 
 	// Required. The type of value this tag field can contain.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.TagTemplateField.type
+	// +required
 	Type *FieldType `json:"type,omitempty"`
 
 	// If true, this field is required. Defaults to false.
@@ -1102,14 +1126,17 @@ type UsageSignal struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.UsageSignal.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// Common usage statistics over each of the predefined time ranges.
+	//
+	//  Supported time ranges are `{"24H", "7D", "30D", "Lifetime"}`.
+	// +kcc:proto:field=google.cloud.datacatalog.v1.UsageSignal.common_usage_within_time_range
+	CommonUsageWithinTimeRange map[string]CommonUsageStats `json:"commonUsageWithinTimeRange,omitempty"`
 
 	// Favorite count in the source system.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.UsageSignal.favorite_count
 	FavoriteCount *int64 `json:"favoriteCount,omitempty"`
 }
 
-/* unreachable type UsageStats
 // +kcc:proto=google.cloud.datacatalog.v1.UsageStats
 type UsageStats struct {
 	// The number of successful uses of the underlying entry.
@@ -1128,7 +1155,6 @@ type UsageStats struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.UsageStats.total_execution_time_for_completions_millis
 	TotalExecutionTimeForCompletionsMillis *float32 `json:"totalExecutionTimeForCompletionsMillis,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.datacatalog.v1.VertexDatasetSpec
 type VertexDatasetSpec struct {
@@ -1421,9 +1447,12 @@ type TagObservedState struct {
 
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.UsageSignal
 type UsageSignalObservedState struct {
-
-	// TODO: unsupported map type with key string and value message
-
+	// Output only. BigQuery usage statistics over each of the predefined time
+	//  ranges.
+	//
+	//  Supported time ranges are `{"24H", "7D", "30D"}`.
+	// +kcc:proto:field=google.cloud.datacatalog.v1.UsageSignal.usage_within_time_range
+	UsageWithinTimeRange map[string]UsageStats `json:"usageWithinTimeRange,omitempty"`
 }
 
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.ViewSpec

@@ -69,6 +69,7 @@ type ImportJob struct {
 	// Required. Immutable. The wrapping method to be used for incoming key
 	//  material.
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.import_method
+	// +required
 	ImportMethod *string `json:"importMethod,omitempty"`
 
 	// Required. Immutable. The protection level of the
@@ -78,6 +79,7 @@ type ImportJob struct {
 	//  on the [CryptoKey][google.cloud.kms.v1.CryptoKey] you attempt to import
 	//  into.
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.protection_level
+	// +required
 	ProtectionLevel *string `json:"protectionLevel,omitempty"`
 }
 */

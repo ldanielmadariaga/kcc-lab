@@ -175,10 +175,12 @@ type DiskConfig struct {
 type DriverSchedulingConfig struct {
 	// Required. The amount of memory in MB the driver is requesting.
 	// +kcc:proto:field=google.cloud.dataproc.v1.DriverSchedulingConfig.memory_mb
+	// +required
 	MemoryMb *int32 `json:"memoryMb,omitempty"`
 
 	// Required. The number of vCPUs the driver is requesting.
 	// +kcc:proto:field=google.cloud.dataproc.v1.DriverSchedulingConfig.vcores
+	// +required
 	Vcores *int32 `json:"vcores,omitempty"`
 }
 */
@@ -294,7 +296,7 @@ type FlinkJob struct {
 	// Optional. HCFS URIs of jar files to add to the CLASSPATHs of the
 	//  Flink driver and tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.FlinkJob.jar_file_uris
-	JarFileUris []string `json:"jarFileUris,omitempty"`
+	JarFileURIs []string `json:"jarFileURIs,omitempty"`
 
 	// Optional. HCFS URI of the savepoint, which contains the last saved progress
 	//  for starting the current job.
@@ -341,19 +343,19 @@ type HadoopJob struct {
 	// Optional. Jar file URIs to add to the CLASSPATHs of the
 	//  Hadoop driver and tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.HadoopJob.jar_file_uris
-	JarFileUris []string `json:"jarFileUris,omitempty"`
+	JarFileURIs []string `json:"jarFileURIs,omitempty"`
 
 	// Optional. HCFS (Hadoop Compatible Filesystem) URIs of files to be copied
 	//  to the working directory of Hadoop drivers and distributed tasks. Useful
 	//  for naively parallel tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.HadoopJob.file_uris
-	FileUris []string `json:"fileUris,omitempty"`
+	FileURIs []string `json:"fileURIs,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted in the working directory of
 	//  Hadoop drivers and tasks. Supported file types:
 	//  .jar, .tar, .tar.gz, .tgz, or .zip.
 	// +kcc:proto:field=google.cloud.dataproc.v1.HadoopJob.archive_uris
-	ArchiveUris []string `json:"archiveUris,omitempty"`
+	ArchiveURIs []string `json:"archiveURIs,omitempty"`
 
 	// Optional. A mapping of property names to values, used to configure Hadoop.
 	//  Properties that conflict with values set by the Dataproc API might be
@@ -402,7 +404,7 @@ type HiveJob struct {
 	//  Hive server and Hadoop MapReduce (MR) tasks. Can contain Hive SerDes
 	//  and UDFs.
 	// +kcc:proto:field=google.cloud.dataproc.v1.HiveJob.jar_file_uris
-	JarFileUris []string `json:"jarFileUris,omitempty"`
+	JarFileURIs []string `json:"jarFileURIs,omitempty"`
 }
 */
 
@@ -597,6 +599,7 @@ type Job struct {
 	// Required. Job information, including how, when, and where to
 	//  run the job.
 	// +kcc:proto:field=google.cloud.dataproc.v1.Job.placement
+	// +required
 	Placement *JobPlacement `json:"placement,omitempty"`
 
 	// Optional. Job is a Hadoop job.
@@ -665,6 +668,7 @@ type Job struct {
 type JobPlacement struct {
 	// Required. The name of the cluster where the job will be submitted.
 	// +kcc:proto:field=google.cloud.dataproc.v1.JobPlacement.cluster_name
+	// +required
 	ClusterName *string `json:"clusterName,omitempty"`
 
 	// Optional. Cluster labels to identify a cluster where the job will be
@@ -754,7 +758,7 @@ type JupyterConfig struct {
 // +kcc:proto=google.cloud.dataproc.v1.LoggingConfig
 type LoggingConfig struct {
 
-	// TODO: unsupported map type with key string and value enum
+	// TODO: driverLogLevels: unsupported map type with key string and value enum
 
 }
 */
@@ -775,6 +779,7 @@ type NodeGroup struct {
 
 	// Required. Node group roles.
 	// +kcc:proto:field=google.cloud.dataproc.v1.NodeGroup.roles
+	// +required
 	Roles []string `json:"roles,omitempty"`
 
 	// Optional. The node group instance group configuration.
@@ -845,7 +850,7 @@ type PigJob struct {
 	// Optional. HCFS URIs of jar files to add to the CLASSPATH of
 	//  the Pig Client and Hadoop MapReduce (MR) tasks. Can contain Pig UDFs.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PigJob.jar_file_uris
-	JarFileUris []string `json:"jarFileUris,omitempty"`
+	JarFileURIs []string `json:"jarFileURIs,omitempty"`
 
 	// Optional. The runtime log config for job execution.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PigJob.logging_config
@@ -909,6 +914,7 @@ type PySparkBatch struct {
 	// Required. The HCFS URI of the main Python file to use as the Spark driver.
 	//  Must be a .py file.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkBatch.main_python_file_uri
+	// +required
 	MainPythonFileURI *string `json:"mainPythonFileURI,omitempty"`
 
 	// Optional. The arguments to pass to the driver. Do not include arguments
@@ -920,23 +926,23 @@ type PySparkBatch struct {
 	// Optional. HCFS file URIs of Python files to pass to the PySpark
 	//  framework. Supported file types: `.py`, `.egg`, and `.zip`.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkBatch.python_file_uris
-	PythonFileUris []string `json:"pythonFileUris,omitempty"`
+	PythonFileURIs []string `json:"pythonFileURIs,omitempty"`
 
 	// Optional. HCFS URIs of jar files to add to the classpath of the
 	//  Spark driver and tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkBatch.jar_file_uris
-	JarFileUris []string `json:"jarFileUris,omitempty"`
+	JarFileURIs []string `json:"jarFileURIs,omitempty"`
 
 	// Optional. HCFS URIs of files to be placed in the working directory of
 	//  each executor.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkBatch.file_uris
-	FileUris []string `json:"fileUris,omitempty"`
+	FileURIs []string `json:"fileURIs,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted into the working directory
 	//  of each executor. Supported file types:
 	//  `.jar`, `.tar`, `.tar.gz`, `.tgz`, and `.zip`.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkBatch.archive_uris
-	ArchiveUris []string `json:"archiveUris,omitempty"`
+	ArchiveURIs []string `json:"archiveURIs,omitempty"`
 }
 */
 
@@ -947,6 +953,7 @@ type PySparkJob struct {
 	// Required. The HCFS URI of the main Python file to use as the driver. Must
 	//  be a .py file.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkJob.main_python_file_uri
+	// +required
 	MainPythonFileURI *string `json:"mainPythonFileURI,omitempty"`
 
 	// Optional. The arguments to pass to the driver.  Do not include arguments,
@@ -958,23 +965,23 @@ type PySparkJob struct {
 	// Optional. HCFS file URIs of Python files to pass to the PySpark
 	//  framework. Supported file types: .py, .egg, and .zip.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkJob.python_file_uris
-	PythonFileUris []string `json:"pythonFileUris,omitempty"`
+	PythonFileURIs []string `json:"pythonFileURIs,omitempty"`
 
 	// Optional. HCFS URIs of jar files to add to the CLASSPATHs of the
 	//  Python driver and tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkJob.jar_file_uris
-	JarFileUris []string `json:"jarFileUris,omitempty"`
+	JarFileURIs []string `json:"jarFileURIs,omitempty"`
 
 	// Optional. HCFS URIs of files to be placed in the working directory of
 	//  each executor. Useful for naively parallel tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkJob.file_uris
-	FileUris []string `json:"fileUris,omitempty"`
+	FileURIs []string `json:"fileURIs,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted into the working directory
 	//  of each executor. Supported file types:
 	//  .jar, .tar, .tar.gz, .tgz, and .zip.
 	// +kcc:proto:field=google.cloud.dataproc.v1.PySparkJob.archive_uris
-	ArchiveUris []string `json:"archiveUris,omitempty"`
+	ArchiveURIs []string `json:"archiveURIs,omitempty"`
 
 	// Optional. A mapping of property names to values, used to configure PySpark.
 	//  Properties that conflict with values set by the Dataproc API might be
@@ -1008,6 +1015,7 @@ type QueryList struct {
 	//        }
 	//      }
 	// +kcc:proto:field=google.cloud.dataproc.v1.QueryList.queries
+	// +required
 	Queries []string `json:"queries,omitempty"`
 }
 */
@@ -1068,6 +1076,7 @@ type RuntimeInfo struct {
 type Session struct {
 	// Required. The resource name of the session.
 	// +kcc:proto:field=google.cloud.dataproc.v1.Session.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. Jupyter session config.
@@ -1128,6 +1137,7 @@ type Session_SessionStateHistory struct {
 type SessionTemplate struct {
 	// Required. The resource name of the session template.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SessionTemplate.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. Brief description of the template.
@@ -1184,18 +1194,18 @@ type SparkBatch struct {
 	// Optional. HCFS URIs of jar files to add to the classpath of the
 	//  Spark driver and tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkBatch.jar_file_uris
-	JarFileUris []string `json:"jarFileUris,omitempty"`
+	JarFileURIs []string `json:"jarFileURIs,omitempty"`
 
 	// Optional. HCFS URIs of files to be placed in the working directory of
 	//  each executor.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkBatch.file_uris
-	FileUris []string `json:"fileUris,omitempty"`
+	FileURIs []string `json:"fileURIs,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted into the working directory
 	//  of each executor. Supported file types:
 	//  `.jar`, `.tar`, `.tar.gz`, `.tgz`, and `.zip`.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkBatch.archive_uris
-	ArchiveUris []string `json:"archiveUris,omitempty"`
+	ArchiveURIs []string `json:"archiveURIs,omitempty"`
 }
 */
 
@@ -1244,18 +1254,18 @@ type SparkJob struct {
 	// Optional. HCFS URIs of jar files to add to the CLASSPATHs of the
 	//  Spark driver and tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkJob.jar_file_uris
-	JarFileUris []string `json:"jarFileUris,omitempty"`
+	JarFileURIs []string `json:"jarFileURIs,omitempty"`
 
 	// Optional. HCFS URIs of files to be placed in the working directory of
 	//  each executor. Useful for naively parallel tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkJob.file_uris
-	FileUris []string `json:"fileUris,omitempty"`
+	FileURIs []string `json:"fileURIs,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted into the working directory
 	//  of each executor. Supported file types:
 	//  .jar, .tar, .tar.gz, .tgz, and .zip.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkJob.archive_uris
-	ArchiveUris []string `json:"archiveUris,omitempty"`
+	ArchiveURIs []string `json:"archiveURIs,omitempty"`
 
 	// Optional. A mapping of property names to values, used to configure Spark.
 	//  Properties that conflict with values set by the Dataproc API might be
@@ -1277,6 +1287,7 @@ type SparkRBatch struct {
 	// Required. The HCFS URI of the main R file to use as the driver.
 	//  Must be a `.R` or `.r` file.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkRBatch.main_r_file_uri
+	// +required
 	MainRFileURI *string `json:"mainRFileURI,omitempty"`
 
 	// Optional. The arguments to pass to the Spark driver. Do not include
@@ -1288,13 +1299,13 @@ type SparkRBatch struct {
 	// Optional. HCFS URIs of files to be placed in the working directory of
 	//  each executor.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkRBatch.file_uris
-	FileUris []string `json:"fileUris,omitempty"`
+	FileURIs []string `json:"fileURIs,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted into the working directory
 	//  of each executor. Supported file types:
 	//  `.jar`, `.tar`, `.tar.gz`, `.tgz`, and `.zip`.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkRBatch.archive_uris
-	ArchiveUris []string `json:"archiveUris,omitempty"`
+	ArchiveURIs []string `json:"archiveURIs,omitempty"`
 }
 */
 
@@ -1305,6 +1316,7 @@ type SparkRJob struct {
 	// Required. The HCFS URI of the main R file to use as the driver.
 	//  Must be a .R file.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkRJob.main_r_file_uri
+	// +required
 	MainRFileURI *string `json:"mainRFileURI,omitempty"`
 
 	// Optional. The arguments to pass to the driver.  Do not include arguments,
@@ -1316,13 +1328,13 @@ type SparkRJob struct {
 	// Optional. HCFS URIs of files to be placed in the working directory of
 	//  each executor. Useful for naively parallel tasks.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkRJob.file_uris
-	FileUris []string `json:"fileUris,omitempty"`
+	FileURIs []string `json:"fileURIs,omitempty"`
 
 	// Optional. HCFS URIs of archives to be extracted into the working directory
 	//  of each executor. Supported file types:
 	//  .jar, .tar, .tar.gz, .tgz, and .zip.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkRJob.archive_uris
-	ArchiveUris []string `json:"archiveUris,omitempty"`
+	ArchiveURIs []string `json:"archiveURIs,omitempty"`
 
 	// Optional. A mapping of property names to values, used to configure SparkR.
 	//  Properties that conflict with values set by the Dataproc API might be
@@ -1344,6 +1356,7 @@ type SparkSQLBatch struct {
 	// Required. The HCFS URI of the script that contains Spark SQL queries to
 	//  execute.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkSqlBatch.query_file_uri
+	// +required
 	QueryFileURI *string `json:"queryFileURI,omitempty"`
 
 	// Optional. Mapping of query variable names to values (equivalent to the
@@ -1353,7 +1366,7 @@ type SparkSQLBatch struct {
 
 	// Optional. HCFS URIs of jar files to be added to the Spark CLASSPATH.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkSqlBatch.jar_file_uris
-	JarFileUris []string `json:"jarFileUris,omitempty"`
+	JarFileURIs []string `json:"jarFileURIs,omitempty"`
 }
 */
 
@@ -1382,7 +1395,7 @@ type SparkSQLJob struct {
 
 	// Optional. HCFS URIs of jar files to be added to the Spark CLASSPATH.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkSqlJob.jar_file_uris
-	JarFileUris []string `json:"jarFileUris,omitempty"`
+	JarFileURIs []string `json:"jarFileURIs,omitempty"`
 
 	// Optional. The runtime log config for job execution.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SparkSqlJob.logging_config
@@ -1517,14 +1530,17 @@ type UsageSnapshot struct {
 type YarnApplication struct {
 	// Required. The application name.
 	// +kcc:proto:field=google.cloud.dataproc.v1.YarnApplication.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Required. The application state.
 	// +kcc:proto:field=google.cloud.dataproc.v1.YarnApplication.state
+	// +required
 	State *string `json:"state,omitempty"`
 
 	// Required. The numerical progress of the application, from 1 to 100.
 	// +kcc:proto:field=google.cloud.dataproc.v1.YarnApplication.progress
+	// +required
 	Progress *float32 `json:"progress,omitempty"`
 
 	// Optional. The HTTP URL of the ApplicationMaster, HistoryServer, or
