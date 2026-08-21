@@ -63,7 +63,7 @@ spec:
             description: DatastreamConnectionProfileSpec defines the desired state
               of DatastreamConnectionProfile
             properties:
-              bigQueryProfile:
+              bigqueryProfile:
                 description: BigQuery Connection Profile configuration.
                 type: object
               displayName:
@@ -75,6 +75,9 @@ spec:
                   hostname:
                     description: Required. Hostname for the SSH tunnel.
                     type: string
+                  password:
+                    description: Input only. SSH password.
+                    type: string
                   port:
                     description: Port for the SSH tunnel, default value is 22.
                     format: int32
@@ -82,24 +85,12 @@ spec:
                   privateKey:
                     description: Input only. SSH private key.
                     type: string
-                  secretRef:
-                    description: The Kubernetes Secret object that stores the "username"
-                      and "password" information for the SSH tunnel. The Secret type
-                      has to be `kubernetes.io/basic-auth`.
-                    properties:
-                      name:
-                        description: The `metadata.name` field of a Kubernetes `Secret`
-                        type: string
-                      namespace:
-                        description: The `metadata.namespace` field of a Kubernetes
-                          `Secret`.
-                        type: string
-                    required:
-                    - name
-                    type: object
+                  username:
+                    description: Required. Username for the SSH tunnel.
+                    type: string
                 required:
                 - hostname
-                - secretRef
+                - username
                 type: object
               gcsProfile:
                 description: Cloud Storage ConnectionProfile configuration.
@@ -119,36 +110,111 @@ spec:
                 description: Labels.
                 type: object
               location:
-                description: Immutable.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
-              mySQLProfile:
+              mongodbProfile:
+                description: MongoDB Connection Profile configuration.
+                properties:
+                  hostAddresses:
+                    description: Required. List of host addresses for a MongoDB cluster.
+                      For SRV connection format, this list must contain exactly one
+                      DNS host without a port. For Standard connection format, this
+                      list must contain all the required hosts in the cluster with
+                      their respective ports.
+                    items:
+                      properties:
+                        hostname:
+                          description: Required. Hostname for the connection.
+                          type: string
+                        port:
+                          description: Optional. Port for the connection.
+                          format: int32
+                          type: integer
+                      required:
+                      - hostname
+                      type: object
+                    type: array
+                  password:
+                    description: Optional. Password for the MongoDB connection. Mutually
+                      exclusive with the `secret_manager_stored_password` field.
+                    type: string
+                  replicaSet:
+                    description: Optional. Name of the replica set. Only needed for
+                      self hosted replica set type MongoDB cluster. For SRV connection
+                      format, this field must be empty. For Standard connection format,
+                      this field must be specified.
+                    type: string
+                  secretManagerStoredPassword:
+                    description: Optional. A reference to a Secret Manager resource
+                      name storing the SQLServer connection password. Mutually exclusive
+                      with the `password` field.
+                    type: string
+                  srvConnectionFormat:
+                    description: Srv connection format.
+                    type: object
+                  sslConfig:
+                    description: Optional. SSL configuration for the MongoDB connection.
+                    properties:
+                      caCertificate:
+                        description: Optional. Input only. PEM-encoded certificate
+                          of the CA that signed the source database server's certificate.
+                        type: string
+                      clientCertificate:
+                        description: Optional. Input only. PEM-encoded certificate
+                          that will be used by the replica to authenticate against
+                          the source database server. If this field is used then the
+                          'client_key' and the 'ca_certificate' fields are mandatory.
+                        type: string
+                      clientKey:
+                        description: Optional. Input only. PEM-encoded private key
+                          associated with the Client Certificate. If this field is
+                          used then the 'client_certificate' and the 'ca_certificate'
+                          fields are mandatory.
+                        type: string
+                      secretManagerStoredClientKey:
+                        description: Optional. Input only. A reference to a Secret
+                          Manager resource name storing the PEM-encoded private key
+                          associated with the Client Certificate. If this field is
+                          used then the 'client_certificate' and the 'ca_certificate'
+                          fields are mandatory. Mutually exclusive with the `client_key`
+                          field.
+                        type: string
+                    type: object
+                  standardConnectionFormat:
+                    description: Standard connection format.
+                    properties:
+                      directConnection:
+                        description: Optional. Specifies whether the client connects
+                          directly to the host[:port] in the connection URI.
+                        type: boolean
+                    type: object
+                  username:
+                    description: Required. Username for the MongoDB connection.
+                    type: string
+                required:
+                - hostAddresses
+                - username
+                type: object
+              mysqlProfile:
                 description: MySQL ConnectionProfile configuration.
                 properties:
                   hostname:
                     description: Required. Hostname for the MySQL connection.
                     type: string
+                  password:
+                    description: Optional. Input only. Password for the MySQL connection.
+                      Mutually exclusive with the `secret_manager_stored_password`
+                      field.
+                    type: string
                   port:
                     description: Port for the MySQL connection, default value is 3306.
                     format: int32
                     type: integer
-                  secretRef:
-                    description: The Kubernetes Secret object that stores the "username"
-                      and "password" information for the MySQL connection. The Secret
-                      type has to be `kubernetes.io/basic-auth`.
-                    properties:
-                      name:
-                        description: The `metadata.name` field of a Kubernetes `Secret`
-                        type: string
-                      namespace:
-                        description: The `metadata.namespace` field of a Kubernetes
-                          `Secret`.
-                        type: string
-                    required:
-                    - name
-                    type: object
+                  secretManagerStoredPassword:
+                    description: Optional. A reference to a Secret Manager resource
+                      name storing the MySQL connection password. Mutually exclusive
+                      with the `password` field.
+                    type: string
                   sslConfig:
                     description: SSL configuration for the MySQL connection.
                     properties:
@@ -169,9 +235,12 @@ spec:
                           fields are mandatory.
                         type: string
                     type: object
+                  username:
+                    description: Required. Username for the MySQL connection.
+                    type: string
                 required:
                 - hostname
-                - secretRef
+                - username
                 type: object
               oracleProfile:
                 description: Oracle ConnectionProfile configuration.
@@ -187,7 +256,7 @@ spec:
                   hostname:
                     description: Required. Hostname for the Oracle connection.
                     type: string
-                  oracleASMConfig:
+                  oracleAsmConfig:
                     description: Optional. Configuration for Oracle ASM connection.
                     properties:
                       asmService:
@@ -217,31 +286,28 @@ spec:
                               enforced.
                             type: string
                         type: object
+                      password:
+                        description: Optional. Password for the Oracle ASM connection.
+                          Mutually exclusive with the `secret_manager_stored_password`
+                          field.
+                        type: string
                       port:
                         description: Required. Port for the Oracle ASM connection.
                         format: int32
                         type: integer
-                      secretRef:
-                        description: The Kubernetes Secret object that stores the
-                          "username" and "password" information for the Oracle ASM
-                          connection. The Secret type has to be `kubernetes.io/basic-auth`.
-                        properties:
-                          name:
-                            description: The `metadata.name` field of a Kubernetes
-                              `Secret`
-                            type: string
-                          namespace:
-                            description: The `metadata.namespace` field of a Kubernetes
-                              `Secret`.
-                            type: string
-                        required:
-                        - name
-                        type: object
+                      secretManagerStoredPassword:
+                        description: Optional. A reference to a Secret Manager resource
+                          name storing the Oracle ASM connection password. Mutually
+                          exclusive with the `password` field.
+                        type: string
+                      username:
+                        description: Required. Username for the Oracle ASM connection.
+                        type: string
                     required:
                     - asmService
                     - hostname
                     - port
-                    - secretRef
+                    - username
                     type: object
                   oracleSSLConfig:
                     description: Optional. SSL configuration for the Oracle connection.
@@ -257,98 +323,133 @@ spec:
                           If this field is not provided, the DN matching is not enforced.
                         type: string
                     type: object
+                  password:
+                    description: Optional. Password for the Oracle connection. Mutually
+                      exclusive with the `secret_manager_stored_password` field.
+                    type: string
                   port:
                     description: Port for the Oracle connection, default value is
                       1521.
                     format: int32
                     type: integer
-                  secretManagerSecretRef:
+                  secretManagerStoredPassword:
                     description: Optional. A reference to a Secret Manager resource
                       name storing the Oracle connection password. Mutually exclusive
-                      with the `secretRef` field.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: ' If provided must be in the format `projects/*/secrets/*`.'
-                        type: string
-                      name:
-                        description: The `name` field of a `SecretManagerSecret` resource.
-                        type: string
-                      namespace:
-                        description: The `metadata.namespace` field of a `SecretManagerSecret`
-                          resource.
-                        type: string
-                    type: object
-                  secretRef:
-                    description: The Kubernetes Secret object that stores the "username"
-                      and "password" information for the Oracle connection. The Secret
-                      type has to be `kubernetes.io/basic-auth`.
-                    properties:
-                      name:
-                        description: The `metadata.name` field of a Kubernetes `Secret`
-                        type: string
-                      namespace:
-                        description: The `metadata.namespace` field of a Kubernetes
-                          `Secret`.
-                        type: string
-                    required:
-                    - name
-                    type: object
+                      with the `password` field.
+                    type: string
+                  username:
+                    description: Required. Username for the Oracle connection.
+                    type: string
                 required:
                 - databaseService
                 - hostname
-                - secretRef
+                - username
+                type: object
+              postgresqlProfile:
+                description: PostgreSQL Connection Profile configuration.
+                properties:
+                  database:
+                    description: Required. Database for the PostgreSQL connection.
+                    type: string
+                  hostname:
+                    description: Required. Hostname for the PostgreSQL connection.
+                    type: string
+                  password:
+                    description: Optional. Password for the PostgreSQL connection.
+                      Mutually exclusive with the `secret_manager_stored_password`
+                      field.
+                    type: string
+                  port:
+                    description: Port for the PostgreSQL connection, default value
+                      is 5432.
+                    format: int32
+                    type: integer
+                  secretManagerStoredPassword:
+                    description: Optional. A reference to a Secret Manager resource
+                      name storing the PostgreSQL connection password. Mutually exclusive
+                      with the `password` field.
+                    type: string
+                  sslConfig:
+                    description: Optional. SSL configuration for the PostgreSQL connection.
+                      In case PostgresqlSslConfig is not set, the connection will
+                      use the default SSL mode, which is `prefer` (i.e. this mode
+                      will only use encryption if enabled from database side, otherwise
+                      will use unencrypted communication)
+                    properties:
+                      serverAndClientVerification:
+                        description: If this field is set, the communication will
+                          be encrypted with TLS encryption and both the server identity
+                          and the client identity will be authenticated.
+                        properties:
+                          caCertificate:
+                            description: Required. Input only. PEM-encoded server
+                              root CA certificate.
+                            type: string
+                          clientCertificate:
+                            description: Required. Input only. PEM-encoded certificate
+                              used by the source database to authenticate the client
+                              identity (i.e., the Datastream's identity). This certificate
+                              is signed by either a root certificate trusted by the
+                              server or one or more intermediate certificates (which
+                              is stored with the leaf certificate) to link the this
+                              certificate to the trusted root certificate.
+                            type: string
+                          clientKey:
+                            description: Optional. Input only. PEM-encoded private
+                              key associated with the client certificate. This value
+                              will be used during the SSL/TLS handshake, allowing
+                              the PostgreSQL server to authenticate the client's identity,
+                              i.e. identity of the Datastream.
+                            type: string
+                          serverCertificateHostname:
+                            description: Optional. The hostname mentioned in the Subject
+                              or SAN extension of the server certificate. If this
+                              field is not provided, the hostname in the server certificate
+                              is not validated.
+                            type: string
+                        required:
+                        - caCertificate
+                        - clientCertificate
+                        type: object
+                      serverVerification:
+                        description: If this field is set, the communication will
+                          be encrypted with TLS encryption and the server identity
+                          will be authenticated.
+                        properties:
+                          caCertificate:
+                            description: Required. Input only. PEM-encoded server
+                              root CA certificate.
+                            type: string
+                          serverCertificateHostname:
+                            description: Optional. The hostname mentioned in the Subject
+                              or SAN extension of the server certificate. If this
+                              field is not provided, the hostname in the server certificate
+                              is not validated.
+                            type: string
+                        required:
+                        - caCertificate
+                        type: object
+                    type: object
+                  username:
+                    description: Required. Username for the PostgreSQL connection.
+                    type: string
+                required:
+                - database
+                - hostname
+                - username
                 type: object
               privateConnectivity:
                 description: Private connectivity.
                 properties:
-                  privateConnectionRef:
-                    description: Required. A reference to a private connection resource.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: A reference to an externally managed DatastreamPrivateConnection
-                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/privateConnections/{{privateconnectionID}}".
-                        type: string
-                      name:
-                        description: The name of a DatastreamPrivateConnection resource.
-                        type: string
-                      namespace:
-                        description: The namespace of a DatastreamPrivateConnection
-                          resource.
-                        type: string
-                    type: object
+                  privateConnection:
+                    description: 'Required. A reference to a private connection resource.
+                      Format: `projects/{project}/locations/{location}/privateConnections/{name}`'
+                    type: string
                 required:
-                - privateConnectionRef
+                - privateConnection
                 type: object
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -383,6 +484,64 @@ spec:
                 description: The DatastreamConnectionProfile name. If not given, the
                   metadata.name will be used.
                 type: string
+              salesforceProfile:
+                description: Salesforce Connection Profile configuration.
+                properties:
+                  domain:
+                    description: Required. Domain endpoint for the Salesforce connection.
+                    type: string
+                  oauth2ClientCredentials:
+                    description: Connected app authentication.
+                    properties:
+                      clientID:
+                        description: Required. Client ID for Salesforce OAuth2 Client
+                          Credentials.
+                        type: string
+                      clientSecret:
+                        description: Optional. Client secret for Salesforce OAuth2
+                          Client Credentials. Mutually exclusive with the `secret_manager_stored_client_secret`
+                          field.
+                        type: string
+                      secretManagerStoredClientSecret:
+                        description: Optional. A reference to a Secret Manager resource
+                          name storing the Salesforce OAuth2 client_secret. Mutually
+                          exclusive with the `client_secret` field.
+                        type: string
+                    required:
+                    - clientID
+                    type: object
+                  userCredentials:
+                    description: User-password authentication.
+                    properties:
+                      password:
+                        description: Optional. Password for the Salesforce connection.
+                          Mutually exclusive with the `secret_manager_stored_password`
+                          field.
+                        type: string
+                      secretManagerStoredPassword:
+                        description: Optional. A reference to a Secret Manager resource
+                          name storing the Salesforce connection's password. Mutually
+                          exclusive with the `password` field.
+                        type: string
+                      secretManagerStoredSecurityToken:
+                        description: Optional. A reference to a Secret Manager resource
+                          name storing the Salesforce connection's security token.
+                          Mutually exclusive with the `security_token` field.
+                        type: string
+                      securityToken:
+                        description: Optional. Security token for the Salesforce connection.
+                          Mutually exclusive with the `secret_manager_stored_security_token`
+                          field.
+                        type: string
+                      username:
+                        description: Required. Username for the Salesforce connection.
+                        type: string
+                    required:
+                    - username
+                    type: object
+                required:
+                - domain
+                type: object
               sqlServerProfile:
                 description: SQLServer Connection Profile configuration.
                 properties:
@@ -392,30 +551,28 @@ spec:
                   hostname:
                     description: Required. Hostname for the SQLServer connection.
                     type: string
+                  password:
+                    description: Optional. Password for the SQLServer connection.
+                      Mutually exclusive with the `secret_manager_stored_password`
+                      field.
+                    type: string
                   port:
                     description: Port for the SQLServer connection, default value
                       is 1433.
                     format: int32
                     type: integer
-                  secretRef:
-                    description: The Kubernetes Secret object that stores the "username"
-                      and "password" information for the SQLServer connection. The
-                      Secret type has to be `kubernetes.io/basic-auth`.
-                    properties:
-                      name:
-                        description: The `metadata.name` field of a Kubernetes `Secret`
-                        type: string
-                      namespace:
-                        description: The `metadata.namespace` field of a Kubernetes
-                          `Secret`.
-                        type: string
-                    required:
-                    - name
-                    type: object
+                  secretManagerStoredPassword:
+                    description: Optional. A reference to a Secret Manager resource
+                      name storing the SQLServer connection password. Mutually exclusive
+                      with the `password` field.
+                    type: string
+                  username:
+                    description: Required. Username for the SQLServer connection.
+                    type: string
                 required:
                 - database
                 - hostname
-                - secretRef
+                - username
                 type: object
               staticServiceIPConnectivity:
                 description: Static Service IP connectivity.
@@ -474,7 +631,27 @@ spec:
                   createTime:
                     description: Output only. The create time of the resource.
                     type: string
-                  mySQLProfile:
+                  mongodbProfile:
+                    description: MongoDB Connection Profile configuration.
+                    properties:
+                      sslConfig:
+                        description: Optional. SSL configuration for the MongoDB connection.
+                        properties:
+                          caCertificateSet:
+                            description: Output only. Indicates whether the ca_certificate
+                              field is set.
+                            type: boolean
+                          clientCertificateSet:
+                            description: Output only. Indicates whether the client_certificate
+                              field is set.
+                            type: boolean
+                          clientKeySet:
+                            description: Output only. Indicates whether the client_key
+                              field is set.
+                            type: boolean
+                        type: object
+                    type: object
+                  mysqlProfile:
                     description: MySQL ConnectionProfile configuration.
                     properties:
                       sslConfig:
@@ -497,6 +674,19 @@ spec:
                   oracleProfile:
                     description: Oracle ConnectionProfile configuration.
                     properties:
+                      oracleAsmConfig:
+                        description: Optional. Configuration for Oracle ASM connection.
+                        properties:
+                          oracleSSLConfig:
+                            description: Optional. SSL configuration for the Oracle
+                              connection.
+                            properties:
+                              caCertificateSet:
+                                description: Output only. Indicates whether the ca_certificate
+                                  field has been set for this Connection-Profile.
+                                type: boolean
+                            type: object
+                        type: object
                       oracleSSLConfig:
                         description: Optional. SSL configuration for the Oracle connection.
                         properties:
@@ -506,6 +696,12 @@ spec:
                             type: boolean
                         type: object
                     type: object
+                  satisfiesPzi:
+                    description: Output only. Reserved for future use.
+                    type: boolean
+                  satisfiesPzs:
+                    description: Output only. Reserved for future use.
+                    type: boolean
                   updateTime:
                     description: Output only. The update time of the resource.
                     type: string

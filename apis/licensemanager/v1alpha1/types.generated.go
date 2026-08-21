@@ -30,8 +30,7 @@ type BillingInfo struct {
 	UserCountBilling *UserCountBillingInfo `json:"userCountBilling,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.licensemanager.v1.Configuration", skipping
-
+/* unreachable type Configuration
 // +kcc:proto=google.cloud.licensemanager.v1.Configuration
 type Configuration struct {
 	// Identifier. name of resource
@@ -88,8 +87,7 @@ type BillingInfoObservedState struct {
 	EndTime *string `json:"endTime,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.licensemanager.v1.Configuration", skipping
-
+/* unreachable type ConfigurationObservedState
 // +kcc:observedstate:proto=google.cloud.licensemanager.v1.Configuration
 type ConfigurationObservedState struct {
 	// Required. Billing information applicable till end of the current month.

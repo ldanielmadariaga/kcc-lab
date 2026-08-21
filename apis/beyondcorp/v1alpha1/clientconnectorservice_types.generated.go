@@ -21,6 +21,34 @@
 
 package v1alpha1
 
+/* unreachable type ClientConnectorService
+// +kcc:proto=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService
+type ClientConnectorService struct {
+	// Required. Name of resource. The name is ignored during creation.
+	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.name
+	// +required
+	Name *string `json:"name,omitempty"`
+
+	// Optional. User-provided name.
+	//  The display name should follow certain format.
+	//  * Must be 6 to 30 characters in length.
+	//  * Can only contain lowercase letters, numbers, and hyphens.
+	//  * Must start with a letter.
+	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Required. The details of the ingress settings.
+	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.ingress
+	// +required
+	Ingress *ClientConnectorService_Ingress `json:"ingress,omitempty"`
+
+	// Required. The details of the egress settings.
+	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.egress
+	// +required
+	Egress *ClientConnectorService_Egress `json:"egress,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.Egress
 type ClientConnectorService_Egress struct {
 	// A VPC from the consumer project.
@@ -71,3 +99,20 @@ type ClientConnectorService_Ingress_Config_DestinationRoute struct {
 	// +required
 	Netmask *string `json:"netmask,omitempty"`
 }
+
+/* unreachable type ClientConnectorServiceObservedState
+// +kcc:observedstate:proto=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService
+type ClientConnectorServiceObservedState struct {
+	// Output only. [Output only] Create time stamp.
+	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. [Output only] Update time stamp.
+	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The operational state of the ClientConnectorService.
+	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.state
+	State *string `json:"state,omitempty"`
+}
+*/

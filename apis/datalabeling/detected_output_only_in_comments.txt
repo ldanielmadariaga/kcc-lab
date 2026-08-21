@@ -6,6 +6,9 @@
 # out of the Spec struct and into the ObservedState struct in
 # <kind>_types.go by hand.
 
+kind=DataLabelingInstruction group=datalabeling.cnrm.cloud.google.com: field ".spec.createTime" comment="Output only. Creation time of instruction."
+kind=DataLabelingInstruction group=datalabeling.cnrm.cloud.google.com: field ".spec.updateTime" comment="Output only. Last update time of instruction."
+kind=DataLabelingInstruction group=datalabeling.cnrm.cloud.google.com: field ".spec.blockingResources" comment="Output only. The names of any related resources that are blocking changes to the instruction."
 kind=DataLabelingAnnotationSpecSet group=datalabeling.cnrm.cloud.google.com: field ".spec.blockingResources" comment="Output only. The names of any related resources that are blocking changes to the annotation spec set."
 kind=DataLabelingDataset group=datalabeling.cnrm.cloud.google.com: field ".spec.createTime" comment="Output only. Time the dataset is created."
 kind=DataLabelingDataset group=datalabeling.cnrm.cloud.google.com: field ".spec.inputConfigs" comment="Output only. This is populated with the original input configs where ImportData is called. It is available only after the clients import data to this dataset."

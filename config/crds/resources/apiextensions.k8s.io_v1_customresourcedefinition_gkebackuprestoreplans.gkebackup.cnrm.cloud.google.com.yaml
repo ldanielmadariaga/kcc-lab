@@ -62,68 +62,20 @@ spec:
           spec:
             description: GKEBackupRestorePlanSpec defines the desired state of GKEBackupRestorePlan
             properties:
-              backupPlanRef:
-                description: Required. Immutable. A reference to the [BackupPlan][google.cloud.gkebackup.v1.BackupPlan]
+              backupPlan:
+                description: 'Required. Immutable. A reference to the [BackupPlan][google.cloud.gkebackup.v1.BackupPlan]
                   from which Backups may be used as the source for Restores created
-                  via this RestorePlan.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed GKEBackupBackupPlan
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/backupPlans/{{backupplanID}}".
-                    type: string
-                  name:
-                    description: The name of a GKEBackupBackupPlan resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a GKEBackupBackupPlan resource.
-                    type: string
-                type: object
-              clusterRef:
-                description: 'Required. Immutable. The target cluster into which Restores
-                  created via this RestorePlan will restore data. NOTE: the cluster''s
-                  region must be the same as the RestorePlan.'
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: 'The GKE cluster. Valid formats: `projects/{projectID}/locations/{location}/clusters/{clusterID}`
-                      `projects/{projectID}/zones/{zone}/clusters/{clusterID}`'
-                    type: string
-                  name:
-                    description: 'Name of the project resource. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                      */'
-                    type: string
-                  namespace:
-                    description: 'Namespace of the project resource. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-                      */'
-                    type: string
-                type: object
+                  via this RestorePlan. Format: `projects/*/locations/*/backupPlans/*`.'
+                type: string
+              cluster:
+                description: |-
+                  Required. Immutable. The target cluster into which Restores created via
+                   this RestorePlan will restore data. NOTE: the cluster's region must be the
+                   same as the RestorePlan. Valid formats:
+
+                     - `projects/*/locations/*/clusters/*`
+                     - `projects/*/zones/*/clusters/*`
+                type: string
               description:
                 description: Optional. User specified descriptive string for this
                   RestorePlan.
@@ -134,13 +86,10 @@ spec:
                 description: Optional. A set of custom labels supplied by user.
                 type: object
               location:
-                description: Immutable.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -395,7 +344,7 @@ spec:
                                 type: string
                             type: object
                           type: array
-                        targetJSONPath:
+                        targetJsonPath:
                           description: Required. This is a [JSONPath] (https://kubernetes.io/docs/reference/kubectl/jsonpath/)
                             expression that matches specific fields of candidate resources
                             and it operates as both a filtering parameter (resources
@@ -418,7 +367,7 @@ spec:
                             type: string
                           type: array
                       required:
-                      - targetJSONPath
+                      - targetJsonPath
                       type: object
                     type: array
                   transformationRules:
@@ -543,8 +492,8 @@ spec:
                     type: array
                 type: object
             required:
-            - backupPlanRef
-            - clusterRef
+            - backupPlan
+            - cluster
             - location
             - projectRef
             - restoreConfig
@@ -610,6 +559,12 @@ spec:
                       or `DeleteRestorePlan` to ensure that their change will be applied
                       to the same version of the resource.'
                     type: string
+                  restoreChannel:
+                    description: 'Output only. The fully qualified name of the RestoreChannel
+                      to be used to create a RestorePlan. This field is set only if
+                      the `backup_plan` is in a different project than the RestorePlan.
+                      Format: `projects/*/locations/*/restoreChannels/*`'
+                    type: string
                   state:
                     description: Output only. State of the RestorePlan. This State
                       field reflects the various stages a RestorePlan can be in during
@@ -617,7 +572,9 @@ spec:
                     type: string
                   stateReason:
                     description: Output only. Human-readable description of why RestorePlan
-                      is in the current `state`
+                      is in the current `state`. This field is only meant for human
+                      readability and should not be used programmatically as this
+                      field is not guaranteed to be consistent.
                     type: string
                   uid:
                     description: Output only. Server generated global unique identifier

@@ -6,3 +6,4 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=BillingAccount group=billing.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=BillingAccount group=billing.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-unknown-parent (the proto declares no google.api.resource, so the parent shape is unknown; add location if the resource is regional)

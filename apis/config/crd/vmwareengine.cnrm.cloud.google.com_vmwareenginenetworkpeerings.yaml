@@ -93,91 +93,29 @@ spec:
                   are always imported to peers and are not controlled by this field.
                 type: boolean
               location:
-                description: Immutable.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
-              peerMTU:
+              peerMtu:
                 description: Optional. Maximum transmission unit (MTU) in bytes. The
                   default value is `1500`. If a value of `0` is provided for this
                   field, VMware Engine uses the default value instead.
                 format: int32
                 type: integer
               peerNetwork:
-                description: Required. The name of the network to peer with a standard
-                  VMware Engine network. The provided network can be a consumer VPC
-                  network or another standard VMware Engine network.
-                properties:
-                  computeNetworkRef:
-                    description: Reference to a ComputeNetwork. Exactly one of VMwareEngineNetworkRef
-                      or ComputeNetworkRef must be specified.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: A reference to an externally managed ComputeNetwork
-                          resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
-                        type: string
-                      name:
-                        description: The name of a ComputeNetwork resource.
-                        type: string
-                      namespace:
-                        description: The namespace of a ComputeNetwork resource.
-                        type: string
-                    type: object
-                  vmwareEngineNetworkRef:
-                    description: Reference to a VmwareEngineNetwork. Exactly one of
-                      VMwareEngineNetworkRef or ComputeNetworkRef must be specified.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: A reference to an externally managed VMwareEngineNetwork
-                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/vmwareEngineNetworks/{{vmwareenginenetworkID}}".
-                        type: string
-                      name:
-                        description: The name of a VMwareEngineNetwork resource.
-                        type: string
-                      namespace:
-                        description: The namespace of a VMwareEngineNetwork resource.
-                        type: string
-                    type: object
-                type: object
-                x-kubernetes-validations:
-                - message: Exactly one of vmwareEngineNetworkRef or computeNetworkRef
-                    must be specified
-                  rule: self != null && has(self.vmwareEngineNetworkRef) != has(self.computeNetworkRef)
+                description: 'Required. The relative resource name of the network
+                  to peer with a standard VMware Engine network. The provided network
+                  can be a consumer VPC network or another standard VMware Engine
+                  network. If the `peer_network_type` is VMWARE_ENGINE_NETWORK, specify
+                  the name in the form: `projects/{project}/locations/global/vmwareEngineNetworks/{vmware_engine_network_id}`.
+                  Otherwise specify the name in the form: `projects/{project}/global/networks/{network_id}`,
+                  where `{project}` can either be a project number or a project ID.'
+                type: string
               peerNetworkType:
                 description: Required. The type of the network to peer with the VMware
                   Engine network.
                 type: string
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -212,41 +150,17 @@ spec:
                 description: The VMwareEngineNetworkPeering name. If not given, the
                   metadata.name will be used.
                 type: string
-              vmwareEngineNetworkRef:
-                description: Required. The relative resource name of the VMware Engine
-                  network.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed VMwareEngineNetwork
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/vmwareEngineNetworks/{{vmwareenginenetworkID}}".
-                    type: string
-                  name:
-                    description: The name of a VMwareEngineNetwork resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a VMwareEngineNetwork resource.
-                    type: string
-                type: object
+              vmwareEngineNetwork:
+                description: 'Required. The relative resource name of the VMware Engine
+                  network. Specify the name in the following form: `projects/{project}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
+                  where `{project}` can either be a project number or a project ID.'
+                type: string
             required:
             - location
             - peerNetwork
             - peerNetworkType
             - projectRef
-            - vmwareEngineNetworkRef
+            - vmwareEngineNetwork
             type: object
           status:
             description: VMwareEngineNetworkPeeringStatus defines the config connector

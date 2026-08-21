@@ -71,10 +71,20 @@ spec:
                   A render call on a disabled resource fails with an error. Default
                   value is False.
                 type: boolean
-              parameterRef:
-                description: The resource name of the [Parameter][google.cloud.parametermanager.v1.Parameter]
-                  to create a [ParameterVersion][google.cloud.parametermanager.v1.ParameterVersion]
-                  for.
+              payload:
+                description: Required. Immutable. Payload content of a ParameterVersion
+                  resource.  This is only returned when the request provides the View
+                  value of FULL (default for GET request).
+                properties:
+                  data:
+                    description: Required. bytes data for storing payload.
+                    format: byte
+                    type: string
+                required:
+                - data
+                type: object
+              projectRef:
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -91,36 +101,27 @@ spec:
                   - external
                 properties:
                   external:
-                    description: A reference to an externally managed ParameterManagerParameter
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/parameters/{{parameterID}}".
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
                     type: string
                   name:
-                    description: The name of a ParameterManagerParameter resource.
+                    description: The `name` field of a `Project` resource.
                     type: string
                   namespace:
-                    description: The namespace of a ParameterManagerParameter resource.
+                    description: The `namespace` field of a `Project` resource.
                     type: string
-                type: object
-              payload:
-                description: Required. Immutable. Payload content of a ParameterVersion
-                  resource.  This is only returned when the request provides the View
-                  value of FULL (default for GET request).
-                properties:
-                  data:
-                    description: Required. bytes data for storing payload. Provide
-                      base64-encoded value
-                    format: byte
-                    type: string
-                required:
-                - data
                 type: object
               resourceID:
                 description: The ParameterManagerParameterVersion name. If not given,
                   the metadata.name will be used.
                 type: string
             required:
-            - parameterRef
             - payload
+            - projectRef
             type: object
           status:
             description: ParameterManagerParameterVersionStatus defines the config

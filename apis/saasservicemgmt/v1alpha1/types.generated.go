@@ -29,8 +29,7 @@ type Blueprint struct {
 	Package *string `json:"package,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.saasplatform.saasservicemgmt.v1beta1.Release", skipping
-
+/* unreachable type Release
 // +kcc:proto=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release
 type Release struct {
 	// Identifier. The resource name (full URI of the resource) following the
@@ -115,8 +114,7 @@ type BlueprintObservedState struct {
 	Version *string `json:"version,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.saasplatform.saasservicemgmt.v1beta1.Release", skipping
-
+/* unreachable type ReleaseObservedState
 // +kcc:observedstate:proto=google.cloud.saasplatform.saasservicemgmt.v1beta1.Release
 type ReleaseObservedState struct {
 	// Optional. Blueprints are OCI Images that contain all of the artifacts

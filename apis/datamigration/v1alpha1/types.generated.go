@@ -23,8 +23,7 @@
 
 package v1alpha1
 
-/* found existing non-generated go type with proto tag "google.cloud.clouddms.v1.ConversionWorkspace", skipping
-
+/* unreachable type ConversionWorkspace
 // +kcc:proto=google.cloud.clouddms.v1.ConversionWorkspace
 type ConversionWorkspace struct {
 	// Full name of the workspace resource, in the form of:
@@ -91,8 +90,7 @@ type DatabaseType struct {
 	Engine *string `json:"engine,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.clouddms.v1.MigrationJob", skipping
-
+/* unreachable type MigrationJob
 // +kcc:proto=google.cloud.clouddms.v1.MigrationJob
 type MigrationJob struct {
 	// The name (URI) of this migration job resource, in the form of:
@@ -221,8 +219,7 @@ type MigrationJob_PerformanceConfig struct {
 	DumpParallelLevel *string `json:"dumpParallelLevel,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.clouddms.v1.PrivateConnection", skipping
-
+/* unreachable type PrivateConnection
 // +kcc:proto=google.cloud.clouddms.v1.PrivateConnection
 type PrivateConnection struct {
 	// The name of the resource.
@@ -296,8 +293,7 @@ type VPCPeeringConnectivity struct {
 	VPC *string `json:"vpc,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.clouddms.v1.ConversionWorkspace", skipping
-
+/* unreachable type ConversionWorkspaceObservedState
 // +kcc:observedstate:proto=google.cloud.clouddms.v1.ConversionWorkspace
 type ConversionWorkspaceObservedState struct {
 	// Output only. Whether the workspace has uncommitted changes (changes which
@@ -323,8 +319,7 @@ type ConversionWorkspaceObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.clouddms.v1.MigrationJob", skipping
-
+/* unreachable type MigrationJobObservedState
 // +kcc:observedstate:proto=google.cloud.clouddms.v1.MigrationJob
 type MigrationJobObservedState struct {
 	// Output only. The timestamp when the migration job resource was created.
@@ -360,8 +355,7 @@ type MigrationJobObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.clouddms.v1.PrivateConnection", skipping
-
+/* unreachable type PrivateConnectionObservedState
 // +kcc:observedstate:proto=google.cloud.clouddms.v1.PrivateConnection
 type PrivateConnectionObservedState struct {
 	// Output only. The create time of the resource.

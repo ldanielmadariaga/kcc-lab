@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
 package v1alpha1
 
 import (
-	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
-	computev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -28,39 +26,53 @@ var NetworkConnectivityRegionalEndpointGVK = GroupVersion.WithKind("NetworkConne
 // +kcc:spec:proto=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint
 type NetworkConnectivityRegionalEndpointSpec struct {
 	// The project that this resource belongs to.
-	// +kubebuilder:validation:Required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The location of this resource.
-	// +kubebuilder:validation:Required
-	Location *string `json:"location"`
-
 	// The NetworkConnectivityRegionalEndpoint name. If not given, the metadata.name will be used.
-	// +kubebuilder:validation:Optional
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. The access type of this regional endpoint. This field is reflected in the PSC Forwarding Rule configuration to enable global access.
-	// +kubebuilder:validation:Required
-	AccessType *string `json:"accessType"`
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.access_type
+	AccessType *string `json:"accessType,omitempty"`
 
-	// Optional. The IP Address of the Regional Endpoint. When no address is provided, an IP from the subnetwork is allocated.
-	// +kubebuilder:validation:Optional
-	AddressRef *computev1beta1.ComputeAddressRef `json:"addressRef,omitempty"`
+	// Optional. The IP Address of the Regional Endpoint. When no address is provided, an IP from the subnetwork is allocated. Use one of the following formats: * IPv4 address as in `10.0.0.1` * Address resource URI as in `projects/{project}/regions/{region}/addresses/{address_name}` for an IPv4 or IPv6 address.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.address
+	Address *string `json:"address,omitempty"`
+
+	// Output only. Time when the RegionalEndpoint was created.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.create_time
+	CreateTime *string `json:"createTime,omitempty"`
 
 	// Optional. A description of this resource.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.description
 	Description *string `json:"description,omitempty"`
 
-	// Optional. The name of the VPC network for this private regional endpoint.
-	// +kubebuilder:validation:Optional
-	NetworkRef *computerefs.ComputeNetworkRef `json:"networkRef,omitempty"`
-	// Optional. The name of the subnetwork from which the IP address will be allocated.
-	// +kubebuilder:validation:Optional
-	SubnetworkRef *computev1beta1.ComputeSubnetworkRef `json:"subnetworkRef,omitempty"`
+	// Output only. The literal IP address of the PSC Forwarding Rule created on behalf of the customer. This field is deprecated. Use address instead.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.ip_address
+	IPAddress *string `json:"ipAddress,omitempty"`
+
+	// User-defined labels.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. The name of the VPC network for this private regional endpoint. Format: `projects/{project}/global/networks/{network}`
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.network
+	Network *string `json:"network,omitempty"`
+
+	// Output only. The resource reference of the PSC Forwarding Rule created on behalf of the customer. Format: `//compute.googleapis.com/projects/{project}/regions/{region}/forwardingRules/{forwarding_rule_name}`
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.psc_forwarding_rule
+	PSCForwardingRule *string `json:"pscForwardingRule,omitempty"`
+
+	// Optional. The name of the subnetwork from which the IP address will be allocated. Format: `projects/{project}/regions/{region}/subnetworks/{subnetwork}`
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.subnetwork
+	Subnetwork *string `json:"subnetwork,omitempty"`
 
 	// Required. The service endpoint this private regional endpoint connects to. Format: `{apiname}.{region}.p.rep.googleapis.com` Example: "cloudkms.us-central1.p.rep.googleapis.com".
-	// +kubebuilder:validation:Required
-	TargetGoogleAPI *string `json:"targetGoogleAPI"`
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.target_google_api
+	TargetGoogleAPI *string `json:"targetGoogleAPI,omitempty"`
+
+	// Output only. Time when the RegionalEndpoint was updated.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // NetworkConnectivityRegionalEndpointStatus defines the config connector machine state of NetworkConnectivityRegionalEndpoint
@@ -82,17 +94,6 @@ type NetworkConnectivityRegionalEndpointStatus struct {
 // NetworkConnectivityRegionalEndpointObservedState is the state of the NetworkConnectivityRegionalEndpoint resource as most recently observed in GCP.
 // +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint
 type NetworkConnectivityRegionalEndpointObservedState struct {
-	// Output only. Time when the RegionalEndpoint was created.
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. The literal IP address of the PSC Forwarding Rule created on behalf of the customer. This field is deprecated. Use address instead.
-	IPAddress *string `json:"ipAddress,omitempty"`
-
-	// Output only. The resource reference of the PSC Forwarding Rule created on behalf of the customer. Format: `//compute.googleapis.com/projects/{project}/regions/{region}/forwardingRules/{forwarding_rule_name}`
-	PSCForwardingRule *string `json:"pscForwardingRule,omitempty"`
-
-	// Output only. Time when the RegionalEndpoint was updated.
-	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient
@@ -101,7 +102,6 @@ type NetworkConnectivityRegionalEndpointObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

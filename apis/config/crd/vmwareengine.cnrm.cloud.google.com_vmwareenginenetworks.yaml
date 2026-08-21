@@ -63,14 +63,17 @@ spec:
               description:
                 description: User-provided description for this VMware Engine network.
                 type: string
-              location:
-                description: Immutable.
+              etag:
+                description: Checksum that may be sent on update and delete requests
+                  to ensure that the user-provided value is up to date before the
+                  server processes a request. The server computes checksums based
+                  on the value of other fields in the request.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:

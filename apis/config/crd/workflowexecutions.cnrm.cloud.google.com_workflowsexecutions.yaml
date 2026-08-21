@@ -81,9 +81,6 @@ spec:
                   are allowed. By default, labels are inherited from the workflow
                   but are overridden by any labels associated with the execution.
                 type: object
-              location:
-                description: The location of this resource.
-                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -121,7 +118,6 @@ spec:
                   will be used.
                 type: string
             required:
-            - location
             - projectRef
             type: object
           status:

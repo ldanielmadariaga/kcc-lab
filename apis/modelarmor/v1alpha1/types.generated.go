@@ -141,6 +141,28 @@ type SdpFilterSettings struct {
 	AdvancedConfig *SdpAdvancedConfig `json:"advancedConfig,omitempty"`
 }
 
+/* unreachable type Template
+// +kcc:proto=google.cloud.modelarmor.v1.Template
+type Template struct {
+	// Identifier. name of resource
+	// +kcc:proto:field=google.cloud.modelarmor.v1.Template.name
+	Name *string `json:"name,omitempty"`
+
+	// Optional. Labels as key value pairs
+	// +kcc:proto:field=google.cloud.modelarmor.v1.Template.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. filter configuration for this template
+	// +kcc:proto:field=google.cloud.modelarmor.v1.Template.filter_config
+	// +required
+	FilterConfig *FilterConfig `json:"filterConfig,omitempty"`
+
+	// Optional. metadata for this template
+	// +kcc:proto:field=google.cloud.modelarmor.v1.Template.template_metadata
+	TemplateMetadata *Template_TemplateMetadata `json:"templateMetadata,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.modelarmor.v1.Template.TemplateMetadata
 type Template_TemplateMetadata struct {
 	// Optional. If true, partial detector failures should be ignored.
@@ -192,3 +214,16 @@ type Template_TemplateMetadata_MultiLanguageDetection struct {
 	// +required
 	EnableMultiLanguageDetection *bool `json:"enableMultiLanguageDetection,omitempty"`
 }
+
+/* unreachable type TemplateObservedState
+// +kcc:observedstate:proto=google.cloud.modelarmor.v1.Template
+type TemplateObservedState struct {
+	// Output only. [Output only] Create time stamp
+	// +kcc:proto:field=google.cloud.modelarmor.v1.Template.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. [Output only] Update time stamp
+	// +kcc:proto:field=google.cloud.modelarmor.v1.Template.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/

@@ -7,10 +7,9 @@
 
 kind=DiscoveryEngineSampleQuerySet group=discoveryengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DiscoveryEngineSampleQuery group=discoveryengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DiscoveryEngineSampleQuery group=discoveryengine.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/sampleQuerySets/{sample_query_set}/sampleQueries/{sample_query}; location is implied by the parent, add it only if the API needs it stated)
 kind=DiscoveryEngineLicenseConfig group=discoveryengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DiscoveryEngineServingConfig group=discoveryengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DiscoveryEngineServingConfig group=discoveryengine.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/dataStores/{data_store}/servingConfigs/{serving_config}; location is implied by the parent, add it only if the API needs it stated)
 kind=DiscoveryEngineUserStore group=discoveryengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DiscoveryEngineUserStore group=discoveryengine.cnrm.cloud.google.com: field ".spec.defaultLicenseConfig" reason=possible-reference (target=discoveryengine.googleapis.com/LicenseConfig)
-kind=DiscoveryEngineDataStore group=discoveryengine.cnrm.cloud.google.com: field ".spec.workspaceConfig.superAdminServiceAccount" reason=possible-reference-by-description
-kind=DiscoveryEngineEngine group=discoveryengine.cnrm.cloud.google.com: field ".spec.chatEngineConfig.dialogflowAgentToLink" reason=possible-reference-by-description
-kind=DiscoveryEngineIdentityMappingStore group=discoveryengine.cnrm.cloud.google.com: field ".spec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)

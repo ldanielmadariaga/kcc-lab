@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,12 +22,6 @@ import (
 
 var DataprocSessionTemplateGVK = GroupVersion.WithKind("DataprocSessionTemplate")
 
-// +kcc:proto=google.cloud.dataproc.v1.SparkConnectConfig
-// +kubebuilder:pruning:PreserveUnknownFields
-// +kubebuilder:validation:Schemaless
-type SparkConnectConfig struct {
-}
-
 // DataprocSessionTemplateSpec defines the desired state of DataprocSessionTemplate
 // +kcc:spec:proto=google.cloud.dataproc.v1.SessionTemplate
 type DataprocSessionTemplateSpec struct {
@@ -35,9 +29,10 @@ type DataprocSessionTemplateSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +kubebuilder:validation:Required
 	Location *string `json:"location"`
 
+	// The DataprocSessionTemplate name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. Brief description of the template.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SessionTemplate.description
 	Description *string `json:"description,omitempty"`
@@ -67,9 +62,6 @@ type DataprocSessionTemplateSpec struct {
 	// Optional. Environment configuration for session execution.
 	// +kcc:proto:field=google.cloud.dataproc.v1.SessionTemplate.environment_config
 	EnvironmentConfig *EnvironmentConfig `json:"environmentConfig,omitempty"`
-
-	// The DataprocSessionTemplate name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
 }
 
 // DataprocSessionTemplateStatus defines the config connector machine state of DataprocSessionTemplate
@@ -115,7 +107,6 @@ type DataprocSessionTemplateObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

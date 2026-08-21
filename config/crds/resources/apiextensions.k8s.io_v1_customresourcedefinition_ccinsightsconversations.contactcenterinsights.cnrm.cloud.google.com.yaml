@@ -284,6 +284,17 @@ spec:
                             type: string
                         type: object
                     type: object
+                  dialogflowIntents:
+                    additionalProperties:
+                      properties:
+                        displayName:
+                          description: The human-readable name of the intent.
+                          type: string
+                      type: object
+                    description: 'Output only. All the matched Dialogflow intents
+                      in the call. The key corresponds to a Dialogflow intent, format:
+                      projects/{project}/agent/{agent}/intents/{intent}'
+                    type: object
                   duration:
                     description: Output only. The duration of the conversation.
                     type: string

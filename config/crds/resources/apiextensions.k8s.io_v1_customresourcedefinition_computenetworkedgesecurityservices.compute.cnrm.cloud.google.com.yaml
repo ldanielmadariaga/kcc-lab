@@ -88,9 +88,6 @@ spec:
                 description: '[Output only] Type of the resource. Always compute#networkEdgeSecurityService
                   for NetworkEdgeSecurityServices'
                 type: string
-              location:
-                description: The location of this resource.
-                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -144,7 +141,6 @@ spec:
                   the resource id.'
                 type: string
             required:
-            - location
             - projectRef
             type: object
           status:

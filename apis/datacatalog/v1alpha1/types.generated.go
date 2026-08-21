@@ -129,8 +129,6 @@ type CloudSQLBigQueryConnectionSpec struct {
 	Type *string `json:"type,omitempty"`
 }
 
-/* found existing non-generated go type "ColumnSchema", skipping
-
 // +kcc:proto=google.cloud.datacatalog.v1.ColumnSchema
 type ColumnSchema struct {
 	// Required. Name of the column.
@@ -198,7 +196,6 @@ type ColumnSchema struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.ColumnSchema.gc_rule
 	GcRule *string `json:"gcRule,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.datacatalog.v1.ColumnSchema.FieldElementType
 type ColumnSchema_FieldElementType struct {
@@ -242,8 +239,7 @@ type Contacts_Person struct {
 	Email *string `json:"email,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.DataSource", skipping
-
+/* unreachable type DataSource
 // +kcc:proto=google.cloud.datacatalog.v1.DataSource
 type DataSource struct {
 	// Service that physically stores the data.
@@ -370,8 +366,7 @@ type DatasetSpec struct {
 	VertexDatasetSpec *VertexDatasetSpec `json:"vertexDatasetSpec,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.Entry", skipping
-
+/* unreachable type Entry
 // +kcc:proto=google.cloud.datacatalog.v1.Entry
 type Entry struct {
 
@@ -543,8 +538,7 @@ type Entry struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.EntryGroup", skipping
-
+/* unreachable type EntryGroup
 // +kcc:proto=google.cloud.datacatalog.v1.EntryGroup
 type EntryGroup struct {
 	// Identifier. The resource name of the entry group in URL format.
@@ -941,8 +935,7 @@ type TableSpec struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.Tag", skipping
-
+/* unreachable type Tag
 // +kcc:proto=google.cloud.datacatalog.v1.Tag
 type Tag struct {
 	// Identifier. The resource name of the tag in URL format where tag ID is a
@@ -1024,8 +1017,7 @@ type TagField_EnumValue struct {
 	DisplayName *string `json:"displayName,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.TagTemplate", skipping
-
+/* unreachable type TagTemplate
 // +kcc:proto=google.cloud.datacatalog.v1.TagTemplate
 type TagTemplate struct {
 	// Identifier. The resource name of the tag template in URL format.
@@ -1255,8 +1247,6 @@ type BigQueryTableSpecObservedState struct {
 	TableSpec *TableSpecObservedState `json:"tableSpec,omitempty"`
 }
 
-/* found existing non-generated go type "DataSourceObservedState", skipping
-
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.DataSource
 type DataSourceObservedState struct {
 	// Service that physically stores the data.
@@ -1277,7 +1267,6 @@ type DataSourceObservedState struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.DataSource.storage_properties
 	StorageProperties *StorageProperties `json:"storageProperties,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.DatabaseTableSpec
 type DatabaseTableSpecObservedState struct {
@@ -1287,8 +1276,7 @@ type DatabaseTableSpecObservedState struct {
 	DataplexTable *DataplexTableSpec `json:"dataplexTable,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.Entry", skipping
-
+/* unreachable type EntryObservedState
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.Entry
 type EntryObservedState struct {
 	// Output only. Identifier. The resource name of an entry in URL format.
@@ -1354,8 +1342,7 @@ type EntryObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.EntryGroup", skipping
-
+/* unreachable type EntryGroupObservedState
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.EntryGroup
 type EntryGroupObservedState struct {
 	// Output only. Timestamps of the entry group. Default value is empty.
@@ -1431,8 +1418,7 @@ type TableSpecObservedState struct {
 	GroupedEntry *string `json:"groupedEntry,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.datacatalog.v1.Tag", skipping
-
+/* unreachable type TagObservedState
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.Tag
 type TagObservedState struct {
 	// Output only. The display name of the tag template.

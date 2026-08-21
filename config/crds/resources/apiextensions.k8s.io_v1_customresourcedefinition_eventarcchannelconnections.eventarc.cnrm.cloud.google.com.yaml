@@ -75,6 +75,9 @@ spec:
                   references. This must be in `projects/{project}/location/{location}/channels/{channel_id}`
                   format.
                 type: string
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -113,6 +116,7 @@ spec:
                 type: string
             required:
             - channel
+            - location
             - projectRef
             type: object
           status:

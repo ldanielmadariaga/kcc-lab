@@ -78,6 +78,9 @@ spec:
                   type: string
                 description: Optional. User-defined labels for the DataTaxonomy.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -115,6 +118,7 @@ spec:
                   will be used.
                 type: string
             required:
+            - location
             - projectRef
             type: object
           status:

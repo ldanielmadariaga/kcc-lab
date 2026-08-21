@@ -6,5 +6,8 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=CloudSecurityComplianceCloudControl group=cloudsecuritycompliance.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudSecurityComplianceCloudControl group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is organizations/{organization}/locations/{location}/cloudControls/{cloud_control}; location is implied by the parent, add it only if the API needs it stated)
 kind=CloudSecurityComplianceFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudSecurityComplianceFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is organizations/{organization}/locations/{location}/frameworks/{framework}; location is implied by the parent, add it only if the API needs it stated)
 kind=CloudSecurityFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudSecurityFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is organizations/{organization}/locations/{location}/frameworks/{framework}; location is implied by the parent, add it only if the API needs it stated)

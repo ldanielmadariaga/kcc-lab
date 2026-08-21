@@ -83,6 +83,9 @@ spec:
 
                    Both keys and values are additionally constrained to be <= 128 bytes.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -243,6 +246,7 @@ spec:
                 - variantNameTemplate
                 type: object
             required:
+            - location
             - projectRef
             - resourceBundleSelector
             - variantSelector

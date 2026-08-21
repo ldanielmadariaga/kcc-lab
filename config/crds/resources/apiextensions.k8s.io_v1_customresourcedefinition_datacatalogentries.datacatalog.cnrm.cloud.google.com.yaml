@@ -20,7 +20,7 @@ spec:
     plural: datacatalogentries
     shortNames:
     - gcpdatacatalogentry
-    - gcpdatacatalogentries
+    - gcpdatacatalogentrys
     singular: datacatalogentry
   preserveUnknownFields: false
   scope: Namespaced
@@ -195,34 +195,6 @@ spec:
                    The maximum size is 500 bytes when encoded in UTF-8.
                    Default value is an empty string.
                 type: string
-              entryGroupRef:
-                description: Reference to the entry group that contains the entry.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed DataCatalogEntryGroup
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/entrygroups/{{entrygroupID}}".
-                    type: string
-                  name:
-                    description: The name of a DataCatalogEntryGroup resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a DataCatalogEntryGroup resource.
-                    type: string
-                type: object
               featureOnlineStoreSpec:
                 description: FeatureonlineStore spec for Vertex AI Feature Store.
                 type: object
@@ -290,6 +262,12 @@ spec:
                         type: object
                     type: object
                 type: object
+              fullyQualifiedName:
+                description: '[Fully Qualified Name (FQN)](https://cloud.google.com//data-catalog/docs/fully-qualified-names)
+                  of the resource. Set automatically for entries representing resources
+                  from synced systems. Settable only during creation, and read-only
+                  later. Can be used for search and lookup of the entries.'
+                type: string
               gcsFilesetSpec:
                 description: Specification that applies to a Cloud Storage fileset.
                   Valid only for entries with the `FILESET` type.
@@ -341,6 +319,27 @@ spec:
                    entries. Synced entries have unmodifiable labels that come from the source
                    system.
                 type: object
+              linkedResource:
+                description: |-
+                  The resource this metadata entry refers to.
+
+                   For Google Cloud Platform resources, `linked_resource` is the
+                   [Full Resource Name]
+                   (https://cloud.google.com/apis/design/resource_names#full_resource_name).
+                   For example, the `linked_resource` for a table resource from BigQuery is:
+
+                   `//bigquery.googleapis.com/projects/{PROJECT_ID}/datasets/{DATASET_ID}/tables/{TABLE_ID}`
+
+                   Output only when the entry is one of the types in the `EntryType` enum.
+
+                   For entries with a `user_specified_type`, this field is optional and
+                   defaults to an empty string.
+
+                   The resource string must contain only letters (a-z, A-Z), numbers (0-9),
+                   underscores (_), periods (.), colons (:), slashes (/), dashes (-),
+                   and hashes (#).
+                   The maximum size is 200 bytes when encoded in UTF-8.
+                type: string
               lookerSystemSpec:
                 description: Specification that applies to Looker sysstem. Only settable
                   when `user_specified_system` is equal to `LOOKER`
@@ -401,6 +400,38 @@ spec:
                             type: string
                         type: object
                     type: object
+                type: object
+              projectRef:
+                description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
+                    type: string
+                  name:
+                    description: The `name` field of a `Project` resource.
+                    type: string
+                  namespace:
+                    description: The `namespace` field of a `Project` resource.
+                    type: string
                 type: object
               resourceID:
                 description: The DataCatalogEntry name. If not given, the metadata.name
@@ -529,7 +560,8 @@ spec:
                         subcolumns:
                           description: Optional. Schema of sub-columns. A column can
                             have zero or more sub-columns.
-                          x-kubernetes-preserve-unknown-fields: true
+                          items: {}
+                          type: array
                         type:
                           description: |-
                             Required. Type of the column.
@@ -673,7 +705,7 @@ spec:
                    * Must be at least 1 character and at most 64 characters long.
                 type: string
             required:
-            - entryGroupRef
+            - projectRef
             type: object
           status:
             description: DataCatalogEntryStatus defines the config connector machine
@@ -986,24 +1018,6 @@ spec:
                       that Data Catalog integrates with, such as BigQuery, Pub/Sub,
                       or Dataproc Metastore.
                     type: string
-                  linkedResource:
-                    description: |-
-                      The resource this metadata entry refers to.
-
-                       For Google Cloud Platform resources, `linked_resource` is the
-                       [Full Resource Name]
-                       (https://cloud.google.com/apis/design/resource_names#full_resource_name).
-
-                       Output only when the entry is one of the types in the `EntryType` enum.
-
-                       For entries with a `user_specified_type`, this field is optional and
-                       defaults to an empty string.
-
-                       The resource string must contain only letters (a-z, A-Z), numbers (0-9),
-                       underscores (_), periods (.), colons (:), slashes (/), dashes (-),
-                       and hashes (#).
-                       The maximum size is 200 bytes when encoded in UTF-8.
-                    type: string
                   personalDetails:
                     description: Output only. Additional information related to the
                       entry. Private to the current user.
@@ -1015,6 +1029,36 @@ spec:
                         description: True if the entry is starred by the user; false
                           otherwise.
                         type: boolean
+                    type: object
+                  sourceSystemTimestamps:
+                    description: |-
+                      Timestamps from the underlying resource, not from the Data Catalog
+                       entry.
+
+                       Output only when the entry has a system listed in the `IntegratedSystem`
+                       enum. For entries with `user_specified_system`, this field is optional
+                       and defaults to an empty timestamp.
+                    properties:
+                      createTime:
+                        description: Creation timestamp of the resource within the
+                          given system.
+                        type: string
+                      expireTime:
+                        description: |-
+                          Output only. Expiration timestamp of the resource within the given system.
+
+                           Currently only applicable to BigQuery resources.
+                        type: string
+                      updateTime:
+                        description: |-
+                          Timestamp of the last modification of the resource or its metadata within
+                           a given system.
+
+                           Note: Depending on the source system, not every modification updates this
+                           timestamp.
+                           For example, BigQuery timestamps every metadata modification but not data
+                           or permission changes.
+                        type: string
                     type: object
                   usageSignal:
                     description: Resource usage statistics.

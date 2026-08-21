@@ -6,7 +6,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: networkconnectivitymulticlouddatatransferconfigs.networkconnectivity.cnrm.cloud.google.com
 spec:
@@ -62,17 +61,33 @@ spec:
             description: NetworkConnectivityMulticloudDataTransferConfigSpec defines
               the desired state of NetworkConnectivityMulticloudDataTransferConfig
             properties:
+              createTime:
+                description: Output only. Time when the `MulticloudDataTransferConfig`
+                  resource was created.
+                type: string
               description:
                 description: Optional. A description of this resource.
+                type: string
+              destinationsActiveCount:
+                description: Output only. The number of `Destination` resources in
+                  use with the `MulticloudDataTransferConfig` resource.
+                format: int32
+                type: integer
+              destinationsCount:
+                description: Output only. The number of `Destination` resources configured
+                  for the `MulticloudDataTransferConfig` resource.
+                format: int32
+                type: integer
+              etag:
+                description: The etag is computed by the server, and might be sent
+                  with update and delete requests so that the client has an up-to-date
+                  value before proceeding.
                 type: string
               labels:
                 additionalProperties:
                   type: string
                 description: Optional. User-defined labels.
                 type: object
-              location:
-                description: The location of this resource.
-                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -109,8 +124,48 @@ spec:
                 description: The NetworkConnectivityMulticloudDataTransferConfig name.
                   If not given, the metadata.name will be used.
                 type: string
+              services:
+                additionalProperties:
+                  properties:
+                    states:
+                      description: Output only. The state and activation time details
+                        of the resource state.
+                      items:
+                        properties:
+                          effectiveTime:
+                            description: Output only. Accompanies only the transient
+                              states, which include `ADDING`, `DELETING`, and `SUSPENDING`,
+                              to denote the time until which the transient state of
+                              the resource will be effective. For instance, if the
+                              state is `ADDING`, this field shows the time when the
+                              resource state transitions to `ACTIVE`.
+                            type: string
+                          state:
+                            description: Output only. The state of the resource.
+                            type: string
+                        type: object
+                      type: array
+                  type: object
+                description: 'Optional. Maps services to their current or planned
+                  states. Service names are keys, and the associated values describe
+                  the state of the service. If a state change is expected, the value
+                  is either `ADDING` or `DELETING`, depending on the actions taken.
+                  Sample output: "services": { "big-query": { "states": [ { "effectiveTime":
+                  "2024-12-12T08:00:00Z" "state": "ADDING", }, ] }, "cloud-storage":
+                  { "states": [ { "state": "ACTIVE", } ] } }'
+                type: object
+              uid:
+                description: Output only. The Google-generated unique ID for the `MulticloudDataTransferConfig`
+                  resource. This value is unique across all `MulticloudDataTransferConfig`
+                  resources. If a resource is deleted and another with the same name
+                  is created, the new resource is assigned a different and unique
+                  ID.
+                type: string
+              updateTime:
+                description: Output only. Time when the `MulticloudDataTransferConfig`
+                  resource was updated.
+                type: string
             required:
-            - location
             - projectRef
             type: object
           status:
@@ -158,56 +213,6 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
-                properties:
-                  createTime:
-                    description: Output only. Time when the `MulticloudDataTransferConfig`
-                      resource was created.
-                    type: string
-                  destinationsActiveCount:
-                    description: Output only. The number of `Destination` resources
-                      in use with the `MulticloudDataTransferConfig` resource.
-                    format: int32
-                    type: integer
-                  destinationsCount:
-                    description: Output only. The number of `Destination` resources
-                      configured for the `MulticloudDataTransferConfig` resource.
-                    format: int32
-                    type: integer
-                  services:
-                    additionalProperties:
-                      properties:
-                        states:
-                          description: Output only. The state and activation time
-                            details of the resource state.
-                          items:
-                            properties:
-                              effectiveTime:
-                                description: Output only. Accompanies only the transient
-                                  states, which include `ADDING`, `DELETING`, and
-                                  `SUSPENDING`, to denote the time until which the
-                                  transient state of the resource will be effective.
-                                  For instance, if the state is `ADDING`, this field
-                                  shows the time when the resource state transitions
-                                  to `ACTIVE`.
-                                type: string
-                              state:
-                                description: Output only. The state of the resource.
-                                type: string
-                            type: object
-                          type: array
-                      type: object
-                    description: Output only. Maps services to their current or planned
-                      states. Service names are keys, and the associated values describe
-                      the state of the service.
-                    type: object
-                  uid:
-                    description: Output only. The Google-generated unique ID for the
-                      `MulticloudDataTransferConfig` resource.
-                    type: string
-                  updateTime:
-                    description: Output only. Time when the `MulticloudDataTransferConfig`
-                      resource was updated.
-                    type: string
                 type: object
             type: object
         required:

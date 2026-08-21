@@ -7,8 +7,3 @@
 
 kind=NetworkSecurityPartnerSSERealm group=networksecurity.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=NetworkSecurityPartnerSSEGateway group=networksecurity.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=NetworkSecurityBackendAuthenticationConfig group=networksecurity.cnrm.cloud.google.com: field ".spec.clientCertificate" reason=possible-reference-by-description
-kind=NetworkSecurityBackendAuthenticationConfig group=networksecurity.cnrm.cloud.google.com: field ".spec.trustConfig" reason=possible-reference-by-description
-kind=NetworkSecurityFirewallEndpointAssociation group=networksecurity.cnrm.cloud.google.com: field ".spec.network" reason=possible-reference-by-name (ComputeNetworkRef)
-kind=NetworkSecurityTLSInspectionPolicy group=networksecurity.cnrm.cloud.google.com: field ".spec.caPool" reason=possible-reference-by-description
-kind=NetworkSecurityTLSInspectionPolicy group=networksecurity.cnrm.cloud.google.com: field ".spec.trustConfig" reason=possible-reference-by-description

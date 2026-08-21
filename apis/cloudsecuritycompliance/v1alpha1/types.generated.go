@@ -54,8 +54,7 @@ type CelExpression struct {
 	Expression *string `json:"expression,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.cloudsecuritycompliance.v1.CloudControl", skipping
-
+/* unreachable type CloudControl
 // +kcc:proto=google.cloud.cloudsecuritycompliance.v1.CloudControl
 type CloudControl struct {
 	// Required. Identifier. The resource name of the cloud control.
@@ -112,8 +111,6 @@ type CloudControl struct {
 }
 */
 
-/* found existing non-generated go type "CloudControlDetails", skipping
-
 // +kcc:proto=google.cloud.cloudsecuritycompliance.v1.CloudControlDetails
 type CloudControlDetails struct {
 	// Required. The name of the CloudControl in the format:
@@ -134,9 +131,6 @@ type CloudControlDetails struct {
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlDetails.parameters
 	Parameters []Parameter `json:"parameters,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "CloudControlGroup", skipping
 
 // +kcc:proto=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup
 type CloudControlGroup struct {
@@ -173,10 +167,8 @@ type CloudControlGroup struct {
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup.control
 	Control *string `json:"control,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.cloudsecuritycompliance.v1.Framework", skipping
-
+/* unreachable type Framework
 // +kcc:proto=google.cloud.cloudsecuritycompliance.v1.Framework
 type Framework struct {
 	// Required. Identifier. The name of the framework.
@@ -232,8 +224,6 @@ type IntRange struct {
 	Max *int64 `json:"max,omitempty"`
 }
 
-/* found existing non-generated go type "ParamValue", skipping
-
 // +kcc:proto=google.cloud.cloudsecuritycompliance.v1.ParamValue
 type ParamValue struct {
 	// Represents a string value.
@@ -256,9 +246,6 @@ type ParamValue struct {
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.ParamValue.oneof_value
 	OneofValue *Parameter `json:"oneofValue,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Parameter", skipping
 
 // +kcc:proto=google.cloud.cloudsecuritycompliance.v1.Parameter
 type Parameter struct {
@@ -272,9 +259,6 @@ type Parameter struct {
 	// +required
 	ParameterValue *ParamValue `json:"parameterValue,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "ParameterSpec", skipping
 
 // +kcc:proto=google.cloud.cloudsecuritycompliance.v1.ParameterSpec
 type ParameterSpec struct {
@@ -319,7 +303,6 @@ type ParameterSpec struct {
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.ParameterSpec.validation
 	Validation *Validation `json:"validation,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.cloudsecuritycompliance.v1.ParameterSubstitutionRule
 type ParameterSubstitutionRule struct {
@@ -386,8 +369,7 @@ type Validation struct {
 	RegexpPattern *RegexpPattern `json:"regexpPattern,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.cloudsecuritycompliance.v1.CloudControl", skipping
-
+/* unreachable type CloudControlObservedState
 // +kcc:observedstate:proto=google.cloud.cloudsecuritycompliance.v1.CloudControl
 type CloudControlObservedState struct {
 	// Output only. Major revision of the cloud control incremented in ascending
@@ -412,8 +394,6 @@ type CloudControlObservedState struct {
 }
 */
 
-/* found existing non-generated go type "CloudControlGroupObservedState", skipping
-
 // +kcc:observedstate:proto=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup
 type CloudControlGroupObservedState struct {
 	// Optional. Output only. The type of the cloud control group. Default is
@@ -421,10 +401,8 @@ type CloudControlGroupObservedState struct {
 	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.CloudControlGroup.type
 	Type *string `json:"type,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.cloudsecuritycompliance.v1.Framework", skipping
-
+/* unreachable type FrameworkObservedState
 // +kcc:observedstate:proto=google.cloud.cloudsecuritycompliance.v1.Framework
 type FrameworkObservedState struct {
 	// Output only. Major revision of the framework incremented in ascending

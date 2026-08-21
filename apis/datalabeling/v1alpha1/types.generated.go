@@ -40,8 +40,6 @@ type AnnotationSpec struct {
 	Description *string `json:"description,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.datalabeling.v1beta1.AnnotationSpecSet", skipping
-
 // +kcc:proto=google.cloud.datalabeling.v1beta1.AnnotationSpecSet
 type AnnotationSpecSet struct {
 	// Output only. The AnnotationSpecSet resource name in the following format:
@@ -70,7 +68,6 @@ type AnnotationSpecSet struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.AnnotationSpecSet.blocking_resources
 	BlockingResources []string `json:"blockingResources,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.datalabeling.v1beta1.Attempt
 type Attempt struct {
@@ -140,8 +137,6 @@ type CsvInstruction struct {
 	GCSFileURI *string `json:"gcsFileURI,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.datalabeling.v1beta1.Dataset", skipping
-
 // +kcc:proto=google.cloud.datalabeling.v1beta1.Dataset
 type Dataset struct {
 	// Output only. Dataset resource name, format is:
@@ -177,7 +172,6 @@ type Dataset struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Dataset.data_item_count
 	DataItemCount *int64 `json:"dataItemCount,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.datalabeling.v1beta1.EvaluationConfig
 type EvaluationConfig struct {
@@ -187,8 +181,6 @@ type EvaluationConfig struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationConfig.bounding_box_evaluation_options
 	BoundingBoxEvaluationOptions *BoundingBoxEvaluationOptions `json:"boundingBoxEvaluationOptions,omitempty"`
 }
-
-/* found existing non-generated go type with proto tag "google.cloud.datalabeling.v1beta1.EvaluationJob", skipping
 
 // +kcc:proto=google.cloud.datalabeling.v1beta1.EvaluationJob
 type EvaluationJob struct {
@@ -263,7 +255,6 @@ type EvaluationJob struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.datalabeling.v1beta1.EvaluationJobAlertConfig
 type EvaluationJobAlertConfig struct {
@@ -503,8 +494,6 @@ type InputConfig struct {
 	ClassificationMetadata *ClassificationMetadata `json:"classificationMetadata,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.datalabeling.v1beta1.Instruction", skipping
-
 // +kcc:proto=google.cloud.datalabeling.v1beta1.Instruction
 type Instruction struct {
 	// Output only. Instruction resource name, format:
@@ -552,7 +541,6 @@ type Instruction struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Instruction.blocking_resources
 	BlockingResources []string `json:"blockingResources,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.datalabeling.v1beta1.PdfInstruction
 type PdfInstruction struct {

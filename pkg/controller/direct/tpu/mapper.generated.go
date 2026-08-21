@@ -31,6 +31,24 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
+func AcceleratorConfig_FromProto(mapCtx *direct.MapContext, in *pb.AcceleratorConfig) *krm.AcceleratorConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AcceleratorConfig{}
+	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
+	out.Topology = direct.LazyPtr(in.GetTopology())
+	return out
+}
+func AcceleratorConfig_ToProto(mapCtx *direct.MapContext, in *krm.AcceleratorConfig) *pb.AcceleratorConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AcceleratorConfig{}
+	out.Type = direct.Enum_ToProto[pb.AcceleratorConfig_Type](mapCtx, in.Type)
+	out.Topology = direct.ValueOf(in.Topology)
+	return out
+}
 func AccessConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.AccessConfig) *krm.AccessConfigObservedState {
 	if in == nil {
 		return nil
@@ -45,6 +63,24 @@ func AccessConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Access
 	}
 	out := &pb.AccessConfig{}
 	out.ExternalIp = direct.ValueOf(in.ExternalIP)
+	return out
+}
+func AttachedDisk_FromProto(mapCtx *direct.MapContext, in *pb.AttachedDisk) *krm.AttachedDisk {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AttachedDisk{}
+	out.SourceDisk = direct.LazyPtr(in.GetSourceDisk())
+	out.Mode = direct.Enum_FromProto(mapCtx, in.GetMode())
+	return out
+}
+func AttachedDisk_ToProto(mapCtx *direct.MapContext, in *krm.AttachedDisk) *pb.AttachedDisk {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AttachedDisk{}
+	out.SourceDisk = direct.ValueOf(in.SourceDisk)
+	out.Mode = direct.Enum_ToProto[pb.AttachedDisk_DiskMode](mapCtx, in.Mode)
 	return out
 }
 func NetworkConfig_FromProto(mapCtx *direct.MapContext, in *pb.NetworkConfig) *krm.NetworkConfig {
@@ -119,36 +155,79 @@ func NetworkEndpointObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Net
 	out.AccessConfig = AccessConfigObservedState_ToProto(mapCtx, in.AccessConfig)
 	return out
 }
+func SchedulingConfig_FromProto(mapCtx *direct.MapContext, in *pb.SchedulingConfig) *krm.SchedulingConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.SchedulingConfig{}
+	out.Preemptible = direct.LazyPtr(in.GetPreemptible())
+	out.Reserved = direct.LazyPtr(in.GetReserved())
+	out.Spot = direct.LazyPtr(in.GetSpot())
+	return out
+}
+func SchedulingConfig_ToProto(mapCtx *direct.MapContext, in *krm.SchedulingConfig) *pb.SchedulingConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.SchedulingConfig{}
+	out.Preemptible = direct.ValueOf(in.Preemptible)
+	out.Reserved = direct.ValueOf(in.Reserved)
+	out.Spot = direct.ValueOf(in.Spot)
+	return out
+}
+func ShieldedInstanceConfig_FromProto(mapCtx *direct.MapContext, in *pb.ShieldedInstanceConfig) *krm.ShieldedInstanceConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ShieldedInstanceConfig{}
+	out.EnableSecureBoot = direct.LazyPtr(in.GetEnableSecureBoot())
+	return out
+}
+func ShieldedInstanceConfig_ToProto(mapCtx *direct.MapContext, in *krm.ShieldedInstanceConfig) *pb.ShieldedInstanceConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ShieldedInstanceConfig{}
+	out.EnableSecureBoot = direct.ValueOf(in.EnableSecureBoot)
+	return out
+}
+func Symptom_FromProto(mapCtx *direct.MapContext, in *pb.Symptom) *krm.Symptom {
+	if in == nil {
+		return nil
+	}
+	out := &krm.Symptom{}
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.SymptomType = direct.Enum_FromProto(mapCtx, in.GetSymptomType())
+	out.Details = direct.LazyPtr(in.GetDetails())
+	out.WorkerID = direct.LazyPtr(in.GetWorkerId())
+	return out
+}
+func Symptom_ToProto(mapCtx *direct.MapContext, in *krm.Symptom) *pb.Symptom {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Symptom{}
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.SymptomType = direct.Enum_ToProto[pb.Symptom_SymptomType](mapCtx, in.SymptomType)
+	out.Details = direct.ValueOf(in.Details)
+	out.WorkerId = direct.ValueOf(in.WorkerID)
+	return out
+}
 func TPUVirtualMachineObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Node) *krm.TPUVirtualMachineObservedState {
 	if in == nil {
 		return nil
 	}
 	out := &krm.TPUVirtualMachineObservedState{}
 	// MISSING: Name
-	// MISSING: Description
-	// MISSING: AcceleratorType
-	// MISSING: State
-	// MISSING: HealthDescription
-	// MISSING: RuntimeVersion
-	// MISSING: NetworkConfig
-	// MISSING: NetworkConfigs
-	// MISSING: CIDRBlock
-	// MISSING: ServiceAccount
-	// MISSING: CreateTime
-	// MISSING: SchedulingConfig
-	// MISSING: NetworkEndpoints
-	// MISSING: Health
-	// MISSING: Labels
-	// MISSING: Metadata
-	// MISSING: Tags
-	// MISSING: ID
-	// MISSING: DataDisks
-	// MISSING: APIVersion
-	// MISSING: Symptoms
-	// MISSING: ShieldedInstanceConfig
-	// MISSING: AcceleratorConfig
-	// MISSING: QueuedResource
-	// MISSING: MultisliceNode
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.HealthDescription = direct.LazyPtr(in.GetHealthDescription())
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.NetworkEndpoints = direct.Slice_FromProto(mapCtx, in.NetworkEndpoints, NetworkEndpointObservedState_FromProto)
+	out.ID = direct.LazyPtr(in.GetId())
+	out.APIVersion = direct.Enum_FromProto(mapCtx, in.GetApiVersion())
+	out.Symptoms = direct.Slice_FromProto(mapCtx, in.Symptoms, Symptom_FromProto)
+	out.QueuedResource = direct.LazyPtr(in.GetQueuedResource())
+	out.MultisliceNode = direct.LazyPtr(in.GetMultisliceNode())
 	return out
 }
 func TPUVirtualMachineObservedState_ToProto(mapCtx *direct.MapContext, in *krm.TPUVirtualMachineObservedState) *pb.Node {
@@ -157,30 +236,15 @@ func TPUVirtualMachineObservedState_ToProto(mapCtx *direct.MapContext, in *krm.T
 	}
 	out := &pb.Node{}
 	// MISSING: Name
-	// MISSING: Description
-	// MISSING: AcceleratorType
-	// MISSING: State
-	// MISSING: HealthDescription
-	// MISSING: RuntimeVersion
-	// MISSING: NetworkConfig
-	// MISSING: NetworkConfigs
-	// MISSING: CIDRBlock
-	// MISSING: ServiceAccount
-	// MISSING: CreateTime
-	// MISSING: SchedulingConfig
-	// MISSING: NetworkEndpoints
-	// MISSING: Health
-	// MISSING: Labels
-	// MISSING: Metadata
-	// MISSING: Tags
-	// MISSING: ID
-	// MISSING: DataDisks
-	// MISSING: APIVersion
-	// MISSING: Symptoms
-	// MISSING: ShieldedInstanceConfig
-	// MISSING: AcceleratorConfig
-	// MISSING: QueuedResource
-	// MISSING: MultisliceNode
+	out.State = direct.Enum_ToProto[pb.Node_State](mapCtx, in.State)
+	out.HealthDescription = direct.ValueOf(in.HealthDescription)
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.NetworkEndpoints = direct.Slice_ToProto(mapCtx, in.NetworkEndpoints, NetworkEndpointObservedState_ToProto)
+	out.Id = direct.ValueOf(in.ID)
+	out.ApiVersion = direct.Enum_ToProto[pb.Node_ApiVersion](mapCtx, in.APIVersion)
+	out.Symptoms = direct.Slice_ToProto(mapCtx, in.Symptoms, Symptom_ToProto)
+	out.QueuedResource = direct.ValueOf(in.QueuedResource)
+	out.MultisliceNode = direct.ValueOf(in.MultisliceNode)
 	return out
 }
 func TPUVirtualMachineSpec_FromProto(mapCtx *direct.MapContext, in *pb.Node) *krm.TPUVirtualMachineSpec {
@@ -189,30 +253,21 @@ func TPUVirtualMachineSpec_FromProto(mapCtx *direct.MapContext, in *pb.Node) *kr
 	}
 	out := &krm.TPUVirtualMachineSpec{}
 	// MISSING: Name
-	// MISSING: Description
-	// MISSING: AcceleratorType
-	// MISSING: State
-	// MISSING: HealthDescription
-	// MISSING: RuntimeVersion
-	// MISSING: NetworkConfig
-	// MISSING: NetworkConfigs
-	// MISSING: CIDRBlock
-	// MISSING: ServiceAccount
-	// MISSING: CreateTime
-	// MISSING: SchedulingConfig
-	// MISSING: NetworkEndpoints
-	// MISSING: Health
-	// MISSING: Labels
-	// MISSING: Metadata
-	// MISSING: Tags
-	// MISSING: ID
-	// MISSING: DataDisks
-	// MISSING: APIVersion
-	// MISSING: Symptoms
-	// MISSING: ShieldedInstanceConfig
-	// MISSING: AcceleratorConfig
-	// MISSING: QueuedResource
-	// MISSING: MultisliceNode
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.AcceleratorType = direct.LazyPtr(in.GetAcceleratorType())
+	out.RuntimeVersion = direct.LazyPtr(in.GetRuntimeVersion())
+	out.NetworkConfig = NetworkConfig_FromProto(mapCtx, in.GetNetworkConfig())
+	out.NetworkConfigs = direct.Slice_FromProto(mapCtx, in.NetworkConfigs, NetworkConfig_FromProto)
+	out.CIDRBlock = direct.LazyPtr(in.GetCidrBlock())
+	out.ServiceAccount = ServiceAccount_FromProto(mapCtx, in.GetServiceAccount())
+	out.SchedulingConfig = SchedulingConfig_FromProto(mapCtx, in.GetSchedulingConfig())
+	out.Health = direct.Enum_FromProto(mapCtx, in.GetHealth())
+	out.Labels = in.Labels
+	out.Metadata = in.Metadata
+	out.Tags = in.Tags
+	out.DataDisks = direct.Slice_FromProto(mapCtx, in.DataDisks, AttachedDisk_FromProto)
+	out.ShieldedInstanceConfig = ShieldedInstanceConfig_FromProto(mapCtx, in.GetShieldedInstanceConfig())
+	out.AcceleratorConfig = AcceleratorConfig_FromProto(mapCtx, in.GetAcceleratorConfig())
 	return out
 }
 func TPUVirtualMachineSpec_ToProto(mapCtx *direct.MapContext, in *krm.TPUVirtualMachineSpec) *pb.Node {
@@ -221,29 +276,20 @@ func TPUVirtualMachineSpec_ToProto(mapCtx *direct.MapContext, in *krm.TPUVirtual
 	}
 	out := &pb.Node{}
 	// MISSING: Name
-	// MISSING: Description
-	// MISSING: AcceleratorType
-	// MISSING: State
-	// MISSING: HealthDescription
-	// MISSING: RuntimeVersion
-	// MISSING: NetworkConfig
-	// MISSING: NetworkConfigs
-	// MISSING: CIDRBlock
-	// MISSING: ServiceAccount
-	// MISSING: CreateTime
-	// MISSING: SchedulingConfig
-	// MISSING: NetworkEndpoints
-	// MISSING: Health
-	// MISSING: Labels
-	// MISSING: Metadata
-	// MISSING: Tags
-	// MISSING: ID
-	// MISSING: DataDisks
-	// MISSING: APIVersion
-	// MISSING: Symptoms
-	// MISSING: ShieldedInstanceConfig
-	// MISSING: AcceleratorConfig
-	// MISSING: QueuedResource
-	// MISSING: MultisliceNode
+	out.Description = direct.ValueOf(in.Description)
+	out.AcceleratorType = direct.ValueOf(in.AcceleratorType)
+	out.RuntimeVersion = direct.ValueOf(in.RuntimeVersion)
+	out.NetworkConfig = NetworkConfig_ToProto(mapCtx, in.NetworkConfig)
+	out.NetworkConfigs = direct.Slice_ToProto(mapCtx, in.NetworkConfigs, NetworkConfig_ToProto)
+	out.CidrBlock = direct.ValueOf(in.CIDRBlock)
+	out.ServiceAccount = ServiceAccount_ToProto(mapCtx, in.ServiceAccount)
+	out.SchedulingConfig = SchedulingConfig_ToProto(mapCtx, in.SchedulingConfig)
+	out.Health = direct.Enum_ToProto[pb.Node_Health](mapCtx, in.Health)
+	out.Labels = in.Labels
+	out.Metadata = in.Metadata
+	out.Tags = in.Tags
+	out.DataDisks = direct.Slice_ToProto(mapCtx, in.DataDisks, AttachedDisk_ToProto)
+	out.ShieldedInstanceConfig = ShieldedInstanceConfig_ToProto(mapCtx, in.ShieldedInstanceConfig)
+	out.AcceleratorConfig = AcceleratorConfig_ToProto(mapCtx, in.AcceleratorConfig)
 	return out
 }

@@ -62,10 +62,10 @@ spec:
               AppHubDiscoveredService
             properties:
               location:
-                description: Required. The location of the resource.
+                description: The location of this resource.
                 type: string
               projectRef:
-                description: Required. The host project of the resource.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -100,6 +100,9 @@ spec:
                 description: The AppHubDiscoveredService name. If not given, the metadata.name
                   will be used.
                 type: string
+            required:
+            - location
+            - projectRef
             type: object
           status:
             description: AppHubDiscoveredServiceStatus defines the config connector
@@ -169,8 +172,8 @@ spec:
                       resource that can comprise a Service. These are immutable.
                     properties:
                       uri:
-                        description: Output only. The underlying resource URI (For
-                          example, URI of Forwarding Rule, URL Map, and Backend Service).
+                        description: Output only. The underlying resource URI. For
+                          example, URI of Forwarding Rule, URL Map, and Backend Service.
                         type: string
                     type: object
                 type: object

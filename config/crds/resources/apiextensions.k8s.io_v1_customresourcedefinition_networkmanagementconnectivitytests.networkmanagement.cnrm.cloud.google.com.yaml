@@ -179,9 +179,6 @@ spec:
                   type: string
                 description: Resource labels to represent user-provided metadata.
                 type: object
-              location:
-                description: The location of this resource.
-                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -338,7 +335,6 @@ spec:
                 type: object
             required:
             - destination
-            - location
             - projectRef
             - source
             type: object

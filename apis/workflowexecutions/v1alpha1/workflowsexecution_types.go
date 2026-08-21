@@ -28,9 +28,6 @@ type WorkflowsExecutionSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The location of this resource.
-	Location string `json:"location"`
-
 	// The WorkflowsExecution name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Input parameters of the execution represented as a JSON string.

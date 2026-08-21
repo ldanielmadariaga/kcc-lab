@@ -102,45 +102,16 @@ spec:
                 description: The AppHubServiceProjectAttachment name. If not given,
                   the metadata.name will be used.
                 type: string
-              serviceProjectRef:
+              serviceProject:
                 description: 'Required. Immutable. Service project name in the format:
                   `"projects/abc"` or `"projects/123"`. As input, project name with
                   either project id or number are accepted. As output, this field
                   will contain project number.'
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: The `projectID` field of a project, when not managed
-                      by Config Connector.
-                    type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
-                  name:
-                    description: The `name` field of a `Project` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `Project` resource.
-                    type: string
-                type: object
+                type: string
             required:
             - location
             - projectRef
-            - serviceProjectRef
+            - serviceProject
             type: object
           status:
             description: AppHubServiceProjectAttachmentStatus defines the config connector

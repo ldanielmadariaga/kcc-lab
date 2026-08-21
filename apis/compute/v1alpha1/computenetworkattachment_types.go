@@ -28,9 +28,6 @@ type ComputeNetworkAttachmentSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The location of this resource.
-	Location string `json:"location"`
-
 	// The ComputeNetworkAttachment name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// [Output Only] An array of connections for all the producers connected to this network attachment.

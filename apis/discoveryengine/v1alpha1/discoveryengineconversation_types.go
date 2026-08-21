@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,29 +25,21 @@ var DiscoveryEngineConversationGVK = GroupVersion.WithKind("DiscoveryEngineConve
 // DiscoveryEngineConversationSpec defines the desired state of DiscoveryEngineConversation
 // +kcc:spec:proto=google.cloud.discoveryengine.v1.Conversation
 type DiscoveryEngineConversationSpec struct {
-	// The DataStore this conversation belongs to.
-	// +required
-	DataStoreRef *DiscoveryEngineDataStoreRef `json:"dataStoreRef"`
-
-	// Immutable. The location of this resource.
-	// +required
-	Location string `json:"location"`
-
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The DiscoveryEngineConversation name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// The state of the Conversation.
-	// +kubebuilder:validation:Enum=STATE_UNSPECIFIED;IN_PROGRESS;COMPLETED
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Conversation.state
 	State *string `json:"state,omitempty"`
 
 	// A unique identifier for tracking users.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Conversation.user_pseudo_id
 	UserPseudoID *string `json:"userPseudoID,omitempty"`
 
 	// Conversation messages.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Conversation.messages
 	Messages []ConversationMessage `json:"messages,omitempty"`
 }
 
@@ -70,10 +62,16 @@ type DiscoveryEngineConversationStatus struct {
 // DiscoveryEngineConversationObservedState is the state of the DiscoveryEngineConversation resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1.Conversation
 type DiscoveryEngineConversationObservedState struct {
+	// Conversation messages.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Conversation.messages
+	Messages []ConversationMessageObservedState `json:"messages,omitempty"`
+
 	// Output only. The time the conversation started.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Conversation.start_time
 	StartTime *string `json:"startTime,omitempty"`
 
 	// Output only. The time the conversation finished.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Conversation.end_time
 	EndTime *string `json:"endTime,omitempty"`
 }
 
@@ -83,7 +81,6 @@ type DiscoveryEngineConversationObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

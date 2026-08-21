@@ -8,6 +8,3 @@
 kind=CESApp group=ces.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.rootAgent" reason=possible-reference (target=ces.googleapis.com/Agent)
 kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.guardrails" reason=possible-reference (target=ces.googleapis.com/Guardrail)
-kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.audioRecordingConfig.gcsBucket" reason=possible-reference-by-description
-kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.evaluationAudioRecordingConfig.gcsBucket" reason=possible-reference-by-description
-kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.unredactedAudioRecordingConfig.gcsBucket" reason=possible-reference-by-description

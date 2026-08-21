@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,32 +26,33 @@ var SecurityCenterManagementEventThreatDetectionCustomModuleGVK = GroupVersion.W
 // SecurityCenterManagementEventThreatDetectionCustomModuleSpec defines the desired state of SecurityCenterManagementEventThreatDetectionCustomModule
 // +kcc:spec:proto=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule
 type SecurityCenterManagementEventThreatDetectionCustomModuleSpec struct {
-	// The organization that this resource belongs to.
-	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef"`
-
-	// The location of this resource.
-	Location *string `json:"location"`
-
-	// Optional. Configuration for the module. For the resident module, its
-	//  configuration value is defined at this level. For the inherited module, its
-	//  configuration value is inherited from the ancestor module.
-	Config *apiextensionsv1.JSON `json:"config,omitempty"`
-
-	// Optional. The state of enablement for the module at the given level of the
-	//  hierarchy.
-	EnablementState *string `json:"enablementState,omitempty"`
-
-	// Optional. Type for the module. For example, `CONFIGURABLE_BAD_IP`.
-	Type *string `json:"type,omitempty"`
-
-	// Optional. The human-readable name of the module.
-	DisplayName *string `json:"displayName,omitempty"`
-
-	// Optional. A description of the module.
-	Description *string `json:"description,omitempty"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The SecurityCenterManagementEventThreatDetectionCustomModule name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. Configuration for the module. For the resident module, its
+	//  configuration value is defined at this level. For the inherited module, its
+	//  configuration value is inherited from the ancestor module.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.config
+	Config apiextensionsv1.JSON `json:"config,omitempty"`
+
+	// Optional. The state of enablement for the module at the given level of the
+	//  hierarchy.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.enablement_state
+	EnablementState *string `json:"enablementState,omitempty"`
+
+	// Optional. Type for the module. For example, `CONFIGURABLE_BAD_IP`.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.type
+	Type *string `json:"type,omitempty"`
+
+	// Optional. The human-readable name of the module.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. A description of the module.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.description
+	Description *string `json:"description,omitempty"`
 }
 
 // SecurityCenterManagementEventThreatDetectionCustomModuleStatus defines the config connector machine state of SecurityCenterManagementEventThreatDetectionCustomModule
@@ -77,12 +78,15 @@ type SecurityCenterManagementEventThreatDetectionCustomModuleObservedState struc
 	//  enablement state from. If empty, indicates that the custom module was
 	//  created in the requesting parent organization, folder, or project. The
 	//  format is the same as the custom module's resource name.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.ancestor_module
 	AncestorModule *string `json:"ancestorModule,omitempty"`
 
 	// Output only. The time the module was last updated.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. The editor the module was last updated by.
+	// +kcc:proto:field=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.last_editor
 	LastEditor *string `json:"lastEditor,omitempty"`
 }
 
@@ -92,7 +96,6 @@ type SecurityCenterManagementEventThreatDetectionCustomModuleObservedState struc
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

@@ -29,7 +29,7 @@ type CloudDMSConversionWorkspaceSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	Location string `json:"location"`
+	Location *string `json:"location"`
 
 	// The CloudDMSConversionWorkspace name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`

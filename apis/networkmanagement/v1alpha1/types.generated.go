@@ -131,6 +131,67 @@ type CloudSQLInstanceInfo struct {
 	Region *string `json:"region,omitempty"`
 }
 
+/* unreachable type ConnectivityTest
+// +kcc:proto=google.cloud.networkmanagement.v1.ConnectivityTest
+type ConnectivityTest struct {
+	// Identifier. Unique name of the resource using the form:
+	//      `projects/{project_id}/locations/global/connectivityTests/{test_id}`
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.name
+	Name *string `json:"name,omitempty"`
+
+	// The user-supplied description of the Connectivity Test.
+	//  Maximum of 512 characters.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.description
+	Description *string `json:"description,omitempty"`
+
+	// Required. Source specification of the Connectivity Test.
+	//
+	//  You can use a combination of source IP address, URI of a supported
+	//  endpoint, project ID, or VPC network to identify the source location.
+	//
+	//  Reachability analysis might proceed even if the source location is
+	//  ambiguous. However, the test result might include endpoints or use a source
+	//  that you don't intend to test.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.source
+	// +required
+	Source *Endpoint `json:"source,omitempty"`
+
+	// Required. Destination specification of the Connectivity Test.
+	//
+	//  You can use a combination of destination IP address, URI of a supported
+	//  endpoint, project ID, or VPC network to identify the destination location.
+	//
+	//  Reachability analysis proceeds even if the destination location is
+	//  ambiguous. However, the test result might include endpoints or use a
+	//  destination that you don't intend to test.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.destination
+	// +required
+	Destination *Endpoint `json:"destination,omitempty"`
+
+	// IP Protocol of the test. When not provided, "TCP" is assumed.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.protocol
+	Protocol *string `json:"protocol,omitempty"`
+
+	// Other projects that may be relevant for reachability analysis.
+	//  This is applicable to scenarios where a test can cross project boundaries.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.related_projects
+	RelatedProjects []string `json:"relatedProjects,omitempty"`
+
+	// Resource labels to represent user-provided metadata.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Whether run analysis for the return path from destination to source.
+	//  Default value is false.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.round_trip
+	RoundTrip *bool `json:"roundTrip,omitempty"`
+
+	// Whether the analysis should skip firewall checking. Default value is false.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.bypass_firewall_checks
+	BypassFirewallChecks *bool `json:"bypassFirewallChecks,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.networkmanagement.v1.DeliverInfo
 type DeliverInfo struct {
 	// Target type where the packet is delivered to.
@@ -1241,6 +1302,69 @@ type VPCConnectorInfo struct {
 	Location *string `json:"location,omitempty"`
 }
 
+/* unreachable type VPCFlowLogsConfig
+// +kcc:proto=google.cloud.networkmanagement.v1.VpcFlowLogsConfig
+type VPCFlowLogsConfig struct {
+	// Identifier. Unique name of the configuration using the form:
+	//      `projects/{project_id}/locations/global/vpcFlowLogsConfigs/{vpc_flow_logs_config_id}`
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.name
+	Name *string `json:"name,omitempty"`
+
+	// Optional. The user-supplied description of the VPC Flow Logs configuration.
+	//  Maximum of 512 characters.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. The state of the VPC Flow Log configuration. Default value is
+	//  ENABLED. When creating a new configuration, it must be enabled.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.state
+	State *string `json:"state,omitempty"`
+
+	// Optional. The aggregation interval for the logs. Default value is
+	//  INTERVAL_5_SEC.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.aggregation_interval
+	AggregationInterval *string `json:"aggregationInterval,omitempty"`
+
+	// Optional. The value of the field must be in (0, 1]. The sampling rate of
+	//  VPC Flow Logs where 1.0 means all collected logs are reported. Setting the
+	//  sampling rate to 0.0 is not allowed. If you want to disable VPC Flow Logs,
+	//  use the state field instead. Default value is 1.0.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.flow_sampling
+	FlowSampling *float32 `json:"flowSampling,omitempty"`
+
+	// Optional. Configures whether all, none or a subset of metadata fields
+	//  should be added to the reported VPC flow logs. Default value is
+	//  INCLUDE_ALL_METADATA.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.metadata
+	Metadata *string `json:"metadata,omitempty"`
+
+	// Optional. Custom metadata fields to include in the reported VPC flow logs.
+	//  Can only be specified if "metadata" was set to CUSTOM_METADATA.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.metadata_fields
+	MetadataFields []string `json:"metadataFields,omitempty"`
+
+	// Optional. Export filter used to define which VPC Flow Logs should be
+	//  logged.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.filter_expr
+	FilterExpr *string `json:"filterExpr,omitempty"`
+
+	// Traffic will be logged from the Interconnect Attachment.
+	//  Format:
+	//  projects/{project_id}/regions/{region}/interconnectAttachments/{name}
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.interconnect_attachment
+	InterconnectAttachment *string `json:"interconnectAttachment,omitempty"`
+
+	// Traffic will be logged from the VPN Tunnel.
+	//  Format: projects/{project_id}/regions/{region}/vpnTunnels/{name}
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.vpn_tunnel
+	VPNTunnel *string `json:"vpnTunnel,omitempty"`
+
+	// Optional. Resource labels to represent user-provided metadata.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.labels
+	Labels map[string]string `json:"labels,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.networkmanagement.v1.VpnGatewayInfo
 type VPNGatewayInfo struct {
 	// Name of a VPN gateway.
@@ -1308,6 +1432,65 @@ type VPNTunnelInfo struct {
 	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpnTunnelInfo.routing_type
 	RoutingType *string `json:"routingType,omitempty"`
 }
+
+/* unreachable type ConnectivityTestObservedState
+// +kcc:observedstate:proto=google.cloud.networkmanagement.v1.ConnectivityTest
+type ConnectivityTestObservedState struct {
+	// Required. Source specification of the Connectivity Test.
+	//
+	//  You can use a combination of source IP address, URI of a supported
+	//  endpoint, project ID, or VPC network to identify the source location.
+	//
+	//  Reachability analysis might proceed even if the source location is
+	//  ambiguous. However, the test result might include endpoints or use a source
+	//  that you don't intend to test.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.source
+	Source *EndpointObservedState `json:"source,omitempty"`
+
+	// Required. Destination specification of the Connectivity Test.
+	//
+	//  You can use a combination of destination IP address, URI of a supported
+	//  endpoint, project ID, or VPC network to identify the destination location.
+	//
+	//  Reachability analysis proceeds even if the destination location is
+	//  ambiguous. However, the test result might include endpoints or use a
+	//  destination that you don't intend to test.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.destination
+	Destination *EndpointObservedState `json:"destination,omitempty"`
+
+	// Output only. The display name of a Connectivity Test.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Output only. The time the test was created.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time the test's configuration was updated.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The reachability details of this test from the latest run.
+	//  The details are updated when creating a new test, updating an
+	//  existing test, or triggering a one-time rerun of an existing test.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.reachability_details
+	ReachabilityDetails *ReachabilityDetailsObservedState `json:"reachabilityDetails,omitempty"`
+
+	// Output only. The probing details of this test from the latest run, present
+	//  for applicable tests only. The details are updated when creating a new
+	//  test, updating an existing test, or triggering a one-time rerun of an
+	//  existing test.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.probing_details
+	ProbingDetails *ProbingDetails `json:"probingDetails,omitempty"`
+
+	// Output only. The reachability details of this test from the latest run for
+	//  the return path. The details are updated when creating a new test,
+	//  updating an existing test, or triggering a one-time rerun of an existing
+	//  test.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.ConnectivityTest.return_reachability_details
+	ReturnReachabilityDetails *ReachabilityDetailsObservedState `json:"returnReachabilityDetails,omitempty"`
+}
+*/
 
 // +kcc:observedstate:proto=google.cloud.networkmanagement.v1.Endpoint
 type EndpointObservedState struct {
@@ -1577,3 +1760,21 @@ type TraceObservedState struct {
 	// +kcc:proto:field=google.cloud.networkmanagement.v1.Trace.forward_trace_id
 	ForwardTraceID *int32 `json:"forwardTraceID,omitempty"`
 }
+
+/* unreachable type VPCFlowLogsConfigObservedState
+// +kcc:observedstate:proto=google.cloud.networkmanagement.v1.VpcFlowLogsConfig
+type VPCFlowLogsConfigObservedState struct {
+	// Output only. A diagnostic bit - describes the state of the configured
+	//  target resource for diagnostic purposes.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.target_resource_state
+	TargetResourceState *string `json:"targetResourceState,omitempty"`
+
+	// Output only. The time the config was created.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time the config was updated.
+	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/

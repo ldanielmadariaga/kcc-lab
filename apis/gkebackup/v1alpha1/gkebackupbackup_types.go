@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -24,13 +25,11 @@ var GKEBackupBackupGVK = GroupVersion.WithKind("GKEBackupBackup")
 // GKEBackupBackupSpec defines the desired state of GKEBackupBackup
 // +kcc:spec:proto=google.cloud.gkebackup.v1.Backup
 type GKEBackupBackupSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 	// The GKEBackupBackup name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Required. The BackupPlan from which this Backup is created.
-	// +required
-	BackupPlanRef *BackupPlanRef `json:"backupPlanRef,omitempty"`
-
 	// Optional. A set of custom labels supplied by user.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.labels
 	Labels map[string]string `json:"labels,omitempty"`
@@ -88,16 +87,10 @@ type GKEBackupBackupStatus struct {
 // GKEBackupBackupObservedState is the state of the GKEBackupBackup resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.gkebackup.v1.Backup
 type GKEBackupBackupObservedState struct {
-	// Output only. The fully qualified name of the Backup.
-	//  `projects/*/locations/*/backupPlans/*/backups/*`
-	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. Server generated global unique identifier of
 	//  [UUID4](https://en.wikipedia.org/wiki/Universally_unique_identifier)
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.uid
-	UID *string `json:"uid,omitempty"`
+	Uid *string `json:"uid,omitempty"`
 
 	// Output only. The timestamp when this Backup resource was created.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.create_time
@@ -130,7 +123,7 @@ type GKEBackupBackupObservedState struct {
 	//  [encryption_key][google.cloud.gkebackup.v1.BackupPlan.BackupConfig.encryption_key]
 	//  value.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.encryption_key
-	EncryptionKey *Backup_EncryptionKeyObservedState `json:"encryptionKey,omitempty"`
+	EncryptionKey *EncryptionKey `json:"encryptionKey,omitempty"`
 
 	// Output only. If True, all namespaces were included in the Backup.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.all_namespaces
@@ -170,7 +163,8 @@ type GKEBackupBackupObservedState struct {
 	State *string `json:"state,omitempty"`
 
 	// Output only. Human-readable description of why the backup is in the current
-	//  `state`.
+	//  `state`. This field is only meant for human readability and should not be
+	//  used programmatically as this field is not guaranteed to be consistent.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.state_reason
 	StateReason *string `json:"stateReason,omitempty"`
 
@@ -220,6 +214,14 @@ type GKEBackupBackupObservedState struct {
 	//  value.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.permissive_mode
 	PermissiveMode *bool `json:"permissiveMode,omitempty"`
+
+	// Output only. [Output Only] Reserved for future use.
+	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.satisfies_pzs
+	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+
+	// Output only. [Output Only] Reserved for future use.
+	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.satisfies_pzi
+	SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
 }
 
 // +genclient
@@ -254,43 +256,4 @@ type GKEBackupBackupList struct {
 
 func init() {
 	SchemeBuilder.Register(&GKEBackupBackup{}, &GKEBackupBackupList{})
-}
-
-// +kcc:observedstate:proto=google.cloud.gkebackup.v1.Backup.ClusterMetadata
-type Backup_ClusterMetadataObservedState struct {
-	// Output only. The source cluster from which this Backup was created.
-	//  Valid formats:
-	//
-	//    - `projects/*/locations/*/clusters/*`
-	//    - `projects/*/zones/*/clusters/*`
-	//
-	//  This is inherited from the parent BackupPlan's
-	//  [cluster][google.cloud.gkebackup.v1.BackupPlan.cluster] field.
-	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.ClusterMetadata.cluster
-	Cluster *string `json:"cluster,omitempty"`
-
-	// Output only. The Kubernetes server version of the source cluster.
-	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.ClusterMetadata.k8s_version
-	K8sVersion *string `json:"k8sVersion,omitempty"`
-
-	// Output only. A list of the Backup for GKE CRD versions found in the
-	//  cluster.
-	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.ClusterMetadata.backup_crd_versions
-	BackupCRDVersions map[string]string `json:"backupCRDVersions,omitempty"`
-
-	// Output only. GKE version
-	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.ClusterMetadata.gke_version
-	GKEVersion *string `json:"gkeVersion,omitempty"`
-
-	// Output only. Anthos version
-	// +kcc:proto:field=google.cloud.gkebackup.v1.Backup.ClusterMetadata.anthos_version
-	AnthosVersion *string `json:"anthosVersion,omitempty"`
-}
-
-// +kcc:observedstate:proto=google.cloud.gkebackup.v1.EncryptionKey
-type Backup_EncryptionKeyObservedState struct {
-	// Optional. Google Cloud KMS encryption key. Format:
-	//  `projects/*/locations/*/keyRings/*/cryptoKeys/*`
-	// +kcc:proto:field=google.cloud.gkebackup.v1.EncryptionKey.gcp_kms_encryption_key
-	GCPKMSEncryptionKey *string `json:"gcpKMSEncryptionKey,omitempty"`
 }

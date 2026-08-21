@@ -22,8 +22,7 @@
 
 package v1alpha1
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.CryptoKeyVersion", skipping
-
+/* unreachable type CryptoKeyVersion
 // +kcc:proto=google.cloud.kms.v1.CryptoKeyVersion
 type CryptoKeyVersion struct {
 
@@ -43,8 +42,6 @@ type CryptoKeyVersion struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.ExternalProtectionLevelOptions", skipping
-
 // +kcc:proto=google.cloud.kms.v1.ExternalProtectionLevelOptions
 type ExternalProtectionLevelOptions struct {
 	// The URI for an external resource that this
@@ -59,10 +56,8 @@ type ExternalProtectionLevelOptions struct {
 	// +kcc:proto:field=google.cloud.kms.v1.ExternalProtectionLevelOptions.ekm_connection_key_path
 	EkmConnectionKeyPath *string `json:"ekmConnectionKeyPath,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.ImportJob", skipping
-
+/* unreachable type ImportJob
 // +kcc:proto=google.cloud.kms.v1.ImportJob
 type ImportJob struct {
 
@@ -84,8 +79,6 @@ type ImportJob struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.ImportJob.WrappingPublicKey", skipping
-
 // +kcc:proto=google.cloud.kms.v1.ImportJob.WrappingPublicKey
 type ImportJob_WrappingPublicKey struct {
 	// The public key, encoded in PEM format. For more information, see the [RFC
@@ -96,16 +89,12 @@ type ImportJob_WrappingPublicKey struct {
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.WrappingPublicKey.pem
 	Pem *string `json:"pem,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.KeyOperationAttestation", skipping
-
+/* unreachable type KeyOperationAttestation
 // +kcc:proto=google.cloud.kms.v1.KeyOperationAttestation
 type KeyOperationAttestation struct {
 }
 */
-
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.KeyOperationAttestation.CertificateChains", skipping
 
 // +kcc:proto=google.cloud.kms.v1.KeyOperationAttestation.CertificateChains
 type KeyOperationAttestation_CertificateChains struct {
@@ -121,15 +110,13 @@ type KeyOperationAttestation_CertificateChains struct {
 	// +kcc:proto:field=google.cloud.kms.v1.KeyOperationAttestation.CertificateChains.google_partition_certs
 	GooglePartitionCerts []string `json:"googlePartitionCerts,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.CryptoKeyVersion", skipping
-
+/* unreachable type CryptoKeyVersionObservedState
 // +kcc:observedstate:proto=google.cloud.kms.v1.CryptoKeyVersion
 type CryptoKeyVersionObservedState struct {
 	// Output only. The resource name for this
 	//  [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] in the format
-	//  `projects/* /locations/* /keyRings/* /cryptoKeys/* /cryptoKeyVersions/*`.
+	//  `projects/-*-/locations/-*-/keyRings/-*-/cryptoKeys/-*-/cryptoKeyVersions/-*`.
 	// +kcc:proto:field=google.cloud.kms.v1.CryptoKeyVersion.name
 	Name *string `json:"name,omitempty"`
 
@@ -220,13 +207,12 @@ type CryptoKeyVersionObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.ImportJob", skipping
-
+/* unreachable type ImportJobObservedState
 // +kcc:observedstate:proto=google.cloud.kms.v1.ImportJob
 type ImportJobObservedState struct {
 	// Output only. The resource name for this
 	//  [ImportJob][google.cloud.kms.v1.ImportJob] in the format
-	//  `projects/* /locations/* /keyRings/* /importJobs/*`.
+	//  `projects/-*-/locations/-*-/keyRings/-*-/importJobs/-*`.
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.name
 	Name *string `json:"name,omitempty"`
 
@@ -274,8 +260,6 @@ type ImportJobObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.KeyOperationAttestation", skipping
-
 // +kcc:observedstate:proto=google.cloud.kms.v1.KeyOperationAttestation
 type KeyOperationAttestationObservedState struct {
 	// Output only. The format of the attestation data.
@@ -291,4 +275,3 @@ type KeyOperationAttestationObservedState struct {
 	// +kcc:proto:field=google.cloud.kms.v1.KeyOperationAttestation.cert_chains
 	CertChains *KeyOperationAttestation_CertificateChains `json:"certChains,omitempty"`
 }
-*/

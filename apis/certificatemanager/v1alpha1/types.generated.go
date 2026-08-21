@@ -22,13 +22,12 @@
 
 package v1alpha1
 
-/* found existing non-generated go type with proto tag "google.cloud.certificatemanager.v1.CertificateIssuanceConfig", skipping
-
+/* unreachable type CertificateIssuanceConfig
 // +kcc:proto=google.cloud.certificatemanager.v1.CertificateIssuanceConfig
 type CertificateIssuanceConfig struct {
 	// A user-defined name of the certificate issuance config.
 	//  CertificateIssuanceConfig names must be unique globally and match pattern
-	//  `projects/* /locations/* /certificateIssuanceConfigs/*`.
+	//  `projects/-*-/locations/-*-/certificateIssuanceConfigs/-*`.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.name
 	Name *string `json:"name,omitempty"`
 
@@ -82,13 +81,12 @@ type CertificateIssuanceConfig_CertificateAuthorityConfig_CertificateAuthoritySe
 	CAPool *string `json:"caPool,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.certificatemanager.v1.TrustConfig", skipping
-
+/* unreachable type TrustConfig
 // +kcc:proto=google.cloud.certificatemanager.v1.TrustConfig
 type TrustConfig struct {
 	// A user-defined name of the trust config. TrustConfig names must be
 	//  unique globally and match pattern
-	//  `projects/* /locations/* /trustConfigs/*`.
+	//  `projects/-*-/locations/-*-/trustConfigs/-*`.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.TrustConfig.name
 	Name *string `json:"name,omitempty"`
 
@@ -152,8 +150,7 @@ type TrustConfig_TrustStore struct {
 	IntermediateCAs []TrustConfig_IntermediateCA `json:"intermediateCAs,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.certificatemanager.v1.CertificateIssuanceConfig", skipping
-
+/* unreachable type CertificateIssuanceConfigObservedState
 // +kcc:observedstate:proto=google.cloud.certificatemanager.v1.CertificateIssuanceConfig
 type CertificateIssuanceConfigObservedState struct {
 	// Output only. The creation timestamp of a CertificateIssuanceConfig.
@@ -166,8 +163,7 @@ type CertificateIssuanceConfigObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.certificatemanager.v1.TrustConfig", skipping
-
+/* unreachable type TrustConfigObservedState
 // +kcc:observedstate:proto=google.cloud.certificatemanager.v1.TrustConfig
 type TrustConfigObservedState struct {
 	// Output only. The creation timestamp of a TrustConfig.

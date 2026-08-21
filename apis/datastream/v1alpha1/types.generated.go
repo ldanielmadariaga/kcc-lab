@@ -27,7 +27,126 @@ package v1alpha1
 type BigQueryProfile struct {
 }
 
-/* unreachable type HostAddress
+/* unreachable type ConnectionProfile
+// +kcc:proto=google.cloud.datastream.v1.ConnectionProfile
+type ConnectionProfile struct {
+
+	// Labels.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. Display name.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.display_name
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Oracle ConnectionProfile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.oracle_profile
+	OracleProfile *OracleProfile `json:"oracleProfile,omitempty"`
+
+	// Cloud Storage ConnectionProfile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.gcs_profile
+	GCSProfile *GCSProfile `json:"gcsProfile,omitempty"`
+
+	// MySQL ConnectionProfile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.mysql_profile
+	MysqlProfile *MysqlProfile `json:"mysqlProfile,omitempty"`
+
+	// BigQuery Connection Profile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.bigquery_profile
+	BigqueryProfile *BigQueryProfile `json:"bigqueryProfile,omitempty"`
+
+	// PostgreSQL Connection Profile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.postgresql_profile
+	PostgresqlProfile *PostgresqlProfile `json:"postgresqlProfile,omitempty"`
+
+	// SQLServer Connection Profile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.sql_server_profile
+	SQLServerProfile *SQLServerProfile `json:"sqlServerProfile,omitempty"`
+
+	// Salesforce Connection Profile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.salesforce_profile
+	SalesforceProfile *SalesforceProfile `json:"salesforceProfile,omitempty"`
+
+	// MongoDB Connection Profile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.mongodb_profile
+	MongodbProfile *MongodbProfile `json:"mongodbProfile,omitempty"`
+
+	// Static Service IP connectivity.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.static_service_ip_connectivity
+	StaticServiceIPConnectivity *StaticServiceIPConnectivity `json:"staticServiceIPConnectivity,omitempty"`
+
+	// Forward SSH tunnel connectivity.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.forward_ssh_connectivity
+	ForwardSSHConnectivity *ForwardSSHTunnelConnectivity `json:"forwardSSHConnectivity,omitempty"`
+
+	// Private connectivity.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.private_connectivity
+	PrivateConnectivity *PrivateConnectivity `json:"privateConnectivity,omitempty"`
+}
+*/
+
+// +kcc:proto=google.cloud.datastream.v1.Error
+type Error struct {
+	// A title that explains the reason for the error.
+	// +kcc:proto:field=google.cloud.datastream.v1.Error.reason
+	Reason *string `json:"reason,omitempty"`
+
+	// A unique identifier for this specific error,
+	//  allowing it to be traced throughout the system in logs and API responses.
+	// +kcc:proto:field=google.cloud.datastream.v1.Error.error_uuid
+	ErrorUuid *string `json:"errorUuid,omitempty"`
+
+	// A message containing more information about the error that occurred.
+	// +kcc:proto:field=google.cloud.datastream.v1.Error.message
+	Message *string `json:"message,omitempty"`
+
+	// The time when the error occurred.
+	// +kcc:proto:field=google.cloud.datastream.v1.Error.error_time
+	ErrorTime *string `json:"errorTime,omitempty"`
+
+	// Additional information about the error.
+	// +kcc:proto:field=google.cloud.datastream.v1.Error.details
+	Details map[string]string `json:"details,omitempty"`
+}
+
+// +kcc:proto=google.cloud.datastream.v1.ForwardSshTunnelConnectivity
+type ForwardSSHTunnelConnectivity struct {
+	// Required. Hostname for the SSH tunnel.
+	// +kcc:proto:field=google.cloud.datastream.v1.ForwardSshTunnelConnectivity.hostname
+	// +required
+	Hostname *string `json:"hostname,omitempty"`
+
+	// Required. Username for the SSH tunnel.
+	// +kcc:proto:field=google.cloud.datastream.v1.ForwardSshTunnelConnectivity.username
+	// +required
+	Username *string `json:"username,omitempty"`
+
+	// Port for the SSH tunnel, default value is 22.
+	// +kcc:proto:field=google.cloud.datastream.v1.ForwardSshTunnelConnectivity.port
+	Port *int32 `json:"port,omitempty"`
+
+	// Input only. SSH password.
+	// +kcc:proto:field=google.cloud.datastream.v1.ForwardSshTunnelConnectivity.password
+	Password *string `json:"password,omitempty"`
+
+	// Input only. SSH private key.
+	// +kcc:proto:field=google.cloud.datastream.v1.ForwardSshTunnelConnectivity.private_key
+	PrivateKey *string `json:"privateKey,omitempty"`
+}
+
+// +kcc:proto=google.cloud.datastream.v1.GcsProfile
+type GCSProfile struct {
+	// Required. The Cloud Storage bucket name.
+	// +kcc:proto:field=google.cloud.datastream.v1.GcsProfile.bucket
+	// +required
+	Bucket *string `json:"bucket,omitempty"`
+
+	// The root path inside the Cloud Storage bucket.
+	// +kcc:proto:field=google.cloud.datastream.v1.GcsProfile.root_path
+	RootPath *string `json:"rootPath,omitempty"`
+}
+
 // +kcc:proto=google.cloud.datastream.v1.HostAddress
 type HostAddress struct {
 	// Required. Hostname for the connection.
@@ -39,9 +158,7 @@ type HostAddress struct {
 	// +kcc:proto:field=google.cloud.datastream.v1.HostAddress.port
 	Port *int32 `json:"port,omitempty"`
 }
-*/
 
-/* unreachable type MongodbProfile
 // +kcc:proto=google.cloud.datastream.v1.MongodbProfile
 type MongodbProfile struct {
 	// Required. List of host addresses for a MongoDB cluster.
@@ -86,9 +203,7 @@ type MongodbProfile struct {
 	// +kcc:proto:field=google.cloud.datastream.v1.MongodbProfile.standard_connection_format
 	StandardConnectionFormat *StandardConnectionFormat `json:"standardConnectionFormat,omitempty"`
 }
-*/
 
-/* unreachable type MongodbSSLConfig
 // +kcc:proto=google.cloud.datastream.v1.MongodbSslConfig
 type MongodbSSLConfig struct {
 	// Optional. Input only. PEM-encoded private key associated with the Client
@@ -116,7 +231,37 @@ type MongodbSSLConfig struct {
 	// +kcc:proto:field=google.cloud.datastream.v1.MongodbSslConfig.secret_manager_stored_client_key
 	SecretManagerStoredClientKey *string `json:"secretManagerStoredClientKey,omitempty"`
 }
-*/
+
+// +kcc:proto=google.cloud.datastream.v1.MysqlProfile
+type MysqlProfile struct {
+	// Required. Hostname for the MySQL connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.MysqlProfile.hostname
+	// +required
+	Hostname *string `json:"hostname,omitempty"`
+
+	// Port for the MySQL connection, default value is 3306.
+	// +kcc:proto:field=google.cloud.datastream.v1.MysqlProfile.port
+	Port *int32 `json:"port,omitempty"`
+
+	// Required. Username for the MySQL connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.MysqlProfile.username
+	// +required
+	Username *string `json:"username,omitempty"`
+
+	// Optional. Input only. Password for the MySQL connection. Mutually exclusive
+	//  with the `secret_manager_stored_password` field.
+	// +kcc:proto:field=google.cloud.datastream.v1.MysqlProfile.password
+	Password *string `json:"password,omitempty"`
+
+	// SSL configuration for the MySQL connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.MysqlProfile.ssl_config
+	SSLConfig *MysqlSSLConfig `json:"sslConfig,omitempty"`
+
+	// Optional. A reference to a Secret Manager resource name storing the MySQL
+	//  connection password. Mutually exclusive with the `password` field.
+	// +kcc:proto:field=google.cloud.datastream.v1.MysqlProfile.secret_manager_stored_password
+	SecretManagerStoredPassword *string `json:"secretManagerStoredPassword,omitempty"`
+}
 
 // +kcc:proto=google.cloud.datastream.v1.MysqlSslConfig
 type MysqlSSLConfig struct {
@@ -139,6 +284,91 @@ type MysqlSSLConfig struct {
 	CACertificate *string `json:"caCertificate,omitempty"`
 }
 
+// +kcc:proto=google.cloud.datastream.v1.OracleAsmConfig
+type OracleAsmConfig struct {
+	// Required. Hostname for the Oracle ASM connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.hostname
+	// +required
+	Hostname *string `json:"hostname,omitempty"`
+
+	// Required. Port for the Oracle ASM connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.port
+	// +required
+	Port *int32 `json:"port,omitempty"`
+
+	// Required. Username for the Oracle ASM connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.username
+	// +required
+	Username *string `json:"username,omitempty"`
+
+	// Optional. Password for the Oracle ASM connection. Mutually exclusive with
+	//  the `secret_manager_stored_password` field.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.password
+	Password *string `json:"password,omitempty"`
+
+	// Required. ASM service name for the Oracle ASM connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.asm_service
+	// +required
+	AsmService *string `json:"asmService,omitempty"`
+
+	// Optional. Connection string attributes
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.connection_attributes
+	ConnectionAttributes map[string]string `json:"connectionAttributes,omitempty"`
+
+	// Optional. SSL configuration for the Oracle connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.oracle_ssl_config
+	OracleSSLConfig *OracleSSLConfig `json:"oracleSSLConfig,omitempty"`
+
+	// Optional. A reference to a Secret Manager resource name storing the Oracle
+	//  ASM connection password. Mutually exclusive with the `password` field.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.secret_manager_stored_password
+	SecretManagerStoredPassword *string `json:"secretManagerStoredPassword,omitempty"`
+}
+
+// +kcc:proto=google.cloud.datastream.v1.OracleProfile
+type OracleProfile struct {
+	// Required. Hostname for the Oracle connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.hostname
+	// +required
+	Hostname *string `json:"hostname,omitempty"`
+
+	// Port for the Oracle connection, default value is 1521.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.port
+	Port *int32 `json:"port,omitempty"`
+
+	// Required. Username for the Oracle connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.username
+	// +required
+	Username *string `json:"username,omitempty"`
+
+	// Optional. Password for the Oracle connection. Mutually exclusive with the
+	//  `secret_manager_stored_password` field.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.password
+	Password *string `json:"password,omitempty"`
+
+	// Required. Database for the Oracle connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.database_service
+	// +required
+	DatabaseService *string `json:"databaseService,omitempty"`
+
+	// Connection string attributes
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.connection_attributes
+	ConnectionAttributes map[string]string `json:"connectionAttributes,omitempty"`
+
+	// Optional. SSL configuration for the Oracle connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.oracle_ssl_config
+	OracleSSLConfig *OracleSSLConfig `json:"oracleSSLConfig,omitempty"`
+
+	// Optional. Configuration for Oracle ASM connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.oracle_asm_config
+	OracleAsmConfig *OracleAsmConfig `json:"oracleAsmConfig,omitempty"`
+
+	// Optional. A reference to a Secret Manager resource name storing the Oracle
+	//  connection password. Mutually exclusive with the `password` field.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.secret_manager_stored_password
+	SecretManagerStoredPassword *string `json:"secretManagerStoredPassword,omitempty"`
+}
+
 // +kcc:proto=google.cloud.datastream.v1.OracleSslConfig
 type OracleSSLConfig struct {
 	// Input only. PEM-encoded certificate of the CA that signed the source
@@ -155,7 +385,46 @@ type OracleSSLConfig struct {
 	ServerCertificateDistinguishedName *string `json:"serverCertificateDistinguishedName,omitempty"`
 }
 
-/* unreachable type PostgresqlSSLConfig
+// +kcc:proto=google.cloud.datastream.v1.PostgresqlProfile
+type PostgresqlProfile struct {
+	// Required. Hostname for the PostgreSQL connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlProfile.hostname
+	// +required
+	Hostname *string `json:"hostname,omitempty"`
+
+	// Port for the PostgreSQL connection, default value is 5432.
+	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlProfile.port
+	Port *int32 `json:"port,omitempty"`
+
+	// Required. Username for the PostgreSQL connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlProfile.username
+	// +required
+	Username *string `json:"username,omitempty"`
+
+	// Optional. Password for the PostgreSQL connection. Mutually exclusive with
+	//  the `secret_manager_stored_password` field.
+	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlProfile.password
+	Password *string `json:"password,omitempty"`
+
+	// Required. Database for the PostgreSQL connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlProfile.database
+	// +required
+	Database *string `json:"database,omitempty"`
+
+	// Optional. A reference to a Secret Manager resource name storing the
+	//  PostgreSQL connection password. Mutually exclusive with the `password`
+	//  field.
+	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlProfile.secret_manager_stored_password
+	SecretManagerStoredPassword *string `json:"secretManagerStoredPassword,omitempty"`
+
+	// Optional. SSL configuration for the PostgreSQL connection.
+	//  In case PostgresqlSslConfig is not set, the connection will use the default
+	//  SSL mode, which is `prefer` (i.e. this mode will only use encryption if
+	//  enabled from database side, otherwise will use unencrypted communication)
+	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlProfile.ssl_config
+	SSLConfig *PostgresqlSSLConfig `json:"sslConfig,omitempty"`
+}
+
 // +kcc:proto=google.cloud.datastream.v1.PostgresqlSslConfig
 type PostgresqlSSLConfig struct {
 	// If this field is set, the communication will be encrypted with TLS
@@ -169,9 +438,7 @@ type PostgresqlSSLConfig struct {
 	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlSslConfig.server_and_client_verification
 	ServerAndClientVerification *PostgresqlSSLConfig_ServerAndClientVerification `json:"serverAndClientVerification,omitempty"`
 }
-*/
 
-/* unreachable type PostgresqlSSLConfig_ServerAndClientVerification
 // +kcc:proto=google.cloud.datastream.v1.PostgresqlSslConfig.ServerAndClientVerification
 type PostgresqlSSLConfig_ServerAndClientVerification struct {
 	// Required. Input only. PEM-encoded certificate used by the source database
@@ -202,9 +469,7 @@ type PostgresqlSSLConfig_ServerAndClientVerification struct {
 	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlSslConfig.ServerAndClientVerification.server_certificate_hostname
 	ServerCertificateHostname *string `json:"serverCertificateHostname,omitempty"`
 }
-*/
 
-/* unreachable type PostgresqlSSLConfig_ServerVerification
 // +kcc:proto=google.cloud.datastream.v1.PostgresqlSslConfig.ServerVerification
 type PostgresqlSSLConfig_ServerVerification struct {
 	// Required. Input only. PEM-encoded server root CA certificate.
@@ -218,9 +483,39 @@ type PostgresqlSSLConfig_ServerVerification struct {
 	// +kcc:proto:field=google.cloud.datastream.v1.PostgresqlSslConfig.ServerVerification.server_certificate_hostname
 	ServerCertificateHostname *string `json:"serverCertificateHostname,omitempty"`
 }
+
+/* unreachable type PrivateConnection
+// +kcc:proto=google.cloud.datastream.v1.PrivateConnection
+type PrivateConnection struct {
+
+	// Labels.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. Display name.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.display_name
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// VPC Peering Config.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.vpc_peering_config
+	VPCPeeringConfig *VPCPeeringConfig `json:"vpcPeeringConfig,omitempty"`
+
+	// PSC Interface Config.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.psc_interface_config
+	PSCInterfaceConfig *PSCInterfaceConfig `json:"pscInterfaceConfig,omitempty"`
+}
 */
 
-/* unreachable type PSCInterfaceConfig
+// +kcc:proto=google.cloud.datastream.v1.PrivateConnectivity
+type PrivateConnectivity struct {
+	// Required. A reference to a private connection resource.
+	//  Format: `projects/{project}/locations/{location}/privateConnections/{name}`
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnectivity.private_connection
+	// +required
+	PrivateConnection *string `json:"privateConnection,omitempty"`
+}
+
 // +kcc:proto=google.cloud.datastream.v1.PscInterfaceConfig
 type PSCInterfaceConfig struct {
 	// Required. Fully qualified name of the Network Attachment that Datastream
@@ -230,9 +525,31 @@ type PSCInterfaceConfig struct {
 	// +required
 	NetworkAttachment *string `json:"networkAttachment,omitempty"`
 }
+
+/* unreachable type Route
+// +kcc:proto=google.cloud.datastream.v1.Route
+type Route struct {
+
+	// Labels.
+	// +kcc:proto:field=google.cloud.datastream.v1.Route.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. Display name.
+	// +kcc:proto:field=google.cloud.datastream.v1.Route.display_name
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Required. Destination address for connection
+	// +kcc:proto:field=google.cloud.datastream.v1.Route.destination_address
+	// +required
+	DestinationAddress *string `json:"destinationAddress,omitempty"`
+
+	// Destination port for connection
+	// +kcc:proto:field=google.cloud.datastream.v1.Route.destination_port
+	DestinationPort *int32 `json:"destinationPort,omitempty"`
+}
 */
 
-/* unreachable type SalesforceProfile
 // +kcc:proto=google.cloud.datastream.v1.SalesforceProfile
 type SalesforceProfile struct {
 	// Required. Domain endpoint for the Salesforce connection.
@@ -248,9 +565,7 @@ type SalesforceProfile struct {
 	// +kcc:proto:field=google.cloud.datastream.v1.SalesforceProfile.oauth2_client_credentials
 	OAUTH2ClientCredentials *SalesforceProfile_OAUTH2ClientCredentials `json:"oauth2ClientCredentials,omitempty"`
 }
-*/
 
-/* unreachable type SalesforceProfile_OAUTH2ClientCredentials
 // +kcc:proto=google.cloud.datastream.v1.SalesforceProfile.Oauth2ClientCredentials
 type SalesforceProfile_OAUTH2ClientCredentials struct {
 	// Required. Client ID for Salesforce OAuth2 Client Credentials.
@@ -269,9 +584,7 @@ type SalesforceProfile_OAUTH2ClientCredentials struct {
 	// +kcc:proto:field=google.cloud.datastream.v1.SalesforceProfile.Oauth2ClientCredentials.secret_manager_stored_client_secret
 	SecretManagerStoredClientSecret *string `json:"secretManagerStoredClientSecret,omitempty"`
 }
-*/
 
-/* unreachable type SalesforceProfile_UserCredentials
 // +kcc:proto=google.cloud.datastream.v1.SalesforceProfile.UserCredentials
 type SalesforceProfile_UserCredentials struct {
 	// Required. Username for the Salesforce connection.
@@ -301,15 +614,44 @@ type SalesforceProfile_UserCredentials struct {
 	// +kcc:proto:field=google.cloud.datastream.v1.SalesforceProfile.UserCredentials.secret_manager_stored_security_token
 	SecretManagerStoredSecurityToken *string `json:"secretManagerStoredSecurityToken,omitempty"`
 }
-*/
 
-/* unreachable type SrvConnectionFormat
+// +kcc:proto=google.cloud.datastream.v1.SqlServerProfile
+type SQLServerProfile struct {
+	// Required. Hostname for the SQLServer connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.SqlServerProfile.hostname
+	// +required
+	Hostname *string `json:"hostname,omitempty"`
+
+	// Port for the SQLServer connection, default value is 1433.
+	// +kcc:proto:field=google.cloud.datastream.v1.SqlServerProfile.port
+	Port *int32 `json:"port,omitempty"`
+
+	// Required. Username for the SQLServer connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.SqlServerProfile.username
+	// +required
+	Username *string `json:"username,omitempty"`
+
+	// Optional. Password for the SQLServer connection. Mutually exclusive with
+	//  the `secret_manager_stored_password` field.
+	// +kcc:proto:field=google.cloud.datastream.v1.SqlServerProfile.password
+	Password *string `json:"password,omitempty"`
+
+	// Required. Database for the SQLServer connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.SqlServerProfile.database
+	// +required
+	Database *string `json:"database,omitempty"`
+
+	// Optional. A reference to a Secret Manager resource name storing the
+	//  SQLServer connection password. Mutually exclusive with the `password`
+	//  field.
+	// +kcc:proto:field=google.cloud.datastream.v1.SqlServerProfile.secret_manager_stored_password
+	SecretManagerStoredPassword *string `json:"secretManagerStoredPassword,omitempty"`
+}
+
 // +kcc:proto=google.cloud.datastream.v1.SrvConnectionFormat
 type SrvConnectionFormat struct {
 }
-*/
 
-/* unreachable type StandardConnectionFormat
 // +kcc:proto=google.cloud.datastream.v1.StandardConnectionFormat
 type StandardConnectionFormat struct {
 	// Optional. Specifies whether the client connects directly to the host[:port]
@@ -317,22 +659,69 @@ type StandardConnectionFormat struct {
 	// +kcc:proto:field=google.cloud.datastream.v1.StandardConnectionFormat.direct_connection
 	DirectConnection *bool `json:"directConnection,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.datastream.v1.StaticServiceIpConnectivity
 type StaticServiceIPConnectivity struct {
 }
 
-/* unreachable type MongodbProfileObservedState
+// +kcc:proto=google.cloud.datastream.v1.VpcPeeringConfig
+type VPCPeeringConfig struct {
+	// Required. Fully qualified name of the VPC that Datastream will peer to.
+	//  Format: `projects/{project}/global/{networks}/{name}`
+	// +kcc:proto:field=google.cloud.datastream.v1.VpcPeeringConfig.vpc
+	// +required
+	VPC *string `json:"vpc,omitempty"`
+
+	// Required. A free subnet for peering. (CIDR of /29)
+	// +kcc:proto:field=google.cloud.datastream.v1.VpcPeeringConfig.subnet
+	// +required
+	Subnet *string `json:"subnet,omitempty"`
+}
+
+/* unreachable type ConnectionProfileObservedState
+// +kcc:observedstate:proto=google.cloud.datastream.v1.ConnectionProfile
+type ConnectionProfileObservedState struct {
+	// Output only. Identifier. The resource's name.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. The create time of the resource.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The update time of the resource.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.satisfies_pzs
+	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+
+	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.satisfies_pzi
+	SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
+
+	// Oracle ConnectionProfile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.oracle_profile
+	OracleProfile *OracleProfileObservedState `json:"oracleProfile,omitempty"`
+
+	// MySQL ConnectionProfile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.mysql_profile
+	MysqlProfile *MysqlProfileObservedState `json:"mysqlProfile,omitempty"`
+
+	// MongoDB Connection Profile configuration.
+	// +kcc:proto:field=google.cloud.datastream.v1.ConnectionProfile.mongodb_profile
+	MongodbProfile *MongodbProfileObservedState `json:"mongodbProfile,omitempty"`
+}
+*/
+
 // +kcc:observedstate:proto=google.cloud.datastream.v1.MongodbProfile
 type MongodbProfileObservedState struct {
 	// Optional. SSL configuration for the MongoDB connection.
 	// +kcc:proto:field=google.cloud.datastream.v1.MongodbProfile.ssl_config
 	SSLConfig *MongodbSSLConfigObservedState `json:"sslConfig,omitempty"`
 }
-*/
 
-/* unreachable type MongodbSSLConfigObservedState
 // +kcc:observedstate:proto=google.cloud.datastream.v1.MongodbSslConfig
 type MongodbSSLConfigObservedState struct {
 	// Output only. Indicates whether the client_key field is set.
@@ -347,7 +736,13 @@ type MongodbSSLConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.datastream.v1.MongodbSslConfig.ca_certificate_set
 	CACertificateSet *bool `json:"caCertificateSet,omitempty"`
 }
-*/
+
+// +kcc:observedstate:proto=google.cloud.datastream.v1.MysqlProfile
+type MysqlProfileObservedState struct {
+	// SSL configuration for the MySQL connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.MysqlProfile.ssl_config
+	SSLConfig *MysqlSSLConfigObservedState `json:"sslConfig,omitempty"`
+}
 
 // +kcc:observedstate:proto=google.cloud.datastream.v1.MysqlSslConfig
 type MysqlSSLConfigObservedState struct {
@@ -364,6 +759,24 @@ type MysqlSSLConfigObservedState struct {
 	CACertificateSet *bool `json:"caCertificateSet,omitempty"`
 }
 
+// +kcc:observedstate:proto=google.cloud.datastream.v1.OracleAsmConfig
+type OracleAsmConfigObservedState struct {
+	// Optional. SSL configuration for the Oracle connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleAsmConfig.oracle_ssl_config
+	OracleSSLConfig *OracleSSLConfigObservedState `json:"oracleSSLConfig,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.datastream.v1.OracleProfile
+type OracleProfileObservedState struct {
+	// Optional. SSL configuration for the Oracle connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.oracle_ssl_config
+	OracleSSLConfig *OracleSSLConfigObservedState `json:"oracleSSLConfig,omitempty"`
+
+	// Optional. Configuration for Oracle ASM connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.OracleProfile.oracle_asm_config
+	OracleAsmConfig *OracleAsmConfigObservedState `json:"oracleAsmConfig,omitempty"`
+}
+
 // +kcc:observedstate:proto=google.cloud.datastream.v1.OracleSslConfig
 type OracleSSLConfigObservedState struct {
 	// Output only. Indicates whether the ca_certificate field has been set for
@@ -371,3 +784,54 @@ type OracleSSLConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.datastream.v1.OracleSslConfig.ca_certificate_set
 	CACertificateSet *bool `json:"caCertificateSet,omitempty"`
 }
+
+/* unreachable type PrivateConnectionObservedState
+// +kcc:observedstate:proto=google.cloud.datastream.v1.PrivateConnection
+type PrivateConnectionObservedState struct {
+	// Output only. Identifier. The resource's name.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. The create time of the resource.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The update time of the resource.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The state of the Private Connection.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. In case of error, the details of the error in a user-friendly
+	//  format.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.error
+	Error *Error `json:"error,omitempty"`
+
+	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.satisfies_pzs
+	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+
+	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnection.satisfies_pzi
+	SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
+}
+*/
+
+/* unreachable type RouteObservedState
+// +kcc:observedstate:proto=google.cloud.datastream.v1.Route
+type RouteObservedState struct {
+	// Output only. Identifier. The resource's name.
+	// +kcc:proto:field=google.cloud.datastream.v1.Route.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. The create time of the resource.
+	// +kcc:proto:field=google.cloud.datastream.v1.Route.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The update time of the resource.
+	// +kcc:proto:field=google.cloud.datastream.v1.Route.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/

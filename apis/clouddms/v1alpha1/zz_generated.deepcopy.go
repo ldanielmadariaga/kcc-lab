@@ -148,6 +148,11 @@ func (in *CloudDMSConversionWorkspaceSpec) DeepCopyInto(out *CloudDMSConversionW
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -332,6 +337,11 @@ func (in *CloudDMSMigrationJobSpec) DeepCopyInto(out *CloudDMSMigrationJobSpec) 
 	if in.ProjectRef != nil {
 		in, out := &in.ProjectRef, &out.ProjectRef
 		*out = new(v1beta1.ProjectRef)
+		**out = **in
+	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
 		**out = **in
 	}
 	if in.ResourceID != nil {
@@ -573,6 +583,11 @@ func (in *CloudDMSPrivateConnectionSpec) DeepCopyInto(out *CloudDMSPrivateConnec
 	if in.ProjectRef != nil {
 		in, out := &in.ProjectRef, &out.ProjectRef
 		*out = new(v1beta1.ProjectRef)
+		**out = **in
+	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
 		**out = **in
 	}
 	if in.ResourceID != nil {

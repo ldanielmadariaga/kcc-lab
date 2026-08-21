@@ -6,7 +6,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: networkconnectivityregionalendpoints.networkconnectivity.cnrm.cloud.google.com
 spec:
@@ -67,71 +66,33 @@ spec:
                   This field is reflected in the PSC Forwarding Rule configuration
                   to enable global access.
                 type: string
-              addressRef:
-                description: Optional. The IP Address of the Regional Endpoint. When
+              address:
+                description: 'Optional. The IP Address of the Regional Endpoint. When
                   no address is provided, an IP from the subnetwork is allocated.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed ComputeAddress
-                      resource. Should be in the format "projects/{{projectID}}/global/addresses/{{addressID}}"
-                      or "projects/{{projectID}}/regions/{{region}}/addresses/{{addressID}}".
-                    type: string
-                  name:
-                    description: The name of a ComputeAddress resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a ComputeAddress resource.
-                    type: string
-                type: object
+                  Use one of the following formats: * IPv4 address as in `10.0.0.1`
+                  * Address resource URI as in `projects/{project}/regions/{region}/addresses/{address_name}`
+                  for an IPv4 or IPv6 address.'
+                type: string
+              createTime:
+                description: Output only. Time when the RegionalEndpoint was created.
+                type: string
               description:
                 description: Optional. A description of this resource.
                 type: string
-              location:
-                description: The location of this resource.
+              ipAddress:
+                description: Output only. The literal IP address of the PSC Forwarding
+                  Rule created on behalf of the customer. This field is deprecated.
+                  Use address instead.
                 type: string
-              networkRef:
-                description: Optional. The name of the VPC network for this private
-                  regional endpoint.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed ComputeNetwork
-                      resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
-                    type: string
-                  name:
-                    description: The name of a ComputeNetwork resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a ComputeNetwork resource.
-                    type: string
+              labels:
+                additionalProperties:
+                  type: string
+                description: User-defined labels.
                 type: object
+              network:
+                description: 'Optional. The name of the VPC network for this private
+                  regional endpoint. Format: `projects/{project}/global/networks/{network}`'
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -164,49 +125,28 @@ spec:
                     description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
+              pscForwardingRule:
+                description: 'Output only. The resource reference of the PSC Forwarding
+                  Rule created on behalf of the customer. Format: `//compute.googleapis.com/projects/{project}/regions/{region}/forwardingRules/{forwarding_rule_name}`'
+                type: string
               resourceID:
                 description: The NetworkConnectivityRegionalEndpoint name. If not
                   given, the metadata.name will be used.
                 type: string
-              subnetworkRef:
-                description: Optional. The name of the subnetwork from which the IP
-                  address will be allocated.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed ComputeSubnetwork
-                      resource. Should be in the format "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
-                    type: string
-                  name:
-                    description: The name of a ComputeSubnetwork resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a ComputeSubnetwork resource.
-                    type: string
-                type: object
+              subnetwork:
+                description: 'Optional. The name of the subnetwork from which the
+                  IP address will be allocated. Format: `projects/{project}/regions/{region}/subnetworks/{subnetwork}`'
+                type: string
               targetGoogleAPI:
                 description: 'Required. The service endpoint this private regional
                   endpoint connects to. Format: `{apiname}.{region}.p.rep.googleapis.com`
                   Example: "cloudkms.us-central1.p.rep.googleapis.com".'
                 type: string
+              updateTime:
+                description: Output only. Time when the RegionalEndpoint was updated.
+                type: string
             required:
-            - accessType
-            - location
             - projectRef
-            - targetGoogleAPI
             type: object
           status:
             description: NetworkConnectivityRegionalEndpointStatus defines the config
@@ -253,22 +193,6 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
-                properties:
-                  createTime:
-                    description: Output only. Time when the RegionalEndpoint was created.
-                    type: string
-                  ipAddress:
-                    description: Output only. The literal IP address of the PSC Forwarding
-                      Rule created on behalf of the customer. This field is deprecated.
-                      Use address instead.
-                    type: string
-                  pscForwardingRule:
-                    description: 'Output only. The resource reference of the PSC Forwarding
-                      Rule created on behalf of the customer. Format: `//compute.googleapis.com/projects/{project}/regions/{region}/forwardingRules/{forwarding_rule_name}`'
-                    type: string
-                  updateTime:
-                    description: Output only. Time when the RegionalEndpoint was updated.
-                    type: string
                 type: object
             type: object
         required:

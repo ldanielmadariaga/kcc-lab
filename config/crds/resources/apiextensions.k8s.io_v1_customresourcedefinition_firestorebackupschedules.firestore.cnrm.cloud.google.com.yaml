@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: firestorebackupschedules.firestore.cnrm.cloud.google.com
 spec:
@@ -67,8 +66,8 @@ spec:
               dailyRecurrence:
                 description: For a schedule that runs daily.
                 type: object
-              databaseRef:
-                description: The database that this resource belongs to.
+              projectRef:
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -85,16 +84,24 @@ spec:
                   - external
                 properties:
                   external:
-                    description: A reference to an externally managed Firestore database
-                      resource. Should be in the format "projects/{{projectID}}/databases/{{databaseID}}".
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
                     type: string
                   name:
-                    description: The name of a FirestoreDatabase resource.
+                    description: The `name` field of a `Project` resource.
                     type: string
                   namespace:
-                    description: The namespace of a FirestoreDatabase resource.
+                    description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
+              resourceID:
+                description: The FirestoreBackupSchedule name. If not given, the metadata.name
+                  will be used.
+                type: string
               retention:
                 description: |-
                   At what relative time in the future, compared to its creation time,
@@ -113,7 +120,7 @@ spec:
                     type: string
                 type: object
             required:
-            - databaseRef
+            - projectRef
             type: object
           status:
             description: FirestoreBackupScheduleStatus defines the config connector
@@ -167,16 +174,6 @@ spec:
                        effective since.
 
                        No backups will be created for this schedule before this time.
-                    type: string
-                  name:
-                    description: |-
-                      Output only. The unique backup schedule identifier across all locations and
-                       databases for the given project.
-
-                       This will be auto-assigned.
-
-                       Format is
-                       `projects/{project}/databases/{database}/backupSchedules/{backup_schedule}`
                     type: string
                   updateTime:
                     description: Output only. The timestamp at which this backup schedule

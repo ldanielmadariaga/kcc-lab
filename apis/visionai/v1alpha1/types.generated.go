@@ -21,7 +21,39 @@
 
 package v1alpha1
 
-import apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+// +kcc:proto=google.cloud.visionai.v1.AIEnabledDevicesInputConfig
+type AiEnabledDevicesInputConfig struct {
+}
+
+/* unreachable type Application
+// +kcc:proto=google.cloud.visionai.v1.Application
+type Application struct {
+	// name of resource
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.name
+	Name *string `json:"name,omitempty"`
+
+	// Labels as key value pairs
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. A user friendly display name for the solution.
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.display_name
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// A description for this application.
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.description
+	Description *string `json:"description,omitempty"`
+
+	// Application graph configuration.
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.application_configs
+	ApplicationConfigs *ApplicationConfigs `json:"applicationConfigs,omitempty"`
+
+	// Billing mode of the application.
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.billing_mode
+	BillingMode *string `json:"billingMode,omitempty"`
+}
+*/
 
 // +kcc:proto=google.cloud.visionai.v1.Application.ApplicationRuntimeInfo
 type Application_ApplicationRuntimeInfo struct {
@@ -237,6 +269,10 @@ type GCSOutputConfig struct {
 	GCSPath *string `json:"gcsPath,omitempty"`
 }
 
+// +kcc:proto=google.cloud.visionai.v1.GeneralObjectDetectionConfig
+type GeneralObjectDetectionConfig struct {
+}
+
 // +kcc:proto=google.cloud.visionai.v1.MachineSpec
 type MachineSpec struct {
 	// Immutable. The type of the machine.
@@ -262,6 +298,24 @@ type MachineSpec struct {
 	// The number of accelerators to attach to the machine.
 	// +kcc:proto:field=google.cloud.visionai.v1.MachineSpec.accelerator_count
 	AcceleratorCount *int32 `json:"acceleratorCount,omitempty"`
+}
+
+// +kcc:proto=google.cloud.visionai.v1.MediaWarehouseConfig
+type MediaWarehouseConfig struct {
+	// Resource name of the Media Warehouse corpus.
+	//  Format:
+	//  projects/${project_id}/locations/${location_id}/corpora/${corpus_id}
+	// +kcc:proto:field=google.cloud.visionai.v1.MediaWarehouseConfig.corpus
+	Corpus *string `json:"corpus,omitempty"`
+
+	// Deprecated.
+	// +kcc:proto:field=google.cloud.visionai.v1.MediaWarehouseConfig.region
+	Region *string `json:"region,omitempty"`
+
+	// The duration for which all media assets, associated metadata, and search
+	//  documents can exist.
+	// +kcc:proto:field=google.cloud.visionai.v1.MediaWarehouseConfig.ttl
+	TTL *string `json:"ttl,omitempty"`
 }
 
 // +kcc:proto=google.cloud.visionai.v1.Node
@@ -595,6 +649,10 @@ type TagRecognizerConfig struct {
 	TagParsingConfig *TagParsingConfig `json:"tagParsingConfig,omitempty"`
 }
 
+// +kcc:proto=google.cloud.visionai.v1.UniversalInputConfig
+type UniversalInputConfig struct {
+}
+
 // +kcc:proto=google.cloud.visionai.v1.VertexAutoMLVideoConfig
 type VertexAutoMlVideoConfig struct {
 	// Only entities with higher score than the threshold will be returned.
@@ -694,3 +752,25 @@ type VideoStreamInputConfig struct {
 	// +kcc:proto:field=google.cloud.visionai.v1.VideoStreamInputConfig.streams_with_annotation
 	StreamsWithAnnotation []StreamWithAnnotation `json:"streamsWithAnnotation,omitempty"`
 }
+
+/* unreachable type ApplicationObservedState
+// +kcc:observedstate:proto=google.cloud.visionai.v1.Application
+type ApplicationObservedState struct {
+	// Output only. [Output only] Create timestamp
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. [Output only] Update timestamp
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Application graph runtime info. Only exists when application
+	//  state equals to DEPLOYED.
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.runtime_info
+	RuntimeInfo *Application_ApplicationRuntimeInfo `json:"runtimeInfo,omitempty"`
+
+	// Output only. State of the application.
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.state
+	State *string `json:"state,omitempty"`
+}
+*/

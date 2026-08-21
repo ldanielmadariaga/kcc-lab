@@ -261,6 +261,9 @@ spec:
                   scheme. Supported values: `INTERNAL_MANAGED` and `EXTERNAL_MANAGED`.
                   For more information, refer to [Backend services overview](https://cloud.google.com/load-balancing/docs/backend-service).'
                 type: string
+              location:
+                description: The location of this resource.
+                type: string
               metadata:
                 description: |-
                   Optional. The metadata provided here is included as part of the
@@ -324,6 +327,7 @@ spec:
             required:
             - extensionChains
             - loadBalancingScheme
+            - location
             - projectRef
             type: object
           status:

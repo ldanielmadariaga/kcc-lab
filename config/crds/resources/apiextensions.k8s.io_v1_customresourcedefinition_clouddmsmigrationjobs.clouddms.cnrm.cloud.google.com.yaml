@@ -138,6 +138,9 @@ spec:
 
                    Example: `{ "name": "wrench", "mass": "1.3kg", "count": "3" }`.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               performanceConfig:
                 description: Optional. Data dump parallelism settings used by the
                   migration. Currently applicable only for MySQL to Cloud SQL for
@@ -243,6 +246,7 @@ spec:
                 type: object
             required:
             - destination
+            - location
             - projectRef
             - source
             - type

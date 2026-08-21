@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,34 +28,88 @@ type SQLAdminBackupSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The SQLInstance that this backup belongs to.
-	// +kubebuilder:validation:Required
-	InstanceRef *refsv1beta1.SQLInstanceRef `json:"instanceRef"`
+	// The SQLAdminBackup name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
+	// This is always `sql#backupRun`.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.kind
+	Kind *string `json:"kind,omitempty"`
 
-	// The location of this resource.
-	// +kubebuilder:validation:Required
-	Location *string `json:"location"`
+	// The status of this run.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.status
+	Status *string `json:"status,omitempty"`
 
-	// The description of this backup, only applicable to on-demand backups.
-	// +kubebuilder:validation:Optional
+	// The time the run was enqueued in UTC timezone in
+	//  [RFC 3339](https://tools.ietf.org/html/rfc3339) format, for example
+	//  `2012-11-15T16:19:00.094Z`.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.enqueued_time
+	EnqueuedTime *string `json:"enqueuedTime,omitempty"`
+
+	// The identifier for this backup run. Unique only for a specific Cloud SQL
+	//  instance.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.id
+	ID *int64 `json:"id,omitempty"`
+
+	// The time the backup operation actually started in UTC timezone in
+	//  [RFC 3339](https://tools.ietf.org/html/rfc3339) format, for example
+	//  `2012-11-15T16:19:00.094Z`.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.start_time
+	StartTime *string `json:"startTime,omitempty"`
+
+	// The time the backup operation completed in UTC timezone in
+	//  [RFC 3339](https://tools.ietf.org/html/rfc3339) format, for example
+	//  `2012-11-15T16:19:00.094Z`.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.end_time
+	EndTime *string `json:"endTime,omitempty"`
+
+	// Information about why the backup operation failed. This is only present if
+	//  the run has the FAILED status.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.error
+	Error *OperationError `json:"error,omitempty"`
+
+	// The type of this run; can be either "AUTOMATED" or "ON_DEMAND" or "FINAL".
+	//  This field defaults to "ON_DEMAND" and is ignored, when specified for
+	//  insert requests.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.type
+	Type *string `json:"type,omitempty"`
+
+	// The description of this run, only applicable to on-demand backups.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.description
 	Description *string `json:"description,omitempty"`
 
+	// The start time of the backup window during which this the backup was
+	//  attempted in [RFC 3339](https://tools.ietf.org/html/rfc3339) format, for
+	//  example `2012-11-15T16:19:00.094Z`.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.window_start_time
+	WindowStartTime *string `json:"windowStartTime,omitempty"`
+
+	// Name of the database instance.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.instance
+	Instance *string `json:"instance,omitempty"`
+
+	// The URI of this resource.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+
+	// Location of the backups.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.location
+	Location *string `json:"location,omitempty"`
+
 	// Encryption configuration specific to a backup.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.disk_encryption_configuration
 	DiskEncryptionConfiguration *DiskEncryptionConfiguration `json:"diskEncryptionConfiguration,omitempty"`
 
+	// Encryption status specific to a backup.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.disk_encryption_status
+	DiskEncryptionStatus *DiskEncryptionStatus `json:"diskEncryptionStatus,omitempty"`
+
 	// Specifies the kind of backup, PHYSICAL or DEFAULT_SNAPSHOT.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.backup_kind
 	BackupKind *string `json:"backupKind,omitempty"`
 
-	// The SQLAdminBackup name (ID). If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
-}
-
-// +kcc:proto=google.cloud.sql.v1.DiskEncryptionConfiguration
-type DiskEncryptionConfiguration struct {
-	// KMS key used to encrypt the backup.
-	KMSKeyRef *refsv1beta1.KMSCryptoKeyRef `json:"kmsKeyRef,omitempty"`
+	// Backup time zone to prevent restores to an instance with
+	//  a different time zone. Now relevant only for SQL Server.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.time_zone
+	TimeZone *string `json:"timeZone,omitempty"`
 }
 
 // SQLAdminBackupStatus defines the config connector machine state of SQLAdminBackup
@@ -77,61 +131,9 @@ type SQLAdminBackupStatus struct {
 // SQLAdminBackupObservedState is the state of the SQLAdminBackup resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.sql.v1.BackupRun
 type SQLAdminBackupObservedState struct {
-	// The time the run was enqueued in UTC timezone in RFC 3339 format.
-	EnqueuedTime *string `json:"enqueuedTime,omitempty"`
-
-	// The identifier for this backup run. Unique only for a specific Cloud SQL instance.
-	ID *int64 `json:"id,omitempty"`
-
-	// The time the backup operation actually started in UTC timezone in RFC 3339 format.
-	StartTime *string `json:"startTime,omitempty"`
-
-	// The time the backup operation completed in UTC timezone in RFC 3339 format.
-	EndTime *string `json:"endTime,omitempty"`
-
-	// Information about why the backup operation failed. This is only present if the run has the FAILED status.
-	Error *OperationError `json:"error,omitempty"`
-
-	// The status of this run.
-	Status *string `json:"status,omitempty"`
-
-	// The type of this run; can be either "AUTOMATED" or "ON_DEMAND" or "FINAL".
-	Type *string `json:"type,omitempty"`
-
-	// The start time of the backup window during which this the backup was attempted in RFC 3339 format.
-	WindowStartTime *string `json:"windowStartTime,omitempty"`
-
-	// Encryption status specific to a backup.
-	DiskEncryptionStatus *DiskEncryptionStatus `json:"diskEncryptionStatus,omitempty"`
-
-	// Backup time zone to prevent restores to an instance with a different time zone. Now relevant only for SQL Server.
-	TimeZone *string `json:"timeZone,omitempty"`
-}
-
-// +kcc:proto=google.cloud.sql.v1.DiskEncryptionStatus
-type DiskEncryptionStatus struct {
-	// KMS key version used to encrypt the Cloud SQL instance resource
-	// +kcc:proto:field=google.cloud.sql.v1.DiskEncryptionStatus.kms_key_version_name
-	KMSKeyVersionName *string `json:"kmsKeyVersionName,omitempty"`
-
-	// This is always `sql#diskEncryptionStatus`.
-	// +kcc:proto:field=google.cloud.sql.v1.DiskEncryptionStatus.kind
-	Kind *string `json:"kind,omitempty"`
-}
-
-// +kcc:proto=google.cloud.sql.v1.OperationError
-type OperationError struct {
-	// This is always `sql#operationError`.
-	// +kcc:proto:field=google.cloud.sql.v1.OperationError.kind
-	Kind *string `json:"kind,omitempty"`
-
-	// Identifies the specific error that occurred.
-	// +kcc:proto:field=google.cloud.sql.v1.OperationError.code
-	Code *string `json:"code,omitempty"`
-
-	// Additional information about the error encountered.
-	// +kcc:proto:field=google.cloud.sql.v1.OperationError.message
-	Message *string `json:"message,omitempty"`
+	// Output only. The maximum chargeable bytes for the backup.
+	// +kcc:proto:field=google.cloud.sql.v1.BackupRun.max_chargeable_bytes
+	MaxChargeableBytes *int64 `json:"maxChargeableBytes,omitempty"`
 }
 
 // +genclient
@@ -140,7 +142,6 @@ type OperationError struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

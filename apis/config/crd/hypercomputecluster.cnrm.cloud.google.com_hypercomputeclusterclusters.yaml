@@ -61,6 +61,103 @@ spec:
             description: HypercomputeClusterClusterSpec defines the desired state
               of HypercomputeClusterCluster
             properties:
+              computeResources:
+                additionalProperties:
+                  properties:
+                    config:
+                      description: Required. Immutable. Configuration for this compute
+                        resource, which describes how it should be created at runtime.
+                      properties:
+                        newFlexStartInstances:
+                          description: Optional. Immutable. If set, indicates that
+                            this resource should use flex-start VMs.
+                          properties:
+                            machineType:
+                              description: Required. Immutable. Name of the Compute
+                                Engine [machine type](https://cloud.google.com/compute/docs/machine-resource)
+                                to use, e.g. `n2-standard-2`.
+                              type: string
+                            maxDuration:
+                              description: Required. Immutable. Specifies the time
+                                limit for created instances. Instances will be terminated
+                                at the end of this duration.
+                              type: string
+                            zone:
+                              description: Required. Immutable. Name of the zone in
+                                which VM instances should run, e.g., `us-central1-a`.
+                                Must be in the same region as the cluster, and must
+                                match the zone of any other resources specified in
+                                the cluster.
+                              type: string
+                          required:
+                          - machineType
+                          - maxDuration
+                          - zone
+                          type: object
+                        newOnDemandInstances:
+                          description: Optional. Immutable. If set, indicates that
+                            this resource should use on-demand VMs.
+                          properties:
+                            machineType:
+                              description: Required. Immutable. Name of the Compute
+                                Engine [machine type](https://cloud.google.com/compute/docs/machine-resource)
+                                to use, e.g. `n2-standard-2`.
+                              type: string
+                            zone:
+                              description: Required. Immutable. Name of the zone in
+                                which VM instances should run, e.g., `us-central1-a`.
+                                Must be in the same region as the cluster, and must
+                                match the zone of any other resources specified in
+                                the cluster.
+                              type: string
+                          required:
+                          - machineType
+                          - zone
+                          type: object
+                        newReservedInstances:
+                          description: Optional. Immutable. If set, indicates that
+                            this resource should use reserved VMs.
+                          properties:
+                            reservation:
+                              description: Optional. Immutable. Name of the reservation
+                                from which VM instances should be created, in the
+                                format `projects/{project}/zones/{zone}/reservations/{reservation}`.
+                              type: string
+                          type: object
+                        newSpotInstances:
+                          description: Optional. Immutable. If set, indicates that
+                            this resource should use spot VMs.
+                          properties:
+                            machineType:
+                              description: Required. Immutable. Name of the Compute
+                                Engine [machine type](https://cloud.google.com/compute/docs/machine-resource)
+                                to use, e.g. `n2-standard-2`.
+                              type: string
+                            terminationAction:
+                              description: Optional. Termination action for the instance.
+                                If not specified, Compute Engine sets the termination
+                                action to DELETE.
+                              type: string
+                            zone:
+                              description: Required. Immutable. Name of the zone in
+                                which VM instances should run, e.g., `us-central1-a`.
+                                Must be in the same region as the cluster, and must
+                                match the zone of any other resources specified in
+                                the cluster.
+                              type: string
+                          required:
+                          - machineType
+                          - zone
+                          type: object
+                      type: object
+                  required:
+                  - config
+                  type: object
+                description: Optional. Compute resources available to the cluster.
+                  Keys specify the ID of the compute resource by which it can be referenced
+                  elsewhere, and must conform to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034)
+                  (lower-case, alphanumeric, and at most 63 characters).
+                type: object
               description:
                 description: Optional. User-provided description of the cluster.
                 type: string
@@ -74,6 +171,59 @@ spec:
               location:
                 description: The location of this resource.
                 type: string
+              networkResources:
+                additionalProperties:
+                  properties:
+                    config:
+                      description: Immutable. Configuration for this network resource,
+                        which describes how it should be created or imported. This
+                        field only controls how the network resource is initially
+                        created or imported. Subsequent changes to the network resource
+                        should be made via the resource's API and will not be reflected
+                        in the configuration.
+                      properties:
+                        existingNetwork:
+                          description: Optional. Immutable. If set, indicates that
+                            an existing network should be imported.
+                          properties:
+                            network:
+                              description: Required. Immutable. Name of the network
+                                to import, in the format `projects/{project}/global/networks/{network}`.
+                              type: string
+                            subnetwork:
+                              description: Required. Immutable. Particular subnetwork
+                                to use, in the format `projects/{project}/regions/{region}/subnetworks/{subnetwork}`.
+                              type: string
+                          required:
+                          - network
+                          - subnetwork
+                          type: object
+                        newNetwork:
+                          description: Optional. Immutable. If set, indicates that
+                            a new network should be created.
+                          properties:
+                            description:
+                              description: Optional. Immutable. Description of the
+                                network. Maximum of 2048 characters.
+                              type: string
+                            network:
+                              description: Required. Immutable. Name of the network
+                                to create, in the format `projects/{project}/global/networks/{network}`.
+                              type: string
+                          required:
+                          - network
+                          type: object
+                      type: object
+                    network:
+                      description: Reference to a network in Google Compute Engine.
+                      type: object
+                  type: object
+                description: Optional. Network resources available to the cluster.
+                  Must contain at most one value. Keys specify the ID of the network
+                  resource by which it can be referenced elsewhere, and must conform
+                  to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034) (lower-case,
+                  alphanumeric, and at most 63 characters).
+                type: object
               orchestrator:
                 description: Optional. Orchestrator that is responsible for scheduling
                   and running jobs on the cluster.
@@ -343,6 +493,187 @@ spec:
                 description: The HypercomputeClusterCluster name. If not given, the
                   metadata.name will be used.
                 type: string
+              storageResources:
+                additionalProperties:
+                  properties:
+                    bucket:
+                      description: Reference to a Google Cloud Storage bucket. Populated
+                        if and only if the storage resource was configured to use
+                        Google Cloud Storage.
+                      type: object
+                    config:
+                      description: Required. Immutable. Configuration for this storage
+                        resource, which describes how it should be created or imported.
+                        This field only controls how the storage resource is initially
+                        created or imported. Subsequent changes to the storage resource
+                        should be made via the resource's API and will not be reflected
+                        in the configuration.
+                      properties:
+                        existingBucket:
+                          description: Optional. Immutable. If set, indicates that
+                            an existing Cloud Storage bucket should be imported.
+                          properties:
+                            bucket:
+                              description: Required. Immutable. Name of the Cloud
+                                Storage bucket to import.
+                              type: string
+                          required:
+                          - bucket
+                          type: object
+                        existingFilestore:
+                          description: Optional. Immutable. If set, indicates that
+                            an existing Filestore instance should be imported.
+                          properties:
+                            filestore:
+                              description: Required. Immutable. Name of the Filestore
+                                instance to import, in the format `projects/{project}/locations/{location}/instances/{instance}`
+                              type: string
+                          required:
+                          - filestore
+                          type: object
+                        existingLustre:
+                          description: Optional. Immutable. If set, indicates that
+                            an existing Managed Lustre instance should be imported.
+                          properties:
+                            lustre:
+                              description: Required. Immutable. Name of the Managed
+                                Lustre instance to import, in the format `projects/{project}/locations/{location}/instances/{instance}`
+                              type: string
+                          required:
+                          - lustre
+                          type: object
+                        newBucket:
+                          description: Optional. Immutable. If set, indicates that
+                            a new Cloud Storage bucket should be created.
+                          properties:
+                            autoclass:
+                              description: Optional. Immutable. If set, indicates
+                                that the bucket should use [Autoclass](https://cloud.google.com/storage/docs/autoclass).
+                              properties:
+                                enabled:
+                                  description: Required. Enables Auto-class feature.
+                                  type: boolean
+                                terminalStorageClass:
+                                  description: Optional. Terminal storage class of
+                                    the autoclass bucket
+                                  type: string
+                              required:
+                              - enabled
+                              type: object
+                            bucket:
+                              description: Required. Immutable. Name of the Cloud
+                                Storage bucket to create.
+                              type: string
+                            hierarchicalNamespace:
+                              description: Optional. Immutable. If set, indicates
+                                that the bucket should use [hierarchical namespaces](https://cloud.google.com/storage/docs/hns-overview).
+                              properties:
+                                enabled:
+                                  description: Required. Enables hierarchical namespace
+                                    setup for the bucket.
+                                  type: boolean
+                              required:
+                              - enabled
+                              type: object
+                            storageClass:
+                              description: Optional. Immutable. If set, uses the provided
+                                storage class as the bucket's default storage class.
+                              type: string
+                          required:
+                          - bucket
+                          type: object
+                        newFilestore:
+                          description: Optional. Immutable. If set, indicates that
+                            a new Filestore instance should be created.
+                          properties:
+                            description:
+                              description: Optional. Immutable. Description of the
+                                instance. Maximum of 2048 characters.
+                              type: string
+                            fileShares:
+                              description: Required. Immutable. File system shares
+                                on the instance. Exactly one file share must be specified.
+                              items:
+                                properties:
+                                  capacityGB:
+                                    description: Required. Size of the filestore in
+                                      GB. Must be between 1024 and 102400, and must
+                                      meet scalability requirements described at https://cloud.google.com/filestore/docs/service-tiers.
+                                    format: int64
+                                    type: integer
+                                  fileShare:
+                                    description: Required. Filestore share location
+                                    type: string
+                                required:
+                                - capacityGB
+                                - fileShare
+                                type: object
+                              type: array
+                            filestore:
+                              description: Required. Immutable. Name of the Filestore
+                                instance to create, in the format `projects/{project}/locations/{location}/instances/{instance}`
+                              type: string
+                            protocol:
+                              description: Optional. Immutable. Access protocol to
+                                use for all file shares in the instance. Defaults
+                                to NFS V3 if not set.
+                              type: string
+                            tier:
+                              description: Required. Immutable. Service tier to use
+                                for the instance.
+                              type: string
+                          required:
+                          - fileShares
+                          - filestore
+                          - tier
+                          type: object
+                        newLustre:
+                          description: Optional. Immutable. If set, indicates that
+                            a new Managed Lustre instance should be created.
+                          properties:
+                            capacityGB:
+                              description: Required. Immutable. Storage capacity of
+                                the instance in gibibytes (GiB). Allowed values are
+                                between 18000 and 7632000.
+                              format: int64
+                              type: integer
+                            description:
+                              description: Optional. Immutable. Description of the
+                                Managed Lustre instance. Maximum of 2048 characters.
+                              type: string
+                            filesystem:
+                              description: Required. Immutable. Filesystem name for
+                                this instance. This name is used by client-side tools,
+                                including when mounting the instance. Must be 8 characters
+                                or less and can only contain letters and numbers.
+                              type: string
+                            lustre:
+                              description: Required. Immutable. Name of the Managed
+                                Lustre instance to create, in the format `projects/{project}/locations/{location}/instances/{instance}`
+                              type: string
+                          required:
+                          - capacityGB
+                          - filesystem
+                          - lustre
+                          type: object
+                      type: object
+                    filestore:
+                      description: Reference to a Filestore instance. Populated if
+                        and only if the storage resource was configured to use Filestore.
+                      type: object
+                    lustre:
+                      description: Reference to a Managed Lustre instance. Populated
+                        if and only if the storage resource was configured to use
+                        Managed Lustre.
+                      type: object
+                  required:
+                  - config
+                  type: object
+                description: Optional. Storage resources available to the cluster.
+                  Keys specify the ID of the storage resource by which it can be referenced
+                  elsewhere, and must conform to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034)
+                  (lower-case, alphanumeric, and at most 63 characters).
+                type: object
             required:
             - location
             - projectRef

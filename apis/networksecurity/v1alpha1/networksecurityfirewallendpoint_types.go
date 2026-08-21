@@ -28,9 +28,6 @@ type NetworkSecurityFirewallEndpointSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The location of this resource.
-	Location string `json:"location"`
-
 	// The NetworkSecurityFirewallEndpoint name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. Description of the firewall endpoint. Max length 2048

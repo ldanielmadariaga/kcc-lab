@@ -5,6 +5,7 @@
 # While a resource has entries here, TestMissingRefs suppresses its [refs]
 # findings. Clearing them graduates the resource and the ratchet applies.
 
+kind=BigQueryMigrationMigrationWorkflow group=bigquerymigration.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 
 # Fields dropped because the generator could not produce a Go type for
 # them. They are absent from the CRD. Shared nested messages, so they are

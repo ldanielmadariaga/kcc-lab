@@ -29,6 +29,68 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
+func AccountConnector_FromProto(mapCtx *direct.MapContext, in *pb.AccountConnector) *krm.AccountConnector {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AccountConnector{}
+	out.ProviderOauthConfig = ProviderOAuthConfig_FromProto(mapCtx, in.GetProviderOauthConfig())
+	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	out.Annotations = in.Annotations
+	out.Etag = direct.LazyPtr(in.GetEtag())
+	out.Labels = in.Labels
+	// MISSING: OauthStartURI
+	return out
+}
+func AccountConnector_ToProto(mapCtx *direct.MapContext, in *krm.AccountConnector) *pb.AccountConnector {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AccountConnector{}
+	if oneof := ProviderOAuthConfig_ToProto(mapCtx, in.ProviderOauthConfig); oneof != nil {
+		out.AccountConnectorConfig = &pb.AccountConnector_ProviderOauthConfig{ProviderOauthConfig: oneof}
+	}
+	out.Name = direct.ValueOf(in.Name)
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	out.Annotations = in.Annotations
+	out.Etag = direct.ValueOf(in.Etag)
+	out.Labels = in.Labels
+	// MISSING: OauthStartURI
+	return out
+}
+func AccountConnectorObservedState_FromProto(mapCtx *direct.MapContext, in *pb.AccountConnector) *krm.AccountConnectorObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AccountConnectorObservedState{}
+	// MISSING: ProviderOauthConfig
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: Labels
+	out.OauthStartURI = direct.LazyPtr(in.GetOauthStartUri())
+	return out
+}
+func AccountConnectorObservedState_ToProto(mapCtx *direct.MapContext, in *krm.AccountConnectorObservedState) *pb.AccountConnector {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AccountConnector{}
+	// MISSING: ProviderOauthConfig
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: Labels
+	out.OauthStartUri = direct.ValueOf(in.OauthStartURI)
+	return out
+}
 func AppHubWorkload_FromProto(mapCtx *direct.MapContext, in *pb.AppHubWorkload) *krm.AppHubWorkload {
 	if in == nil {
 		return nil
@@ -191,6 +253,134 @@ func BitbucketDataCenterConfigObservedState_ToProto(mapCtx *direct.MapContext, i
 	// MISSING: ServiceDirectoryConfig
 	// MISSING: SSLCACertificate
 	out.ServerVersion = direct.ValueOf(in.ServerVersion)
+	return out
+}
+func Connection_FromProto(mapCtx *direct.MapContext, in *pb.Connection) *krm.Connection {
+	if in == nil {
+		return nil
+	}
+	out := &krm.Connection{}
+	out.GithubConfig = GitHubConfig_FromProto(mapCtx, in.GetGithubConfig())
+	out.GithubEnterpriseConfig = GitHubEnterpriseConfig_FromProto(mapCtx, in.GetGithubEnterpriseConfig())
+	out.GitlabConfig = GitLabConfig_FromProto(mapCtx, in.GetGitlabConfig())
+	out.GitlabEnterpriseConfig = GitLabEnterpriseConfig_FromProto(mapCtx, in.GetGitlabEnterpriseConfig())
+	out.BitbucketDataCenterConfig = BitbucketDataCenterConfig_FromProto(mapCtx, in.GetBitbucketDataCenterConfig())
+	out.BitbucketCloudConfig = BitbucketCloudConfig_FromProto(mapCtx, in.GetBitbucketCloudConfig())
+	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	out.Labels = in.Labels
+	// MISSING: InstallationState
+	out.Disabled = direct.LazyPtr(in.GetDisabled())
+	// MISSING: Reconciling
+	out.Annotations = in.Annotations
+	out.Etag = direct.LazyPtr(in.GetEtag())
+	// MISSING: Uid
+	out.CryptoKeyConfig = CryptoKeyConfig_FromProto(mapCtx, in.GetCryptoKeyConfig())
+	out.GitProxyConfig = GitProxyConfig_FromProto(mapCtx, in.GetGitProxyConfig())
+	return out
+}
+func Connection_ToProto(mapCtx *direct.MapContext, in *krm.Connection) *pb.Connection {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Connection{}
+	if oneof := GitHubConfig_ToProto(mapCtx, in.GithubConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GithubConfig{GithubConfig: oneof}
+	}
+	if oneof := GitHubEnterpriseConfig_ToProto(mapCtx, in.GithubEnterpriseConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GithubEnterpriseConfig{GithubEnterpriseConfig: oneof}
+	}
+	if oneof := GitLabConfig_ToProto(mapCtx, in.GitlabConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GitlabConfig{GitlabConfig: oneof}
+	}
+	if oneof := GitLabEnterpriseConfig_ToProto(mapCtx, in.GitlabEnterpriseConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GitlabEnterpriseConfig{GitlabEnterpriseConfig: oneof}
+	}
+	if oneof := BitbucketDataCenterConfig_ToProto(mapCtx, in.BitbucketDataCenterConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_BitbucketDataCenterConfig{BitbucketDataCenterConfig: oneof}
+	}
+	if oneof := BitbucketCloudConfig_ToProto(mapCtx, in.BitbucketCloudConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_BitbucketCloudConfig{BitbucketCloudConfig: oneof}
+	}
+	out.Name = direct.ValueOf(in.Name)
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	out.Labels = in.Labels
+	// MISSING: InstallationState
+	out.Disabled = direct.ValueOf(in.Disabled)
+	// MISSING: Reconciling
+	out.Annotations = in.Annotations
+	out.Etag = direct.ValueOf(in.Etag)
+	// MISSING: Uid
+	out.CryptoKeyConfig = CryptoKeyConfig_ToProto(mapCtx, in.CryptoKeyConfig)
+	out.GitProxyConfig = GitProxyConfig_ToProto(mapCtx, in.GitProxyConfig)
+	return out
+}
+func ConnectionObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Connection) *krm.ConnectionObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ConnectionObservedState{}
+	out.GithubConfig = GitHubConfigObservedState_FromProto(mapCtx, in.GetGithubConfig())
+	out.GithubEnterpriseConfig = GitHubEnterpriseConfigObservedState_FromProto(mapCtx, in.GetGithubEnterpriseConfig())
+	out.GitlabConfig = GitLabConfigObservedState_FromProto(mapCtx, in.GetGitlabConfig())
+	out.GitlabEnterpriseConfig = GitLabEnterpriseConfigObservedState_FromProto(mapCtx, in.GetGitlabEnterpriseConfig())
+	out.BitbucketDataCenterConfig = BitbucketDataCenterConfigObservedState_FromProto(mapCtx, in.GetBitbucketDataCenterConfig())
+	out.BitbucketCloudConfig = BitbucketCloudConfigObservedState_FromProto(mapCtx, in.GetBitbucketCloudConfig())
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
+	// MISSING: Labels
+	out.InstallationState = InstallationStateObservedState_FromProto(mapCtx, in.GetInstallationState())
+	// MISSING: Disabled
+	out.Reconciling = direct.LazyPtr(in.GetReconciling())
+	// MISSING: Annotations
+	// MISSING: Etag
+	out.Uid = direct.LazyPtr(in.GetUid())
+	// MISSING: CryptoKeyConfig
+	// MISSING: GitProxyConfig
+	return out
+}
+func ConnectionObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ConnectionObservedState) *pb.Connection {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Connection{}
+	if oneof := GitHubConfigObservedState_ToProto(mapCtx, in.GithubConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GithubConfig{GithubConfig: oneof}
+	}
+	if oneof := GitHubEnterpriseConfigObservedState_ToProto(mapCtx, in.GithubEnterpriseConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GithubEnterpriseConfig{GithubEnterpriseConfig: oneof}
+	}
+	if oneof := GitLabConfigObservedState_ToProto(mapCtx, in.GitlabConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GitlabConfig{GitlabConfig: oneof}
+	}
+	if oneof := GitLabEnterpriseConfigObservedState_ToProto(mapCtx, in.GitlabEnterpriseConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_GitlabEnterpriseConfig{GitlabEnterpriseConfig: oneof}
+	}
+	if oneof := BitbucketDataCenterConfigObservedState_ToProto(mapCtx, in.BitbucketDataCenterConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_BitbucketDataCenterConfig{BitbucketDataCenterConfig: oneof}
+	}
+	if oneof := BitbucketCloudConfigObservedState_ToProto(mapCtx, in.BitbucketCloudConfig); oneof != nil {
+		out.ConnectionConfig = &pb.Connection_BitbucketCloudConfig{BitbucketCloudConfig: oneof}
+	}
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
+	// MISSING: Labels
+	out.InstallationState = InstallationStateObservedState_ToProto(mapCtx, in.InstallationState)
+	// MISSING: Disabled
+	out.Reconciling = direct.ValueOf(in.Reconciling)
+	// MISSING: Annotations
+	// MISSING: Etag
+	out.Uid = direct.ValueOf(in.Uid)
+	// MISSING: CryptoKeyConfig
+	// MISSING: GitProxyConfig
 	return out
 }
 func CryptoKeyConfig_FromProto(mapCtx *direct.MapContext, in *pb.CryptoKeyConfig) *krm.CryptoKeyConfig {
@@ -659,6 +849,86 @@ func GoogleArtifactRegistry_ToProto(mapCtx *direct.MapContext, in *krm.GoogleArt
 	out := &pb.GoogleArtifactRegistry{}
 	out.ProjectId = direct.ValueOf(in.ProjectID)
 	out.ArtifactRegistryPackage = direct.ValueOf(in.ArtifactRegistryPackage)
+	return out
+}
+func InsightsConfig_FromProto(mapCtx *direct.MapContext, in *pb.InsightsConfig) *krm.InsightsConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.InsightsConfig{}
+	out.AppHubApplication = direct.LazyPtr(in.GetAppHubApplication())
+	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: RuntimeConfigs
+	out.ArtifactConfigs = direct.Slice_FromProto(mapCtx, in.ArtifactConfigs, ArtifactConfig_FromProto)
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.Annotations = in.Annotations
+	out.Labels = in.Labels
+	// MISSING: Reconciling
+	// MISSING: Errors
+	return out
+}
+func InsightsConfig_ToProto(mapCtx *direct.MapContext, in *krm.InsightsConfig) *pb.InsightsConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.InsightsConfig{}
+	if oneof := InsightsConfig_AppHubApplication_ToProto(mapCtx, in.AppHubApplication); oneof != nil {
+		out.InsightsConfigContext = oneof
+	}
+	out.Name = direct.ValueOf(in.Name)
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: RuntimeConfigs
+	out.ArtifactConfigs = direct.Slice_ToProto(mapCtx, in.ArtifactConfigs, ArtifactConfig_ToProto)
+	out.State = direct.Enum_ToProto[pb.InsightsConfig_State](mapCtx, in.State)
+	out.Annotations = in.Annotations
+	out.Labels = in.Labels
+	// MISSING: Reconciling
+	// MISSING: Errors
+	return out
+}
+func InsightsConfig_AppHubApplication_ToProto(mapCtx *direct.MapContext, in *string) *pb.InsightsConfig_AppHubApplication {
+	if in == nil {
+		return nil
+	}
+	return &pb.InsightsConfig_AppHubApplication{AppHubApplication: *in}
+}
+func InsightsConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.InsightsConfig) *krm.InsightsConfigObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.InsightsConfigObservedState{}
+	// MISSING: AppHubApplication
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.RuntimeConfigs = direct.Slice_FromProto(mapCtx, in.RuntimeConfigs, RuntimeConfigObservedState_FromProto)
+	// MISSING: ArtifactConfigs
+	// MISSING: State
+	// MISSING: Annotations
+	// MISSING: Labels
+	out.Reconciling = direct.LazyPtr(in.GetReconciling())
+	out.Errors = direct.Slice_FromProto(mapCtx, in.Errors, common.Status_FromProto)
+	return out
+}
+func InsightsConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.InsightsConfigObservedState) *pb.InsightsConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.InsightsConfig{}
+	// MISSING: AppHubApplication
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.RuntimeConfigs = direct.Slice_ToProto(mapCtx, in.RuntimeConfigs, RuntimeConfigObservedState_ToProto)
+	// MISSING: ArtifactConfigs
+	// MISSING: State
+	// MISSING: Annotations
+	// MISSING: Labels
+	out.Reconciling = direct.ValueOf(in.Reconciling)
+	out.Errors = direct.Slice_ToProto(mapCtx, in.Errors, common.Status_ToProto)
 	return out
 }
 func InstallationState_FromProto(mapCtx *direct.MapContext, in *pb.InstallationState) *krm.InstallationState {

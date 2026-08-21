@@ -22,8 +22,6 @@
 
 package v1alpha1
 
-/* found existing non-generated go type "AllocationPolicy", skipping
-
 // +kcc:proto=google.cloud.batch.v1.AllocationPolicy
 type AllocationPolicy struct {
 	// Location where compute resources should be allocated for the Job.
@@ -83,7 +81,6 @@ type AllocationPolicy struct {
 	// +kcc:proto:field=google.cloud.batch.v1.AllocationPolicy.tags
 	Tags []string `json:"tags,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.batch.v1.AllocationPolicy.Accelerator
 type AllocationPolicy_Accelerator struct {
@@ -127,8 +124,6 @@ type AllocationPolicy_AttachedDisk struct {
 	// +kcc:proto:field=google.cloud.batch.v1.AllocationPolicy.AttachedDisk.device_name
 	DeviceName *string `json:"deviceName,omitempty"`
 }
-
-/* found existing non-generated go type "AllocationPolicy_Disk", skipping
 
 // +kcc:proto=google.cloud.batch.v1.AllocationPolicy.Disk
 type AllocationPolicy_Disk struct {
@@ -193,7 +188,6 @@ type AllocationPolicy_Disk struct {
 	// +kcc:proto:field=google.cloud.batch.v1.AllocationPolicy.Disk.disk_interface
 	DiskInterface *string `json:"diskInterface,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.batch.v1.AllocationPolicy.InstancePolicy
 type AllocationPolicy_InstancePolicy struct {
@@ -312,8 +306,6 @@ type AllocationPolicy_LocationPolicy struct {
 	AllowedLocations []string `json:"allowedLocations,omitempty"`
 }
 
-/* found existing non-generated go type "AllocationPolicy_NetworkInterface", skipping
-
 // +kcc:proto=google.cloud.batch.v1.AllocationPolicy.NetworkInterface
 type AllocationPolicy_NetworkInterface struct {
 	// The URL of an existing network resource.
@@ -348,7 +340,6 @@ type AllocationPolicy_NetworkInterface struct {
 	// +kcc:proto:field=google.cloud.batch.v1.AllocationPolicy.NetworkInterface.no_external_ip_address
 	NoExternalIPAddress *bool `json:"noExternalIPAddress,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.batch.v1.AllocationPolicy.NetworkPolicy
 type AllocationPolicy_NetworkPolicy struct {
@@ -374,8 +365,6 @@ type AllocationPolicy_PlacementPolicy struct {
 	// +kcc:proto:field=google.cloud.batch.v1.AllocationPolicy.PlacementPolicy.max_distance
 	MaxDistance *int64 `json:"maxDistance,omitempty"`
 }
-
-/* found existing non-generated go type "ComputeResource", skipping
 
 // +kcc:proto=google.cloud.batch.v1.ComputeResource
 type ComputeResource struct {
@@ -423,7 +412,6 @@ type ComputeResource struct {
 	// +kcc:proto:field=google.cloud.batch.v1.ComputeResource.boot_disk_mib
 	BootDiskMIB *int64 `json:"bootDiskMIB,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.batch.v1.Environment
 type Environment struct {
@@ -443,8 +431,6 @@ type Environment struct {
 	EncryptedVariables *Environment_KMSEnvMap `json:"encryptedVariables,omitempty"`
 }
 
-/* found existing non-generated go type "Environment_KMSEnvMap", skipping
-
 // +kcc:proto=google.cloud.batch.v1.Environment.KMSEnvMap
 type Environment_KMSEnvMap struct {
 	// The name of the KMS key that will be used to decrypt the cipher text.
@@ -455,7 +441,6 @@ type Environment_KMSEnvMap struct {
 	// +kcc:proto:field=google.cloud.batch.v1.Environment.KMSEnvMap.cipher_text
 	CipherText *string `json:"cipherText,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.batch.v1.GCS
 type GCS struct {
@@ -465,8 +450,7 @@ type GCS struct {
 	RemotePath *string `json:"remotePath,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.batch.v1.Job", skipping
-
+/* unreachable type Job
 // +kcc:proto=google.cloud.batch.v1.Job
 type Job struct {
 
@@ -512,8 +496,6 @@ type Job struct {
 }
 */
 
-/* found existing non-generated go type "JobNotification", skipping
-
 // +kcc:proto=google.cloud.batch.v1.JobNotification
 type JobNotification struct {
 	// The Pub/Sub topic where notifications for the job, like state
@@ -537,7 +519,6 @@ type JobNotification struct {
 	// +kcc:proto:field=google.cloud.batch.v1.JobNotification.message
 	Message *JobNotification_Message `json:"message,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.batch.v1.JobNotification.Message
 type JobNotification_Message struct {
@@ -754,8 +735,6 @@ type Runnable_Barrier struct {
 	Name *string `json:"name,omitempty"`
 }
 
-/* found existing non-generated go type "Runnable_Container", skipping
-
 // +kcc:proto=google.cloud.batch.v1.Runnable.Container
 type Runnable_Container struct {
 	// Required. The URI to pull the container image from.
@@ -807,7 +786,7 @@ type Runnable_Container struct {
 	//
 	//  You can either specify the username directly by using plain text or
 	//  specify an encrypted username by using a Secret Manager secret:
-	//  `projects/* /secrets/* /versions/*`. However, using a secret is
+	//  `projects/*/secrets/*/versions/*`. However, using a secret is
 	//  recommended for enhanced security.
 	//
 	//  Caution: If you specify the username using plain text, you risk the
@@ -826,7 +805,7 @@ type Runnable_Container struct {
 	//
 	//  For security, it is strongly recommended to specify an
 	//  encrypted password by using a Secret Manager secret:
-	//  `projects/* /secrets/* /versions/*`.
+	//  `projects/*/secrets/*/versions/*`.
 	//
 	//  Warning: If you specify the password using plain text, you risk the
 	//  password being exposed to any users who can view the job or its logs.
@@ -859,7 +838,6 @@ type Runnable_Container struct {
 	// +kcc:proto:field=google.cloud.batch.v1.Runnable.Container.enable_image_streaming
 	EnableImageStreaming *bool `json:"enableImageStreaming,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.batch.v1.Runnable.Script
 type Runnable_Script struct {
@@ -888,7 +866,6 @@ type Runnable_Script struct {
 	Text *string `json:"text,omitempty"`
 }
 
-/* unreachable type ServiceAccount
 // +kcc:proto=google.cloud.batch.v1.ServiceAccount
 type ServiceAccount struct {
 	// Email address of the service account.
@@ -899,7 +876,6 @@ type ServiceAccount struct {
 	// +kcc:proto:field=google.cloud.batch.v1.ServiceAccount.scopes
 	Scopes []string `json:"scopes,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.batch.v1.StatusEvent
 type StatusEvent struct {
@@ -927,8 +903,7 @@ type StatusEvent struct {
 	TaskState *string `json:"taskState,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.batch.v1.Task", skipping
-
+/* unreachable type Task
 // +kcc:proto=google.cloud.batch.v1.Task
 type Task struct {
 	// Task name.
@@ -1132,8 +1107,7 @@ type Volume struct {
 	MountOptions []string `json:"mountOptions,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.batch.v1.Job", skipping
-
+/* unreachable type JobObservedState
 // +kcc:observedstate:proto=google.cloud.batch.v1.Job
 type JobObservedState struct {
 	// Output only. Job name.
@@ -1163,8 +1137,7 @@ type JobObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.batch.v1.Task", skipping
-
+/* unreachable type TaskObservedState
 // +kcc:observedstate:proto=google.cloud.batch.v1.Task
 type TaskObservedState struct {
 	// Task Status.

@@ -76,8 +76,8 @@ spec:
                   type: string
                 description: Labels.
                 type: object
-              privateConnectionRef:
-                description: Required. The parent that owns the collection of Routes.
+              projectRef:
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -94,14 +94,18 @@ spec:
                   - external
                 properties:
                   external:
-                    description: A reference to an externally managed DatastreamPrivateConnection
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/privateConnections/{{privateconnectionID}}".
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
                     type: string
                   name:
-                    description: The name of a DatastreamPrivateConnection resource.
+                    description: The `name` field of a `Project` resource.
                     type: string
                   namespace:
-                    description: The namespace of a DatastreamPrivateConnection resource.
+                    description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
               resourceID:
@@ -109,7 +113,9 @@ spec:
                   will be used.
                 type: string
             required:
-            - privateConnectionRef
+            - destinationAddress
+            - displayName
+            - projectRef
             type: object
           status:
             description: DatastreamRouteStatus defines the config connector machine

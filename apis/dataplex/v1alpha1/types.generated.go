@@ -29,6 +29,38 @@
 
 package v1alpha1
 
+/* unreachable type AspectType
+// +kcc:proto=google.cloud.dataplex.v1.AspectType
+type AspectType struct {
+
+	// Optional. Description of the AspectType.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the AspectType.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// The service computes this checksum. The client may send it on update and
+	//  delete requests to ensure it has an up-to-date value before proceeding.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Immutable. Defines the Authorization for this type.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.authorization
+	Authorization *AspectType_Authorization `json:"authorization,omitempty"`
+
+	// Required. MetadataTemplate of the aspect.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.metadata_template
+	// +required
+	MetadataTemplate *AspectType_MetadataTemplate `json:"metadataTemplate,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.dataplex.v1.AspectType.Authorization
 type AspectType_Authorization struct {
 	// Immutable. The IAM permission grantable on the EntryGroup to allow access
@@ -994,6 +1026,51 @@ type DataQualitySpec_PostScanActions_ScoreThresholdTrigger struct {
 	ScoreThreshold *float32 `json:"scoreThreshold,omitempty"`
 }
 
+/* unreachable type DataScan
+// +kcc:proto=google.cloud.dataplex.v1.DataScan
+type DataScan struct {
+
+	// Optional. Description of the scan.
+	//
+	//  * Must be between 1-1024 characters.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User friendly display name.
+	//
+	//  * Must be between 1-256 characters.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. The data source for DataScan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data
+	// +required
+	Data *DataSource `json:"data,omitempty"`
+
+	// Optional. DataScan execution settings.
+	//
+	//  If not specified, the fields in it will use their default values.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.execution_spec
+	ExecutionSpec *DataScan_ExecutionSpec `json:"executionSpec,omitempty"`
+
+	// Settings for a data quality scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_quality_spec
+	DataQualitySpec *DataQualitySpec `json:"dataQualitySpec,omitempty"`
+
+	// Settings for a data profile scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_profile_spec
+	DataProfileSpec *DataProfileSpec `json:"dataProfileSpec,omitempty"`
+
+	// Settings for a data discovery scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_discovery_spec
+	DataDiscoverySpec *DataDiscoverySpec `json:"dataDiscoverySpec,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.dataplex.v1.DataScan.ExecutionSpec
 type DataScan_ExecutionSpec struct {
 	// Optional. Spec related to how often and when a scan should be triggered.
@@ -1042,6 +1119,100 @@ type DataSource struct {
 	Resource *string `json:"resource,omitempty"`
 }
 
+/* unreachable type DataTaxonomy
+// +kcc:proto=google.cloud.dataplex.v1.DataTaxonomy
+type DataTaxonomy struct {
+
+	// Optional. Description of the DataTaxonomy.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the DataTaxonomy.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// This checksum is computed by the server based on the value of other
+	//  fields, and may be sent on update and delete requests to ensure the
+	//  client has an up-to-date value before proceeding.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.etag
+	Etag *string `json:"etag,omitempty"`
+}
+*/
+
+/* unreachable type EntryGroup
+// +kcc:proto=google.cloud.dataplex.v1.EntryGroup
+type EntryGroup struct {
+
+	// Optional. Description of the EntryGroup.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the EntryGroup.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// This checksum is computed by the service, and might be sent on update and
+	//  delete requests to ensure the client has an up-to-date value before
+	//  proceeding.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.etag
+	Etag *string `json:"etag,omitempty"`
+}
+*/
+
+/* unreachable type EntryType
+// +kcc:proto=google.cloud.dataplex.v1.EntryType
+type EntryType struct {
+
+	// Optional. Description of the EntryType.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the EntryType.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. This checksum is computed by the service, and might be sent on
+	//  update and delete requests to ensure the client has an up-to-date value
+	//  before proceeding.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Optional. Indicates the classes this Entry Type belongs to, for example,
+	//  TABLE, DATABASE, MODEL.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.type_aliases
+	TypeAliases []string `json:"typeAliases,omitempty"`
+
+	// Optional. The platform that Entries of this type belongs to.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.platform
+	Platform *string `json:"platform,omitempty"`
+
+	// Optional. The system that Entries of this type belongs to. Examples include
+	//  CloudSQL, MariaDB etc
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.system
+	System *string `json:"system,omitempty"`
+
+	// AspectInfo for the entry type.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.required_aspects
+	RequiredAspects []EntryType_AspectInfo `json:"requiredAspects,omitempty"`
+
+	// Immutable. Authorization defined for this type.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.authorization
+	Authorization *EntryType_Authorization `json:"authorization,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.dataplex.v1.EntryType.AspectInfo
 type EntryType_AspectInfo struct {
 	// Required aspect type for the entry type.
@@ -1061,6 +1232,29 @@ type EntryType_Authorization struct {
 /* unreachable type Job
 // +kcc:proto=google.cloud.dataplex.v1.Job
 type Job struct {
+}
+*/
+
+/* unreachable type Lake
+// +kcc:proto=google.cloud.dataplex.v1.Lake
+type Lake struct {
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the lake.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. Description of the lake.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. Settings to manage lake and Dataproc Metastore service instance
+	//  association.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.metastore
+	Metastore *Lake_Metastore `json:"metastore,omitempty"`
 }
 */
 
@@ -1092,6 +1286,29 @@ type Lake_MetastoreStatus struct {
 	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.MetastoreStatus.endpoint
 	Endpoint *string `json:"endpoint,omitempty"`
 }
+
+/* unreachable type MetadataJob
+// +kcc:proto=google.cloud.dataplex.v1.MetadataJob
+type MetadataJob struct {
+
+	// Optional. User-defined labels.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. Metadata job type.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.type
+	// +required
+	Type *string `json:"type,omitempty"`
+
+	// Import job specification.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.import_spec
+	ImportSpec *MetadataJob_ImportJobSpec `json:"importSpec,omitempty"`
+
+	// Export job specification.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.export_spec
+	ExportSpec *MetadataJob_ExportJobSpec `json:"exportSpec,omitempty"`
+}
+*/
 
 /* unreachable type MetadataJob_ExportJobResult
 // +kcc:proto=google.cloud.dataplex.v1.MetadataJob.ExportJobResult
@@ -1317,6 +1534,42 @@ type ScannedData_IncrementalField struct {
 	// +kcc:proto:field=google.cloud.dataplex.v1.ScannedData.IncrementalField.end
 	End *string `json:"end,omitempty"`
 }
+
+/* unreachable type Task
+// +kcc:proto=google.cloud.dataplex.v1.Task
+type Task struct {
+
+	// Optional. Description of the task.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined labels for the task.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. Spec related to how often and when a task should be triggered.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.trigger_spec
+	// +required
+	TriggerSpec *Task_TriggerSpec `json:"triggerSpec,omitempty"`
+
+	// Required. Spec related to how a task is executed.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.execution_spec
+	// +required
+	ExecutionSpec *Task_ExecutionSpec `json:"executionSpec,omitempty"`
+
+	// Config related to running custom Spark tasks.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.spark
+	Spark *Task_SparkTaskConfig `json:"spark,omitempty"`
+
+	// Config related to running scheduled Notebooks.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.notebook
+	Notebook *Task_NotebookTaskConfig `json:"notebook,omitempty"`
+}
+*/
 
 // +kcc:proto=google.cloud.dataplex.v1.Task.ExecutionSpec
 type Task_ExecutionSpec struct {
@@ -1582,6 +1835,40 @@ type Trigger_Schedule struct {
 	Cron *string `json:"cron,omitempty"`
 }
 
+/* unreachable type Zone
+// +kcc:proto=google.cloud.dataplex.v1.Zone
+type Zone struct {
+
+	// Optional. User friendly display name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User defined labels for the zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. Description of the zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.description
+	Description *string `json:"description,omitempty"`
+
+	// Required. Immutable. The type of the zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.type
+	// +required
+	Type *string `json:"type,omitempty"`
+
+	// Optional. Specification of the discovery feature applied to data in this
+	//  zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.discovery_spec
+	DiscoverySpec *Zone_DiscoverySpec `json:"discoverySpec,omitempty"`
+
+	// Required. Specification of the resources that are referenced by the assets
+	//  within this zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.resource_spec
+	// +required
+	ResourceSpec *Zone_ResourceSpec `json:"resourceSpec,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.dataplex.v1.Zone.DiscoverySpec
 type Zone_DiscoverySpec struct {
 	// Required. Whether discovery is enabled.
@@ -1669,6 +1956,35 @@ type Zone_ResourceSpec struct {
 	// +required
 	LocationType *string `json:"locationType,omitempty"`
 }
+
+/* unreachable type AspectTypeObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.AspectType
+type AspectTypeObservedState struct {
+	// Output only. The relative resource name of the AspectType, of the form:
+	//  projects/{project_number}/locations/{location_id}/aspectTypes/{aspect_type_id}.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the AspectType.
+	//  If you delete and recreate the AspectType with the same name, then this ID
+	//  will be different.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the AspectType was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the AspectType was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Denotes the transfer status of the Aspect Type. It is
+	//  unspecified for Aspect Types created from Dataplex API.
+	// +kcc:proto:field=google.cloud.dataplex.v1.AspectType.transfer_status
+	TransferStatus *string `json:"transferStatus,omitempty"`
+}
+*/
 
 // +kcc:observedstate:proto=google.cloud.dataplex.v1.DataDiscoveryResult
 type DataDiscoveryResultObservedState struct {
@@ -1981,6 +2297,140 @@ type DataQualityRuleResultObservedState struct {
 	AssertionRowCount *int64 `json:"assertionRowCount,omitempty"`
 }
 
+/* unreachable type DataScanObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataScan
+type DataScanObservedState struct {
+	// Output only. Identifier. The relative resource name of the scan, of the
+	//  form: `projects/{project}/locations/{location_id}/dataScans/{datascan_id}`,
+	//  where `project` refers to a *project_id* or *project_number* and
+	//  `location_id` refers to a GCP region.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the scan. This ID will
+	//  be different if the scan is deleted and re-created with the same name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. Current state of the DataScan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. The time when the scan was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the scan was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Status of the data scan execution.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.execution_status
+	ExecutionStatus *DataScan_ExecutionStatus `json:"executionStatus,omitempty"`
+
+	// Output only. The type of DataScan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.type
+	Type *string `json:"type,omitempty"`
+
+	// Output only. The result of a data quality scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_quality_result
+	DataQualityResult *DataQualityResultObservedState `json:"dataQualityResult,omitempty"`
+
+	// Output only. The result of a data profile scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_profile_result
+	DataProfileResult *DataProfileResultObservedState `json:"dataProfileResult,omitempty"`
+
+	// Output only. The result of a data discovery scan.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataScan.data_discovery_result
+	DataDiscoveryResult *DataDiscoveryResultObservedState `json:"dataDiscoveryResult,omitempty"`
+}
+*/
+
+/* unreachable type DataTaxonomyObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.DataTaxonomy
+type DataTaxonomyObservedState struct {
+	// Output only. The relative resource name of the DataTaxonomy, of the form:
+	//  projects/{project_number}/locations/{location_id}/dataTaxonomies/{data_taxonomy_id}.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the dataTaxonomy. This
+	//  ID will be different if the DataTaxonomy is deleted and re-created with the
+	//  same name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the DataTaxonomy was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the DataTaxonomy was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The number of attributes in the DataTaxonomy.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.attribute_count
+	AttributeCount *int32 `json:"attributeCount,omitempty"`
+
+	// Output only. The number of classes in the DataTaxonomy.
+	// +kcc:proto:field=google.cloud.dataplex.v1.DataTaxonomy.class_count
+	ClassCount *int32 `json:"classCount,omitempty"`
+}
+*/
+
+/* unreachable type EntryGroupObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.EntryGroup
+type EntryGroupObservedState struct {
+	// Output only. The relative resource name of the EntryGroup, in the format
+	//  projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the EntryGroup. If you
+	//  delete and recreate the EntryGroup with the same name, this ID will be
+	//  different.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the EntryGroup was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the EntryGroup was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Denotes the transfer status of the Entry Group. It is
+	//  unspecified for Entry Group created from Dataplex API.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.transfer_status
+	TransferStatus *string `json:"transferStatus,omitempty"`
+}
+*/
+
+/* unreachable type EntryTypeObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.EntryType
+type EntryTypeObservedState struct {
+	// Output only. The relative resource name of the EntryType, of the form:
+	//  projects/{project_number}/locations/{location_id}/entryTypes/{entry_type_id}.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the EntryType. This ID
+	//  will be different if the EntryType is deleted and re-created with the same
+	//  name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the EntryType was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the EntryType was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.EntryType.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/
+
 // +kcc:observedstate:proto=google.cloud.dataplex.v1.Job
 type JobObservedState struct {
 	// Output only. The relative resource name of the job, of the form:
@@ -2034,6 +2484,84 @@ type JobObservedState struct {
 	// +kcc:proto:field=google.cloud.dataplex.v1.Job.execution_spec
 	ExecutionSpec *Task_ExecutionSpecObservedState `json:"executionSpec,omitempty"`
 }
+
+/* unreachable type LakeObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.Lake
+type LakeObservedState struct {
+	// Output only. The relative resource name of the lake, of the form:
+	//  `projects/{project_number}/locations/{location_id}/lakes/{lake_id}`.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the lake. This ID will
+	//  be different if the lake is deleted and re-created with the same name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the lake was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the lake was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Current state of the lake.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. Service account associated with this lake. This service
+	//  account must be authorized to access or operate on resources managed by the
+	//  lake.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.service_account
+	ServiceAccount *string `json:"serviceAccount,omitempty"`
+
+	// Output only. Aggregated status of the underlying assets of the lake.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.asset_status
+	AssetStatus *AssetStatus `json:"assetStatus,omitempty"`
+
+	// Output only. Metastore status of the lake.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.metastore_status
+	MetastoreStatus *Lake_MetastoreStatus `json:"metastoreStatus,omitempty"`
+}
+*/
+
+/* unreachable type MetadataJobObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.MetadataJob
+type MetadataJobObservedState struct {
+	// Output only. Identifier. The name of the resource that the configuration is
+	//  applied to, in the format
+	//  `projects/{project_number}/locations/{location_id}/metadataJobs/{metadata_job_id}`.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. A system-generated, globally unique ID for the metadata job.
+	//  If the metadata job is deleted and then re-created with the same name, this
+	//  ID is different.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the metadata job was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the metadata job was updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Import job result.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.import_result
+	ImportResult *MetadataJob_ImportJobResultObservedState `json:"importResult,omitempty"`
+
+	// Output only. Export job result.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.export_result
+	ExportResult *MetadataJob_ExportJobResultObservedState `json:"exportResult,omitempty"`
+
+	// Output only. Metadata job status.
+	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.status
+	Status *MetadataJob_StatusObservedState `json:"status,omitempty"`
+}
+*/
 
 // +kcc:observedstate:proto=google.cloud.dataplex.v1.MetadataJob.ExportJobResult
 type MetadataJob_ExportJobResultObservedState struct {
@@ -2092,6 +2620,38 @@ type MetadataJob_StatusObservedState struct {
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
+/* unreachable type TaskObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.Task
+type TaskObservedState struct {
+	// Output only. The relative resource name of the task, of the form:
+	//  projects/{project_number}/locations/{location_id}/lakes/{lake_id}/
+	//  tasks/{task_id}.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the task. This ID will
+	//  be different if the task is deleted and re-created with the same name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the task was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the task was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Current state of the task.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. Status of the latest task executions.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Task.execution_status
+	ExecutionStatus *Task_ExecutionStatusObservedState `json:"executionStatus,omitempty"`
+}
+*/
+
 // +kcc:observedstate:proto=google.cloud.dataplex.v1.Task.ExecutionSpec
 type Task_ExecutionSpecObservedState struct {
 	// Optional. The arguments to pass to the task.
@@ -2142,3 +2702,34 @@ type Task_ExecutionStatusObservedState struct {
 	// +kcc:proto:field=google.cloud.dataplex.v1.Task.ExecutionStatus.latest_job
 	LatestJob *JobObservedState `json:"latestJob,omitempty"`
 }
+
+/* unreachable type ZoneObservedState
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.Zone
+type ZoneObservedState struct {
+	// Output only. The relative resource name of the zone, of the form:
+	//  `projects/{project_number}/locations/{location_id}/lakes/{lake_id}/zones/{zone_id}`.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. System generated globally unique ID for the zone. This ID will
+	//  be different if the zone is deleted and re-created with the same name.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The time when the zone was created.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the zone was last updated.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Current state of the zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. Aggregated status of the underlying assets of the zone.
+	// +kcc:proto:field=google.cloud.dataplex.v1.Zone.asset_status
+	AssetStatus *AssetStatus `json:"assetStatus,omitempty"`
+}
+*/

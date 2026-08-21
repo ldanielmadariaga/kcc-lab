@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,23 +26,20 @@ var APIHubRuntimeProjectAttachmentGVK = GroupVersion.WithKind("APIHubRuntimeProj
 // +kcc:spec:proto=google.cloud.apihub.v1.RuntimeProjectAttachment
 type APIHubRuntimeProjectAttachmentSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +required
-	Location string `json:"location"`
+	Location *string `json:"location"`
 
 	// The APIHubRuntimeProjectAttachment name. If not given, the metadata.name will be used.
-	// +optional
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. Immutable. Google cloud project name in the format:
 	//  "projects/abc" or "projects/123". As input, project name with either
 	//  project id or number are accepted. As output, this field will contain
 	//  project number.
+	// +kcc:proto:field=google.cloud.apihub.v1.RuntimeProjectAttachment.runtime_project
 	// +required
-	RuntimeProjectRef *refsv1beta1.ProjectRef `json:"runtimeProjectRef"`
+	RuntimeProject *string `json:"runtimeProject,omitempty"`
 }
 
 // APIHubRuntimeProjectAttachmentStatus defines the config connector machine state of APIHubRuntimeProjectAttachment
@@ -65,7 +62,7 @@ type APIHubRuntimeProjectAttachmentStatus struct {
 // +kcc:observedstate:proto=google.cloud.apihub.v1.RuntimeProjectAttachment
 type APIHubRuntimeProjectAttachmentObservedState struct {
 	// Output only. Create time.
-	// +optional
+	// +kcc:proto:field=google.cloud.apihub.v1.RuntimeProjectAttachment.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 }
 
@@ -75,7 +72,6 @@ type APIHubRuntimeProjectAttachmentObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

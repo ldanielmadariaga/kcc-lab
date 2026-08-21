@@ -15,34 +15,30 @@
 package v1alpha1
 
 import (
-	bigtablev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/bigtable/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var BigtableAuthorizedViewGVK = GroupVersion.WithKind("BigtableAuthorizedView")
 
-type BigtableAuthorizedViewParent struct {
-	// +required
-	TableRef bigtablev1beta1.TableRef `json:"tableRef"`
-}
-
 // BigtableAuthorizedViewSpec defines the desired state of BigtableAuthorizedView
 // +kcc:spec:proto=google.bigtable.admin.v2.AuthorizedView
 type BigtableAuthorizedViewSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 	// The BigtableAuthorizedView name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	BigtableAuthorizedViewParent `json:",inline"`
-
 	// An AuthorizedView permitting access to an explicit subset of a Table.
 	// +kcc:proto:field=google.bigtable.admin.v2.AuthorizedView.subset_view
 	SubsetView *AuthorizedView_SubsetView `json:"subsetView,omitempty"`
 
-	// NOTYET: not supported in Config Connector reconciliation
-	// The etag for this `AuthorizedView` resource.
+	// The etag for this AuthorizedView.
+	//  If this is provided on update, it must match the server's etag. The server
+	//  returns ABORTED error on a mismatched etag.
 	// +kcc:proto:field=google.bigtable.admin.v2.AuthorizedView.etag
-	// Etag *string `json:"etag,omitempty"`
+	Etag *string `json:"etag,omitempty"`
 
 	// Set to true to make the AuthorizedView protected against deletion.
 	//  The parent Table and containing Instance cannot be deleted if an
@@ -78,7 +74,6 @@ type BigtableAuthorizedViewObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

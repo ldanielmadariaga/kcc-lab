@@ -27,7 +27,6 @@ import (
 	pb "cloud.google.com/go/apphub/apiv1/apphubpb"
 	krmapphubv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/apphub/v1alpha1"
 	krmapphubv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/apphub/v1beta1"
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -179,9 +178,7 @@ func AppHubServiceProjectAttachmentSpec_v1alpha1_FromProto(mapCtx *direct.MapCon
 	}
 	out := &krmapphubv1alpha1.AppHubServiceProjectAttachmentSpec{}
 	// MISSING: Name
-	if in.GetServiceProject() != "" {
-		out.ServiceProjectRef = &refsv1beta1.ProjectRef{External: in.GetServiceProject()}
-	}
+	out.ServiceProject = direct.LazyPtr(in.GetServiceProject())
 	return out
 }
 func AppHubServiceProjectAttachmentSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmapphubv1alpha1.AppHubServiceProjectAttachmentSpec) *pb.ServiceProjectAttachment {
@@ -190,9 +187,7 @@ func AppHubServiceProjectAttachmentSpec_v1alpha1_ToProto(mapCtx *direct.MapConte
 	}
 	out := &pb.ServiceProjectAttachment{}
 	// MISSING: Name
-	if in.ServiceProjectRef != nil {
-		out.ServiceProject = in.ServiceProjectRef.External
-	}
+	out.ServiceProject = direct.ValueOf(in.ServiceProject)
 	return out
 }
 func Attributes_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Attributes) *krmapphubv1beta1.Attributes {
@@ -285,26 +280,6 @@ func Scope_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmapphubv1beta1.Scope
 	out.Type = direct.Enum_ToProto[pb.Scope_Type](mapCtx, in.Type)
 	return out
 }
-func ServiceProperties_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ServiceProperties) *krmapphubv1alpha1.ServiceProperties {
-	if in == nil {
-		return nil
-	}
-	out := &krmapphubv1alpha1.ServiceProperties{}
-	// MISSING: GcpProject
-	// MISSING: Location
-	// MISSING: Zone
-	return out
-}
-func ServiceProperties_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmapphubv1alpha1.ServiceProperties) *pb.ServiceProperties {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ServiceProperties{}
-	// MISSING: GcpProject
-	// MISSING: Location
-	// MISSING: Zone
-	return out
-}
 func ServicePropertiesObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ServiceProperties) *krmapphubv1alpha1.ServicePropertiesObservedState {
 	if in == nil {
 		return nil
@@ -323,22 +298,6 @@ func ServicePropertiesObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, 
 	out.GcpProject = direct.ValueOf(in.GcpProject)
 	out.Location = direct.ValueOf(in.Location)
 	out.Zone = direct.ValueOf(in.Zone)
-	return out
-}
-func ServiceReference_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ServiceReference) *krmapphubv1alpha1.ServiceReference {
-	if in == nil {
-		return nil
-	}
-	out := &krmapphubv1alpha1.ServiceReference{}
-	// MISSING: URI
-	return out
-}
-func ServiceReference_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmapphubv1alpha1.ServiceReference) *pb.ServiceReference {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ServiceReference{}
-	// MISSING: URI
 	return out
 }
 func ServiceReferenceObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ServiceReference) *krmapphubv1alpha1.ServiceReferenceObservedState {

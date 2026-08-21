@@ -6,7 +6,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: visionaiapplications.visionai.cnrm.cloud.google.com
 spec:
@@ -95,7 +94,6 @@ spec:
                             aiEnabledDevicesInputConfig:
                               description: Config of AI-enabled input devices.
                               type: object
-                              x-kubernetes-preserve-unknown-fields: true
                             bigQueryConfig:
                               description: Configs of BigQuery processor.
                               properties:
@@ -156,7 +154,6 @@ spec:
                             experimentalConfig:
                               description: Experimental configurations. Structured
                                 object containing not-yet-stable processor parameters.
-                              x-kubernetes-preserve-unknown-fields: true
                             gcsOutputConfig:
                               description: Configs of Cloud Storage output processor.
                               properties:
@@ -168,41 +165,13 @@ spec:
                             generalObjectDetectionConfig:
                               description: Configs of General Object Detection processor.
                               type: object
-                              x-kubernetes-preserve-unknown-fields: true
                             mediaWarehouseConfig:
                               description: Configs of media warehouse processor.
                               properties:
-                                corpusRef:
-                                  description: Resource name of the Media Warehouse
-                                    corpus.
-                                  oneOf:
-                                  - not:
-                                      required:
-                                      - external
-                                    required:
-                                    - name
-                                  - not:
-                                      anyOf:
-                                      - required:
-                                        - name
-                                      - required:
-                                        - namespace
-                                    required:
-                                    - external
-                                  properties:
-                                    external:
-                                      description: A reference to an externally managed
-                                        VisionAI Corpus resource. Should be in the
-                                        format "projects/{{projectID}}/locations/{{location}}/corpora/{{corpusID}}".
-                                      type: string
-                                    name:
-                                      description: The name of a VisionAICorpus resource.
-                                      type: string
-                                    namespace:
-                                      description: The namespace of a VisionAICorpus
-                                        resource.
-                                      type: string
-                                  type: object
+                                corpus:
+                                  description: 'Resource name of the Media Warehouse
+                                    corpus. Format: projects/${project_id}/locations/${location_id}/corpora/${corpus_id}'
+                                  type: string
                                 region:
                                   description: Deprecated.
                                   type: string
@@ -212,7 +181,6 @@ spec:
                                     exist.
                                   type: string
                               type: object
-                              x-kubernetes-preserve-unknown-fields: true
                             occupancyCountConfig:
                               description: Configs of occupancy count processor.
                               properties:
@@ -323,7 +291,6 @@ spec:
                             universalInputConfig:
                               description: Runtime configs of UniversalInput processor.
                               type: object
-                              x-kubernetes-preserve-unknown-fields: true
                             vertexAutomlVideoConfig:
                               description: Configs of Vertex AutoML video processor.
                               properties:
@@ -754,6 +721,11 @@ spec:
               displayName:
                 description: Required. A user friendly display name for the solution.
                 type: string
+              labels:
+                additionalProperties:
+                  type: string
+                description: Labels as key value pairs
+                type: object
               location:
                 description: The location of this resource.
                 type: string
@@ -845,7 +817,7 @@ spec:
                   observed in GCP.
                 properties:
                   createTime:
-                    description: Output only. Create timestamp
+                    description: Output only. [Output only] Create timestamp
                     type: string
                   runtimeInfo:
                     description: Output only. Application graph runtime info. Only
@@ -888,7 +860,7 @@ spec:
                     description: Output only. State of the application.
                     type: string
                   updateTime:
-                    description: Output only. Update timestamp
+                    description: Output only. [Output only] Update timestamp
                     type: string
                 type: object
             type: object

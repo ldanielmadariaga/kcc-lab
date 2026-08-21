@@ -7,4 +7,3 @@
 
 kind=CertificateManagerCertificateIssuanceConfig group=certificatemanager.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=CertificateManagerTrustConfig group=certificatemanager.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=CertificateManagerCertificateIssuanceConfig group=certificatemanager.cnrm.cloud.google.com: field ".spec.certificateAuthorityConfig.certificateAuthorityServiceConfig.caPool" reason=possible-reference-by-description

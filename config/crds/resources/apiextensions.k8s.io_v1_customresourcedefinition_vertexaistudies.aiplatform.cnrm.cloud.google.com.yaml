@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: vertexaistudies.aiplatform.cnrm.cloud.google.com
 spec:
@@ -21,7 +20,7 @@ spec:
     plural: vertexaistudies
     shortNames:
     - gcpvertexaistudy
-    - gcpvertexaistudies
+    - gcpvertexaistudys
     singular: vertexaistudy
   preserveUnknownFields: false
   scope: Namespaced
@@ -267,6 +266,9 @@ spec:
                              must have disjoint parent_value_condition.
                           items:
                             properties:
+                              parameterSpec:
+                                description: Required. The spec for a conditional
+                                  parameter.
                               parentCategoricalValues:
                                 description: The spec for matching values from a parent
                                   parameter of `CATEGORICAL` type.
@@ -313,6 +315,8 @@ spec:
                                 required:
                                 - values
                                 type: object
+                            required:
+                            - parameterSpec
                             type: object
                           type: array
                         discreteValueSpec:
@@ -559,9 +563,9 @@ spec:
                   createTime:
                     description: Output only. Time at which the study was created.
                     type: string
-                  name:
-                    description: 'Output only. The name of a study. The study''s globally
-                      unique identifier. Format: `projects/{project}/locations/{location}/studies/{study}`'
+                  inactiveReason:
+                    description: Output only. A human readable reason why the Study
+                      is inactive. This should be empty if a study is ACTIVE or COMPLETED.
                     type: string
                   state:
                     description: Output only. The detailed state of a Study.

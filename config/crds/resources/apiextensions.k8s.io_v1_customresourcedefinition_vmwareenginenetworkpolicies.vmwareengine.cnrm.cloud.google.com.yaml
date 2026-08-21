@@ -20,7 +20,7 @@ spec:
     plural: vmwareenginenetworkpolicies
     shortNames:
     - gcpvmwareenginenetworkpolicy
-    - gcpvmwareenginenetworkpolicies
+    - gcpvmwareenginenetworkpolicys
     singular: vmwareenginenetworkpolicy
   preserveUnknownFields: false
   scope: Namespaced
@@ -92,13 +92,10 @@ spec:
                     type: boolean
                 type: object
               location:
-                description: Immutable.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -133,35 +130,11 @@ spec:
                 description: The VMwareEngineNetworkPolicy name. If not given, the
                   metadata.name will be used.
                 type: string
-              vmwareEngineNetworkRef:
-                description: Optional. The relative resource name of the VMware Engine
-                  network.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed VMwareEngineNetwork
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/vmwareEngineNetworks/{{vmwareenginenetworkID}}".
-                    type: string
-                  name:
-                    description: The name of a VMwareEngineNetwork resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a VMwareEngineNetwork resource.
-                    type: string
-                type: object
+              vmwareEngineNetwork:
+                description: 'Optional. The relative resource name of the VMware Engine
+                  network. Specify the name in the following form: `projects/{project}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
+                  where `{project}` can either be a project number or a project ID.'
+                type: string
             required:
             - edgeServicesCIDR
             - location

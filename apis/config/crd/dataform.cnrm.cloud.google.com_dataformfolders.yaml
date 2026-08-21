@@ -6,7 +6,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: dataformfolders.dataform.cnrm.cloud.google.com
 spec:
@@ -60,6 +59,16 @@ spec:
           spec:
             description: DataformFolderSpec defines the desired state of DataformFolder
             properties:
+              containingFolder:
+                description: 'Optional. The containing Folder resource name. This
+                  should take the format: projects/{project}/locations/{location}/folders/{folder},
+                  projects/{project}/locations/{location}/teamFolders/{teamFolder},
+                  or just projects/{project}/locations/{location} if this is a root
+                  Folder. This field can only be updated through MoveFolder.'
+                type: string
+              displayName:
+                description: Required. The Folder's user-friendly name.
+                type: string
               location:
                 description: The location of this resource.
                 type: string
@@ -100,6 +109,7 @@ spec:
                   will be used.
                 type: string
             required:
+            - displayName
             - location
             - projectRef
             type: object
@@ -148,6 +158,32 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. The timestamp of when the Folder was
+                      created.
+                    type: string
+                  creatorIAMPrincipal:
+                    description: Output only. The IAM principal identifier of the
+                      creator of the Folder.
+                    type: string
+                  internalMetadata:
+                    description: 'Output only. All the metadata information that is
+                      used internally to serve the resource. For example: timestamps,
+                      flags, status fields, etc. The format of this field is a JSON
+                      string.'
+                    type: string
+                  teamFolderName:
+                    description: 'Output only. The resource name of the TeamFolder
+                      that this Folder is associated with. This should take the format:
+                      projects/{project}/locations/{location}/teamFolders/{teamFolder}.
+                      If this is not set, the Folder is not associated with a TeamFolder
+                      and is a UserFolder.'
+                    type: string
+                  updateTime:
+                    description: Output only. The timestamp of when the Folder was
+                      last updated.
+                    type: string
                 type: object
             type: object
         required:

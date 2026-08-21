@@ -6,7 +6,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: cloudbatchresourceallowances.batch.cnrm.cloud.google.com
 spec:
@@ -65,8 +64,18 @@ spec:
               labels:
                 additionalProperties:
                   type: string
-                description: Optional. Labels are attributes that can be set and used
-                  by both the user and by Batch.
+                description: |-
+                  Optional. Labels are attributes that can be set and used by both the
+                   user and by Batch. Labels must meet the following constraints:
+
+                   * Keys and values can contain only lowercase letters, numeric characters,
+                   underscores, and dashes.
+                   * All characters must use UTF-8 encoding, and international characters are
+                   allowed.
+                   * Keys must start with a lowercase letter or international character.
+                   * Each resource is limited to a maximum of 64 labels.
+
+                   Both keys and values are additionally constrained to be <= 128 bytes.
                 type: object
               location:
                 description: The location of this resource.
@@ -75,35 +84,15 @@ spec:
                 description: Optional. Notification configurations.
                 items:
                   properties:
-                    pubsubTopicRef:
-                      description: Required. The Pub/Sub topic where notifications
+                    pubsubTopic:
+                      description: 'Required. The Pub/Sub topic where notifications
                         like the resource allowance state changes will be published.
-                      oneOf:
-                      - not:
-                          required:
-                          - external
-                        required:
-                        - name
-                      - not:
-                          anyOf:
-                          - required:
-                            - name
-                          - required:
-                            - namespace
-                        required:
-                        - external
-                      properties:
-                        external:
-                          description: A reference to an externally managed PubSubTopic
-                            resource. Should be in the format "projects/{{projectID}}/topics/{{topicID}}".
-                          type: string
-                        name:
-                          description: The name of a PubSubTopic resource.
-                          type: string
-                        namespace:
-                          description: The namespace of a PubSubTopic resource.
-                          type: string
-                      type: object
+                        The topic must exist in the same project as the job and billings
+                        will be charged to this project. If not specified, no Pub/Sub
+                        messages will be sent. Topic format: `projects/{project}/topics/{topic}`.'
+                      type: string
+                  required:
+                  - pubsubTopic
                   type: object
                 type: array
               projectRef:
@@ -158,16 +147,30 @@ spec:
                               start.
                             type: string
                           limit:
-                            description: Required. Limit value of a UsageResourceAllowance
-                              within its one duration.
+                            description: |-
+                              Required. Limit value of a UsageResourceAllowance within its one
+                               duration.
+
+                               Limit cannot be a negative value. Default is 0.
+                               For example, you can set `limit` as 10000.0 with duration of the current
+                               month by setting `calendar_period` field as monthly. That means in your
+                               current month, 10000.0 is the core hour limitation that your resources
+                               are allowed to consume.
                             type: number
+                        required:
+                        - limit
                         type: object
                       type:
                         description: Required. Spec type is unique for each usage
                           ResourceAllowance. Batch now only supports type as "cpu-core-hours"
                           for CPU usage consumption tracking.
                         type: string
+                    required:
+                    - limit
+                    - type
                     type: object
+                required:
+                - spec
                 type: object
             required:
             - location
@@ -245,11 +248,18 @@ spec:
                                 description: Output only. The consumption interval.
                                 properties:
                                   endTime:
-                                    description: Optional. Exclusive end of the interval.
+                                    description: |-
+                                      Optional. Exclusive end of the interval.
+
+                                       If specified, a Timestamp matching this interval will have to be before the
+                                       end.
                                     type: string
                                   startTime:
-                                    description: Optional. Inclusive start of the
-                                      interval.
+                                    description: |-
+                                      Optional. Inclusive start of the interval.
+
+                                       If specified, a Timestamp matching this interval will have to be the same
+                                       or after the start.
                                     type: string
                                 type: object
                               limit:
@@ -263,23 +273,6 @@ spec:
                             properties:
                               latestPeriodConsumptions:
                                 additionalProperties:
-                                  properties:
-                                    consumed:
-                                      description: Output only. Accumulated consumption
-                                        during `consumption_interval`.
-                                      type: number
-                                    consumptionInterval:
-                                      description: Output only. The consumption interval.
-                                      properties:
-                                        endTime:
-                                          description: Optional. Exclusive end of
-                                            the interval.
-                                          type: string
-                                        startTime:
-                                          description: Optional. Inclusive start of
-                                            the interval.
-                                          type: string
-                                      type: object
                                   type: object
                                 description: Output only. ResourceAllowance consumptions
                                   in the latest calendar period. Key is the calendar

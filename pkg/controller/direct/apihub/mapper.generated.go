@@ -26,20 +26,77 @@ package apihub
 import (
 	pb "cloud.google.com/go/apihub/apiv1/apihubpb"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/apihub/v1alpha1"
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
+func API_FromProto(mapCtx *direct.MapContext, in *pb.Api) *krm.API {
+	if in == nil {
+		return nil
+	}
+	out := &krm.API{}
+	out.Name = direct.LazyPtr(in.GetName())
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.Documentation = Documentation_FromProto(mapCtx, in.GetDocumentation())
+	out.Owner = Owner_FromProto(mapCtx, in.GetOwner())
+	// MISSING: Versions
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	out.TargetUser = AttributeValues_FromProto(mapCtx, in.GetTargetUser())
+	out.Team = AttributeValues_FromProto(mapCtx, in.GetTeam())
+	out.BusinessUnit = AttributeValues_FromProto(mapCtx, in.GetBusinessUnit())
+	out.MaturityLevel = AttributeValues_FromProto(mapCtx, in.GetMaturityLevel())
+	if in.Attributes != nil {
+		out.Attributes = make(map[string]krm.AttributeValues, len(in.Attributes))
+		for k, v := range in.Attributes {
+			if c := AttributeValues_FromProto(mapCtx, v); c != nil {
+				out.Attributes[k] = *c
+			}
+		}
+	}
+	out.APIStyle = AttributeValues_FromProto(mapCtx, in.GetApiStyle())
+	out.SelectedVersion = direct.LazyPtr(in.GetSelectedVersion())
+	return out
+}
+func API_ToProto(mapCtx *direct.MapContext, in *krm.API) *pb.Api {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Api{}
+	out.Name = direct.ValueOf(in.Name)
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Description = direct.ValueOf(in.Description)
+	out.Documentation = Documentation_ToProto(mapCtx, in.Documentation)
+	out.Owner = Owner_ToProto(mapCtx, in.Owner)
+	// MISSING: Versions
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	out.TargetUser = AttributeValues_ToProto(mapCtx, in.TargetUser)
+	out.Team = AttributeValues_ToProto(mapCtx, in.Team)
+	out.BusinessUnit = AttributeValues_ToProto(mapCtx, in.BusinessUnit)
+	out.MaturityLevel = AttributeValues_ToProto(mapCtx, in.MaturityLevel)
+	if in.Attributes != nil {
+		out.Attributes = make(map[string]*pb.AttributeValues, len(in.Attributes))
+		for k, v := range in.Attributes {
+			out.Attributes[k] = AttributeValues_ToProto(mapCtx, &v)
+		}
+	}
+	out.ApiStyle = AttributeValues_ToProto(mapCtx, in.APIStyle)
+	out.SelectedVersion = direct.ValueOf(in.SelectedVersion)
+	return out
+}
 func APIHubDeploymentObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Deployment) *krm.APIHubDeploymentObservedState {
 	if in == nil {
 		return nil
 	}
 	out := &krm.APIHubDeploymentObservedState{}
 	// MISSING: Name
+	out.DeploymentType = AttributeValuesObservedState_FromProto(mapCtx, in.GetDeploymentType())
 	out.APIVersions = in.ApiVersions
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Attributes
+	out.Slo = AttributeValuesObservedState_FromProto(mapCtx, in.GetSlo())
+	out.Environment = AttributeValuesObservedState_FromProto(mapCtx, in.GetEnvironment())
 	return out
 }
 func APIHubDeploymentObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIHubDeploymentObservedState) *pb.Deployment {
@@ -48,10 +105,12 @@ func APIHubDeploymentObservedState_ToProto(mapCtx *direct.MapContext, in *krm.AP
 	}
 	out := &pb.Deployment{}
 	// MISSING: Name
+	out.DeploymentType = AttributeValuesObservedState_ToProto(mapCtx, in.DeploymentType)
 	out.ApiVersions = in.APIVersions
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Attributes
+	out.Slo = AttributeValuesObservedState_ToProto(mapCtx, in.Slo)
+	out.Environment = AttributeValuesObservedState_ToProto(mapCtx, in.Environment)
 	return out
 }
 func APIHubExternalAPIObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ExternalApi) *krm.APIHubExternalAPIObservedState {
@@ -60,7 +119,6 @@ func APIHubExternalAPIObservedState_FromProto(mapCtx *direct.MapContext, in *pb.
 	}
 	out := &krm.APIHubExternalAPIObservedState{}
 	// MISSING: Name
-	// MISSING: Attributes
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	return out
@@ -71,9 +129,62 @@ func APIHubExternalAPIObservedState_ToProto(mapCtx *direct.MapContext, in *krm.A
 	}
 	out := &pb.ExternalApi{}
 	// MISSING: Name
-	// MISSING: Attributes
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	return out
+}
+func APIHubInstance_FromProto(mapCtx *direct.MapContext, in *pb.ApiHubInstance) *krm.APIHubInstance {
+	if in == nil {
+		return nil
+	}
+	out := &krm.APIHubInstance{}
+	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: State
+	// MISSING: StateMessage
+	out.Config = APIHubInstance_Config_FromProto(mapCtx, in.GetConfig())
+	out.Labels = in.Labels
+	out.Description = direct.LazyPtr(in.GetDescription())
+	return out
+}
+func APIHubInstance_ToProto(mapCtx *direct.MapContext, in *krm.APIHubInstance) *pb.ApiHubInstance {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ApiHubInstance{}
+	out.Name = direct.ValueOf(in.Name)
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: State
+	// MISSING: StateMessage
+	out.Config = APIHubInstance_Config_ToProto(mapCtx, in.Config)
+	out.Labels = in.Labels
+	out.Description = direct.ValueOf(in.Description)
+	return out
+}
+func APIHubInstanceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ApiHubInstance) *krm.APIHubInstanceObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.APIHubInstanceObservedState{}
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.StateMessage = direct.LazyPtr(in.GetStateMessage())
+	return out
+}
+func APIHubInstanceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIHubInstanceObservedState) *pb.ApiHubInstance {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ApiHubInstance{}
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.State = direct.Enum_ToProto[pb.ApiHubInstance_State](mapCtx, in.State)
+	out.StateMessage = direct.ValueOf(in.StateMessage)
 	return out
 }
 func APIHubInstanceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ApiHubInstance) *krm.APIHubInstanceObservedState {
@@ -188,9 +299,7 @@ func APIHubRuntimeProjectAttachmentSpec_FromProto(mapCtx *direct.MapContext, in 
 	}
 	out := &krm.APIHubRuntimeProjectAttachmentSpec{}
 	// MISSING: Name
-	if in.GetRuntimeProject() != "" {
-		out.RuntimeProjectRef = &refsv1beta1.ProjectRef{External: in.GetRuntimeProject()}
-	}
+	out.RuntimeProject = direct.LazyPtr(in.GetRuntimeProject())
 	return out
 }
 func APIHubRuntimeProjectAttachmentSpec_ToProto(mapCtx *direct.MapContext, in *krm.APIHubRuntimeProjectAttachmentSpec) *pb.RuntimeProjectAttachment {
@@ -199,9 +308,51 @@ func APIHubRuntimeProjectAttachmentSpec_ToProto(mapCtx *direct.MapContext, in *k
 	}
 	out := &pb.RuntimeProjectAttachment{}
 	// MISSING: Name
-	if in.RuntimeProjectRef != nil {
-		out.RuntimeProject = in.RuntimeProjectRef.External
+	out.RuntimeProject = direct.ValueOf(in.RuntimeProject)
+	return out
+}
+func APIObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Api) *krm.APIObservedState {
+	if in == nil {
+		return nil
 	}
+	out := &krm.APIObservedState{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	// MISSING: Description
+	// MISSING: Documentation
+	// MISSING: Owner
+	out.Versions = in.Versions
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.TargetUser = AttributeValuesObservedState_FromProto(mapCtx, in.GetTargetUser())
+	out.Team = AttributeValuesObservedState_FromProto(mapCtx, in.GetTeam())
+	out.BusinessUnit = AttributeValuesObservedState_FromProto(mapCtx, in.GetBusinessUnit())
+	out.MaturityLevel = AttributeValuesObservedState_FromProto(mapCtx, in.GetMaturityLevel())
+	// MISSING: Attributes
+	out.APIStyle = AttributeValuesObservedState_FromProto(mapCtx, in.GetApiStyle())
+	// MISSING: SelectedVersion
+	return out
+}
+func APIObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIObservedState) *pb.Api {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Api{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	// MISSING: Description
+	// MISSING: Documentation
+	// MISSING: Owner
+	out.Versions = in.Versions
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.TargetUser = AttributeValuesObservedState_ToProto(mapCtx, in.TargetUser)
+	out.Team = AttributeValuesObservedState_ToProto(mapCtx, in.Team)
+	out.BusinessUnit = AttributeValuesObservedState_ToProto(mapCtx, in.BusinessUnit)
+	out.MaturityLevel = AttributeValuesObservedState_ToProto(mapCtx, in.MaturityLevel)
+	// MISSING: Attributes
+	out.ApiStyle = AttributeValuesObservedState_ToProto(mapCtx, in.APIStyle)
+	// MISSING: SelectedVersion
 	return out
 }
 func AttributeValues_FromProto(mapCtx *direct.MapContext, in *pb.AttributeValues) *krm.AttributeValues {
@@ -286,6 +437,98 @@ func AttributeValues_StringAttributeValues_ToProto(mapCtx *direct.MapContext, in
 	out.Values = in.Values
 	return out
 }
+func Deployment_FromProto(mapCtx *direct.MapContext, in *pb.Deployment) *krm.Deployment {
+	if in == nil {
+		return nil
+	}
+	out := &krm.Deployment{}
+	out.Name = direct.LazyPtr(in.GetName())
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.Documentation = Documentation_FromProto(mapCtx, in.GetDocumentation())
+	out.DeploymentType = AttributeValues_FromProto(mapCtx, in.GetDeploymentType())
+	out.ResourceURI = direct.LazyPtr(in.GetResourceUri())
+	out.Endpoints = in.Endpoints
+	// MISSING: APIVersions
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	out.Slo = AttributeValues_FromProto(mapCtx, in.GetSlo())
+	out.Environment = AttributeValues_FromProto(mapCtx, in.GetEnvironment())
+	if in.Attributes != nil {
+		out.Attributes = make(map[string]krm.AttributeValues, len(in.Attributes))
+		for k, v := range in.Attributes {
+			if c := AttributeValues_FromProto(mapCtx, v); c != nil {
+				out.Attributes[k] = *c
+			}
+		}
+	}
+	return out
+}
+func Deployment_ToProto(mapCtx *direct.MapContext, in *krm.Deployment) *pb.Deployment {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Deployment{}
+	out.Name = direct.ValueOf(in.Name)
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Description = direct.ValueOf(in.Description)
+	out.Documentation = Documentation_ToProto(mapCtx, in.Documentation)
+	out.DeploymentType = AttributeValues_ToProto(mapCtx, in.DeploymentType)
+	out.ResourceUri = direct.ValueOf(in.ResourceURI)
+	out.Endpoints = in.Endpoints
+	// MISSING: APIVersions
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	out.Slo = AttributeValues_ToProto(mapCtx, in.Slo)
+	out.Environment = AttributeValues_ToProto(mapCtx, in.Environment)
+	if in.Attributes != nil {
+		out.Attributes = make(map[string]*pb.AttributeValues, len(in.Attributes))
+		for k, v := range in.Attributes {
+			out.Attributes[k] = AttributeValues_ToProto(mapCtx, &v)
+		}
+	}
+	return out
+}
+func DeploymentObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Deployment) *krm.DeploymentObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.DeploymentObservedState{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	// MISSING: Description
+	// MISSING: Documentation
+	out.DeploymentType = AttributeValuesObservedState_FromProto(mapCtx, in.GetDeploymentType())
+	// MISSING: ResourceURI
+	// MISSING: Endpoints
+	out.APIVersions = in.ApiVersions
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.Slo = AttributeValuesObservedState_FromProto(mapCtx, in.GetSlo())
+	out.Environment = AttributeValuesObservedState_FromProto(mapCtx, in.GetEnvironment())
+	// MISSING: Attributes
+	return out
+}
+func DeploymentObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DeploymentObservedState) *pb.Deployment {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Deployment{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	// MISSING: Description
+	// MISSING: Documentation
+	out.DeploymentType = AttributeValuesObservedState_ToProto(mapCtx, in.DeploymentType)
+	// MISSING: ResourceURI
+	// MISSING: Endpoints
+	out.ApiVersions = in.APIVersions
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.Slo = AttributeValuesObservedState_ToProto(mapCtx, in.Slo)
+	out.Environment = AttributeValuesObservedState_ToProto(mapCtx, in.Environment)
+	// MISSING: Attributes
+	return out
+}
 func Documentation_FromProto(mapCtx *direct.MapContext, in *pb.Documentation) *krm.Documentation {
 	if in == nil {
 		return nil
@@ -300,6 +543,82 @@ func Documentation_ToProto(mapCtx *direct.MapContext, in *krm.Documentation) *pb
 	}
 	out := &pb.Documentation{}
 	out.ExternalUri = direct.ValueOf(in.ExternalURI)
+	return out
+}
+func ExternalAPI_FromProto(mapCtx *direct.MapContext, in *pb.ExternalApi) *krm.ExternalAPI {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ExternalAPI{}
+	out.Name = direct.LazyPtr(in.GetName())
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.Endpoints = in.Endpoints
+	out.Paths = in.Paths
+	out.Documentation = Documentation_FromProto(mapCtx, in.GetDocumentation())
+	if in.Attributes != nil {
+		out.Attributes = make(map[string]krm.AttributeValues, len(in.Attributes))
+		for k, v := range in.Attributes {
+			if c := AttributeValues_FromProto(mapCtx, v); c != nil {
+				out.Attributes[k] = *c
+			}
+		}
+	}
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	return out
+}
+func ExternalAPI_ToProto(mapCtx *direct.MapContext, in *krm.ExternalAPI) *pb.ExternalApi {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ExternalApi{}
+	out.Name = direct.ValueOf(in.Name)
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Description = direct.ValueOf(in.Description)
+	out.Endpoints = in.Endpoints
+	out.Paths = in.Paths
+	out.Documentation = Documentation_ToProto(mapCtx, in.Documentation)
+	if in.Attributes != nil {
+		out.Attributes = make(map[string]*pb.AttributeValues, len(in.Attributes))
+		for k, v := range in.Attributes {
+			out.Attributes[k] = AttributeValues_ToProto(mapCtx, &v)
+		}
+	}
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	return out
+}
+func ExternalAPIObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ExternalApi) *krm.ExternalAPIObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ExternalAPIObservedState{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	// MISSING: Description
+	// MISSING: Endpoints
+	// MISSING: Paths
+	// MISSING: Documentation
+	// MISSING: Attributes
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	return out
+}
+func ExternalAPIObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ExternalAPIObservedState) *pb.ExternalApi {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ExternalApi{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	// MISSING: Description
+	// MISSING: Endpoints
+	// MISSING: Paths
+	// MISSING: Documentation
+	// MISSING: Attributes
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	return out
 }
 func Owner_FromProto(mapCtx *direct.MapContext, in *pb.Owner) *krm.Owner {
@@ -318,5 +637,93 @@ func Owner_ToProto(mapCtx *direct.MapContext, in *krm.Owner) *pb.Owner {
 	out := &pb.Owner{}
 	out.DisplayName = direct.ValueOf(in.DisplayName)
 	out.Email = direct.ValueOf(in.Email)
+	return out
+}
+func Plugin_FromProto(mapCtx *direct.MapContext, in *pb.Plugin) *krm.Plugin {
+	if in == nil {
+		return nil
+	}
+	out := &krm.Plugin{}
+	out.Name = direct.LazyPtr(in.GetName())
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.Type = AttributeValues_FromProto(mapCtx, in.GetType())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	// MISSING: State
+	return out
+}
+func Plugin_ToProto(mapCtx *direct.MapContext, in *krm.Plugin) *pb.Plugin {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Plugin{}
+	out.Name = direct.ValueOf(in.Name)
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Type = AttributeValues_ToProto(mapCtx, in.Type)
+	out.Description = direct.ValueOf(in.Description)
+	// MISSING: State
+	return out
+}
+func PluginObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Plugin) *krm.PluginObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.PluginObservedState{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	out.Type = AttributeValuesObservedState_FromProto(mapCtx, in.GetType())
+	// MISSING: Description
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	return out
+}
+func PluginObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PluginObservedState) *pb.Plugin {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Plugin{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	out.Type = AttributeValuesObservedState_ToProto(mapCtx, in.Type)
+	// MISSING: Description
+	out.State = direct.Enum_ToProto[pb.Plugin_State](mapCtx, in.State)
+	return out
+}
+func RuntimeProjectAttachment_FromProto(mapCtx *direct.MapContext, in *pb.RuntimeProjectAttachment) *krm.RuntimeProjectAttachment {
+	if in == nil {
+		return nil
+	}
+	out := &krm.RuntimeProjectAttachment{}
+	out.Name = direct.LazyPtr(in.GetName())
+	out.RuntimeProject = direct.LazyPtr(in.GetRuntimeProject())
+	// MISSING: CreateTime
+	return out
+}
+func RuntimeProjectAttachment_ToProto(mapCtx *direct.MapContext, in *krm.RuntimeProjectAttachment) *pb.RuntimeProjectAttachment {
+	if in == nil {
+		return nil
+	}
+	out := &pb.RuntimeProjectAttachment{}
+	out.Name = direct.ValueOf(in.Name)
+	out.RuntimeProject = direct.ValueOf(in.RuntimeProject)
+	// MISSING: CreateTime
+	return out
+}
+func RuntimeProjectAttachmentObservedState_FromProto(mapCtx *direct.MapContext, in *pb.RuntimeProjectAttachment) *krm.RuntimeProjectAttachmentObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.RuntimeProjectAttachmentObservedState{}
+	// MISSING: Name
+	// MISSING: RuntimeProject
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	return out
+}
+func RuntimeProjectAttachmentObservedState_ToProto(mapCtx *direct.MapContext, in *krm.RuntimeProjectAttachmentObservedState) *pb.RuntimeProjectAttachment {
+	if in == nil {
+		return nil
+	}
+	out := &pb.RuntimeProjectAttachment{}
+	// MISSING: Name
+	// MISSING: RuntimeProject
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	return out
 }

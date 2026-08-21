@@ -11,6 +11,7 @@ kind=VMwareEngineNetworkPeering group=vmwareengine.cnrm.cloud.google.com: field 
 kind=VMwareEngineNetworkPolicy group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=VMwareEngineNetworkPolicy group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference (target=vmwareengine.googleapis.com/VmwareEngineNetwork)
 kind=VMwareEngineExternalAccessRule group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VMwareEngineExternalAccessRule group=vmwareengine.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/networkPolicies/{network_policy}/externalAccessRules/{external_access_rule}; location is implied by the parent, add it only if the API needs it stated)
 kind=VMwareEnginePrivateCloud group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference (target=vmwareengine.googleapis.com/VmwareEngineNetwork)

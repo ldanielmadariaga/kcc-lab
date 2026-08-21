@@ -36,14 +36,11 @@ type BootDisk struct {
 	SizeGB *int64 `json:"sizeGB,omitempty"`
 }
 
-/* unreachable type BucketReference
 // +kcc:proto=google.cloud.hypercomputecluster.v1.BucketReference
 type BucketReference struct {
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.hypercomputecluster.v1.Cluster", skipping
-
+/* unreachable type Cluster
 // +kcc:proto=google.cloud.hypercomputecluster.v1.Cluster
 type Cluster struct {
 	// Identifier. [Relative resource name](https://google.aip.dev/122) of the
@@ -117,7 +114,6 @@ type ComputeInstanceSlurmNodeSet struct {
 	BootDisk *BootDisk `json:"bootDisk,omitempty"`
 }
 
-/* unreachable type ComputeResource
 // +kcc:proto=google.cloud.hypercomputecluster.v1.ComputeResource
 type ComputeResource struct {
 	// Required. Immutable. Configuration for this compute resource, which
@@ -126,9 +122,7 @@ type ComputeResource struct {
 	// +required
 	Config *ComputeResourceConfig `json:"config,omitempty"`
 }
-*/
 
-/* unreachable type ComputeResourceConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.ComputeResourceConfig
 type ComputeResourceConfig struct {
 	// Optional. Immutable. If set, indicates that this resource should use
@@ -151,9 +145,7 @@ type ComputeResourceConfig struct {
 	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.ComputeResourceConfig.new_flex_start_instances
 	NewFlexStartInstances *NewFlexStartInstancesConfig `json:"newFlexStartInstances,omitempty"`
 }
-*/
 
-/* unreachable type ExistingBucketConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.ExistingBucketConfig
 type ExistingBucketConfig struct {
 	// Required. Immutable. Name of the Cloud Storage bucket to import.
@@ -161,9 +153,7 @@ type ExistingBucketConfig struct {
 	// +required
 	Bucket *string `json:"bucket,omitempty"`
 }
-*/
 
-/* unreachable type ExistingFilestoreConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.ExistingFilestoreConfig
 type ExistingFilestoreConfig struct {
 	// Required. Immutable. Name of the Filestore instance to import, in the
@@ -172,9 +162,7 @@ type ExistingFilestoreConfig struct {
 	// +required
 	Filestore *string `json:"filestore,omitempty"`
 }
-*/
 
-/* unreachable type ExistingLustreConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.ExistingLustreConfig
 type ExistingLustreConfig struct {
 	// Required. Immutable. Name of the Managed Lustre instance to import, in the
@@ -183,9 +171,7 @@ type ExistingLustreConfig struct {
 	// +required
 	Lustre *string `json:"lustre,omitempty"`
 }
-*/
 
-/* unreachable type ExistingNetworkConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.ExistingNetworkConfig
 type ExistingNetworkConfig struct {
 	// Required. Immutable. Name of the network to import, in the format
@@ -200,9 +186,7 @@ type ExistingNetworkConfig struct {
 	// +required
 	Subnetwork *string `json:"subnetwork,omitempty"`
 }
-*/
 
-/* unreachable type FileShareConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.FileShareConfig
 type FileShareConfig struct {
 	// Required. Size of the filestore in GB. Must be between 1024 and 102400, and
@@ -217,15 +201,11 @@ type FileShareConfig struct {
 	// +required
 	FileShare *string `json:"fileShare,omitempty"`
 }
-*/
 
-/* unreachable type FilestoreReference
 // +kcc:proto=google.cloud.hypercomputecluster.v1.FilestoreReference
 type FilestoreReference struct {
 }
-*/
 
-/* unreachable type GCSAutoclassConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.GcsAutoclassConfig
 type GCSAutoclassConfig struct {
 	// Required. Enables Auto-class feature.
@@ -237,9 +217,7 @@ type GCSAutoclassConfig struct {
 	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.GcsAutoclassConfig.terminal_storage_class
 	TerminalStorageClass *string `json:"terminalStorageClass,omitempty"`
 }
-*/
 
-/* unreachable type GCSHierarchicalNamespaceConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.GcsHierarchicalNamespaceConfig
 type GCSHierarchicalNamespaceConfig struct {
 	// Required. Enables hierarchical namespace setup for the bucket.
@@ -247,21 +225,15 @@ type GCSHierarchicalNamespaceConfig struct {
 	// +required
 	Enabled *bool `json:"enabled,omitempty"`
 }
-*/
 
-/* unreachable type LustreReference
 // +kcc:proto=google.cloud.hypercomputecluster.v1.LustreReference
 type LustreReference struct {
 }
-*/
 
-/* unreachable type NetworkReference
 // +kcc:proto=google.cloud.hypercomputecluster.v1.NetworkReference
 type NetworkReference struct {
 }
-*/
 
-/* unreachable type NetworkResource
 // +kcc:proto=google.cloud.hypercomputecluster.v1.NetworkResource
 type NetworkResource struct {
 	// Reference to a network in Google Compute Engine.
@@ -276,9 +248,7 @@ type NetworkResource struct {
 	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.NetworkResource.config
 	Config *NetworkResourceConfig `json:"config,omitempty"`
 }
-*/
 
-/* unreachable type NetworkResourceConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.NetworkResourceConfig
 type NetworkResourceConfig struct {
 	// Optional. Immutable. If set, indicates that a new network should be
@@ -291,9 +261,7 @@ type NetworkResourceConfig struct {
 	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.NetworkResourceConfig.existing_network
 	ExistingNetwork *ExistingNetworkConfig `json:"existingNetwork,omitempty"`
 }
-*/
 
-/* unreachable type NewBucketConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.NewBucketConfig
 type NewBucketConfig struct {
 	// Optional. Immutable. If set, indicates that the bucket should use
@@ -317,9 +285,7 @@ type NewBucketConfig struct {
 	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.NewBucketConfig.hierarchical_namespace
 	HierarchicalNamespace *GCSHierarchicalNamespaceConfig `json:"hierarchicalNamespace,omitempty"`
 }
-*/
 
-/* unreachable type NewFilestoreConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.NewFilestoreConfig
 type NewFilestoreConfig struct {
 	// Required. Immutable. Name of the Filestore instance to create, in the
@@ -349,9 +315,7 @@ type NewFilestoreConfig struct {
 	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.NewFilestoreConfig.protocol
 	Protocol *string `json:"protocol,omitempty"`
 }
-*/
 
-/* unreachable type NewFlexStartInstancesConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.NewFlexStartInstancesConfig
 type NewFlexStartInstancesConfig struct {
 	// Required. Immutable. Name of the zone in which VM instances should run,
@@ -374,9 +338,7 @@ type NewFlexStartInstancesConfig struct {
 	// +required
 	MaxDuration *string `json:"maxDuration,omitempty"`
 }
-*/
 
-/* unreachable type NewLustreConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.NewLustreConfig
 type NewLustreConfig struct {
 	// Required. Immutable. Name of the Managed Lustre instance to create, in the
@@ -403,9 +365,7 @@ type NewLustreConfig struct {
 	// +required
 	CapacityGB *int64 `json:"capacityGB,omitempty"`
 }
-*/
 
-/* unreachable type NewNetworkConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.NewNetworkConfig
 type NewNetworkConfig struct {
 	// Required. Immutable. Name of the network to create, in the format
@@ -419,9 +379,7 @@ type NewNetworkConfig struct {
 	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.NewNetworkConfig.description
 	Description *string `json:"description,omitempty"`
 }
-*/
 
-/* unreachable type NewOnDemandInstancesConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.NewOnDemandInstancesConfig
 type NewOnDemandInstancesConfig struct {
 	// Required. Immutable. Name of the zone in which VM instances should run,
@@ -438,9 +396,7 @@ type NewOnDemandInstancesConfig struct {
 	// +required
 	MachineType *string `json:"machineType,omitempty"`
 }
-*/
 
-/* unreachable type NewReservedInstancesConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.NewReservedInstancesConfig
 type NewReservedInstancesConfig struct {
 	// Optional. Immutable. Name of the reservation from which VM instances
@@ -449,9 +405,7 @@ type NewReservedInstancesConfig struct {
 	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.NewReservedInstancesConfig.reservation
 	Reservation *string `json:"reservation,omitempty"`
 }
-*/
 
-/* unreachable type NewSpotInstancesConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.NewSpotInstancesConfig
 type NewSpotInstancesConfig struct {
 	// Required. Immutable. Name of the zone in which VM instances should run,
@@ -473,7 +427,6 @@ type NewSpotInstancesConfig struct {
 	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.NewSpotInstancesConfig.termination_action
 	TerminationAction *string `json:"terminationAction,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.hypercomputecluster.v1.Orchestrator
 type Orchestrator struct {
@@ -656,7 +609,6 @@ type StorageConfig struct {
 	LocalMount *string `json:"localMount,omitempty"`
 }
 
-/* unreachable type StorageResource
 // +kcc:proto=google.cloud.hypercomputecluster.v1.StorageResource
 type StorageResource struct {
 	// Reference to a Filestore instance. Populated if and only if the storage
@@ -683,9 +635,7 @@ type StorageResource struct {
 	// +required
 	Config *StorageResourceConfig `json:"config,omitempty"`
 }
-*/
 
-/* unreachable type StorageResourceConfig
 // +kcc:proto=google.cloud.hypercomputecluster.v1.StorageResourceConfig
 type StorageResourceConfig struct {
 	// Optional. Immutable. If set, indicates that a new Filestore instance
@@ -718,10 +668,8 @@ type StorageResourceConfig struct {
 	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.StorageResourceConfig.existing_lustre
 	ExistingLustre *ExistingLustreConfig `json:"existingLustre,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.hypercomputecluster.v1.Cluster", skipping
-
+/* unreachable type ClusterObservedState
 // +kcc:observedstate:proto=google.cloud.hypercomputecluster.v1.Cluster
 type ClusterObservedState struct {
 	// Output only. Time that the cluster was originally created.

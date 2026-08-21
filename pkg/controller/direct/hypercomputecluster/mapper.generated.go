@@ -47,6 +47,22 @@ func BootDisk_ToProto(mapCtx *direct.MapContext, in *krm.BootDisk) *pb.BootDisk 
 	out.SizeGb = direct.ValueOf(in.SizeGB)
 	return out
 }
+func BucketReference_FromProto(mapCtx *direct.MapContext, in *pb.BucketReference) *krm.BucketReference {
+	if in == nil {
+		return nil
+	}
+	out := &krm.BucketReference{}
+	// MISSING: Bucket
+	return out
+}
+func BucketReference_ToProto(mapCtx *direct.MapContext, in *krm.BucketReference) *pb.BucketReference {
+	if in == nil {
+		return nil
+	}
+	out := &pb.BucketReference{}
+	// MISSING: Bucket
+	return out
+}
 func ComputeInstanceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ComputeInstance) *krm.ComputeInstanceObservedState {
 	if in == nil {
 		return nil
@@ -83,6 +99,186 @@ func ComputeInstanceSlurmNodeSet_ToProto(mapCtx *direct.MapContext, in *krm.Comp
 	out.BootDisk = BootDisk_ToProto(mapCtx, in.BootDisk)
 	return out
 }
+func ComputeResource_FromProto(mapCtx *direct.MapContext, in *pb.ComputeResource) *krm.ComputeResource {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ComputeResource{}
+	out.Config = ComputeResourceConfig_FromProto(mapCtx, in.GetConfig())
+	return out
+}
+func ComputeResource_ToProto(mapCtx *direct.MapContext, in *krm.ComputeResource) *pb.ComputeResource {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ComputeResource{}
+	out.Config = ComputeResourceConfig_ToProto(mapCtx, in.Config)
+	return out
+}
+func ComputeResourceConfig_FromProto(mapCtx *direct.MapContext, in *pb.ComputeResourceConfig) *krm.ComputeResourceConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ComputeResourceConfig{}
+	out.NewOnDemandInstances = NewOnDemandInstancesConfig_FromProto(mapCtx, in.GetNewOnDemandInstances())
+	out.NewSpotInstances = NewSpotInstancesConfig_FromProto(mapCtx, in.GetNewSpotInstances())
+	out.NewReservedInstances = NewReservedInstancesConfig_FromProto(mapCtx, in.GetNewReservedInstances())
+	out.NewFlexStartInstances = NewFlexStartInstancesConfig_FromProto(mapCtx, in.GetNewFlexStartInstances())
+	return out
+}
+func ComputeResourceConfig_ToProto(mapCtx *direct.MapContext, in *krm.ComputeResourceConfig) *pb.ComputeResourceConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ComputeResourceConfig{}
+	if oneof := NewOnDemandInstancesConfig_ToProto(mapCtx, in.NewOnDemandInstances); oneof != nil {
+		out.Config = &pb.ComputeResourceConfig_NewOnDemandInstances{NewOnDemandInstances: oneof}
+	}
+	if oneof := NewSpotInstancesConfig_ToProto(mapCtx, in.NewSpotInstances); oneof != nil {
+		out.Config = &pb.ComputeResourceConfig_NewSpotInstances{NewSpotInstances: oneof}
+	}
+	if oneof := NewReservedInstancesConfig_ToProto(mapCtx, in.NewReservedInstances); oneof != nil {
+		out.Config = &pb.ComputeResourceConfig_NewReservedInstances{NewReservedInstances: oneof}
+	}
+	if oneof := NewFlexStartInstancesConfig_ToProto(mapCtx, in.NewFlexStartInstances); oneof != nil {
+		out.Config = &pb.ComputeResourceConfig_NewFlexStartInstances{NewFlexStartInstances: oneof}
+	}
+	return out
+}
+func ExistingBucketConfig_FromProto(mapCtx *direct.MapContext, in *pb.ExistingBucketConfig) *krm.ExistingBucketConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ExistingBucketConfig{}
+	out.Bucket = direct.LazyPtr(in.GetBucket())
+	return out
+}
+func ExistingBucketConfig_ToProto(mapCtx *direct.MapContext, in *krm.ExistingBucketConfig) *pb.ExistingBucketConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ExistingBucketConfig{}
+	out.Bucket = direct.ValueOf(in.Bucket)
+	return out
+}
+func ExistingFilestoreConfig_FromProto(mapCtx *direct.MapContext, in *pb.ExistingFilestoreConfig) *krm.ExistingFilestoreConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ExistingFilestoreConfig{}
+	out.Filestore = direct.LazyPtr(in.GetFilestore())
+	return out
+}
+func ExistingFilestoreConfig_ToProto(mapCtx *direct.MapContext, in *krm.ExistingFilestoreConfig) *pb.ExistingFilestoreConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ExistingFilestoreConfig{}
+	out.Filestore = direct.ValueOf(in.Filestore)
+	return out
+}
+func ExistingLustreConfig_FromProto(mapCtx *direct.MapContext, in *pb.ExistingLustreConfig) *krm.ExistingLustreConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ExistingLustreConfig{}
+	out.Lustre = direct.LazyPtr(in.GetLustre())
+	return out
+}
+func ExistingLustreConfig_ToProto(mapCtx *direct.MapContext, in *krm.ExistingLustreConfig) *pb.ExistingLustreConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ExistingLustreConfig{}
+	out.Lustre = direct.ValueOf(in.Lustre)
+	return out
+}
+func ExistingNetworkConfig_FromProto(mapCtx *direct.MapContext, in *pb.ExistingNetworkConfig) *krm.ExistingNetworkConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ExistingNetworkConfig{}
+	out.Network = direct.LazyPtr(in.GetNetwork())
+	out.Subnetwork = direct.LazyPtr(in.GetSubnetwork())
+	return out
+}
+func ExistingNetworkConfig_ToProto(mapCtx *direct.MapContext, in *krm.ExistingNetworkConfig) *pb.ExistingNetworkConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ExistingNetworkConfig{}
+	out.Network = direct.ValueOf(in.Network)
+	out.Subnetwork = direct.ValueOf(in.Subnetwork)
+	return out
+}
+func FileShareConfig_FromProto(mapCtx *direct.MapContext, in *pb.FileShareConfig) *krm.FileShareConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.FileShareConfig{}
+	out.CapacityGB = direct.LazyPtr(in.GetCapacityGb())
+	out.FileShare = direct.LazyPtr(in.GetFileShare())
+	return out
+}
+func FileShareConfig_ToProto(mapCtx *direct.MapContext, in *krm.FileShareConfig) *pb.FileShareConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.FileShareConfig{}
+	out.CapacityGb = direct.ValueOf(in.CapacityGB)
+	out.FileShare = direct.ValueOf(in.FileShare)
+	return out
+}
+func FilestoreReference_FromProto(mapCtx *direct.MapContext, in *pb.FilestoreReference) *krm.FilestoreReference {
+	if in == nil {
+		return nil
+	}
+	out := &krm.FilestoreReference{}
+	// MISSING: Filestore
+	return out
+}
+func FilestoreReference_ToProto(mapCtx *direct.MapContext, in *krm.FilestoreReference) *pb.FilestoreReference {
+	if in == nil {
+		return nil
+	}
+	out := &pb.FilestoreReference{}
+	// MISSING: Filestore
+	return out
+}
+func GCSAutoclassConfig_FromProto(mapCtx *direct.MapContext, in *pb.GcsAutoclassConfig) *krm.GCSAutoclassConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.GCSAutoclassConfig{}
+	out.Enabled = direct.LazyPtr(in.GetEnabled())
+	out.TerminalStorageClass = direct.Enum_FromProto(mapCtx, in.GetTerminalStorageClass())
+	return out
+}
+func GCSAutoclassConfig_ToProto(mapCtx *direct.MapContext, in *krm.GCSAutoclassConfig) *pb.GcsAutoclassConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.GcsAutoclassConfig{}
+	out.Enabled = direct.ValueOf(in.Enabled)
+	out.TerminalStorageClass = direct.Enum_ToProto[pb.GcsAutoclassConfig_TerminalStorageClass](mapCtx, in.TerminalStorageClass)
+	return out
+}
+func GCSHierarchicalNamespaceConfig_FromProto(mapCtx *direct.MapContext, in *pb.GcsHierarchicalNamespaceConfig) *krm.GCSHierarchicalNamespaceConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.GCSHierarchicalNamespaceConfig{}
+	out.Enabled = direct.LazyPtr(in.GetEnabled())
+	return out
+}
+func GCSHierarchicalNamespaceConfig_ToProto(mapCtx *direct.MapContext, in *krm.GCSHierarchicalNamespaceConfig) *pb.GcsHierarchicalNamespaceConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.GcsHierarchicalNamespaceConfig{}
+	out.Enabled = direct.ValueOf(in.Enabled)
+	return out
+}
 func HypercomputeClusterClusterObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Cluster) *krm.HypercomputeClusterClusterObservedState {
 	if in == nil {
 		return nil
@@ -92,9 +288,6 @@ func HypercomputeClusterClusterObservedState_FromProto(mapCtx *direct.MapContext
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.Reconciling = direct.LazyPtr(in.GetReconciling())
-	// MISSING: NetworkResources
-	// MISSING: StorageResources
-	// MISSING: ComputeResources
 	out.Orchestrator = OrchestratorObservedState_FromProto(mapCtx, in.GetOrchestrator())
 	return out
 }
@@ -107,9 +300,6 @@ func HypercomputeClusterClusterObservedState_ToProto(mapCtx *direct.MapContext, 
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.Reconciling = direct.ValueOf(in.Reconciling)
-	// MISSING: NetworkResources
-	// MISSING: StorageResources
-	// MISSING: ComputeResources
 	out.Orchestrator = OrchestratorObservedState_ToProto(mapCtx, in.Orchestrator)
 	return out
 }
@@ -121,9 +311,30 @@ func HypercomputeClusterClusterSpec_FromProto(mapCtx *direct.MapContext, in *pb.
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.Labels = in.Labels
-	// MISSING: NetworkResources
-	// MISSING: StorageResources
-	// MISSING: ComputeResources
+	if in.NetworkResources != nil {
+		out.NetworkResources = make(map[string]krm.NetworkResource, len(in.NetworkResources))
+		for k, v := range in.NetworkResources {
+			if c := NetworkResource_FromProto(mapCtx, v); c != nil {
+				out.NetworkResources[k] = *c
+			}
+		}
+	}
+	if in.StorageResources != nil {
+		out.StorageResources = make(map[string]krm.StorageResource, len(in.StorageResources))
+		for k, v := range in.StorageResources {
+			if c := StorageResource_FromProto(mapCtx, v); c != nil {
+				out.StorageResources[k] = *c
+			}
+		}
+	}
+	if in.ComputeResources != nil {
+		out.ComputeResources = make(map[string]krm.ComputeResource, len(in.ComputeResources))
+		for k, v := range in.ComputeResources {
+			if c := ComputeResource_FromProto(mapCtx, v); c != nil {
+				out.ComputeResources[k] = *c
+			}
+		}
+	}
 	out.Orchestrator = Orchestrator_FromProto(mapCtx, in.GetOrchestrator())
 	return out
 }
@@ -135,10 +346,279 @@ func HypercomputeClusterClusterSpec_ToProto(mapCtx *direct.MapContext, in *krm.H
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
 	out.Labels = in.Labels
-	// MISSING: NetworkResources
-	// MISSING: StorageResources
-	// MISSING: ComputeResources
+	if in.NetworkResources != nil {
+		out.NetworkResources = make(map[string]*pb.NetworkResource, len(in.NetworkResources))
+		for k, v := range in.NetworkResources {
+			out.NetworkResources[k] = NetworkResource_ToProto(mapCtx, &v)
+		}
+	}
+	if in.StorageResources != nil {
+		out.StorageResources = make(map[string]*pb.StorageResource, len(in.StorageResources))
+		for k, v := range in.StorageResources {
+			out.StorageResources[k] = StorageResource_ToProto(mapCtx, &v)
+		}
+	}
+	if in.ComputeResources != nil {
+		out.ComputeResources = make(map[string]*pb.ComputeResource, len(in.ComputeResources))
+		for k, v := range in.ComputeResources {
+			out.ComputeResources[k] = ComputeResource_ToProto(mapCtx, &v)
+		}
+	}
 	out.Orchestrator = Orchestrator_ToProto(mapCtx, in.Orchestrator)
+	return out
+}
+func LustreReference_FromProto(mapCtx *direct.MapContext, in *pb.LustreReference) *krm.LustreReference {
+	if in == nil {
+		return nil
+	}
+	out := &krm.LustreReference{}
+	// MISSING: Lustre
+	return out
+}
+func LustreReference_ToProto(mapCtx *direct.MapContext, in *krm.LustreReference) *pb.LustreReference {
+	if in == nil {
+		return nil
+	}
+	out := &pb.LustreReference{}
+	// MISSING: Lustre
+	return out
+}
+func NetworkReference_FromProto(mapCtx *direct.MapContext, in *pb.NetworkReference) *krm.NetworkReference {
+	if in == nil {
+		return nil
+	}
+	out := &krm.NetworkReference{}
+	// MISSING: Network
+	// MISSING: Subnetwork
+	return out
+}
+func NetworkReference_ToProto(mapCtx *direct.MapContext, in *krm.NetworkReference) *pb.NetworkReference {
+	if in == nil {
+		return nil
+	}
+	out := &pb.NetworkReference{}
+	// MISSING: Network
+	// MISSING: Subnetwork
+	return out
+}
+func NetworkResource_FromProto(mapCtx *direct.MapContext, in *pb.NetworkResource) *krm.NetworkResource {
+	if in == nil {
+		return nil
+	}
+	out := &krm.NetworkResource{}
+	out.Network = NetworkReference_FromProto(mapCtx, in.GetNetwork())
+	out.Config = NetworkResourceConfig_FromProto(mapCtx, in.GetConfig())
+	return out
+}
+func NetworkResource_ToProto(mapCtx *direct.MapContext, in *krm.NetworkResource) *pb.NetworkResource {
+	if in == nil {
+		return nil
+	}
+	out := &pb.NetworkResource{}
+	if oneof := NetworkReference_ToProto(mapCtx, in.Network); oneof != nil {
+		out.Reference = &pb.NetworkResource_Network{Network: oneof}
+	}
+	out.Config = NetworkResourceConfig_ToProto(mapCtx, in.Config)
+	return out
+}
+func NetworkResourceConfig_FromProto(mapCtx *direct.MapContext, in *pb.NetworkResourceConfig) *krm.NetworkResourceConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.NetworkResourceConfig{}
+	out.NewNetwork = NewNetworkConfig_FromProto(mapCtx, in.GetNewNetwork())
+	out.ExistingNetwork = ExistingNetworkConfig_FromProto(mapCtx, in.GetExistingNetwork())
+	return out
+}
+func NetworkResourceConfig_ToProto(mapCtx *direct.MapContext, in *krm.NetworkResourceConfig) *pb.NetworkResourceConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.NetworkResourceConfig{}
+	if oneof := NewNetworkConfig_ToProto(mapCtx, in.NewNetwork); oneof != nil {
+		out.Config = &pb.NetworkResourceConfig_NewNetwork{NewNetwork: oneof}
+	}
+	if oneof := ExistingNetworkConfig_ToProto(mapCtx, in.ExistingNetwork); oneof != nil {
+		out.Config = &pb.NetworkResourceConfig_ExistingNetwork{ExistingNetwork: oneof}
+	}
+	return out
+}
+func NewBucketConfig_FromProto(mapCtx *direct.MapContext, in *pb.NewBucketConfig) *krm.NewBucketConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.NewBucketConfig{}
+	out.Autoclass = GCSAutoclassConfig_FromProto(mapCtx, in.GetAutoclass())
+	out.StorageClass = direct.Enum_FromProto(mapCtx, in.GetStorageClass())
+	out.Bucket = direct.LazyPtr(in.GetBucket())
+	out.HierarchicalNamespace = GCSHierarchicalNamespaceConfig_FromProto(mapCtx, in.GetHierarchicalNamespace())
+	return out
+}
+func NewBucketConfig_ToProto(mapCtx *direct.MapContext, in *krm.NewBucketConfig) *pb.NewBucketConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.NewBucketConfig{}
+	if oneof := GCSAutoclassConfig_ToProto(mapCtx, in.Autoclass); oneof != nil {
+		out.Option = &pb.NewBucketConfig_Autoclass{Autoclass: oneof}
+	}
+	if oneof := NewBucketConfig_StorageClass_ToProto(mapCtx, in.StorageClass); oneof != nil {
+		out.Option = oneof
+	}
+	out.Bucket = direct.ValueOf(in.Bucket)
+	out.HierarchicalNamespace = GCSHierarchicalNamespaceConfig_ToProto(mapCtx, in.HierarchicalNamespace)
+	return out
+}
+func NewBucketConfig_StorageClass_ToProto(mapCtx *direct.MapContext, in *string) *pb.NewBucketConfig_StorageClass_ {
+	if in == nil {
+		return nil
+	}
+	return &pb.NewBucketConfig_StorageClass_{StorageClass: direct.Enum_ToProto[pb.NewBucketConfig_StorageClass](mapCtx, in)}
+}
+func NewFilestoreConfig_FromProto(mapCtx *direct.MapContext, in *pb.NewFilestoreConfig) *krm.NewFilestoreConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.NewFilestoreConfig{}
+	out.Filestore = direct.LazyPtr(in.GetFilestore())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.FileShares = direct.Slice_FromProto(mapCtx, in.FileShares, FileShareConfig_FromProto)
+	out.Tier = direct.Enum_FromProto(mapCtx, in.GetTier())
+	out.Protocol = direct.Enum_FromProto(mapCtx, in.GetProtocol())
+	return out
+}
+func NewFilestoreConfig_ToProto(mapCtx *direct.MapContext, in *krm.NewFilestoreConfig) *pb.NewFilestoreConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.NewFilestoreConfig{}
+	out.Filestore = direct.ValueOf(in.Filestore)
+	out.Description = direct.ValueOf(in.Description)
+	out.FileShares = direct.Slice_ToProto(mapCtx, in.FileShares, FileShareConfig_ToProto)
+	out.Tier = direct.Enum_ToProto[pb.NewFilestoreConfig_Tier](mapCtx, in.Tier)
+	out.Protocol = direct.Enum_ToProto[pb.NewFilestoreConfig_Protocol](mapCtx, in.Protocol)
+	return out
+}
+func NewFlexStartInstancesConfig_FromProto(mapCtx *direct.MapContext, in *pb.NewFlexStartInstancesConfig) *krm.NewFlexStartInstancesConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.NewFlexStartInstancesConfig{}
+	out.Zone = direct.LazyPtr(in.GetZone())
+	out.MachineType = direct.LazyPtr(in.GetMachineType())
+	out.MaxDuration = direct.StringDuration_FromProto(mapCtx, in.GetMaxDuration())
+	return out
+}
+func NewFlexStartInstancesConfig_ToProto(mapCtx *direct.MapContext, in *krm.NewFlexStartInstancesConfig) *pb.NewFlexStartInstancesConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.NewFlexStartInstancesConfig{}
+	out.Zone = direct.ValueOf(in.Zone)
+	out.MachineType = direct.ValueOf(in.MachineType)
+	out.MaxDuration = direct.StringDuration_ToProto(mapCtx, in.MaxDuration)
+	return out
+}
+func NewLustreConfig_FromProto(mapCtx *direct.MapContext, in *pb.NewLustreConfig) *krm.NewLustreConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.NewLustreConfig{}
+	out.Lustre = direct.LazyPtr(in.GetLustre())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.Filesystem = direct.LazyPtr(in.GetFilesystem())
+	out.CapacityGB = direct.LazyPtr(in.GetCapacityGb())
+	return out
+}
+func NewLustreConfig_ToProto(mapCtx *direct.MapContext, in *krm.NewLustreConfig) *pb.NewLustreConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.NewLustreConfig{}
+	out.Lustre = direct.ValueOf(in.Lustre)
+	out.Description = direct.ValueOf(in.Description)
+	out.Filesystem = direct.ValueOf(in.Filesystem)
+	out.CapacityGb = direct.ValueOf(in.CapacityGB)
+	return out
+}
+func NewNetworkConfig_FromProto(mapCtx *direct.MapContext, in *pb.NewNetworkConfig) *krm.NewNetworkConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.NewNetworkConfig{}
+	out.Network = direct.LazyPtr(in.GetNetwork())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	return out
+}
+func NewNetworkConfig_ToProto(mapCtx *direct.MapContext, in *krm.NewNetworkConfig) *pb.NewNetworkConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.NewNetworkConfig{}
+	out.Network = direct.ValueOf(in.Network)
+	out.Description = direct.ValueOf(in.Description)
+	return out
+}
+func NewOnDemandInstancesConfig_FromProto(mapCtx *direct.MapContext, in *pb.NewOnDemandInstancesConfig) *krm.NewOnDemandInstancesConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.NewOnDemandInstancesConfig{}
+	out.Zone = direct.LazyPtr(in.GetZone())
+	out.MachineType = direct.LazyPtr(in.GetMachineType())
+	return out
+}
+func NewOnDemandInstancesConfig_ToProto(mapCtx *direct.MapContext, in *krm.NewOnDemandInstancesConfig) *pb.NewOnDemandInstancesConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.NewOnDemandInstancesConfig{}
+	out.Zone = direct.ValueOf(in.Zone)
+	out.MachineType = direct.ValueOf(in.MachineType)
+	return out
+}
+func NewReservedInstancesConfig_FromProto(mapCtx *direct.MapContext, in *pb.NewReservedInstancesConfig) *krm.NewReservedInstancesConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.NewReservedInstancesConfig{}
+	out.Reservation = direct.LazyPtr(in.GetReservation())
+	return out
+}
+func NewReservedInstancesConfig_ToProto(mapCtx *direct.MapContext, in *krm.NewReservedInstancesConfig) *pb.NewReservedInstancesConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.NewReservedInstancesConfig{}
+	if oneof := NewReservedInstancesConfig_Reservation_ToProto(mapCtx, in.Reservation); oneof != nil {
+		out.Source = oneof
+	}
+	return out
+}
+func NewReservedInstancesConfig_Reservation_ToProto(mapCtx *direct.MapContext, in *string) *pb.NewReservedInstancesConfig_Reservation {
+	if in == nil {
+		return nil
+	}
+	return &pb.NewReservedInstancesConfig_Reservation{Reservation: *in}
+}
+func NewSpotInstancesConfig_FromProto(mapCtx *direct.MapContext, in *pb.NewSpotInstancesConfig) *krm.NewSpotInstancesConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.NewSpotInstancesConfig{}
+	out.Zone = direct.LazyPtr(in.GetZone())
+	out.MachineType = direct.LazyPtr(in.GetMachineType())
+	out.TerminationAction = direct.Enum_FromProto(mapCtx, in.GetTerminationAction())
+	return out
+}
+func NewSpotInstancesConfig_ToProto(mapCtx *direct.MapContext, in *krm.NewSpotInstancesConfig) *pb.NewSpotInstancesConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.NewSpotInstancesConfig{}
+	out.Zone = direct.ValueOf(in.Zone)
+	out.MachineType = direct.ValueOf(in.MachineType)
+	out.TerminationAction = direct.Enum_ToProto[pb.NewSpotInstancesConfig_TerminationAction](mapCtx, in.TerminationAction)
 	return out
 }
 func Orchestrator_FromProto(mapCtx *direct.MapContext, in *pb.Orchestrator) *krm.Orchestrator {
@@ -367,5 +847,71 @@ func StorageConfig_ToProto(mapCtx *direct.MapContext, in *krm.StorageConfig) *pb
 	out := &pb.StorageConfig{}
 	out.Id = direct.ValueOf(in.ID)
 	out.LocalMount = direct.ValueOf(in.LocalMount)
+	return out
+}
+func StorageResource_FromProto(mapCtx *direct.MapContext, in *pb.StorageResource) *krm.StorageResource {
+	if in == nil {
+		return nil
+	}
+	out := &krm.StorageResource{}
+	out.Filestore = FilestoreReference_FromProto(mapCtx, in.GetFilestore())
+	out.Bucket = BucketReference_FromProto(mapCtx, in.GetBucket())
+	out.Lustre = LustreReference_FromProto(mapCtx, in.GetLustre())
+	out.Config = StorageResourceConfig_FromProto(mapCtx, in.GetConfig())
+	return out
+}
+func StorageResource_ToProto(mapCtx *direct.MapContext, in *krm.StorageResource) *pb.StorageResource {
+	if in == nil {
+		return nil
+	}
+	out := &pb.StorageResource{}
+	if oneof := FilestoreReference_ToProto(mapCtx, in.Filestore); oneof != nil {
+		out.Reference = &pb.StorageResource_Filestore{Filestore: oneof}
+	}
+	if oneof := BucketReference_ToProto(mapCtx, in.Bucket); oneof != nil {
+		out.Reference = &pb.StorageResource_Bucket{Bucket: oneof}
+	}
+	if oneof := LustreReference_ToProto(mapCtx, in.Lustre); oneof != nil {
+		out.Reference = &pb.StorageResource_Lustre{Lustre: oneof}
+	}
+	out.Config = StorageResourceConfig_ToProto(mapCtx, in.Config)
+	return out
+}
+func StorageResourceConfig_FromProto(mapCtx *direct.MapContext, in *pb.StorageResourceConfig) *krm.StorageResourceConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.StorageResourceConfig{}
+	out.NewFilestore = NewFilestoreConfig_FromProto(mapCtx, in.GetNewFilestore())
+	out.ExistingFilestore = ExistingFilestoreConfig_FromProto(mapCtx, in.GetExistingFilestore())
+	out.NewBucket = NewBucketConfig_FromProto(mapCtx, in.GetNewBucket())
+	out.ExistingBucket = ExistingBucketConfig_FromProto(mapCtx, in.GetExistingBucket())
+	out.NewLustre = NewLustreConfig_FromProto(mapCtx, in.GetNewLustre())
+	out.ExistingLustre = ExistingLustreConfig_FromProto(mapCtx, in.GetExistingLustre())
+	return out
+}
+func StorageResourceConfig_ToProto(mapCtx *direct.MapContext, in *krm.StorageResourceConfig) *pb.StorageResourceConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.StorageResourceConfig{}
+	if oneof := NewFilestoreConfig_ToProto(mapCtx, in.NewFilestore); oneof != nil {
+		out.Config = &pb.StorageResourceConfig_NewFilestore{NewFilestore: oneof}
+	}
+	if oneof := ExistingFilestoreConfig_ToProto(mapCtx, in.ExistingFilestore); oneof != nil {
+		out.Config = &pb.StorageResourceConfig_ExistingFilestore{ExistingFilestore: oneof}
+	}
+	if oneof := NewBucketConfig_ToProto(mapCtx, in.NewBucket); oneof != nil {
+		out.Config = &pb.StorageResourceConfig_NewBucket{NewBucket: oneof}
+	}
+	if oneof := ExistingBucketConfig_ToProto(mapCtx, in.ExistingBucket); oneof != nil {
+		out.Config = &pb.StorageResourceConfig_ExistingBucket{ExistingBucket: oneof}
+	}
+	if oneof := NewLustreConfig_ToProto(mapCtx, in.NewLustre); oneof != nil {
+		out.Config = &pb.StorageResourceConfig_NewLustre{NewLustre: oneof}
+	}
+	if oneof := ExistingLustreConfig_ToProto(mapCtx, in.ExistingLustre); oneof != nil {
+		out.Config = &pb.StorageResourceConfig_ExistingLustre{ExistingLustre: oneof}
+	}
 	return out
 }

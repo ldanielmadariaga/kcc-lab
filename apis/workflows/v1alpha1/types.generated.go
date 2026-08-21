@@ -21,8 +21,7 @@
 
 package v1alpha1
 
-/* found existing non-generated go type with proto tag "google.cloud.workflows.v1.Workflow", skipping
-
+/* unreachable type Workflow
 // +kcc:proto=google.cloud.workflows.v1.Workflow
 type Workflow struct {
 	// The resource name of the workflow.
@@ -114,8 +113,7 @@ type Workflow_StateError struct {
 	Type *string `json:"type,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.workflows.v1.Workflow", skipping
-
+/* unreachable type WorkflowObservedState
 // +kcc:observedstate:proto=google.cloud.workflows.v1.Workflow
 type WorkflowObservedState struct {
 	// Output only. State of the workflow deployment.

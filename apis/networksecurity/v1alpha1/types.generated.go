@@ -23,6 +23,49 @@
 
 package v1alpha1
 
+/* unreachable type PartnerSseGateway
+// +kcc:proto=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway
+type PartnerSseGateway struct {
+	// Immutable. name of resource
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.name
+	Name *string `json:"name,omitempty"`
+
+	// Optional. Labels as key value pairs
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. ID of the SSEGatewayReference that pairs with this
+	//  PartnerSSEGateway
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_gateway_reference_id
+	// +required
+	SseGatewayReferenceID *string `json:"sseGatewayReferenceID,omitempty"`
+
+	// Optional. Subnet range of the partner_vpc
+	//  This field is deprecated. Use partner_subnet_range instead.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.partner_vpc_subnet_range
+	PartnerVPCSubnetRange *string `json:"partnerVPCSubnetRange,omitempty"`
+
+	// Optional. Subnet range where SSE GW instances are deployed.
+	//  Default value is set to "100.88.255.0/24".
+	//  The CIDR suffix should be less than or equal to 25.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_subnet_range
+	SseSubnetRange *string `json:"sseSubnetRange,omitempty"`
+
+	// Optional. Subnet range of the partner-owned subnet.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.partner_subnet_range
+	PartnerSubnetRange *string `json:"partnerSubnetRange,omitempty"`
+
+	// Optional. Virtual Network Identifier to use in NCG.
+	//  Today the only partner that depends on it is Symantec.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.vni
+	Vni *int32 `json:"vni,omitempty"`
+
+	// Optional. Required iff Partner is Symantec.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.symantec_options
+	SymantecOptions *PartnerSseGateway_PartnerSseGatewaySymantecOptions `json:"symantecOptions,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.PartnerSSEGatewaySymantecOptions
 type PartnerSseGateway_PartnerSseGatewaySymantecOptions struct {
 
@@ -31,6 +74,38 @@ type PartnerSseGateway_PartnerSseGatewaySymantecOptions struct {
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.PartnerSSEGatewaySymantecOptions.symantec_site_target_host
 	SymantecSiteTargetHost *string `json:"symantecSiteTargetHost,omitempty"`
 }
+
+/* unreachable type PartnerSseRealm
+// +kcc:proto=google.cloud.networksecurity.v1alpha1.PartnerSSERealm
+type PartnerSseRealm struct {
+	// name of resource
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.name
+	Name *string `json:"name,omitempty"`
+
+	// Labels as key value pairs
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. value of the key to establish global handshake from SSERealm
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.pairing_key
+	// +required
+	PairingKey *string `json:"pairingKey,omitempty"`
+
+	// Optional. VPC owned by the partner to be peered with CDEN sse_vpc in
+	//  sse_project This field is deprecated. Use partner_network instead.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.partner_vpc
+	PartnerVPC *string `json:"partnerVPC,omitempty"`
+
+	// Optional. Partner-owned network to be peered with CDEN's sse_network in
+	//  sse_project
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.partner_network
+	PartnerNetwork *string `json:"partnerNetwork,omitempty"`
+
+	// Optional. Required only for PAN.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.pan_options
+	PanOptions *PartnerSseRealm_PartnerSseRealmPanOptions `json:"panOptions,omitempty"`
+}
+*/
 
 // +kcc:proto=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.PartnerSSERealmPanOptions
 type PartnerSseRealm_PartnerSseRealmPanOptions struct {
@@ -117,6 +192,93 @@ type TLSInspectionPolicy struct {
 }
 */
 
+/* unreachable type PartnerSseGatewayObservedState
+// +kcc:observedstate:proto=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway
+type PartnerSseGatewayObservedState struct {
+	// Output only. Create time stamp
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Update time stamp
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Subnet range of the subnet where partner traffic is routed.
+	//  This field is deprecated. Use sse_subnet_range instead.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_vpc_subnet_range
+	SseVPCSubnetRange *string `json:"sseVPCSubnetRange,omitempty"`
+
+	// Output only. This is the IP where the partner traffic should be routed to.
+	//  This field is deprecated. Use sse_target_ip instead.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_vpc_target_ip
+	SseVPCTargetIP *string `json:"sseVPCTargetIP,omitempty"`
+
+	// Output only. IP of SSE BGP
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_bgp_ips
+	SseBGPIps []string `json:"sseBGPIps,omitempty"`
+
+	// Output only. ASN of SSE BGP
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_bgp_asn
+	SseBGPAsn *int32 `json:"sseBGPAsn,omitempty"`
+
+	// Output only. name of PartnerSSERealm owning the PartnerSSEGateway
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.partner_sse_realm
+	PartnerSseRealm *string `json:"partnerSseRealm,omitempty"`
+
+	// Output only. Target IP that belongs to sse_subnet_range where partner
+	//  should send the traffic to reach the customer networks.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_target_ip
+	SseTargetIP *string `json:"sseTargetIP,omitempty"`
+
+	// Optional. Required iff Partner is Symantec.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.symantec_options
+	SymantecOptions *PartnerSseGateway_PartnerSseGatewaySymantecOptionsObservedState `json:"symantecOptions,omitempty"`
+
+	// Output only. The project owning partner_facing_network. Only filled for
+	//  PartnerSSEGateways associated with Symantec today.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_project
+	SseProject *string `json:"sseProject,omitempty"`
+
+	// Output only. The ID of the network in sse_project containing
+	//  sse_subnet_range. This is also known as the partnerFacingNetwork. Only
+	//  filled for PartnerSSEGateways associated with Symantec today.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.sse_network
+	SseNetwork *string `json:"sseNetwork,omitempty"`
+
+	// Output only. Full URI of the partner environment this PartnerSSEGateway is
+	//  connected to. Filled from the customer SSEGateway, and only for
+	//  PartnerSSEGateways associated with Symantec today.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.partner_sse_environment
+	PartnerSseEnvironment *string `json:"partnerSseEnvironment,omitempty"`
+
+	// Output only. ISO-3166 alpha 2 country code used for localization.
+	//  Filled from the customer SSEGateway, and only for PartnerSSEGateways
+	//  associated with Symantec today.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.country
+	Country *string `json:"country,omitempty"`
+
+	// Output only. tzinfo identifier used for localization.
+	//  Filled from the customer SSEGateway, and only for PartnerSSEGateways
+	//  associated with Symantec today.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.timezone
+	Timezone *string `json:"timezone,omitempty"`
+
+	// Output only. Copied from the associated NCC resource in Symantec NCCGW
+	//  flows. Used by Symantec API.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.capacity_bps
+	CapacityBps *int64 `json:"capacityBps,omitempty"`
+
+	// Output only. State of the gateway.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. Subnet ranges for Google-issued probe packets.
+	//  It's populated only for Prisma Access partners.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.prober_subnet_ranges
+	ProberSubnetRanges []string `json:"proberSubnetRanges,omitempty"`
+}
+*/
+
 // +kcc:observedstate:proto=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.PartnerSSEGatewaySymantecOptions
 type PartnerSseGateway_PartnerSseGatewaySymantecOptionsObservedState struct {
 	// Output only. UUID of the Symantec Location created on the customer's
@@ -130,6 +292,44 @@ type PartnerSseGateway_PartnerSseGatewaySymantecOptionsObservedState struct {
 	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSEGateway.PartnerSSEGatewaySymantecOptions.symantec_site
 	SymantecSite *string `json:"symantecSite,omitempty"`
 }
+
+/* unreachable type PartnerSseRealmObservedState
+// +kcc:observedstate:proto=google.cloud.networksecurity.v1alpha1.PartnerSSERealm
+type PartnerSseRealmObservedState struct {
+	// Output only. Create time stamp
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Update time stamp
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. CDEN owned VPC to be peered with partner_vpc
+	//  This field is deprecated. Use sse_network instead.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.sse_vpc
+	SseVPC *string `json:"sseVPC,omitempty"`
+
+	// Output only. CDEN owned project owning sse_vpc. It stores project id in the
+	//  TTM flow, but project number in the NCCGW flow. This field will be
+	//  deprecated after the partner migrates from using sse_project to using
+	//  sse_project_number.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.sse_project
+	SseProject *string `json:"sseProject,omitempty"`
+
+	// Output only. State of the realm. It can be either CUSTOMER_ATTACHED or
+	//  CUSTOMER_DETACHED.
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. CDEN-owned network to be peered with partner_network
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.sse_network
+	SseNetwork *string `json:"sseNetwork,omitempty"`
+
+	// Output only. CDEN owned project owning sse_vpc
+	// +kcc:proto:field=google.cloud.networksecurity.v1alpha1.PartnerSSERealm.sse_project_number
+	SseProjectNumber *int64 `json:"sseProjectNumber,omitempty"`
+}
+*/
 
 /* unreachable type TLSInspectionPolicyObservedState
 // +kcc:observedstate:proto=google.cloud.networksecurity.v1alpha1.TlsInspectionPolicy

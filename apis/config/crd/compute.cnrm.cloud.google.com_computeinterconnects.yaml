@@ -439,7 +439,6 @@ spec:
                   Check the State enum for the list of possible values.'
                 type: string
             required:
-            - location
             - projectRef
             type: object
           status:

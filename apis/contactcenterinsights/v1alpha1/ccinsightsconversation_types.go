@@ -145,8 +145,11 @@ type CCInsightsConversationObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.runtime_annotations
 	RuntimeAnnotations []RuntimeAnnotation `json:"runtimeAnnotations,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Output only. All the matched Dialogflow intents in the call. The key
+	//  corresponds to a Dialogflow intent, format:
+	//  projects/{project}/agent/{agent}/intents/{intent}
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.dialogflow_intents
+	DialogflowIntents map[string]DialogflowIntent `json:"dialogflowIntents,omitempty"`
 }
 
 // +genclient

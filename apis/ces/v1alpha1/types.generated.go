@@ -67,8 +67,7 @@ type AmbientSoundConfig struct {
 	VolumeGainDb *float64 `json:"volumeGainDb,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.ces.v1beta.App", skipping
-
+/* unreachable type App
 // +kcc:proto=google.cloud.ces.v1beta.App
 type App struct {
 	// Identifier. The unique identifier of the app.
@@ -183,8 +182,6 @@ type App struct {
 }
 */
 
-/* found existing non-generated go type "App_VariableDeclaration", skipping
-
 // +kcc:proto=google.cloud.ces.v1beta.App.VariableDeclaration
 type App_VariableDeclaration struct {
 	// Required. The name of the variable. The name must start with a letter or
@@ -203,7 +200,6 @@ type App_VariableDeclaration struct {
 	// +required
 	Schema *Schema `json:"schema,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.ces.v1beta.AudioProcessingConfig
 type AudioProcessingConfig struct {
@@ -394,8 +390,6 @@ type ChannelProfile_WebWidgetConfig_SecuritySettings struct {
 	EnableRecaptcha *bool `json:"enableRecaptcha,omitempty"`
 }
 
-/* found existing non-generated go type "ClientCertificateSettings", skipping
-
 // +kcc:proto=google.cloud.ces.v1beta.ClientCertificateSettings
 type ClientCertificateSettings struct {
 	// Required. The TLS certificate encoded in PEM format. This string must
@@ -418,7 +412,6 @@ type ClientCertificateSettings struct {
 	// +kcc:proto:field=google.cloud.ces.v1beta.ClientCertificateSettings.passphrase
 	Passphrase *string `json:"passphrase,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.ces.v1beta.CloudLoggingSettings
 type CloudLoggingSettings struct {
@@ -439,15 +432,11 @@ type ConversationLoggingSettings struct {
 	RetentionWindow *string `json:"retentionWindow,omitempty"`
 }
 
-/* found existing non-generated go type "DataStoreSettings", skipping
-
 // +kcc:proto=google.cloud.ces.v1beta.DataStoreSettings
 type DataStoreSettings struct {
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.ces.v1beta.DataStoreSettings.Engine", skipping
-
+/* unreachable type DataStoreSettings_Engine
 // +kcc:proto=google.cloud.ces.v1beta.DataStoreSettings.Engine
 type DataStoreSettings_Engine struct {
 }
@@ -635,8 +624,6 @@ type EvaluationMetricsThresholds_ToolMatchingSettings struct {
 	ExtraToolCallBehavior *string `json:"extraToolCallBehavior,omitempty"`
 }
 
-/* found existing non-generated go type "EvaluationPersona", skipping
-
 // +kcc:proto=google.cloud.ces.v1beta.EvaluationPersona
 type EvaluationPersona struct {
 	// Required. The unique identifier of the persona.
@@ -664,9 +651,7 @@ type EvaluationPersona struct {
 	// +kcc:proto:field=google.cloud.ces.v1beta.EvaluationPersona.speech_config
 	SpeechConfig *EvaluationPersona_SpeechConfig `json:"speechConfig,omitempty"`
 }
-*/
 
-/* unreachable type EvaluationPersona_SpeechConfig
 // +kcc:proto=google.cloud.ces.v1beta.EvaluationPersona.SpeechConfig
 type EvaluationPersona_SpeechConfig struct {
 	// Optional. The speaking rate. 1.0 is normal.
@@ -684,7 +669,6 @@ type EvaluationPersona_SpeechConfig struct {
 	// +kcc:proto:field=google.cloud.ces.v1beta.EvaluationPersona.SpeechConfig.voice_id
 	VoiceID *string `json:"voiceID,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.ces.v1beta.EvaluationSettings
 type EvaluationSettings struct {
@@ -820,8 +804,6 @@ type ModelSettings struct {
 	Temperature *float64 `json:"temperature,omitempty"`
 }
 
-/* found existing non-generated go type "RedactionConfig", skipping
-
 // +kcc:proto=google.cloud.ces.v1beta.RedactionConfig
 type RedactionConfig struct {
 	// Optional. If true, redaction will be applied in various logging scenarios,
@@ -845,9 +827,6 @@ type RedactionConfig struct {
 	// +kcc:proto:field=google.cloud.ces.v1beta.RedactionConfig.deidentify_template
 	DeidentifyTemplate *string `json:"deidentifyTemplate,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Schema", skipping
 
 // +kcc:proto=google.cloud.ces.v1beta.Schema
 type Schema struct {
@@ -959,7 +938,6 @@ type Schema struct {
 	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.maximum
 	Maximum *float64 `json:"maximum,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.ces.v1beta.SynthesizeSpeechConfig
 type SynthesizeSpeechConfig struct {
@@ -989,7 +967,6 @@ type TimeZoneSettings struct {
 	TimeZone *string `json:"timeZone,omitempty"`
 }
 
-/* unreachable type VPCScSettings
 // +kcc:proto=google.cloud.ces.v1beta.VpcScSettings
 type VPCScSettings struct {
 	// Optional. The allowed HTTP(s) origins that OpenAPI tools in the App are
@@ -1000,15 +977,13 @@ type VPCScSettings struct {
 	// +kcc:proto:field=google.cloud.ces.v1beta.VpcScSettings.allowed_origins
 	AllowedOrigins []string `json:"allowedOrigins,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.ces.v1beta.App", skipping
-
+/* unreachable type AppObservedState
 // +kcc:observedstate:proto=google.cloud.ces.v1beta.App
 type AppObservedState struct {
 	// Output only. The declarations of predefined variables for the app.
 	// +kcc:proto:field=google.cloud.ces.v1beta.App.predefined_variable_declarations
-	PredefinedVariableDeclarations []App_VariableDeclaration `json:"predefinedVariableDeclarations,omitempty"`
+	PredefinedVariableDeclarations []App_VariableDeclarationObservedState `json:"predefinedVariableDeclarations,omitempty"`
 
 	// Optional. The data store settings for the app.
 	// +kcc:proto:field=google.cloud.ces.v1beta.App.data_store_settings
@@ -1038,7 +1013,21 @@ type AppObservedState struct {
 }
 */
 
-/* found existing non-generated go type "DataStoreSettingsObservedState", skipping
+// +kcc:observedstate:proto=google.cloud.ces.v1beta.App.VariableDeclaration
+type App_VariableDeclarationObservedState struct {
+	// Required. The name of the variable. The name must start with a letter or
+	//  underscore and contain only letters, numbers, or underscores.
+	// +kcc:proto:field=google.cloud.ces.v1beta.App.VariableDeclaration.name
+	Name *string `json:"name,omitempty"`
+
+	// Required. The description of the variable.
+	// +kcc:proto:field=google.cloud.ces.v1beta.App.VariableDeclaration.description
+	Description *string `json:"description,omitempty"`
+
+	// Required. The schema of the variable.
+	// +kcc:proto:field=google.cloud.ces.v1beta.App.VariableDeclaration.schema
+	Schema *SchemaObservedState `json:"schema,omitempty"`
+}
 
 // +kcc:observedstate:proto=google.cloud.ces.v1beta.DataStoreSettings
 type DataStoreSettingsObservedState struct {
@@ -1046,9 +1035,6 @@ type DataStoreSettingsObservedState struct {
 	// +kcc:proto:field=google.cloud.ces.v1beta.DataStoreSettings.engines
 	Engines []DataStoreSettings_EngineObservedState `json:"engines,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "DataStoreSettings_EngineObservedState", skipping
 
 // +kcc:observedstate:proto=google.cloud.ces.v1beta.DataStoreSettings.Engine
 type DataStoreSettings_EngineObservedState struct {
@@ -1062,4 +1048,113 @@ type DataStoreSettings_EngineObservedState struct {
 	// +kcc:proto:field=google.cloud.ces.v1beta.DataStoreSettings.Engine.type
 	Type *string `json:"type,omitempty"`
 }
-*/
+
+// +kcc:observedstate:proto=google.cloud.ces.v1beta.Schema
+type SchemaObservedState struct {
+	// Required. The type of the data.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.type
+	Type *string `json:"type,omitempty"`
+
+	// Optional. Properties of Type.OBJECT.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.properties
+	Properties map[string]Schema `json:"properties,omitempty"`
+
+	// Optional. Required properties of Type.OBJECT.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.required
+	Required []string `json:"required,omitempty"`
+
+	// Optional. The description of the data.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. Schema of the elements of Type.ARRAY.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.items
+	Items *SchemaObservedState `json:"items,omitempty"`
+
+	// Optional. Indicates if the value may be null.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.nullable
+	Nullable *bool `json:"nullable,omitempty"`
+
+	// Optional. Indicate the items in the array must be unique. Only applies to
+	//  TYPE.ARRAY.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.unique_items
+	UniqueItems *bool `json:"uniqueItems,omitempty"`
+
+	// Optional. Schemas of initial elements of Type.ARRAY.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.prefix_items
+	PrefixItems []SchemaObservedState `json:"prefixItems,omitempty"`
+
+	// Optional. Can either be a boolean or an object, controls the presence of
+	//  additional properties.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.additional_properties
+	AdditionalProperties *SchemaObservedState `json:"additionalProperties,omitempty"`
+
+	// Optional. The value should be validated against any (one or more) of the
+	//  subschemas in the list.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.any_of
+	AnyOf []SchemaObservedState `json:"anyOf,omitempty"`
+
+	// Optional. Possible values of the element of primitive type with enum
+	//  format. Examples:
+	//  1. We can define direction as :
+	//  {type:STRING, format:enum, enum:["EAST", NORTH", "SOUTH", "WEST"]}
+	//  2. We can define apartment number as :
+	//  {type:INTEGER, format:enum, enum:["101", "201", "301"]}
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.enum
+	Enum []string `json:"enum,omitempty"`
+
+	// Optional. Default value of the data.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.default
+	Default apiextensionsv1.JSON `json:"default,omitempty"`
+
+	// Optional. Allows indirect references between schema nodes. The value should
+	//  be a valid reference to a child of the root `defs`.
+	//
+	//  For example, the following schema defines a reference to a schema node
+	//  named "Pet":
+	//
+	//  ```
+	//  type: object
+	//  properties:
+	//    pet:
+	//      ref: #/defs/Pet
+	//  defs:
+	//    Pet:
+	//      type: object
+	//      properties:
+	//        name:
+	//          type: string
+	//  ```
+	//
+	//  The value of the "pet" property is a reference to the schema node
+	//  named "Pet".
+	//  See details in
+	//  https://json-schema.org/understanding-json-schema/structuring.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.ref
+	Ref *string `json:"ref,omitempty"`
+
+	// Optional. A map of definitions for use by `ref`. Only allowed at the root
+	//  of the schema.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.defs
+	Defs map[string]Schema `json:"defs,omitempty"`
+
+	// Optional. The title of the schema.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.title
+	Title *string `json:"title,omitempty"`
+
+	// Optional. Minimum number of the elements for Type.ARRAY.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.min_items
+	MinItems *int64 `json:"minItems,omitempty"`
+
+	// Optional. Maximum number of the elements for Type.ARRAY.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.max_items
+	MaxItems *int64 `json:"maxItems,omitempty"`
+
+	// Optional. Minimum value for Type.INTEGER and Type.NUMBER.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.minimum
+	Minimum *float64 `json:"minimum,omitempty"`
+
+	// Optional. Maximum value for Type.INTEGER and Type.NUMBER.
+	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.maximum
+	Maximum *float64 `json:"maximum,omitempty"`
+}

@@ -28,9 +28,6 @@ type ComputeFutureReservationSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The location of this resource.
-	Location string `json:"location"`
-
 	// The ComputeFutureReservation name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Aggregate reservation details for the future reservation.

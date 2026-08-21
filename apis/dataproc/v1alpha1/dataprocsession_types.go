@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,19 +22,6 @@ import (
 
 var DataprocSessionGVK = GroupVersion.WithKind("DataprocSession")
 
-// +kcc:proto=google.cloud.dataproc.v1.JupyterConfig
-type JupyterConfig struct {
-	// Optional. Kernel
-	// +kcc:proto:field=google.cloud.dataproc.v1.JupyterConfig.kernel
-	Kernel *string `json:"kernel,omitempty"`
-
-	// Optional. Display name, shown in the Jupyter kernelspec card.
-	// +kcc:proto:field=google.cloud.dataproc.v1.JupyterConfig.display_name
-	DisplayName *string `json:"displayName,omitempty"`
-}
-
-// +kcc:proto=google.cloud.dataproc.v1.SparkConnectConfig
-
 // DataprocSessionSpec defines the desired state of DataprocSession
 // +kcc:spec:proto=google.cloud.dataproc.v1.Session
 type DataprocSessionSpec struct {
@@ -42,14 +29,17 @@ type DataprocSessionSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +kubebuilder:validation:Required
 	Location *string `json:"location"`
 
+	// The DataprocSession name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. Jupyter session config.
 	// +kcc:proto:field=google.cloud.dataproc.v1.Session.jupyter_session
 	JupyterSession *JupyterConfig `json:"jupyterSession,omitempty"`
 
+	// Optional. Spark Connect session config.
 	// +kcc:proto:field=google.cloud.dataproc.v1.Session.spark_connect_session
+	SparkConnectSession *SparkConnectConfig `json:"sparkConnectSession,omitempty"`
 
 	// Optional. The labels to associate with the session.
 	//  Label **keys** must contain 1 to 63 characters, and must conform to
@@ -85,9 +75,6 @@ type DataprocSessionSpec struct {
 	//  session.
 	// +kcc:proto:field=google.cloud.dataproc.v1.Session.session_template
 	SessionTemplate *string `json:"sessionTemplate,omitempty"`
-
-	// The DataprocSession name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
 }
 
 // DataprocSessionStatus defines the config connector machine state of DataprocSession
@@ -104,23 +91,6 @@ type DataprocSessionStatus struct {
 
 	// ObservedState is the state of the resource as most recently observed in GCP.
 	ObservedState *DataprocSessionObservedState `json:"observedState,omitempty"`
-}
-
-// +kcc:observedstate:proto=google.cloud.dataproc.v1.Session.SessionStateHistory
-type Session_SessionStateHistoryObservedState struct {
-	// Output only. The state of the session at this point in the session
-	//  history.
-	// +kcc:proto:field=google.cloud.dataproc.v1.Session.SessionStateHistory.state
-	State *string `json:"state,omitempty"`
-
-	// Output only. Details about the state at this point in the session
-	//  history.
-	// +kcc:proto:field=google.cloud.dataproc.v1.Session.SessionStateHistory.state_message
-	StateMessage *string `json:"stateMessage,omitempty"`
-
-	// Output only. The time when the session entered the historical state.
-	// +kcc:proto:field=google.cloud.dataproc.v1.Session.SessionStateHistory.state_start_time
-	StateStartTime *string `json:"stateStartTime,omitempty"`
 }
 
 // DataprocSessionObservedState is the state of the DataprocSession resource as most recently observed in GCP.

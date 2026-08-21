@@ -15,41 +15,42 @@
 package v1alpha1
 
 import (
-	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/kccscheme"
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var NetworkConnectivityInternalRangeGVK = GroupVersion.WithKind("NetworkConnectivityInternalRange")
 
-type Parent struct {
-	// Required. The location of the application.
-	Location string `json:"location,omitempty"`
-
-	// Required. The host project of the application.
-	ProjectRef *refs.ProjectRef `json:"projectRef,omitempty"`
-}
-
 // NetworkConnectivityInternalRangeSpec defines the desired state of NetworkConnectivityInternalRange
 // +kcc:spec:proto=mockgcp.cloud.networkconnectivity.v1.InternalRange
 type NetworkConnectivityInternalRangeSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 	// The NetworkConnectivityInternalRange name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Required. Defines the parent path of the resource.
-	*Parent `json:",inline"`
-
 	// Optional. Range auto-allocation options, may be set only when auto-allocation is selected by not setting ip_cidr_range (and setting prefix_length).
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.allocation_options
 	AllocationOptions *AllocationOptions `json:"allocationOptions,omitempty"`
 
-	// A description of this resource.
+	// Output only. Time when the internal range was created.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Optional. A description of this resource.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.description
 	Description *string `json:"description,omitempty"`
 
-	// The IP range that this internal range defines. NOTE: IPv6 ranges are limited to usage=EXTERNAL_TO_VPC and peering=FOR_SELF. NOTE: For IPv6 Ranges this field is compulsory, i.e. the address range must be specified explicitly.
+	// Optional. ExcludeCidrRanges flag. Specifies a set of CIDR blocks that allows exclusion of particular CIDR ranges from the auto-allocation process, without having to reserve these blocks
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.exclude_cidr_ranges
+	ExcludeCIDRRanges []string `json:"excludeCIDRRanges,omitempty"`
+
+	// Optional. Immutable ranges cannot have their fields modified, except for labels and description.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.immutable
+	Immutable *bool `json:"immutable,omitempty"`
+
+	// Optional. The IP range that this internal range defines. NOTE: IPv6 ranges are limited to usage=EXTERNAL_TO_VPC and peering=FOR_SELF. NOTE: For IPv6 Ranges this field is compulsory, i.e. the address range must be specified explicitly.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.ip_cidr_range
 	IPCIDRRange *string `json:"ipCIDRRange,omitempty"`
 
@@ -57,44 +58,41 @@ type NetworkConnectivityInternalRangeSpec struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
-	// Optional. Must be present if usage is set to FOR_MIGRATION. This field is for internal use.
+	// Optional. Must be present if usage is set to FOR_MIGRATION.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.migration
 	Migration *Migration `json:"migration,omitempty"`
 
-	// The network in which to reserve the internal range. The network cannot be deleted if there are any reserved internal ranges referring to it. Legacy networks are not supported. For example: https://www.googleapis.com/compute/v1/projects/{project}/locations/global/networks/{network} projects/{project}/locations/global/networks/{network} {network}
+	// Immutable. The URL or resource ID of the network in which to reserve the internal range. The network cannot be deleted if there are any reserved internal ranges referring to it. Legacy networks are not supported. For example: https://www.googleapis.com/compute/v1/projects/{project}/locations/global/networks/{network} projects/{project}/locations/global/networks/{network} {network}
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.network
-	NetworkRef *computerefs.ComputeNetworkRef `json:"networkRef,omitempty"`
+	Network *string `json:"network,omitempty"`
 
 	// Optional. Types of resources that are allowed to overlap with the current internal range.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.overlaps
 	Overlaps []string `json:"overlaps,omitempty"`
 
-	// The type of peering set for this internal range.
+	// Optional. The type of peering set for this internal range.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.peering
 	Peering *string `json:"peering,omitempty"`
 
-	// An alternate to ip_cidr_range. Can be set when trying to create an IPv4 reservation that automatically finds a free range of the given size. If both ip_cidr_range and prefix_length are set, there is an error if the range sizes do not match. Can also be used during updates to change the range size. NOTE: For IPv6 this field only works if ip_cidr_range is set as well, and both fields must match. In other words, with IPv6 this field only works as a redundant parameter.
+	// Optional. An alternate to ip_cidr_range. Can be set when trying to create an IPv4 reservation that automatically finds a free range of the given size. If both ip_cidr_range and prefix_length are set, there is an error if the range sizes do not match. Can also be used during updates to change the range size. NOTE: For IPv6 this field only works if ip_cidr_range is set as well, and both fields must match. In other words, with IPv6 this field only works as a redundant parameter.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.prefix_length
 	PrefixLength *int32 `json:"prefixLength,omitempty"`
 
-	// Optional. Can be set to narrow down or pick a different address space while searching for a free range. If not set, defaults to the "10.0.0.0/8" address space. This can be used to search in other rfc-1918 address spaces like "172.16.0.0/12" and "192.168.0.0/16" or non-rfc-1918 address spaces used in the VPC.
+	// Optional. Can be set to narrow down or pick a different address space while searching for a free range. If not set, defaults to the ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"] address space (for auto-mode networks, the "10.0.0.0/9" range is used instead of "10.0.0.0/8"). This can be used to target the search in other rfc-1918 address spaces like "172.16.0.0/12" and "192.168.0.0/16" or non-rfc-1918 address spaces used in the VPC.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.target_cidr_range
 	TargetCIDRRange []string `json:"targetCIDRRange,omitempty"`
 
-	// The type of usage set for this InternalRange.
+	// Output only. Time when the internal range was updated.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Optional. The type of usage set for this InternalRange.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.usage
 	Usage *string `json:"usage,omitempty"`
-}
 
-// +kcc:proto=mockgcp.cloud.networkconnectivity.v1.AllocationOptions
-type AllocationOptions struct {
-	// Optional. Allocation strategy. Not setting this field when the allocation is requested means an implementation defined strategy is used.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.AllocationOptions.allocation_strategy
-	AllocationStrategy *string `json:"allocationStrategy,omitempty"`
-
-	// Optional. This field must be set only when allocation_strategy is set to RANDOM_FIRST_N_AVAILABLE. The value should be the maximum expected parallelism of range creation requests issued to the same space of peered networks.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.AllocationOptions.first_available_ranges_lookup_size
-	FirstAvailableRangesLookupSize *int32 `json:"firstAvailableRangesLookupSize,omitempty"`
+	// Output only. The list of resources that refer to this internal range. Resources that use the internal range for their range allocation are referred to as users of the range. Other resources mark themselves as users while doing so by creating a reference to this internal range. Having a user, based on this reference, prevents deletion of the internal range referred to. Can be empty.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.users
+	Users []string `json:"users,omitempty"`
 }
 
 // NetworkConnectivityInternalRangeStatus defines the config connector machine state of NetworkConnectivityInternalRange
@@ -116,17 +114,6 @@ type NetworkConnectivityInternalRangeStatus struct {
 // NetworkConnectivityInternalRangeObservedState is the state of the NetworkConnectivityInternalRange resource as most recently observed in GCP.
 // +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.InternalRange
 type NetworkConnectivityInternalRangeObservedState struct {
-	// Output only. The list of resources that refer to this internal range. Resources that use the internal range for their range allocation are referred to as users of the range. Other resources mark themselves as users while doing so by creating a reference to this internal range. Having a user, based on this reference, prevents deletion of the internal range referred to. Can be empty.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.users
-	Users []string `json:"users,omitempty"`
-
-	// Time when the internal range was created.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Time when the internal range was updated.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient
@@ -161,5 +148,4 @@ type NetworkConnectivityInternalRangeList struct {
 
 func init() {
 	SchemeBuilder.Register(&NetworkConnectivityInternalRange{}, &NetworkConnectivityInternalRangeList{})
-	kccscheme.RegisterType(NetworkConnectivityInternalRangeGVK, &NetworkConnectivityInternalRange{})
 }

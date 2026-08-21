@@ -63,8 +63,17 @@ spec:
             description: DiscoveryEngineDataStoreTargetSiteSpec defines the desired
               state of DiscoveryEngineDataStoreTargetSite
             properties:
-              dataStoreRef:
-                description: The DataStore this target site should be part of.
+              exactMatch:
+                description: Immutable. If set to false, a uri_pattern is generated
+                  to include all pages whose address contains the provided_uri_pattern.
+                  If set to true, an uri_pattern is generated to try to be an exact
+                  match of the provided_uri_pattern or just the specific page if the
+                  provided_uri_pattern is a specific one. provided_uri_pattern is
+                  always normalized to generate the URI pattern to be used by the
+                  search engine.
+                type: boolean
+              projectRef:
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -81,33 +90,35 @@ spec:
                   - external
                 properties:
                   external:
-                    description: A reference to an externally managed DiscoveryEngineDataStore
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/datastores/{{datastoreID}}".
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
                     type: string
                   name:
-                    description: The name of a DiscoveryEngineDataStore resource.
+                    description: The `name` field of a `Project` resource.
                     type: string
                   namespace:
-                    description: The namespace of a DiscoveryEngineDataStore resource.
+                    description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
-              exactMatch:
-                description: Input only. If set to false, a uri_pattern is generated
-                  to include all pages whose address contains the provided_uri_pattern.
-                  If set to true, an uri_pattern is generated to try to be an exact
-                  match of the provided_uri_pattern or just the specific page if the
-                  provided_uri_pattern is a specific one. provided_uri_pattern is
-                  always normalized to generate the URI pattern to be used by the
-                  search engine.
-                type: boolean
               providedURIPattern:
                 description: Required. Input only. The user provided URI pattern from
                   which the `generated_uri_pattern` is generated.
+                type: string
+              resourceID:
+                description: The DiscoveryEngineDataStoreTargetSite name. If not given,
+                  the metadata.name will be used.
                 type: string
               type:
                 description: The type of the target site, e.g., whether the site is
                   to be included or excluded.
                 type: string
+            required:
+            - projectRef
+            - providedURIPattern
             type: object
           status:
             description: DiscoveryEngineDataStoreTargetSiteStatus defines the config
@@ -171,13 +182,13 @@ spec:
                     type: object
                   generatedURIPattern:
                     description: Output only. This is system-generated based on the
-                      provided_uri.
+                      provided_uri_pattern.
                     type: string
                   indexingStatus:
                     description: Output only. Indexing status.
                     type: string
                   rootDomainURI:
-                    description: Output only. Root domain of the provided_uri.
+                    description: Output only. Root domain of the provided_uri_pattern.
                     type: string
                   siteVerificationInfo:
                     description: Output only. Site ownership and validity verification

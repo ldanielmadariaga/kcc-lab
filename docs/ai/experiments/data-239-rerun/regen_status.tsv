@@ -82,7 +82,7 @@ tpu	ok
 transcoder	ok
 translate	ok
 vectorsearch	ok
-vertexai	ok
+vertexai	FAILED
 videostitcher	ok
 vision	ok
 visionai	ok

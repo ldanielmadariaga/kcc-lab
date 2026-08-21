@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -24,23 +25,23 @@ var DatastreamRouteGVK = GroupVersion.WithKind("DatastreamRoute")
 // DatastreamRouteSpec defines the desired state of DatastreamRoute
 // +kcc:spec:proto=google.cloud.datastream.v1.Route
 type DatastreamRouteSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 	// The DatastreamRoute name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Required. The parent that owns the collection of Routes.
-	// +required
-	PrivateConnectionRef *PrivateConnectionRef `json:"privateConnectionRef,omitempty"`
-
 	// Labels.
 	// +kcc:proto:field=google.cloud.datastream.v1.Route.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Required. Display name.
 	// +kcc:proto:field=google.cloud.datastream.v1.Route.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Required. Destination address for connection
 	// +kcc:proto:field=google.cloud.datastream.v1.Route.destination_address
+	// +required
 	DestinationAddress *string `json:"destinationAddress,omitempty"`
 
 	// Destination port for connection
@@ -67,11 +68,6 @@ type DatastreamRouteStatus struct {
 // DatastreamRouteObservedState is the state of the DatastreamRoute resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.datastream.v1.Route
 type DatastreamRouteObservedState struct {
-	// Output only. The resource's name.
-	// +kcc:proto:field=google.cloud.datastream.v1.Route.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. The create time of the resource.
 	// +kcc:proto:field=google.cloud.datastream.v1.Route.create_time
 	CreateTime *string `json:"createTime,omitempty"`

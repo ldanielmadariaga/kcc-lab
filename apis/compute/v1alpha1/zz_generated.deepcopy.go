@@ -939,6 +939,13 @@ func (in *ComputeAutoscalerSpec) DeepCopyInto(out *ComputeAutoscalerSpec) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.ScalingScheduleStatus != nil {
+		in, out := &in.ScalingScheduleStatus, &out.ScalingScheduleStatus
+		*out = make(map[string]ScalingScheduleStatus, len(*in))
+		for key, val := range *in {
+			(*out)[key] = *val.DeepCopy()
+		}
+	}
 	if in.SelfLink != nil {
 		in, out := &in.SelfLink, &out.SelfLink
 		*out = new(string)
@@ -1659,11 +1666,6 @@ func (in *ComputeInterconnectSpec) DeepCopyInto(out *ComputeInterconnectSpec) {
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
-	if in.Location != nil {
-		in, out := &in.Location, &out.Location
-		*out = new(string)
-		**out = **in
-	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -1767,6 +1769,11 @@ func (in *ComputeInterconnectSpec) DeepCopyInto(out *ComputeInterconnectSpec) {
 	}
 	if in.LinkType != nil {
 		in, out := &in.LinkType, &out.LinkType
+		*out = new(string)
+		**out = **in
+	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
 		*out = new(string)
 		**out = **in
 	}

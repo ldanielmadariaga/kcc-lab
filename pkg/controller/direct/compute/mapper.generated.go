@@ -1114,7 +1114,6 @@ func ComputeAutoscalerObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext
 	}
 	out := &krmcomputev1alpha1.ComputeAutoscalerObservedState{}
 	// MISSING: Name
-	// MISSING: ScalingScheduleStatus
 	return out
 }
 func ComputeAutoscalerObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1alpha1.ComputeAutoscalerObservedState) *pb.Autoscaler {
@@ -1123,7 +1122,6 @@ func ComputeAutoscalerObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, 
 	}
 	out := &pb.Autoscaler{}
 	// MISSING: Name
-	// MISSING: ScalingScheduleStatus
 	return out
 }
 
@@ -1141,7 +1139,14 @@ func ComputeAutoscalerSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.
 	// MISSING: Name
 	out.RecommendedSize = in.RecommendedSize
 	out.Region = in.Region
-	// MISSING: ScalingScheduleStatus
+	if in.ScalingScheduleStatus != nil {
+		out.ScalingScheduleStatus = make(map[string]krmcomputev1alpha1.ScalingScheduleStatus, len(in.ScalingScheduleStatus))
+		for k, v := range in.ScalingScheduleStatus {
+			if c := ScalingScheduleStatus_v1alpha1_FromProto(mapCtx, v); c != nil {
+				out.ScalingScheduleStatus[k] = *c
+			}
+		}
+	}
 	out.SelfLink = in.SelfLink
 	out.Status = in.Status
 	out.StatusDetails = direct.Slice_FromProto(mapCtx, in.StatusDetails, AutoscalerStatusDetails_v1alpha1_FromProto)
@@ -1165,7 +1170,12 @@ func ComputeAutoscalerSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmco
 	// MISSING: Name
 	out.RecommendedSize = in.RecommendedSize
 	out.Region = in.Region
-	// MISSING: ScalingScheduleStatus
+	if in.ScalingScheduleStatus != nil {
+		out.ScalingScheduleStatus = make(map[string]*pb.ScalingScheduleStatus, len(in.ScalingScheduleStatus))
+		for k, v := range in.ScalingScheduleStatus {
+			out.ScalingScheduleStatus[k] = ScalingScheduleStatus_v1alpha1_ToProto(mapCtx, &v)
+		}
+	}
 	out.SelfLink = in.SelfLink
 	out.Status = in.Status
 	out.StatusDetails = direct.Slice_ToProto(mapCtx, in.StatusDetails, AutoscalerStatusDetails_v1alpha1_ToProto)

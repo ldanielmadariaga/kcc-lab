@@ -84,6 +84,9 @@ spec:
                   type: string
                 description: Optional. User-defined labels for the AspectType.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               metadataTemplate:
                 description: Required. MetadataTemplate of the aspect.
                 properties:
@@ -255,6 +258,7 @@ spec:
                   will be used.
                 type: string
             required:
+            - location
             - metadataTemplate
             - projectRef
             type: object

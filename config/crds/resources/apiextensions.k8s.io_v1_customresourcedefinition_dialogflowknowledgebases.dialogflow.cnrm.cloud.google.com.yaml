@@ -74,9 +74,6 @@ spec:
                   non en-us languages. When unspecified, the default language code
                   en-us applies.
                 type: string
-              location:
-                description: The location of this resource.
-                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -115,7 +112,6 @@ spec:
                 type: string
             required:
             - displayName
-            - location
             - projectRef
             type: object
           status:

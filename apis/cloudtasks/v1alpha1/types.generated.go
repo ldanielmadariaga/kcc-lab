@@ -95,8 +95,7 @@ type AppEngineRouting struct {
 	Host *string `json:"host,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.tasks.v2.Queue", skipping
-
+/* unreachable type Queue
 // +kcc:proto=google.cloud.tasks.v2.Queue
 type Queue struct {
 	// Caller-specified and required in

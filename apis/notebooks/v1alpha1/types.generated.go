@@ -38,8 +38,7 @@ type ContainerImage struct {
 	Tag *string `json:"tag,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Environment", skipping
-
+/* unreachable type Environment
 // +kcc:proto=google.cloud.notebooks.v1.Environment
 type Environment struct {
 
@@ -67,8 +66,7 @@ type Environment struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Execution", skipping
-
+/* unreachable type Execution
 // +kcc:proto=google.cloud.notebooks.v1.Execution
 type Execution struct {
 	// execute metadata including name, hardware spec, region, labels, etc.
@@ -264,8 +262,7 @@ type ExecutionTemplate_VertexAiParameters struct {
 	Env map[string]string `json:"env,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Schedule", skipping
-
+/* unreachable type Schedule
 // +kcc:proto=google.cloud.notebooks.v1.Schedule
 type Schedule struct {
 
@@ -318,7 +315,6 @@ type VMImage struct {
 	ImageFamily *string `json:"imageFamily,omitempty"`
 }
 
-/* unreachable type AcceleratorConfig
 // +kcc:proto=google.cloud.notebooks.v2.AcceleratorConfig
 type AcceleratorConfig struct {
 	// Optional. Type of this accelerator.
@@ -329,9 +325,7 @@ type AcceleratorConfig struct {
 	// +kcc:proto:field=google.cloud.notebooks.v2.AcceleratorConfig.core_count
 	CoreCount *int64 `json:"coreCount,omitempty"`
 }
-*/
 
-/* unreachable type BootDisk
 // +kcc:proto=google.cloud.notebooks.v2.BootDisk
 type BootDisk struct {
 	// Optional. The size of the boot disk in GB attached to this instance, up to
@@ -357,7 +351,6 @@ type BootDisk struct {
 	// +kcc:proto:field=google.cloud.notebooks.v2.BootDisk.kms_key
 	KMSKey *string `json:"kmsKey,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.notebooks.v2.ContainerImage
 type ContainerImage struct {
@@ -373,7 +366,6 @@ type ContainerImage struct {
 	Tag *string `json:"tag,omitempty"`
 }
 
-/* unreachable type DataDisk
 // +kcc:proto=google.cloud.notebooks.v2.DataDisk
 type DataDisk struct {
 	// Optional. The size of the disk in GB attached to this VM instance, up to a
@@ -398,9 +390,7 @@ type DataDisk struct {
 	// +kcc:proto:field=google.cloud.notebooks.v2.DataDisk.kms_key
 	KMSKey *string `json:"kmsKey,omitempty"`
 }
-*/
 
-/* unreachable type GpuDriverConfig
 // +kcc:proto=google.cloud.notebooks.v2.GPUDriverConfig
 type GpuDriverConfig struct {
 	// Optional. Whether the end user authorizes Google Cloud to install GPU
@@ -415,9 +405,7 @@ type GpuDriverConfig struct {
 	// +kcc:proto:field=google.cloud.notebooks.v2.GPUDriverConfig.custom_gpu_driver_path
 	CustomGpuDriverPath *string `json:"customGpuDriverPath,omitempty"`
 }
-*/
 
-/* unreachable type GCESetup
 // +kcc:proto=google.cloud.notebooks.v2.GceSetup
 type GCESetup struct {
 	// Optional. The machine type of the VM instance.
@@ -488,7 +476,6 @@ type GCESetup struct {
 	// +kcc:proto:field=google.cloud.notebooks.v2.GceSetup.gpu_driver_config
 	GpuDriverConfig *GpuDriverConfig `json:"gpuDriverConfig,omitempty"`
 }
-*/
 
 /* unreachable type Instance
 // +kcc:proto=google.cloud.notebooks.v2.Instance
@@ -519,7 +506,6 @@ type Instance struct {
 }
 */
 
-/* unreachable type NetworkInterface
 // +kcc:proto=google.cloud.notebooks.v2.NetworkInterface
 type NetworkInterface struct {
 	// Optional. The name of the VPC that this VM instance is in.
@@ -539,18 +525,14 @@ type NetworkInterface struct {
 	// +kcc:proto:field=google.cloud.notebooks.v2.NetworkInterface.nic_type
 	NicType *string `json:"nicType,omitempty"`
 }
-*/
 
-/* unreachable type ServiceAccount
 // +kcc:proto=google.cloud.notebooks.v2.ServiceAccount
 type ServiceAccount struct {
 	// Optional. Email address of the service account.
 	// +kcc:proto:field=google.cloud.notebooks.v2.ServiceAccount.email
 	Email *string `json:"email,omitempty"`
 }
-*/
 
-/* unreachable type ShieldedInstanceConfig
 // +kcc:proto=google.cloud.notebooks.v2.ShieldedInstanceConfig
 type ShieldedInstanceConfig struct {
 	// Optional. Defines whether the VM instance has Secure Boot enabled.
@@ -575,7 +557,6 @@ type ShieldedInstanceConfig struct {
 	// +kcc:proto:field=google.cloud.notebooks.v2.ShieldedInstanceConfig.enable_integrity_monitoring
 	EnableIntegrityMonitoring *bool `json:"enableIntegrityMonitoring,omitempty"`
 }
-*/
 
 /* unreachable type UpgradeHistoryEntry
 // +kcc:proto=google.cloud.notebooks.v2.UpgradeHistoryEntry
@@ -633,8 +614,7 @@ type VMImage struct {
 	Family *string `json:"family,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Environment", skipping
-
+/* unreachable type EnvironmentObservedState
 // +kcc:observedstate:proto=google.cloud.notebooks.v1.Environment
 type EnvironmentObservedState struct {
 	// Output only. Name of this environment.
@@ -648,8 +628,6 @@ type EnvironmentObservedState struct {
 	CreateTime *string `json:"createTime,omitempty"`
 }
 */
-
-/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Execution", skipping
 
 // +kcc:observedstate:proto=google.cloud.notebooks.v1.Execution
 type ExecutionObservedState struct {
@@ -691,9 +669,7 @@ type ExecutionObservedState struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.Execution.job_uri
 	JobURI *string `json:"jobURI,omitempty"`
 }
-*/
 
-/* unreachable type ExecutionTemplateObservedState
 // +kcc:observedstate:proto=google.cloud.notebooks.v1.ExecutionTemplate
 type ExecutionTemplateObservedState struct {
 	// Required. Scale tier of the hardware used for notebook execution.
@@ -829,10 +805,8 @@ type ExecutionTemplateObservedState struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.ExecutionTemplate.tensorboard
 	Tensorboard *string `json:"tensorboard,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Schedule", skipping
-
+/* unreachable type ScheduleObservedState
 // +kcc:observedstate:proto=google.cloud.notebooks.v1.Schedule
 type ScheduleObservedState struct {
 	// Output only. The name of this schedule. Format:
@@ -861,7 +835,6 @@ type ScheduleObservedState struct {
 }
 */
 
-/* unreachable type GCESetupObservedState
 // +kcc:observedstate:proto=google.cloud.notebooks.v2.GceSetup
 type GCESetupObservedState struct {
 	// Optional. The service account that serves as an identity for the VM
@@ -869,7 +842,6 @@ type GCESetupObservedState struct {
 	// +kcc:proto:field=google.cloud.notebooks.v2.GceSetup.service_accounts
 	ServiceAccounts []ServiceAccountObservedState `json:"serviceAccounts,omitempty"`
 }
-*/
 
 /* unreachable type InstanceObservedState
 // +kcc:observedstate:proto=google.cloud.notebooks.v2.Instance
@@ -933,7 +905,6 @@ type InstanceObservedState struct {
 }
 */
 
-/* unreachable type ServiceAccountObservedState
 // +kcc:observedstate:proto=google.cloud.notebooks.v2.ServiceAccount
 type ServiceAccountObservedState struct {
 	// Output only. The list of scopes to be made available for this service
@@ -941,9 +912,7 @@ type ServiceAccountObservedState struct {
 	// +kcc:proto:field=google.cloud.notebooks.v2.ServiceAccount.scopes
 	Scopes []string `json:"scopes,omitempty"`
 }
-*/
 
-/* unreachable type UpgradeHistoryEntryObservedState
 // +kcc:observedstate:proto=google.cloud.notebooks.v2.UpgradeHistoryEntry
 type UpgradeHistoryEntryObservedState struct {
 	// Optional. The snapshot of the boot disk of this notebook instance before
@@ -983,4 +952,3 @@ type UpgradeHistoryEntryObservedState struct {
 	// +kcc:proto:field=google.cloud.notebooks.v2.UpgradeHistoryEntry.target_version
 	TargetVersion *string `json:"targetVersion,omitempty"`
 }
-*/

@@ -26,9 +26,6 @@ package batch
 import (
 	pb "cloud.google.com/go/batch/apiv1/batchpb"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/batch/v1alpha1"
-	krmcomputerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
-	krmcomputev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
-	krmpubsubv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/pubsub/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -83,6 +80,12 @@ func AllocationPolicy_AttachedDisk_ExistingDisk_ToProto(mapCtx *direct.MapContex
 		return nil
 	}
 	return &pb.AllocationPolicy_AttachedDisk_ExistingDisk{ExistingDisk: *in}
+}
+func AllocationPolicy_Disk_Image_ToProto(mapCtx *direct.MapContext, in *string) *pb.AllocationPolicy_Disk_Image {
+	if in == nil {
+		return nil
+	}
+	return &pb.AllocationPolicy_Disk_Image{Image: *in}
 }
 func AllocationPolicy_Disk_Snapshot_ToProto(mapCtx *direct.MapContext, in *string) *pb.AllocationPolicy_Disk_Snapshot {
 	if in == nil {
@@ -173,12 +176,8 @@ func AllocationPolicy_NetworkInterface_FromProto(mapCtx *direct.MapContext, in *
 		return nil
 	}
 	out := &krm.AllocationPolicy_NetworkInterface{}
-	if in.GetNetwork() != "" {
-		out.NetworkRef = &krmcomputerefs.ComputeNetworkRef{External: in.GetNetwork()}
-	}
-	if in.GetSubnetwork() != "" {
-		out.SubnetworkRef = &krmcomputev1beta1.ComputeSubnetworkRef{External: in.GetSubnetwork()}
-	}
+	out.Network = direct.LazyPtr(in.GetNetwork())
+	out.Subnetwork = direct.LazyPtr(in.GetSubnetwork())
 	out.NoExternalIPAddress = direct.LazyPtr(in.GetNoExternalIpAddress())
 	return out
 }
@@ -187,12 +186,8 @@ func AllocationPolicy_NetworkInterface_ToProto(mapCtx *direct.MapContext, in *kr
 		return nil
 	}
 	out := &pb.AllocationPolicy_NetworkInterface{}
-	if in.NetworkRef != nil {
-		out.Network = in.NetworkRef.External
-	}
-	if in.SubnetworkRef != nil {
-		out.Subnetwork = in.SubnetworkRef.External
-	}
+	out.Network = direct.ValueOf(in.Network)
+	out.Subnetwork = direct.ValueOf(in.Subnetwork)
 	out.NoExternalIpAddress = direct.ValueOf(in.NoExternalIPAddress)
 	return out
 }
@@ -235,10 +230,9 @@ func BatchJobObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Job) *krm
 		return nil
 	}
 	out := &krm.BatchJobObservedState{}
-	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: Name
 	out.Uid = direct.LazyPtr(in.GetUid())
 	out.TaskGroups = direct.Slice_FromProto(mapCtx, in.TaskGroups, TaskGroupObservedState_FromProto)
-	// MISSING: Labels
 	out.Status = JobStatus_FromProto(mapCtx, in.GetStatus())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
@@ -249,10 +243,9 @@ func BatchJobObservedState_ToProto(mapCtx *direct.MapContext, in *krm.BatchJobOb
 		return nil
 	}
 	out := &pb.Job{}
-	out.Name = direct.ValueOf(in.Name)
+	// MISSING: Name
 	out.Uid = direct.ValueOf(in.Uid)
 	out.TaskGroups = direct.Slice_ToProto(mapCtx, in.TaskGroups, TaskGroupObservedState_ToProto)
-	// MISSING: Labels
 	out.Status = JobStatus_ToProto(mapCtx, in.Status)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
@@ -263,10 +256,11 @@ func BatchJobSpec_FromProto(mapCtx *direct.MapContext, in *pb.Job) *krm.BatchJob
 		return nil
 	}
 	out := &krm.BatchJobSpec{}
+	// MISSING: Name
 	out.Priority = direct.LazyPtr(in.GetPriority())
 	out.TaskGroups = direct.Slice_FromProto(mapCtx, in.TaskGroups, TaskGroup_FromProto)
 	out.AllocationPolicy = AllocationPolicy_FromProto(mapCtx, in.GetAllocationPolicy())
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.LogsPolicy = LogsPolicy_FromProto(mapCtx, in.GetLogsPolicy())
 	out.Notifications = direct.Slice_FromProto(mapCtx, in.Notifications, JobNotification_FromProto)
 	return out
@@ -276,10 +270,11 @@ func BatchJobSpec_ToProto(mapCtx *direct.MapContext, in *krm.BatchJobSpec) *pb.J
 		return nil
 	}
 	out := &pb.Job{}
+	// MISSING: Name
 	out.Priority = direct.ValueOf(in.Priority)
 	out.TaskGroups = direct.Slice_ToProto(mapCtx, in.TaskGroups, TaskGroup_ToProto)
 	out.AllocationPolicy = AllocationPolicy_ToProto(mapCtx, in.AllocationPolicy)
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.LogsPolicy = LogsPolicy_ToProto(mapCtx, in.LogsPolicy)
 	out.Notifications = direct.Slice_ToProto(mapCtx, in.Notifications, JobNotification_ToProto)
 	return out
@@ -324,10 +319,8 @@ func ComputeResource_FromProto(mapCtx *direct.MapContext, in *pb.ComputeResource
 	}
 	out := &krm.ComputeResource{}
 	out.CPUMilli = direct.LazyPtr(in.GetCpuMilli())
-	// MISSING: MemoryMIB
-	// (near miss): "MemoryMIB" vs "MemoryMiB"
-	// MISSING: BootDiskMIB
-	// (near miss): "BootDiskMIB" vs "BootDiskMiB"
+	out.MemoryMIB = direct.LazyPtr(in.GetMemoryMib())
+	out.BootDiskMIB = direct.LazyPtr(in.GetBootDiskMib())
 	return out
 }
 func ComputeResource_ToProto(mapCtx *direct.MapContext, in *krm.ComputeResource) *pb.ComputeResource {
@@ -336,10 +329,8 @@ func ComputeResource_ToProto(mapCtx *direct.MapContext, in *krm.ComputeResource)
 	}
 	out := &pb.ComputeResource{}
 	out.CpuMilli = direct.ValueOf(in.CPUMilli)
-	// MISSING: MemoryMIB
-	// (near miss): "MemoryMIB" vs "MemoryMiB"
-	// MISSING: BootDiskMIB
-	// (near miss): "BootDiskMIB" vs "BootDiskMiB"
+	out.MemoryMib = direct.ValueOf(in.MemoryMIB)
+	out.BootDiskMib = direct.ValueOf(in.BootDiskMIB)
 	return out
 }
 func Environment_FromProto(mapCtx *direct.MapContext, in *pb.Environment) *krm.Environment {
@@ -367,7 +358,7 @@ func Environment_KMSEnvMap_FromProto(mapCtx *direct.MapContext, in *pb.Environme
 		return nil
 	}
 	out := &krm.Environment_KMSEnvMap{}
-	// MISSING: KeyName
+	out.KeyName = direct.LazyPtr(in.GetKeyName())
 	out.CipherText = direct.LazyPtr(in.GetCipherText())
 	return out
 }
@@ -376,7 +367,7 @@ func Environment_KMSEnvMap_ToProto(mapCtx *direct.MapContext, in *krm.Environmen
 		return nil
 	}
 	out := &pb.Environment_KMSEnvMap{}
-	// MISSING: KeyName
+	out.KeyName = direct.ValueOf(in.KeyName)
 	out.CipherText = direct.ValueOf(in.CipherText)
 	return out
 }
@@ -401,9 +392,7 @@ func JobNotification_FromProto(mapCtx *direct.MapContext, in *pb.JobNotification
 		return nil
 	}
 	out := &krm.JobNotification{}
-	if in.GetPubsubTopic() != "" {
-		out.PubsubTopicRef = &krmpubsubv1beta1.PubSubTopicRef{External: in.GetPubsubTopic()}
-	}
+	out.PubsubTopic = direct.LazyPtr(in.GetPubsubTopic())
 	out.Message = JobNotification_Message_FromProto(mapCtx, in.GetMessage())
 	return out
 }
@@ -412,9 +401,7 @@ func JobNotification_ToProto(mapCtx *direct.MapContext, in *krm.JobNotification)
 		return nil
 	}
 	out := &pb.JobNotification{}
-	if in.PubsubTopicRef != nil {
-		out.PubsubTopic = in.PubsubTopicRef.External
-	}
+	out.PubsubTopic = direct.ValueOf(in.PubsubTopic)
 	out.Message = JobNotification_Message_ToProto(mapCtx, in.Message)
 	return out
 }
@@ -668,7 +655,7 @@ func Runnable_Container_FromProto(mapCtx *direct.MapContext, in *pb.Runnable_Con
 	out.Options = direct.LazyPtr(in.GetOptions())
 	out.BlockExternalNetwork = direct.LazyPtr(in.GetBlockExternalNetwork())
 	out.Username = direct.LazyPtr(in.GetUsername())
-	// MISSING: Password
+	out.Password = direct.LazyPtr(in.GetPassword())
 	out.EnableImageStreaming = direct.LazyPtr(in.GetEnableImageStreaming())
 	return out
 }
@@ -684,7 +671,7 @@ func Runnable_Container_ToProto(mapCtx *direct.MapContext, in *krm.Runnable_Cont
 	out.Options = direct.ValueOf(in.Options)
 	out.BlockExternalNetwork = direct.ValueOf(in.BlockExternalNetwork)
 	out.Username = direct.ValueOf(in.Username)
-	// MISSING: Password
+	out.Password = direct.ValueOf(in.Password)
 	out.EnableImageStreaming = direct.ValueOf(in.EnableImageStreaming)
 	return out
 }
@@ -721,6 +708,24 @@ func Runnable_Script_Text_ToProto(mapCtx *direct.MapContext, in *string) *pb.Run
 		return nil
 	}
 	return &pb.Runnable_Script_Text{Text: *in}
+}
+func ServiceAccount_FromProto(mapCtx *direct.MapContext, in *pb.ServiceAccount) *krm.ServiceAccount {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ServiceAccount{}
+	out.Email = direct.LazyPtr(in.GetEmail())
+	out.Scopes = in.Scopes
+	return out
+}
+func ServiceAccount_ToProto(mapCtx *direct.MapContext, in *krm.ServiceAccount) *pb.ServiceAccount {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ServiceAccount{}
+	out.Email = direct.ValueOf(in.Email)
+	out.Scopes = in.Scopes
+	return out
 }
 func StatusEvent_FromProto(mapCtx *direct.MapContext, in *pb.StatusEvent) *krm.StatusEvent {
 	if in == nil {

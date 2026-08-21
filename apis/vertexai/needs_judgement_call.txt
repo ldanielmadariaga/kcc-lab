@@ -15,6 +15,4 @@ kind=VertexAIDataLabelingJob group=vertexai.cnrm.cloud.google.com: field ".spec.
 kind=VertexAICustomJob group=vertexai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=VertexAITensorboard group=vertexai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=VertexAITensorboardExperiment group=vertexai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=VertexAIFeaturestoreEntityType group=vertexai.cnrm.cloud.google.com: field ".spec.featurestore" reason=possible-reference-by-description
-kind=VertexAIFeaturestoreEntityTypeFeature group=vertexai.cnrm.cloud.google.com: field ".spec.entitytype" reason=possible-reference-by-description
-kind=VertexAIIndexEndpoint group=vertexai.cnrm.cloud.google.com: field ".spec.network" reason=possible-reference-by-description
+kind=VertexAITensorboardExperiment group=vertexai.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/tensorboards/{tensorboard}/experiments/{experiment}; location is implied by the parent, add it only if the API needs it stated)

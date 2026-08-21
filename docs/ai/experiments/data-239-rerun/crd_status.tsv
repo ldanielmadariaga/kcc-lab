@@ -1,7 +1,7 @@
 aiplatform	ok
 analytics	ok
 apigeeregistry	ok
-apihub	ok
+apihub	FAILED
 apikeys	ok
 apphub	ok
 appoptimize	ok
@@ -15,10 +15,10 @@ bigquerydatapolicy	ok
 bigquerymigration	ok
 bigqueryreservation	ok
 bigtable	ok
-billing	ok
+billing	FAILED
 blockchainnodeengine	ok
 certificatemanager	ok
-ces	ok
+ces	FAILED
 cloudbuild	ok
 clouddeploy	ok
 clouddms	ok
@@ -30,7 +30,7 @@ configdelivery	ok
 configdeployment	ok
 connectors	ok
 contactcenterinsights	ok
-contentwarehouse	ok
+contentwarehouse	FAILED
 datacatalog	ok
 dataform	ok
 datalabeling	ok
@@ -85,7 +85,7 @@ vectorsearch	ok
 vertexai	ok
 videostitcher	ok
 vision	ok
-visionai	ok
+visionai	FAILED
 vmwareengine	ok
 workflowexecutions	ok
 workflows	ok

@@ -7,7 +7,14 @@
 
 kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DataprocJob group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataprocJob group=dataproc.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-unknown-parent (the proto declares no google.api.resource, so the parent shape is unknown; add location if the resource is regional)
 kind=DataprocNodeGroup group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataprocNodeGroup group=dataproc.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/regions/{region}/clusters/{cluster}/nodeGroups/{node_group}; location is implied by the parent, add it only if the API needs it stated)
 kind=DataprocSession group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.sessionTemplate" reason=possible-reference (target=dataproc.googleapis.com/SessionTemplate)
 kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+
+# Fields dropped because the generator could not produce a Go type for
+# them. They are absent from the CRD. Shared nested messages, so they are
+# listed per service rather than against one Kind.
+# dropped: google.cloud.dataproc.v1.LoggingConfig.driverLogLevels reason=unsupported map type with key string and value enum

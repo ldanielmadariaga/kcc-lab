@@ -21,8 +21,7 @@
 
 package v1alpha1
 
-/* found existing non-generated go type with proto tag "google.cloud.workflows.executions.v1.Execution", skipping
-
+/* unreachable type Execution
 // +kcc:proto=google.cloud.workflows.executions.v1.Execution
 type Execution struct {
 
@@ -139,8 +138,7 @@ type Execution_Status_Step struct {
 	Step *string `json:"step,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.workflows.executions.v1.Execution", skipping
-
+/* unreachable type ExecutionObservedState
 // +kcc:observedstate:proto=google.cloud.workflows.executions.v1.Execution
 type ExecutionObservedState struct {
 	// Output only. The resource name of the execution.

@@ -75,34 +75,10 @@ spec:
 
                        Default (empty): Config backup artifacts will not be encrypted.
                     properties:
-                      kmsKeyRef:
-                        description: Optional. Google Cloud KMS encryption key.
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: A reference to an externally managed KMSCryptoKey.
-                              Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
-                            type: string
-                          name:
-                            description: The `name` of a `KMSCryptoKey` resource.
-                            type: string
-                          namespace:
-                            description: The `namespace` of a `KMSCryptoKey` resource.
-                            type: string
-                        type: object
+                      gcpKMSEncryptionKey:
+                        description: 'Optional. Google Cloud KMS encryption key. Format:
+                          `projects/*/locations/*/keyRings/*/cryptoKeys/*`'
+                        type: string
                     type: object
                   includeSecrets:
                     description: |-
@@ -287,46 +263,25 @@ spec:
                           - startTime
                           type: object
                         type: array
-                      targetRPOMinutes:
+                      targetRpoMinutes:
                         description: Required. Defines the target RPO for the BackupPlan
                           in minutes, which means the target maximum data loss in
                           time that is acceptable for this BackupPlan. This must be
                           at least 60, i.e., 1 hour, and at most 86400, i.e., 60 days.
                         format: int32
                         type: integer
+                    required:
+                    - targetRpoMinutes
                     type: object
                 type: object
-              clusterRef:
-                description: Required. Immutable. The source cluster from which Backups
-                  will be created via this BackupPlan.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: 'The GKE cluster. Valid formats: `projects/{projectID}/locations/{location}/clusters/{clusterID}`
-                      `projects/{projectID}/zones/{zone}/clusters/{clusterID}`'
-                    type: string
-                  name:
-                    description: 'Name of the project resource. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                      */'
-                    type: string
-                  namespace:
-                    description: 'Namespace of the project resource. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-                      */'
-                    type: string
-                type: object
+              cluster:
+                description: |-
+                  Required. Immutable. The source cluster from which Backups will be created
+                   via this BackupPlan. Valid formats:
+
+                   - `projects/*/locations/*/clusters/*`
+                   - `projects/*/zones/*/clusters/*`
+                type: string
               deactivated:
                 description: |-
                   Optional. This flag indicates whether this BackupPlan has been deactivated.
@@ -347,13 +302,10 @@ spec:
                 description: Optional. A set of custom labels supplied by user.
                 type: object
               location:
-                description: Immutable.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -438,7 +390,7 @@ spec:
                     type: boolean
                 type: object
             required:
-            - clusterRef
+            - cluster
             - location
             - projectRef
             type: object
@@ -488,6 +440,11 @@ spec:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
                 properties:
+                  backupChannel:
+                    description: Output only. The fully qualified name of the BackupChannel
+                      to be used to create a backup. This field is set only if the
+                      cluster being backed up is in a different project. `projects/*/locations/*/backupChannels/*`
+                    type: string
                   backupSchedule:
                     description: Optional. Defines a schedule for automatic Backup
                       creation via this BackupPlan.
@@ -511,6 +468,12 @@ spec:
                       systems are expected to put that etag in the request to `UpdateBackupPlan`
                       or `DeleteBackupPlan` to ensure that their change will be applied
                       to the same version of the resource.'
+                    type: string
+                  lastSuccessfulBackupTime:
+                    description: Output only. Completion time of the last successful
+                      Backup. This is sourced from a successful Backup's complete_time
+                      field. This field is added to maintain consistency with BackupPlanBinding
+                      to display last successful backup time.
                     type: string
                   protectedPodCount:
                     description: Output only. The number of Kubernetes Pods backed
@@ -536,7 +499,9 @@ spec:
                     type: string
                   stateReason:
                     description: Output only. Human-readable description of why BackupPlan
-                      is in the current `state`
+                      is in the current `state`. This field is only meant for human
+                      readability and should not be used programmatically as this
+                      field is not guaranteed to be consistent.
                     type: string
                   uid:
                     description: Output only. Server generated global unique identifier

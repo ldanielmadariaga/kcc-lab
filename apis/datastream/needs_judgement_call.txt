@@ -8,8 +8,4 @@
 kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DatastreamRoute group=datastream.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.gcsProfile.bucket" reason=possible-reference-by-description
-kind=DatastreamStream group=datastream.cnrm.cloud.google.com: field ".spec.destinationConfig.bigqueryDestinationConfig.singleTargetDataset.datasetId" reason=possible-reference-by-description
-kind=DatastreamStream group=datastream.cnrm.cloud.google.com: field ".spec.destinationConfig.bigqueryDestinationConfig.sourceHierarchyDatasets.datasetTemplate.kmsKeyName" reason=possible-reference-by-description
-kind=DatastreamStream group=datastream.cnrm.cloud.google.com: field ".spec.destinationConfig.destinationConnectionProfile" reason=possible-reference-by-description
-kind=DatastreamStream group=datastream.cnrm.cloud.google.com: field ".spec.sourceConfig.sourceConnectionProfile" reason=possible-reference-by-description
+kind=DatastreamRoute group=datastream.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/privateConnections/{private_connection}/routes/{route}; location is implied by the parent, add it only if the API needs it stated)

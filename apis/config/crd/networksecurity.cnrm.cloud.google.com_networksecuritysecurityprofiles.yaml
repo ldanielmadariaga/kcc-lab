@@ -75,9 +75,6 @@ spec:
                   type: string
                 description: Optional. Labels as key value pairs.
                 type: object
-              location:
-                description: The location of this resource.
-                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -123,7 +120,6 @@ spec:
               urlFilteringProfile:
                 description: The URL filtering configuration for the SecurityProfile.
             required:
-            - location
             - projectRef
             type: object
           status:

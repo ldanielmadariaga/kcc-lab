@@ -126,9 +126,6 @@ spec:
               kind:
                 description: '[Output Only] Type of the resource.'
                 type: string
-              location:
-                description: The location of this resource.
-                type: string
               network:
                 description: '[Output Only] The URL of the network which the Network
                   Attachment belongs to. Practically it is inferred by fetching the
@@ -206,7 +203,6 @@ spec:
                   type: string
                 type: array
             required:
-            - location
             - projectRef
             type: object
           status:

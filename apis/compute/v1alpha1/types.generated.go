@@ -291,8 +291,7 @@ type AttachedDiskInitializeParams struct {
 	StoragePool *string `json:"storagePool,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Autoscaler", skipping
-
+/* unreachable type Autoscaler
 // +kcc:proto=google.cloud.compute.v1.Autoscaler
 type Autoscaler struct {
 	// The configuration parameters for the autoscaling algorithm. You can define one or more signals for an autoscaler: cpuUtilization, customMetricUtilizations, and loadBalancingUtilization. If none of these are specified, the default will be to autoscale based on cpuUtilization to 0.6 or 60%.
@@ -708,8 +707,7 @@ type InstanceProperties struct {
 	Tags *Tags `json:"tags,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Interconnect", skipping
-
+/* unreachable type Interconnect
 // +kcc:proto=google.cloud.compute.v1.Interconnect
 type Interconnect struct {
 	// Enable or disable the application awareness feature on this Cloud Interconnect.
@@ -990,8 +988,7 @@ type Items struct {
 	Value *string `json:"value,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.MachineImage", skipping
-
+/* unreachable type MachineImage
 // +kcc:proto=google.cloud.compute.v1.MachineImage
 type MachineImage struct {
 	// [Output Only] The creation timestamp for this machine image in RFC3339 text format.
@@ -1092,8 +1089,7 @@ type Metadata struct {
 	Kind *string `json:"kind,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.NetworkAttachment", skipping
-
+/* unreachable type NetworkAttachment
 // +kcc:proto=google.cloud.compute.v1.NetworkAttachment
 type NetworkAttachment struct {
 	// [Output Only] An array of connections for all the producers connected to this network attachment.
@@ -1193,8 +1189,7 @@ type NetworkAttachmentConnectedEndpoint struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.NetworkEdgeSecurityService", skipping
-
+/* unreachable type NetworkEdgeSecurityService
 // +kcc:proto=google.cloud.compute.v1.NetworkEdgeSecurityService
 type NetworkEdgeSecurityService struct {
 	// [Output Only] Creation timestamp in RFC3339 text format.
@@ -1239,8 +1234,7 @@ type NetworkEdgeSecurityService struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.NetworkEndpoint", skipping
-
+/* unreachable type NetworkEndpoint
 // +kcc:proto=google.cloud.compute.v1.NetworkEndpoint
 type NetworkEndpoint struct {
 	// Optional metadata defined as annotations on the network endpoint.
@@ -1350,8 +1344,7 @@ type NetworkPerformanceConfig struct {
 	TotalEgressBandwidthTier *string `json:"totalEgressBandwidthTier,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.PerInstanceConfig", skipping
-
+/* unreachable type PerInstanceConfig
 // +kcc:proto=google.cloud.compute.v1.PerInstanceConfig
 type PerInstanceConfig struct {
 	// Fingerprint of this per-instance config. This field can be used in optimistic locking. It is ignored when inserting a per-instance config. An up-to-date fingerprint must be provided in order to update an existing per-instance configuration or the field needs to be unset.
@@ -1644,8 +1637,7 @@ type SchedulingOnInstanceStopAction struct {
 	DiscardLocalSsd *bool `json:"discardLocalSsd,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.SecurityPolicy", skipping
-
+/* unreachable type SecurityPolicy
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicy
 type SecurityPolicy struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.adaptive_protection_config
@@ -2153,8 +2145,7 @@ type ShieldedInstanceConfig struct {
 	EnableVTPM *bool `json:"enableVTPM,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.SignedUrlKey", skipping
-
+/* unreachable type SignedURLKey
 // +kcc:proto=google.cloud.compute.v1.SignedUrlKey
 type SignedURLKey struct {
 	// Name of the key. The name must be 1-63 characters long, and comply with RFC1035. Specifically, the name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase letter, and all following characters must be a dash, lowercase letter, or digit, except the last character, which cannot be a dash.
@@ -2238,8 +2229,7 @@ type SourceInstanceProperties struct {
 	Tags *Tags `json:"tags,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.SslPolicy", skipping
-
+/* unreachable type SSLPolicy
 // +kcc:proto=google.cloud.compute.v1.SslPolicy
 type SSLPolicy struct {
 	// [Output Only] Creation timestamp in RFC3339 text format.

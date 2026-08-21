@@ -86,6 +86,9 @@ spec:
                   type: string
                 description: Optional. User-defined labels for the EntryType.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               platform:
                 description: Optional. The platform that Entries of this type belongs
                   to.
@@ -146,6 +149,7 @@ spec:
                   type: string
                 type: array
             required:
+            - location
             - projectRef
             type: object
           status:

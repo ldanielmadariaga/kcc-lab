@@ -6,12 +6,3 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=RunWorkerPool group=run.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.binaryAuthorization.policy" reason=possible-reference-by-description
-kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.containers[].env[].valueSource.secretKeyRef.secret" reason=possible-reference-by-description
-kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.encryptionKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
-kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.serviceAccount" reason=possible-reference-by-description
-kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.serviceMesh.mesh" reason=possible-reference-by-description
-kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.volumes[].gcs.bucket" reason=possible-reference-by-description
-kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.volumes[].secret.secret" reason=possible-reference-by-description
-kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.vpcAccess.connector" reason=possible-reference-by-description
-kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.vpcAccess.networkInterfaces[].network" reason=possible-reference-by-name (ComputeNetworkRef)

@@ -68,7 +68,7 @@ spec:
                 type: string
               baseModelSource:
                 description: Optional. User input field to specify the base model
-                  source. Currently it only supports specifying the Model Garden models
+                  source. Currently it only supports specifing the Model Garden models
                   and Genie models.
                 properties:
                   genieSource:
@@ -835,6 +835,9 @@ spec:
                     format: int64
                     type: integer
                 type: object
+              defaultCheckpointID:
+                description: The default checkpoint id of a model version.
+                type: string
               description:
                 description: The description of the Model.
                 type: string
@@ -847,39 +850,20 @@ spec:
                   set, this Model and all sub-resources of this Model will be secured
                   by this key.
                 properties:
-                  kmsKeyRef:
+                  kmsKeyName:
                     description: 'Required. The Cloud KMS resource identifier of the
                       customer managed encryption key used to protect a resource.
                       Has the form: `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
                       The key needs to be in the same region as where the compute
                       resource is created.'
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: A reference to an externally managed KMSCryptoKey
-                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/keyRings/{{keyring}}/cryptoKeys/{{cryptokey}}".
-                        type: string
-                      name:
-                        description: The name of a KMSCryptoKey resource.
-                        type: string
-                      namespace:
-                        description: The namespace of a KMSCryptoKey resource.
-                        type: string
-                    type: object
+                    type: string
+                required:
+                - kmsKeyName
                 type: object
+              etag:
+                description: Used to perform consistent read-modify-write updates.
+                  If not set, a blind "overwrite" update happens.
+                type: string
               explanationSpec:
                 description: |-
                   The default explanation specification for this Model.
@@ -1096,20 +1080,20 @@ spec:
                           type: object
                         description: |-
                           Required. Map from feature names to feature input metadata. Keys are the
-                          name of the features. Values are the specification of the feature.
+                           name of the features. Values are the specification of the feature.
 
-                          An empty InputMetadata is valid. It describes a text feature which has the
-                          name specified as the key in
-                          [ExplanationMetadata.inputs][google.cloud.aiplatform.v1.ExplanationMetadata.inputs].
-                          The baseline of the empty feature is chosen by Vertex AI.
+                           An empty InputMetadata is valid. It describes a text feature which has the
+                           name specified as the key in
+                           [ExplanationMetadata.inputs][google.cloud.aiplatform.v1.ExplanationMetadata.inputs].
+                           The baseline of the empty feature is chosen by Vertex AI.
 
-                          For Vertex AI-provided Tensorflow images, the key can be any friendly
-                          name of the feature. Once specified,
-                          [featureAttributions][google.cloud.aiplatform.v1.Attribution.feature_attributions]
-                          are keyed by this key (if not grouped with another feature).
+                           For Vertex AI-provided Tensorflow images, the key can be any friendly
+                           name of the feature. Once specified,
+                           [featureAttributions][google.cloud.aiplatform.v1.Attribution.feature_attributions]
+                           are keyed by this key (if not grouped with another feature).
 
-                          For custom images, the key must match with the key in
-                          [instance][google.cloud.aiplatform.v1.ExplainRequest.instances].
+                           For custom images, the key must match with the key in
+                           [instance][google.cloud.aiplatform.v1.ExplainRequest.instances].
                         type: object
                       latentSpaceSource:
                         description: Name of the source to generate embeddings for
@@ -1155,14 +1139,17 @@ spec:
                         description: |-
                           Required. Map from output names to output metadata.
 
-                          For Vertex AI-provided Tensorflow images, keys can be any user defined
-                          string that consists of any UTF-8 characters.
+                           For Vertex AI-provided Tensorflow images, keys can be any user defined
+                           string that consists of any UTF-8 characters.
 
-                          For custom images, keys are the name of the output field in the prediction
-                          to be explained.
+                           For custom images, keys are the name of the output field in the prediction
+                           to be explained.
 
-                          Currently only one key is allowed.
+                           Currently only one key is allowed.
                         type: object
+                    required:
+                    - inputs
+                    - outputs
                     type: object
                   parameters:
                     description: Required. Parameters that configure explaining of
@@ -1474,29 +1461,13 @@ spec:
                    See https://goo.gl/xmQnxf for more information and examples of labels.
                 type: object
               location:
-                description: Immutable. The location where the model should reside.
+                description: The location of this resource.
                 type: string
               metadata:
                 description: Immutable. An additional information about the Model;
                   the schema of the metadata can be found in [metadata_schema][google.cloud.aiplatform.v1.Model.metadata_schema_uri].
                   Unset if the Model does not have any additional information.
-                properties:
-                  boolValue:
-                    description: Represents a boolean value.
-                    type: boolean
-                  nullValue:
-                    description: Represents a null value.
-                    type: string
-                  numberValue:
-                    description: Represents a double value.
-                    type: number
-                  stringValue:
-                    description: Represents a string value.
-                    type: string
-                  structValue:
-                    description: Represents a structured value.
-                    x-kubernetes-preserve-unknown-fields: true
-                type: object
+                x-kubernetes-preserve-unknown-fields: true
               metadataSchemaURI:
                 description: 'Immutable. Points to a YAML file stored on Google Cloud
                   Storage describing additional information about the Model, that
@@ -1597,8 +1568,8 @@ spec:
                 type: string
               versionAliases:
                 description: User provided version aliases so that a model version
-                  can be referenced via alias (i.e. `projects/PROJECT/locations/LOCATION/models/MODEL_ID@VERSION_ALIAS`
-                  instead of auto-generated version id (i.e. `projects/PROJECT/locations/LOCATION/models/MODEL_ID@VERSION_ID`).
+                  can be referenced via alias (i.e. `projects/{project}/locations/{location}/models/{model_id}@{version_alias}`
+                  instead of auto-generated version id (i.e. `projects/{project}/locations/{location}/models/{model_id}@{version_id})`.
                   The format is [a-z][a-zA-Z0-9-]{0,126}[a-z0-9] to distinguish from
                   version_id. A default version alias will be created for the first
                   version of the model, and there must be exactly one default version
@@ -1610,6 +1581,7 @@ spec:
                 description: The description of this version.
                 type: string
             required:
+            - displayName
             - location
             - projectRef
             type: object
@@ -1659,6 +1631,23 @@ spec:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
                 properties:
+                  checkpoints:
+                    description: Optional. Output only. The checkpoints of the model.
+                    items:
+                      properties:
+                        checkpointID:
+                          description: The ID of the checkpoint.
+                          type: string
+                        epoch:
+                          description: The epoch of the checkpoint.
+                          format: int64
+                          type: integer
+                        step:
+                          description: The step of the checkpoint.
+                          format: int64
+                          type: integer
+                      type: object
+                    type: array
                   createTime:
                     description: Output only. Timestamp when this Model was uploaded
                       into Vertex AI.
@@ -1700,6 +1689,12 @@ spec:
                   originalModelInfo:
                     description: Output only. If this Model is a copy of another Model,
                       this contains info about the original.
+                    properties:
+                      model:
+                        description: 'Output only. The resource name of the Model
+                          this Model is a copy of, including the revision. Format:
+                          `projects/{project}/locations/{location}/models/{model_id}@{version_id}`'
+                        type: string
                     type: object
                   satisfiesPzi:
                     description: Output only. Reserved for future use.
@@ -1727,6 +1722,37 @@ spec:
                     description: Output only. The formats in which this Model may
                       be exported. If empty, this Model is not available for export.
                     items:
+                      properties:
+                        exportableContents:
+                          description: Output only. The content of this Model that
+                            may be exported.
+                          items:
+                            type: string
+                          type: array
+                        id:
+                          description: |-
+                            Output only. The ID of the export format.
+                             The possible format IDs are:
+
+                             * `tflite`
+                             Used for Android mobile devices.
+
+                             * `edgetpu-tflite`
+                             Used for [Edge TPU](https://cloud.google.com/edge-tpu/) devices.
+
+                             * `tf-saved-model`
+                             A tensorflow model in SavedModel format.
+
+                             * `tf-js`
+                             A [TensorFlow.js](https://www.tensorflow.org/js) model that can be used
+                             in the browser and in Node.js using JavaScript.
+
+                             * `core-ml`
+                             Used for iOS mobile devices.
+
+                             * `custom-trained`
+                             A Model that was uploaded or trained by custom code.
+                          type: string
                       type: object
                     type: array
                   supportedInputStorageFormats:

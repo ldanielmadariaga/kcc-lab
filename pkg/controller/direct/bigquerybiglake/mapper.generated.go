@@ -38,8 +38,8 @@ func BigLakeCatalogObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, i
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: DeleteTime
-	// MISSING: ExpireTime
+	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
+	out.ExpireTime = direct.StringTimestamp_FromProto(mapCtx, in.GetExpireTime())
 	return out
 }
 func BigLakeCatalogObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigquerybiglakev1alpha1.BigLakeCatalogObservedState) *pb.Catalog {
@@ -50,8 +50,8 @@ func BigLakeCatalogObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in 
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: DeleteTime
-	// MISSING: ExpireTime
+	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
+	out.ExpireTime = direct.StringTimestamp_ToProto(mapCtx, in.ExpireTime)
 	return out
 }
 func BigLakeCatalogSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Catalog) *krmbigquerybiglakev1alpha1.BigLakeCatalogSpec {
@@ -60,8 +60,6 @@ func BigLakeCatalogSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Cat
 	}
 	out := &krmbigquerybiglakev1alpha1.BigLakeCatalogSpec{}
 	// MISSING: Name
-	// MISSING: DeleteTime
-	// MISSING: ExpireTime
 	return out
 }
 func BigLakeCatalogSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigquerybiglakev1alpha1.BigLakeCatalogSpec) *pb.Catalog {
@@ -70,8 +68,6 @@ func BigLakeCatalogSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigqu
 	}
 	out := &pb.Catalog{}
 	// MISSING: Name
-	// MISSING: DeleteTime
-	// MISSING: ExpireTime
 	return out
 }
 func BigLakeDatabaseObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Database) *krmbigquerybiglakev1alpha1.BigLakeDatabaseObservedState {

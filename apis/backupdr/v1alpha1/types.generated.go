@@ -21,8 +21,7 @@
 
 package v1alpha1
 
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.ManagementServer", skipping
-
+/* unreachable type ManagementServer
 // +kcc:proto=google.cloud.backupdr.v1.ManagementServer
 type ManagementServer struct {
 
@@ -86,8 +85,7 @@ type WorkforceIdentityBasedOAuth2ClientID struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.ManagementServer", skipping
-
+/* unreachable type ManagementServerObservedState
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.ManagementServer
 type ManagementServerObservedState struct {
 	// Output only. Identifier. The resource name.

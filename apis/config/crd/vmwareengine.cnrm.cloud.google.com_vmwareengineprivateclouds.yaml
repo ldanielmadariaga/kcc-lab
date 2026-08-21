@@ -65,11 +65,8 @@ spec:
                 description: User-provided description for this private cloud.
                 type: string
               location:
-                description: Immutable.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
               managementCluster:
                 description: |-
                   Required. Input only. The management cluster for this private cloud.
@@ -92,8 +89,7 @@ spec:
                        1034](https://datatracker.ietf.org/doc/html/rfc1034) (section 3.5)
                     type: string
                   nodeTypeConfigs:
-                    description: Required. A list of cluster node types in this cluster.
-                    items:
+                    additionalProperties:
                       properties:
                         customCoreCount:
                           description: Optional. Customized number of cores available
@@ -108,16 +104,37 @@ spec:
                             in the cluster
                           format: int32
                           type: integer
-                        nodeTypeID:
-                          description: 'Required. The type of the node. The canonical
-                            identifier of the node type (corresponds to the NodeType).
-                            For example: standard-72.'
-                          type: string
                       required:
                       - nodeCount
-                      - nodeTypeID
                       type: object
-                    type: array
+                    description: Required. The map of cluster node types in this cluster,
+                      where the key is canonical identifier of the node type (corresponds
+                      to the `NodeType`).
+                    type: object
+                  stretchedClusterConfig:
+                    description: Optional. Configuration of a stretched cluster. Required
+                      for STRETCHED private clouds.
+                    properties:
+                      preferredLocation:
+                        description: 'Required. Zone that will remain operational
+                          when connection between the two zones is lost. Specify the
+                          resource name of a zone that belongs to the region of the
+                          private cloud. For example: `projects/{project}/locations/europe-west3-a`
+                          where `{project}` can either be a project number or a project
+                          ID.'
+                        type: string
+                      secondaryLocation:
+                        description: 'Required. Additional zone for a higher level
+                          of availability and load balancing. Specify the resource
+                          name of a zone that belongs to the region of the private
+                          cloud. For example: `projects/{project}/locations/europe-west3-b`
+                          where `{project}` can either be a project number or a project
+                          ID.'
+                        type: string
+                    required:
+                    - preferredLocation
+                    - secondaryLocation
+                    type: object
                 required:
                 - clusterID
                 - nodeTypeConfigs
@@ -129,40 +146,18 @@ spec:
                     description: Required. Management CIDR used by VMware management
                       appliances.
                     type: string
-                  vmwareEngineNetworkRef:
-                    description: Optional. The name of the VMware Engine network attached
-                      to the private cloud.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: A reference to an externally managed VMwareEngineNetwork
-                          resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/vmwareEngineNetworks/{{vmwareenginenetworkID}}".
-                        type: string
-                      name:
-                        description: The name of a VMwareEngineNetwork resource.
-                        type: string
-                      namespace:
-                        description: The namespace of a VMwareEngineNetwork resource.
-                        type: string
-                    type: object
+                  vmwareEngineNetwork:
+                    description: 'Optional. The relative resource name of the VMware
+                      Engine network attached to the private cloud. Specify the name
+                      in the following form: `projects/{project}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
+                      where `{project}` can either be a project number or a project
+                      ID.'
+                    type: string
                 required:
                 - managementCIDR
                 type: object
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -280,7 +275,7 @@ spec:
                         type: string
                     type: object
                   networkConfig:
-                    description: Network configuration of the private cloud.
+                    description: Required. Network configuration of the private cloud.
                     properties:
                       dnsServerIP:
                         description: Output only. DNS Server IP of the Private Cloud.
@@ -292,7 +287,7 @@ spec:
                         description: 'Output only. The IP address layout version of
                           the management IP address range. Possible versions include:
                           * `managementIpAddressLayoutVersion=1`: Indicates the legacy
-                          IP address layout used by some existing private cloudqs.
+                          IP address layout used by some existing private clouds.
                           This is no longer supported for new private clouds as it
                           does not support all features. * `managementIpAddressLayoutVersion=2`:
                           Indicates the latest IP address layout used by all newly

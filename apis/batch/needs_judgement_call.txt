@@ -7,4 +7,4 @@
 
 kind=BatchJob group=batch.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=BatchTask group=batch.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.network" reason=possible-reference-by-name (ComputeNetworkRef)
+kind=BatchTask group=batch.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/jobs/{job}/taskGroups/{task_group}/tasks/{task}; location is implied by the parent, add it only if the API needs it stated)

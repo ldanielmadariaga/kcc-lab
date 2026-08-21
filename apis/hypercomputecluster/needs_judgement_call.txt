@@ -6,5 +6,3 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.orchestrator.slurm.loginNodes.bootDisk.type" reason=possible-reference-by-description
-kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.orchestrator.slurm.nodeSets[].computeInstance.bootDisk.type" reason=possible-reference-by-description

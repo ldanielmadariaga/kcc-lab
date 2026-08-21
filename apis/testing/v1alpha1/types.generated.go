@@ -44,9 +44,67 @@ type AndroidDevice struct {
 	Orientation *string `json:"orientation,omitempty"`
 }
 
+/* unreachable type DeviceSession
+// +kcc:proto=google.devtools.testing.v1.DeviceSession
+type DeviceSession struct {
+	// Optional. Name of the DeviceSession, e.g.
+	//  "projects/{project_id}/deviceSessions/{session_id}"
+	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.name
+	Name *string `json:"name,omitempty"`
+
+	// Optional. The amount of time that a device will be initially allocated
+	//  for. This can eventually be extended with the UpdateDeviceSession RPC.
+	//  Default: 15 minutes.
+	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.ttl
+	TTL *string `json:"ttl,omitempty"`
+
+	// Optional. If the device is still in use at this time, any connections
+	//  will be ended and the SessionState will transition from ACTIVE to
+	//  FINISHED.
+	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.expire_time
+	ExpireTime *string `json:"expireTime,omitempty"`
+
+	// Required. The requested device
+	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.android_device
+	// +required
+	AndroidDevice *AndroidDevice `json:"androidDevice,omitempty"`
+}
+*/
+
 /* unreachable type DeviceSession_SessionStateEvent
 // +kcc:proto=google.devtools.testing.v1.DeviceSession.SessionStateEvent
 type DeviceSession_SessionStateEvent struct {
+}
+*/
+
+/* unreachable type DeviceSessionObservedState
+// +kcc:observedstate:proto=google.devtools.testing.v1.DeviceSession
+type DeviceSessionObservedState struct {
+	// Output only. The title of the DeviceSession to be presented in the UI.
+	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Output only. Current state of the DeviceSession.
+	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. The historical state transitions of the session_state message
+	//  including the current session state.
+	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.state_histories
+	StateHistories []DeviceSession_SessionStateEventObservedState `json:"stateHistories,omitempty"`
+
+	// Output only. The interval of time that this device must be interacted with
+	//  before it transitions from ACTIVE to TIMEOUT_INACTIVITY.
+	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.inactivity_timeout
+	InactivityTimeout *string `json:"inactivityTimeout,omitempty"`
+
+	// Output only. The time that the Session was created.
+	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The timestamp that the session first became ACTIVE.
+	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.active_start_time
+	ActiveStartTime *string `json:"activeStartTime,omitempty"`
 }
 */
 

@@ -79,40 +79,19 @@ spec:
                   If set, this Metadata Store and all sub-resources of this Metadata
                   Store are secured using this key.
                 properties:
-                  kmsKeyRef:
-                    description: Required. The Cloud KMS resource identifier of the
+                  kmsKeyName:
+                    description: 'Required. The Cloud KMS resource identifier of the
                       customer managed encryption key used to protect a resource.
+                      Has the form: `projects/my-project/locations/my-region/keyRings/my-kr/cryptoKeys/my-key`.
                       The key needs to be in the same region as where the compute
-                      resource is created.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: A reference to an externally managed KMSCryptoKey.
-                          Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
-                        type: string
-                      name:
-                        description: The `name` of a `KMSCryptoKey` resource.
-                        type: string
-                      namespace:
-                        description: The `namespace` of a `KMSCryptoKey` resource.
-                        type: string
-                    type: object
+                      resource is created.'
+                    type: string
                 required:
-                - kmsKeyRef
+                - kmsKeyName
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -145,13 +124,13 @@ spec:
                     description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
-              region:
-                description: The region of the Metadata Store. eg us-central1.
-                type: string
               resourceID:
                 description: The VertexAIMetadataStore name. If not given, the metadata.name
                   will be used.
                 type: string
+            required:
+            - location
+            - projectRef
             type: object
           status:
             description: VertexAIMetadataStoreStatus defines the config connector
@@ -202,10 +181,6 @@ spec:
                   createTime:
                     description: Output only. Timestamp when this MetadataStore was
                       created.
-                    type: string
-                  name:
-                    description: Output only. The resource name of the MetadataStore
-                      instance.
                     type: string
                   state:
                     description: Output only. State information of the MetadataStore.

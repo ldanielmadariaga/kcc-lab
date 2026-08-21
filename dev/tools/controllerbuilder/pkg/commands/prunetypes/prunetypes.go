@@ -336,8 +336,15 @@ func dropUnusedImports(filename string, content []byte) ([]byte, error) {
 		return true
 	})
 
-	changed := false
+	// Collect first, delete after. astutil.DeleteNamedImport mutates
+	// file.Imports, and deleting while ranging over that same slice walks off the
+	// end of it -- which panics on any file with more than one unused import.
+	type unusedImport struct{ name, path string }
+	var unused []unusedImport
 	for _, imp := range file.Imports {
+		if imp == nil || imp.Path == nil {
+			continue
+		}
 		path, err := strconv.Unquote(imp.Path.Value)
 		if err != nil {
 			continue
@@ -357,9 +364,14 @@ func dropUnusedImports(filename string, content []byte) ([]byte, error) {
 		if used[qualifier] {
 			continue
 		}
-		if astutil.DeleteNamedImport(fset, file, name, path) {
+		unused = append(unused, unusedImport{name: name, path: path})
+	}
+
+	changed := false
+	for _, u := range unused {
+		if astutil.DeleteNamedImport(fset, file, u.name, u.path) {
 			changed = true
-			klog.Infof("Dropped now-unused import %q from %s", path, filename)
+			klog.Infof("Dropped now-unused import %q from %s", u.path, filename)
 		}
 	}
 	if !changed {

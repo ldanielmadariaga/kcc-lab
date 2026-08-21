@@ -30,7 +30,6 @@ package v1alpha1
 
 import apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 
-/* unreachable type AdvancedSiteSearchConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.AdvancedSiteSearchConfig
 type AdvancedSiteSearchConfig struct {
 	// If set true, initial indexing is disabled for the DataStore.
@@ -41,7 +40,6 @@ type AdvancedSiteSearchConfig struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.AdvancedSiteSearchConfig.disable_automatic_refresh
 	DisableAutomaticRefresh *bool `json:"disableAutomaticRefresh,omitempty"`
 }
-*/
 
 /* unreachable type Answer
 // +kcc:proto=google.cloud.discoveryengine.v1.Answer
@@ -614,6 +612,7 @@ type AssistantGroundedContent_TextGroundingMetadata_Segment struct {
 	Text *string `json:"text,omitempty"`
 }
 
+/* unreachable type CmekConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.CmekConfig
 type CmekConfig struct {
 	// Required. The name of the CmekConfig of the form
@@ -637,6 +636,7 @@ type CmekConfig struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.CmekConfig.single_region_keys
 	SingleRegionKeys []SingleRegionKey `json:"singleRegionKeys,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.discoveryengine.v1.Condition
 type Condition struct {
@@ -696,6 +696,107 @@ type Condition_TimeRange struct {
 	EndTime *string `json:"endTime,omitempty"`
 }
 
+/* unreachable type Control
+// +kcc:proto=google.cloud.discoveryengine.v1.Control
+type Control struct {
+	// Defines a boost-type control
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.boost_action
+	BoostAction *Control_BoostAction `json:"boostAction,omitempty"`
+
+	// Defines a filter-type control
+	//  Currently not supported by Recommendation
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.filter_action
+	FilterAction *Control_FilterAction `json:"filterAction,omitempty"`
+
+	// Defines a redirect-type control.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.redirect_action
+	RedirectAction *Control_RedirectAction `json:"redirectAction,omitempty"`
+
+	// Treats a group of terms as synonyms of one another.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.synonyms_action
+	SynonymsAction *Control_SynonymsAction `json:"synonymsAction,omitempty"`
+
+	// Promote certain links based on predefined trigger queries.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.promote_action
+	PromoteAction *Control_PromoteAction `json:"promoteAction,omitempty"`
+
+	// Immutable. Fully qualified name
+	//  `projects/-*-/locations/global/dataStore/-*-/controls/-*`
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.name
+	Name *string `json:"name,omitempty"`
+
+	// Required. Human readable name. The identifier used in UI views.
+	//
+	//  Must be UTF-8 encoded string. Length limit is 128 characters.
+	//  Otherwise an INVALID ARGUMENT error is thrown.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.display_name
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Required. Immutable. What solution the control belongs to.
+	//
+	//  Must be compatible with vertical of resource.
+	//  Otherwise an INVALID ARGUMENT error is thrown.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.solution_type
+	// +required
+	SolutionType *string `json:"solutionType,omitempty"`
+
+	// Specifies the use case for the control.
+	//  Affects what condition fields can be set.
+	//  Only applies to
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_SEARCH].
+	//  Currently only allow one use case per control.
+	//  Must be set when solution_type is
+	//  [SolutionType.SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_SEARCH].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.use_cases
+	UseCases []string `json:"useCases,omitempty"`
+
+	// Determines when the associated action will trigger.
+	//
+	//  Omit to always apply the action.
+	//  Currently only a single condition may be specified.
+	//  Otherwise an INVALID ARGUMENT error is thrown.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.conditions
+	Conditions []Condition `json:"conditions,omitempty"`
+}
+*/
+
+// +kcc:proto=google.cloud.discoveryengine.v1.Control.BoostAction
+type Control_BoostAction struct {
+	// Optional. Strength of the boost, which should be in [-1, 1]. Negative
+	//  boost means demotion. Default is 0.0 (No-op).
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.BoostAction.fixed_boost
+	FixedBoost *float32 `json:"fixedBoost,omitempty"`
+
+	// Optional. Complex specification for custom ranking based on customer
+	//  defined attribute value.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.BoostAction.interpolation_boost_spec
+	InterpolationBoostSpec *Control_BoostAction_InterpolationBoostSpec `json:"interpolationBoostSpec,omitempty"`
+
+	// Strength of the boost, which should be in [-1, 1]. Negative
+	//  boost means demotion. Default is 0.0 (No-op).
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.BoostAction.boost
+	Boost *float32 `json:"boost,omitempty"`
+
+	// Required. Specifies which products to apply the boost to.
+	//
+	//  If no filter is provided all products will be boosted (No-op).
+	//  Syntax documentation:
+	//  https://cloud.google.com/retail/docs/filter-and-order
+	//  Maximum length is 5000 characters.
+	//  Otherwise an INVALID ARGUMENT error is thrown.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.BoostAction.filter
+	// +required
+	Filter *string `json:"filter,omitempty"`
+
+	// Required. Specifies which data store's documents can be boosted by this
+	//  control. Full data store name e.g.
+	//  projects/123/locations/global/collections/default_collection/dataStores/default_data_store
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.BoostAction.data_store
+	// +required
+	DataStore *string `json:"dataStore,omitempty"`
+}
+
 // +kcc:proto=google.cloud.discoveryengine.v1.Control.BoostAction.InterpolationBoostSpec
 type Control_BoostAction_InterpolationBoostSpec struct {
 	// Optional. The name of the field whose value will be used to determine
@@ -740,6 +841,40 @@ type Control_BoostAction_InterpolationBoostSpec_ControlPoint struct {
 	BoostAmount *float32 `json:"boostAmount,omitempty"`
 }
 
+// +kcc:proto=google.cloud.discoveryengine.v1.Control.FilterAction
+type Control_FilterAction struct {
+	// Required. A filter to apply on the matching condition results.
+	//
+	//  Required
+	//  Syntax documentation:
+	//  https://cloud.google.com/retail/docs/filter-and-order
+	//  Maximum length is 5000 characters. Otherwise an INVALID
+	//  ARGUMENT error is thrown.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.FilterAction.filter
+	// +required
+	Filter *string `json:"filter,omitempty"`
+
+	// Required. Specifies which data store's documents can be filtered by this
+	//  control. Full data store name e.g.
+	//  projects/123/locations/global/collections/default_collection/dataStores/default_data_store
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.FilterAction.data_store
+	// +required
+	DataStore *string `json:"dataStore,omitempty"`
+}
+
+// +kcc:proto=google.cloud.discoveryengine.v1.Control.PromoteAction
+type Control_PromoteAction struct {
+	// Required. Data store with which this promotion is attached to.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.PromoteAction.data_store
+	// +required
+	DataStore *string `json:"dataStore,omitempty"`
+
+	// Required. Promotion attached to this action.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.PromoteAction.search_link_promotion
+	// +required
+	SearchLinkPromotion *SearchLinkPromotion `json:"searchLinkPromotion,omitempty"`
+}
+
 // +kcc:proto=google.cloud.discoveryengine.v1.Control.RedirectAction
 type Control_RedirectAction struct {
 	// Required. The URI to which the shopper will be redirected.
@@ -761,6 +896,30 @@ type Control_SynonymsAction struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.SynonymsAction.synonyms
 	Synonyms []string `json:"synonyms,omitempty"`
 }
+
+/* unreachable type Conversation
+// +kcc:proto=google.cloud.discoveryengine.v1.Conversation
+type Conversation struct {
+	// Immutable. Fully qualified name
+	//  `projects/{project}/locations/global/collections/{collection}/dataStore/-*-/conversations/-*`
+	//  or
+	//  `projects/{project}/locations/global/collections/{collection}/engines/-*-/conversations/-*`.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Conversation.name
+	Name *string `json:"name,omitempty"`
+
+	// The state of the Conversation.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Conversation.state
+	State *string `json:"state,omitempty"`
+
+	// A unique identifier for tracking users.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Conversation.user_pseudo_id
+	UserPseudoID *string `json:"userPseudoID,omitempty"`
+
+	// Conversation messages.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Conversation.messages
+	Messages []ConversationMessage `json:"messages,omitempty"`
+}
+*/
 
 // +kcc:proto=google.cloud.discoveryengine.v1.ConversationContext
 type ConversationContext struct {
@@ -785,6 +944,130 @@ type ConversationMessage struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.ConversationMessage.reply
 	Reply *Reply `json:"reply,omitempty"`
 }
+
+/* unreachable type DataStore
+// +kcc:proto=google.cloud.discoveryengine.v1.DataStore
+type DataStore struct {
+	// Immutable. Identifier. The full resource name of the data store.
+	//  Format:
+	//  `projects/{project}/locations/{location}/collections/{collection_id}/dataStores/{data_store_id}`.
+	//
+	//  This field must be a UTF-8 encoded string with a length limit of 1024
+	//  characters.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.name
+	Name *string `json:"name,omitempty"`
+
+	// Required. The data store display name.
+	//
+	//  This field must be a UTF-8 encoded string with a length limit of 128
+	//  characters. Otherwise, an INVALID_ARGUMENT error is returned.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.display_name
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Immutable. The industry vertical that the data store registers.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.industry_vertical
+	IndustryVertical *string `json:"industryVertical,omitempty"`
+
+	// The solutions that the data store enrolls. Available solutions for each
+	//  [industry_vertical][google.cloud.discoveryengine.v1.DataStore.industry_vertical]:
+	//
+	//  * `MEDIA`: `SOLUTION_TYPE_RECOMMENDATION` and `SOLUTION_TYPE_SEARCH`.
+	//  * `SITE_SEARCH`: `SOLUTION_TYPE_SEARCH` is automatically enrolled. Other
+	//    solutions cannot be enrolled.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.solution_types
+	SolutionTypes []string `json:"solutionTypes,omitempty"`
+
+	// Immutable. The content config of the data store. If this field is unset,
+	//  the server behavior defaults to
+	//  [ContentConfig.NO_CONTENT][google.cloud.discoveryengine.v1.DataStore.ContentConfig.NO_CONTENT].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.content_config
+	ContentConfig *string `json:"contentConfig,omitempty"`
+
+	// Optional. Configuration for advanced site search.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.advanced_site_search_config
+	AdvancedSiteSearchConfig *AdvancedSiteSearchConfig `json:"advancedSiteSearchConfig,omitempty"`
+
+	// Optional. Configuration for Natural Language Query Understanding.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.natural_language_query_understanding_config
+	NaturalLanguageQueryUnderstandingConfig *NaturalLanguageQueryUnderstandingConfig `json:"naturalLanguageQueryUnderstandingConfig,omitempty"`
+
+	// Input only. The KMS key to be used to protect this DataStore at creation
+	//  time.
+	//
+	//  Must be set for requests that need to comply with CMEK Org Policy
+	//  protections.
+	//
+	//  If this field is set and processed successfully, the DataStore will be
+	//  protected by the KMS key, as indicated in the cmek_config field.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.kms_key_name
+	KMSKeyName *string `json:"kmsKeyName,omitempty"`
+
+	// Immutable. Whether data in the
+	//  [DataStore][google.cloud.discoveryengine.v1.DataStore] has ACL information.
+	//  If set to `true`, the source data must have ACL. ACL will be ingested when
+	//  data is ingested by
+	//  [DocumentService.ImportDocuments][google.cloud.discoveryengine.v1.DocumentService.ImportDocuments]
+	//  methods.
+	//
+	//  When ACL is enabled for the
+	//  [DataStore][google.cloud.discoveryengine.v1.DataStore],
+	//  [Document][google.cloud.discoveryengine.v1.Document] can't be accessed by
+	//  calling
+	//  [DocumentService.GetDocument][google.cloud.discoveryengine.v1.DocumentService.GetDocument]
+	//  or
+	//  [DocumentService.ListDocuments][google.cloud.discoveryengine.v1.DocumentService.ListDocuments].
+	//
+	//  Currently ACL is only supported in `GENERIC` industry vertical with
+	//  non-`PUBLIC_WEBSITE` content config.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.acl_enabled
+	AclEnabled *bool `json:"aclEnabled,omitempty"`
+
+	// Config to store data store type configuration for workspace data. This
+	//  must be set when
+	//  [DataStore.content_config][google.cloud.discoveryengine.v1.DataStore.content_config]
+	//  is set as
+	//  [DataStore.ContentConfig.GOOGLE_WORKSPACE][google.cloud.discoveryengine.v1.DataStore.ContentConfig.GOOGLE_WORKSPACE].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.workspace_config
+	WorkspaceConfig *WorkspaceConfig `json:"workspaceConfig,omitempty"`
+
+	// Configuration for Document understanding and enrichment.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.document_processing_config
+	DocumentProcessingConfig *DocumentProcessingConfig `json:"documentProcessingConfig,omitempty"`
+
+	// The start schema to use for this
+	//  [DataStore][google.cloud.discoveryengine.v1.DataStore] when provisioning
+	//  it. If unset, a default vertical specialized schema will be used.
+	//
+	//  This field is only used by
+	//  [CreateDataStore][google.cloud.discoveryengine.v1.DataStoreService.CreateDataStore]
+	//  API, and will be ignored if used in other APIs. This field will be omitted
+	//  from all API responses including
+	//  [CreateDataStore][google.cloud.discoveryengine.v1.DataStoreService.CreateDataStore]
+	//  API. To retrieve a schema of a
+	//  [DataStore][google.cloud.discoveryengine.v1.DataStore], use
+	//  [SchemaService.GetSchema][google.cloud.discoveryengine.v1.SchemaService.GetSchema]
+	//  API instead.
+	//
+	//  The provided schema will be validated against certain rules on schema.
+	//  Learn more from [this
+	//  doc](https://cloud.google.com/generative-ai-app-builder/docs/provide-schema).
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.starting_schema
+	StartingSchema *Schema `json:"startingSchema,omitempty"`
+
+	// Optional. Configuration for `HEALTHCARE_FHIR` vertical.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.healthcare_fhir_config
+	HealthcareFhirConfig *HealthcareFhirConfig `json:"healthcareFhirConfig,omitempty"`
+
+	// Immutable. The fully qualified resource name of the associated
+	//  [IdentityMappingStore][google.cloud.discoveryengine.v1.IdentityMappingStore].
+	//  This field can only be set for acl_enabled DataStores with `THIRD_PARTY` or
+	//  `GSUITE` IdP. Format:
+	//  `projects/{project}/locations/{location}/identityMappingStores/{identity_mapping_store}`.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.identity_mapping_store
+	IdentityMappingStore *string `json:"identityMappingStore,omitempty"`
+}
+*/
 
 // +kcc:proto=google.cloud.discoveryengine.v1.DataStore.BillingEstimation
 type DataStore_BillingEstimation struct {
@@ -813,12 +1096,11 @@ type DataStore_BillingEstimation struct {
 	WebsiteDataUpdateTime *string `json:"websiteDataUpdateTime,omitempty"`
 }
 
-/* unreachable type DocumentProcessingConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.DocumentProcessingConfig
 type DocumentProcessingConfig struct {
 	// The full resource name of the Document Processing Config.
 	//  Format:
-	//  `projects/-*-/locations/-*-/collections/-*-/dataStores/-*-/documentProcessingConfig`.
+	//  `projects/*/locations/*/collections/*/dataStores/*/documentProcessingConfig`.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.DocumentProcessingConfig.name
 	Name *string `json:"name,omitempty"`
 
@@ -851,18 +1133,14 @@ type DocumentProcessingConfig struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.DocumentProcessingConfig.parsing_config_overrides
 	ParsingConfigOverrides map[string]DocumentProcessingConfig_ParsingConfig `json:"parsingConfigOverrides,omitempty"`
 }
-*/
 
-/* unreachable type DocumentProcessingConfig_ChunkingConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.DocumentProcessingConfig.ChunkingConfig
 type DocumentProcessingConfig_ChunkingConfig struct {
 	// Configuration for the layout based chunking.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.DocumentProcessingConfig.ChunkingConfig.layout_based_chunking_config
 	LayoutBasedChunkingConfig *DocumentProcessingConfig_ChunkingConfig_LayoutBasedChunkingConfig `json:"layoutBasedChunkingConfig,omitempty"`
 }
-*/
 
-/* unreachable type DocumentProcessingConfig_ChunkingConfig_LayoutBasedChunkingConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.DocumentProcessingConfig.ChunkingConfig.LayoutBasedChunkingConfig
 type DocumentProcessingConfig_ChunkingConfig_LayoutBasedChunkingConfig struct {
 	// The token size limit for each chunk.
@@ -879,9 +1157,7 @@ type DocumentProcessingConfig_ChunkingConfig_LayoutBasedChunkingConfig struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.DocumentProcessingConfig.ChunkingConfig.LayoutBasedChunkingConfig.include_ancestor_headings
 	IncludeAncestorHeadings *bool `json:"includeAncestorHeadings,omitempty"`
 }
-*/
 
-/* unreachable type DocumentProcessingConfig_ParsingConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.DocumentProcessingConfig.ParsingConfig
 type DocumentProcessingConfig_ParsingConfig struct {
 	// Configurations applied to digital parser.
@@ -897,15 +1173,11 @@ type DocumentProcessingConfig_ParsingConfig struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.DocumentProcessingConfig.ParsingConfig.layout_parsing_config
 	LayoutParsingConfig *DocumentProcessingConfig_ParsingConfig_LayoutParsingConfig `json:"layoutParsingConfig,omitempty"`
 }
-*/
 
-/* unreachable type DocumentProcessingConfig_ParsingConfig_DigitalParsingConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.DocumentProcessingConfig.ParsingConfig.DigitalParsingConfig
 type DocumentProcessingConfig_ParsingConfig_DigitalParsingConfig struct {
 }
-*/
 
-/* unreachable type DocumentProcessingConfig_ParsingConfig_LayoutParsingConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.DocumentProcessingConfig.ParsingConfig.LayoutParsingConfig
 type DocumentProcessingConfig_ParsingConfig_LayoutParsingConfig struct {
 	// Optional. If true, the LLM based annotation is added to the table
@@ -937,9 +1209,7 @@ type DocumentProcessingConfig_ParsingConfig_LayoutParsingConfig struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.DocumentProcessingConfig.ParsingConfig.LayoutParsingConfig.exclude_html_ids
 	ExcludeHTMLIDs []string `json:"excludeHTMLIDs,omitempty"`
 }
-*/
 
-/* unreachable type DocumentProcessingConfig_ParsingConfig_OcrParsingConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.DocumentProcessingConfig.ParsingConfig.OcrParsingConfig
 type DocumentProcessingConfig_ParsingConfig_OcrParsingConfig struct {
 	// [DEPRECATED] This field is deprecated. To use the additional enhanced
@@ -951,6 +1221,92 @@ type DocumentProcessingConfig_ParsingConfig_OcrParsingConfig struct {
 	//  native text.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.DocumentProcessingConfig.ParsingConfig.OcrParsingConfig.use_native_text
 	UseNativeText *bool `json:"useNativeText,omitempty"`
+}
+
+/* unreachable type Engine
+// +kcc:proto=google.cloud.discoveryengine.v1.Engine
+type Engine struct {
+	// Configurations for the Chat Engine. Only applicable if
+	//  [solution_type][google.cloud.discoveryengine.v1.Engine.solution_type] is
+	//  [SOLUTION_TYPE_CHAT][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_CHAT].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.chat_engine_config
+	ChatEngineConfig *Engine_ChatEngineConfig `json:"chatEngineConfig,omitempty"`
+
+	// Configurations for the Search Engine. Only applicable if
+	//  [solution_type][google.cloud.discoveryengine.v1.Engine.solution_type] is
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_SEARCH].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.search_engine_config
+	SearchEngineConfig *Engine_SearchEngineConfig `json:"searchEngineConfig,omitempty"`
+
+	// Configurations for the Media Engine. Only applicable on the data
+	//  stores with
+	//  [solution_type][google.cloud.discoveryengine.v1.Engine.solution_type]
+	//  [SOLUTION_TYPE_RECOMMENDATION][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_RECOMMENDATION]
+	//  and
+	//  [IndustryVertical.MEDIA][google.cloud.discoveryengine.v1.IndustryVertical.MEDIA]
+	//  vertical.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.media_recommendation_engine_config
+	MediaRecommendationEngineConfig *Engine_MediaRecommendationEngineConfig `json:"mediaRecommendationEngineConfig,omitempty"`
+
+	// Immutable. Identifier. The fully qualified resource name of the engine.
+	//
+	//  This field must be a UTF-8 encoded string with a length limit of 1024
+	//  characters.
+	//
+	//  Format:
+	//  `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}`
+	//  engine should be 1-63 characters, and valid characters are
+	//  /[a-z0-9][a-z0-9-_]*-/. Otherwise, an INVALID_ARGUMENT error is returned.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.name
+	Name *string `json:"name,omitempty"`
+
+	// Required. The display name of the engine. Should be human readable. UTF-8
+	//  encoded string with limit of 1024 characters.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.display_name
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. The data stores associated with this engine.
+	//
+	//  For
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_SEARCH]
+	//  and
+	//  [SOLUTION_TYPE_RECOMMENDATION][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_RECOMMENDATION]
+	//  type of engines, they can only associate with at most one data store.
+	//
+	//  If [solution_type][google.cloud.discoveryengine.v1.Engine.solution_type] is
+	//  [SOLUTION_TYPE_CHAT][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_CHAT],
+	//  multiple [DataStore][google.cloud.discoveryengine.v1.DataStore]s in the
+	//  same [Collection][google.cloud.discoveryengine.v1.Collection] can be
+	//  associated here.
+	//
+	//  Note that when used in
+	//  [CreateEngineRequest][google.cloud.discoveryengine.v1.CreateEngineRequest],
+	//  one DataStore id must be provided as the system will use it for necessary
+	//  initializations.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.data_store_ids
+	DataStoreIDs []string `json:"dataStoreIDs,omitempty"`
+
+	// Required. The solutions of the engine.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.solution_type
+	// +required
+	SolutionType *string `json:"solutionType,omitempty"`
+
+	// Optional. The industry vertical that the engine registers.
+	//  The restriction of the Engine industry vertical is based on
+	//  [DataStore][google.cloud.discoveryengine.v1.DataStore]: Vertical on Engine
+	//  has to match vertical of the DataStore linked to the engine.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.industry_vertical
+	IndustryVertical *string `json:"industryVertical,omitempty"`
+
+	// Common config spec that specifies the metadata of the engine.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.common_config
+	CommonConfig *Engine_CommonConfig `json:"commonConfig,omitempty"`
+
+	// Optional. Whether to disable analytics for searches performed on this
+	//  engine.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.disable_analytics
+	DisableAnalytics *bool `json:"disableAnalytics,omitempty"`
 }
 */
 
@@ -1031,7 +1387,6 @@ type Engine_ChatEngineConfig_AgentCreationConfig struct {
 	Location *string `json:"location,omitempty"`
 }
 
-/* unreachable type Engine_ChatEngineMetadata
 // +kcc:proto=google.cloud.discoveryengine.v1.Engine.ChatEngineMetadata
 type Engine_ChatEngineMetadata struct {
 	// The resource name of a Dialogflow agent, that this Chat Engine refers
@@ -1042,7 +1397,6 @@ type Engine_ChatEngineMetadata struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.ChatEngineMetadata.dialogflow_agent
 	DialogflowAgent *string `json:"dialogflowAgent,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.discoveryengine.v1.Engine.CommonConfig
 type Engine_CommonConfig struct {
@@ -1052,7 +1406,6 @@ type Engine_CommonConfig struct {
 	CompanyName *string `json:"companyName,omitempty"`
 }
 
-/* unreachable type Engine_MediaRecommendationEngineConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.Engine.MediaRecommendationEngineConfig
 type Engine_MediaRecommendationEngineConfig struct {
 	// Required. The type of engine. e.g., `recommended-for-you`.
@@ -1110,9 +1463,7 @@ type Engine_MediaRecommendationEngineConfig struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.MediaRecommendationEngineConfig.engine_features_config
 	EngineFeaturesConfig *Engine_MediaRecommendationEngineConfig_EngineFeaturesConfig `json:"engineFeaturesConfig,omitempty"`
 }
-*/
 
-/* unreachable type Engine_MediaRecommendationEngineConfig_EngineFeaturesConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.Engine.MediaRecommendationEngineConfig.EngineFeaturesConfig
 type Engine_MediaRecommendationEngineConfig_EngineFeaturesConfig struct {
 	// Recommended for you engine feature config.
@@ -1123,9 +1474,7 @@ type Engine_MediaRecommendationEngineConfig_EngineFeaturesConfig struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.MediaRecommendationEngineConfig.EngineFeaturesConfig.most_popular_config
 	MostPopularConfig *Engine_MediaRecommendationEngineConfig_MostPopularFeatureConfig `json:"mostPopularConfig,omitempty"`
 }
-*/
 
-/* unreachable type Engine_MediaRecommendationEngineConfig_MostPopularFeatureConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.Engine.MediaRecommendationEngineConfig.MostPopularFeatureConfig
 type Engine_MediaRecommendationEngineConfig_MostPopularFeatureConfig struct {
 	// The time window of which the engine is queried at training and
@@ -1135,9 +1484,7 @@ type Engine_MediaRecommendationEngineConfig_MostPopularFeatureConfig struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.MediaRecommendationEngineConfig.MostPopularFeatureConfig.time_window_days
 	TimeWindowDays *int64 `json:"timeWindowDays,omitempty"`
 }
-*/
 
-/* unreachable type Engine_MediaRecommendationEngineConfig_OptimizationObjectiveConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.Engine.MediaRecommendationEngineConfig.OptimizationObjectiveConfig
 type Engine_MediaRecommendationEngineConfig_OptimizationObjectiveConfig struct {
 	// Required. The name of the field to target. Currently supported
@@ -1151,9 +1498,7 @@ type Engine_MediaRecommendationEngineConfig_OptimizationObjectiveConfig struct {
 	// +required
 	TargetFieldValueFloat *float32 `json:"targetFieldValueFloat,omitempty"`
 }
-*/
 
-/* unreachable type Engine_MediaRecommendationEngineConfig_RecommendedForYouFeatureConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.Engine.MediaRecommendationEngineConfig.RecommendedForYouFeatureConfig
 type Engine_MediaRecommendationEngineConfig_RecommendedForYouFeatureConfig struct {
 	// The type of event with which the engine is queried at prediction time.
@@ -1166,7 +1511,6 @@ type Engine_MediaRecommendationEngineConfig_RecommendedForYouFeatureConfig struc
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.MediaRecommendationEngineConfig.RecommendedForYouFeatureConfig.context_event_type
 	ContextEventType *string `json:"contextEventType,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.discoveryengine.v1.Engine.SearchEngineConfig
 type Engine_SearchEngineConfig struct {
@@ -1186,7 +1530,6 @@ type Engine_SearchEngineConfig struct {
 	SearchAddOns []string `json:"searchAddOns,omitempty"`
 }
 
-/* unreachable type HealthcareFhirConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.HealthcareFhirConfig
 type HealthcareFhirConfig struct {
 	// Whether to enable configurable schema for `HEALTHCARE_FHIR` vertical.
@@ -1205,9 +1548,31 @@ type HealthcareFhirConfig struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.HealthcareFhirConfig.enable_static_indexing_for_batch_ingestion
 	EnableStaticIndexingForBatchIngestion *bool `json:"enableStaticIndexingForBatchIngestion,omitempty"`
 }
+
+/* unreachable type IdentityMappingStore
+// +kcc:proto=google.cloud.discoveryengine.v1.IdentityMappingStore
+type IdentityMappingStore struct {
+	// Immutable. The full resource name of the identity mapping store.
+	//  Format:
+	//  `projects/{project}/locations/{location}/identityMappingStores/{identity_mapping_store}`.
+	//  This field must be a UTF-8 encoded string with a length limit of 1024
+	//  characters.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.IdentityMappingStore.name
+	Name *string `json:"name,omitempty"`
+
+	// Input only. The KMS key to be used to protect this Identity Mapping Store
+	//  at creation time.
+	//
+	//  Must be set for requests that need to comply with CMEK Org Policy
+	//  protections.
+	//
+	//  If this field is set and processed successfully, the Identity Mapping Store
+	//  will be protected by the KMS key, as indicated in the cmek_config field.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.IdentityMappingStore.kms_key_name
+	KMSKeyName *string `json:"kmsKeyName,omitempty"`
+}
 */
 
-/* unreachable type NaturalLanguageQueryUnderstandingConfig
 // +kcc:proto=google.cloud.discoveryengine.v1.NaturalLanguageQueryUnderstandingConfig
 type NaturalLanguageQueryUnderstandingConfig struct {
 	// Mode of Natural Language Query Understanding. If this field is unset, the
@@ -1216,7 +1581,6 @@ type NaturalLanguageQueryUnderstandingConfig struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.NaturalLanguageQueryUnderstandingConfig.mode
 	Mode *string `json:"mode,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.discoveryengine.v1.Query
 type Query struct {
@@ -1238,7 +1602,6 @@ type SafetyRating struct {
 }
 */
 
-/* unreachable type Schema
 // +kcc:proto=google.cloud.discoveryengine.v1.Schema
 type Schema struct {
 	// The structured representation of the schema.
@@ -1257,7 +1620,6 @@ type Schema struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Schema.name
 	Name *string `json:"name,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.discoveryengine.v1.SearchLinkPromotion
 type SearchLinkPromotion struct {
@@ -1409,6 +1771,45 @@ type SearchResponse_Summary_SummaryWithMetadata struct {
 	References []SearchResponse_Summary_Reference `json:"references,omitempty"`
 }
 
+/* unreachable type Session
+// +kcc:proto=google.cloud.discoveryengine.v1.Session
+type Session struct {
+	// Immutable. Fully qualified name
+	//  `projects/{project}/locations/global/collections/{collection}/engines/{engine}/sessions/-*`
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.name
+	Name *string `json:"name,omitempty"`
+
+	// Optional. The display name of the session.
+	//
+	//  This field is used to identify the session in the UI.
+	//  By default, the display name is the first turn query text in the session.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// The state of the session.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.state
+	State *string `json:"state,omitempty"`
+
+	// A unique identifier for tracking users.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.user_pseudo_id
+	UserPseudoID *string `json:"userPseudoID,omitempty"`
+
+	// Turns.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.turns
+	Turns []Session_Turn `json:"turns,omitempty"`
+
+	// Optional. The labels for the session.
+	//  Can be set as filter in ListSessionsRequest.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.labels
+	Labels []string `json:"labels,omitempty"`
+
+	// Optional. Whether the session is pinned, pinned session will be displayed
+	//  on the top of the session list.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.is_pinned
+	IsPinned *bool `json:"isPinned,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.discoveryengine.v1.Session.Turn
 type Session_Turn struct {
 	// Optional. The user query. May not be set if this turn is merely
@@ -1431,6 +1832,7 @@ type Session_Turn struct {
 	QueryConfig map[string]string `json:"queryConfig,omitempty"`
 }
 
+/* unreachable type SingleRegionKey
 // +kcc:proto=google.cloud.discoveryengine.v1.SingleRegionKey
 type SingleRegionKey struct {
 	// Required. Single-regional kms key resource name which will be used to
@@ -1440,6 +1842,17 @@ type SingleRegionKey struct {
 	// +required
 	KMSKey *string `json:"kmsKey,omitempty"`
 }
+*/
+
+/* unreachable type SiteSearchEngine
+// +kcc:proto=google.cloud.discoveryengine.v1.SiteSearchEngine
+type SiteSearchEngine struct {
+	// The fully qualified resource name of the site search engine.
+	//  Format: `projects/-*-/locations/-*-/dataStores/-*-/siteSearchEngine`
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.SiteSearchEngine.name
+	Name *string `json:"name,omitempty"`
+}
+*/
 
 // +kcc:proto=google.cloud.discoveryengine.v1.SiteVerificationInfo
 type SiteVerificationInfo struct {
@@ -1451,6 +1864,32 @@ type SiteVerificationInfo struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.SiteVerificationInfo.verify_time
 	VerifyTime *string `json:"verifyTime,omitempty"`
 }
+
+/* unreachable type TargetSite
+// +kcc:proto=google.cloud.discoveryengine.v1.TargetSite
+type TargetSite struct {
+
+	// Required. Input only. The user provided URI pattern from which the
+	//  `generated_uri_pattern` is generated.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.provided_uri_pattern
+	// +required
+	ProvidedURIPattern *string `json:"providedURIPattern,omitempty"`
+
+	// The type of the target site, e.g., whether the site is to be included or
+	//  excluded.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.type
+	Type *string `json:"type,omitempty"`
+
+	// Immutable. If set to false, a uri_pattern is generated to include all pages
+	//  whose address contains the provided_uri_pattern. If set to true, an
+	//  uri_pattern is generated to try to be an exact match of the
+	//  provided_uri_pattern or just the specific page if the provided_uri_pattern
+	//  is a specific one. provided_uri_pattern is always normalized to
+	//  generate the URI pattern to be used by the search engine.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.exact_match
+	ExactMatch *bool `json:"exactMatch,omitempty"`
+}
+*/
 
 // +kcc:proto=google.cloud.discoveryengine.v1.TargetSite.FailureReason
 type TargetSite_FailureReason struct {
@@ -1742,7 +2181,6 @@ type AssistantGroundedContentObservedState struct {
 	Content *AssistantContentObservedState `json:"content,omitempty"`
 }
 
-/* unreachable type CmekConfigObservedState
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1.CmekConfig
 type CmekConfigObservedState struct {
 	// Required. The name of the CmekConfig of the form
@@ -1781,14 +2219,92 @@ type CmekConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.CmekConfig.notebooklm_state
 	NotebooklmState *string `json:"notebooklmState,omitempty"`
 }
+
+/* unreachable type ControlObservedState
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.Control
+type ControlObservedState struct {
+	// Output only. List of all
+	//  [ServingConfig][google.cloud.discoveryengine.v1.ServingConfig] IDs this
+	//  control is attached to. May take up to 10 minutes to update after changes.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.associated_serving_config_ids
+	AssociatedServingConfigIds []string `json:"associatedServingConfigIds,omitempty"`
+}
 */
 
-/* unreachable type ConversationMessageObservedState
+/* unreachable type ConversationObservedState
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.Conversation
+type ConversationObservedState struct {
+	// Conversation messages.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Conversation.messages
+	Messages []ConversationMessageObservedState `json:"messages,omitempty"`
+
+	// Output only. The time the conversation started.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Conversation.start_time
+	StartTime *string `json:"startTime,omitempty"`
+
+	// Output only. The time the conversation finished.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Conversation.end_time
+	EndTime *string `json:"endTime,omitempty"`
+}
+*/
+
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1.ConversationMessage
 type ConversationMessageObservedState struct {
 	// Output only. Message creation timestamp.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.ConversationMessage.create_time
 	CreateTime *string `json:"createTime,omitempty"`
+}
+
+/* unreachable type DataStoreObservedState
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.DataStore
+type DataStoreObservedState struct {
+	// Output only. The id of the default
+	//  [Schema][google.cloud.discoveryengine.v1.Schema] associated to this data
+	//  store.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.default_schema_id
+	DefaultSchemaID *string `json:"defaultSchemaID,omitempty"`
+
+	// Output only. Timestamp the
+	//  [DataStore][google.cloud.discoveryengine.v1.DataStore] was created at.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. CMEK-related information for the DataStore.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.cmek_config
+	CmekConfig *CmekConfigObservedState `json:"cmekConfig,omitempty"`
+
+	// Output only. Data size estimation for billing.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.billing_estimation
+	BillingEstimation *DataStore_BillingEstimation `json:"billingEstimation,omitempty"`
+}
+*/
+
+/* unreachable type EngineObservedState
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.Engine
+type EngineObservedState struct {
+	// Output only. Additional information of the Chat Engine. Only applicable
+	//  if [solution_type][google.cloud.discoveryengine.v1.Engine.solution_type]
+	//  is
+	//  [SOLUTION_TYPE_CHAT][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_CHAT].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.chat_engine_metadata
+	ChatEngineMetadata *Engine_ChatEngineMetadata `json:"chatEngineMetadata,omitempty"`
+
+	// Output only. Timestamp the Recommendation Engine was created at.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Timestamp the Recommendation Engine was last updated.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/
+
+/* unreachable type IdentityMappingStoreObservedState
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.IdentityMappingStore
+type IdentityMappingStoreObservedState struct {
+	// Output only. CMEK-related information for the Identity Mapping Store.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.IdentityMappingStore.cmek_config
+	CmekConfig *CmekConfigObservedState `json:"cmekConfig,omitempty"`
 }
 */
 
@@ -1827,6 +2343,23 @@ type SafetyRatingObservedState struct {
 	Blocked *bool `json:"blocked,omitempty"`
 }
 
+/* unreachable type SessionObservedState
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.Session
+type SessionObservedState struct {
+	// Turns.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.turns
+	Turns []Session_TurnObservedState `json:"turns,omitempty"`
+
+	// Output only. The time the session started.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.start_time
+	StartTime *string `json:"startTime,omitempty"`
+
+	// Output only. The time the session finished.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Session.end_time
+	EndTime *string `json:"endTime,omitempty"`
+}
+*/
+
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1.Session.Turn
 type Session_TurnObservedState struct {
 	// Optional. The user query. May not be set if this turn is merely
@@ -1853,7 +2386,6 @@ type Session_TurnObservedState struct {
 	DetailedAssistAnswer *AssistAnswerObservedState `json:"detailedAssistAnswer,omitempty"`
 }
 
-/* unreachable type SingleRegionKeyObservedState
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1.SingleRegionKey
 type SingleRegionKeyObservedState struct {
 	// Required. Single-regional kms key resource name which will be used to
@@ -1861,5 +2393,39 @@ type SingleRegionKeyObservedState struct {
 	//  `projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{keyId}`.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.SingleRegionKey.kms_key
 	KMSKey *string `json:"kmsKey,omitempty"`
+}
+
+/* unreachable type TargetSiteObservedState
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1.TargetSite
+type TargetSiteObservedState struct {
+	// Output only. The fully qualified resource name of the target site.
+	//  `projects/{project}/locations/{location}/collections/{collection}/dataStores/{data_store}/siteSearchEngine/targetSites/{target_site}`
+	//  The `target_site_id` is system-generated.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. This is system-generated based on the provided_uri_pattern.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.generated_uri_pattern
+	GeneratedURIPattern *string `json:"generatedURIPattern,omitempty"`
+
+	// Output only. Root domain of the provided_uri_pattern.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.root_domain_uri
+	RootDomainURI *string `json:"rootDomainURI,omitempty"`
+
+	// Output only. Site ownership and validity verification status.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.site_verification_info
+	SiteVerificationInfo *SiteVerificationInfo `json:"siteVerificationInfo,omitempty"`
+
+	// Output only. Indexing status.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.indexing_status
+	IndexingStatus *string `json:"indexingStatus,omitempty"`
+
+	// Output only. The target site's last updated time.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Failure reason.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.failure_reason
+	FailureReason *TargetSite_FailureReason `json:"failureReason,omitempty"`
 }
 */

@@ -63,8 +63,6 @@ type Any struct {
 }
 */
 
-/* found existing non-generated go type "AllocationOptions", skipping
-
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.AllocationOptions
 type AllocationOptions struct {
 	// Optional. Allocation strategy Not setting this field when the allocation is requested means an implementation defined strategy is used.
@@ -75,9 +73,7 @@ type AllocationOptions struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.AllocationOptions.first_available_ranges_lookup_size
 	FirstAvailableRangesLookupSize *int32 `json:"firstAvailableRangesLookupSize,omitempty"`
 }
-*/
 
-/* unreachable type AutoCreatedSubnetworkInfo
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.AutoCreatedSubnetworkInfo
 type AutoCreatedSubnetworkInfo struct {
 	// Output only. Indicates whether the subnetwork is delinked from the Service Connection Policy. Only set if the subnetwork mode is AUTO_CREATED during creation.
@@ -100,7 +96,6 @@ type AutoCreatedSubnetworkInfo struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.AutoCreatedSubnetworkInfo.subnetwork_ref
 	SubnetworkRef *string `json:"subnetworkRef,omitempty"`
 }
-*/
 
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.GoogleRpcErrorInfo
 type GoogleRpcErrorInfo struct {
@@ -135,8 +130,7 @@ type GoogleRpcStatus struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "mockgcp.cloud.networkconnectivity.v1.InternalRange", skipping
-
+/* unreachable type InternalRange
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.InternalRange
 type InternalRange struct {
 	// Optional. Range auto-allocation options, may be set only when auto-allocation is selected by not setting ip_cidr_range (and setting prefix_length).
@@ -220,8 +214,7 @@ type Migration struct {
 	Target *string `json:"target,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig", skipping
-
+/* unreachable type MulticloudDataTransferConfig
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig
 type MulticloudDataTransferConfig struct {
 	// Output only. Time when the `MulticloudDataTransferConfig` resource was created.
@@ -266,8 +259,6 @@ type MulticloudDataTransferConfig struct {
 }
 */
 
-/* found existing non-generated go type "PSCConfig", skipping
-
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.PscConfig
 type PSCConfig struct {
 	// Optional. List of Projects, Folders, or Organizations from where the Producer instance can be within. For example, a network administrator can provide both 'organizations/foo' and 'projects/bar' as allowed_google_producers_resource_hierarchy_levels. This allowlists this network to connect with any Producer instance within the 'foo' organization or the 'bar' project. By default, allowed_google_producers_resource_hierarchy_level is empty. The format for each allowed_google_producers_resource_hierarchy_level is / where is one of 'projects', 'folders', or 'organizations' and is either the ID or the number of the resource type. Format for each allowed_google_producers_resource_hierarchy_level value: 'projects/' or 'folders/' or 'organizations/' Eg. [projects/my-project-id, projects/567, folders/891, organizations/123]
@@ -286,9 +277,6 @@ type PSCConfig struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConfig.subnetworks
 	Subnetworks []string `json:"subnetworks,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "PSCConnection", skipping
 
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.PscConnection
 type PSCConnection struct {
@@ -348,10 +336,8 @@ type PSCConnection struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConnection.state
 	State *string `json:"state,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint", skipping
-
+/* unreachable type RegionalEndpoint
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint
 type RegionalEndpoint struct {
 	// Required. The access type of this regional endpoint. This field is reflected in the PSC Forwarding Rule configuration to enable global access.
@@ -404,8 +390,7 @@ type RegionalEndpoint struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy", skipping
-
+/* unreachable type ServiceConnectionPolicy
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy
 type ServiceConnectionPolicy struct {
 	// Output only. Information for the automatically created subnetwork and its associated IR.
@@ -458,8 +443,6 @@ type ServiceConnectionPolicy struct {
 }
 */
 
-/* found existing non-generated go type "StateMetadata", skipping
-
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.StateMetadata
 type StateMetadata struct {
 	// Output only. Accompanies only the transient states, which include `ADDING`, `DELETING`, and `SUSPENDING`, to denote the time until which the transient state of the resource will be effective. For instance, if the state is `ADDING`, this field shows the time when the resource state transitions to `ACTIVE`.
@@ -470,9 +453,6 @@ type StateMetadata struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.StateMetadata.state
 	State *string `json:"state,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "StateTimeline", skipping
 
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.StateTimeline
 type StateTimeline struct {
@@ -480,4 +460,3 @@ type StateTimeline struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.StateTimeline.states
 	States []StateMetadata `json:"states,omitempty"`
 }
-*/

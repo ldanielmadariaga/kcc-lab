@@ -29,7 +29,7 @@ type HypercomputeClusterClusterSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	Location string `json:"location"`
+	Location *string `json:"location"`
 
 	// The HypercomputeClusterCluster name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
@@ -44,11 +44,27 @@ type HypercomputeClusterClusterSpec struct {
 	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.Cluster.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// Optional. Network resources available to the cluster. Must contain at most
+	//  one value. Keys specify the ID of the network resource by which it can be
+	//  referenced elsewhere, and must conform to
+	//  [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034) (lower-case,
+	//  alphanumeric, and at most 63 characters).
+	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.Cluster.network_resources
+	NetworkResources map[string]NetworkResource `json:"networkResources,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// Optional. Storage resources available to the cluster. Keys specify the ID
+	//  of the storage resource by which it can be referenced elsewhere, and must
+	//  conform to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034)
+	//  (lower-case, alphanumeric, and at most 63 characters).
+	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.Cluster.storage_resources
+	StorageResources map[string]StorageResource `json:"storageResources,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// Optional. Compute resources available to the cluster. Keys specify the ID
+	//  of the compute resource by which it can be referenced elsewhere, and must
+	//  conform to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034)
+	//  (lower-case, alphanumeric, and at most 63 characters).
+	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.Cluster.compute_resources
+	ComputeResources map[string]ComputeResource `json:"computeResources,omitempty"`
 
 	// Optional. Orchestrator that is responsible for scheduling and running jobs
 	//  on the cluster.

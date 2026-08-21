@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: vectorsearchcollections.vectorsearch.cnrm.cloud.google.com
 spec:
@@ -156,7 +155,6 @@ spec:
                     sparseVector:
                       description: Sparse vector field.
                       type: object
-                      x-kubernetes-preserve-unknown-fields: true
                   type: object
                 description: Optional. Schema for vector fields. Only vector fields
                   in this schema will be searchable. Field names must contain only

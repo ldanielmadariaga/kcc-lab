@@ -86,7 +86,7 @@ func CloudControlDetails_FromProto(mapCtx *direct.MapContext, in *pb.CloudContro
 		return nil
 	}
 	out := &krm.CloudControlDetails{}
-	// MISSING: Name
+	out.Name = direct.LazyPtr(in.GetName())
 	out.MajorRevisionID = direct.LazyPtr(in.GetMajorRevisionId())
 	out.Parameters = direct.Slice_FromProto(mapCtx, in.Parameters, Parameter_FromProto)
 	return out
@@ -96,11 +96,81 @@ func CloudControlDetails_ToProto(mapCtx *direct.MapContext, in *krm.CloudControl
 		return nil
 	}
 	out := &pb.CloudControlDetails{}
-	// MISSING: Name
+	out.Name = direct.ValueOf(in.Name)
 	out.MajorRevisionId = direct.ValueOf(in.MajorRevisionID)
 	out.Parameters = direct.Slice_ToProto(mapCtx, in.Parameters, Parameter_ToProto)
 	return out
 }
+
+/* found existing non-generated mapping function "CloudControlGroup_FromProto", skipping
+func CloudControlGroup_FromProto(mapCtx *direct.MapContext, in *pb.CloudControlGroup) *krm.CloudControlGroup {
+	if in == nil {
+		return nil
+	}
+	out := &krm.CloudControlGroup{}
+	out.Name = direct.LazyPtr(in.GetName())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	// MISSING: Type
+	out.ControlID = direct.LazyPtr(in.GetControlId())
+	out.CloudControlDetails = direct.Slice_FromProto(mapCtx, in.CloudControlDetails, CloudControlDetails_FromProto)
+	out.MajorRevisionID = direct.LazyPtr(in.GetMajorRevisionId())
+	out.Control = direct.LazyPtr(in.GetControl())
+	return out
+}
+*/
+
+/* found existing non-generated mapping function "CloudControlGroup_ToProto", skipping
+func CloudControlGroup_ToProto(mapCtx *direct.MapContext, in *krm.CloudControlGroup) *pb.CloudControlGroup {
+	if in == nil {
+		return nil
+	}
+	out := &pb.CloudControlGroup{}
+	out.Name = direct.ValueOf(in.Name)
+	out.Description = direct.ValueOf(in.Description)
+	// MISSING: Type
+	out.ControlId = direct.ValueOf(in.ControlID)
+	out.CloudControlDetails = direct.Slice_ToProto(mapCtx, in.CloudControlDetails, CloudControlDetails_ToProto)
+	out.MajorRevisionId = direct.ValueOf(in.MajorRevisionID)
+	out.Control = direct.ValueOf(in.Control)
+	return out
+}
+*/
+
+/* found existing non-generated mapping function "CloudControlGroupObservedState_FromProto", skipping
+func CloudControlGroupObservedState_FromProto(mapCtx *direct.MapContext, in *pb.CloudControlGroup) *krm.CloudControlGroupObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.CloudControlGroupObservedState{}
+	// MISSING: Name
+	// MISSING: Description
+	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
+	// MISSING: ControlID
+	// MISSING: CloudControlDetails
+	// MISSING: MajorRevisionID
+	// MISSING: Control
+	return out
+}
+*/
+
+/*
+found existing non-generated mapping function "CloudControlGroupObservedState_ToProto", skipping
+
+	func CloudControlGroupObservedState_ToProto(mapCtx *direct.MapContext, in *krm.CloudControlGroupObservedState) *pb.CloudControlGroup {
+		if in == nil {
+			return nil
+		}
+		out := &pb.CloudControlGroup{}
+		// MISSING: Name
+		// MISSING: Description
+		out.Type = direct.Enum_ToProto[pb.CloudControlGroup_CloudControlGroupType](mapCtx, in.Type)
+		// MISSING: ControlID
+		// MISSING: CloudControlDetails
+		// MISSING: MajorRevisionID
+		// MISSING: Control
+		return out
+	}
+*/
 func CloudSecurityComplianceCloudControlObservedState_FromProto(mapCtx *direct.MapContext, in *pb.CloudControl) *krm.CloudSecurityComplianceCloudControlObservedState {
 	if in == nil {
 		return nil
@@ -235,7 +305,7 @@ func CloudSecurityFrameworkObservedState_FromProto(mapCtx *direct.MapContext, in
 	// MISSING: Name
 	out.MajorRevisionID = direct.LazyPtr(in.GetMajorRevisionId())
 	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
-	// MISSING: CloudControlGroupDetails
+	out.CloudControlGroupDetails = direct.Slice_FromProto(mapCtx, in.CloudControlGroupDetails, Framework_CloudControlGroupDetailsObservedState_FromProto)
 	out.SupportedCloudProviders = direct.EnumSlice_FromProto(mapCtx, in.SupportedCloudProviders)
 	out.SupportedTargetResourceTypes = direct.EnumSlice_FromProto(mapCtx, in.SupportedTargetResourceTypes)
 	return out
@@ -248,7 +318,7 @@ func CloudSecurityFrameworkObservedState_ToProto(mapCtx *direct.MapContext, in *
 	// MISSING: Name
 	out.MajorRevisionId = direct.ValueOf(in.MajorRevisionID)
 	out.Type = direct.Enum_ToProto[pb.Framework_FrameworkType](mapCtx, in.Type)
-	// MISSING: CloudControlGroupDetails
+	out.CloudControlGroupDetails = direct.Slice_ToProto(mapCtx, in.CloudControlGroupDetails, Framework_CloudControlGroupDetailsObservedState_ToProto)
 	out.SupportedCloudProviders = direct.EnumSlice_ToProto[pb.CloudProvider](mapCtx, in.SupportedCloudProviders)
 	out.SupportedTargetResourceTypes = direct.EnumSlice_ToProto[pb.TargetResourceType](mapCtx, in.SupportedTargetResourceTypes)
 	return out
@@ -261,7 +331,7 @@ func CloudSecurityFrameworkSpec_FromProto(mapCtx *direct.MapContext, in *pb.Fram
 	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.Description = direct.LazyPtr(in.GetDescription())
-	// MISSING: CloudControlGroupDetails
+	out.CloudControlGroupDetails = direct.Slice_FromProto(mapCtx, in.CloudControlGroupDetails, Framework_CloudControlGroupDetails_FromProto)
 	out.CloudControlDetails = direct.Slice_FromProto(mapCtx, in.CloudControlDetails, CloudControlDetails_FromProto)
 	out.Category = direct.EnumSlice_FromProto(mapCtx, in.Category)
 	return out
@@ -274,7 +344,7 @@ func CloudSecurityFrameworkSpec_ToProto(mapCtx *direct.MapContext, in *krm.Cloud
 	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
 	out.Description = direct.ValueOf(in.Description)
-	// MISSING: CloudControlGroupDetails
+	out.CloudControlGroupDetails = direct.Slice_ToProto(mapCtx, in.CloudControlGroupDetails, Framework_CloudControlGroupDetails_ToProto)
 	out.CloudControlDetails = direct.Slice_ToProto(mapCtx, in.CloudControlDetails, CloudControlDetails_ToProto)
 	out.Category = direct.EnumSlice_ToProto[pb.FrameworkCategory](mapCtx, in.Category)
 	return out
@@ -429,7 +499,7 @@ func ParameterSpec_FromProto(mapCtx *direct.MapContext, in *pb.ParameterSpec) *k
 	out.ValueType = direct.Enum_FromProto(mapCtx, in.GetValueType())
 	out.DefaultValue = ParamValue_FromProto(mapCtx, in.GetDefaultValue())
 	out.SubstitutionRules = direct.Slice_FromProto(mapCtx, in.SubstitutionRules, ParameterSubstitutionRule_FromProto)
-	out.SubParameters = direct.Slice_FromProto(mapCtx, in.SubParameters, SubParameterSpec_FromProto)
+	out.SubParameters = direct.Slice_FromProto(mapCtx, in.SubParameters, ParameterSpec_FromProto)
 	out.Validation = Validation_FromProto(mapCtx, in.GetValidation())
 	return out
 }
@@ -445,7 +515,7 @@ func ParameterSpec_ToProto(mapCtx *direct.MapContext, in *krm.ParameterSpec) *pb
 	out.ValueType = direct.Enum_ToProto[pb.ParameterSpec_ValueType](mapCtx, in.ValueType)
 	out.DefaultValue = ParamValue_ToProto(mapCtx, in.DefaultValue)
 	out.SubstitutionRules = direct.Slice_ToProto(mapCtx, in.SubstitutionRules, ParameterSubstitutionRule_ToProto)
-	out.SubParameters = direct.Slice_ToProto(mapCtx, in.SubParameters, SubParameterSpec_ToProto)
+	out.SubParameters = direct.Slice_ToProto(mapCtx, in.SubParameters, ParameterSpec_ToProto)
 	out.Validation = Validation_ToProto(mapCtx, in.Validation)
 	return out
 }
@@ -539,38 +609,6 @@ func StringList_ToProto(mapCtx *direct.MapContext, in *krm.StringList) *pb.Strin
 	}
 	out := &pb.StringList{}
 	out.Values = in.Values
-	return out
-}
-func SubParameterSpec_FromProto(mapCtx *direct.MapContext, in *pb.ParameterSpec) *krm.SubParameterSpec {
-	if in == nil {
-		return nil
-	}
-	out := &krm.SubParameterSpec{}
-	out.Name = direct.LazyPtr(in.GetName())
-	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	out.Description = direct.LazyPtr(in.GetDescription())
-	out.IsRequired = direct.LazyPtr(in.GetIsRequired())
-	out.ValueType = direct.Enum_FromProto(mapCtx, in.GetValueType())
-	out.DefaultValue = ParamValue_FromProto(mapCtx, in.GetDefaultValue())
-	out.SubstitutionRules = direct.Slice_FromProto(mapCtx, in.SubstitutionRules, ParameterSubstitutionRule_FromProto)
-	// MISSING: SubParameters
-	out.Validation = Validation_FromProto(mapCtx, in.GetValidation())
-	return out
-}
-func SubParameterSpec_ToProto(mapCtx *direct.MapContext, in *krm.SubParameterSpec) *pb.ParameterSpec {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ParameterSpec{}
-	out.Name = direct.ValueOf(in.Name)
-	out.DisplayName = direct.ValueOf(in.DisplayName)
-	out.Description = direct.ValueOf(in.Description)
-	out.IsRequired = direct.ValueOf(in.IsRequired)
-	out.ValueType = direct.Enum_ToProto[pb.ParameterSpec_ValueType](mapCtx, in.ValueType)
-	out.DefaultValue = ParamValue_ToProto(mapCtx, in.DefaultValue)
-	out.SubstitutionRules = direct.Slice_ToProto(mapCtx, in.SubstitutionRules, ParameterSubstitutionRule_ToProto)
-	// MISSING: SubParameters
-	out.Validation = Validation_ToProto(mapCtx, in.Validation)
 	return out
 }
 func Validation_FromProto(mapCtx *direct.MapContext, in *pb.Validation) *krm.Validation {

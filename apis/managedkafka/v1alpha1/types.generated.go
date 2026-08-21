@@ -89,8 +89,6 @@ type Cluster struct {
 }
 */
 
-/* found existing non-generated go type "ConnectAccessConfig", skipping
-
 // +kcc:proto=google.cloud.managedkafka.v1.ConnectAccessConfig
 type ConnectAccessConfig struct {
 	// Required.
@@ -101,10 +99,8 @@ type ConnectAccessConfig struct {
 	// +required
 	NetworkConfigs []ConnectNetworkConfig `json:"networkConfigs,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.managedkafka.v1.ConnectCluster", skipping
-
+/* unreachable type ConnectCluster
 // +kcc:proto=google.cloud.managedkafka.v1.ConnectCluster
 type ConnectCluster struct {
 	// Required. Configuration properties for a Kafka Connect cluster deployed
@@ -142,8 +138,6 @@ type ConnectCluster struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.managedkafka.v1.ConnectGcpConfig", skipping
-
 // +kcc:proto=google.cloud.managedkafka.v1.ConnectGcpConfig
 type ConnectGcpConfig struct {
 	// Required. Access configuration for the Kafka Connect cluster.
@@ -158,9 +152,6 @@ type ConnectGcpConfig struct {
 	// +kcc:proto:field=google.cloud.managedkafka.v1.ConnectGcpConfig.secret_paths
 	SecretPaths []string `json:"secretPaths,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "ConnectNetworkConfig", skipping
 
 // +kcc:proto=google.cloud.managedkafka.v1.ConnectNetworkConfig
 type ConnectNetworkConfig struct {
@@ -194,10 +185,8 @@ type ConnectNetworkConfig struct {
 	// +kcc:proto:field=google.cloud.managedkafka.v1.ConnectNetworkConfig.dns_domain_names
 	DNSDomainNames []string `json:"dnsDomainNames,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.managedkafka.v1.ConsumerGroup", skipping
-
+/* unreachable type ConsumerGroup
 // +kcc:proto=google.cloud.managedkafka.v1.ConsumerGroup
 type ConsumerGroup struct {
 	// Identifier. The name of the consumer group. The `consumer_group` segment is
@@ -214,8 +203,7 @@ type ConsumerGroup struct {
 }
 */
 
-/* found existing non-generated go type "ConsumerPartitionMetadata", skipping
-
+/* unreachable type ConsumerPartitionMetadata
 // +kcc:proto=google.cloud.managedkafka.v1.ConsumerPartitionMetadata
 type ConsumerPartitionMetadata struct {
 	// Required. The current offset for this partition, or 0 if no offset has been
@@ -231,15 +219,12 @@ type ConsumerPartitionMetadata struct {
 }
 */
 
-/* found existing non-generated go type "ConsumerTopicMetadata", skipping
-
 // +kcc:proto=google.cloud.managedkafka.v1.ConsumerTopicMetadata
 type ConsumerTopicMetadata struct {
 
 	// TODO: partitions: unsupported map type with key int32 and value message
 
 }
-*/
 
 /* found existing non-generated go type "GcpConfig", skipping
 
@@ -391,8 +376,7 @@ type ClusterObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.managedkafka.v1.ConnectCluster", skipping
-
+/* unreachable type ConnectClusterObservedState
 // +kcc:observedstate:proto=google.cloud.managedkafka.v1.ConnectCluster
 type ConnectClusterObservedState struct {
 	// Output only. The time when the cluster was created.

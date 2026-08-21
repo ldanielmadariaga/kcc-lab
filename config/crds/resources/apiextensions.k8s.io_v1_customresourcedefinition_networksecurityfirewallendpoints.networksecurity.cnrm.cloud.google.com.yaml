@@ -79,9 +79,6 @@ spec:
                   type: string
                 description: Optional. Labels as key value pairs
                 type: object
-              location:
-                description: The location of this resource.
-                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -119,7 +116,6 @@ spec:
                   the metadata.name will be used.
                 type: string
             required:
-            - location
             - projectRef
             type: object
           status:

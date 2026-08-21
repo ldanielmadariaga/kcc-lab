@@ -6,7 +6,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: discoveryenginesearchengines.discoveryengine.cnrm.cloud.google.com
 spec:
@@ -62,9 +61,8 @@ spec:
             description: DiscoveryEngineSearchEngineSpec defines the desired state
               of DiscoveryEngineSearchEngine
             properties:
-              dataStoreRef:
-                description: The DataStore this DiscoveryEngineSearchEngine should
-                  be part of.
+              projectRef:
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -81,18 +79,26 @@ spec:
                   - external
                 properties:
                   external:
-                    description: A reference to an externally managed DiscoveryEngineDataStore
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/datastores/{{datastoreID}}".
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
                     type: string
                   name:
-                    description: The name of a DiscoveryEngineDataStore resource.
+                    description: The `name` field of a `Project` resource.
                     type: string
                   namespace:
-                    description: The namespace of a DiscoveryEngineDataStore resource.
+                    description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
+              resourceID:
+                description: The DiscoveryEngineSearchEngine name. If not given, the
+                  metadata.name will be used.
+                type: string
             required:
-            - dataStoreRef
+            - projectRef
             type: object
           status:
             description: DiscoveryEngineSearchEngineStatus defines the config connector

@@ -58,7 +58,9 @@ type ComputeAutoscalerSpec struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.region
 	Region *string `json:"region,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// [Output Only] Status information of existing scaling schedules.
+	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.scaling_schedule_status
+	ScalingScheduleStatus map[string]ScalingScheduleStatus `json:"scalingScheduleStatus,omitempty"`
 
 	// [Output Only] Server-defined URL for the resource.
 	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.self_link

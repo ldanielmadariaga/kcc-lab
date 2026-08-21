@@ -20,7 +20,7 @@ spec:
     plural: iamdenypolicies
     shortNames:
     - gcpiamdenypolicy
-    - gcpiamdenypolicies
+    - gcpiamdenypolicys
     singular: iamdenypolicy
   preserveUnknownFields: false
   scope: Namespaced
@@ -61,52 +61,29 @@ spec:
           spec:
             description: IAMDenyPolicySpec defines the desired state of IAMDenyPolicy
             properties:
+              annotations:
+                additionalProperties:
+                  type: string
+                description: A key-value map to store arbitrary metadata for the `Policy`.
+                  Keys can be up to 63 characters. Values can be up to 255 characters.
+                type: object
               displayName:
                 description: A user-specified description of the `Policy`. This value
                   can be up to 63 characters.
                 type: string
-              folderRef:
-                description: The folder that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: The 'name' field of a folder, when not managed by
-                      Config Connector. This field must be set when 'name' field is
-                      not set.
-                    type: string
-                  name:
-                    description: The 'name' field of a 'Folder' resource. This field
-                      must be set when 'external' field is not set.
-                    type: string
-                  namespace:
-                    description: The 'namespace' field of a 'Folder' resource. If
-                      unset, the namespace is defaulted to the namespace of the referencer
-                      resource.
-                    type: string
-                type: object
-              organizationRef:
-                description: The organization that this resource belongs to.
-                properties:
-                  external:
-                    description: The 'name' field of an organization, when not managed
-                      by Config Connector.
-                    type: string
-                required:
-                - external
-                type: object
+              etag:
+                description: |-
+                  An opaque tag that identifies the current version of the `Policy`. IAM uses
+                   this value to help manage concurrent updates, so they do not cause one
+                   update to be overwritten by another.
+
+                   If this field is present in a [CreatePolicy][] request, the value is
+                   ignored.
+                type: string
+              managingAuthority:
+                description: Immutable. Specifies that this policy is managed by an
+                  authority and can only be modified by that authority. Usage is restricted.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -270,6 +247,12 @@ spec:
                       type: string
                   type: object
                 type: array
+              uid:
+                description: Immutable. The globally unique ID of the `Policy`. Assigned
+                  automatically when the `Policy` is created.
+                type: string
+            required:
+            - projectRef
             type: object
           status:
             description: IAMDenyPolicyStatus defines the config connector machine
@@ -316,6 +299,22 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. The time when the `Policy` was created.
+                    type: string
+                  deleteTime:
+                    description: Output only. The time when the `Policy` was deleted.
+                      Empty if the policy is not deleted.
+                    type: string
+                  kind:
+                    description: Output only. The kind of the `Policy`. Always contains
+                      the value `DenyPolicy`.
+                    type: string
+                  updateTime:
+                    description: Output only. The time when the `Policy` was last
+                      updated.
+                    type: string
                 type: object
             type: object
         required:

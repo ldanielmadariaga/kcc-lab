@@ -72,6 +72,9 @@ spec:
                   type: string
                 description: Optional. User-defined labels for the lake.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               metastore:
                 description: Optional. Settings to manage lake and Dataproc Metastore
                   service instance association.
@@ -119,6 +122,7 @@ spec:
                   will be used.
                 type: string
             required:
+            - location
             - projectRef
             type: object
           status:

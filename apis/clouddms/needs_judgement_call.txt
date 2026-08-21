@@ -8,7 +8,3 @@
 kind=CloudDMSConversionWorkspace group=clouddms.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=CloudDMSPrivateConnection group=clouddms.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=CloudDMSMigrationJob group=clouddms.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=CloudDMSMigrationJob group=clouddms.cnrm.cloud.google.com: field ".spec.cmekKeyName" reason=possible-reference-by-description
-kind=CloudDMSMigrationJob group=clouddms.cnrm.cloud.google.com: field ".spec.reverseSSHConnectivity.vpc" reason=possible-reference-by-name (ComputeNetworkRef)
-kind=CloudDMSMigrationJob group=clouddms.cnrm.cloud.google.com: field ".spec.vpcPeeringConnectivity.vpc" reason=possible-reference-by-name (ComputeNetworkRef)
-kind=CloudDMSPrivateConnection group=clouddms.cnrm.cloud.google.com: field ".spec.vpcPeeringConfig.vpcName" reason=possible-reference-by-name (ComputeNetworkRef)

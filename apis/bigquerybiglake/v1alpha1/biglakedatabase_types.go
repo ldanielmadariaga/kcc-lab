@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -24,12 +25,11 @@ var BigLakeDatabaseGVK = GroupVersion.WithKind("BigLakeDatabase")
 // BigLakeDatabaseSpec defines the desired state of BigLakeDatabase
 // +kcc:spec:proto=google.cloud.bigquery.biglake.v1.Database
 type BigLakeDatabaseSpec struct {
-	// Required. Defines the parent path of the resource.
-	ParentRef *BigQueryBigLakeCatalogRef `json:"parentCatalogRef,omitempty"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The BigLakeDatabase name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Options of a Hive database.
 	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Database.hive_options
 	HiveOptions *HiveDatabaseOptions `json:"hiveOptions,omitempty"`

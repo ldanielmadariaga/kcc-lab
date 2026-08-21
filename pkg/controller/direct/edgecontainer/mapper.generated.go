@@ -37,7 +37,6 @@ func EdgeContainerMachineObservedState_FromProto(mapCtx *direct.MapContext, in *
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.HostedNode = direct.LazyPtr(in.GetHostedNode())
 	out.Version = direct.LazyPtr(in.GetVersion())
 	out.Disabled = direct.LazyPtr(in.GetDisabled())
 	return out
@@ -50,7 +49,6 @@ func EdgeContainerMachineObservedState_ToProto(mapCtx *direct.MapContext, in *kr
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	out.HostedNode = direct.ValueOf(in.HostedNode)
 	out.Version = direct.ValueOf(in.Version)
 	out.Disabled = direct.ValueOf(in.Disabled)
 	return out
@@ -62,6 +60,7 @@ func EdgeContainerMachineSpec_FromProto(mapCtx *direct.MapContext, in *pb.Machin
 	out := &krm.EdgeContainerMachineSpec{}
 	// MISSING: Name
 	out.Labels = in.Labels
+	out.HostedNode = direct.LazyPtr(in.GetHostedNode())
 	out.Zone = direct.LazyPtr(in.GetZone())
 	return out
 }
@@ -72,6 +71,7 @@ func EdgeContainerMachineSpec_ToProto(mapCtx *direct.MapContext, in *krm.EdgeCon
 	out := &pb.Machine{}
 	// MISSING: Name
 	out.Labels = in.Labels
+	out.HostedNode = direct.ValueOf(in.HostedNode)
 	out.Zone = direct.ValueOf(in.Zone)
 	return out
 }

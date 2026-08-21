@@ -64,45 +64,22 @@ spec:
               format:
                 description: Optional. Specifies the format of a Parameter.
                 type: string
-              kmsKeyRef:
+              kmsKey:
                 description: Optional. Customer managed encryption key (CMEK) to use
                   for encrypting the Parameter Versions. If not set, the default Google-managed
                   encryption key will be used. Cloud KMS CryptoKeys must reside in
                   the same location as the Parameter. The expected format is `projects/*/locations/*/keyRings/*/cryptoKeys/*`.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed KMSCryptoKey.
-                      Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
-                    type: string
-                  name:
-                    description: The `name` of a `KMSCryptoKey` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` of a `KMSCryptoKey` resource.
-                    type: string
+                type: string
+              labels:
+                additionalProperties:
+                  type: string
+                description: Optional. Labels as key value pairs
                 type: object
               location:
-                description: The location that this resource belongs to.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location is immutable.
-                  rule: self == oldSelf
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -189,10 +166,6 @@ spec:
                 properties:
                   createTime:
                     description: Output only. [Output only] Create time stamp
-                    type: string
-                  name:
-                    description: Identifier. [Output only] The resource name of the
-                      Parameter in the format `projects/*/locations/*/parameters/*`
                     type: string
                   policyMember:
                     description: Output only. [Output-only] policy member strings

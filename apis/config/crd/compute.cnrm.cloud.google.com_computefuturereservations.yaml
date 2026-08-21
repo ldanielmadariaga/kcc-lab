@@ -195,9 +195,6 @@ spec:
                 description: '[Output Only] Type of the resource. Always compute#futureReservation
                   for future reservations.'
                 type: string
-              location:
-                description: The location of this resource.
-                type: string
               namePrefix:
                 description: Name prefix for the reservations to be created at the
                   time of delivery. The name prefix must comply with RFC1035. Maximum
@@ -637,7 +634,6 @@ spec:
                   resides.'
                 type: string
             required:
-            - location
             - projectRef
             type: object
           status:

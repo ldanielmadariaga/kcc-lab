@@ -6,7 +6,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: dataformteamfolders.dataform.cnrm.cloud.google.com
 spec:
@@ -162,8 +161,10 @@ spec:
                       creator of the TeamFolder.
                     type: string
                   internalMetadata:
-                    description: Output only. All the metadata information that is
-                      used internally to serve the resource.
+                    description: 'Output only. All the metadata information that is
+                      used internally to serve the resource. For example: timestamps,
+                      flags, status fields, etc. The format of this field is a JSON
+                      string.'
                     type: string
                   updateTime:
                     description: Output only. The timestamp of when the TeamFolder

@@ -28,6 +28,9 @@ type ConfigDeliveryFleetPackageSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	Location *string `json:"location"`
+
 	// The ConfigDeliveryFleetPackage name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. Labels are attributes that can be set and used by both the

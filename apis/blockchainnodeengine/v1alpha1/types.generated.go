@@ -21,8 +21,7 @@
 
 package v1alpha1
 
-/* found existing non-generated go type with proto tag "google.cloud.blockchainnodeengine.v1.BlockchainNode", skipping
-
+/* unreachable type BlockchainNode
 // +kcc:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode
 type BlockchainNode struct {
 	// Ethereum-specific blockchain node details.
@@ -135,8 +134,7 @@ type BlockchainNode_EthereumDetails_ValidatorConfig struct {
 	BeaconFeeRecipient *string `json:"beaconFeeRecipient,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.blockchainnodeengine.v1.BlockchainNode", skipping
-
+/* unreachable type BlockchainNodeObservedState
 // +kcc:observedstate:proto=google.cloud.blockchainnodeengine.v1.BlockchainNode
 type BlockchainNodeObservedState struct {
 	// Ethereum-specific blockchain node details.

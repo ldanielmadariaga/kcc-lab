@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,38 +24,35 @@ var CloudSecurityFrameworkGVK = GroupVersion.WithKind("CloudSecurityFramework")
 
 // CloudSecurityFrameworkSpec defines the desired state of CloudSecurityFramework
 // +kcc:spec:proto=google.cloud.cloudsecuritycompliance.v1.Framework
-// +kubebuilder:validation:XValidation:rule="(has(self.organizationRef) ? 1 : 0) + (has(self.projectRef) ? 1 : 0) == 1",message="Exactly one parent field must be set"
 type CloudSecurityFrameworkSpec struct {
-	// The organization that this resource belongs to. Only one of organizationRef or projectRef may be specified.
-	// +optional
-	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef,omitempty"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The project that this resource belongs to. Only one of organizationRef or projectRef may be specified.
-	// +optional
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef,omitempty"`
-
-	// The location of this resource.
-	// +required
-	Location *string `json:"location"`
-
-	// Optional. The CloudSecurityFramework name. If not given, the metadata.name will be used.
+	// The CloudSecurityFramework name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Optional. The friendly name of the framework. The maximum length is 200 characters.
+	// Optional. Display name of the framework. The maximum length is 200
+	//  characters.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
-	// Optional. The description of the framework. The maximum length is 2000 characters.
+	// Optional. The description of the framework. The maximum length is 2000
+	//  characters.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.description
 	Description *string `json:"description,omitempty"`
 
-	// Optional. The cloud control details that are directly added without any grouping in the framework.
+	// Optional. The details of the cloud control groups included in the
+	//  framework.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.cloud_control_group_details
+	CloudControlGroupDetails []Framework_CloudControlGroupDetails `json:"cloudControlGroupDetails,omitempty"`
+
+	// Optional. The details of the cloud controls directly added without any
+	//  grouping in the framework.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.cloud_control_details
 	CloudControlDetails []CloudControlDetails `json:"cloudControlDetails,omitempty"`
 
 	// Optional. The category of the framework.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.category
 	Category []string `json:"category,omitempty"`
-
-	// Optional. The labels with user-defined metadata to organize your frameworks.
-	// +optional
-	Labels map[string]string `json:"labels,omitempty"`
 }
 
 // CloudSecurityFrameworkStatus defines the config connector machine state of CloudSecurityFramework
@@ -77,20 +74,27 @@ type CloudSecurityFrameworkStatus struct {
 // CloudSecurityFrameworkObservedState is the state of the CloudSecurityFramework resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.cloudsecuritycompliance.v1.Framework
 type CloudSecurityFrameworkObservedState struct {
-	// Output only. The major version of the framework, which is incremented in ascending order.
+	// Output only. Major revision of the framework incremented in ascending
+	//  order.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.major_revision_id
 	MajorRevisionID *int64 `json:"majorRevisionID,omitempty"`
 
-	// Output only. The type of framework.
+	// Output only. The type of the framework. The default is TYPE_CUSTOM.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.type
 	Type *string `json:"type,omitempty"`
 
-	// Output only. The cloud providers that are supported by the framework.
+	// Optional. The details of the cloud control groups included in the
+	//  framework.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.cloud_control_group_details
+	CloudControlGroupDetails []Framework_CloudControlGroupDetailsObservedState `json:"cloudControlGroupDetails,omitempty"`
+
+	// Output only. cloud providers supported
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.supported_cloud_providers
 	SupportedCloudProviders []string `json:"supportedCloudProviders,omitempty"`
 
-	// Output only. The target resource types that are supported by the framework.
+	// Output only. target resource types supported by the Framework.
+	// +kcc:proto:field=google.cloud.cloudsecuritycompliance.v1.Framework.supported_target_resource_types
 	SupportedTargetResourceTypes []string `json:"supportedTargetResourceTypes,omitempty"`
-
-	// Output only. The supported enforcement modes of the framework.
-	SupportedEnforcementModes []string `json:"supportedEnforcementModes,omitempty"`
 }
 
 // +genclient
@@ -99,7 +103,6 @@ type CloudSecurityFrameworkObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

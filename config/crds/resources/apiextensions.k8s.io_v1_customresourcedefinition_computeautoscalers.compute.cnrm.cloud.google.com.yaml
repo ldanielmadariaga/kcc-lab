@@ -370,6 +370,29 @@ spec:
                 description: The ComputeAutoscaler name. If not given, the metadata.name
                   will be used.
                 type: string
+              scalingScheduleStatus:
+                additionalProperties:
+                  properties:
+                    lastStartTime:
+                      description: '[Output Only] The last time the scaling schedule
+                        became active. Note: this is a timestamp when a schedule actually
+                        became active, not when it was planned to do so. The timestamp
+                        is in RFC3339 text format.'
+                      type: string
+                    nextStartTime:
+                      description: '[Output Only] The next time the scaling schedule
+                        is to become active. Note: this is a timestamp when a schedule
+                        is planned to run, but the actual time might be slightly different.
+                        The timestamp is in RFC3339 text format.'
+                      type: string
+                    state:
+                      description: '[Output Only] The current state of a scaling schedule.
+                        Check the State enum for the list of possible values.'
+                      type: string
+                  type: object
+                description: '[Output Only] Status information of existing scaling
+                  schedules.'
+                type: object
               selfLink:
                 description: '[Output Only] Server-defined URL for the resource.'
                 type: string

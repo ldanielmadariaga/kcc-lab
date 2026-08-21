@@ -66,13 +66,13 @@ spec:
               kmsKeyName:
                 description: |-
                   Input only. The KMS key to be used to protect this Identity Mapping Store
-                  at creation time.
+                   at creation time.
 
-                  Must be set for requests that need to comply with CMEK Org Policy
-                  protections.
+                   Must be set for requests that need to comply with CMEK Org Policy
+                   protections.
 
-                  If this field is set and processed successfully, the Identity Mapping Store
-                  will be protected by the KMS key, as indicated in the cmek_config field.
+                   If this field is set and processed successfully, the Identity Mapping Store
+                   will be protected by the KMS key, as indicated in the cmek_config field.
                 type: string
               location:
                 description: The location of this resource.
@@ -122,6 +122,8 @@ spec:
               connector machine state of DiscoveryEngineIdentityMappingStore
             properties:
               conditions:
+                description: Conditions represent the latest available observations
+                  of the object's current state.
                 items:
                   properties:
                     lastTransitionTime:
@@ -165,6 +167,9 @@ spec:
                     description: Output only. CMEK-related information for the Identity
                       Mapping Store.
                     properties:
+                      isDefault:
+                        description: Output only. The default CmekConfig for the Customer.
+                        type: boolean
                       kmsKey:
                         description: KMS key resource name which will be used to encrypt
                           resources `projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{keyId}`.
@@ -173,10 +178,18 @@ spec:
                         description: KMS key version resource name which will be used
                           to encrypt resources `<kms_key>/cryptoKeyVersions/{keyVersion}`.
                         type: string
+                      lastRotationTimestampMicros:
+                        description: Output only. The timestamp of the last key rotation.
+                        format: int64
+                        type: integer
                       name:
                         description: Required. The name of the CmekConfig of the form
                           `projects/{project}/locations/{location}/cmekConfig` or
                           `projects/{project}/locations/{location}/cmekConfigs/{cmek_config}`.
+                        type: string
+                      notebooklmState:
+                        description: Output only. Whether the NotebookLM Corpus is
+                          ready to be used.
                         type: string
                       singleRegionKeys:
                         description: Optional. Single-regional CMEKs that are required
@@ -187,12 +200,11 @@ spec:
                               description: Required. Single-regional kms key resource
                                 name which will be used to encrypt resources `projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{keyId}`.
                               type: string
-                          required:
-                          - kmsKey
                           type: object
                         type: array
-                    required:
-                    - name
+                      state:
+                        description: Output only. The states of the CmekConfig.
+                        type: string
                     type: object
                 type: object
             type: object

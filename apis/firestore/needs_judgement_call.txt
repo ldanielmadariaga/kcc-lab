@@ -6,5 +6,8 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=FirestoreDocument group=firestore.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=FirestoreDocument group=firestore.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-unknown-parent (the proto declares no google.api.resource, so the parent shape is unknown; add location if the resource is regional)
 kind=FirestoreField group=firestore.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=FirestoreField group=firestore.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/databases/{database}/collectionGroups/{collection}/fields/{field}; location is implied by the parent, add it only if the API needs it stated)
 kind=FirestoreBackupSchedule group=firestore.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=FirestoreBackupSchedule group=firestore.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/databases/{database}/backupSchedules/{backup_schedule}; location is implied by the parent, add it only if the API needs it stated)

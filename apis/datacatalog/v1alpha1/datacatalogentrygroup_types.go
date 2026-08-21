@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -23,22 +23,16 @@ import (
 var DataCatalogEntryGroupGVK = GroupVersion.WithKind("DataCatalogEntryGroup")
 
 // DataCatalogEntryGroupSpec defines the desired state of DataCatalogEntryGroup
-
-type DataCatalogEntryGroupParent struct {
-	// +required
-	ProjectRef *v1beta1.ProjectRef `json:"projectRef"`
-	// +required
-	Location string `json:"location"`
-}
-
-// +kcc:alias=datacatalog-entrygroup
 // +kcc:spec:proto=google.cloud.datacatalog.v1.EntryGroup
 type DataCatalogEntryGroupSpec struct {
-	DataCatalogEntryGroupParent `json:",inline"`
-	// The DataCatalogEntryGroup name. If not given, the metadata.name will be used.
-	//+required
-	ResourceID *string `json:"resourceID,omitempty"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	Location *string `json:"location"`
+
+	// The DataCatalogEntryGroup name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// A short name to identify the entry group, for example,
 	//  "analytics data - jan 2011". Default value is an empty string.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.EntryGroup.display_name
@@ -80,12 +74,11 @@ type DataCatalogEntryGroupStatus struct {
 type DataCatalogEntryGroupObservedState struct {
 	// Output only. Timestamps of the entry group. Default value is empty.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.EntryGroup.data_catalog_timestamps
-	DataCatalogTimestamps *SystemTimestamps `json:"dataCatalogTimestamps,omitempty"`
+	DataCatalogTimestamps *SystemTimestampsObservedState `json:"dataCatalogTimestamps,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// TODO(user): make sure the pluralizaiton below is correct
 // +kubebuilder:resource:categories=gcp,shortName=gcpdatacatalogentrygroup;gcpdatacatalogentrygroups
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
