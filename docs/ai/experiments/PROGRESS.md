@@ -21,6 +21,31 @@ Measured on the 93 resources scorable in every run to date.
 The 239-run figures are quoted here over the 93-resource intersection, not the 98 the original
 write-up used, so the columns are comparable. Over its own 98 that run read 73.7 / 82.8 / 91.4.
 
+## Population, not sample
+
+The rows above track a fixed 93-resource intersection so the trend is honest. Separately, the whole
+greenfield population has now been defined and measured once — see
+[greenfield-population.md](greenfield-population.md).
+
+| | count |
+|---|---|
+| greenfield resources upstream | **300** |
+| regenerable by the Step 1 pipeline | 231 |
+| actually regenerated | 225 |
+| scorable (CRD not stale) | **189** |
+
+Measured over those 189: spec **78.5%** (**95.7%** excluding missing references), required 78.1%,
+observedState 88.5%. References: 484 in baseline, 168 reproduced, 203 plain strings, 113 absent.
+
+Do not read 78.5% against the 80.1% above as a regression. It is a larger and differently-defined
+population — every v1alpha1 resource whose `SupportedControllers` is `[Direct]` or which has no
+controller registered yet, rather than every resource that happened to have a `generate.sh` line.
+
+**The old 239 set contained 12 Terraform-backed resources** — `APIKeysKey`, seven `Compute` kinds,
+two KMS kinds, `BigQueryReservationCapacityCommitment`, `VertexAITensorboard`. Their KRM shape was
+set by the Terraform provider, so scoring generator output against them asks it to reproduce a TF
+artifact, and they are excluded now.
+
 ## What each change was worth
 
 | change | effect |
