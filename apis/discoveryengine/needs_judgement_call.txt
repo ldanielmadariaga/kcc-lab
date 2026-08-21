@@ -11,3 +11,6 @@ kind=DiscoveryEngineLicenseConfig group=discoveryengine.cnrm.cloud.google.com: r
 kind=DiscoveryEngineServingConfig group=discoveryengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DiscoveryEngineUserStore group=discoveryengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DiscoveryEngineUserStore group=discoveryengine.cnrm.cloud.google.com: field ".spec.defaultLicenseConfig" reason=possible-reference (target=discoveryengine.googleapis.com/LicenseConfig)
+kind=DiscoveryEngineDataStore group=discoveryengine.cnrm.cloud.google.com: field ".spec.workspaceConfig.superAdminServiceAccount" reason=possible-reference-by-description
+kind=DiscoveryEngineEngine group=discoveryengine.cnrm.cloud.google.com: field ".spec.chatEngineConfig.dialogflowAgentToLink" reason=possible-reference-by-description
+kind=DiscoveryEngineIdentityMappingStore group=discoveryengine.cnrm.cloud.google.com: field ".spec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)

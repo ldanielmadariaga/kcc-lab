@@ -7,3 +7,6 @@
 
 kind=KMSCryptoKeyVersion group=kms.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=KMSKeyRingImportJob group=kms.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=KMSCryptoKeyVersion group=kms.cnrm.cloud.google.com: field ".spec.cryptoKey" reason=possible-reference-by-description
+kind=KMSKeyRingImportJob group=kms.cnrm.cloud.google.com: field ".spec.keyRing" reason=possible-reference-by-description
+kind=KMSSecretCiphertext group=kms.cnrm.cloud.google.com: field ".spec.cryptoKey" reason=possible-reference-by-description

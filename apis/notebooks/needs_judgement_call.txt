@@ -9,3 +9,15 @@ kind=NotebooksEnvironment group=notebooks.cnrm.cloud.google.com: resource reason
 kind=NotebooksExecution group=notebooks.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=NotebooksSchedule group=notebooks.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=NotebookInstanceV2 group=notebooks.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NotebookInstanceV2 group=notebooks.cnrm.cloud.google.com: field ".spec.kmsKey" reason=possible-reference-by-description
+kind=NotebookInstanceV2 group=notebooks.cnrm.cloud.google.com: field ".spec.network" reason=possible-reference-by-description
+kind=NotebookInstanceV2 group=notebooks.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description
+kind=NotebookInstanceV2 group=notebooks.cnrm.cloud.google.com: field ".spec.subnet" reason=possible-reference-by-description
+kind=NotebooksExecution group=notebooks.cnrm.cloud.google.com: field ".spec.executionTemplate.dataprocParameters.cluster" reason=possible-reference-by-description
+kind=NotebooksExecution group=notebooks.cnrm.cloud.google.com: field ".spec.executionTemplate.serviceAccount" reason=possible-reference-by-description
+kind=NotebooksExecution group=notebooks.cnrm.cloud.google.com: field ".spec.executionTemplate.tensorboard" reason=possible-reference-by-description
+kind=NotebooksExecution group=notebooks.cnrm.cloud.google.com: field ".spec.executionTemplate.vertexAiParameters.network" reason=possible-reference-by-description
+kind=NotebooksSchedule group=notebooks.cnrm.cloud.google.com: field ".spec.executionTemplate.dataprocParameters.cluster" reason=possible-reference-by-description
+kind=NotebooksSchedule group=notebooks.cnrm.cloud.google.com: field ".spec.executionTemplate.serviceAccount" reason=possible-reference-by-description
+kind=NotebooksSchedule group=notebooks.cnrm.cloud.google.com: field ".spec.executionTemplate.tensorboard" reason=possible-reference-by-description
+kind=NotebooksSchedule group=notebooks.cnrm.cloud.google.com: field ".spec.executionTemplate.vertexAiParameters.network" reason=possible-reference-by-description

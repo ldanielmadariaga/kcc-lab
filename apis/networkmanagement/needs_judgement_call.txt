@@ -7,3 +7,11 @@
 
 kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=NetworkManagementVPCFlowLogsConfig group=networkmanagement.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: field ".spec.destination.cloudRunRevision.uri" reason=possible-reference-by-description
+kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: field ".spec.destination.forwardingRule" reason=possible-reference-by-description
+kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: field ".spec.destination.network" reason=possible-reference-by-name (ComputeNetworkRef)
+kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: field ".spec.source.cloudRunRevision.uri" reason=possible-reference-by-description
+kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: field ".spec.source.forwardingRule" reason=possible-reference-by-description
+kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: field ".spec.source.network" reason=possible-reference-by-name (ComputeNetworkRef)
+kind=NetworkManagementVPCFlowLogsConfig group=networkmanagement.cnrm.cloud.google.com: field ".spec.interconnectAttachment" reason=possible-reference-by-description
+kind=NetworkManagementVPCFlowLogsConfig group=networkmanagement.cnrm.cloud.google.com: field ".spec.vpnTunnel" reason=possible-reference-by-description

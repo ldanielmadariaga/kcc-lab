@@ -9,3 +9,5 @@ kind=NetworkConnectivityInternalRange group=networkconnectivity.cnrm.cloud.googl
 kind=NetworkConnectivityServiceConnectionPolicy group=networkconnectivity.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=NetworkConnectivityRegionalEndpoint group=networkconnectivity.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=NetworkConnectivityMulticloudDataTransferConfig group=networkconnectivity.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NetworkConnectivityInternalRange group=networkconnectivity.cnrm.cloud.google.com: field ".spec.migration.source" reason=possible-reference-by-description
+kind=NetworkConnectivityInternalRange group=networkconnectivity.cnrm.cloud.google.com: field ".spec.migration.target" reason=possible-reference-by-description

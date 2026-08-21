@@ -14,3 +14,4 @@ kind=GKEBackupBackup group=gkebackup.cnrm.cloud.google.com: resource reason=untr
 kind=GKEBackupRestore group=gkebackup.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=GKEBackupRestore group=gkebackup.cnrm.cloud.google.com: field ".spec.backup" reason=possible-reference (target=gkebackup.googleapis.com/Backup)
 kind=GKEBackupBackupChannel group=gkebackup.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=GKEBackupBackupPlan group=gkebackup.cnrm.cloud.google.com: field ".spec.backupConfig.encryptionKey" reason=possible-reference-by-name (KMSCryptoKeyRef)

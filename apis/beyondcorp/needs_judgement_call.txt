@@ -6,3 +6,5 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=BeyondCorpClientGateway group=beyondcorp.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=BeyondCorpAppConnection group=beyondcorp.cnrm.cloud.google.com: field ".spec.gateway.appGateway" reason=possible-reference-by-description
+kind=BeyondCorpAppConnector group=beyondcorp.cnrm.cloud.google.com: field ".spec.principalInfo.serviceAccount" reason=possible-reference-by-description

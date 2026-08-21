@@ -17,3 +17,10 @@ kind=ComputeOrganizationSecurityPolicy group=compute.cnrm.cloud.google.com: reso
 kind=ComputeNetworkEndpoint group=compute.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=ComputeMachineImage group=compute.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=ComputeRegionSSLPolicy group=compute.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=ComputeInstance group=compute.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description
+kind=ComputeInstanceTemplate group=compute.cnrm.cloud.google.com: field ".spec.networkInterface[].networkAttachment" reason=possible-reference-by-description
+kind=ComputeInstanceTemplate group=compute.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description
+kind=ComputeMachineImage group=compute.cnrm.cloud.google.com: field ".spec.machineImageEncryptionKey.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=ComputeMachineImage group=compute.cnrm.cloud.google.com: field ".spec.machineImageEncryptionKey.kmsKeyServiceAccount" reason=possible-reference-by-description
+kind=ComputeOrganizationSecurityPolicy group=compute.cnrm.cloud.google.com: field ".spec.parent" reason=possible-reference-by-description
+kind=ComputePacketMirroring group=compute.cnrm.cloud.google.com: field ".spec.network" reason=possible-reference-by-name (ComputeNetworkRef)
