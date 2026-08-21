@@ -43,7 +43,7 @@ ${CONTROLLERBUILDER} generate-types \
   --resource NotebooksEnvironment:Environment \
   --resource NotebooksExecution:Execution \
   --resource NotebooksSchedule:Schedule \
-  --resource NotebookInstanceV2:Instance
+  --resource NotebookInstanceV2:google.cloud.notebooks.v2.Instance
 
 ${CONTROLLERBUILDER} generate-mapper \
   --service google.cloud.notebooks.v2 \

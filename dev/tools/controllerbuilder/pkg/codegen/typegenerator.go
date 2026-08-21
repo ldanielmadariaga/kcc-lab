@@ -513,14 +513,29 @@ func WriteObservedStateFields(out io.Writer, msgDetails *OutputMessageDetails, o
 func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool) (string, error) {
 	if field.IsMap() {
 		entryMsg := field.Message()
-		keyKind := entryMsg.Fields().ByName("key").Kind()
-		valueKind := entryMsg.Fields().ByName("value").Kind()
-		if keyKind == protoreflect.StringKind && valueKind == protoreflect.StringKind {
+		keyField := entryMsg.Fields().ByName("key")
+		valueField := entryMsg.Fields().ByName("value")
+		if keyField.Kind() != protoreflect.StringKind {
+			// A CRD keys additionalProperties by string; nothing else is expressible.
+			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyField.Kind(), valueField.Kind())
+		}
+		switch valueField.Kind() {
+		case protoreflect.StringKind:
 			return "map[string]string", nil
-		} else if keyKind == protoreflect.StringKind && valueKind == protoreflect.Int64Kind {
+		case protoreflect.Int64Kind:
 			return "map[string]int64", nil
-		} else {
-			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyKind, valueKind)
+		case protoreflect.MessageKind:
+			// The value struct is generated like any other nested message:
+			// FindDependenciesForField already recurses through the map entry into
+			// the value, so it is visited and written without new machinery here.
+			// A CRD expresses this as additionalProperties with an object schema.
+			if _, skip := protoMessagesNotMappedToGoStruct[string(valueField.Message().FullName())]; skip {
+				return "", fmt.Errorf("unsupported map type with key %v and value %v",
+					keyField.Kind(), valueField.Kind())
+			}
+			return "map[string]" + GoNameForProtoMessage(valueField.Message()), nil
+		default:
+			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyField.Kind(), valueField.Kind())
 		}
 	}
 
