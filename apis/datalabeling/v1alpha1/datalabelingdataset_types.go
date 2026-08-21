@@ -28,7 +28,6 @@ type DataLabelingDatasetSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-
 	// The DataLabelingDataset name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. The display name of the dataset. Maximum of 64 characters.

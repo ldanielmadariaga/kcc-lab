@@ -396,8 +396,11 @@ designed yet, and the first prerequisite is gap 2 above.
   special-cased Go type with no map spelling. Together those are 100 of the 1002 map-of-message
   fields across the Google API protos; mapping all three to `apiextensionsv1.JSON`, which is what
   upstream writes by hand in `apis/firestore/v1alpha1` and `apis/aiplatform/v1alpha1/recursive_types.go`,
-  would close them. A declined field never reaches the CRD and appears in the queue as
-  `unsupported-field-type`.
+  would close them. A declined field never reaches the CRD; on a fresh scaffold it appears in the
+  queue twice, as a `field ".spec.<name>" reason=unsupported-field-type` entry and as a per-service
+  `# dropped:` comment. **Regenerating a resource whose `_types.go` already exists records only the
+  second**, because the scaffolder skips a file that is already there and the field-level entry is
+  written on that path. So a rerun looks quieter than a first run for the same defect.
 - **When `generate-crds` panics without naming a package**, run `controller-gen` per service with
   `paths="./<svc>/v1alpha1"` from `apis/`. The tree-wide `paths="./..."` lets one unloadable package
   block every other, and a panic on an unresolvable type names nothing to attribute it to.
@@ -421,6 +424,12 @@ designed yet, and the first prerequisite is gap 2 above.
   Any output is a flag line whose predecessor did not end in a continuation. Silence means clean.
   Then check the resulting Spec has more than three fields, since the stub is already on disk by
   the time the script fails.
+- **A comment above a Spec field becomes that field's CRD `description`.** `controller-gen` takes
+  the whole contiguous `//` block, so a note meant for whoever reads the generator ends up in the
+  published schema, where it reads as nonsense. The Location rationale leaked into eight CRDs this
+  way before anyone noticed. Rationale belongs on the template in
+  `dev/tools/controllerbuilder/template/apis/types.go`, not inside the backtick-quoted template
+  string. `grep` your new wording in `config/crds/resources/` to check.
 - **The scaffold templates hardcode `Copyright 2025`.** `template/apis/{doc,groupversion_info,identity,refs}.go`
   all carry that year, so every newly scaffolded file gets it, while CLAUDE.md asks for the current
   year on new files. Fix the header by hand, or fix the templates once.

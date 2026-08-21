@@ -73,6 +73,9 @@ spec:
                 description: Human-readable display name of this key that you can
                   modify. The maximum length is 63 characters.
                 type: string
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -190,6 +193,7 @@ spec:
                     type: object
                 type: object
             required:
+            - location
             - projectRef
             type: object
           status:

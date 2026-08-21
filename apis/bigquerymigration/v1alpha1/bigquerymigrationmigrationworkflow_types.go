@@ -29,7 +29,7 @@ type BigQueryMigrationMigrationWorkflowSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	Location string `json:"location"`
+	Location *string `json:"location"`
 
 	// The BigQueryMigrationMigrationWorkflow name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
@@ -38,7 +38,11 @@ type BigQueryMigrationMigrationWorkflowSpec struct {
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// The tasks in a workflow in a named map. The name (i.e. key) has no
+	//  meaning and is merely a convenient way to address a specific task
+	//  in a workflow.
+	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.tasks
+	Tasks map[string]MigrationTask `json:"tasks,omitempty"`
 
 	// Time when the workflow was created.
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.create_time

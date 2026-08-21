@@ -51,6 +51,16 @@ type APIArgs struct {
 	ExtraImports []string
 }
 
+// Location, emitted only when the proto's resource pattern makes the parent
+// project+location, is a pointer: 100 of the 129 existing resources that
+// declare one use that form, and the value form does not compile against
+// hand-written identity files that dereference it. It carries no omitempty, so
+// the field stays required, as upstream has it.
+//
+// Its comment in the template is the one-line "The location of this resource."
+// and nothing more. Whatever is written there becomes the field's CRD
+// description, which users read; a rationale for the generator's own choice
+// does not belong in a published API schema.
 const TypesTemplate = `
 // Copyright 2025 Google LLC
 //
@@ -89,10 +99,6 @@ type {{ .Kind }}Spec struct {
 {{- if eq .ParentStyle "project_location" }}
 
 	// The location of this resource.
-	// A pointer, matching the 100 of 129 existing resources that use one; the
-	// value form does not compile against hand-written identity files that
-	// dereference it. No omitempty, so the field stays required, as upstream
-	// has it.
 	Location *string ` + "`" + `json:"location"` + "`" + `
 {{- end }}
 

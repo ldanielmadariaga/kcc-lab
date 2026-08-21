@@ -79,6 +79,50 @@ func ApigeeRegistryAPISpec_ToProto(mapCtx *direct.MapContext, in *krm.ApigeeRegi
 	out.Annotations = in.Annotations
 	return out
 }
+func ApigeeRegistryArtifactObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Artifact) *krm.ApigeeRegistryArtifactObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ApigeeRegistryArtifactObservedState{}
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.SizeBytes = direct.LazyPtr(in.GetSizeBytes())
+	out.Hash = direct.LazyPtr(in.GetHash())
+	return out
+}
+func ApigeeRegistryArtifactObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ApigeeRegistryArtifactObservedState) *pb.Artifact {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Artifact{}
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.SizeBytes = direct.ValueOf(in.SizeBytes)
+	out.Hash = direct.ValueOf(in.Hash)
+	return out
+}
+func ApigeeRegistryArtifactSpec_FromProto(mapCtx *direct.MapContext, in *pb.Artifact) *krm.ApigeeRegistryArtifactSpec {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ApigeeRegistryArtifactSpec{}
+	// MISSING: Name
+	out.MimeType = direct.LazyPtr(in.GetMimeType())
+	out.Contents = in.GetContents()
+	return out
+}
+func ApigeeRegistryArtifactSpec_ToProto(mapCtx *direct.MapContext, in *krm.ApigeeRegistryArtifactSpec) *pb.Artifact {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Artifact{}
+	// MISSING: Name
+	out.MimeType = direct.ValueOf(in.MimeType)
+	out.Contents = in.Contents
+	return out
+}
 func ApigeeRegistryInstanceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Instance) *krm.ApigeeRegistryInstanceObservedState {
 	if in == nil {
 		return nil

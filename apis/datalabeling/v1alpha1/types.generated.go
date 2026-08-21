@@ -494,6 +494,8 @@ type InputConfig struct {
 	ClassificationMetadata *ClassificationMetadata `json:"classificationMetadata,omitempty"`
 }
 
+/* found existing non-generated go type with proto tag "google.cloud.datalabeling.v1beta1.Instruction", skipping
+
 // +kcc:proto=google.cloud.datalabeling.v1beta1.Instruction
 type Instruction struct {
 	// Output only. Instruction resource name, format:
@@ -541,6 +543,7 @@ type Instruction struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Instruction.blocking_resources
 	BlockingResources []string `json:"blockingResources,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.datalabeling.v1beta1.PdfInstruction
 type PdfInstruction struct {

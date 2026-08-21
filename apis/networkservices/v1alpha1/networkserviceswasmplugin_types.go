@@ -28,6 +28,8 @@ type NetworkServicesWasmPluginSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	Location *string `json:"location"`
 
 	// The NetworkServicesWasmPlugin name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
@@ -56,8 +58,24 @@ type NetworkServicesWasmPluginSpec struct {
 	// +kcc:proto:field=google.cloud.networkservices.v1.WasmPlugin.log_config
 	LogConfig *WasmPlugin_LogConfig `json:"logConfig,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Optional. All versions of this `WasmPlugin` resource in the key-value
+	//  format. The key is the resource ID, and the value is the `VersionDetails`
+	//  object.
+	//
+	//  Lets you create or update a `WasmPlugin` resource and its versions in a
+	//  single request. When the `main_version_id` field is not empty, it must
+	//  point to one of the `VersionDetails` objects in the map.
+	//
+	//  If provided in a `PATCH` request, the new versions replace the
+	//  previous set. Any version omitted from the `versions` field is removed.
+	//  Because the `WasmPluginVersion` resource is immutable, if a
+	//  `WasmPluginVersion` resource with the same name already exists and differs,
+	//  the request fails.
+	//
+	//  Note: In a `GET` request, this field is populated only if the field
+	//  `GetWasmPluginRequest.view` is set to `WASM_PLUGIN_VIEW_FULL`.
+	// +kcc:proto:field=google.cloud.networkservices.v1.WasmPlugin.versions
+	Versions map[string]WasmPlugin_VersionDetails `json:"versions,omitempty"`
 }
 
 // NetworkServicesWasmPluginStatus defines the config connector machine state of NetworkServicesWasmPlugin

@@ -6,5 +6,3 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=AppOptimizeReport group=appoptimize.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=AppOptimizeReport group=appoptimize.cnrm.cloud.google.com: field ".spec.scopes[].application" reason=possible-reference-by-description
-kind=AppOptimizeReport group=appoptimize.cnrm.cloud.google.com: field ".spec.scopes[].project" reason=possible-reference-by-description

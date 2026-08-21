@@ -30,7 +30,6 @@ type AssessmentOrchestrationResultDetails struct {
 }
 */
 
-/* unreachable type AssessmentTaskDetails
 // +kcc:proto=google.cloud.bigquery.migration.v2alpha.AssessmentTaskDetails
 type AssessmentTaskDetails struct {
 	// Required. The Cloud Storage path for assessment input files.
@@ -54,9 +53,7 @@ type AssessmentTaskDetails struct {
 	// +required
 	DataSource *string `json:"dataSource,omitempty"`
 }
-*/
 
-/* unreachable type BteqOptions
 // +kcc:proto=google.cloud.bigquery.migration.v2alpha.BteqOptions
 type BteqOptions struct {
 	// Specifies the project and dataset in BigQuery that will be used for
@@ -75,9 +72,7 @@ type BteqOptions struct {
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.BteqOptions.file_replacement_map
 	FileReplacementMap map[string]string `json:"fileReplacementMap,omitempty"`
 }
-*/
 
-/* unreachable type DatasetReference
 // +kcc:proto=google.cloud.bigquery.migration.v2alpha.DatasetReference
 type DatasetReference struct {
 	// A unique ID for this dataset, without the project name. The ID
@@ -90,18 +85,14 @@ type DatasetReference struct {
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.DatasetReference.project_id
 	ProjectID *string `json:"projectID,omitempty"`
 }
-*/
 
-/* unreachable type Filter
 // +kcc:proto=google.cloud.bigquery.migration.v2alpha.Filter
 type Filter struct {
 	// The list of prefixes used to exclude processing for input files.
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.Filter.input_file_exclusion_prefixes
 	InputFileExclusionPrefixes []string `json:"inputFileExclusionPrefixes,omitempty"`
 }
-*/
 
-/* unreachable type IdentifierSettings
 // +kcc:proto=google.cloud.bigquery.migration.v2alpha.IdentifierSettings
 type IdentifierSettings struct {
 	// The setting to control output queries' identifier case.
@@ -112,9 +103,7 @@ type IdentifierSettings struct {
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.IdentifierSettings.identifier_rewrite_mode
 	IdentifierRewriteMode *string `json:"identifierRewriteMode,omitempty"`
 }
-*/
 
-/* unreachable type MigrationTask
 // +kcc:proto=google.cloud.bigquery.migration.v2alpha.MigrationTask
 type MigrationTask struct {
 	// Task configuration for Assessment.
@@ -143,7 +132,6 @@ type MigrationTask struct {
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationTask.last_update_time
 	LastUpdateTime *string `json:"lastUpdateTime,omitempty"`
 }
-*/
 
 /* unreachable type MigrationTaskOrchestrationResult
 // +kcc:proto=google.cloud.bigquery.migration.v2alpha.MigrationTaskOrchestrationResult
@@ -163,7 +151,11 @@ type MigrationWorkflow struct {
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// The tasks in a workflow in a named map. The name (i.e. key) has no
+	//  meaning and is merely a convenient way to address a specific task
+	//  in a workflow.
+	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.tasks
+	Tasks map[string]MigrationTask `json:"tasks,omitempty"`
 
 	// Time when the workflow was created.
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.MigrationWorkflow.create_time
@@ -175,13 +167,10 @@ type MigrationWorkflow struct {
 }
 */
 
-/* unreachable type TeradataOptions
 // +kcc:proto=google.cloud.bigquery.migration.v2alpha.TeradataOptions
 type TeradataOptions struct {
 }
-*/
 
-/* unreachable type TranslationFileMapping
 // +kcc:proto=google.cloud.bigquery.migration.v2alpha.TranslationFileMapping
 type TranslationFileMapping struct {
 	// The Cloud Storage path for a file to translation in a subtask.
@@ -192,9 +181,7 @@ type TranslationFileMapping struct {
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.TranslationFileMapping.output_path
 	OutputPath *string `json:"outputPath,omitempty"`
 }
-*/
 
-/* unreachable type TranslationTaskDetails
 // +kcc:proto=google.cloud.bigquery.migration.v2alpha.TranslationTaskDetails
 type TranslationTaskDetails struct {
 	// The Teradata SQL specific settings for the translation task.
@@ -230,7 +217,7 @@ type TranslationTaskDetails struct {
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.TranslationTaskDetails.identifier_settings
 	IdentifierSettings *IdentifierSettings `json:"identifierSettings,omitempty"`
 
-	// TODO: unsupported map type with key string and value enum
+	// TODO: specialTokenMap: unsupported map type with key string and value enum
 
 	// The filter applied to translation details.
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.TranslationTaskDetails.filter
@@ -243,9 +230,7 @@ type TranslationTaskDetails struct {
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.TranslationTaskDetails.translation_exception_table
 	TranslationExceptionTable *string `json:"translationExceptionTable,omitempty"`
 }
-*/
 
-/* unreachable type Any
 // +kcc:proto=google.protobuf.Any
 type Any struct {
 	// A URL/resource name that uniquely identifies the type of the serialized
@@ -282,7 +267,6 @@ type Any struct {
 	// +kcc:proto:field=google.protobuf.Any.value
 	Value []byte `json:"value,omitempty"`
 }
-*/
 
 /* unreachable type ErrorInfo
 // +kcc:proto=google.rpc.ErrorInfo

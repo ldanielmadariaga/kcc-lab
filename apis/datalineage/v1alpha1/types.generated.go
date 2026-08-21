@@ -61,7 +61,7 @@ type Process struct {
 	// +kcc:proto:field=google.cloud.datacatalog.lineage.v1.Process.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: attributes: recursive map value google.protobuf.Value: no CRD schema is possible
 
 	// Optional. The origin of this process and its runs and lineage events.
 	// +kcc:proto:field=google.cloud.datacatalog.lineage.v1.Process.origin

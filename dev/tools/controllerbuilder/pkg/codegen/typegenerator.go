@@ -539,8 +539,7 @@ func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool)
 			// then fails on the whole package rather than on this one field.
 			if protoMessagesRecursiveInCRD[valueName] {
 				return "", fmt.Errorf(
-					"unsupported map value %s: recursive, controller-gen cannot build a schema for it",
-					valueName)
+					"recursive map value %s: no CRD schema is possible", valueName)
 			}
 			return "map[string]" + GoNameForProtoMessage(valueField.Message()), nil
 		default:
