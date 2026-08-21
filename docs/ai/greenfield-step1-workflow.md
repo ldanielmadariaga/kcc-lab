@@ -17,6 +17,7 @@ test fixtures are later steps and are not produced here. This covers the experim
 
 1. **Generate** the types and CRD mechanically, filling the Spec from the proto.
 2. **Inventory** what the generator could not decide, from the queue it writes.
+2b. **Seed reference hints** into the queue, once the CRDs exist.
 3. **Judgement pass** where an agent or a human resolves those, and clears the queue.
 4. **Mappers and deepcopy**, regenerated against the settled types.
 5. **Register and verify** the resource against the conformance checks.
@@ -31,6 +32,7 @@ bulk-generation PR could not land.
 |---|---|---|
 | 1. Generate | Types, CRD, Spec filled from the proto | Yes |
 | 2. Inventory | Reads `needs_judgement_call.txt` | Yes |
+| 2b. Reference hints | `scripts/queue-ref-hints` seeds the queue | Yes |
 | 3. Judgement pass | Refs, omissions, ObservedState, KRM renames | Yes, by hand |
 | 4. Mappers and deepcopy | `generate-mapper`, then `controller-gen` | Yes |
 | 5. Register and verify | Manifest entry, baselines, checks | Yes |
@@ -38,14 +40,17 @@ bulk-generation PR could not land.
 
 ## Before you start
 
-All four generator changes are on master. Two are opt-in per service, so a service that has not
-turned them on yet still gets the old behaviour:
+The generator changes are on master. Four are opt-in per service, so a service that has not turned
+them on yet still gets the old behaviour:
 
 | Capability | How you get it |
 |---|---|
-| Spec filled from the proto message | `--prepopulate-spec` |
+| Spec **and ObservedState** filled from the proto message | `--prepopulate-spec` |
 | `+required` from `field_behavior` | `--emit-required-from-proto` |
+| Plural acronyms cased as KRM wants (`relatedURIs`) | `--emit-plural-acronyms` |
+| Report output-only fields the proto states only in prose | `--detect-output-only-in-comments` |
 | Real collection segment and parent shape | always on |
+| `Location` only where the parent shape calls for it | always on |
 | `[refs]` suppression while a resource is queued | always on, reads the queue |
 
 The two flags are opt-in because turning them on for a resource people already use can change its
@@ -131,17 +136,46 @@ have been suppressed, and the resource would have gone straight into the ratchet
 While a resource has entries here, its `[refs]` findings are suppressed and it will not fail
 `TestMissingRefs`. That is the only thing suppressed — every other check applies normally.
 
+## Stage 2b — Seed the queue with reference hints
+
+Run after the CRDs exist, because the detector reads them:
+
+```bash
+go run ./scripts/queue-ref-hints
+```
+
+This is what makes the queue usable as a work list. Without it the queue names only the references
+the proto annotates with `google.api.resource_reference`, which measured **11 of 111** on the
+239-resource run — `CloudBuildConnection` needs 15 references and the queue listed none. The seeder
+applies the same rules as `TestMissingRefs`, plus name rules for the classes those rules cannot see,
+and reaches **82 of 111**.
+
+Entries say how confident they are, and the difference matters when you work through them:
+
+| reason | what it means |
+|---|---|
+| `possible-reference` | the proto's own `resource_reference` annotation — a fact |
+| `possible-reference-by-description` | the description names a resource path — strong |
+| `possible-reference-by-name (TargetRef)` | the field name matches a known target — a hint |
+
+Roughly a third of hints are wrong, and that is the intended trade for a list a person confirms.
+Most of the wrong ones are fields whose exact name upstream made a reference in a *different*
+resource, so they are worth a moment's thought rather than a reflex dismissal.
+
 ## Stage 3 — The judgement pass
 
-Four decisions cannot be derived from anything, and this stage is where they get made:
+Three decisions cannot be derived from anything, and this stage is where they get made:
 
 1. **Which strings are really references.**
 2. **Which fields to leave out deliberately.**
 3. **Which fields need renaming for KRM conventions.**
-4. **What belongs in ObservedState**, which the scaffolder leaves as an empty struct.
 
-Required-versus-optional is deliberately not on that list: `--emit-required-from-proto` answers it
-from the annotation, and only a considered contradiction of the proto needs a person.
+Two things are deliberately not on that list. Required-versus-optional is answered by
+`--emit-required-from-proto` from the annotation, and only a considered contradiction of the proto
+needs a person. ObservedState used to be here and is not any more: `--prepopulate-spec` fills it
+from the proto's `OUTPUT_ONLY` fields, including the `*Foo` versus `*FooObservedState` choice for
+nested messages. What the proto states only in prose is reported by
+`--detect-output-only-in-comments` and is a hand edit; see the gotchas.
 
 References are the one that matters, because the mistake is expensive to undo — the field name is
 baked into the CRD schema. Check `google.api.resource_reference` first, since it names the target
@@ -165,28 +199,6 @@ itself, with no hand-editing.
 
 Do not add entries to `missingrefs.txt` to make a finding go away — implement the reference, or
 defer it explicitly in `refs_deferred.txt` with a reason.
-
-ObservedState is the decision people skip, because an empty struct compiles and looks finished.
-Twenty-three alpha resources currently ship with one. Only the resource-level
-`<Kind>ObservedState` in `<kind>_types.go` needs filling; the nested `<Proto>ObservedState` structs
-in `types.generated.go` are already generated for you.
-
-Start from the `OUTPUT_ONLY` fields, which cover about 84% of what ends up there in practice. Two
-things to get right:
-
-- **Message-typed fields take the ObservedState variant.** If `types.generated.go` defines
-  `FooObservedState`, the field is `*FooObservedState`, not `*Foo`. Nine fields in the tree get
-  this wrong today, which is how the `CmekConfig` bug got in.
-- **The proto often forgets to mark server-computed fields.** `create_time`, `update_time`,
-  `delete_time`, `uid`, `etag`, `self_link` and `id` belong in ObservedState whether or not they
-  carry the annotation. Where several identifier-shaped fields turn up together — compute resources
-  routinely have `id`, `selfLink` and `selfLinkWithID` — deciding which one is the resource's
-  identity is the real call, and it is the same one Step 2 has to make.
-
-Some services give you nothing to work from. `apis/compute/v1alpha1/types.generated.go` contains a
-single `Output only.` in the entire file, and at least ten other services contain none, because
-their protos are derived from a discovery document that has no `field_behavior`. There, every field
-is a judgement call.
 
 **Clearing the queue entries graduates the resource.** Suppression stops, and anything it still owes
 lands in `missingrefs.txt` as a normal finding. A resource is in exactly one state at a time, which
@@ -229,12 +241,14 @@ when it is `// MISSING:` in **both** the Spec and the ObservedState mapper, beca
 same proto message and each reports the other's fields. So an unfilled ObservedState correctly
 reports every output-only field as dropped, and a filled one clears them.
 
-Two generator gaps will stop the package compiling, and both are worth recognising quickly:
+One generator gap will stop the package compiling:
 
 - **`google.protobuf.Value` and `ListValue` have no mappers anywhere.** There is no fix at this
   stage; dropping the field is the only option, which makes it a stage 3 omission decision.
-- **`[]common.Status` emits a mapper call without adding the `common` import.** Add
-  `github.com/GoogleCloudPlatform/k8s-config-connector/apis/common` by hand.
+
+The import gaps that used to sit here are fixed. `common.Status` and `apiextensionsv1.JSON` now
+bring their own imports into the scaffolded file, and the generated file no longer keeps an import
+for a type the scaffolder took.
 
 Hand-written mapping is needed only where the generator emits `// MISSING:`. Everything else,
 references included, it handles by itself.
@@ -321,7 +335,7 @@ and the answer is to fix the finding rather than to record it.
 
 ## Gaps
 
-Six places the pipeline stops short. These are stated here, not solved.
+Five places the pipeline stops short. These are stated here, not solved.
 
 1. **No "ready for identity and refs" list.** Stage 5 produces nothing that tells you which
    resources are complete enough to hand on, so stage 6 has no input. It is a disk scan: manifest
@@ -337,10 +351,7 @@ Six places the pipeline stops short. These are stated here, not solved.
    services has no single report of what is outstanding to drive the judgement pass from.
 5. **Nothing forces the queue to drain.** A resource can sit queued indefinitely with its `[refs]`
    findings suppressed the whole time, which makes suppression permanent in practice.
-6. **ObservedState is not prepopulated.** The scaffolder emits an empty struct even though roughly
-   84% of what belongs in it is derivable from `OUTPUT_ONLY`, and the generator already computes the
-   plain-versus-`ObservedState` type choice that filling it needs. Designed but not built; see
-   phase 5 in [the mechanics doc](greenfield-generator-mechanics.md).
+
 
 ## What comes next
 
@@ -361,9 +372,28 @@ designed yet, and the first prerequisite is gap 2 above.
   comparison. Grep `apis/` and `config/crds/resources/` before generating.
 - **`SupportsIAM` warns** for a types-only resource, saying it is `not recognized as a direct kind`.
   That is expected until a controller exists.
-- **The scaffold emits `Location` as a plain `string`.** KCC types are pointers throughout; fix it
-  to `*string` by hand in `<kind>_types.go`.
-- **`bin/controllerbuilder` is reused if present**, at any age, by every `apis/*/generate.sh`. If
+- **`Location` follows the parent shape now, and the nested case needs a decision.** The scaffold
+  emits it only when the proto's pattern makes the parent project+location. A resource nested under
+  another resource — a Lake, a DataStore, a KeyRing — gets none, because its parent already fixes
+  one and upstream is split 8 to 7 on repeating it; the queue records that as
+  `location-omitted-nested-parent` for you to settle. A resource whose proto carries no
+  `google.api.resource` gets none either, recorded as `location-omitted-unknown-parent`.
+- **Never delete a resource whose invocation passes `--skip-scaffold-files`.** The generator does
+  not write its types file, so deleting one removes something nothing will restore. Two resources
+  were lost this way in the 239-resource run before anyone noticed.
+- **A Kind whose name matches a proto message in the same package collides.** `APIHubInstance`,
+  `Document` and `BillingAccount` end up declared by both the scaffold and `types.generated.go`.
+- **Regenerating a `v1alpha1` package can break a `v1beta1` one.** `backupdr/v1beta1` references
+  `v1alpha1.Parent`, so a change on the alpha side stops the beta package compiling.
+- **Two `generate-types` invocations writing one `types.generated.go`** overwrite each other; the
+  second wins. `networksecurity` does this.
+- **`map<string, Message>` is unsupported and the field is dropped.** `GoTypeForField` handles only
+  `map[string]string` and `map[string]int64`. The field never reaches the CRD; it now appears in the
+  queue as `unsupported-field-type` rather than only as a comment in generated source.
+- **When `generate-crds` panics without naming a package**, run `controller-gen` per service with
+  `paths="./<svc>/v1alpha1"` from `apis/`. The tree-wide `paths="./..."` lets one unloadable package
+  block every other, and a panic on an unresolvable type names nothing to attribute it to.
+- - **`bin/controllerbuilder` is reused if present**, at any age, by every `apis/*/generate.sh`. If
   you are changing the generator itself, rebuild it or delete it — a stale binary fails silently and
   the
   symptom shows up in a service you never touched.
