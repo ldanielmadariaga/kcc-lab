@@ -75,6 +75,25 @@ var protoMessagesNotMappedToGoStruct = map[string]string{
 	"google.cloud.connectors.v1.Secret": "secretmanagerv1beta1.SecretRef",
 }
 
+// protoMessagesRecursiveInCRD are messages whose generated Go struct is
+// mutually recursive, which controller-gen cannot turn into a CRD schema:
+// Value.list_value is a ListValue, ListValue.values is a []Value, and the
+// schema never terminates. The types generate fine and are harmless while
+// nothing reaches them, so this list is not a global ban; it is consulted where
+// a field would pull one into a CRD.
+//
+// Upstream hand-writes around this. apis/aiplatform/v1alpha1/recursive_types.go
+// declares both types with the ListValue field commented out "due to CRD
+// instability", and apis/firestore/v1alpha1 types Document.fields, a
+// map<string, Value>, as map[string]apiextensionsv1.JSON. Mapping these two to
+// apiextensionsv1.JSON generator-wide is the real fix and would remove this,
+// but it changes the type everywhere it appears across five packages, so it
+// needs its own measurement.
+var protoMessagesRecursiveInCRD = map[string]bool{
+	"google.protobuf.Value":     true,
+	"google.protobuf.ListValue": true,
+}
+
 // QualifierImports maps the package qualifier of every Go type in
 // protoMessagesNotMappedToGoStruct to the import that supplies it.
 //

@@ -387,13 +387,43 @@ designed yet, and the first prerequisite is gap 2 above.
   `v1alpha1.Parent`, so a change on the alpha side stops the beta package compiling.
 - **Two `generate-types` invocations writing one `types.generated.go`** overwrite each other; the
   second wins. `networksecurity` does this.
-- **`map<string, Message>` is unsupported and the field is dropped.** `GoTypeForField` handles only
-  `map[string]string` and `map[string]int64`. The field never reaches the CRD; it now appears in the
-  queue as `unsupported-field-type` rather than only as a comment in generated source.
+- **`map<string, Message>` generates now; the JSON-ish value types still do not.** The value
+  struct is written like any other nested message, and the field renders as
+  `map[string]TheValueType` with the value form rather than a pointer, which the corpus prefers 16
+  to 7. Three value types are still declined: `google.protobuf.Value` and `google.protobuf.ListValue`
+  are mutually recursive, so a map of one makes it reachable from the CRD and `controller-gen` then
+  fails on the whole package rather than on the one field, and `google.protobuf.Struct` has a
+  special-cased Go type with no map spelling. Together those are 100 of the 1002 map-of-message
+  fields across the Google API protos; mapping all three to `apiextensionsv1.JSON`, which is what
+  upstream writes by hand in `apis/firestore/v1alpha1` and `apis/aiplatform/v1alpha1/recursive_types.go`,
+  would close them. A declined field never reaches the CRD and appears in the queue as
+  `unsupported-field-type`.
 - **When `generate-crds` panics without naming a package**, run `controller-gen` per service with
   `paths="./<svc>/v1alpha1"` from `apis/`. The tree-wide `paths="./..."` lets one unloadable package
   block every other, and a panic on an unresolvable type names nothing to attribute it to.
-- - **`bin/controllerbuilder` is reused if present**, at any age, by every `apis/*/generate.sh`. If
+- **A bare `--resource Kind:Message` in a multi-service block picks the first match.** Where the
+  `--service` flag lists several comma-separated services, an unqualified proto message resolves
+  against whichever of them declares it first. `NotebookInstanceV2` took `notebooks.v1.Instance`
+  that way instead of the v2 message and came out 39 CRD fields short, with nothing reporting a
+  problem. Qualify the message with its full proto name whenever the block names more than one
+  service. The generator now logs a warning on an ambiguous name; it is worth reading.
+- **Editing a `generate.sh` puts flags inside the invocation, not after it.** Several services
+  write theirs on one line with no `\` continuations, so a flag appended below becomes its own
+  command. `tpu` and `edgecontainer` were corrupted this way: the original invocation ran first and
+  wrote a three-field stub, and only then did the shell say `--prepopulate-spec: command not found`.
+  `bash -n` does not help — an orphan flag line is valid syntax, just a command that does not
+  exist — so check for the shape directly:
+
+  ```sh
+  awk 'prev !~ /\\$/ && /^[[:space:]]*--/ {print FILENAME":"FNR": "$0} {prev=$0}' apis/*/generate.sh
+  ```
+
+  Any output is a flag line whose predecessor did not end in a continuation. Silence means clean.
+  Then check the resulting Spec has more than three fields, since the stub is already on disk by
+  the time the script fails.
+- **The scaffold templates hardcode `Copyright 2025`.** `template/apis/{doc,groupversion_info,identity,refs}.go`
+  all carry that year, so every newly scaffolded file gets it, while CLAUDE.md asks for the current
+  year on new files. Fix the header by hand, or fix the templates once.
+- **`bin/controllerbuilder` is reused if present**, at any age, by every `apis/*/generate.sh`. If
   you are changing the generator itself, rebuild it or delete it — a stale binary fails silently and
-  the
-  symptom shows up in a service you never touched.
+  the symptom shows up in a service you never touched.

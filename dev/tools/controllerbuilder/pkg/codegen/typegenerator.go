@@ -529,9 +529,18 @@ func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool)
 			// FindDependenciesForField already recurses through the map entry into
 			// the value, so it is visited and written without new machinery here.
 			// A CRD expresses this as additionalProperties with an object schema.
-			if _, skip := protoMessagesNotMappedToGoStruct[string(valueField.Message().FullName())]; skip {
+			valueName := string(valueField.Message().FullName())
+			if _, skip := protoMessagesNotMappedToGoStruct[valueName]; skip {
 				return "", fmt.Errorf("unsupported map type with key %v and value %v",
 					keyField.Kind(), valueField.Kind())
+			}
+			// Declining here drops the field, which is the lesser harm: a map of
+			// one of these makes it reachable from the CRD, and controller-gen
+			// then fails on the whole package rather than on this one field.
+			if protoMessagesRecursiveInCRD[valueName] {
+				return "", fmt.Errorf(
+					"unsupported map value %s: recursive, controller-gen cannot build a schema for it",
+					valueName)
 			}
 			return "map[string]" + GoNameForProtoMessage(valueField.Message()), nil
 		default:

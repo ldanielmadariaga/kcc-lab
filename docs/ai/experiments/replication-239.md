@@ -156,6 +156,61 @@ made references of none — they are container images, GCS object paths, an OAut
 existing policy of treating them as not-representable is correct. Caveat: 9 is a small sample,
 enough to say "do not invert this", not enough to say "never".
 
+## Map support, and how it was verified
+
+`map<string, Message>` was one of the dropped-field categories. It now generates, and this is the
+evidence that the output is right rather than merely present.
+
+**Against upstream, byte for byte.** Two resources were regenerated and their map declarations
+compared with the hand-written upstream versions at `c1df0b9326`:
+
+| resource | generated | upstream | |
+|---|---|---|---|
+| `BigQueryMigrationMigrationWorkflow` | `Tasks map[string]MigrationTask` | identical | match |
+| `NetworkServicesWasmPlugin` | `Versions map[string]WasmPlugin_VersionDetails` | identical | match |
+| `HypercomputeClusterCluster` | `map[string]NetworkResource` | `map[string]*NetworkResource` | differs |
+
+The one difference is the value type's pointer-ness. The corpus settles it: across all `v1alpha1`
+and `v1beta1` types, 16 map declarations use the value form and 7 use a pointer, so upstream's
+`hypercomputecluster` is the minority spelling rather than a convention being violated. A map value's
+pointer-ness also does not change the OpenAPI schema, so no CRD differs either way. Recorded, not
+"fixed".
+
+Worth noting about the second row: `networkserviceswasmplugin_types.go` had **not** in fact been
+regenerated when this was first checked, and its old-format `// TODO: unsupported map type` was
+mistaken for a match. It was regenerated for real and then compared. The tell was the TODO text,
+which lacks the field name that `WriteField` now emits — old-format markers are a reliable sign that
+a file predates the change you are trying to measure.
+
+**Unit tests**, in `dev/tools/controllerbuilder/pkg/codegen/typegenerator_test.go`. Maps had no
+coverage at all before this, including the two forms that already worked, which matters more than
+usual here: when `GoTypeForField` declines a type, `WriteField` swallows the error, leaves a
+`// TODO:` comment and carries on, so a regression removes fields from the CRD without failing
+anything.
+
+- `TestGoTypeForFieldMaps` covers the type string: `map<string,string>`, `map<string,int64>`,
+  `map<string,Message>`, a non-string key, and a `google.protobuf.Value` value.
+- `TestWriteMessage` covers the rendered output, which is what distinguishes a field that is typed
+  wrongly from one that is not there at all. It now carries a supported map, a map of message, and a
+  declined one, pinning the `// TODO:` line.
+
+Reverting the map branch fails all five type cases; reverting only the map-of-message arm fails that
+one. Confirmed by doing it.
+
+**Sizing the remainder.** Across the Google API protos there are 1002 `map<string, Message>` fields.
+The ones still declined are all JSON-shaped: `google.protobuf.Value` (88), `google.protobuf.Struct`
+(8) and `google.protobuf.ListValue` (4). So roughly 900 of 1002 generate now, and the whole
+remainder is one follow-up — mapping those three to `apiextensionsv1.JSON`, which is what upstream
+writes by hand in `apis/firestore/v1alpha1` and `apis/aiplatform/v1alpha1/recursive_types.go`.
+
+**A hazard found while writing the tests.** The map branch happily generated `map[string]Value`.
+`Value` and `ListValue` are mutually recursive — `Value.list_value` is a `ListValue`,
+`ListValue.values` is a `[]Value` — and `controller-gen` cannot build a terminating schema for that,
+so it fails on the whole package rather than on the one field. This is the `DataLineageProcess`
+failure, and upstream hit it too: `recursive_types.go` declares both types with the `ListValue`
+field commented out "due to CRD instability". The generator now declines these as map values, which
+drops the field visibly into the queue instead of producing a tree that cannot generate CRDs.
+
 ## Lessons for the evaluation framework
 
 These cost more time than the generator defects did.
@@ -193,6 +248,18 @@ reports matched, missing, extra and mismatched per bucket. It reuses `walk`/`fla
 `compare.go`, so it sees schemas exactly as the existing equivalence check does.
 
 **Resource resolution** from each CRD's own `kind:` field, never from the filename.
+
+**Map value pointer-ness** counted on `upstream/master`, not the working tree, which the experiment
+has modified:
+
+```sh
+git grep -hoE "map\[string\]\*?[A-Z][A-Za-z0-9_]*" upstream/master -- 'apis/**/*.go'
+```
+
+Halve the totals: every declaration appears exactly twice, once in the types file and once in
+`zz_generated.deepcopy.go`. That gives 16 value to 7 pointer. Restricting the glob to types files
+instead gives 16 to 4, because the deepcopy copies are not evenly distributed across the two forms —
+so quote the halved figure, not a filtered one.
 
 **The measured set** counts a resource only if its `_types.go` actually differs from baseline; a
 restored resource would otherwise score a false 100%.

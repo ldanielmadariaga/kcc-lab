@@ -25,7 +25,10 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/known/structpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"k8s.io/apimachinery/pkg/util/sets"
 )
 
@@ -540,25 +543,74 @@ func TestWriteFieldRequiredMarker(t *testing.T) {
 	}
 }
 
+// TestWriteMessage pins the rendered output, which is what distinguishes a
+// field that is typed wrongly from one that is not there at all. GoTypeForField
+// returning an error does not fail generation: WriteField swallows it, leaves a
+// "// TODO:" comment in place of the field, and the CRD comes out short by one
+// field with nothing reporting a problem. Both outcomes appear below.
 func TestWriteMessage(t *testing.T) {
+	mapEntry := func(name string, value *descriptorpb.FieldDescriptorProto) *descriptorpb.DescriptorProto {
+		return &descriptorpb.DescriptorProto{
+			Name: protoPtr(name),
+			Field: []*descriptorpb.FieldDescriptorProto{
+				{Name: protoPtr("key"), Number: protoPtr(int32(1)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+				value,
+			},
+			Options: &descriptorpb.MessageOptions{MapEntry: protoPtr(true)},
+		}
+	}
+	mapField := func(name string, num int32, entry string) *descriptorpb.FieldDescriptorProto {
+		return &descriptorpb.FieldDescriptorProto{
+			Name: protoPtr(name), Number: protoPtr(num),
+			Type:     typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE),
+			TypeName: protoPtr(".google.cloud.test.v1.TestMessage." + entry),
+			Label:    labelDescriptor(descriptorpb.FieldDescriptorProto_LABEL_REPEATED),
+		}
+	}
+
 	fdp := &descriptorpb.FileDescriptorProto{
-		Name:    protoPtr("test.proto"),
-		Package: protoPtr("google.cloud.test.v1"),
+		Name:       protoPtr("test.proto"),
+		Package:    protoPtr("google.cloud.test.v1"),
+		Dependency: []string{"google/protobuf/timestamp.proto"},
 		MessageType: []*descriptorpb.DescriptorProto{
+			{Name: protoPtr("TargetMessage")},
 			{
 				Name: protoPtr("TestMessage"),
+				NestedType: []*descriptorpb.DescriptorProto{
+					mapEntry("LabelsEntry", &descriptorpb.FieldDescriptorProto{
+						Name: protoPtr("value"), Number: protoPtr(int32(2)),
+						Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING),
+					}),
+					mapEntry("TasksEntry", &descriptorpb.FieldDescriptorProto{
+						Name: protoPtr("value"), Number: protoPtr(int32(2)),
+						Type:     typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE),
+						TypeName: protoPtr(".google.cloud.test.v1.TargetMessage"),
+					}),
+					mapEntry("SeenEntry", &descriptorpb.FieldDescriptorProto{
+						Name: protoPtr("value"), Number: protoPtr(int32(2)),
+						Type:     typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE),
+						TypeName: protoPtr(".google.protobuf.Timestamp"),
+					}),
+				},
 				Field: []*descriptorpb.FieldDescriptorProto{
 					{
 						Name:   protoPtr("project_id"),
 						Number: protoPtr(int32(1)),
 						Type:   typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING),
 					},
+					mapField("labels", 2, "LabelsEntry"),
+					mapField("tasks", 3, "TasksEntry"),
+					mapField("seen", 4, "SeenEntry"),
 				},
 			},
 		},
 	}
 
-	fd, err := protodesc.NewFile(fdp, nil)
+	deps := new(protoregistry.Files)
+	if err := deps.RegisterFile(timestamppb.Now().ProtoReflect().Descriptor().ParentFile()); err != nil {
+		t.Fatalf("registering timestamp.proto: %v", err)
+	}
+	fd, err := protodesc.NewFile(fdp, deps)
 	if err != nil {
 		t.Fatalf("failed to create file descriptor: %v", err)
 	}
@@ -568,7 +620,32 @@ func TestWriteMessage(t *testing.T) {
 	WriteMessage(&buf, msg, WriteOptions{})
 
 	got := buf.String()
-	expected := "\n// +kcc:proto=google.cloud.test.v1.TestMessage\ntype TestMessage struct {\n\t// +kcc:proto:field=google.cloud.test.v1.TestMessage.project_id\n\tProjectID *string `json:\"projectID,omitempty\"`\n}\n"
+	// labels and tasks are the two supported map shapes. seen is the rejected
+	// one: the generator special-cases Timestamp to a plain string in every other
+	// position but has no spelling for it as a map value, so the field is dropped
+	// and the TODO line is its only trace. Timestamp itself never appears as a
+	// map value in the Google API protos; the shapes that do hit this path are
+	// the JSON-ish ones, google.protobuf.Struct (8 fields), Value (88) and
+	// ListValue (4) out of 1002 map-of-message fields. All three want
+	// apiextensionsv1.JSON, which is the follow-up that would close them.
+	expected := strings.Join([]string{
+		"",
+		"// +kcc:proto=google.cloud.test.v1.TestMessage",
+		"type TestMessage struct {",
+		"\t// +kcc:proto:field=google.cloud.test.v1.TestMessage.project_id",
+		"\tProjectID *string `json:\"projectID,omitempty\"`",
+		"",
+		"\t// +kcc:proto:field=google.cloud.test.v1.TestMessage.labels",
+		"\tLabels map[string]string `json:\"labels,omitempty\"`",
+		"",
+		"\t// +kcc:proto:field=google.cloud.test.v1.TestMessage.tasks",
+		"\tTasks map[string]TargetMessage `json:\"tasks,omitempty\"`",
+		"",
+		"\t// TODO: seen: unsupported map type with key string and value message",
+		"",
+		"}",
+		"",
+	}, "\n")
 
 	if got != expected {
 		t.Errorf("WriteMessage output mismatch.\nGot:\n%q\nWant:\n%q", got, expected)
@@ -796,6 +873,130 @@ func TestAcronymCasing(t *testing.T) {
 		}
 		if ok && got != tt.want {
 			t.Errorf("AcronymCasing(%q, %v) = %q, want %q", tt.token, tt.plurals, got, tt.want)
+		}
+	}
+}
+
+// Maps had no coverage at all before this, including the two forms that already
+// worked. That matters more than usual here: when GoTypeForField declines a
+// type, WriteField replaces the field with a "// TODO:" comment and carries on,
+// so a regression removes fields from the CRD without failing anything.
+func TestGoTypeForFieldMaps(t *testing.T) {
+	mapEntry := func(name string, key, value *descriptorpb.FieldDescriptorProto) *descriptorpb.DescriptorProto {
+		return &descriptorpb.DescriptorProto{
+			Name:    protoPtr(name),
+			Field:   []*descriptorpb.FieldDescriptorProto{key, value},
+			Options: &descriptorpb.MessageOptions{MapEntry: protoPtr(true)},
+		}
+	}
+	strKey := func() *descriptorpb.FieldDescriptorProto {
+		return &descriptorpb.FieldDescriptorProto{Name: protoPtr("key"), Number: protoPtr(int32(1)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)}
+	}
+	val := func(t descriptorpb.FieldDescriptorProto_Type, typeName string) *descriptorpb.FieldDescriptorProto {
+		f := &descriptorpb.FieldDescriptorProto{Name: protoPtr("value"), Number: protoPtr(int32(2)), Type: typeDescriptor(t)}
+		if typeName != "" {
+			f.TypeName = protoPtr(typeName)
+		}
+		return f
+	}
+	mapField := func(name string, num int32, entry string) *descriptorpb.FieldDescriptorProto {
+		return &descriptorpb.FieldDescriptorProto{
+			Name: protoPtr(name), Number: protoPtr(num),
+			Type:     typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE),
+			TypeName: protoPtr(".google.cloud.test.v1.TestMessage." + entry),
+			Label:    labelDescriptor(descriptorpb.FieldDescriptorProto_LABEL_REPEATED),
+		}
+	}
+
+	fdp := &descriptorpb.FileDescriptorProto{
+		Name:       protoPtr("maps.proto"),
+		Package:    protoPtr("google.cloud.test.v1"),
+		Dependency: []string{"google/protobuf/struct.proto"},
+		MessageType: []*descriptorpb.DescriptorProto{
+			{Name: protoPtr("TargetMessage")},
+			{
+				Name: protoPtr("TestMessage"),
+				NestedType: []*descriptorpb.DescriptorProto{
+					mapEntry("StringMapEntry", strKey(), val(descriptorpb.FieldDescriptorProto_TYPE_STRING, "")),
+					mapEntry("Int64MapEntry", strKey(), val(descriptorpb.FieldDescriptorProto_TYPE_INT64, "")),
+					mapEntry("MessageMapEntry", strKey(), val(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, ".google.cloud.test.v1.TargetMessage")),
+					mapEntry("ValueMapEntry", strKey(), val(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, ".google.protobuf.Value")),
+					mapEntry("IntKeyMapEntry",
+						&descriptorpb.FieldDescriptorProto{Name: protoPtr("key"), Number: protoPtr(int32(1)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_INT32)},
+						val(descriptorpb.FieldDescriptorProto_TYPE_STRING, "")),
+				},
+				Field: []*descriptorpb.FieldDescriptorProto{
+					mapField("string_map", 1, "StringMapEntry"),
+					mapField("int64_map", 2, "Int64MapEntry"),
+					mapField("message_map", 3, "MessageMapEntry"),
+					mapField("value_map", 4, "ValueMapEntry"),
+					mapField("int_key_map", 5, "IntKeyMapEntry"),
+				},
+			},
+		},
+	}
+
+	// value_map refers to google.protobuf.Value, so the file needs struct.proto
+	// resolvable. Take the descriptor from the generated structpb package rather
+	// than looking it up by path in the global registry, which only holds files
+	// some package has already linked in.
+	deps := new(protoregistry.Files)
+	structFile := (&structpb.Value{}).ProtoReflect().Descriptor().ParentFile()
+	if err := deps.RegisterFile(structFile); err != nil {
+		t.Fatalf("registering struct.proto: %v", err)
+	}
+	fd, err := protodesc.NewFile(fdp, deps)
+	if err != nil {
+		t.Fatalf("failed to create file descriptor: %v", err)
+	}
+	fields := fd.Messages().ByName("TestMessage").Fields()
+
+	tests := []struct {
+		field   string
+		want    string
+		wantErr bool
+		why     string
+	}{
+		{field: "string_map", want: "map[string]string", why: "worked before and was untested"},
+		{field: "int64_map", want: "map[string]int64", why: "worked before and was untested"},
+		{
+			field: "message_map", want: "map[string]TargetMessage",
+			why: "the value struct generates like any other nested message; the value form " +
+				"rather than a pointer, which the corpus prefers 16 to 7",
+		},
+		{
+			field: "int_key_map", wantErr: true,
+			why: "a CRD keys additionalProperties by string, so nothing else is expressible",
+		},
+		{
+			field: "value_map", wantErr: true,
+			why: "Value and ListValue are mutually recursive, so a map of one makes it " +
+				"reachable from the CRD and controller-gen fails on the whole package; " +
+				"lifting this needs the type mapped to apiextensionsv1.JSON first",
+		},
+	}
+
+	for _, tt := range tests {
+		f := fields.ByName(protoreflect.Name(tt.field))
+		if f == nil {
+			t.Fatalf("could not find field %q", tt.field)
+		}
+		if !f.IsMap() {
+			t.Fatalf("%q is not a map field; the fixture is wrong", tt.field)
+		}
+		got, err := GoTypeForField(f, false)
+		if tt.wantErr {
+			if err == nil {
+				t.Errorf("GoTypeForField(%q) = %q, want an error (%s)", tt.field, got, tt.why)
+			}
+			continue
+		}
+		if err != nil {
+			t.Errorf("GoTypeForField(%q) returned error: %v (%s)", tt.field, err, tt.why)
+			continue
+		}
+		if got != tt.want {
+			t.Errorf("GoTypeForField(%q) = %q, want %q (%s)", tt.field, got, tt.want, tt.why)
 		}
 	}
 }
