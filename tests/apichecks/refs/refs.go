@@ -298,3 +298,35 @@ func notRepresentableReason(fieldPath, desc string) string {
 
 	return ""
 }
+
+// referenceShapeChildren are the properties a KCC reference object carries.
+// "external" is the discriminating one: it is what makes a reference a
+// reference, and no ordinary message has it alongside name and namespace.
+var referenceShapeChildren = []string{"external", "name", "namespace"}
+
+// HasReferenceShape reports whether an object's property names are those of a
+// KCC reference.
+//
+// Needed because the name is not reliable. IsReferenceFieldPath keys off a Ref
+// or Refs suffix, which most references have, but not all: upstream models
+// NetworkManagementConnectivityTest's destination.sqlInstance as a full
+// reference while calling it "sqlInstance". Judged by name alone its external,
+// name and namespace children look like three ordinary missing fields, which is
+// how 25 reference children ended up miscounted as unexplained drops.
+//
+// Callers pass the property names of the object being visited.
+func HasReferenceShape(propertyNames []string) bool {
+	have := make(map[string]bool, len(propertyNames))
+	for _, n := range propertyNames {
+		have[n] = true
+	}
+	if !have["external"] {
+		return false
+	}
+	for _, n := range referenceShapeChildren {
+		if !have[n] {
+			return false
+		}
+	}
+	return true
+}

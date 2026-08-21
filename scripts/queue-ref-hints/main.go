@@ -139,6 +139,14 @@ func visitProps(props *apiextensions.JSONSchemaProps, path string, fn func(strin
 	if props == nil {
 		return
 	}
+	// A reference-shaped object is already a reference, whatever it is called,
+	// so neither it nor its external/name/namespace children are candidates.
+	// Pruning the subtree here rather than filtering by name catches the ones
+	// upstream did not suffix with Ref, such as
+	// NetworkManagementConnectivityTest's destination.sqlInstance.
+	if path != "" && refs.HasReferenceShape(propertyNames(props)) {
+		return
+	}
 	if path != "" {
 		fn(path, props)
 	}
@@ -148,6 +156,14 @@ func visitProps(props *apiextensions.JSONSchemaProps, path string, fn func(strin
 	if props.Items != nil && props.Items.Schema != nil {
 		visitProps(props.Items.Schema, path+"[]", fn)
 	}
+}
+
+func propertyNames(props *apiextensions.JSONSchemaProps) []string {
+	out := make([]string, 0, len(props.Properties))
+	for name := range props.Properties {
+		out = append(out, name)
+	}
+	return out
 }
 
 func serviceFromGroup(group string) string {
