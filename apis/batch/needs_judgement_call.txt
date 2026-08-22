@@ -16,3 +16,5 @@ kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.n
 kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.network.networkInterfaces[].subnetwork" reason=possible-reference-by-description
 kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.serviceAccount" reason=possible-reference-by-description
 kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.notifications[].pubsubTopic" reason=possible-reference-by-description
+kind=BatchTask group=batch.cnrm.cloud.google.com: field ".spec.job" reason=parent-segment-omitted (the resource pattern is projects/{project}/locations/{location}/jobs/{job}/taskGroups/{task_group}/tasks/{task}; upstream carries each part of the name as a spec field)
+kind=BatchTask group=batch.cnrm.cloud.google.com: field ".spec.taskGroup" reason=parent-segment-omitted (the resource pattern is projects/{project}/locations/{location}/jobs/{job}/taskGroups/{task_group}/tasks/{task}; upstream carries each part of the name as a spec field)

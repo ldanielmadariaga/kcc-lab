@@ -7,3 +7,4 @@
 
 kind=CloudTalentSolutionCompany group=cloudtalentsolution.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=CloudTalentSolutionCompany group=cloudtalentsolution.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/tenants/{tenant}/companies/{company}; location is implied by the parent, add it only if the API needs it stated)
+kind=CloudTalentSolutionCompany group=cloudtalentsolution.cnrm.cloud.google.com: field ".spec.tenant" reason=parent-segment-omitted (the resource pattern is projects/{project}/tenants/{tenant}/companies/{company}; upstream carries each part of the name as a spec field)

@@ -71,10 +71,10 @@ decision deliberately deferred. Both are still reported.
 
 | class | we miss | flagged by field | by section | unflagged |
 |---|---|---|---|---|
-| `reference-shape` | 314 | 167 | 0 | 147 |
+| `reference-shape` | 314 | 180 | 0 | 134 |
 | `moved` | 102 | 36 | 41 | 25 |
-| `absent` | 85 | 39 | 1 | 45 |
-| **subtotal, the target** | **501** | **242** | **42** | **217** |
+| `absent` | 85 | 40 | 1 | 44 |
+| **subtotal, the target** | **501** | **256** | **42** | **203** |
 | `renamed` (accepted) | 22 | 0 | 0 | 22 |
 | `intentionally-different` (accepted) | 60 | 0 | 0 | 60 |
 
@@ -87,7 +87,8 @@ How the target got from 450 to 217:
 | run `scripts/queue-hints` — a tool that already existed and had never been run | 276 |
 | pair the suffix upstream drops when it adds `Ref` (`kmsKeyName` → `kmsKeyRef`) | 256 |
 | gate the seeder per Kind, so it stops queueing hand-written upstream resources | 259 |
-| flag `empty-observedstate` on the 36 resources that generated no status at all | **217** |
+| flag `empty-observedstate` on the 36 resources that generated no status at all | 217 |
+| name every omitted parent segment (`spec.collection`, `spec.tenant`, `spec.lake`) | **203** |
 
 "We produce" held at 8,727 throughout. That check matters: a change that flags fields by no longer
 producing them improves the report and damages the CRD.

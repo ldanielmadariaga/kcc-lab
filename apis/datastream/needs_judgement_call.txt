@@ -16,3 +16,4 @@ kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field "
 kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.privateConnectivity.privateConnection" reason=possible-reference-by-description
 kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: field ".spec.pscInterfaceConfig.networkAttachment" reason=possible-reference-by-description
 kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: field ".spec.vpcPeeringConfig.vpc" reason=possible-reference-by-description
+kind=DatastreamRoute group=datastream.cnrm.cloud.google.com: field ".spec.privateConnection" reason=parent-segment-omitted (the resource pattern is projects/{project}/locations/{location}/privateConnections/{private_connection}/routes/{route}; upstream carries each part of the name as a spec field)

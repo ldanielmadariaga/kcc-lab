@@ -14,7 +14,8 @@ Baseline `c1df0b9326`, 189 greenfield resources, target classes `reference-shape
 | run `scripts/queue-hints` | 276 | a tool that already existed, never run here |
 | pair the suffix upstream drops when it adds `Ref` | 256 | measurement fix |
 | gate the seeder per Kind | 259 | costs 3, avoids pruning a ratchet |
-| flag `empty-observedstate` | **217** | 36 resources, one fact each |
+| flag `empty-observedstate` | 217 | 36 resources, one fact each |
+| name every omitted parent segment | **203** | 18 lines merged from a scratch regeneration |
 
 Two of those are measurement fixes rather than coverage improvements. They are in the table because
 the number they corrected was published, and quietly restating it would be worse than showing the
@@ -121,12 +122,50 @@ handful of times and should be queued as well as moved; `type` appears 36 times 
 | `resourceID` on an embedded resource | 2 | a nested message that itself carries `google.api.resource` |
 | no mechanical explanation | ~19 | including a self-recursive message the generator truncates |
 
-The parent-segment group is the next mechanical win. `AddTypeFile` in
-`dev/tools/controllerbuilder/scaffold/apis.go` already parses the `google.api.resource` pattern and
-already prints it in the `location-omitted-*` detail — it just only ever names `.spec.location`.
-Walking every variable segment of the pattern and naming each one we did not produce covers the
-group. It needs proto access, so it belongs in the generator rather than in `queue-hints`, and it
-only takes effect on a regeneration.
+### The parent-segment detector
+
+Done. The types template emits `projectRef` and `resourceID` always, and `location` only when the
+parent is exactly `projects/locations`; every other variable segment of the resource pattern was
+dropped in silence. `ParentStyle` could not see this — it collapses everything past
+project+location into `other`, which is enough to decide what the template renders but not enough
+to say what was left out. `protoapi.ParentVariables` now walks the pattern's placeholders directly,
+and `AddTypeFile` emits `parent-segment-omitted` for each one the Spec does not carry.
+
+`DiscoveryEngineEngine` is the worked example: pattern
+`projects/{project}/locations/{location}/collections/{collection}/engines/{engine}`, upstream
+carries `spec.location` and `spec.collection`, we emitted neither and named only location.
+
+Two limits worth knowing. Entries use the **placeholder's** name, not the collection segment
+singularised. They disagree once in the corpus — `FirestoreField`'s pattern is
+`collectionGroups/{collection}` while upstream calls the field `collectionGroup` — and
+singularising is the worse trade, since it fixes that one and mangles `policies` and `addresses`.
+And a resource with no `google.api.resource` at all is beyond reach: `DataprocJob`'s `spec.parent`
+and `FirestoreDocument`'s `spec.collection` are not derivable from the proto, so they keep only the
+`location-omitted-unknown-parent` entry.
+
+**Applying it without a regeneration.** A generator change normally shows up only after a full
+regeneration, which would overwrite the tree everything here is measured against. `--output-api`
+avoids that: the queue path derives from it, so every service can be generated into a scratch tree
+(1.4s each) and only the parent-related lines merged back, gated per Kind exactly like the seeder.
+No types file is touched.
+
+That merged 18 lines and took the target from 217 to **203**. Most of the credit landed in
+`reference-shape` rather than `absent`, which is right — a parent segment is usually a reference to
+the parent resource. `GKEBackupBackup` needs `spec.backupPlanRef`, `ManagedKafkaTopic` needs
+`spec.clusterRef`, `WorkflowsExecution` needs `spec.workflowRef`, and none of the three was
+mentioned anywhere before.
+
+Three things that run did **not** reach, so the detector is worth more than 18 lines:
+
+* Only 114 of the 189 measured kinds regenerated. Twelve invocations failed with `proto: not found`
+  — `hypercomputecluster`, `workloadmanager`, `networksecurity` and others need an overlay or a
+  newer descriptor set that the per-service `generate.sh` supplies and this re-invocation did not.
+* Every invocation also reported a failure at the *prune* step (`no packages found`), because a bare
+  scratch tree has no Go packages to prune. Harmless — the queue is written before pruning — but
+  pass `--prune-unused-types=false` next time to keep the log readable.
+* The DiscoveryEngine group, which is where this detector was aimed, is gated out. Those kinds have
+  no resource-level queue entry to gate on, and queueing them would prune their ratchet. Their
+  `spec.collection` stays unflagged until that is resolved on its own terms.
 
 ## This tree does not build
 

@@ -22,3 +22,5 @@ kind=GKEBackupRestore group=gkebackup.cnrm.cloud.google.com: field ".spec.locati
 kind=GKEBackupBackupChannel group=gkebackup.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=GKEBackupBackupChannel group=gkebackup.cnrm.cloud.google.com: field ".spec.destinationProject" reason=possible-reference-by-description
 kind=GKEBackupBackupPlan group=gkebackup.cnrm.cloud.google.com: field ".spec.backupConfig.encryptionKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=GKEBackupBackup group=gkebackup.cnrm.cloud.google.com: field ".spec.backupPlan" reason=parent-segment-omitted (the resource pattern is projects/{project}/locations/{location}/backupPlans/{backup_plan}/backups/{backup}; upstream carries each part of the name as a spec field)
+kind=GKEBackupRestore group=gkebackup.cnrm.cloud.google.com: field ".spec.restorePlan" reason=parent-segment-omitted (the resource pattern is projects/{project}/locations/{location}/restorePlans/{restore_plan}/restores/{restore}; upstream carries each part of the name as a spec field)

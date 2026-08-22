@@ -68,12 +68,12 @@ Current state of the target classes:
 
 | | we miss | by field | by section | unflagged |
 |---|---|---|---|---|
-| `reference-shape` | 314 | 167 | 0 | 147 |
+| `reference-shape` | 314 | 180 | 0 | 134 |
 | `moved` | 102 | 36 | 41 | 25 |
-| `absent` | 85 | 39 | 1 | 45 |
-| **subtotal** | **501** | **242** | **42** | **217** |
+| `absent` | 85 | 40 | 1 | 44 |
+| **subtotal** | **501** | **256** | **42** | **203** |
 
-217 unflagged, down from 450 when this was first measured. What moved it is
+203 unflagged, down from 450 when this was first measured. What moved it is
 recorded in [greenfield-detection-gaps.md](greenfield-detection-gaps.md).
 
 ## Why each field differs
@@ -187,6 +187,7 @@ tool prints "we produce" beside the gap.
 | `untriaged-bulk-generation` | blanket, per resource; does not count as a flag |
 | `possible-reference` | a plain string that `google.api.resource_reference` says is a reference |
 | `location-omitted-nested-parent` | parent is not project+location, so no `spec.location` was emitted |
+| `parent-segment-omitted` | another part of the resource name — `collection`, `tenant`, `database` — that the Spec does not carry |
 | `location-omitted-unknown-parent` | the proto declares no `google.api.resource` pattern |
 | `unsupported-field-type` | the type was declined; the field is a `// TODO:` and never reaches the CRD |
 | `possible-reference-by-description` | the description spells out a resource-name path — strong |
