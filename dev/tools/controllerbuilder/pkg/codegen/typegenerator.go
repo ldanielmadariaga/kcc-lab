@@ -488,11 +488,31 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 // scaffolder would drift from this one the first time either changed.
 //
 // skip names proto fields to leave out, or nil to write all of them.
-func WriteObservedStateFields(out io.Writer, msgDetails *OutputMessageDetails, observedStateMessages sets.String, skip map[string]bool) {
+// ObservedStateFieldNote records an output-only field that did not reach the
+// struct cleanly, so the caller can say so rather than dropping it in silence.
+//
+// Rendered carries the field's own output for the caller to inspect. The reason
+// a type was declined is spelled in the "// TODO:" comment WriteField leaves
+// behind, and parsing that belongs with the queue rather than here.
+type ObservedStateFieldNote struct {
+	// JSONName is the field as KRM spells it, e.g. "createTime".
+	JSONName string
+	// Skipped is true when the caller's skip map excluded the field outright.
+	Skipped bool
+	// Rendered is the field's output, non-empty only when it was not skipped.
+	Rendered string
+}
+
+func WriteObservedStateFields(out io.Writer, msgDetails *OutputMessageDetails, observedStateMessages sets.String, skip map[string]bool) []ObservedStateFieldNote {
 	msg := msgDetails.Message
 	emitted := 0
+	var notes []ObservedStateFieldNote
 	for _, field := range msgDetails.OutputFields {
 		if skip[string(field.Name())] {
+			notes = append(notes, ObservedStateFieldNote{
+				JSONName: GetJSONForKRM(field),
+				Skipped:  true,
+			})
 			continue
 		}
 		isMessage := field.Kind() == protoreflect.MessageKind && !field.IsMap()
@@ -502,12 +522,23 @@ func WriteObservedStateFields(out io.Writer, msgDetails *OutputMessageDetails, o
 				useObservedState = true
 			}
 		}
+		// Rendered separately so the field's own output can be inspected before it
+		// is appended, the same way the Spec does it. A field whose type the
+		// generator declines becomes a "// TODO:" comment and never reaches the
+		// CRD, which is a silent drop unless somebody records it.
+		var field_ bytes.Buffer
 		// Never emit +required from here. An observed-state struct describes what GCP
 		// returned, and the API server validates status, so requiring a field GCP is
 		// free to omit would make it reject a status KCC itself wrote.
-		WriteField(out, field, msg, emitted, useObservedState, WriteOptions{})
+		WriteField(&field_, field, msg, emitted, useObservedState, WriteOptions{})
+		out.Write(field_.Bytes())
 		emitted++
+		notes = append(notes, ObservedStateFieldNote{
+			JSONName: GetJSONForKRM(field),
+			Rendered: field_.String(),
+		})
 	}
+	return notes
 }
 
 func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool) (string, error) {

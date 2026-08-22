@@ -146,19 +146,41 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 // details comes from the type generator's identifyOutputs, so the transitive rule
 // -- a field is output-only if reached through an OUTPUT_ONLY parent -- is applied
 // once, in one place.
-func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedStateMessages sets.String) (fields string, extraImports []string) {
+func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedStateMessages sets.String) (fields string, extraImports []string, judgement []JudgementItem) {
 	if details == nil {
-		return "", nil
+		return "", nil, nil
 	}
 
 	var buf bytes.Buffer
 	// identityFields is skipped here for the same reason as in the Spec: "name" is
 	// the resource's own resource name, which KCC carries in status.externalRef
 	// rather than as an observed field, even where the proto marks it OUTPUT_ONLY.
-	codegen.WriteObservedStateFields(&buf, details, observedStateMessages, identityFields)
+	notes := codegen.WriteObservedStateFields(&buf, details, observedStateMessages, identityFields)
 	fields = buf.String()
 
-	return fields, ExtraImportsFor(fields)
+	// Report what did not make it. Until this existed, ObservedState was the only
+	// part of the generator that dropped fields without saying so, which made a
+	// resource with a half-empty status indistinguishable from a complete one.
+	for _, n := range notes {
+		switch {
+		case n.Skipped:
+			judgement = append(judgement, JudgementItem{
+				FieldPath: ".status.observedState." + n.JSONName,
+				Reason:    "observedstate-identity-field-omitted",
+				Detail:    "proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource",
+			})
+		default:
+			if reason, ok := unsupportedFieldReason(n.Rendered); ok {
+				judgement = append(judgement, JudgementItem{
+					FieldPath: ".status.observedState." + n.JSONName,
+					Reason:    "unsupported-field-type",
+					Detail:    reason,
+				})
+			}
+		}
+	}
+
+	return fields, ExtraImportsFor(fields), judgement
 }
 
 // judgementFor reports whether a field needs a human decision that the generator
