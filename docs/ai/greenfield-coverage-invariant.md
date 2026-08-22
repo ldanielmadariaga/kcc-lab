@@ -18,48 +18,96 @@ Measured over the 189 greenfield resources against baseline `c1df0b9326`:
 
 | | count |
 |---|---|
-| fields in KCC master's CRDs | 9,356 |
-| we produce | 8,727 (93.3%) |
-| we miss | 629 (6.7%) |
-| …of those, flagged | 96 |
-| …of those, **unflagged** | **533** |
+| fields in KCC master's CRDs | 9,310 |
+| we produce | 8,727 (93.7%) |
+| we miss | 583 (6.3%) |
 
-## The three states
+## Two questions, not one
 
-**produced** — the field is in our CRD, matching the baseline.
+The report answers two questions about the fields we miss, and they are
+**independent**. Reading them as one axis is what made an earlier version of this
+output contradict itself: it said "104 genuinely appear nowhere in our output" and
+then showed 37 of those 104 flagged, which reads as nonsense.
 
-**flagged** — it is not, and `apis/<service>/needs_judgement_call.txt` names it in
-a field-level entry, with a reason.
+It is not nonsense. The two questions are:
 
-**unflagged** — it is not, and nothing says so. This is the number to drive to
-zero. Note the denominator: 533 unflagged is a share of the **629 we miss**, not
-of the 9,356 KCC has.
+* **why does the field differ?** — the five classes, the rows of the table
+* **was anybody told about it?** — the three columns
+
+A field can be `absent` **and** flagged at the same time. That is the queue doing
+its job: we did not produce the field, and the queue says so, so a human will see
+it. Nothing about "absent" implies "unreported".
+
+## The three columns
+
+**field-flagged** — a queue entry names this exact field, with a reason.
+
+**section-flagged** — a resource-level entry names the *section* the field belongs
+to. Today that is `empty-observedstate`, written when a resource's
+`status.observedState` was generated with no fields at all. It is specific enough
+to act on: "your status is empty" tells a human exactly what to go and do, and
+does it better than nineteen separate lines would. The blanket
+`untriaged-bulk-generation` entry names neither field nor section and deliberately
+counts for nothing.
+
+**unflagged** — nothing says anything. This is the number to drive to zero.
+
+## The target, and what is excluded from it
+
+Three of the five classes are the target. The other two are differences we accept,
+reported below the subtotal and left out of it:
+
+* `renamed` (22) is a casing table — `bootDiskMIB` against upstream's
+  `bootDiskMiB`. A fix, not a judgement call.
+* `intentionally-different` (60) is the `google.protobuf.Value` union arms, which
+  we map to `apiextensionsv1.JSON` on purpose. Whether to keep doing that is an
+  open question and is **deliberately deferred**; it is recorded rather than
+  counted as a miss.
+
+Current state of the target classes:
+
+| | we miss | by field | by section | unflagged |
+|---|---|---|---|---|
+| `reference-shape` | 314 | 167 | 0 | 147 |
+| `moved` | 102 | 36 | 41 | 25 |
+| `absent` | 85 | 39 | 1 | 45 |
+| **subtotal** | **501** | **242** | **42** | **217** |
+
+217 unflagged, down from 450 when this was first measured. What moved it is
+recorded in [greenfield-detection-gaps.md](greenfield-detection-gaps.md).
 
 ## Why each field differs
 
-Every field we miss is also classed by *why*, to route the fix. All five are real
-gaps; they need different work.
+Every field we miss is classed by *why*, to route the fix. All five are real gaps;
+they need different work.
 
-| class | count | what it means | where the fix lives |
-|---|---|---|---|
-| `reference-shape` | 328 | we emit a plain string, KCC has a `Ref` object | judgement; the reference-hint seeder |
-| `moved` | 114 | we emit it in Spec, KCC has it in `status.observedState` | placement rules |
-| `absent` | 104 | it appears nowhere in our output | generation |
-| `intentionally-different` | 60 | we model it deliberately otherwise, e.g. `google.protobuf.Value` as `apiextensionsv1.JSON` | a decision to record — still a CRD difference |
-| `renamed` | 23 | same field, different name: `bootDiskMIB` vs `bootDiskMiB` | the acronym list |
+| class | what it means | where the fix lives |
+|---|---|---|
+| `reference-shape` | we emit a plain string, KCC has a `Ref` object | judgement; `scripts/queue-hints` |
+| `moved` | we emit it in Spec, KCC has it in `status.observedState` | placement rules |
+| `absent` | it appears nowhere in our output | generation |
+| `intentionally-different` | we model it deliberately otherwise, e.g. `google.protobuf.Value` as `apiextensionsv1.JSON` | a decision to record — still a CRD difference |
+| `renamed` | same field, different name: `bootDiskMIB` vs `bootDiskMiB` | the acronym list |
+
+A reference is recognised by a `Ref`/`Refs` segment, and also by a missing
+`.external` child under a repeated field. Upstream does not always add the suffix:
+`producerAcceptLists[]` and `relatedProjects[]` are references with plain names.
+`.external` is the discriminator because KCC puts it on references and nothing
+else in a CRD has it, whereas a plain repeated message can have a `name` field of
+its own.
 
 `moved` and `renamed` are detected from the score's own *extra* list — a field we
 put somewhere else shows up as missing in one place and extra in another. That
 catches a section swap (Spec versus observedState) and a same-parent case
 difference. It does **not** catch a field moved to a different nesting level, so
 `absent` is somewhat overstated: comparing `+kcc:proto:field` annotations across
-the two trees suggests the true never-produced count is nearer 79 than 104.
+the two trees suggests the true never-produced count is nearer 79 than 85.
 
 That annotation comparison is a useful second opinion — it says the generator
 emits 16,295 of the 16,438 proto fields KCC declares, so generation itself is
 healthy and the gap is mostly shape, name and placement. It is **not** the
-measurement. Using it to shrink 629 explains away fields users genuinely cannot
-set.
+measurement. Using it to shrink the gap explains away fields users genuinely
+cannot set.
 
 Run the report with:
 
@@ -74,7 +122,7 @@ python3 hack/tools/greenfield/silence_report.py \
 resources takes minutes, so keep it while iterating — but **delete it after
 regenerating**, or you will measure the previous tree and believe it.
 
-## Three rules that decide whether the number means anything
+## Four rules that decide whether the number means anything
 
 Each of these produced a confidently wrong answer before it was fixed. They are
 worth knowing because any new analysis over the same data will hit them again.
@@ -84,6 +132,17 @@ subtree missing as well. 298 missing observedState paths were 156 actual defects
 1264 missing reference paths were roughly 280 actual references. Counting paths
 inflates everything several-fold and makes the reference problem look four times
 worse than it is.
+
+**Count a repeated field once.** The score reports `foo` and `foo[]` as two
+separate missing paths; they are one field. 28 of the first published 533 were
+this, and the parent check did not catch them because it splits on `.`, so the
+`[]` sibling never matched.
+
+**Count a reference site once, suffixed or not.** A missing `fooRef` hides its own
+`.external` / `.name` / `.namespace` / `.kind` children, so the roots rule
+collapses it to one entry. Upstream does not always add the suffix, and without
+the same collapsing an unsuffixed reference such as `producerAcceptLists[]` costs
+four where a suffixed one costs one.
 
 **Pair names across the reference rename.** The queue names a field as *we*
 generated it — `.spec.pipelineJob`. The baseline names it as *upstream* has it —
@@ -100,7 +159,12 @@ otherwise it explains nothing it is meant to explain.
 **Ignore the blanket entry.** `untriaged-bulk-generation` is one entry per
 resource naming no field. It exists to suppress `[refs]` findings while a
 resource is unreviewed, and it covers everything trivially. Counting it would
-report 100% explained on day one. Only field-level entries count.
+report 100% explained on day one, so it counts for nothing.
+
+A resource-level entry that names a *section* is different, and does count — in
+its own column. `empty-observedstate` says which part of the resource is missing
+and is actionable on its own. The distinction is whether an entry tells a human
+where to look.
 
 ## Reading a result
 
@@ -125,6 +189,9 @@ tool prints "we produce" beside the gap.
 | `location-omitted-nested-parent` | parent is not project+location, so no `spec.location` was emitted |
 | `location-omitted-unknown-parent` | the proto declares no `google.api.resource` pattern |
 | `unsupported-field-type` | the type was declined; the field is a `// TODO:` and never reaches the CRD |
+| `possible-reference-by-description` | the description spells out a resource-name path — strong |
+| `possible-reference-by-name` | the field name matches a known target — a hint, roughly a third wrong |
+| `empty-observedstate` | nothing was generated into `status.observedState`; counts as a section flag |
 | `observedstate-identity-field-omitted` | OUTPUT_ONLY, but skipped because KCC carries it in `status.externalRef` |
 | `output-only-in-comment-only` | the proto comment says output only, but no `field_behavior` annotation, so it landed in the Spec |
 

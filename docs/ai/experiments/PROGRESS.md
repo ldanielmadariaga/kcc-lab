@@ -57,32 +57,43 @@ than paths:
 
 | | fields |
 |---|---|
-| in KCC master's CRDs | 9,356 |
-| we produce | 8,727 (93.3%) |
-| **we miss** | **629 (6.7%)** |
+| in KCC master's CRDs | 9,310 |
+| we produce | 8,727 (93.7%) |
+| **we miss** | **583 (6.3%)** |
 
-Of the 629 we miss:
+Two axes, not one, and they are independent: the class says *why* a field differs, the columns say
+*whether anyone was told*. A field can be `absent` and flagged at once — that is the queue working.
+An earlier version of this table put both on one axis and read as a contradiction.
 
-| | flagged | unflagged | unflagged share of the 629 |
-|---|---|---|---|
-| before any reporting work | 37 | 592 | 94% |
-| + observedState omissions reported | 53 | 576 | 92% |
-| + comment detector routed into the queue | **96** | **533** | **85%** |
+`renamed` and `intentionally-different` are excluded from the target: the first is a casing table,
+the second is the `google.protobuf.Value` arms we map to `apiextensionsv1.JSON` on purpose, a
+decision deliberately deferred. Both are still reported.
+
+| class | we miss | flagged by field | by section | unflagged |
+|---|---|---|---|---|
+| `reference-shape` | 314 | 167 | 0 | 147 |
+| `moved` | 102 | 36 | 41 | 25 |
+| `absent` | 85 | 39 | 1 | 45 |
+| **subtotal, the target** | **501** | **242** | **42** | **217** |
+| `renamed` (accepted) | 22 | 0 | 0 | 22 |
+| `intentionally-different` (accepted) | 60 | 0 | 0 | 60 |
+
+How the target got from 450 to 217:
+
+| | unflagged |
+|---|---|
+| first published | 450 |
+| de-duplicate repeated fields and reference children | 412 |
+| run `scripts/queue-hints` — a tool that already existed and had never been run | 276 |
+| pair the suffix upstream drops when it adds `Ref` (`kmsKeyName` → `kmsKeyRef`) | 256 |
+| gate the seeder per Kind, so it stops queueing hand-written upstream resources | 259 |
+| flag `empty-observedstate` on the 36 resources that generated no status at all | **217** |
 
 "We produce" held at 8,727 throughout. That check matters: a change that flags fields by no longer
 producing them improves the report and damages the CRD.
 
-By why the field differs, at 96/533:
-
-| class | we miss | flagged | unflagged |
-|---|---|---|---|
-| `reference-shape` | 328 | 16 | 312 |
-| `moved` | 114 | 43 | 71 |
-| `absent` | 104 | 37 | 67 |
-| `intentionally-different` | 60 | 0 | 60 |
-| `renamed` | 23 | 0 | 23 |
-
-References are the large one and the least mechanical, so they are the next target.
+What is left, and why, is in
+[greenfield-detection-gaps.md](../greenfield-detection-gaps.md).
 
 ## What each change was worth
 
@@ -95,6 +106,8 @@ References are the large one and the least mechanical, so they are the next targ
 | `map<string, Message>` | 40 previously-dropped fields across 18 services |
 | `Value`/`ListValue`/`Struct` → `apiextensionsv1.JSON` | removes a wire-format bug; **lowers** the score, see below |
 | reference-hint seeder | zero effect on any rate — it writes queue entries, not fields |
+| running that seeder against the corpus | reference-shape unflagged 298 → 147 |
+| `empty-observedstate` flag | `moved` unflagged 66 → 25 |
 
 ## Where the remaining gap is
 
