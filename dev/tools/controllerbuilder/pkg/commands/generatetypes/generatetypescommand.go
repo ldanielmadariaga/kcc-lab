@@ -217,6 +217,23 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 					if o.DetectOutputOnly {
 						if c := scaffold.DetectOutputOnlyInComments(msg); len(c) > 0 {
 							outputOnly = append(outputOnly, scaffold.FormatOutputOnlyCandidates(resource.Kind, gv.Group, c))
+							// Also into the queue. The report on its own is a file
+							// nothing reads: the field is in the Spec, looks
+							// generated, and nothing says it is in the wrong struct.
+							// The queue is where a resource's outstanding decisions
+							// are counted, so a finding that never reaches it is
+							// indistinguishable from no finding at all.
+							for _, cand := range c {
+								// Named where the field belongs, not where it
+								// currently sits. The entry exists to account for a
+								// field absent from ObservedState, so pointing it at
+								// .spec would never line up with what is missing.
+								prepopulated.Judgement = append(prepopulated.Judgement, scaffold.JudgementItem{
+									FieldPath: ".status.observedState." + strings.TrimPrefix(cand.FieldPath, ".spec."),
+									Reason:    "output-only-in-comment-only",
+									Detail:    "proto comment says output only but no field_behavior annotation, so it was generated into the Spec instead. Move it if the comment is right: " + cand.Comment,
+								})
+							}
 						}
 					}
 					if details, ok := typeGenerator.OutputFieldsFor(string(msg.FullName())); ok {
