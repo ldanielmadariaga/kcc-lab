@@ -136,6 +136,24 @@ have been suppressed, and the resource would have gone straight into the ratchet
 While a resource has entries here, its `[refs]` findings are suppressed and it will not fail
 `TestMissingRefs`. That is the only thing suppressed — every other check applies normally.
 
+### The queue covers status as well as spec
+
+It used to describe spec fields only. Every `JudgementItem` was appended inside `PrepopulateSpec`,
+so a field missing from `status.observedState` was reported nowhere — measured across the greenfield
+set, that was 156 defects against zero entries. These reasons now appear too:
+
+| reason | what happened |
+|---|---|
+| `unsupported-field-type` | the type was declined; the field is a `// TODO:` and never reaches the CRD. Emitted for spec and observedState alike |
+| `observedstate-identity-field-omitted` | the proto marks it OUTPUT_ONLY, but KCC carries the resource name in `status.externalRef`. A decision, not a bug — but it was an invisible one |
+| `output-only-in-comment-only` | the proto comment says output only while carrying no `field_behavior` annotation, so the field was generated into the Spec. The entry names `.status.observedState.<field>`, where it belongs, not where it currently sits |
+
+**A resource is not finished when its fields are generated. It is finished when nothing about it is
+silent.** A field a human must decide is a fine outcome; a field nobody was told about is not. See
+[greenfield-coverage-invariant.md](greenfield-coverage-invariant.md) for what that means and how to
+measure it — `hack/tools/greenfield/silence_report.py` reports generated / explained / silent, and
+silent is the number to drive down.
+
 ## Stage 2b — Seed the queue with reference hints
 
 Run after the CRDs exist, because the detector reads them:
@@ -401,6 +419,14 @@ designed yet, and the first prerequisite is gap 2 above.
   `# dropped:` comment. **Regenerating a resource whose `_types.go` already exists records only the
   second**, because the scaffolder skips a file that is already there and the field-level entry is
   written on that path. So a rerun looks quieter than a first run for the same defect.
+- **An existing `_types.go` is never rewritten, and that is invisible.** `--prepopulate-spec` only
+  writes a types file that does not already exist, and `AddTypeFile` skips one that is there — which
+  also means the resource's judgement entries are never written. Regenerating in place therefore
+  keeps the old Spec *and* the old queue, so a service can be regenerated with a new generator and
+  show none of it. `TPUVirtualMachine` sat as a three-field stub through an entire measurement
+  round with `--prepopulate-spec` present in its `generate.sh` the whole time; deleting the file
+  first took it from 0 annotated fields to 24. **Delete the types file before regenerating** when
+  you want the new behaviour, and check the resulting Spec has more than three fields.
 - **When `generate-crds` panics without naming a package**, run `controller-gen` per service with
   `paths="./<svc>/v1alpha1"` from `apis/`. The tree-wide `paths="./..."` lets one unloadable package
   block every other, and a panic on an unresolvable type names nothing to attribute it to.

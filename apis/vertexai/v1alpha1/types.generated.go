@@ -1068,54 +1068,6 @@ type Scheduling struct {
 	MaxWaitDuration *string `json:"maxWaitDuration,omitempty"`
 }
 
-/* unreachable type Tensorboard
-// +kcc:proto=google.cloud.aiplatform.v1beta1.Tensorboard
-type Tensorboard struct {
-
-	// Required. User provided name of this Tensorboard.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.display_name
-	// +required
-	DisplayName *string `json:"displayName,omitempty"`
-
-	// Description of this Tensorboard.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.description
-	Description *string `json:"description,omitempty"`
-
-	// Customer-managed encryption key spec for a Tensorboard. If set, this
-	//  Tensorboard and all sub-resources of this Tensorboard will be secured by
-	//  this key.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.encryption_spec
-	EncryptionSpec *EncryptionSpec `json:"encryptionSpec,omitempty"`
-
-	// The labels with user-defined metadata to organize your Tensorboards.
-	//
-	//  Label keys and values can be no longer than 64 characters
-	//  (Unicode codepoints), can only contain lowercase letters, numeric
-	//  characters, underscores and dashes. International characters are allowed.
-	//  No more than 64 user labels can be associated with one Tensorboard
-	//  (System labels are excluded).
-	//
-	//  See https://goo.gl/xmQnxf for more information and examples of labels.
-	//  System reserved label keys are prefixed with "aiplatform.googleapis.com/"
-	//  and are immutable.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// Used to perform a consistent read-modify-write updates. If not set, a blind
-	//  "overwrite" update happens.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.etag
-	Etag *string `json:"etag,omitempty"`
-
-	// Used to indicate if the TensorBoard instance is the default one.
-	//  Each project & region can have at most one default TensorBoard instance.
-	//  Creation of a default TensorBoard instance and updating an existing
-	//  TensorBoard instance to be default will mark all other TensorBoard
-	//  instances (if any) as non default.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.is_default
-	IsDefault *bool `json:"isDefault,omitempty"`
-}
-*/
-
 /* unreachable type TensorboardExperiment
 // +kcc:proto=google.cloud.aiplatform.v1beta1.TensorboardExperiment
 type TensorboardExperiment struct {
@@ -1409,42 +1361,6 @@ type MetadataStoreObservedState struct {
 	// Output only. State information of the MetadataStore.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.MetadataStore.state
 	State *MetadataStore_MetadataStoreState `json:"state,omitempty"`
-}
-*/
-
-/* unreachable type TensorboardObservedState
-// +kcc:observedstate:proto=google.cloud.aiplatform.v1beta1.Tensorboard
-type TensorboardObservedState struct {
-	// Output only. Name of the Tensorboard.
-	//  Format:
-	//  `projects/{project}/locations/{location}/tensorboards/{tensorboard}`
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.name
-	Name *string `json:"name,omitempty"`
-
-	// Output only. Consumer project Cloud Storage path prefix used to store blob
-	//  data, which can either be a bucket or directory. Does not end with a '/'.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.blob_storage_path_prefix
-	BlobStoragePathPrefix *string `json:"blobStoragePathPrefix,omitempty"`
-
-	// Output only. The number of Runs stored in this Tensorboard.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.run_count
-	RunCount *int32 `json:"runCount,omitempty"`
-
-	// Output only. Timestamp when this Tensorboard was created.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. Timestamp when this Tensorboard was last updated.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. Reserved for future use.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.satisfies_pzs
-	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
-
-	// Output only. Reserved for future use.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.Tensorboard.satisfies_pzi
-	SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
 }
 */
 

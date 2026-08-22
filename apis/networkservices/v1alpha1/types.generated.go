@@ -366,80 +366,6 @@ type LbRouteExtension struct {
 }
 */
 
-/* unreachable type LbTrafficExtension
-// +kcc:proto=google.cloud.networkservices.v1.LbTrafficExtension
-type LbTrafficExtension struct {
-	// Required. Identifier. Name of the `LbTrafficExtension` resource in the
-	//  following format:
-	//  `projects/{project}/locations/{location}/lbTrafficExtensions/{lb_traffic_extension}`.
-	// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.name
-	// +required
-	Name *string `json:"name,omitempty"`
-
-	// Optional. A human-readable description of the resource.
-	// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.description
-	Description *string `json:"description,omitempty"`
-
-	// Optional. Set of labels associated with the `LbTrafficExtension` resource.
-	//
-	//  The format must comply with [the requirements for
-	//  labels](https://cloud.google.com/compute/docs/labeling-resources#requirements)
-	//  for Google Cloud resources.
-	// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// Optional. A list of references to the forwarding rules to which this
-	//  service extension is attached. At least one forwarding rule is required.
-	//  Only one `LbTrafficExtension` resource can be associated with a forwarding
-	//  rule.
-	// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.forwarding_rules
-	ForwardingRules []string `json:"forwardingRules,omitempty"`
-
-	// Required. A set of ordered extension chains that contain the match
-	//  conditions and extensions to execute. Match conditions for each extension
-	//  chain are evaluated in sequence for a given request. The first extension
-	//  chain that has a condition that matches the request is executed.
-	//  Any subsequent extension chains do not execute.
-	//  Limited to 5 extension chains per resource.
-	// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.extension_chains
-	// +required
-	ExtensionChains []ExtensionChain `json:"extensionChains,omitempty"`
-
-	// Required. All backend services and forwarding rules referenced by this
-	//  extension must share the same load balancing scheme. Supported values:
-	//  `INTERNAL_MANAGED` and `EXTERNAL_MANAGED`. For more information, refer to
-	//  [Backend services
-	//  overview](https://cloud.google.com/load-balancing/docs/backend-service).
-	// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.load_balancing_scheme
-	// +required
-	LoadBalancingScheme *string `json:"loadBalancingScheme,omitempty"`
-
-	// Optional. The metadata provided here is included as part of the
-	//  `metadata_context` (of type `google.protobuf.Struct`) in the
-	//  `ProcessingRequest` message sent to the extension server.
-	//
-	//  The metadata applies to all extensions in all extensions chains in this
-	//  resource.
-	//
-	//  The metadata is available under the key
-	//  `com.google.lb_traffic_extension.<resource_name>`.
-	//
-	//  The following variables are supported in the metadata:
-	//
-	//  `{forwarding_rule_id}` - substituted with the forwarding rule's fully
-	//    qualified resource name.
-	//
-	//  This field must not be set if at least one of the extension chains
-	//  contains plugin extensions. Setting it results in a validation error.
-	//
-	//  You can set metadata at either the resource level or the extension level.
-	//  The extension level metadata is recommended because you can pass a
-	//  different set of metadata through each extension to the backend.
-	// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.metadata
-	Metadata apiextensionsv1.JSON `json:"metadata,omitempty"`
-}
-*/
-
 /* unreachable type ServiceBinding
 // +kcc:proto=google.cloud.networkservices.v1.ServiceBinding
 type ServiceBinding struct {
@@ -619,19 +545,6 @@ type LbRouteExtensionObservedState struct {
 
 	// Output only. The timestamp when the resource was updated.
 	// +kcc:proto:field=google.cloud.networkservices.v1.LbRouteExtension.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-}
-*/
-
-/* unreachable type LbTrafficExtensionObservedState
-// +kcc:observedstate:proto=google.cloud.networkservices.v1.LbTrafficExtension
-type LbTrafficExtensionObservedState struct {
-	// Output only. The timestamp when the resource was created.
-	// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. The timestamp when the resource was updated.
-	// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
 */

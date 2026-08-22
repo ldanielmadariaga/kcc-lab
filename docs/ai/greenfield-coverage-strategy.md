@@ -8,6 +8,26 @@ normative and cite it in generated issues and PRs.
 
 ---
 
+## 0. What changed: past ~80%, the goal is accounting, not generating
+
+This document was written when the useful question was "how do we generate more". It largely still
+holds, but the target has moved, and the sequencing below should be read with that in mind.
+
+Measured across all 189 scorable greenfield resources, spec generation reached 78.5% — and 95.7%
+once missing references are set aside. Pushing the generated fraction higher from there runs into
+fields that genuinely need a human: references the proto does not annotate, names upstream chose by
+judgement, shapes the proto cannot express.
+
+The problem is not that those fields need a person. It is that **nobody is told.** At the point the
+measurement was taken, 94% of everything the generator failed to produce was silent: no queue entry,
+no report, nothing. A resource could be missing sixty fields, look finished, and pass every check.
+
+So the goal is now the invariant in
+[greenfield-coverage-invariant.md](greenfield-coverage-invariant.md): every baseline field is either
+generated or named in the queue with a reason. Automation is still worth having, but a field that
+needs judgement and *says so* is a finished outcome, not a gap. Raising generated coverage while the
+silence stands just moves the problem somewhere harder to see.
+
 ## 1. The target, and its denominator
 
 Coverage is measured against **manageable** GCP resources — those with a `Create` or `Upsert` RPC.

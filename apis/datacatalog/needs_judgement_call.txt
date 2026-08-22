@@ -6,6 +6,7 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=DataCatalogEntry group=datacatalog.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataCatalogEntry group=datacatalog.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
 kind=DataCatalogEntry group=datacatalog.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/entryGroups/{entry_group}/entries/{entry}; location is implied by the parent, add it only if the API needs it stated)
 kind=DataCatalogEntryGroup group=datacatalog.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DataCatalogTag group=datacatalog.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)

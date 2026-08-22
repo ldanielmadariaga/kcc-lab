@@ -5,9 +5,12 @@
 # While a resource has entries here, TestMissingRefs suppresses its [refs]
 # findings. Clearing them graduates the resource and the ratchet applies.
 
+kind=ManagedKafkaCluster group=managedkafka.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/clusters/{cluster}/consumerGroups/{consumer_group}; location is implied by the parent, add it only if the API needs it stated)
+kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic}; location is implied by the parent, add it only if the API needs it stated)
 
 # Fields dropped because the generator could not produce a Go type for
 # them. They are absent from the CRD. Shared nested messages, so they are

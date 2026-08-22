@@ -59,35 +59,6 @@ spec:
           spec:
             description: ManagedKafkaTopicSpec defines the desired state of ManagedKafkaTopic
             properties:
-              clusterRef:
-                description: Required. Reference to the Kafka cluster to create the
-                  topic in.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed ManagedKafkaCluster
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/clusters/{{clusterID}}".
-                    type: string
-                  name:
-                    description: The name of a ManagedKafkaCluster resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a ManagedKafkaCluster resource.
-                    type: string
-                type: object
               configs:
                 additionalProperties:
                   type: string
@@ -95,10 +66,6 @@ spec:
                   from the cluster defaults. The key of the map is a Kafka topic property
                   name, for example: `cleanup.policy`, `compression.type`.'
                 type: object
-              location:
-                description: Required. the location of the Kafka resource. See https://cloud.google.com/managed-kafka/docs/locations
-                  for a list of supported locations.
-                type: string
               partitionCount:
                 description: Required. The number of partitions this topic has. The
                   partition count can only be increased, not decreased. Please note
@@ -107,7 +74,7 @@ spec:
                 format: int32
                 type: integer
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -144,12 +111,10 @@ spec:
                 format: int32
                 type: integer
               resourceID:
-                description: The GCP resource identifier. If not given, the metadata.name
+                description: The ManagedKafkaTopic name. If not given, the metadata.name
                   will be used.
                 type: string
             required:
-            - clusterRef
-            - location
             - partitionCount
             - projectRef
             - replicationFactor
@@ -196,6 +161,10 @@ spec:
                   the resource.
                 format: int64
                 type: integer
+              observedState:
+                description: ObservedState is the state of the resource as most recently
+                  observed in GCP.
+                type: object
             type: object
         required:
         - spec

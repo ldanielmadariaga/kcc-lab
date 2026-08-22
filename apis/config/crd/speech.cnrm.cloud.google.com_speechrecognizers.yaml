@@ -59,59 +59,11 @@ spec:
           spec:
             description: SpeechRecognizerSpec defines the desired state of SpeechRecognizer
             properties:
-              annotations:
-                additionalProperties:
-                  type: string
-                description: Allows users to store small amounts of arbitrary data.
-                  Both the key and the value must be 63 characters or less each. At
-                  most 100 annotations.
-                type: object
-              defaultRecognitionConfig:
-                description: Default configuration to use for requests with this Recognizer.
-                  This can be overwritten by inline configuration in the [RecognizeRequest.config][google.cloud.speech.v2.RecognizeRequest.config]
-                  field.
-                properties:
-                  languageCodes:
-                    description: |-
-                      Optional. The language of the supplied audio as a
-                       [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) language tag.
-                       Language tags are normalized to BCP-47 before they are used eg "en-us"
-                       becomes "en-US".
-
-                       Supported languages for each model are listed in the [Table of Supported
-                       Models](https://cloud.google.com/speech-to-text/v2/docs/speech-to-text-supported-languages).
-
-                       If additional languages are provided, recognition result will contain
-                       recognition in the most likely language detected. The recognition result
-                       will include the language tag of the language detected in the audio.
-                    items:
-                      type: string
-                    type: array
-                  model:
-                    description: |-
-                      Optional. Which model to use for recognition requests. Select the model
-                       best suited to your domain to get best results.
-
-                       Guidance for choosing which model to use can be found in the [Transcription
-                       Models
-                       Documentation](https://cloud.google.com/speech-to-text/v2/docs/transcription-model)
-                       and the models supported in each region can be found in the [Table Of
-                       Supported
-                       Models](https://cloud.google.com/speech-to-text/v2/docs/speech-to-text-supported-languages).
-                    type: string
-                type: object
-              displayName:
-                description: User-settable, human-readable name for the Recognizer.
-                  Must be 63 characters or less.
-                type: string
               location:
-                description: Immutable.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -195,84 +147,6 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
-                properties:
-                  createTime:
-                    description: Output only. Creation time.
-                    type: string
-                  defaultRecognitionConfig:
-                    description: Default configuration to use for requests with this
-                      Recognizer. This can be overwritten by inline configuration
-                      in the [RecognizeRequest.config][google.cloud.speech.v2.RecognizeRequest.config]
-                      field.
-                    properties:
-                      languageCodes:
-                        description: |-
-                          Optional. The language of the supplied audio as a
-                           [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) language tag.
-                           Language tags are normalized to BCP-47 before they are used eg "en-us"
-                           becomes "en-US".
-
-                           Supported languages for each model are listed in the [Table of Supported
-                           Models](https://cloud.google.com/speech-to-text/v2/docs/speech-to-text-supported-languages).
-
-                           If additional languages are provided, recognition result will contain
-                           recognition in the most likely language detected. The recognition result
-                           will include the language tag of the language detected in the audio.
-                        items:
-                          type: string
-                        type: array
-                      model:
-                        description: |-
-                          Optional. Which model to use for recognition requests. Select the model
-                           best suited to your domain to get best results.
-
-                           Guidance for choosing which model to use can be found in the [Transcription
-                           Models
-                           Documentation](https://cloud.google.com/speech-to-text/v2/docs/transcription-model)
-                           and the models supported in each region can be found in the [Table Of
-                           Supported
-                           Models](https://cloud.google.com/speech-to-text/v2/docs/speech-to-text-supported-languages).
-                        type: string
-                    type: object
-                  deleteTime:
-                    description: Output only. The time at which this Recognizer was
-                      requested for deletion.
-                    type: string
-                  etag:
-                    description: Output only. This checksum is computed by the server
-                      based on the value of other fields. This may be sent on update,
-                      undelete, and delete requests to ensure the client has an up-to-date
-                      value before proceeding.
-                    type: string
-                  expireTime:
-                    description: Output only. The time at which this Recognizer will
-                      be purged.
-                    type: string
-                  kmsKeyName:
-                    description: Output only. The [KMS key name](https://cloud.google.com/kms/docs/resource-hierarchy#keys)
-                      with which the Recognizer is encrypted. The expected format
-                      is `projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}`.
-                    type: string
-                  kmsKeyVersionName:
-                    description: Output only. The [KMS key version name](https://cloud.google.com/kms/docs/resource-hierarchy#key_versions)
-                      with which the Recognizer is encrypted. The expected format
-                      is `projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}/cryptoKeyVersions/{crypto_key_version}`.
-                    type: string
-                  reconciling:
-                    description: Output only. Whether or not this Recognizer is in
-                      the process of being updated.
-                    type: boolean
-                  state:
-                    description: Output only. The Recognizer lifecycle state.
-                    type: string
-                  uid:
-                    description: Output only. System-assigned unique identifier for
-                      the Recognizer.
-                    type: string
-                  updateTime:
-                    description: Output only. The most recent time this Recognizer
-                      was modified.
-                    type: string
                 type: object
             type: object
         required:

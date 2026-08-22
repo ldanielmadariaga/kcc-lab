@@ -30,22 +30,6 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
-func CustomClass_ClassItem_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.CustomClass_ClassItem) *krmspeechv1alpha1.CustomClass_ClassItem {
-	if in == nil {
-		return nil
-	}
-	out := &krmspeechv1alpha1.CustomClass_ClassItem{}
-	out.Value = direct.LazyPtr(in.GetValue())
-	return out
-}
-func CustomClass_ClassItem_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmspeechv1alpha1.CustomClass_ClassItem) *pb.CustomClass_ClassItem {
-	if in == nil {
-		return nil
-	}
-	out := &pb.CustomClass_ClassItem{}
-	out.Value = direct.ValueOf(in.Value)
-	return out
-}
 func CustomClass_ClassItem_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.CustomClass_ClassItem) *krmspeechv1beta1.CustomClass_ClassItem {
 	if in == nil {
 		return nil
@@ -60,26 +44,6 @@ func CustomClass_ClassItem_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmspe
 	}
 	out := &pb.CustomClass_ClassItem{}
 	out.Value = direct.ValueOf(in.Value)
-	return out
-}
-func ExplicitDecodingConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ExplicitDecodingConfig) *krmspeechv1alpha1.ExplicitDecodingConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krmspeechv1alpha1.ExplicitDecodingConfig{}
-	// MISSING: Encoding
-	// MISSING: SampleRateHertz
-	// MISSING: AudioChannelCount
-	return out
-}
-func ExplicitDecodingConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmspeechv1alpha1.ExplicitDecodingConfig) *pb.ExplicitDecodingConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ExplicitDecodingConfig{}
-	// MISSING: Encoding
-	// MISSING: SampleRateHertz
-	// MISSING: AudioChannelCount
 	return out
 }
 func ExplicitDecodingConfig_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.ExplicitDecodingConfig) *krmspeechv1beta1.ExplicitDecodingConfig {
@@ -100,38 +64,6 @@ func ExplicitDecodingConfig_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmsp
 	// MISSING: Encoding
 	// MISSING: SampleRateHertz
 	// MISSING: AudioChannelCount
-	return out
-}
-func RecognitionConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.RecognitionConfig) *krmspeechv1alpha1.RecognitionConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krmspeechv1alpha1.RecognitionConfig{}
-	// MISSING: AutoDecodingConfig
-	// MISSING: ExplicitDecodingConfig
-	out.Model = direct.LazyPtr(in.GetModel())
-	out.LanguageCodes = in.LanguageCodes
-	// MISSING: Features
-	// MISSING: Adaptation
-	// MISSING: TranscriptNormalization
-	// MISSING: TranslationConfig
-	// MISSING: DenoiserConfig
-	return out
-}
-func RecognitionConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmspeechv1alpha1.RecognitionConfig) *pb.RecognitionConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.RecognitionConfig{}
-	// MISSING: AutoDecodingConfig
-	// MISSING: ExplicitDecodingConfig
-	out.Model = direct.ValueOf(in.Model)
-	out.LanguageCodes = in.LanguageCodes
-	// MISSING: Features
-	// MISSING: Adaptation
-	// MISSING: TranscriptNormalization
-	// MISSING: TranslationConfig
-	// MISSING: DenoiserConfig
 	return out
 }
 func RecognitionConfig_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.RecognitionConfig) *krmspeechv1beta1.RecognitionConfig {
@@ -166,24 +98,6 @@ func RecognitionConfig_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmspeechv
 	// MISSING: DenoiserConfig
 	return out
 }
-func SpeakerDiarizationConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.SpeakerDiarizationConfig) *krmspeechv1alpha1.SpeakerDiarizationConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krmspeechv1alpha1.SpeakerDiarizationConfig{}
-	// MISSING: MinSpeakerCount
-	// MISSING: MaxSpeakerCount
-	return out
-}
-func SpeakerDiarizationConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmspeechv1alpha1.SpeakerDiarizationConfig) *pb.SpeakerDiarizationConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.SpeakerDiarizationConfig{}
-	// MISSING: MinSpeakerCount
-	// MISSING: MaxSpeakerCount
-	return out
-}
 func SpeakerDiarizationConfig_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.SpeakerDiarizationConfig) *krmspeechv1beta1.SpeakerDiarizationConfig {
 	if in == nil {
 		return nil
@@ -209,16 +123,18 @@ func SpeechCustomClassObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext
 	out := &krmspeechv1alpha1.SpeechCustomClassObservedState{}
 	// MISSING: Name
 	// MISSING: Uid
-	// (near miss): "Uid" vs "UID"
-	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
-	out.ExpireTime = direct.StringTimestamp_FromProto(mapCtx, in.GetExpireTime())
-	out.Etag = direct.LazyPtr(in.GetEtag())
-	out.Reconciling = direct.LazyPtr(in.GetReconciling())
-	out.KMSKeyName = direct.LazyPtr(in.GetKmsKeyName())
-	out.KMSKeyVersionName = direct.LazyPtr(in.GetKmsKeyVersionName())
+	// MISSING: DisplayName
+	// MISSING: Items
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechCustomClassObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmspeechv1alpha1.SpeechCustomClassObservedState) *pb.CustomClass {
@@ -228,16 +144,18 @@ func SpeechCustomClassObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, 
 	out := &pb.CustomClass{}
 	// MISSING: Name
 	// MISSING: Uid
-	// (near miss): "Uid" vs "UID"
-	out.State = direct.Enum_ToProto[pb.CustomClass_State](mapCtx, in.State)
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
-	out.ExpireTime = direct.StringTimestamp_ToProto(mapCtx, in.ExpireTime)
-	out.Etag = direct.ValueOf(in.Etag)
-	out.Reconciling = direct.ValueOf(in.Reconciling)
-	out.KmsKeyName = direct.ValueOf(in.KMSKeyName)
-	out.KmsKeyVersionName = direct.ValueOf(in.KMSKeyVersionName)
+	// MISSING: DisplayName
+	// MISSING: Items
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechCustomClassObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.CustomClass) *krmspeechv1beta1.SpeechCustomClassObservedState {
@@ -248,11 +166,14 @@ func SpeechCustomClassObservedState_v1beta1_FromProto(mapCtx *direct.MapContext,
 	// MISSING: Name
 	// MISSING: Uid
 	// (near miss): "Uid" vs "UID"
+	// MISSING: DisplayName
+	// MISSING: Items
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
 	out.ExpireTime = direct.StringTimestamp_FromProto(mapCtx, in.GetExpireTime())
+	// MISSING: Annotations
 	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.Reconciling = direct.LazyPtr(in.GetReconciling())
 	out.KMSKeyName = direct.LazyPtr(in.GetKmsKeyName())
@@ -267,11 +188,14 @@ func SpeechCustomClassObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, i
 	// MISSING: Name
 	// MISSING: Uid
 	// (near miss): "Uid" vs "UID"
+	// MISSING: DisplayName
+	// MISSING: Items
 	out.State = direct.Enum_ToProto[pb.CustomClass_State](mapCtx, in.State)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
 	out.ExpireTime = direct.StringTimestamp_ToProto(mapCtx, in.ExpireTime)
+	// MISSING: Annotations
 	out.Etag = direct.ValueOf(in.Etag)
 	out.Reconciling = direct.ValueOf(in.Reconciling)
 	out.KmsKeyName = direct.ValueOf(in.KMSKeyName)
@@ -285,9 +209,18 @@ func SpeechCustomClassSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.
 	out := &krmspeechv1alpha1.SpeechCustomClassSpec{}
 	// MISSING: Name
 	// MISSING: Uid
-	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	out.Items = direct.Slice_FromProto(mapCtx, in.Items, CustomClass_ClassItem_v1alpha1_FromProto)
-	out.Annotations = in.Annotations
+	// MISSING: DisplayName
+	// MISSING: Items
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechCustomClassSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmspeechv1alpha1.SpeechCustomClassSpec) *pb.CustomClass {
@@ -297,9 +230,18 @@ func SpeechCustomClassSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmsp
 	out := &pb.CustomClass{}
 	// MISSING: Name
 	// MISSING: Uid
-	out.DisplayName = direct.ValueOf(in.DisplayName)
-	out.Items = direct.Slice_ToProto(mapCtx, in.Items, CustomClass_ClassItem_v1alpha1_ToProto)
-	out.Annotations = in.Annotations
+	// MISSING: DisplayName
+	// MISSING: Items
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechCustomClassSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.CustomClass) *krmspeechv1beta1.SpeechCustomClassSpec {
@@ -311,7 +253,16 @@ func SpeechCustomClassSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.C
 	// MISSING: Uid
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.Items = direct.Slice_FromProto(mapCtx, in.Items, CustomClass_ClassItem_v1beta1_FromProto)
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
 	out.Annotations = in.Annotations
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechCustomClassSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmspeechv1beta1.SpeechCustomClassSpec) *pb.CustomClass {
@@ -323,7 +274,16 @@ func SpeechCustomClassSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmspe
 	// MISSING: Uid
 	out.DisplayName = direct.ValueOf(in.DisplayName)
 	out.Items = direct.Slice_ToProto(mapCtx, in.Items, CustomClass_ClassItem_v1beta1_ToProto)
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
 	out.Annotations = in.Annotations
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechPhraseSetObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.PhraseSet) *krmspeechv1alpha1.SpeechPhraseSetObservedState {
@@ -333,17 +293,19 @@ func SpeechPhraseSetObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, 
 	out := &krmspeechv1alpha1.SpeechPhraseSetObservedState{}
 	// MISSING: Name
 	// MISSING: Uid
-	// (near miss): "Uid" vs "UID"
+	// MISSING: Phrases
 	// MISSING: Boost
-	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
-	out.ExpireTime = direct.StringTimestamp_FromProto(mapCtx, in.GetExpireTime())
-	out.Etag = direct.LazyPtr(in.GetEtag())
-	out.Reconciling = direct.LazyPtr(in.GetReconciling())
-	out.KMSKeyName = direct.LazyPtr(in.GetKmsKeyName())
-	out.KMSKeyVersionName = direct.LazyPtr(in.GetKmsKeyVersionName())
+	// MISSING: DisplayName
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechPhraseSetObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmspeechv1alpha1.SpeechPhraseSetObservedState) *pb.PhraseSet {
@@ -353,17 +315,19 @@ func SpeechPhraseSetObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in
 	out := &pb.PhraseSet{}
 	// MISSING: Name
 	// MISSING: Uid
-	// (near miss): "Uid" vs "UID"
+	// MISSING: Phrases
 	// MISSING: Boost
-	out.State = direct.Enum_ToProto[pb.PhraseSet_State](mapCtx, in.State)
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
-	out.ExpireTime = direct.StringTimestamp_ToProto(mapCtx, in.ExpireTime)
-	out.Etag = direct.ValueOf(in.Etag)
-	out.Reconciling = direct.ValueOf(in.Reconciling)
-	out.KmsKeyName = direct.ValueOf(in.KMSKeyName)
-	out.KmsKeyVersionName = direct.ValueOf(in.KMSKeyVersionName)
+	// MISSING: DisplayName
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechPhraseSetObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.PhraseSet) *krmspeechv1beta1.SpeechPhraseSetObservedState {
@@ -374,12 +338,15 @@ func SpeechPhraseSetObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, i
 	// MISSING: Name
 	// MISSING: Uid
 	// (near miss): "Uid" vs "UID"
+	// MISSING: Phrases
 	// MISSING: Boost
+	// MISSING: DisplayName
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
 	out.ExpireTime = direct.StringTimestamp_FromProto(mapCtx, in.GetExpireTime())
+	// MISSING: Annotations
 	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.Reconciling = direct.LazyPtr(in.GetReconciling())
 	out.KMSKeyName = direct.LazyPtr(in.GetKmsKeyName())
@@ -394,12 +361,15 @@ func SpeechPhraseSetObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in 
 	// MISSING: Name
 	// MISSING: Uid
 	// (near miss): "Uid" vs "UID"
+	// MISSING: Phrases
 	// MISSING: Boost
+	// MISSING: DisplayName
 	out.State = direct.Enum_ToProto[pb.PhraseSet_State](mapCtx, in.State)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
 	out.ExpireTime = direct.StringTimestamp_ToProto(mapCtx, in.ExpireTime)
+	// MISSING: Annotations
 	out.Etag = direct.ValueOf(in.Etag)
 	out.Reconciling = direct.ValueOf(in.Reconciling)
 	out.KmsKeyName = direct.ValueOf(in.KMSKeyName)
@@ -413,10 +383,19 @@ func SpeechPhraseSetSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Ph
 	out := &krmspeechv1alpha1.SpeechPhraseSetSpec{}
 	// MISSING: Name
 	// MISSING: Uid
-	out.Phrases = direct.Slice_FromProto(mapCtx, in.Phrases, PhraseSet_Phrase_v1alpha1_FromProto)
+	// MISSING: Phrases
 	// MISSING: Boost
-	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	out.Annotations = in.Annotations
+	// MISSING: DisplayName
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechPhraseSetSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmspeechv1alpha1.SpeechPhraseSetSpec) *pb.PhraseSet {
@@ -426,10 +405,19 @@ func SpeechPhraseSetSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmspee
 	out := &pb.PhraseSet{}
 	// MISSING: Name
 	// MISSING: Uid
-	out.Phrases = direct.Slice_ToProto(mapCtx, in.Phrases, PhraseSet_Phrase_v1alpha1_ToProto)
+	// MISSING: Phrases
 	// MISSING: Boost
-	out.DisplayName = direct.ValueOf(in.DisplayName)
-	out.Annotations = in.Annotations
+	// MISSING: DisplayName
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Annotations
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechPhraseSetSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.PhraseSet) *krmspeechv1beta1.SpeechPhraseSetSpec {
@@ -442,7 +430,16 @@ func SpeechPhraseSetSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Phr
 	out.Phrases = direct.Slice_FromProto(mapCtx, in.Phrases, PhraseSet_Phrase_v1beta1_FromProto)
 	// MISSING: Boost
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
 	out.Annotations = in.Annotations
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechPhraseSetSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmspeechv1beta1.SpeechPhraseSetSpec) *pb.PhraseSet {
@@ -455,7 +452,16 @@ func SpeechPhraseSetSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmspeec
 	out.Phrases = direct.Slice_ToProto(mapCtx, in.Phrases, PhraseSet_Phrase_v1beta1_ToProto)
 	// MISSING: Boost
 	out.DisplayName = direct.ValueOf(in.DisplayName)
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
 	out.Annotations = in.Annotations
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechRecognizerSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Recognizer) *krmspeechv1alpha1.SpeechRecognizerSpec {
@@ -465,11 +471,20 @@ func SpeechRecognizerSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.R
 	out := &krmspeechv1alpha1.SpeechRecognizerSpec{}
 	// MISSING: Name
 	// MISSING: Uid
-	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	// MISSING: DisplayName
 	// MISSING: Model
 	// MISSING: LanguageCodes
-	out.DefaultRecognitionConfig = RecognitionConfig_v1alpha1_FromProto(mapCtx, in.GetDefaultRecognitionConfig())
-	out.Annotations = in.Annotations
+	// MISSING: DefaultRecognitionConfig
+	// MISSING: Annotations
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechRecognizerSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmspeechv1alpha1.SpeechRecognizerSpec) *pb.Recognizer {
@@ -479,11 +494,20 @@ func SpeechRecognizerSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmspe
 	out := &pb.Recognizer{}
 	// MISSING: Name
 	// MISSING: Uid
-	out.DisplayName = direct.ValueOf(in.DisplayName)
+	// MISSING: DisplayName
 	// MISSING: Model
 	// MISSING: LanguageCodes
-	out.DefaultRecognitionConfig = RecognitionConfig_v1alpha1_ToProto(mapCtx, in.DefaultRecognitionConfig)
-	out.Annotations = in.Annotations
+	// MISSING: DefaultRecognitionConfig
+	// MISSING: Annotations
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechRecognizerSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Recognizer) *krmspeechv1beta1.SpeechRecognizerSpec {
@@ -498,6 +522,15 @@ func SpeechRecognizerSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Re
 	// MISSING: LanguageCodes
 	out.DefaultRecognitionConfig = RecognitionConfig_v1beta1_FromProto(mapCtx, in.GetDefaultRecognitionConfig())
 	out.Annotations = in.Annotations
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func SpeechRecognizerSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmspeechv1beta1.SpeechRecognizerSpec) *pb.Recognizer {
@@ -512,22 +545,15 @@ func SpeechRecognizerSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmspee
 	// MISSING: LanguageCodes
 	out.DefaultRecognitionConfig = RecognitionConfig_v1beta1_ToProto(mapCtx, in.DefaultRecognitionConfig)
 	out.Annotations = in.Annotations
-	return out
-}
-func TranslationConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.TranslationConfig) *krmspeechv1alpha1.TranslationConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krmspeechv1alpha1.TranslationConfig{}
-	// MISSING: TargetLanguage
-	return out
-}
-func TranslationConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmspeechv1alpha1.TranslationConfig) *pb.TranslationConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.TranslationConfig{}
-	// MISSING: TargetLanguage
+	// MISSING: State
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Etag
+	// MISSING: Reconciling
+	// MISSING: KMSKeyName
+	// MISSING: KMSKeyVersionName
 	return out
 }
 func TranslationConfig_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.TranslationConfig) *krmspeechv1beta1.TranslationConfig {

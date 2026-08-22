@@ -24,8 +24,6 @@
 
 package v1alpha1
 
-/* found existing non-generated go type "AccessConfig", skipping
-
 // +kcc:proto=google.cloud.managedkafka.v1.AccessConfig
 type AccessConfig struct {
 	// Required. Virtual Private Cloud (VPC) networks that must be granted direct
@@ -35,9 +33,6 @@ type AccessConfig struct {
 	// +required
 	NetworkConfigs []NetworkConfig `json:"networkConfigs,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "CapacityConfig", skipping
 
 // +kcc:proto=google.cloud.managedkafka.v1.CapacityConfig
 type CapacityConfig struct {
@@ -53,10 +48,8 @@ type CapacityConfig struct {
 	// +required
 	MemoryBytes *int64 `json:"memoryBytes,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.managedkafka.v1.Cluster", skipping
-
+/* unreachable type Cluster
 // +kcc:proto=google.cloud.managedkafka.v1.Cluster
 type Cluster struct {
 	// Required. Configuration properties for a Kafka cluster deployed to Google
@@ -226,8 +219,6 @@ type ConsumerTopicMetadata struct {
 
 }
 
-/* found existing non-generated go type "GcpConfig", skipping
-
 // +kcc:proto=google.cloud.managedkafka.v1.GcpConfig
 type GcpConfig struct {
 	// Required. Access configuration for the Kafka cluster.
@@ -242,9 +233,6 @@ type GcpConfig struct {
 	// +kcc:proto:field=google.cloud.managedkafka.v1.GcpConfig.kms_key
 	KMSKey *string `json:"kmsKey,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "NetworkConfig", skipping
 
 // +kcc:proto=google.cloud.managedkafka.v1.NetworkConfig
 type NetworkConfig struct {
@@ -259,9 +247,6 @@ type NetworkConfig struct {
 	// +required
 	Subnet *string `json:"subnet,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "RebalanceConfig", skipping
 
 // +kcc:proto=google.cloud.managedkafka.v1.RebalanceConfig
 type RebalanceConfig struct {
@@ -270,9 +255,7 @@ type RebalanceConfig struct {
 	// +kcc:proto:field=google.cloud.managedkafka.v1.RebalanceConfig.mode
 	Mode *string `json:"mode,omitempty"`
 }
-*/
 
-/* unreachable type TLSConfig
 // +kcc:proto=google.cloud.managedkafka.v1.TlsConfig
 type TLSConfig struct {
 	// Optional. The configuration of the broker truststore. If specified, clients
@@ -292,10 +275,8 @@ type TLSConfig struct {
 	// +kcc:proto:field=google.cloud.managedkafka.v1.TlsConfig.ssl_principal_mapping_rules
 	SSLPrincipalMappingRules *string `json:"sslPrincipalMappingRules,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.managedkafka.v1.Topic", skipping
-
+/* unreachable type Topic
 // +kcc:proto=google.cloud.managedkafka.v1.Topic
 type Topic struct {
 	// Identifier. The name of the topic. The `topic` segment is used when
@@ -326,7 +307,6 @@ type Topic struct {
 }
 */
 
-/* unreachable type TrustConfig
 // +kcc:proto=google.cloud.managedkafka.v1.TrustConfig
 type TrustConfig struct {
 	// Optional. Configuration for the Google Certificate Authority Service.
@@ -334,9 +314,7 @@ type TrustConfig struct {
 	// +kcc:proto:field=google.cloud.managedkafka.v1.TrustConfig.cas_configs
 	CAsConfigs []TrustConfig_CertificateAuthorityServiceConfig `json:"casConfigs,omitempty"`
 }
-*/
 
-/* unreachable type TrustConfig_CertificateAuthorityServiceConfig
 // +kcc:proto=google.cloud.managedkafka.v1.TrustConfig.CertificateAuthorityServiceConfig
 type TrustConfig_CertificateAuthorityServiceConfig struct {
 	// Required. The name of the CA pool to pull CA certificates from.
@@ -348,10 +326,8 @@ type TrustConfig_CertificateAuthorityServiceConfig struct {
 	// +required
 	CAPool *string `json:"caPool,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.managedkafka.v1.Cluster", skipping
-
+/* unreachable type ClusterObservedState
 // +kcc:observedstate:proto=google.cloud.managedkafka.v1.Cluster
 type ClusterObservedState struct {
 	// Output only. The time when the cluster was created.

@@ -60,26 +60,6 @@ func BillingAccountObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Bil
 		return nil
 	}
 	out := &krm.BillingAccountObservedState{}
-	// MISSING: Name
-	out.Open = direct.LazyPtr(in.GetOpen())
-	out.Parent = direct.LazyPtr(in.GetParent())
-	return out
-}
-func BillingAccountObservedState_ToProto(mapCtx *direct.MapContext, in *krm.BillingAccountObservedState) *pb.BillingAccount {
-	if in == nil {
-		return nil
-	}
-	out := &pb.BillingAccount{}
-	// MISSING: Name
-	out.Open = direct.ValueOf(in.Open)
-	out.Parent = direct.ValueOf(in.Parent)
-	return out
-}
-func BillingAccountObservedState_FromProto(mapCtx *direct.MapContext, in *pb.BillingAccount) *krm.BillingAccountObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.BillingAccountObservedState{}
 	out.Name = direct.LazyPtr(in.GetName())
 	out.Open = direct.LazyPtr(in.GetOpen())
 	out.Parent = direct.LazyPtr(in.GetParent())
@@ -95,12 +75,31 @@ func BillingAccountObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Bill
 	out.Parent = direct.ValueOf(in.Parent)
 	return out
 }
+func BillingAccountObservedState_FromProto(mapCtx *direct.MapContext, in *pb.BillingAccount) *krm.BillingAccountObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.BillingAccountObservedState{}
+	// MISSING: Name
+	out.Open = direct.LazyPtr(in.GetOpen())
+	out.Parent = direct.LazyPtr(in.GetParent())
+	return out
+}
+func BillingAccountObservedState_ToProto(mapCtx *direct.MapContext, in *krm.BillingAccountObservedState) *pb.BillingAccount {
+	if in == nil {
+		return nil
+	}
+	out := &pb.BillingAccount{}
+	// MISSING: Name
+	out.Open = direct.ValueOf(in.Open)
+	out.Parent = direct.ValueOf(in.Parent)
+	return out
+}
 func BillingAccountSpec_FromProto(mapCtx *direct.MapContext, in *pb.BillingAccount) *krm.BillingAccountSpec {
 	if in == nil {
 		return nil
 	}
 	out := &krm.BillingAccountSpec{}
-	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.MasterBillingAccount = direct.LazyPtr(in.GetMasterBillingAccount())
 	out.CurrencyCode = direct.LazyPtr(in.GetCurrencyCode())
@@ -111,7 +110,6 @@ func BillingAccountSpec_ToProto(mapCtx *direct.MapContext, in *krm.BillingAccoun
 		return nil
 	}
 	out := &pb.BillingAccount{}
-	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
 	out.MasterBillingAccount = direct.ValueOf(in.MasterBillingAccount)
 	out.CurrencyCode = direct.ValueOf(in.CurrencyCode)

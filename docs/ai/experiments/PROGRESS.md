@@ -46,6 +46,26 @@ two KMS kinds, `BigQueryReservationCapacityCommitment`, `VertexAITensorboard`. T
 set by the Terraform provider, so scoring generator output against them asks it to reproduce a TF
 artifact, and they are excluded now.
 
+## Silence: how much of the gap is accounted for
+
+Past ~80% generated, the useful target changed. A field that needs a human is a fine outcome; a
+field nobody was told about is not. See
+[greenfield-coverage-invariant.md](../greenfield-coverage-invariant.md).
+
+Measured over the same 189 greenfield resources, counting **roots** rather than paths:
+
+| | explained | silent | silent % |
+|---|---|---|---|
+| before any reporting work | 37 | 592 | 94% |
+| + observedState omissions reported | 53 | 576 | 92% |
+| + comment detector routed into the queue | **96** | **533** | **85%** |
+
+Generated counts held at 5535 spec / 603 required / 2589 observedState throughout. That check
+matters: a change that "explains" fields by no longer emitting them improves the report and damages
+the CRD, so read the two together.
+
+Remaining, by bucket: references 312 silent (the large one), spec-other 124, observedState 97.
+
 ## What each change was worth
 
 | change | effect |
