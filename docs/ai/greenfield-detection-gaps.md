@@ -4,6 +4,23 @@ A companion to [greenfield-coverage-invariant.md](greenfield-coverage-invariant.
 the measurement. This one records what was found underneath it: the causes behind the fields we
 miss without telling anyone, what each cause is worth, and what was done about it.
 
+## The point is detection, not prescription
+
+Worth stating before the numbers, because the numbers invite the opposite reading. Driving the
+unflagged count to zero by *fixing* every gap is not the goal and is not achievable — there will
+always be an outlier the generator cannot classify. The goal is that the pipeline **notices** when
+it is guessing, and hands that to a human. A gap somebody was told about is a finished outcome.
+
+Two consequences for how changes here are judged:
+
+* A detector that names 40 fields is worth more than a fix that silently corrects 40, because the
+  detector keeps working on the resources nobody has looked at yet.
+* **Anywhere the generator makes a call it cannot justify from the proto, it should leave a trace in
+  the generated artifact, not only in the queue.** The queue is a work list somebody clears; the
+  types file is what a reader opens when the outlier finally shows up. This applies to any field
+  placed or shaped by a rule that is right *in general* — server-set placement today, and reference
+  detection when it starts emitting refs rather than naming candidates.
+
 Baseline `c1df0b9326`, 189 greenfield resources, target classes `reference-shape` + `moved` +
 `absent`.
 
@@ -104,13 +121,36 @@ Almost all server-set fields the protos failed to annotate: `etag` ×6, `state` 
 `lastUpdateTime`, `id`, `startTime`, `endTime`. Ten of the 25 are `SQLAdminBackup` alone, whose
 ObservedState has exactly one field, so the empty check did not fire.
 
-The fix here is not another flag. `--place-server-set-fields` *produces* these into ObservedState,
-which is strictly better — a field in the right place beats a field flagged. The safe allowlist was
-measured previously in
-[greenfield-generator-findings.md](greenfield-generator-findings.md): `createTime`, `updateTime`,
-`deleteTime`, `creationTimestamp`, `uid`, `selfLink`, `selfLinkWithID` and `id` never appear in a
-resource-level Spec anywhere in the tree; `kind`, `status`, `etag`, `name` and `state` appear a
-handful of times and should be queued as well as moved; `type` appears 36 times and is excluded.
+`--place-server-set-fields` (opt-in, default off) places these into ObservedState rather than
+leaving them in the Spec, and says so in three places: the field carries a `PLACEMENT GUESSED`
+comment in the generated type, the CRD description inherits it, and a `server-set-field-placed`
+entry goes into the queue.
+
+**Reading the names beat counting them.** An earlier draft took the allowlist straight from the
+Spec-appearance counts in
+[greenfield-generator-findings.md](greenfield-generator-findings.md), which put `state` and `status`
+in the "allow, but queue it" tier on 7 and 2 appearances. Opening those Specs says otherwise:
+
+* `ConfigDeliveryFleetPackage.spec.state` — "Optional. **The desired state** of the fleet package."
+* `DLPConnection.spec.state` — "**Required.** The connection's state in its lifecycle."
+* `NetworkManagementVPCFlowLogsConfig.spec.state` — "Optional… **Default value is ENABLED**", an
+  enable/disable toggle.
+* `DiscoveryEngineConversation` and `Session` — a `+kubebuilder:validation:Enum` the user picks from.
+* `DLPDiscoveryConfig.spec.status` — "**Required.** A status for this configuration."
+* `AccessContextManagerServicePerimeter.spec.status` — in the GCP API `status` names the *enforced*
+  perimeter config as opposed to the dry-run `spec`. User-authored configuration whose name
+  collides with the CRD's own `status`.
+
+Both are desired state, not observed state, and moving either would take a settable field away.
+Excluded. It costs 4 fields out of 44 in this corpus.
+
+`etag` stayed in, on 2 appearances — `AlloyDBCluster` and `ContainerAttachedCluster`, both genuine
+optimistic-concurrency inputs — against 27 greenfield resources carrying it status-side and none
+spec-side. That is exactly the kind of call the queue entry and the code comment exist for.
+
+The guard is that the message carries **no** `field_behavior` on any field. Relaxing it to "this
+field is unannotated" recovers 9 more, almost all `etag` in protos that do annotate other fields,
+which is where silence is most likely deliberate. Not taken.
 
 ### absent, 45
 

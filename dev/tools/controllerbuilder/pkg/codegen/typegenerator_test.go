@@ -533,7 +533,7 @@ func TestWriteFieldRequiredMarker(t *testing.T) {
 
 			msg := fd.Messages().ByName("TestMessage")
 			var buf bytes.Buffer
-			WriteField(&buf, msg.Fields().Get(0), msg, 0, false, g.opts)
+			WriteField(&buf, msg.Fields().Get(0), msg, 0, false, g.opts, "")
 
 			got := strings.Contains(buf.String(), "// +required")
 			if got != g.wantMarker {
@@ -1073,7 +1073,7 @@ func TestWriteObservedStateFieldsNotes(t *testing.T) {
 	}
 
 	var buf bytes.Buffer
-	notes := WriteObservedStateFields(&buf, details, sets.NewString(), map[string]bool{"name": true})
+	notes := WriteObservedStateFields(&buf, details, sets.NewString(), map[string]bool{"name": true}, WriteOptions{})
 
 	byName := map[string]ObservedStateFieldNote{}
 	for _, n := range notes {

@@ -90,6 +90,19 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 		if codegen.IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
 			continue
 		}
+		// Same, for a field GCP computes whose proto never said so. This must
+		// agree with the type generator exactly: it puts the field into
+		// ObservedState, and leaving it here as well would emit it twice.
+		if codegen.IsServerSetField(field, msg, opts) {
+			out.Judgement = append(out.Judgement, JudgementItem{
+				FieldPath: ".status.observedState." + codegen.GetJSONForKRM(field),
+				Reason:    "server-set-field-placed",
+				Detail: "GCP computes this, but the proto carries no field_behavior " +
+					"anywhere on the message, so it was placed by name. Confirm it is " +
+					"not something a user sets",
+			})
+			continue
+		}
 		if identityFields[string(field.Name())] {
 			continue
 		}
@@ -99,7 +112,7 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 		// "// TODO:" comment and moves on, and the field then never reaches the
 		// CRD. That is a silent drop unless somebody records it.
 		var field_ bytes.Buffer
-		codegen.WriteField(&field_, field, msg, emitted, false, opts)
+		codegen.WriteField(&field_, field, msg, emitted, false, opts, "")
 		buf.Write(field_.Bytes())
 		emitted++
 
@@ -146,7 +159,7 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 // details comes from the type generator's identifyOutputs, so the transitive rule
 // -- a field is output-only if reached through an OUTPUT_ONLY parent -- is applied
 // once, in one place.
-func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedStateMessages sets.String) (fields string, extraImports []string, judgement []JudgementItem) {
+func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedStateMessages sets.String, opts codegen.WriteOptions) (fields string, extraImports []string, judgement []JudgementItem) {
 	if details == nil {
 		return "", nil, nil
 	}
@@ -155,7 +168,7 @@ func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedSta
 	// identityFields is skipped here for the same reason as in the Spec: "name" is
 	// the resource's own resource name, which KCC carries in status.externalRef
 	// rather than as an observed field, even where the proto marks it OUTPUT_ONLY.
-	notes := codegen.WriteObservedStateFields(&buf, details, observedStateMessages, identityFields)
+	notes := codegen.WriteObservedStateFields(&buf, details, observedStateMessages, identityFields, opts)
 	fields = buf.String()
 
 	// Report what did not make it. Until this existed, ObservedState was the only

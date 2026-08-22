@@ -193,6 +193,7 @@ tool prints "we produce" beside the gap.
 | `possible-reference-by-description` | the description spells out a resource-name path — strong |
 | `possible-reference-by-name` | the field name matches a known target — a hint, roughly a third wrong |
 | `empty-observedstate` | nothing was generated into `status.observedState`; counts as a section flag |
+| `server-set-field-placed` | put in ObservedState by name because the proto carries no `field_behavior`; the field also says so in the generated type |
 | `observedstate-identity-field-omitted` | OUTPUT_ONLY, but skipped because KCC carries it in `status.externalRef` |
 | `output-only-in-comment-only` | the proto comment says output only, but no `field_behavior` annotation, so it landed in the Spec |
 
