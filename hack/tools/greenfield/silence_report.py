@@ -19,23 +19,39 @@ has spec.pipelineJobRef.external and we produce spec.pipelineJob, a user's YAML
 breaks -- it does not help that both come from the same proto field. Renamed,
 moved and reference-shaped fields are all fields KCC has and we do not.
 
-Every field in the baseline CRD is one of:
+The report answers two questions, and they are independent. Reading them as one
+is what made an earlier version of this output self-contradictory.
 
-  produced   we emit it too
-  flagged    we do not, and apis/<svc>/needs_judgement_call.txt names it
-  unflagged  we do not, and nothing says so
+  why does the field differ?     five classes, the rows
+  was anybody told about it?     three columns
+
+A field can be "absent" and flagged at the same time. That is not a contradiction,
+it is the queue doing its job: we did not produce the field, and the queue says so,
+so a human will see it. The columns are:
+
+  field-flagged     a queue entry names this exact field
+  section-flagged   a resource-level entry names the section it belongs to,
+                    e.g. "empty-observedstate" for a resource whose ObservedState
+                    came out with no fields at all. Specific enough to act on.
+  unflagged         nothing says anything
 
 Unflagged is the number to drive to zero. A field a human must decide is a fine
 outcome, as long as somebody is told about it.
 
-Each field we miss is also classified by *why* it differs, to route the fix. All
-five classes are real gaps; they just need different work:
+Three of the five classes are the target:
 
-  reference-shape        we emit a plain string, KCC has a Ref object
-  renamed                same field, different name (bootDiskMIB/bootDiskMiB)
-  moved                  we emit it in Spec, KCC has it in status.observedState
-  intentionally-different  we model it deliberately otherwise, e.g. Value as JSON
-  absent                 it appears nowhere in our output
+  reference-shape   we emit a plain string, KCC has a Ref object
+  moved             we emit it in Spec, KCC has it in status.observedState
+  absent            it appears nowhere in our output
+
+The other two are differences we accept, reported below the subtotal and excluded
+from it:
+
+  renamed                  same field, different name (bootDiskMIB/bootDiskMiB);
+                           a casing table fixes these
+  intentionally-different  google.protobuf.Value arms, which we map to
+                           apiextensionsv1.JSON on purpose. Whether to keep doing
+                           that is an open decision, deliberately deferred.
 
 A note on a number this tool does not report: comparing +kcc:proto:field
 annotations instead of CRD paths says the generator emits 16295 of the 16438
@@ -43,12 +59,21 @@ proto fields KCC declares. That is a useful check on whether generation is
 healthy, and it is not this measurement -- using it to shrink the CRD gap
 explains away fields users actually cannot set.
 
-Three details decide whether the figure means anything, each of which produced a
+Four details decide whether the figure means anything, each of which produced a
 wrong answer before it was fixed:
 
   * Report roots, not paths. When a parent is missing its whole subtree is
     reported missing too, which inflates every count several-fold. 298 missing
     observedState paths were 156 real defects.
+
+  * Count a repeated field once. The scorer reports "foo" and "foo[]" separately;
+    they are one field. 28 of the first published 533 were this.
+
+  * Count a reference site once, whether or not it is suffixed. A missing "fooRef"
+    hides its own .external/.name/.namespace/.kind children, so roots collapses it
+    to one. Upstream does not always add the suffix -- producerAcceptLists[] is a
+    reference too -- and without collapsing those children by hand an unsuffixed
+    reference costs four where a suffixed one costs one.
 
   * Pair names across the reference rename. The queue names a field as we
     generated it (".spec.pipelineJob"); the baseline names it as upstream has it
@@ -56,7 +81,8 @@ wrong answer before it was fixed:
     true figure is 5%.
 
   * Ignore the blanket queue entry. "untriaged-bulk-generation" names no field
-    and covers everything trivially, which would report 100% on day one.
+    and no section, and covers everything trivially, which would report 100% on
+    day one.
 
 Usage:
   python3 hack/tools/greenfield/silence_report.py \
@@ -82,6 +108,16 @@ from collections import Counter, defaultdict
 REF_SEGMENT = re.compile(r"(^|\.)[A-Za-z0-9_]+Refs?(\[\])?(\.|$)")
 REF_CHILD = re.compile(r"\.(external|name|namespace|kind)$")
 REF_SUFFIX = re.compile(r"Refs?(\[\])?$")
+
+# Upstream does not always suffix a repeated reference. ComputeNetworkAttachment's
+# producerAcceptLists[] and NetworkManagementConnectivityTest's relatedProjects[]
+# are references with the same four children and no Ref in the name, so the suffix
+# rule alone files them as "absent" and counts each child separately.
+REF_LIST_CHILD = re.compile(r"\[\]\.(external|name|namespace|kind)$")
+
+
+def is_reference_path(path, arrays=()):
+    return bool(REF_SEGMENT.search(path)) or path in arrays
 
 BUCKETS = ("spec-reference", "spec-other", "observedState")
 
@@ -117,14 +153,50 @@ def parse_score(text):
     return matched, missing, extra
 
 
+def ref_arrays(paths):
+    """Array paths that are really references, judged by a missing ".external".
+
+    "external" is the discriminator rather than the whole child set: it is the
+    marker KCC puts on a reference and nothing else in a CRD has it, whereas a
+    plain repeated message can perfectly well have a "name" field of its own.
+    """
+    return {p[: -len("[].external")] + "[]"
+            for p in paths if p.endswith("[].external")}
+
+
 def roots(paths):
-    """Drop any path whose parent is also missing; the parent explains it."""
+    """Reduce a missing-field list to one entry per real defect.
+
+    Three reductions, all of which were inflating the published figure:
+
+      * a path whose parent is also missing -- the parent explains it;
+      * "foo" alongside "foo[]" -- the scorer emits both for a repeated field,
+        and they are one field;
+      * the external/name/namespace/kind children of an unsuffixed repeated
+        reference -- one reference site, kept as the array itself so that it
+        costs the same as a suffixed "fooRef" would.
+    """
     present = set(paths)
+    arrays = ref_arrays(paths)
     out = []
+    seen = set()
+
+    def key(path):
+        return path.rstrip("[]")
+
     for p in paths:
+        # "foo" and "foo[]" are the same field; keep whichever comes first.
+        if key(p) in seen:
+            continue
         parent = p.rsplit(".", 1)[0] if "." in p else ""
         if parent and (parent in present or parent + "[]" in present):
             continue
+        if REF_LIST_CHILD.search(p) and parent in arrays:
+            # Collapse onto the array, which is the reference site.
+            p = parent
+            if key(p) in seen:
+                continue
+        seen.add(key(p))
         out.append(p)
     return out
 
@@ -135,7 +207,10 @@ def roots(paths):
 VALUE_ARMS = {"nullValue", "numberValue", "boolValue", "stringValue",
               "structValue", "listValue", "values"}
 
-CLASSES = ("reference-shape", "renamed", "moved", "intentionally-different", "absent")
+# Ordered so the report reads target classes first, then the two we accept.
+TARGET_CLASSES = ("reference-shape", "moved", "absent")
+ACCEPTED_CLASSES = ("renamed", "intentionally-different")
+CLASSES = TARGET_CLASSES + ACCEPTED_CLASSES
 
 
 def strip_section(path):
@@ -146,14 +221,14 @@ def strip_section(path):
     return path
 
 
-def classify(path, section, extras):
+def classify(path, section, extras, arrays=()):
     """Say why a baseline field is not in our CRD.
 
     extras maps section -> the paths we emit that the baseline does not have, which
     is what makes "moved" and "renamed" visible: a field we put somewhere else shows
     up as missing in one place and extra in another.
     """
-    if REF_SEGMENT.search(path):
+    if is_reference_path(path, arrays):
         return "reference-shape"
     leaf = path.rsplit(".", 1)[-1].rstrip("[]")
     if leaf in VALUE_ARMS:
@@ -180,15 +255,34 @@ def bucket_of(section, path):
     return "spec-reference" if REF_SEGMENT.search(path) else "spec-other"
 
 
+# A resource-level queue entry normally names nothing and so flags nothing. These
+# reasons are the exception: each names a whole section of the resource, which is
+# specific enough to act on. "your ObservedState came out empty" tells a human
+# exactly what to go and do, and does it better than nineteen separate lines
+# would. The blanket "untriaged-bulk-generation" is deliberately not here.
+SECTION_REASONS = {
+    "empty-observedstate": "status.observedState",
+}
+
+
 def queue_entries():
-    """Field-level judgement entries, keyed by kind. Blanket entries excluded."""
-    q = defaultdict(set)
+    """Judgement entries, keyed by kind.
+
+    Returns (fields, sections): fields maps kind -> field paths named explicitly,
+    sections maps kind -> the section names a resource-level entry covers.
+    """
+    fields = defaultdict(set)
+    sections = defaultdict(set)
     for f in glob.glob("apis/*/needs_judgement_call.txt"):
         for line in open(f):
             m = re.match(r'kind=(\S+) group=\S+: field "([^"]+)"', line)
             if m:
-                q[m.group(1)].add(m.group(2).lstrip("."))
-    return q
+                fields[m.group(1)].add(m.group(2).lstrip("."))
+                continue
+            m = re.match(r"kind=(\S+) group=\S+: resource reason=([a-zA-Z0-9-]+)", line)
+            if m and m.group(2) in SECTION_REASONS:
+                sections[m.group(1)].add(SECTION_REASONS[m.group(2)])
+    return fields, sections
 
 
 def explained(entries, path):
@@ -219,9 +313,9 @@ def main():
     if args.verbose_dir:
         os.makedirs(args.verbose_dir, exist_ok=True)
 
-    q = queue_entries()
+    q, qsections = queue_entries()
     matched = Counter()
-    gap = {c: Counter() for c in CLASSES}     # flagged / unflagged, per class
+    gap = {c: Counter() for c in CLASSES}   # field-flagged / section-flagged / unflagged
     unflagged_list = defaultdict(list)
     n = skipped = 0
 
@@ -249,10 +343,13 @@ def main():
         m, missing, extra = parse_score(text)
         matched.update(m)
         for section, paths in missing.items():
+            arrays = ref_arrays(paths)
             for p in roots(paths):
-                c = classify(p, section, extra)
+                c = classify(p, section, extra, arrays)
                 if explained(q.get(kind, ()), p):
-                    gap[c]["flagged"] += 1
+                    gap[c]["field"] += 1
+                elif section in qsections.get(kind, ()):
+                    gap[c]["section"] += 1
                 else:
                     gap[c]["unflagged"] += 1
                     unflagged_list[c].append((kind, p))
@@ -260,9 +357,7 @@ def main():
     print(f"resources scored: {n}" + (f"   skipped: {skipped}" if skipped else ""))
     print(f"baseline: {args.ref}\n")
     produced = matched["spec"] + matched["required"] + matched["status.observedState"]
-    missing_total = sum(gap[c]["flagged"] + gap[c]["unflagged"] for c in CLASSES)
-    flagged_total = sum(gap[c]["flagged"] for c in CLASSES)
-    unflagged_total = missing_total - flagged_total
+    missing_total = sum(sum(gap[c].values()) for c in CLASSES)
     surface = produced + missing_total
 
     print(f"fields in KCC master's CRDs      {surface}")
@@ -271,17 +366,39 @@ def main():
     print(f"  we miss                        {missing_total}"
           f"   ({100 * missing_total / surface:.1f}%)")
     print()
-    print(f"Of the {missing_total} we miss, how many does the queue name?\n")
-    print(f"{'why it differs':26s} {'we miss':>8s} {'flagged':>8s} {'unflagged':>10s}")
-    for c in CLASSES:
-        f, u = gap[c]["flagged"], gap[c]["unflagged"]
-        if f + u == 0:
-            continue
-        print(f"  {c:24s} {f + u:8d} {f:8d} {u:10d}")
-    print(f"  {'TOTAL':24s} {missing_total:8d} {flagged_total:8d} {unflagged_total:10d}")
-    print(f"\n{unflagged_total} fields we miss without flagging. That is the number to drive to")
-    print(f"zero -- a share of the {missing_total} we miss, not of the {surface} KCC has.")
-    print("Watch \"we produce\" alongside it: a change that flags fields by no longer")
+    print(f"Two independent questions about those {missing_total}. The rows say WHY a field")
+    print("differs; the columns say WHETHER anyone was told. A field can be absent")
+    print("AND flagged -- that is the queue doing its job, not a contradiction.")
+    print()
+
+    def row(label, counters):
+        f, sec, u = counters["field"], counters["section"], counters["unflagged"]
+        print(f"  {label:24s} {f + sec + u:8d} {f:9d} {sec:11d} {u:10d}")
+
+    print(f"  {'why it differs':24s} {'we miss':>8s} {'by field':>9s} "
+          f"{'by section':>11s} {'unflagged':>10s}")
+    for c in TARGET_CLASSES:
+        row(c, gap[c])
+    target = Counter()
+    for c in TARGET_CLASSES:
+        target.update(gap[c])
+    print("  " + "-" * 63)
+    row("subtotal, the target", target)
+
+    accepted = Counter()
+    for c in ACCEPTED_CLASSES:
+        accepted.update(gap[c])
+    if sum(accepted.values()):
+        print("\n  differences we accept, not counted above:")
+        for c in ACCEPTED_CLASSES:
+            row(c, gap[c])
+
+    unflagged = target["unflagged"]
+    tmiss = sum(target.values())
+    print(f"\n{unflagged} fields we miss with nobody told. That is the number to drive to")
+    print(f"zero -- a share of the {tmiss} we miss in the target classes, not of the")
+    print(f"{surface} fields KCC has.")
+    print('Watch "we produce" alongside it: a change that flags fields by no longer')
     print("producing them improves this report and takes working fields away.")
 
     if args.list_silent:
