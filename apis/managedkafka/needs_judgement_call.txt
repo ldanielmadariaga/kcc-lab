@@ -23,3 +23,5 @@ kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field 
 kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.secretPaths" reason=possible-reference-by-description
 kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.kafkaCluster" reason=possible-reference-by-description
 kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: field ".spec.topics" reason=possible-reference-by-description
+kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)
+kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)

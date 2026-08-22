@@ -14,3 +14,4 @@ kind=DataCatalogTag group=datacatalog.cnrm.cloud.google.com: field ".spec.locati
 kind=DataCatalogTagTemplate group=datacatalog.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DataCatalogEntry group=datacatalog.cnrm.cloud.google.com: field ".spec.linkedResource" reason=possible-reference-by-description
 kind=DataCatalogTag group=datacatalog.cnrm.cloud.google.com: field ".spec.template" reason=possible-reference-by-description
+kind=DataCatalogTagTemplate group=datacatalog.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)

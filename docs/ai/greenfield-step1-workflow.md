@@ -32,7 +32,7 @@ bulk-generation PR could not land.
 |---|---|---|
 | 1. Generate | Types, CRD, Spec filled from the proto | Yes |
 | 2. Inventory | Reads `needs_judgement_call.txt` | Yes |
-| 2b. Reference hints | `scripts/queue-ref-hints` seeds the queue | Yes |
+| 2b. Queue hints | `scripts/queue-hints` seeds the queue | Yes |
 | 3. Judgement pass | Refs, omissions, ObservedState, KRM renames | Yes, by hand |
 | 4. Mappers and deepcopy | `generate-mapper`, then `controller-gen` | Yes |
 | 5. Register and verify | Manifest entry, baselines, checks | Yes |
@@ -154,13 +154,17 @@ silent.** A field a human must decide is a fine outcome; a field nobody was told
 measure it — `hack/tools/greenfield/silence_report.py` reports produced / flagged / unflagged
 against KCC master, and unflagged is the number to drive down.
 
-## Stage 2b — Seed the queue with reference hints
+## Stage 2b — Seed the queue with hints
 
-Run after the CRDs exist, because the detector reads them:
+Run after the CRDs exist, because the detectors read them:
 
 ```bash
-go run ./scripts/queue-ref-hints
+go run ./scripts/queue-hints
 ```
+
+**Do not skip this.** The 189-resource bulk run did, and it cost 151 reference fields that nobody
+was told about — the largest single hole in that run's coverage, closed by running a tool that
+already existed.
 
 This is what makes the queue usable as a work list. Without it the queue names only the references
 the proto annotates with `google.api.resource_reference`, which measured **11 of 111** on the
@@ -176,7 +180,15 @@ Entries say how confident they are, and the difference matters when you work thr
 | `possible-reference-by-description` | the description names a resource path — strong |
 | `possible-reference-by-name (TargetRef)` | the field name matches a known target — a hint |
 
-Roughly a third of hints are wrong, and that is the intended trade for a list a person confirms.
+It also flags a resource whose generated `status.observedState` came out with **no fields at all**,
+as `resource reason=empty-observedstate`. That is a fact rather than a guess — the CRD either has
+properties there or it does not — and it caught 36 of the 189 resources in the bulk run, including
+`ComputeInterconnect`, whose upstream CRD has 19 observed fields against our zero. The usual cause
+is a proto carrying no `google.api.field_behavior` anywhere, which leaves the generator nothing to
+identify an output field by, so everything lands in the Spec.
+
+Roughly a third of reference hints are wrong, and that is the intended trade for a list a person
+confirms.
 Most of the wrong ones are fields whose exact name upstream made a reference in a *different*
 resource, so they are worth a moment's thought rather than a reflex dismissal.
 

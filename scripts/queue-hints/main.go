@@ -12,8 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Command queue-ref-hints seeds the judgement queue with the reference fields a
-// generated resource probably needs.
+// Command queue-hints seeds the judgement queue from what generation produced.
+//
+// Two kinds of hint, both read off the generated CRD:
+//
+//   - the reference fields a resource probably needs;
+//   - a resource whose status.observedState came out with no fields at all.
 //
 // Why this runs after generation rather than inside it: the generator holds the
 // proto and could consult google.api.resource_reference directly, which would be
@@ -26,6 +30,14 @@
 // Measured on the 239-resource run before this existed: the queue named 11 of
 // the 168 reference fields those resources actually needed, so an agent working
 // from it saw almost none of the work.
+//
+// The empty-ObservedState hint is a statement of fact rather than a guess,
+// and it is the loudest single signal in the corpus: 36 of 189 measured
+// resources generated an ObservedState with nothing in it, ComputeInterconnect
+// among them, where upstream's CRD has 19 observed fields. Reporting "your
+// status is empty" once beats nineteen separate field entries, and unlike
+// those it needs nothing inferred -- the generated CRD either has properties
+// under status.observedState or it does not.
 package main
 
 import (
@@ -95,6 +107,9 @@ func run(apisDir string, dryRun, listHints bool) error {
 			for _, line := range hintsFor(crd, version) {
 				hints[service] = append(hints[service], line)
 			}
+			if line, ok := observedStateHint(crd, version); ok {
+				hints[service] = append(hints[service], line)
+			}
 		}
 	}
 
@@ -132,6 +147,39 @@ func run(apisDir string, dryRun, listHints bool) error {
 // have queue entries. Those are precisely the untriaged resources the hints are
 // for; the check skips them so a half-finished resource can still merge.
 // queuedKinds reports which Kinds a service's queue file already names.
+// observedStateHint reports a resource whose generated status.observedState has
+// no fields.
+//
+// Read off the CRD rather than the proto so it describes what shipped. The
+// usual cause is a proto with no google.api.field_behavior anywhere -- every
+// compute message is like this -- which leaves the generator nothing to
+// identify an output field by, so everything lands in the Spec.
+func observedStateHint(crd apiextensions.CustomResourceDefinition, version apiextensions.CustomResourceDefinitionVersion) (string, bool) {
+	if version.Schema == nil || version.Schema.OpenAPIV3Schema == nil {
+		return "", false
+	}
+	status, ok := version.Schema.OpenAPIV3Schema.Properties["status"]
+	if !ok {
+		return "", false
+	}
+	observed, ok := status.Properties["observedState"]
+	if !ok {
+		// No observedState at all is a different shape -- the older hand-written
+		// resources put observed fields directly on status -- and not something
+		// this should comment on.
+		return "", false
+	}
+	if len(observed.Properties) > 0 {
+		return "", false
+	}
+	return fmt.Sprintf(
+		"kind=%s group=%s: resource reason=empty-observedstate "+
+			"(nothing was generated into status.observedState; the proto probably "+
+			"carries no google.api.field_behavior, so output fields landed in the "+
+			"Spec. Decide what belongs in status)",
+		crd.Spec.Names.Kind, crd.Spec.Group), true
+}
+
 func queuedKinds(path string) (map[string]bool, error) {
 	body, err := os.ReadFile(path)
 	if err != nil {

@@ -6,3 +6,4 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=VideoStitcherCDNKey group=videostitcher.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VideoStitcherCDNKey group=videostitcher.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)
