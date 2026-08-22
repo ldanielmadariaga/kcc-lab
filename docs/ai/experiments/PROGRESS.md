@@ -46,25 +46,43 @@ two KMS kinds, `BigQueryReservationCapacityCommitment`, `VertexAITensorboard`. T
 set by the Terraform provider, so scoring generator output against them asks it to reproduce a TF
 artifact, and they are excluded now.
 
-## Silence: how much of the gap is accounted for
+## Accounting: is every field KCC master has either produced or flagged?
 
-Past ~80% generated, the useful target changed. A field that needs a human is a fine outcome; a
-field nobody was told about is not. See
+Past ~80% generated, the useful target changed. A field needing a human is a fine outcome; a field
+nobody was told about is not. See
 [greenfield-coverage-invariant.md](../greenfield-coverage-invariant.md).
 
-Measured over the same 189 greenfield resources, counting **roots** rather than paths:
+Over the same 189 greenfield resources, against KCC baseline `c1df0b9326`, counting **roots** rather
+than paths:
 
-| | explained | silent | silent % |
+| | fields |
+|---|---|
+| in KCC master's CRDs | 9,356 |
+| we produce | 8,727 (93.3%) |
+| **we miss** | **629 (6.7%)** |
+
+Of the 629 we miss:
+
+| | flagged | unflagged | unflagged share of the 629 |
 |---|---|---|---|
 | before any reporting work | 37 | 592 | 94% |
 | + observedState omissions reported | 53 | 576 | 92% |
 | + comment detector routed into the queue | **96** | **533** | **85%** |
 
-Generated counts held at 5535 spec / 603 required / 2589 observedState throughout. That check
-matters: a change that "explains" fields by no longer emitting them improves the report and damages
-the CRD, so read the two together.
+"We produce" held at 8,727 throughout. That check matters: a change that flags fields by no longer
+producing them improves the report and damages the CRD.
 
-Remaining, by bucket: references 312 silent (the large one), spec-other 124, observedState 97.
+By why the field differs, at 96/533:
+
+| class | we miss | flagged | unflagged |
+|---|---|---|---|
+| `reference-shape` | 328 | 16 | 312 |
+| `moved` | 114 | 43 | 71 |
+| `absent` | 104 | 37 | 67 |
+| `intentionally-different` | 60 | 0 | 60 |
+| `renamed` | 23 | 0 | 23 |
+
+References are the large one and the least mechanical, so they are the next target.
 
 ## What each change was worth
 

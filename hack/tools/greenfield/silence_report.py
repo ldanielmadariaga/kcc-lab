@@ -12,18 +12,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Report how much of the gap between generated CRDs and a baseline is silent.
+"""Check that every field KCC master has is either produced or flagged.
 
-A field we do not generate is acceptable. A field we do not generate and do not
-mention is not: the resource looks finished, passes its checks, and is quietly
-missing something. This tool splits every missing baseline field three ways.
+The target is CRD compatibility with k8s-config-connector master. If master's CRD
+has spec.pipelineJobRef.external and we produce spec.pipelineJob, a user's YAML
+breaks -- it does not help that both come from the same proto field. Renamed,
+moved and reference-shaped fields are all fields KCC has and we do not.
 
-  generated  the field is in our CRD
-  explained  it is not, and apis/<svc>/needs_judgement_call.txt names it
-  silent     it is not, and nothing says so
+Every field in the baseline CRD is one of:
 
-The number to drive to zero is silent. "Generated" is not the target; a field a
-human must decide is a fine outcome as long as somebody is told.
+  produced   we emit it too
+  flagged    we do not, and apis/<svc>/needs_judgement_call.txt names it
+  unflagged  we do not, and nothing says so
+
+Unflagged is the number to drive to zero. A field a human must decide is a fine
+outcome, as long as somebody is told about it.
+
+Each field we miss is also classified by *why* it differs, to route the fix. All
+five classes are real gaps; they just need different work:
+
+  reference-shape        we emit a plain string, KCC has a Ref object
+  renamed                same field, different name (bootDiskMIB/bootDiskMiB)
+  moved                  we emit it in Spec, KCC has it in status.observedState
+  intentionally-different  we model it deliberately otherwise, e.g. Value as JSON
+  absent                 it appears nowhere in our output
+
+A note on a number this tool does not report: comparing +kcc:proto:field
+annotations instead of CRD paths says the generator emits 16295 of the 16438
+proto fields KCC declares. That is a useful check on whether generation is
+healthy, and it is not this measurement -- using it to shrink the CRD gap
+explains away fields users actually cannot set.
 
 Three details decide whether the figure means anything, each of which produced a
 wrong answer before it was fixed:
@@ -76,25 +94,27 @@ def score_resource(binary, crd, ref):
 
 
 def parse_score(text):
-    """Return (matched-per-bucket, missing paths) from one score report."""
+    """Return (matched-per-bucket, missing paths, extra paths) from one report."""
     matched = Counter()
     missing = {"spec": [], "status.observedState": []}
-    section = None
+    extra = {"spec": [], "status.observedState": []}
+    section = kind = None
     for line in text.split("\n"):
         m = re.match(r"\s+(spec|required|status\.observedState)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s", line)
         if m:
             matched[m.group(1)] += int(m.group(2))
             continue
-        m = re.match(r"\s+(spec|status\.observedState) missing \((\d+)\):", line)
+        m = re.match(r"\s+(spec|status\.observedState) (missing|extra) \((\d+)\):", line)
         if m:
-            section = m.group(1)
+            section, kind = m.group(1), m.group(2)
             continue
         if re.match(r"\s+\S+ (missing|extra|mismatch)", line):
-            section = None
+            section = kind = None
             continue
         if section and line.startswith("      "):
-            missing[section].append(line.strip().split(" ")[0])
-    return matched, missing
+            path = line.strip().split(" ")[0]
+            (missing if kind == "missing" else extra)[section].append(path)
+    return matched, missing, extra
 
 
 def roots(paths):
@@ -107,6 +127,51 @@ def roots(paths):
             continue
         out.append(p)
     return out
+
+
+# The arms of google.protobuf.Value. We map that message to apiextensionsv1.JSON
+# deliberately, so a baseline CRD modelling it as a union struct differs from ours
+# by choice. Still a CRD difference; not a generation failure.
+VALUE_ARMS = {"nullValue", "numberValue", "boolValue", "stringValue",
+              "structValue", "listValue", "values"}
+
+CLASSES = ("reference-shape", "renamed", "moved", "intentionally-different", "absent")
+
+
+def strip_section(path):
+    """Drop the leading spec. / status.observedState. so the two can be compared."""
+    for prefix in ("status.observedState.", "spec."):
+        if path.startswith(prefix):
+            return path[len(prefix):]
+    return path
+
+
+def classify(path, section, extras):
+    """Say why a baseline field is not in our CRD.
+
+    extras maps section -> the paths we emit that the baseline does not have, which
+    is what makes "moved" and "renamed" visible: a field we put somewhere else shows
+    up as missing in one place and extra in another.
+    """
+    if REF_SEGMENT.search(path):
+        return "reference-shape"
+    leaf = path.rsplit(".", 1)[-1].rstrip("[]")
+    if leaf in VALUE_ARMS:
+        return "intentionally-different"
+
+    rel = strip_section(path)
+    other = "spec" if section == "status.observedState" else "status.observedState"
+    if any(strip_section(e) == rel for e in extras.get(other, ())):
+        return "moved"
+
+    # Same parent, same name but for case: an acronym the generator cased
+    # differently, e.g. we write bootDiskMIB where KCC writes bootDiskMiB.
+    parent = path.rsplit(".", 1)[0] if "." in path else ""
+    for e in extras.get(section, ()):
+        e_parent = e.rsplit(".", 1)[0] if "." in e else ""
+        if e_parent == parent and e.rsplit(".", 1)[-1].lower() == leaf.lower():
+            return "renamed"
+    return "absent"
 
 
 def bucket_of(section, path):
@@ -145,7 +210,7 @@ def main():
     ap.add_argument("--verbose-dir", help="cache dir for score --verbose output")
     ap.add_argument("--only", help="file of kinds to restrict to, one per line")
     ap.add_argument("--binary", default="./bin/crd-mcp-server")
-    ap.add_argument("--list-silent", action="store_true", help="print every silent root")
+    ap.add_argument("--list-silent", action="store_true", help="print every field missed without a flag")
     args = ap.parse_args()
 
     only = None
@@ -156,8 +221,8 @@ def main():
 
     q = queue_entries()
     matched = Counter()
-    gap = {b: Counter() for b in BUCKETS}     # explained / silent
-    silent_list = defaultdict(list)
+    gap = {c: Counter() for c in CLASSES}     # flagged / unflagged, per class
+    unflagged_list = defaultdict(list)
     n = skipped = 0
 
     for line in open(args.resources):
@@ -181,46 +246,50 @@ def main():
             if cached:
                 open(cached, "w").write(text)
         n += 1
-        m, missing = parse_score(text)
+        m, missing, extra = parse_score(text)
         matched.update(m)
         for section, paths in missing.items():
             for p in roots(paths):
-                b = bucket_of(section, p)
+                c = classify(p, section, extra)
                 if explained(q.get(kind, ()), p):
-                    gap[b]["explained"] += 1
+                    gap[c]["flagged"] += 1
                 else:
-                    gap[b]["silent"] += 1
-                    silent_list[b].append((kind, p))
+                    gap[c]["unflagged"] += 1
+                    unflagged_list[c].append((kind, p))
 
     print(f"resources scored: {n}" + (f"   skipped: {skipped}" if skipped else ""))
     print(f"baseline: {args.ref}\n")
-    # Fields we do produce, per section. There is no separate figure for
-    # references within spec, so this is reported by section rather than by
-    # bucket -- attributing it to one bucket would read as if it belonged there.
-    print("generated fields matching the baseline")
-    print(f"  spec                 {matched['spec']}")
-    print(f"  required             {matched['required']}")
-    print(f"  status.observedState {matched['status.observedState']}")
+    produced = matched["spec"] + matched["required"] + matched["status.observedState"]
+    missing_total = sum(gap[c]["flagged"] + gap[c]["unflagged"] for c in CLASSES)
+    flagged_total = sum(gap[c]["flagged"] for c in CLASSES)
+    unflagged_total = missing_total - flagged_total
+    surface = produced + missing_total
 
-    print(f"\nmissing, as roots (a missing parent explains its own subtree)\n")
-    print(f"{'bucket':18s} {'explained':>10s} {'silent':>8s} {'silent %':>9s}")
-    tot_e = tot_s = 0
-    for b in BUCKETS:
-        e, s = gap[b]["explained"], gap[b]["silent"]
-        tot_e += e
-        tot_s += s
-        pct = f"{100*s/(e+s):8.0f}%" if e + s else " " * 9
-        print(f"  {b:16s} {e:10d} {s:8d} {pct}")
-    total = tot_e + tot_s
-    pct = f"{100*tot_s/total:8.0f}%" if total else ""
-    print(f"  {'TOTAL':16s} {tot_e:10d} {tot_s:8d} {pct}")
+    print(f"fields in KCC master's CRDs      {surface}")
+    print(f"  we produce                     {produced}"
+          f"   ({100 * produced / surface:.1f}%)")
+    print(f"  we miss                        {missing_total}"
+          f"   ({100 * missing_total / surface:.1f}%)")
+    print()
+    print(f"Of the {missing_total} we miss, how many does the queue name?\n")
+    print(f"{'why it differs':26s} {'we miss':>8s} {'flagged':>8s} {'unflagged':>10s}")
+    for c in CLASSES:
+        f, u = gap[c]["flagged"], gap[c]["unflagged"]
+        if f + u == 0:
+            continue
+        print(f"  {c:24s} {f + u:8d} {f:8d} {u:10d}")
+    print(f"  {'TOTAL':24s} {missing_total:8d} {flagged_total:8d} {unflagged_total:10d}")
+    print(f"\n{unflagged_total} fields we miss without flagging. That is the number to drive to")
+    print(f"zero -- a share of the {missing_total} we miss, not of the {surface} KCC has.")
+    print("Watch \"we produce\" alongside it: a change that flags fields by no longer")
+    print("producing them improves this report and takes working fields away.")
 
     if args.list_silent:
-        for b in BUCKETS:
-            if not silent_list[b]:
+        for c in CLASSES:
+            if not unflagged_list[c]:
                 continue
-            print(f"\n### silent, {b} ({len(silent_list[b])})")
-            for kind, p in sorted(silent_list[b]):
+            print(f"\n### missed without flagging, {c} ({len(unflagged_list[c])})")
+            for kind, p in sorted(unflagged_list[c]):
                 print(f"  {kind}\t{p}")
     return 0
 

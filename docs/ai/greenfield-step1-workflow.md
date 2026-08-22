@@ -151,8 +151,8 @@ set, that was 156 defects against zero entries. These reasons now appear too:
 **A resource is not finished when its fields are generated. It is finished when nothing about it is
 silent.** A field a human must decide is a fine outcome; a field nobody was told about is not. See
 [greenfield-coverage-invariant.md](greenfield-coverage-invariant.md) for what that means and how to
-measure it — `hack/tools/greenfield/silence_report.py` reports generated / explained / silent, and
-silent is the number to drive down.
+measure it — `hack/tools/greenfield/silence_report.py` reports produced / flagged / unflagged
+against KCC master, and unflagged is the number to drive down.
 
 ## Stage 2b — Seed the queue with reference hints
 
