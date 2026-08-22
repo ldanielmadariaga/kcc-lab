@@ -221,33 +221,20 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 	typeFilePath := a.PathToTypeFile(resource)
 	cArgs := a.buildAPIArgs(&resource)
 	if prepopulated != nil {
-		// A resource nested under another resource gets no Location: its parent's
-		// identity already fixes one, and upstream is split 8 to 7 on whether to
-		// repeat it, so there is no convention to copy. Omitting is the reversible
-		// half -- adding a field later is easy, removing a required one is a
-		// breaking change -- but the choice belongs to whoever finishes the
-		// resource, so it is written down rather than made silently.
-		switch cArgs.ParentStyle {
-		case string(protoapi.ParentOther):
-			prepopulated.Judgement = append(prepopulated.Judgement, JudgementItem{
-				FieldPath: ".spec.location",
-				Reason:    "location-omitted-nested-parent",
-				Detail: "parent is " + cArgs.ResourcePattern +
-					"; location is implied by the parent, add it only if the API needs it stated",
-			})
-		case string(protoapi.ParentUnknown):
-			// No google.api.resource on the message, so the parent shape is not
-			// knowable here. Omit for the same reason as the nested case: adding
-			// a field later is easy, removing a required one is a breaking
-			// change. GrafeasNote is the worked example -- unannotated, project
-			// parented, and upstream gives it no location.
-			prepopulated.Judgement = append(prepopulated.Judgement, JudgementItem{
-				FieldPath: ".spec.location",
-				Reason:    "location-omitted-unknown-parent",
-				Detail: "the proto declares no google.api.resource, so the parent shape is unknown; " +
-					"add location if the resource is regional",
-			})
-		}
+		// Name every part of the resource's name that the Spec does not carry.
+		//
+		// The template emits projectRef and resourceID always, and location only
+		// for a projects/locations parent. Every other variable segment is dropped
+		// in silence, and a user cannot name the resource without it. Measured on
+		// the 189-resource bulk run, the omissions were spec.collection,
+		// spec.collectionGroup, spec.tenant, spec.parent and spec.region -- about
+		// fifteen fields upstream has and we did not mention anywhere.
+		//
+		// Omitting rather than emitting is still the right default. Adding a field
+		// later is easy; removing a required one is a breaking change. The point is
+		// only that the choice gets written down instead of made silently.
+		prepopulated.Judgement = append(prepopulated.Judgement,
+			parentSegmentJudgement(cArgs.ResourcePattern, cArgs.ParentStyle)...)
 		cArgs.SpecFields = prepopulated.SpecFields
 		cArgs.ObservedStateFields = prepopulated.ObservedStateFields
 		// Computed from both bodies here rather than taken from the result,
@@ -255,6 +242,72 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 		cArgs.ExtraImports = ExtraImportsFor(prepopulated.SpecFields, prepopulated.ObservedStateFields)
 	}
 	return scaffoldTypeFile(typeFilePath, cArgs)
+}
+
+// parentSegmentJudgement reports the parts of a resource's name that the Spec
+// does not carry.
+//
+// GrafeasNote is the worked example for the unknown case: unannotated, project
+// parented, and upstream gives it no location either.
+func parentSegmentJudgement(pattern, parentStyle string) []JudgementItem {
+	if parentStyle == string(protoapi.ParentUnknown) || pattern == "" {
+		// No google.api.resource, so there is no pattern to walk. Say that much,
+		// naming location because a regional resource is the case that bites.
+		return []JudgementItem{{
+			FieldPath: ".spec.location",
+			Reason:    "location-omitted-unknown-parent",
+			Detail: "the proto declares no google.api.resource, so the parent shape is unknown; " +
+				"add location if the resource is regional",
+		}}
+	}
+
+	// projectRef and resourceID are always emitted; location as well, but only
+	// when the parent is exactly projects/locations.
+	produced := map[string]bool{"project": true}
+	if parentStyle == string(protoapi.ParentProjectLocation) {
+		produced["location"] = true
+	}
+
+	var out []JudgementItem
+	for _, v := range protoapi.ParentVariables(pattern) {
+		if produced[v] {
+			continue
+		}
+		item := JudgementItem{
+			FieldPath: ".spec." + lowerCamel(v),
+			Reason:    "parent-segment-omitted",
+			Detail: "the resource pattern is " + pattern +
+				"; upstream carries each part of the name as a spec field",
+		}
+		if v == "location" {
+			// Keep the more specific advice for the case that has it: upstream is
+			// split 8 to 7 on whether a nested resource repeats its parent's
+			// location, so there is no convention to copy.
+			item.Reason = "location-omitted-nested-parent"
+			item.Detail = "parent is " + pattern +
+				"; location is implied by the parent, add it only if the API needs it stated"
+		}
+		out = append(out, item)
+	}
+	return out
+}
+
+// lowerCamel converts a pattern placeholder to the JSON name upstream uses:
+// "collection_group" -> "collectionGroup".
+//
+// Deliberately not the type generator's field-name casing, which also applies
+// the acronym table. Pattern placeholders are plain words -- collection,
+// tenant, data_store -- and borrowing the acronym rules here would couple this
+// to a setting that is opt-in per service.
+func lowerCamel(s string) string {
+	parts := strings.Split(s, "_")
+	for i := 1; i < len(parts); i++ {
+		if parts[i] == "" {
+			continue
+		}
+		parts[i] = strings.ToUpper(parts[i][:1]) + parts[i][1:]
+	}
+	return strings.Join(parts, "")
 }
 
 func scaffoldTypeFile(path string, cArgs *apis.APIArgs) error {
