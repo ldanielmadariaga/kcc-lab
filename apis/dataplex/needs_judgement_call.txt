@@ -25,3 +25,19 @@ kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: resource reason=untr
 kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
 kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: field ".spec.data.entity" reason=possible-reference-by-description
+kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: field ".spec.dataDiscoverySpec.bigqueryPublishingConfig.connection" reason=possible-reference-by-description
+kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: field ".spec.dataProfileSpec.postScanActions.bigqueryExport.resultsTable" reason=possible-reference-by-description
+kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: field ".spec.dataQualitySpec.postScanActions.bigqueryExport.resultsTable" reason=possible-reference-by-description
+kind=DataplexLake group=dataplex.cnrm.cloud.google.com: field ".spec.metastore.service" reason=possible-reference-by-description
+kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: field ".spec.exportSpec.scope.aspectTypes" reason=possible-reference-by-description
+kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: field ".spec.exportSpec.scope.entryGroups" reason=possible-reference-by-description
+kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: field ".spec.exportSpec.scope.entryTypes" reason=possible-reference-by-description
+kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: field ".spec.exportSpec.scope.projects" reason=possible-reference-by-description
+kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: field ".spec.importSpec.scope.aspectTypes" reason=possible-reference-by-description
+kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: field ".spec.importSpec.scope.entryGroups" reason=possible-reference-by-description
+kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: field ".spec.importSpec.scope.entryTypes" reason=possible-reference-by-description
+kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.executionSpec.kmsKey" reason=possible-reference-by-description
+kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.executionSpec.serviceAccount" reason=possible-reference-by-description
+kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.notebook.infrastructureSpec.vpcNetwork.network" reason=possible-reference-by-name (ComputeNetworkRef)
+kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.spark.infrastructureSpec.vpcNetwork.network" reason=possible-reference-by-name (ComputeNetworkRef)

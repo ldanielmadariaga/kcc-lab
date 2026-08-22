@@ -20,3 +20,5 @@ kind=GKEBackupRestore group=gkebackup.cnrm.cloud.google.com: field ".spec.backup
 kind=GKEBackupRestore group=gkebackup.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
 kind=GKEBackupRestore group=gkebackup.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/restorePlans/{restore_plan}/restores/{restore}; location is implied by the parent, add it only if the API needs it stated)
 kind=GKEBackupBackupChannel group=gkebackup.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=GKEBackupBackupChannel group=gkebackup.cnrm.cloud.google.com: field ".spec.destinationProject" reason=possible-reference-by-description
+kind=GKEBackupBackupPlan group=gkebackup.cnrm.cloud.google.com: field ".spec.backupConfig.encryptionKey" reason=possible-reference-by-name (KMSCryptoKeyRef)

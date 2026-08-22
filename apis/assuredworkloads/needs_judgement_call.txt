@@ -7,3 +7,4 @@
 
 kind=AssuredWorkloadsWorkload group=assuredworkloads.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=AssuredWorkloadsWorkload group=assuredworkloads.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is organizations/{organization}/locations/{location}/workloads/{workload}; location is implied by the parent, add it only if the API needs it stated)
+kind=AssuredWorkloadsWorkload group=assuredworkloads.cnrm.cloud.google.com: field ".spec.provisionedResourcesParent" reason=possible-reference-by-description

@@ -19,3 +19,12 @@ kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: resource reas
 # them. They are absent from the CRD. Shared nested messages, so they are
 # listed per service rather than against one Kind.
 # dropped: google.cloud.dataproc.v1.LoggingConfig.driverLogLevels reason=unsupported map type with key string and value enum
+kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.kmsKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.serviceAccount" reason=possible-reference-by-description
+kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.stagingBucket" reason=possible-reference-by-description
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.kmsKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.serviceAccount" reason=possible-reference-by-description
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.stagingBucket" reason=possible-reference-by-description
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.kmsKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.serviceAccount" reason=possible-reference-by-description
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.stagingBucket" reason=possible-reference-by-description

@@ -9,3 +9,10 @@ kind=BatchJob group=batch.cnrm.cloud.google.com: resource reason=untriaged-bulk-
 kind=BatchJob group=batch.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
 kind=BatchTask group=batch.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=BatchTask group=batch.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/jobs/{job}/taskGroups/{task_group}/tasks/{task}; location is implied by the parent, add it only if the API needs it stated)
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.instances[].policy.bootDisk.image" reason=possible-reference-by-description
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.instances[].policy.disks[].newDisk.image" reason=possible-reference-by-description
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.network" reason=possible-reference-by-name (ComputeNetworkRef)
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.network.networkInterfaces[].network" reason=possible-reference-by-description
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.network.networkInterfaces[].subnetwork" reason=possible-reference-by-description
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.serviceAccount" reason=possible-reference-by-description
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.notifications[].pubsubTopic" reason=possible-reference-by-description

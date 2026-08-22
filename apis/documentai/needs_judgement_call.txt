@@ -8,3 +8,4 @@
 kind=DocumentAIProcessor group=documentai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DocumentAIProcessor group=documentai.cnrm.cloud.google.com: field ".spec.defaultProcessorVersion" reason=possible-reference (target=documentai.googleapis.com/ProcessorVersion)
 kind=DocumentAIProcessor group=documentai.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=DocumentAIProcessor group=documentai.cnrm.cloud.google.com: field ".spec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)

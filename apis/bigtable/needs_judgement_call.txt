@@ -16,3 +16,5 @@ kind=BigtableLogicalView group=bigtable.cnrm.cloud.google.com: resource reason=u
 kind=BigtableLogicalView group=bigtable.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/instances/{instance}/logicalViews/{logical_view}; location is implied by the parent, add it only if the API needs it stated)
 kind=BigtableMaterializedView group=bigtable.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=BigtableMaterializedView group=bigtable.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/instances/{instance}/materializedViews/{materialized_view}; location is implied by the parent, add it only if the API needs it stated)
+kind=BigtableBackup group=bigtable.cnrm.cloud.google.com: field ".spec.sourceTable" reason=possible-reference-by-description
+kind=BigtableCluster group=bigtable.cnrm.cloud.google.com: field ".spec.encryptionConfig.kmsKeyName" reason=possible-reference-by-description

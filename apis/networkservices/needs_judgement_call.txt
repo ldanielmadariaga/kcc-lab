@@ -10,3 +10,5 @@ kind=NetworkServicesServiceBinding group=networkservices.cnrm.cloud.google.com: 
 kind=NetworkServicesLBRouteExtension group=networkservices.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=NetworkServicesWasmPlugin group=networkservices.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=NetworkServicesAuthzExtension group=networkservices.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NetworkServicesAuthzExtension group=networkservices.cnrm.cloud.google.com: field ".spec.service" reason=possible-reference-by-description
+kind=NetworkServicesLBRouteExtension group=networkservices.cnrm.cloud.google.com: field ".spec.extensionChains[].extensions[].service" reason=possible-reference-by-description

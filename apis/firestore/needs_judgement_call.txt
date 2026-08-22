@@ -14,3 +14,4 @@ kind=FirestoreField group=firestore.cnrm.cloud.google.com: field ".spec.location
 kind=FirestoreBackupSchedule group=firestore.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=FirestoreBackupSchedule group=firestore.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
 kind=FirestoreBackupSchedule group=firestore.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/databases/{database}/backupSchedules/{backup_schedule}; location is implied by the parent, add it only if the API needs it stated)
+kind=FirestoreField group=firestore.cnrm.cloud.google.com: field ".spec.indexConfig.indexes[].name" reason=possible-reference-by-description

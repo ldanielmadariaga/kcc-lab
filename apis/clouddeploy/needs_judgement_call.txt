@@ -12,3 +12,13 @@ kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: resource reason=
 kind=CloudDeployAutomation group=clouddeploy.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=CloudDeployAutomation group=clouddeploy.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
 kind=CloudDeployAutomation group=clouddeploy.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}/automations/{automation}; location is implied by the parent, add it only if the API needs it stated)
+kind=CloudDeployAutomation group=clouddeploy.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description
+kind=CloudDeployCustomTargetType group=clouddeploy.cnrm.cloud.google.com: field ".spec.customActions.includeSkaffoldModules[].googleCloudBuildRepo.repository" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.anthosCluster.membership" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.customTarget.customTargetType" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].defaultPool.serviceAccount" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].privatePool.serviceAccount" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].privatePool.workerPool" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].serviceAccount" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].workerPool" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.gke.cluster" reason=possible-reference-by-description

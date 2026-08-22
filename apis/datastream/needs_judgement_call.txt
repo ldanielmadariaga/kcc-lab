@@ -12,3 +12,7 @@ kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field "
 kind=DatastreamRoute group=datastream.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DatastreamRoute group=datastream.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
 kind=DatastreamRoute group=datastream.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/privateConnections/{private_connection}/routes/{route}; location is implied by the parent, add it only if the API needs it stated)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.gcsProfile.bucket" reason=possible-reference-by-description
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.privateConnectivity.privateConnection" reason=possible-reference-by-description
+kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: field ".spec.pscInterfaceConfig.networkAttachment" reason=possible-reference-by-description
+kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: field ".spec.vpcPeeringConfig.vpc" reason=possible-reference-by-description

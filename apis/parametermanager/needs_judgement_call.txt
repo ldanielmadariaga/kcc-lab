@@ -9,3 +9,4 @@ kind=ParameterManagerParameter group=parametermanager.cnrm.cloud.google.com: res
 kind=ParameterManagerParameter group=parametermanager.cnrm.cloud.google.com: field ".spec.kmsKey" reason=possible-reference (target=cloudkms.googleapis.com/CryptoKey)
 kind=ParameterManagerParameterVersion group=parametermanager.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=ParameterManagerParameterVersion group=parametermanager.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/parameters/{parameter}/versions/{parameter_version}; location is implied by the parent, add it only if the API needs it stated)
+kind=ParameterManagerParameter group=parametermanager.cnrm.cloud.google.com: field ".spec.kmsKey" reason=possible-reference-by-name (KMSCryptoKeyRef)

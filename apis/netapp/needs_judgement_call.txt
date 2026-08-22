@@ -8,3 +8,4 @@
 kind=NetAppBackupPolicy group=netapp.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=NetAppBackupVault group=netapp.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=NetAppBackupVault group=netapp.cnrm.cloud.google.com: field ".spec.backupRegion" reason=possible-reference (target=locations.googleapis.com/Location)
+kind=NetAppBackupVault group=netapp.cnrm.cloud.google.com: field ".spec.backupRegion" reason=possible-reference-by-description

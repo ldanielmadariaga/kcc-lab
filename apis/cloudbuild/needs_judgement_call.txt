@@ -6,3 +6,18 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketCloudConfig.authorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketCloudConfig.readAuthorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketCloudConfig.webhookSecretSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketDataCenterConfig.authorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketDataCenterConfig.readAuthorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketDataCenterConfig.serviceDirectoryConfig.service" reason=possible-reference-by-description
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketDataCenterConfig.webhookSecretSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.githubConfig.authorizerCredential.oauthTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.githubEnterpriseConfig.privateKeySecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.githubEnterpriseConfig.serviceDirectoryConfig.service" reason=possible-reference-by-description
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.githubEnterpriseConfig.webhookSecretSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.gitlabConfig.authorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.gitlabConfig.readAuthorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.gitlabConfig.serviceDirectoryConfig.service" reason=possible-reference-by-description
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.gitlabConfig.webhookSecretSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)

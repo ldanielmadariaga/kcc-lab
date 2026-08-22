@@ -7,3 +7,4 @@
 
 kind=GKEHubFleet group=gkehub.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=GKEHubFleet group=gkehub.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=GKEHubFleet group=gkehub.cnrm.cloud.google.com: field ".spec.defaultClusterConfig.binaryAuthorizationConfig.policyBindings[].name" reason=possible-reference-by-description

@@ -22,3 +22,13 @@ kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: res
 kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference (target=vmwareengine.googleapis.com/VmwareEngineNetwork)
 kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".spec.serviceNetwork" reason=possible-reference (target=compute.googleapis.com/Network)
 kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VMwareEngineExternalAccessRule group=vmwareengine.cnrm.cloud.google.com: field ".spec.destinationIPRanges[].externalAddress" reason=possible-reference-by-description
+kind=VMwareEngineExternalAccessRule group=vmwareengine.cnrm.cloud.google.com: field ".spec.sourceIPRanges[].externalAddress" reason=possible-reference-by-description
+kind=VMwareEngineNetworkPeering group=vmwareengine.cnrm.cloud.google.com: field ".spec.peerNetwork" reason=possible-reference-by-description
+kind=VMwareEngineNetworkPeering group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference-by-description
+kind=VMwareEngineNetworkPolicy group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference-by-description
+kind=VMwareEnginePrivateCloud group=vmwareengine.cnrm.cloud.google.com: field ".spec.managementCluster.stretchedClusterConfig.preferredLocation" reason=possible-reference-by-description
+kind=VMwareEnginePrivateCloud group=vmwareengine.cnrm.cloud.google.com: field ".spec.managementCluster.stretchedClusterConfig.secondaryLocation" reason=possible-reference-by-description
+kind=VMwareEnginePrivateCloud group=vmwareengine.cnrm.cloud.google.com: field ".spec.networkConfig.vmwareEngineNetwork" reason=possible-reference-by-description
+kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".spec.serviceNetwork" reason=possible-reference-by-description
+kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference-by-description

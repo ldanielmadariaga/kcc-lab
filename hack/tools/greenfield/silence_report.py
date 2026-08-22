@@ -285,10 +285,32 @@ def queue_entries():
     return fields, sections
 
 
+# When upstream turns a field into a reference it appends "Ref" -- and it also
+# drops a trailing noun that the reference makes redundant. "kmsKeyName" becomes
+# "kmsKeyRef", not "kmsKeyNameRef"; so do cryptoKeyName, bucketName and
+# cloudStorageObjectPath. Stripping "Ref" alone leaves "kmsKey", which matches no
+# queue entry, so 20 correctly hinted fields read as unflagged. Only Name and Path
+# occur in the corpus today; the rest are the same rename and cost nothing, since
+# a candidate only credits an entry that exists at that exact path.
+DROPPED_SUFFIXES = ("", "Name", "Path", "Id", "ID", "Email", "Uri", "URI",
+                    "Names", "Paths", "Ids", "IDs", "Emails", "Uris", "URIs")
+
+
+def queue_candidates(path):
+    """The names a queue entry might use for this baseline field path."""
+    out = {path.lstrip(".")}
+    plain = REF_SUFFIX.sub(r"\1", REF_CHILD.sub("", path)).lstrip(".")
+    # Re-attach any array marker after the suffix: bucketRefs[] came from
+    # bucketName[], not bucket[]Name.
+    stem, arr = (plain[:-2], "[]") if plain.endswith("[]") else (plain, "")
+    for suffix in DROPPED_SUFFIXES:
+        out.add(stem + suffix + arr)
+    return out
+
+
 def explained(entries, path):
     """Does any queue entry name this field, allowing for the reference rename?"""
-    plain = REF_SUFFIX.sub(r"\1", REF_CHILD.sub("", path))
-    for want in {path.lstrip("."), plain.lstrip(".")}:
+    for want in queue_candidates(path):
         for e in entries:
             base = e.rstrip("[]")
             if want == e or want.startswith(base + ".") or want.startswith(base + "[]"):

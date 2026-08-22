@@ -16,3 +16,10 @@ kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: field ".spec.lo
 # them. They are absent from the CRD. Shared nested messages, so they are
 # listed per service rather than against one Kind.
 # dropped: google.cloud.managedkafka.v1.ConsumerTopicMetadata.partitions reason=unsupported map type with key int32 and value message
+kind=ManagedKafkaCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.accessConfig.networkConfigs[].subnet" reason=possible-reference-by-description
+kind=ManagedKafkaCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.kmsKey" reason=possible-reference-by-description
+kind=ManagedKafkaCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.tlsConfig.trustConfig.casConfigs[].caPool" reason=possible-reference-by-description
+kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.accessConfig.networkConfigs[].primarySubnet" reason=possible-reference-by-description
+kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.secretPaths" reason=possible-reference-by-description
+kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.kafkaCluster" reason=possible-reference-by-description
+kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: field ".spec.topics" reason=possible-reference-by-description

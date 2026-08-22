@@ -17,3 +17,8 @@ kind=EventarcChannelConnection group=eventarc.cnrm.cloud.google.com: field ".spe
 kind=EventarcGoogleAPISource group=eventarc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=EventarcGoogleAPISource group=eventarc.cnrm.cloud.google.com: field ".spec.destination" reason=possible-reference (target=eventarc.googleapis.com/MessageBus)
 kind=EventarcGoogleAPISource group=eventarc.cnrm.cloud.google.com: field ".spec.cryptoKeyName" reason=possible-reference (target=cloudkms.googleapis.com/CryptoKey)
+kind=EventarcChannel group=eventarc.cnrm.cloud.google.com: field ".spec.provider" reason=possible-reference-by-description
+kind=EventarcChannelConnection group=eventarc.cnrm.cloud.google.com: field ".spec.channel" reason=possible-reference-by-description
+kind=EventarcEnrollment group=eventarc.cnrm.cloud.google.com: field ".spec.destination" reason=possible-reference-by-description
+kind=EventarcEnrollment group=eventarc.cnrm.cloud.google.com: field ".spec.messageBus" reason=possible-reference-by-description
+kind=EventarcGoogleAPISource group=eventarc.cnrm.cloud.google.com: field ".spec.destination" reason=possible-reference-by-description

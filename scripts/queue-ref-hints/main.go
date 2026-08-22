@@ -67,12 +67,25 @@ func run(apisDir string, dryRun, listHints bool) error {
 		if service == "" {
 			continue
 		}
-		// Only seed a service that already has a queue. The queue is written by
-		// generate-types --prepopulate-spec, so its presence is what marks a
-		// service as bulk-generated; seeding others would add entries to
-		// resources nobody is generating, and every entry suppresses [refs] for
-		// the Kind it names.
-		if _, err := os.Stat(queuePath(apisDir, service)); err != nil {
+		// Only seed a Kind that is already in the queue. The queue is written by
+		// generate-types --prepopulate-spec, so an entry is what marks a resource
+		// as bulk-generated; seeding others would add entries to resources nobody
+		// is generating, and every entry suppresses [refs] for the Kind it names.
+		//
+		// The gate is per Kind rather than per service because a service is not
+		// uniformly bulk-generated. compute holds both freshly generated kinds and
+		// ComputeInstance, which upstream has maintained by hand for years. A
+		// service-level gate let 30 such resources through -- ComputeInstance,
+		// ComputeInstanceTemplate, CloudBuildTrigger, TPUNode among them -- and
+		// queueing one of those does more than add a note: a queued resource
+		// contributes no [refs] findings, so its existing missingrefs.txt entries
+		// read as fixed and get pruned, then return as fresh violations the moment
+		// it graduates.
+		queued, err := queuedKinds(queuePath(apisDir, service))
+		if err != nil {
+			continue
+		}
+		if !queued[crd.Spec.Names.Kind] {
 			continue
 		}
 		for _, version := range crd.Spec.Versions {
@@ -118,6 +131,28 @@ func run(apisDir string, dryRun, listHints bool) error {
 // Unlike TestMissingRefs this deliberately does NOT skip resources that already
 // have queue entries. Those are precisely the untriaged resources the hints are
 // for; the check skips them so a half-finished resource can still merge.
+// queuedKinds reports which Kinds a service's queue file already names.
+func queuedKinds(path string) (map[string]bool, error) {
+	body, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	out := map[string]bool{}
+	for _, line := range strings.Split(string(body), "\n") {
+		if !strings.HasPrefix(line, "kind=") {
+			continue
+		}
+		rest := line[len("kind="):]
+		if i := strings.IndexAny(rest, " \t"); i >= 0 {
+			rest = rest[:i]
+		}
+		if rest != "" {
+			out[rest] = true
+		}
+	}
+	return out, nil
+}
+
 func hintsFor(crd apiextensions.CustomResourceDefinition, version apiextensions.CustomResourceDefinitionVersion) []string {
 	var out []string
 	visitProps(version.Schema.OpenAPIV3Schema, "", func(path string, props *apiextensions.JSONSchemaProps) {
