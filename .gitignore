@@ -192,3 +192,6 @@ operator/autopilot-channels/packages/configconnector/*/namespaced/0-cnrm-system.
 # real ones to config/crds/resources/. 331 files of scratch that a "git add -A"
 # will happily commit.
 apis/config/
+
+# Compiled helper binary, 12MB, committed by accident in 669a8dfc.
+dev/tools/crd-mcp-server/crd-mcp-server
