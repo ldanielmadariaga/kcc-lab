@@ -418,15 +418,27 @@ def names_something_nearby(entries, path):
     if not parent:
         return ""
     parent = parent.lstrip(".")
-    hit = False
+    want = name_words(path.rsplit(".", 1)[-1])
     for e in entries:
-        if e == parent or e.startswith(parent + ".") or e.startswith(parent + "[]"):
-            hit = True
-            break
-    if not hit:
-        return ""
-    # "spec" / "status.observedState" with nothing below it is the whole section.
-    return "top-level" if parent in SECTIONS else "nested"
+        if not (e == parent or e.startswith(parent + ".") or e.startswith(parent + "[]")):
+            continue
+        # Proximity alone credited billingAccountRef to spec.location, because at
+        # the top level the parent is the whole section. Require a shared word.
+        if name_words(e.rsplit(".", 1)[-1]) & want:
+            return "nested"
+    return ""
+
+
+def name_words(leaf):
+    """The lowercase words of a field name, minus a Ref suffix, singularised.
+
+    Singularising is what pairs projectRefs with projects and agentRefs with
+    agents, which an exact match misses over one letter.
+    """
+    leaf = REF_SUFFIX.sub(lambda m: m.group(1) or "", leaf.rstrip("[]"))
+    words = re.findall(r"[A-Z]+(?![a-z])|[A-Z][a-z]*|[a-z]+", leaf)
+    return {w[:-1].lower() if len(w) > 3 and w.endswith("s") else w.lower()
+            for w in words}
 
 
 def main():
