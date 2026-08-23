@@ -89,10 +89,6 @@ type DataLabelingEvaluationJobSpec struct {
 	//  failed attempt is appended to this array.
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.attempts
 	Attempts []Attempt `json:"attempts,omitempty"`
-
-	// Output only. Timestamp of when this evaluation job was created.
-	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.create_time
-	CreateTime *string `json:"createTime,omitempty"`
 }
 
 // DataLabelingEvaluationJobStatus defines the config connector machine state of DataLabelingEvaluationJob
@@ -114,6 +110,10 @@ type DataLabelingEvaluationJobStatus struct {
 // DataLabelingEvaluationJobObservedState is the state of the DataLabelingEvaluationJob resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.datalabeling.v1beta1.EvaluationJob
 type DataLabelingEvaluationJobObservedState struct {
+	// Output only. Timestamp of when this evaluation job was created.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.create_time
+	CreateTime *string `json:"createTime,omitempty"`
 }
 
 // +genclient

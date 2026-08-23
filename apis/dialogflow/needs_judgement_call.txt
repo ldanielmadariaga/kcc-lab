@@ -6,3 +6,20 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=DialogflowSipTrunk group=dialogflow.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DialogflowSipTrunk group=dialogflow.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/sipTrunks/{siptrunk}; confirm the resource is regional and that this is the name for it)
+kind=DialogflowKnowledgeBase group=dialogflow.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DialogflowGenerator group=dialogflow.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DialogflowGenerator group=dialogflow.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=DialogflowGenerator group=dialogflow.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/generators/{generator}; confirm the resource is regional and that this is the name for it)
+kind=DialogflowConversationDataset group=dialogflow.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DialogflowConversationDataset group=dialogflow.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=DialogflowConversationDataset group=dialogflow.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/conversationDatasets/{conversation_dataset}; confirm the resource is regional and that this is the name for it)
+kind=DialogflowSecuritySettings group=dialogflow.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DialogflowSecuritySettings group=dialogflow.cnrm.cloud.google.com: field ".spec.inspectTemplate" reason=possible-reference (target=dlp.googleapis.com/InspectTemplate)
+kind=DialogflowSecuritySettings group=dialogflow.cnrm.cloud.google.com: field ".spec.deidentifyTemplate" reason=possible-reference (target=dlp.googleapis.com/DeidentifyTemplate)
+kind=DialogflowSecuritySettings group=dialogflow.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/securitySettings/{security_settings}; confirm the resource is regional and that this is the name for it)
+kind=DialogflowKnowledgeBase group=dialogflow.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)
+kind=DialogflowSecuritySettings group=dialogflow.cnrm.cloud.google.com: field ".spec.audioExportSettings.gcsBucket" reason=possible-reference-by-description
+kind=DialogflowSecuritySettings group=dialogflow.cnrm.cloud.google.com: field ".spec.deidentifyTemplate" reason=possible-reference-by-description
+kind=DialogflowSecuritySettings group=dialogflow.cnrm.cloud.google.com: field ".spec.inspectTemplate" reason=possible-reference-by-description
+kind=DialogflowSecuritySettings group=dialogflow.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)

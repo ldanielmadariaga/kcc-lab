@@ -106,9 +106,6 @@ spec:
                 description: Check the ConnectionPreference enum for the list of possible
                   values.
                 type: string
-              creationTimestamp:
-                description: '[Output Only] Creation timestamp in RFC3339 text format.'
-                type: string
               description:
                 description: An optional description of this resource. Provide this
                   property when you create the resource.
@@ -117,14 +114,6 @@ spec:
                 description: Fingerprint of this resource. A hash of the contents
                   stored in this object. This field is used in optimistic locking.
                   An up-to-date fingerprint must be provided in order to patch.
-                type: string
-              id:
-                description: '[Output Only] The unique identifier for the resource
-                  type. The server generates this identifier.'
-                format: int64
-                type: integer
-              kind:
-                description: '[Output Only] Type of the resource.'
                 type: string
               network:
                 description: '[Output Only] The URL of the network which the Network
@@ -188,13 +177,6 @@ spec:
                 description: The ComputeNetworkAttachment name. If not given, the
                   metadata.name will be used.
                 type: string
-              selfLink:
-                description: '[Output Only] Server-defined URL for the resource.'
-                type: string
-              selfLinkWithID:
-                description: '[Output Only] Server-defined URL for this resource''s
-                  resource id.'
-                type: string
               subnetworks:
                 description: An array of URLs where each entry is the URL of a subnet
                   provided by the service consumer to use for endpoints in the producers
@@ -250,6 +232,26 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  creationTimestamp:
+                    description: '[Output Only] Creation timestamp in RFC3339 text
+                      format.'
+                    type: string
+                  id:
+                    description: '[Output Only] The unique identifier for the resource
+                      type. The server generates this identifier.'
+                    format: int64
+                    type: integer
+                  kind:
+                    description: '[Output Only] Type of the resource.'
+                    type: string
+                  selfLink:
+                    description: '[Output Only] Server-defined URL for the resource.'
+                    type: string
+                  selfLinkWithID:
+                    description: '[Output Only] Server-defined URL for this resource''s
+                      resource id.'
+                    type: string
                 type: object
             type: object
         required:

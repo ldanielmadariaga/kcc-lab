@@ -30,10 +30,6 @@ type NetworkConnectivityMulticloudDataTransferConfigSpec struct {
 
 	// The NetworkConnectivityMulticloudDataTransferConfig name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-	// Output only. Time when the `MulticloudDataTransferConfig` resource was created.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
 	// Optional. A description of this resource.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.description
 	Description *string `json:"description,omitempty"`
@@ -46,10 +42,6 @@ type NetworkConnectivityMulticloudDataTransferConfigSpec struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.destinations_count
 	DestinationsCount *int32 `json:"destinationsCount,omitempty"`
 
-	// The etag is computed by the server, and might be sent with update and delete requests so that the client has an up-to-date value before proceeding.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.etag
-	Etag *string `json:"etag,omitempty"`
-
 	// Optional. User-defined labels.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.labels
 	Labels map[string]string `json:"labels,omitempty"`
@@ -57,14 +49,6 @@ type NetworkConnectivityMulticloudDataTransferConfigSpec struct {
 	// Optional. Maps services to their current or planned states. Service names are keys, and the associated values describe the state of the service. If a state change is expected, the value is either `ADDING` or `DELETING`, depending on the actions taken. Sample output: "services": { "big-query": { "states": [ { "effectiveTime": "2024-12-12T08:00:00Z" "state": "ADDING", }, ] }, "cloud-storage": { "states": [ { "state": "ACTIVE", } ] } }
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.services
 	Services map[string]StateTimeline `json:"services,omitempty"`
-
-	// Output only. The Google-generated unique ID for the `MulticloudDataTransferConfig` resource. This value is unique across all `MulticloudDataTransferConfig` resources. If a resource is deleted and another with the same name is created, the new resource is assigned a different and unique ID.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.uid
-	Uid *string `json:"uid,omitempty"`
-
-	// Output only. Time when the `MulticloudDataTransferConfig` resource was updated.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // NetworkConnectivityMulticloudDataTransferConfigStatus defines the config connector machine state of NetworkConnectivityMulticloudDataTransferConfig
@@ -86,6 +70,25 @@ type NetworkConnectivityMulticloudDataTransferConfigStatus struct {
 // NetworkConnectivityMulticloudDataTransferConfigObservedState is the state of the NetworkConnectivityMulticloudDataTransferConfig resource as most recently observed in GCP.
 // +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig
 type NetworkConnectivityMulticloudDataTransferConfigObservedState struct {
+	// Output only. Time when the `MulticloudDataTransferConfig` resource was created.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// The etag is computed by the server, and might be sent with update and delete requests so that the client has an up-to-date value before proceeding.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Output only. The Google-generated unique ID for the `MulticloudDataTransferConfig` resource. This value is unique across all `MulticloudDataTransferConfig` resources. If a resource is deleted and another with the same name is created, the new resource is assigned a different and unique ID.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. Time when the `MulticloudDataTransferConfig` resource was updated.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient

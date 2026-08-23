@@ -37,6 +37,7 @@ ${CONTROLLERBUILDER} generate-types --service google.cloud.discoveryengine.v1 --
 --emit-required-from-proto \
 --emit-plural-acronyms \
 --detect-output-only-in-comments \
+--place-server-set-fields \
   --resource DiscoveryEngineControl:Control \
   --resource DiscoveryEngineDataStore:DataStore \
   --resource DiscoveryEngineEngine:Engine \
@@ -52,6 +53,7 @@ ${CONTROLLERBUILDER} generate-types --service google.cloud.discoveryengine.v1bet
 --emit-required-from-proto \
 --emit-plural-acronyms \
 --detect-output-only-in-comments \
+--place-server-set-fields \
   --resource DiscoveryEngineSampleQuerySet:SampleQuerySet \
   --resource DiscoveryEngineSampleQuery:SampleQuery \
   --resource DiscoveryEngineLicenseConfig:LicenseConfig \

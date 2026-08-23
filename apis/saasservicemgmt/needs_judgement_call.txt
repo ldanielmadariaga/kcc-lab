@@ -7,3 +7,4 @@
 
 kind=SaasServiceMgmtRelease group=saasservicemgmt.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=SaasServiceMgmtRelease group=saasservicemgmt.cnrm.cloud.google.com: field ".spec.unitKind" reason=possible-reference (target=saasservicemgmt.googleapis.com/UnitKind)
+kind=SaasServiceMgmtRelease group=saasservicemgmt.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/releases/{release}; confirm the resource is regional and that this is the name for it)

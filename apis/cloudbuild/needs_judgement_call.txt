@@ -6,6 +6,7 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/connections/{connection}; confirm the resource is regional and that this is the name for it)
 kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketCloudConfig.authorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
 kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketCloudConfig.readAuthorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
 kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketCloudConfig.webhookSecretSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)

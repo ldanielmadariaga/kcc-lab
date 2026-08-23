@@ -39,10 +39,6 @@ type DataLabelingDatasetSpec struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Dataset.description
 	Description *string `json:"description,omitempty"`
 
-	// Output only. Time the dataset is created.
-	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Dataset.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
 	// Output only. This is populated with the original input configs
 	//  where ImportData is called. It is available only after the clients
 	//  import data to this dataset.
@@ -78,6 +74,10 @@ type DataLabelingDatasetStatus struct {
 // DataLabelingDatasetObservedState is the state of the DataLabelingDataset resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.datalabeling.v1beta1.Dataset
 type DataLabelingDatasetObservedState struct {
+	// Output only. Time the dataset is created.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Dataset.create_time
+	CreateTime *string `json:"createTime,omitempty"`
 }
 
 // +genclient

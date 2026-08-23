@@ -6,5 +6,6 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=VisionAIApplication group=visionai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VisionAIApplication group=visionai.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/applications/{application}; confirm the resource is regional and that this is the name for it)
 kind=VisionAIApplication group=visionai.cnrm.cloud.google.com: field ".spec.applicationConfigs.nodes[].nodeConfig.mediaWarehouseConfig.corpus" reason=possible-reference-by-description
 kind=VisionAIApplication group=visionai.cnrm.cloud.google.com: field ".spec.applicationConfigs.nodes[].nodeConfig.productRecognizerConfig.retailEndpoint" reason=possible-reference-by-description-loose

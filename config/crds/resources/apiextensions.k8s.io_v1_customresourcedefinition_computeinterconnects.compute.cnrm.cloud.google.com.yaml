@@ -152,9 +152,6 @@ spec:
                       type: string
                   type: object
                 type: array
-              creationTimestamp:
-                description: '[Output Only] Creation timestamp in RFC3339 text format.'
-                type: string
               customerName:
                 description: Customer name, to put in the Letter of Authorization
                   as the party authorized to request a crossconnect.
@@ -229,11 +226,6 @@ spec:
                   support tickets with Google or otherwise to debug backend connectivity
                   issues.'
                 type: string
-              id:
-                description: '[Output Only] The unique identifier for the resource.
-                  This identifier is defined by the server.'
-                format: int64
-                type: integer
               interconnectAttachments:
                 description: '[Output Only] A list of the URLs of all InterconnectAttachments
                   configured to use this Interconnect.'
@@ -253,10 +245,6 @@ spec:
                   with the customer. Note that a value IT_PRIVATE has been deprecated
                   in favor of DEDICATED. Check the InterconnectType enum for the list
                   of possible values.'
-                type: string
-              kind:
-                description: '[Output Only] Type of the resource. Always compute#interconnect
-                  for interconnects.'
                 type: string
               labelFingerprint:
                 description: A fingerprint for the labels being applied to this Interconnect,
@@ -427,9 +415,6 @@ spec:
               satisfiesPzs:
                 description: '[Output Only] Reserved for future use.'
                 type: boolean
-              selfLink:
-                description: '[Output Only] Server-defined URL for the resource.'
-                type: string
               state:
                 description: '[Output Only] The current state of Interconnect functionality,
                   which can take one of the following values: - ACTIVE: The Interconnect
@@ -488,6 +473,23 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  creationTimestamp:
+                    description: '[Output Only] Creation timestamp in RFC3339 text
+                      format.'
+                    type: string
+                  id:
+                    description: '[Output Only] The unique identifier for the resource.
+                      This identifier is defined by the server.'
+                    format: int64
+                    type: integer
+                  kind:
+                    description: '[Output Only] Type of the resource. Always compute#interconnect
+                      for interconnects.'
+                    type: string
+                  selfLink:
+                    description: '[Output Only] Server-defined URL for the resource.'
+                    type: string
                 type: object
             type: object
         required:

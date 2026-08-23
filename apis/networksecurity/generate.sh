@@ -47,6 +47,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource NetworkSecurityBackendAuthenticationConfig:BackendAuthenticationConfig \
   --resource NetworkSecurityInterceptDeployment:InterceptDeployment \
   --resource NetworkSecurityAddressGroup:AddressGroup \
@@ -73,6 +74,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource NetworkSecurityPartnerSSERealm:PartnerSSERealm \
   --resource NetworkSecurityPartnerSSEGateway:PartnerSSEGateway \
   --resource NetworkSecurityTLSInspectionPolicy:TlsInspectionPolicy \

@@ -34,10 +34,6 @@ type NetworkConnectivityInternalRangeSpec struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.allocation_options
 	AllocationOptions *AllocationOptions `json:"allocationOptions,omitempty"`
 
-	// Output only. Time when the internal range was created.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
 	// Optional. A description of this resource.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.description
 	Description *string `json:"description,omitempty"`
@@ -82,10 +78,6 @@ type NetworkConnectivityInternalRangeSpec struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.target_cidr_range
 	TargetCIDRRange []string `json:"targetCIDRRange,omitempty"`
 
-	// Output only. Time when the internal range was updated.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
 	// Optional. The type of usage set for this InternalRange.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.usage
 	Usage *string `json:"usage,omitempty"`
@@ -114,6 +106,15 @@ type NetworkConnectivityInternalRangeStatus struct {
 // NetworkConnectivityInternalRangeObservedState is the state of the NetworkConnectivityInternalRange resource as most recently observed in GCP.
 // +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.InternalRange
 type NetworkConnectivityInternalRangeObservedState struct {
+	// Output only. Time when the internal range was created.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Time when the internal range was updated.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient

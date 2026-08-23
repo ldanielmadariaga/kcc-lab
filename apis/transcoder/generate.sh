@@ -39,6 +39,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource TranscoderJob:Job
 
 # Note: We do not run generate-mapper here as this PR is for types/CRD/Identity only.

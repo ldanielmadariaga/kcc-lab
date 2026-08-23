@@ -460,3 +460,67 @@ type StateTimeline struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.StateTimeline.states
 	States []StateMetadata `json:"states,omitempty"`
 }
+
+/* unreachable type InternalRangeObservedState
+// +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.InternalRange
+type InternalRangeObservedState struct {
+	// Output only. Time when the internal range was created.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Time when the internal range was updated.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/
+
+/* unreachable type MulticloudDataTransferConfigObservedState
+// +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig
+type MulticloudDataTransferConfigObservedState struct {
+	// Output only. Time when the `MulticloudDataTransferConfig` resource was created.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// The etag is computed by the server, and might be sent with update and delete requests so that the client has an up-to-date value before proceeding.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Output only. The Google-generated unique ID for the `MulticloudDataTransferConfig` resource. This value is unique across all `MulticloudDataTransferConfig` resources. If a resource is deleted and another with the same name is created, the new resource is assigned a different and unique ID.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. Time when the `MulticloudDataTransferConfig` resource was updated.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/
+
+/* unreachable type RegionalEndpointObservedState
+// +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint
+type RegionalEndpointObservedState struct {
+	// Output only. Time when the RegionalEndpoint was created.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Time when the RegionalEndpoint was updated.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/
+
+/* unreachable type ServiceConnectionPolicyObservedState
+// +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy
+type ServiceConnectionPolicyObservedState struct {
+	// Output only. Time when the ServiceConnectionPolicy was created.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Optional. The etag is computed by the server, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Output only. Time when the ServiceConnectionPolicy was updated.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/

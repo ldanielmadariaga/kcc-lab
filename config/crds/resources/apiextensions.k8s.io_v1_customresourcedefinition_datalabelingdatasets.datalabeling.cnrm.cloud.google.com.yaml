@@ -68,9 +68,6 @@ spec:
                 items:
                   type: string
                 type: array
-              createTime:
-                description: Output only. Time the dataset is created.
-                type: string
               dataItemCount:
                 description: Output only. The number of data items in the dataset.
                 format: int64
@@ -239,6 +236,10 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. Time the dataset is created.
+                    type: string
                 type: object
             type: object
         required:

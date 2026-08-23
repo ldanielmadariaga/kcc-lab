@@ -6,7 +6,9 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=ApigeeRegistryInstance group=apigeeregistry.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=ApigeeRegistryInstance group=apigeeregistry.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/instances/{instance}; confirm the resource is regional and that this is the name for it)
 kind=ApigeeRegistryAPI group=apigeeregistry.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=ApigeeRegistryAPI group=apigeeregistry.cnrm.cloud.google.com: field ".spec.recommendedVersion" reason=possible-reference (target=apigeeregistry.googleapis.com/ApiVersion)
 kind=ApigeeRegistryAPI group=apigeeregistry.cnrm.cloud.google.com: field ".spec.recommendedDeployment" reason=possible-reference (target=apigeeregistry.googleapis.com/ApiDeployment)
+kind=ApigeeRegistryAPI group=apigeeregistry.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/apis/{api}; confirm the resource is regional and that this is the name for it)
 kind=ApigeeRegistryInstance group=apigeeregistry.cnrm.cloud.google.com: field ".spec.config.cmekKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)

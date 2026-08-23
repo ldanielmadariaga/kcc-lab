@@ -6,8 +6,11 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=CloudDMSConversionWorkspace group=clouddms.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudDMSConversionWorkspace group=clouddms.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}; confirm the resource is regional and that this is the name for it)
 kind=CloudDMSPrivateConnection group=clouddms.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudDMSPrivateConnection group=clouddms.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/privateConnections/{private_connection}; confirm the resource is regional and that this is the name for it)
 kind=CloudDMSMigrationJob group=clouddms.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudDMSMigrationJob group=clouddms.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/migrationJobs/{migration_job}; confirm the resource is regional and that this is the name for it)
 kind=CloudDMSMigrationJob group=clouddms.cnrm.cloud.google.com: field ".spec.cmekKeyName" reason=possible-reference-by-description
 kind=CloudDMSMigrationJob group=clouddms.cnrm.cloud.google.com: field ".spec.destination" reason=possible-reference-by-description-loose
 kind=CloudDMSMigrationJob group=clouddms.cnrm.cloud.google.com: field ".spec.reverseSSHConnectivity.vpc" reason=possible-reference-by-name (ComputeNetworkRef)

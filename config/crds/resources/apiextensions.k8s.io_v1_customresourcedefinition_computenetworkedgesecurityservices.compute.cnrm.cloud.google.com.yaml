@@ -63,9 +63,6 @@ spec:
             description: ComputeNetworkEdgeSecurityServiceSpec defines the desired
               state of ComputeNetworkEdgeSecurityService
             properties:
-              creationTimestamp:
-                description: '[Output Only] Creation timestamp in RFC3339 text format.'
-                type: string
               description:
                 description: An optional description of this resource. Provide this
                   property when you create the resource.
@@ -78,15 +75,6 @@ spec:
                   NetworkEdgeSecurityService, otherwise the request will fail with
                   error 412 conditionNotMet. To see the latest fingerprint, make a
                   get() request to retrieve a NetworkEdgeSecurityService.
-                type: string
-              id:
-                description: '[Output Only] The unique identifier for the resource.
-                  This identifier is defined by the server.'
-                format: int64
-                type: integer
-              kind:
-                description: '[Output only] Type of the resource. Always compute#networkEdgeSecurityService
-                  for NetworkEdgeSecurityServices'
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
@@ -132,13 +120,6 @@ spec:
               securityPolicy:
                 description: The resource URL for the network edge security service
                   associated with this network edge security service.
-                type: string
-              selfLink:
-                description: '[Output Only] Server-defined URL for the resource.'
-                type: string
-              selfLinkWithID:
-                description: '[Output Only] Server-defined URL for this resource with
-                  the resource id.'
                 type: string
             required:
             - projectRef
@@ -188,6 +169,27 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  creationTimestamp:
+                    description: '[Output Only] Creation timestamp in RFC3339 text
+                      format.'
+                    type: string
+                  id:
+                    description: '[Output Only] The unique identifier for the resource.
+                      This identifier is defined by the server.'
+                    format: int64
+                    type: integer
+                  kind:
+                    description: '[Output only] Type of the resource. Always compute#networkEdgeSecurityService
+                      for NetworkEdgeSecurityServices'
+                    type: string
+                  selfLink:
+                    description: '[Output Only] Server-defined URL for the resource.'
+                    type: string
+                  selfLinkWithID:
+                    description: '[Output Only] Server-defined URL for this resource
+                      with the resource id.'
+                    type: string
                 type: object
             type: object
         required:

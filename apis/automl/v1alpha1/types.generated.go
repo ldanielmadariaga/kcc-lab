@@ -138,3 +138,17 @@ type TranslationDatasetMetadata struct {
 	// +required
 	TargetLanguageCode *string `json:"targetLanguageCode,omitempty"`
 }
+
+/* unreachable type DatasetObservedState
+// +kcc:observedstate:proto=google.cloud.automl.v1.Dataset
+type DatasetObservedState struct {
+	// Output only. Timestamp when this dataset was created.
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Used to perform consistent read-modify-write updates. If not set, a blind
+	//  "overwrite" update happens.
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.etag
+	Etag *string `json:"etag,omitempty"`
+}
+*/

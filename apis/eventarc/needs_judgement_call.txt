@@ -7,15 +7,20 @@
 
 kind=EventarcChannel group=eventarc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=EventarcChannel group=eventarc.cnrm.cloud.google.com: field ".spec.cryptoKeyName" reason=possible-reference (target=cloudkms.googleapis.com/CryptoKey)
+kind=EventarcChannel group=eventarc.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/channels/{channel}; confirm the resource is regional and that this is the name for it)
 kind=EventarcGoogleChannelConfig group=eventarc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=EventarcGoogleChannelConfig group=eventarc.cnrm.cloud.google.com: field ".spec.cryptoKeyName" reason=possible-reference (target=cloudkms.googleapis.com/CryptoKey)
+kind=EventarcGoogleChannelConfig group=eventarc.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/googleChannelConfig; confirm the resource is regional and that this is the name for it)
 kind=EventarcEnrollment group=eventarc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=EventarcEnrollment group=eventarc.cnrm.cloud.google.com: field ".spec.messageBus" reason=possible-reference (target=eventarc.googleapis.com/MessageBus)
+kind=EventarcEnrollment group=eventarc.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/enrollments/{enrollment}; confirm the resource is regional and that this is the name for it)
 kind=EventarcChannelConnection group=eventarc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=EventarcChannelConnection group=eventarc.cnrm.cloud.google.com: field ".spec.channel" reason=possible-reference (target=eventarc.googleapis.com/Channel)
+kind=EventarcChannelConnection group=eventarc.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/channelConnections/{channel_connection}; confirm the resource is regional and that this is the name for it)
 kind=EventarcGoogleAPISource group=eventarc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=EventarcGoogleAPISource group=eventarc.cnrm.cloud.google.com: field ".spec.destination" reason=possible-reference (target=eventarc.googleapis.com/MessageBus)
 kind=EventarcGoogleAPISource group=eventarc.cnrm.cloud.google.com: field ".spec.cryptoKeyName" reason=possible-reference (target=cloudkms.googleapis.com/CryptoKey)
+kind=EventarcGoogleAPISource group=eventarc.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/googleApiSources/{google_api_source}; confirm the resource is regional and that this is the name for it)
 kind=EventarcChannel group=eventarc.cnrm.cloud.google.com: field ".spec.cryptoKeyName" reason=possible-reference-by-description-loose
 kind=EventarcChannel group=eventarc.cnrm.cloud.google.com: field ".spec.provider" reason=possible-reference-by-description
 kind=EventarcChannelConnection group=eventarc.cnrm.cloud.google.com: field ".spec.channel" reason=possible-reference-by-description

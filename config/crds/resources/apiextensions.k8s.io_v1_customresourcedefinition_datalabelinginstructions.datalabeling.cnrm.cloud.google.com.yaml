@@ -69,9 +69,6 @@ spec:
                 items:
                   type: string
                 type: array
-              createTime:
-                description: Output only. Creation time of instruction.
-                type: string
               csvInstruction:
                 description: |-
                   Deprecated: this instruction format is not supported any more.
@@ -140,9 +137,6 @@ spec:
                 description: The DataLabelingInstruction name. If not given, the metadata.name
                   will be used.
                 type: string
-              updateTime:
-                description: Output only. Last update time of instruction.
-                type: string
             required:
             - projectRef
             type: object
@@ -191,6 +185,13 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. Creation time of instruction.
+                    type: string
+                  updateTime:
+                    description: Output only. Last update time of instruction.
+                    type: string
                 type: object
             type: object
         required:

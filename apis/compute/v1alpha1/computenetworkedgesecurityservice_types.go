@@ -30,10 +30,6 @@ type ComputeNetworkEdgeSecurityServiceSpec struct {
 
 	// The ComputeNetworkEdgeSecurityService name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-	// [Output Only] Creation timestamp in RFC3339 text format.
-	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.creation_timestamp
-	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
-
 	// An optional description of this resource. Provide this property when you create the resource.
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.description
 	Description *string `json:"description,omitempty"`
@@ -42,14 +38,6 @@ type ComputeNetworkEdgeSecurityServiceSpec struct {
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.fingerprint
 	Fingerprint *string `json:"fingerprint,omitempty"`
 
-	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
-	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.id
-	ID *uint64 `json:"id,omitempty"`
-
-	// [Output only] Type of the resource. Always compute#networkEdgeSecurityService for NetworkEdgeSecurityServices
-	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.kind
-	Kind *string `json:"kind,omitempty"`
-
 	// [Output Only] URL of the region where the resource resides. You must specify this field as part of the HTTP request URL. It is not settable as a field in the request body.
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.region
 	Region *string `json:"region,omitempty"`
@@ -57,14 +45,6 @@ type ComputeNetworkEdgeSecurityServiceSpec struct {
 	// The resource URL for the network edge security service associated with this network edge security service.
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.security_policy
 	SecurityPolicy *string `json:"securityPolicy,omitempty"`
-
-	// [Output Only] Server-defined URL for the resource.
-	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.self_link
-	SelfLink *string `json:"selfLink,omitempty"`
-
-	// [Output Only] Server-defined URL for this resource with the resource id.
-	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.self_link_with_id
-	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
 }
 
 // ComputeNetworkEdgeSecurityServiceStatus defines the config connector machine state of ComputeNetworkEdgeSecurityService
@@ -86,6 +66,30 @@ type ComputeNetworkEdgeSecurityServiceStatus struct {
 // ComputeNetworkEdgeSecurityServiceObservedState is the state of the ComputeNetworkEdgeSecurityService resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.compute.v1.NetworkEdgeSecurityService
 type ComputeNetworkEdgeSecurityServiceObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output only] Type of the resource. Always compute#networkEdgeSecurityService for NetworkEdgeSecurityServices
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+
+	// [Output Only] Server-defined URL for this resource with the resource id.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.self_link_with_id
+	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
 }
 
 // +genclient

@@ -74,8 +74,14 @@ for file in apis/config/crd/*.yaml; do
 done
 echo "   published ${published} CRDs"
 
-echo "== 5/5  re-seeding the judgement queue  <-- the step that gets forgotten"
+echo "== 5/6  re-seeding the judgement queue  <-- the step that gets forgotten"
 go run ./scripts/queue-hints
+
+echo "== 6/6  checking every +kcc:guess has a queue entry"
+python3 hack/tools/greenfield/check_guess_entries.py || {
+  echo "   ^ markers without an entry. Anything the generator marks as a guess"
+  echo "     needs a human, so it belongs in needs_judgement_call.txt."
+}
 
 echo
 echo "Now measure. Count undefined fields, not failing packages: a package fails"

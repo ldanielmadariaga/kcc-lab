@@ -3435,7 +3435,11 @@ func ComputeInterconnectObservedState_v1alpha1_FromProto(mapCtx *direct.MapConte
 		return nil
 	}
 	out := &krmcomputev1alpha1.ComputeInterconnectObservedState{}
+	out.CreationTimestamp = in.CreationTimestamp
+	out.ID = in.Id
+	out.Kind = in.Kind
 	// MISSING: Name
+	out.SelfLink = in.SelfLink
 	return out
 }
 */
@@ -3446,7 +3450,11 @@ func ComputeInterconnectObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext
 		return nil
 	}
 	out := &pb.Interconnect{}
+	out.CreationTimestamp = in.CreationTimestamp
+	out.Id = in.ID
+	out.Kind = in.Kind
 	// MISSING: Name
+	out.SelfLink = in.SelfLink
 	return out
 }
 */
@@ -3462,17 +3470,14 @@ func ComputeInterconnectSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *p
 	out.ApplicationAwareInterconnect = InterconnectApplicationAwareInterconnect_v1alpha1_FromProto(mapCtx, in.GetApplicationAwareInterconnect())
 	out.AvailableFeatures = in.AvailableFeatures
 	out.CircuitInfos = direct.Slice_FromProto(mapCtx, in.CircuitInfos, InterconnectCircuitInfo_v1alpha1_FromProto)
-	out.CreationTimestamp = in.CreationTimestamp
 	out.CustomerName = in.CustomerName
 	out.Description = in.Description
 	out.ExpectedOutages = direct.Slice_FromProto(mapCtx, in.ExpectedOutages, InterconnectOutageNotification_v1alpha1_FromProto)
 	out.GoogleIPAddress = in.GoogleIpAddress
 	out.GoogleReferenceID = in.GoogleReferenceId
-	out.ID = in.Id
 	out.InterconnectAttachments = in.InterconnectAttachments
 	out.InterconnectGroups = in.InterconnectGroups
 	out.InterconnectType = in.InterconnectType
-	out.Kind = in.Kind
 	out.LabelFingerprint = in.LabelFingerprint
 	out.Labels = in.Labels
 	out.LinkType = in.LinkType
@@ -3488,7 +3493,6 @@ func ComputeInterconnectSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *p
 	out.RequestedFeatures = in.RequestedFeatures
 	out.RequestedLinkCount = in.RequestedLinkCount
 	out.SatisfiesPzs = in.SatisfiesPzs
-	out.SelfLink = in.SelfLink
 	out.State = in.State
 	return out
 }
@@ -3507,17 +3511,14 @@ found existing non-generated mapping function "ComputeInterconnectSpec_v1alpha1_
 		out.ApplicationAwareInterconnect = InterconnectApplicationAwareInterconnect_v1alpha1_ToProto(mapCtx, in.ApplicationAwareInterconnect)
 		out.AvailableFeatures = in.AvailableFeatures
 		out.CircuitInfos = direct.Slice_ToProto(mapCtx, in.CircuitInfos, InterconnectCircuitInfo_v1alpha1_ToProto)
-		out.CreationTimestamp = in.CreationTimestamp
 		out.CustomerName = in.CustomerName
 		out.Description = in.Description
 		out.ExpectedOutages = direct.Slice_ToProto(mapCtx, in.ExpectedOutages, InterconnectOutageNotification_v1alpha1_ToProto)
 		out.GoogleIpAddress = in.GoogleIPAddress
 		out.GoogleReferenceId = in.GoogleReferenceID
-		out.Id = in.ID
 		out.InterconnectAttachments = in.InterconnectAttachments
 		out.InterconnectGroups = in.InterconnectGroups
 		out.InterconnectType = in.InterconnectType
-		out.Kind = in.Kind
 		out.LabelFingerprint = in.LabelFingerprint
 		out.Labels = in.Labels
 		out.LinkType = in.LinkType
@@ -3533,7 +3534,6 @@ found existing non-generated mapping function "ComputeInterconnectSpec_v1alpha1_
 		out.RequestedFeatures = in.RequestedFeatures
 		out.RequestedLinkCount = in.RequestedLinkCount
 		out.SatisfiesPzs = in.SatisfiesPzs
-		out.SelfLink = in.SelfLink
 		out.State = in.State
 		return out
 	}
@@ -3615,7 +3615,12 @@ func ComputeNetworkAttachmentObservedState_v1alpha1_FromProto(mapCtx *direct.Map
 		return nil
 	}
 	out := &krmcomputev1alpha1.ComputeNetworkAttachmentObservedState{}
+	out.CreationTimestamp = in.CreationTimestamp
+	out.ID = in.Id
+	out.Kind = in.Kind
 	// MISSING: Name
+	out.SelfLink = in.SelfLink
+	out.SelfLinkWithID = in.SelfLinkWithId
 	return out
 }
 */
@@ -3626,7 +3631,12 @@ func ComputeNetworkAttachmentObservedState_v1alpha1_ToProto(mapCtx *direct.MapCo
 		return nil
 	}
 	out := &pb.NetworkAttachment{}
+	out.CreationTimestamp = in.CreationTimestamp
+	out.Id = in.ID
+	out.Kind = in.Kind
 	// MISSING: Name
+	out.SelfLink = in.SelfLink
+	out.SelfLinkWithId = in.SelfLinkWithID
 	return out
 }
 */
@@ -3639,18 +3649,13 @@ func ComputeNetworkAttachmentSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, 
 	out := &krmcomputev1alpha1.ComputeNetworkAttachmentSpec{}
 	out.ConnectionEndpoints = direct.Slice_FromProto(mapCtx, in.ConnectionEndpoints, NetworkAttachmentConnectedEndpoint_v1alpha1_FromProto)
 	out.ConnectionPreference = in.ConnectionPreference
-	out.CreationTimestamp = in.CreationTimestamp
 	out.Description = in.Description
 	out.Fingerprint = in.Fingerprint
-	out.ID = in.Id
-	out.Kind = in.Kind
 	// MISSING: Name
 	out.Network = in.Network
 	out.ProducerAcceptLists = in.ProducerAcceptLists
 	out.ProducerRejectLists = in.ProducerRejectLists
 	out.Region = in.Region
-	out.SelfLink = in.SelfLink
-	out.SelfLinkWithID = in.SelfLinkWithId
 	out.Subnetworks = in.Subnetworks
 	return out
 }
@@ -3664,18 +3669,13 @@ func ComputeNetworkAttachmentSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in
 	out := &pb.NetworkAttachment{}
 	out.ConnectionEndpoints = direct.Slice_ToProto(mapCtx, in.ConnectionEndpoints, NetworkAttachmentConnectedEndpoint_v1alpha1_ToProto)
 	out.ConnectionPreference = in.ConnectionPreference
-	out.CreationTimestamp = in.CreationTimestamp
 	out.Description = in.Description
 	out.Fingerprint = in.Fingerprint
-	out.Id = in.ID
-	out.Kind = in.Kind
 	// MISSING: Name
 	out.Network = in.Network
 	out.ProducerAcceptLists = in.ProducerAcceptLists
 	out.ProducerRejectLists = in.ProducerRejectLists
 	out.Region = in.Region
-	out.SelfLink = in.SelfLink
-	out.SelfLinkWithId = in.SelfLinkWithID
 	out.Subnetworks = in.Subnetworks
 	return out
 }
@@ -3687,7 +3687,12 @@ func ComputeNetworkEdgeSecurityServiceObservedState_v1alpha1_FromProto(mapCtx *d
 		return nil
 	}
 	out := &krmcomputev1alpha1.ComputeNetworkEdgeSecurityServiceObservedState{}
+	out.CreationTimestamp = in.CreationTimestamp
+	out.ID = in.Id
+	out.Kind = in.Kind
 	// MISSING: Name
+	out.SelfLink = in.SelfLink
+	out.SelfLinkWithID = in.SelfLinkWithId
 	return out
 }
 */
@@ -3698,7 +3703,12 @@ func ComputeNetworkEdgeSecurityServiceObservedState_v1alpha1_ToProto(mapCtx *dir
 		return nil
 	}
 	out := &pb.NetworkEdgeSecurityService{}
+	out.CreationTimestamp = in.CreationTimestamp
+	out.Id = in.ID
+	out.Kind = in.Kind
 	// MISSING: Name
+	out.SelfLink = in.SelfLink
+	out.SelfLinkWithId = in.SelfLinkWithID
 	return out
 }
 */
@@ -3709,16 +3719,11 @@ func ComputeNetworkEdgeSecurityServiceSpec_v1alpha1_FromProto(mapCtx *direct.Map
 		return nil
 	}
 	out := &krmcomputev1alpha1.ComputeNetworkEdgeSecurityServiceSpec{}
-	out.CreationTimestamp = in.CreationTimestamp
 	out.Description = in.Description
 	out.Fingerprint = in.Fingerprint
-	out.ID = in.Id
-	out.Kind = in.Kind
 	// MISSING: Name
 	out.Region = in.Region
 	out.SecurityPolicy = in.SecurityPolicy
-	out.SelfLink = in.SelfLink
-	out.SelfLinkWithID = in.SelfLinkWithId
 	return out
 }
 */
@@ -3729,16 +3734,11 @@ func ComputeNetworkEdgeSecurityServiceSpec_v1alpha1_ToProto(mapCtx *direct.MapCo
 		return nil
 	}
 	out := &pb.NetworkEdgeSecurityService{}
-	out.CreationTimestamp = in.CreationTimestamp
 	out.Description = in.Description
 	out.Fingerprint = in.Fingerprint
-	out.Id = in.ID
-	out.Kind = in.Kind
 	// MISSING: Name
 	out.Region = in.Region
 	out.SecurityPolicy = in.SecurityPolicy
-	out.SelfLink = in.SelfLink
-	out.SelfLinkWithId = in.SelfLinkWithID
 	return out
 }
 */

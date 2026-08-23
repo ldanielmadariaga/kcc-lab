@@ -56,22 +56,6 @@ type FirestoreDocumentSpec struct {
 	//  `` `bak\`tik` `` represents `` bak`tik ``.
 	// +kcc:proto:field=google.firestore.v1.Document.fields
 	Fields map[string]Value `json:"fields,omitempty"`
-
-	// Output only. The time at which the document was created.
-	//
-	//  This value increases monotonically when a document is deleted then
-	//  recreated. It can also be compared to values from other documents and
-	//  the `read_time` of a query.
-	// +kcc:proto:field=google.firestore.v1.Document.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. The time at which the document was last changed.
-	//
-	//  This value is initially set to the `create_time` then increases
-	//  monotonically with each change to the document. It can also be
-	//  compared to values from other documents and the `read_time` of a query.
-	// +kcc:proto:field=google.firestore.v1.Document.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // FirestoreDocumentStatus defines the config connector machine state of FirestoreDocument
@@ -93,6 +77,23 @@ type FirestoreDocumentStatus struct {
 // FirestoreDocumentObservedState is the state of the FirestoreDocument resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.firestore.v1.Document
 type FirestoreDocumentObservedState struct {
+	// Output only. The time at which the document was created.
+	//
+	//  This value increases monotonically when a document is deleted then
+	//  recreated. It can also be compared to values from other documents and
+	//  the `read_time` of a query.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.firestore.v1.Document.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time at which the document was last changed.
+	//
+	//  This value is initially set to the `create_time` then increases
+	//  monotonically with each change to the document. It can also be
+	//  compared to values from other documents and the `read_time` of a query.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.firestore.v1.Document.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient

@@ -40,6 +40,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource DialogflowKnowledgeBase:KnowledgeBase \
   --resource DialogflowGenerator:Generator \
   --resource DialogflowConversationDataset:ConversationDataset
@@ -52,6 +53,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --include-skipped-output \
   --resource DialogflowSecuritySettings:SecuritySettings
 
@@ -65,6 +67,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource DialogflowSipTrunk:SipTrunk
 
 mv ${REPO_ROOT}/apis/dialogflow/v1alpha1/types.generated.go ${REPO_ROOT}/apis/dialogflow/v1alpha1/siptrunk_types.generated.go
@@ -77,6 +80,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource DialogflowKnowledgeBase:KnowledgeBase \
   --resource DialogflowGenerator:Generator \
   --resource DialogflowConversationDataset:ConversationDataset

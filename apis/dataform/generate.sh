@@ -46,6 +46,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --overlay ${REPO_ROOT}/apis/dataform/v1alpha1/overlay.proto \
   --resource DataformFolder:Folder \
   --proto-source-path ${PROTO_OUT}
@@ -57,6 +58,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --overlay ${REPO_ROOT}/apis/dataform/v1alpha1/overlay.proto \
   --resource DataformTeamFolder:TeamFolder \
   --proto-source-path ${PROTO_OUT}

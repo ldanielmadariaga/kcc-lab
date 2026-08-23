@@ -38,6 +38,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource BeyondCorpClientConnectorService:ClientConnectorService
 
 mv "${REPO_ROOT}/apis/beyondcorp/v1alpha1/types.generated.go" "${REPO_ROOT}/apis/beyondcorp/v1alpha1/clientconnectorservice_types.generated.go" || true
@@ -49,6 +50,7 @@ ${CONTROLLERBUILDER} generate-types \
     --emit-required-from-proto \
     --emit-plural-acronyms \
     --detect-output-only-in-comments \
+    --place-server-set-fields \
     --resource BeyondCorpClientGateway:ClientGateway
 
 mv "${REPO_ROOT}/apis/beyondcorp/v1alpha1/types.generated.go" "${REPO_ROOT}/apis/beyondcorp/v1alpha1/clientgateway_types.generated.go" || true

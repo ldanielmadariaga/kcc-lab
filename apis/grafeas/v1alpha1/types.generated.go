@@ -914,3 +914,23 @@ type WindowsUpdate_Identity struct {
 	// +kcc:proto:field=grafeas.v1.WindowsUpdate.Identity.revision
 	Revision *int32 `json:"revision,omitempty"`
 }
+
+/* unreachable type NoteObservedState
+// +kcc:observedstate:proto=grafeas.v1.Note
+type NoteObservedState struct {
+	// Output only. The type of analysis. This field can be used as a filter in
+	//  list requests.
+	// +kcc:proto:field=grafeas.v1.Note.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// Output only. The time this note was created. This field can be used as a
+	//  filter in list requests.
+	// +kcc:proto:field=grafeas.v1.Note.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time this note was last updated. This field can be used as
+	//  a filter in list requests.
+	// +kcc:proto:field=grafeas.v1.Note.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/

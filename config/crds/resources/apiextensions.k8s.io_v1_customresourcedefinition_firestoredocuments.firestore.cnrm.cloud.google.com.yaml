@@ -61,14 +61,6 @@ spec:
           spec:
             description: FirestoreDocumentSpec defines the desired state of FirestoreDocument
             properties:
-              createTime:
-                description: |-
-                  Output only. The time at which the document was created.
-
-                   This value increases monotonically when a document is deleted then
-                   recreated. It can also be compared to values from other documents and
-                   the `read_time` of a query.
-                type: string
               fields:
                 additionalProperties:
                   properties:
@@ -213,14 +205,6 @@ spec:
                 description: The FirestoreDocument name. If not given, the metadata.name
                   will be used.
                 type: string
-              updateTime:
-                description: |-
-                  Output only. The time at which the document was last changed.
-
-                   This value is initially set to the `create_time` then increases
-                   monotonically with each change to the document. It can also be
-                   compared to values from other documents and the `read_time` of a query.
-                type: string
             required:
             - projectRef
             type: object
@@ -269,6 +253,23 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: |-
+                      Output only. The time at which the document was created.
+
+                       This value increases monotonically when a document is deleted then
+                       recreated. It can also be compared to values from other documents and
+                       the `read_time` of a query.
+                    type: string
+                  updateTime:
+                    description: |-
+                      Output only. The time at which the document was last changed.
+
+                       This value is initially set to the `create_time` then increases
+                       monotonically with each change to the document. It can also be
+                       compared to values from other documents and the `read_time` of a query.
+                    type: string
                 type: object
             type: object
         required:

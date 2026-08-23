@@ -6,5 +6,5 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=AssuredWorkloadsWorkload group=assuredworkloads.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=AssuredWorkloadsWorkload group=assuredworkloads.cnrm.cloud.google.com: field ".spec.organization" reason=parent-segment-omitted (the resource pattern is organizations/{organization}/locations/{location}/workloads/{workload}; upstream carries each part of the name as a spec field)
+kind=AssuredWorkloadsWorkload group=assuredworkloads.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of organizations/{organization}/locations/{location}/workloads/{workload}; confirm the resource is regional and that this is the name for it)
 kind=AssuredWorkloadsWorkload group=assuredworkloads.cnrm.cloud.google.com: field ".spec.provisionedResourcesParent" reason=possible-reference-by-description

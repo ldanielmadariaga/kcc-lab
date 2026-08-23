@@ -39,6 +39,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource DataLineageProcess:Process
 
 cd ${REPO_ROOT}

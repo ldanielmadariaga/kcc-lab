@@ -2739,3 +2739,187 @@ type ShareSettingsProjectConfig struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.ShareSettingsProjectConfig.project_id
 	ProjectID *string `json:"projectID,omitempty"`
 }
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Autoscaler", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.Autoscaler
+type AutoscalerObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#autoscaler for autoscalers.
+	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* unreachable type InterconnectObservedState
+// +kcc:observedstate:proto=google.cloud.compute.v1.Interconnect
+type InterconnectObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#interconnect for interconnects.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.MachineImage", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.MachineImage
+type MachineImageObservedState struct {
+	// [Output Only] The creation timestamp for this machine image in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.MachineImage.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] A unique identifier for this machine image. The server defines this identifier.
+	// +kcc:proto:field=google.cloud.compute.v1.MachineImage.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] The resource type, which is always compute#machineImage for machine image.
+	// +kcc:proto:field=google.cloud.compute.v1.MachineImage.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] The URL for this machine image. The server defines this URL.
+	// +kcc:proto:field=google.cloud.compute.v1.MachineImage.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* unreachable type NetworkAttachmentObservedState
+// +kcc:observedstate:proto=google.cloud.compute.v1.NetworkAttachment
+type NetworkAttachmentObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource type. The server generates this identifier.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+
+	// [Output Only] Server-defined URL for this resource's resource id.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.self_link_with_id
+	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
+}
+*/
+
+/* unreachable type NetworkEdgeSecurityServiceObservedState
+// +kcc:observedstate:proto=google.cloud.compute.v1.NetworkEdgeSecurityService
+type NetworkEdgeSecurityServiceObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output only] Type of the resource. Always compute#networkEdgeSecurityService for NetworkEdgeSecurityServices
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+
+	// [Output Only] Server-defined URL for this resource with the resource id.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.self_link_with_id
+	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.SecurityPolicy", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.SecurityPolicy
+type SecurityPolicyObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output only] Type of the resource. Always compute#securityPolicyfor security policies
+	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.SslPolicy", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.SslPolicy
+type SSLPolicyObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.SslPolicy.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.SslPolicy.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output only] Type of the resource. Always compute#sslPolicyfor SSL policies.
+	// +kcc:proto:field=google.cloud.compute.v1.SslPolicy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.SslPolicy.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* unreachable type FutureReservationObservedState
+// +kcc:observedstate:proto=google.cloud.compute.v1beta.FutureReservation
+type FutureReservationObservedState struct {
+	// [Output Only] The creation timestamp for this future reservation in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservation.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] A unique identifier for this future reservation. The server defines this identifier.
+	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservation.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#futureReservation for future reservations.
+	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservation.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined fully-qualified URL for this resource.
+	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservation.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+
+	// [Output Only] Server-defined URL for this resource with the resource id.
+	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservation.self_link_with_id
+	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
+}
+*/

@@ -38,6 +38,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource APIHubDeployment:Deployment \
   --resource APIHubAPI:Api \
   --resource APIHubRuntimeProjectAttachment:RuntimeProjectAttachment \

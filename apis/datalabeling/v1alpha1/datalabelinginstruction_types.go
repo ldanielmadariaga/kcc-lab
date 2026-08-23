@@ -39,14 +39,6 @@ type DataLabelingInstructionSpec struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Instruction.description
 	Description *string `json:"description,omitempty"`
 
-	// Output only. Creation time of instruction.
-	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Instruction.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. Last update time of instruction.
-	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Instruction.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
 	// Required. The data type of this instruction.
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Instruction.data_type
 	DataType *string `json:"dataType,omitempty"`
@@ -90,6 +82,15 @@ type DataLabelingInstructionStatus struct {
 // DataLabelingInstructionObservedState is the state of the DataLabelingInstruction resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.datalabeling.v1beta1.Instruction
 type DataLabelingInstructionObservedState struct {
+	// Output only. Creation time of instruction.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Instruction.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Last update time of instruction.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Instruction.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient

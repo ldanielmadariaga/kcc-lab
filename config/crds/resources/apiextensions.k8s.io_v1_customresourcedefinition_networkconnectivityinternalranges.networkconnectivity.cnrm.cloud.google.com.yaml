@@ -81,9 +81,6 @@ spec:
                     format: int32
                     type: integer
                 type: object
-              createTime:
-                description: Output only. Time when the internal range was created.
-                type: string
               description:
                 description: Optional. A description of this resource.
                 type: string
@@ -198,9 +195,6 @@ spec:
                 items:
                   type: string
                 type: array
-              updateTime:
-                description: Output only. Time when the internal range was updated.
-                type: string
               usage:
                 description: Optional. The type of usage set for this InternalRange.
                 type: string
@@ -262,6 +256,13 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. Time when the internal range was created.
+                    type: string
+                  updateTime:
+                    description: Output only. Time when the internal range was updated.
+                    type: string
                 type: object
             type: object
         required:

@@ -42,6 +42,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --include-skipped-output \
   --resource HypercomputeClusterCluster:Cluster \
   --proto-source-path ${PROTO_OUT}

@@ -251,11 +251,22 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 		// later is easy; removing a required one is a breaking change. The point is
 		// only that the choice gets written down instead of made silently.
 		// Emit every part of the resource's name that the Spec can carry, and
-		// queue whatever is left. Only naming them was the weaker fix: for
-		// greenfield the point is to generate the field.
+		// queue every one of them.
+		//
+		// Each field emitted here carries a +kcc:guess marker, because none of it
+		// is justified by the proto: a segment's field name is taken from the
+		// pattern's placeholder, and a ref's target type is assumed from the
+		// collection segment. Anything marked as a guess belongs in the judgement
+		// queue, typed refs included -- "very sure" is not a state the generator
+		// can be in about a target it inferred from a plural noun.
+		//
+		// An earlier version recorded emitted segments and suppressed their queue
+		// entries. That traded detection for an unflagged guess: BigtableCluster
+		// got "Instance *string" where upstream has spec.instanceRef, and nothing
+		// said so. The compiler found 32 fields missing while the queue named 2.
 		known := refTypesInPackage(a.repoRoot(), filepath.Join(a.BaseDir, a.GoPackage))
 		var parentRefs bytes.Buffer
-		emitted := map[string]bool{}
+		var guesses []JudgementItem
 		segments := parentSegments(cArgs.ResourcePattern)
 		for i, seg := range segments {
 			collection, variable := seg[0], seg[1]
@@ -270,19 +281,41 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 				// parent already fixes a location, so requiring it would be new.
 				required := cArgs.ParentStyle == string(protoapi.ParentProjectLocation)
 				parentRefs.WriteString(locationField(field, cArgs.ResourcePattern, required))
-				emitted[field] = true
-				emitted[lowerCamel(variable)] = true
+				guesses = append(guesses, JudgementItem{
+					FieldPath: ".spec." + field,
+					Reason:    "parent-location-guessed",
+					Detail: "emitted from the location segment of " + cArgs.ResourcePattern +
+						"; confirm the resource is regional and that this is the name for it",
+				})
 				continue
 			}
 			name := lowerCamel(variable)
 			goType := strings.ToUpper(name[:1]) + name[1:] + "Ref"
 			qualifier, ok := known[goType]
+			reason, detail := "parent-ref-guessed",
+				"emitted as a reference to "+goType+", assumed from the collection segment of "+
+					cArgs.ResourcePattern+"; confirm the target type"
 			if !ok {
-				goType = "" // no ref type anywhere; a plain string still beats nothing
+				// No ref type anywhere, so a plain string. Still better than
+				// nothing, and upstream may well want a reference here.
+				goType = ""
+				reason, detail = "parent-segment-guessed",
+					"emitted as a plain string from the pattern "+cArgs.ResourcePattern+
+						"; upstream may model this as a reference instead"
 			}
 			parentRefs.WriteString(parentRefField(name, goType, qualifier, cArgs.ResourcePattern))
-			emitted[name] = true
+			suffix := ""
+			if goType != "" {
+				suffix = "Ref"
+			}
+			guesses = append(guesses, JudgementItem{
+				FieldPath: ".spec." + name + suffix,
+				Reason:    reason,
+				Detail:    detail,
+			})
 		}
+		prepopulated.Judgement = append(prepopulated.Judgement, guesses...)
+
 		cArgs.ParentRefFields = parentRefs.String()
 
 		// An organization- or folder-rooted resource has no project, and emitting
@@ -299,11 +332,12 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 			}
 		}
 
-		for _, item := range parentSegmentJudgement(cArgs.ResourcePattern, cArgs.ParentStyle) {
-			if emitted[strings.TrimPrefix(item.FieldPath, ".spec.")] {
-				continue
-			}
-			prepopulated.Judgement = append(prepopulated.Judgement, item)
+		// Only the nothing-was-emitted case is left for parentSegmentJudgement:
+		// a proto with no google.api.resource, where there is no pattern to walk
+		// and so nothing to emit or to name precisely.
+		if len(segments) == 0 {
+			prepopulated.Judgement = append(prepopulated.Judgement,
+				parentSegmentJudgement(cArgs.ResourcePattern, cArgs.ParentStyle)...)
 		}
 
 		cArgs.SpecFields = prepopulated.SpecFields

@@ -38,11 +38,6 @@ type GrafeasNoteSpec struct {
 	// +kcc:proto:field=grafeas.v1.Note.long_description
 	LongDescription *string `json:"longDescription,omitempty"`
 
-	// Output only. The type of analysis. This field can be used as a filter in
-	//  list requests.
-	// +kcc:proto:field=grafeas.v1.Note.kind
-	Kind *string `json:"kind,omitempty"`
-
 	// URLs associated with this note.
 	// +kcc:proto:field=grafeas.v1.Note.related_url
 	RelatedURL []RelatedURL `json:"relatedURL,omitempty"`
@@ -50,16 +45,6 @@ type GrafeasNoteSpec struct {
 	// Time of expiration for this note. Empty if note does not expire.
 	// +kcc:proto:field=grafeas.v1.Note.expiration_time
 	ExpirationTime *string `json:"expirationTime,omitempty"`
-
-	// Output only. The time this note was created. This field can be used as a
-	//  filter in list requests.
-	// +kcc:proto:field=grafeas.v1.Note.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. The time this note was last updated. This field can be used as
-	//  a filter in list requests.
-	// +kcc:proto:field=grafeas.v1.Note.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Other notes related to this note.
 	// +kcc:proto:field=grafeas.v1.Note.related_note_names
@@ -137,6 +122,23 @@ type GrafeasNoteStatus struct {
 // GrafeasNoteObservedState is the state of the GrafeasNote resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.grafeas.v1.Note
 type GrafeasNoteObservedState struct {
+	// Output only. The type of analysis. This field can be used as a filter in
+	//  list requests.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=grafeas.v1.Note.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// Output only. The time this note was created. This field can be used as a
+	//  filter in list requests.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=grafeas.v1.Note.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time this note was last updated. This field can be used as
+	//  a filter in list requests.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=grafeas.v1.Note.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient

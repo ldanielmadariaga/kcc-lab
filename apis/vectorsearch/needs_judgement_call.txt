@@ -6,3 +6,4 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=VectorSearchCollection group=vectorsearch.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VectorSearchCollection group=vectorsearch.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/collections/{collection}; confirm the resource is regional and that this is the name for it)

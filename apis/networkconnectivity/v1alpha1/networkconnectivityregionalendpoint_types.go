@@ -38,10 +38,6 @@ type NetworkConnectivityRegionalEndpointSpec struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.address
 	Address *string `json:"address,omitempty"`
 
-	// Output only. Time when the RegionalEndpoint was created.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
 	// Optional. A description of this resource.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.description
 	Description *string `json:"description,omitempty"`
@@ -69,10 +65,6 @@ type NetworkConnectivityRegionalEndpointSpec struct {
 	// Required. The service endpoint this private regional endpoint connects to. Format: `{apiname}.{region}.p.rep.googleapis.com` Example: "cloudkms.us-central1.p.rep.googleapis.com".
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.target_google_api
 	TargetGoogleAPI *string `json:"targetGoogleAPI,omitempty"`
-
-	// Output only. Time when the RegionalEndpoint was updated.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // NetworkConnectivityRegionalEndpointStatus defines the config connector machine state of NetworkConnectivityRegionalEndpoint
@@ -94,6 +86,15 @@ type NetworkConnectivityRegionalEndpointStatus struct {
 // NetworkConnectivityRegionalEndpointObservedState is the state of the NetworkConnectivityRegionalEndpoint resource as most recently observed in GCP.
 // +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint
 type NetworkConnectivityRegionalEndpointObservedState struct {
+	// Output only. Time when the RegionalEndpoint was created.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Time when the RegionalEndpoint was updated.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient

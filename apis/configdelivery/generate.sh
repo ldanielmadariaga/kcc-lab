@@ -39,6 +39,7 @@ ${CONTROLLERBUILDER} generate-types \
     --emit-required-from-proto \
     --emit-plural-acronyms \
     --detect-output-only-in-comments \
+    --place-server-set-fields \
     --resource ConfigDeliveryResourceBundle:ResourceBundle
 
 ${CONTROLLERBUILDER} generate-types \
@@ -48,6 +49,7 @@ ${CONTROLLERBUILDER} generate-types \
     --emit-required-from-proto \
     --emit-plural-acronyms \
     --detect-output-only-in-comments \
+    --place-server-set-fields \
     --resource ConfigDeliveryFleetPackage:FleetPackage
 
 ${CONTROLLERBUILDER} generate-mapper \

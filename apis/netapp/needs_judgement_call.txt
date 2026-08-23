@@ -6,6 +6,8 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=NetAppBackupPolicy group=netapp.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NetAppBackupPolicy group=netapp.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/backupPolicies/{backup_policy}; confirm the resource is regional and that this is the name for it)
 kind=NetAppBackupVault group=netapp.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=NetAppBackupVault group=netapp.cnrm.cloud.google.com: field ".spec.backupRegion" reason=possible-reference (target=locations.googleapis.com/Location)
+kind=NetAppBackupVault group=netapp.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/backupVaults/{backup_vault}; confirm the resource is regional and that this is the name for it)
 kind=NetAppBackupVault group=netapp.cnrm.cloud.google.com: field ".spec.backupRegion" reason=possible-reference-by-description

@@ -47,6 +47,7 @@ go run . generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource GKEHubFleet:Fleet
 
 # --- v1beta1 ---

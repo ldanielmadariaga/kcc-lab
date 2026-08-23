@@ -259,6 +259,23 @@ blob. Past knowledge generalised badly.
 not coverage generally, and the number to watch is the undetected count from
 `silence_report.py`, not the size of this list.
 
+### The generator flags
+
+Every service's `generate.sh` carries the same five:
+
+| flag | what it does |
+|---|---|
+| `--prepopulate-spec` | fill the Spec from the proto instead of a three-field stub |
+| `--emit-required-from-proto` | `// +required` for fields the proto marks REQUIRED |
+| `--emit-plural-acronyms` | `relatedURIs` rather than `relatedUris` |
+| `--detect-output-only-in-comments` | report fields whose comment says output-only with no annotation |
+| `--place-server-set-fields` | put `createTime`, `uid`, `selfLink`, `etag` and friends in ObservedState when the proto carries no `field_behavior` at all |
+
+The last one was built, tested and then wired into nothing for weeks — the other four were on all 94
+scripts and it was on zero, which is why server-set fields kept showing up as missed and
+`+kcc:guess=placement` appeared nowhere. If you add a generator flag, add it to the scripts in the
+same change.
+
 ### Regenerating the whole corpus
 
 ```bash

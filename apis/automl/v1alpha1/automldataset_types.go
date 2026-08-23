@@ -74,15 +74,6 @@ type AutoMLDatasetSpec struct {
 	// +kcc:proto:field=google.cloud.automl.v1.Dataset.example_count
 	ExampleCount *int32 `json:"exampleCount,omitempty"`
 
-	// Output only. Timestamp when this dataset was created.
-	// +kcc:proto:field=google.cloud.automl.v1.Dataset.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Used to perform consistent read-modify-write updates. If not set, a blind
-	//  "overwrite" update happens.
-	// +kcc:proto:field=google.cloud.automl.v1.Dataset.etag
-	Etag *string `json:"etag,omitempty"`
-
 	// Optional. The labels with user-defined metadata to organize your dataset.
 	//
 	//  Label keys and values can be no longer than 64 characters
@@ -114,6 +105,16 @@ type AutoMLDatasetStatus struct {
 // AutoMLDatasetObservedState is the state of the AutoMLDataset resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.automl.v1.Dataset
 type AutoMLDatasetObservedState struct {
+	// Output only. Timestamp when this dataset was created.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Used to perform consistent read-modify-write updates. If not set, a blind
+	//  "overwrite" update happens.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.etag
+	Etag *string `json:"etag,omitempty"`
 }
 
 // +genclient

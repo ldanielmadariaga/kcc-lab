@@ -428,7 +428,41 @@ func writeJudgementQueue(apiDir, goPackage string, entries []string) error {
 	if err := os.MkdirAll(serviceDir, 0755); err != nil {
 		return err
 	}
-	return os.WriteFile(path, []byte(header+body.String()), 0644)
+
+	// Merge rather than truncate. The queue is per service but generate.sh calls
+	// generate-types once per proto version -- discoveryengine twice,
+	// networksecurity three times, dialogflow four -- and writing the file
+	// outright meant the last call silently discarded every earlier call's
+	// entries. That left 34 fields carrying a +kcc:guess marker in the types file
+	// with nothing about them in the queue.
+	//
+	// Keyed on the whole line, so re-running is idempotent, and existing lines
+	// come first so a hand-edited queue keeps its order.
+	existing := ""
+	if prior, err := os.ReadFile(path); err == nil {
+		existing = string(prior)
+	}
+	seen := map[string]bool{}
+	var out []string
+	for _, line := range strings.Split(existing, "\n") {
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		if !seen[line] {
+			seen[line] = true
+			out = append(out, line)
+		}
+	}
+	for _, line := range strings.Split(body.String(), "\n") {
+		if line == "" {
+			continue
+		}
+		if !seen[line] {
+			seen[line] = true
+			out = append(out, line)
+		}
+	}
+	return os.WriteFile(path, []byte(header+strings.Join(out, "\n")+"\n"), 0644)
 }
 
 // writeOutputOnlyReport records fields the proto documents as output-only in

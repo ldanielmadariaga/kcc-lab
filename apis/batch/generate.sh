@@ -40,6 +40,7 @@ ${CONTROLLERBUILDER} generate-types \
     --emit-required-from-proto \
     --emit-plural-acronyms \
     --detect-output-only-in-comments \
+    --place-server-set-fields \
     --overlay ${REPO_ROOT}/apis/batch/v1alpha1/overlay.proto \
     --resource CloudBatchResourceAllowance:ResourceAllowance
 
@@ -53,6 +54,7 @@ ${CONTROLLERBUILDER} generate-types \
     --emit-required-from-proto \
     --emit-plural-acronyms \
     --detect-output-only-in-comments \
+    --place-server-set-fields \
     --overlay ${REPO_ROOT}/apis/batch/v1alpha1/overlay.proto \
     --include-skipped-output \
     --resource BatchJob:Job \

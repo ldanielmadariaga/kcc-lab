@@ -583,3 +583,28 @@ type TextMetadata struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.TextMetadata.language_code
 	LanguageCode *string `json:"languageCode,omitempty"`
 }
+
+// +kcc:observedstate:proto=google.cloud.datalabeling.v1beta1.Dataset
+type DatasetObservedState struct {
+	// Output only. Time the dataset is created.
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Dataset.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.datalabeling.v1beta1.EvaluationJob
+type EvaluationJobObservedState struct {
+	// Output only. Timestamp of when this evaluation job was created.
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.datalabeling.v1beta1.Instruction
+type InstructionObservedState struct {
+	// Output only. Creation time of instruction.
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Instruction.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Last update time of instruction.
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Instruction.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}

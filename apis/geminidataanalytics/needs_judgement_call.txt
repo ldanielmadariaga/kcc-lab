@@ -6,4 +6,5 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=GeminiDataAnalyticsConversation group=geminidataanalytics.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=GeminiDataAnalyticsConversation group=geminidataanalytics.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/conversations/{conversation}; confirm the resource is regional and that this is the name for it)
 kind=GeminiDataAnalyticsConversation group=geminidataanalytics.cnrm.cloud.google.com: field ".spec.agents" reason=possible-reference-by-description

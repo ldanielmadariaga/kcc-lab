@@ -6,3 +6,6 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=BeyondCorpClientGateway group=beyondcorp.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=BeyondCorpClientGateway group=beyondcorp.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/clientGateways/{client_gateway}; confirm the resource is regional and that this is the name for it)
+kind=BeyondCorpClientConnectorService group=beyondcorp.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=BeyondCorpClientConnectorService group=beyondcorp.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/clientConnectorServices/{client_connector_service}; confirm the resource is regional and that this is the name for it)

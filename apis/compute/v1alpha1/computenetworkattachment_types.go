@@ -38,10 +38,6 @@ type ComputeNetworkAttachmentSpec struct {
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.connection_preference
 	ConnectionPreference *string `json:"connectionPreference,omitempty"`
 
-	// [Output Only] Creation timestamp in RFC3339 text format.
-	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.creation_timestamp
-	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
-
 	// An optional description of this resource. Provide this property when you create the resource.
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.description
 	Description *string `json:"description,omitempty"`
@@ -49,14 +45,6 @@ type ComputeNetworkAttachmentSpec struct {
 	// Fingerprint of this resource. A hash of the contents stored in this object. This field is used in optimistic locking. An up-to-date fingerprint must be provided in order to patch.
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.fingerprint
 	Fingerprint *string `json:"fingerprint,omitempty"`
-
-	// [Output Only] The unique identifier for the resource type. The server generates this identifier.
-	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.id
-	ID *uint64 `json:"id,omitempty"`
-
-	// [Output Only] Type of the resource.
-	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.kind
-	Kind *string `json:"kind,omitempty"`
 
 	// [Output Only] The URL of the network which the Network Attachment belongs to. Practically it is inferred by fetching the network of the first subnetwork associated. Because it is required that all the subnetworks must be from the same network, it is assured that the Network Attachment belongs to the same network as all the subnetworks.
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.network
@@ -73,14 +61,6 @@ type ComputeNetworkAttachmentSpec struct {
 	// [Output Only] URL of the region where the network attachment resides. This field applies only to the region resource. You must specify this field as part of the HTTP request URL. It is not settable as a field in the request body.
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.region
 	Region *string `json:"region,omitempty"`
-
-	// [Output Only] Server-defined URL for the resource.
-	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.self_link
-	SelfLink *string `json:"selfLink,omitempty"`
-
-	// [Output Only] Server-defined URL for this resource's resource id.
-	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.self_link_with_id
-	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
 
 	// An array of URLs where each entry is the URL of a subnet provided by the service consumer to use for endpoints in the producers that connect to this network attachment.
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.subnetworks
@@ -106,6 +86,30 @@ type ComputeNetworkAttachmentStatus struct {
 // ComputeNetworkAttachmentObservedState is the state of the ComputeNetworkAttachment resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.compute.v1.NetworkAttachment
 type ComputeNetworkAttachmentObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource type. The server generates this identifier.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+
+	// [Output Only] Server-defined URL for this resource's resource id.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.self_link_with_id
+	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
 }
 
 // +genclient

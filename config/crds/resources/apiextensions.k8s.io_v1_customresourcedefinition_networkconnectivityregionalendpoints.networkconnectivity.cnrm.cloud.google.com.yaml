@@ -75,9 +75,6 @@ spec:
                   * Address resource URI as in `projects/{project}/regions/{region}/addresses/{address_name}`
                   for an IPv4 or IPv6 address.'
                 type: string
-              createTime:
-                description: Output only. Time when the RegionalEndpoint was created.
-                type: string
               description:
                 description: Optional. A description of this resource.
                 type: string
@@ -144,9 +141,6 @@ spec:
                   endpoint connects to. Format: `{apiname}.{region}.p.rep.googleapis.com`
                   Example: "cloudkms.us-central1.p.rep.googleapis.com".'
                 type: string
-              updateTime:
-                description: Output only. Time when the RegionalEndpoint was updated.
-                type: string
             required:
             - projectRef
             type: object
@@ -195,6 +189,13 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. Time when the RegionalEndpoint was created.
+                    type: string
+                  updateTime:
+                    description: Output only. Time when the RegionalEndpoint was updated.
+                    type: string
                 type: object
             type: object
         required:

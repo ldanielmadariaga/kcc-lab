@@ -98,10 +98,6 @@ spec:
                       type: array
                   type: object
                 type: array
-              createTime:
-                description: Output only. Timestamp of when this evaluation job was
-                  created.
-                type: string
               description:
                 description: Required. Description of the job. The description can
                   be up to 25,000 characters long.
@@ -519,6 +515,11 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. Timestamp of when this evaluation job
+                      was created.
+                    type: string
                 type: object
             type: object
         required:

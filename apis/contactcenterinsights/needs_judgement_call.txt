@@ -6,7 +6,12 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=CCInsightsView group=contactcenterinsights.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CCInsightsView group=contactcenterinsights.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/views/{view}; confirm the resource is regional and that this is the name for it)
 kind=CCInsightsPhraseMatcher group=contactcenterinsights.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CCInsightsPhraseMatcher group=contactcenterinsights.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/phraseMatchers/{phrase_matcher}; confirm the resource is regional and that this is the name for it)
 kind=CCInsightsIssueModel group=contactcenterinsights.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CCInsightsIssueModel group=contactcenterinsights.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/issueModels/{issue_model}; confirm the resource is regional and that this is the name for it)
 kind=CCInsightsConversation group=contactcenterinsights.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CCInsightsConversation group=contactcenterinsights.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/conversations/{conversation}; confirm the resource is regional and that this is the name for it)
 kind=CCInsightsQAScorecard group=contactcenterinsights.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CCInsightsQAScorecard group=contactcenterinsights.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/qaScorecards/{qa_scorecard}; confirm the resource is regional and that this is the name for it)

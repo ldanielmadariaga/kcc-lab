@@ -34,17 +34,9 @@ type NetworkConnectivityServiceConnectionPolicySpec struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.auto_created_subnet_info
 	AutoCreatedSubnetInfo *AutoCreatedSubnetworkInfo `json:"autoCreatedSubnetInfo,omitempty"`
 
-	// Output only. Time when the ServiceConnectionPolicy was created.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
 	// A description of this resource.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.description
 	Description *string `json:"description,omitempty"`
-
-	// Optional. The etag is computed by the server, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.etag
-	Etag *string `json:"etag,omitempty"`
 
 	// Output only. The type of underlying resources used to create the connection.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.infrastructure
@@ -69,10 +61,6 @@ type NetworkConnectivityServiceConnectionPolicySpec struct {
 	// The service class identifier for which this ServiceConnectionPolicy is for. The service class identifier is a unique, symbolic representation of a ServiceClass. It is provided by the Service Producer. Google services have a prefix of gcp or google-cloud. For example, gcp-memorystore-redis or google-cloud-sql. 3rd party services do not. For example, test-service-a3dfcx.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.service_class
 	ServiceClass *string `json:"serviceClass,omitempty"`
-
-	// Output only. Time when the ServiceConnectionPolicy was updated.
-	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // NetworkConnectivityServiceConnectionPolicyStatus defines the config connector machine state of NetworkConnectivityServiceConnectionPolicy
@@ -94,6 +82,20 @@ type NetworkConnectivityServiceConnectionPolicyStatus struct {
 // NetworkConnectivityServiceConnectionPolicyObservedState is the state of the NetworkConnectivityServiceConnectionPolicy resource as most recently observed in GCP.
 // +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy
 type NetworkConnectivityServiceConnectionPolicyObservedState struct {
+	// Output only. Time when the ServiceConnectionPolicy was created.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Optional. The etag is computed by the server, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Output only. Time when the ServiceConnectionPolicy was updated.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient

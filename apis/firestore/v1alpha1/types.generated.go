@@ -427,3 +427,24 @@ type Field_TTLConfigObservedState struct {
 	// +kcc:proto:field=google.firestore.admin.v1.Field.TtlConfig.state
 	State *string `json:"state,omitempty"`
 }
+
+/* unreachable type DocumentObservedState
+// +kcc:observedstate:proto=google.firestore.v1.Document
+type DocumentObservedState struct {
+	// Output only. The time at which the document was created.
+	//
+	//  This value increases monotonically when a document is deleted then
+	//  recreated. It can also be compared to values from other documents and
+	//  the `read_time` of a query.
+	// +kcc:proto:field=google.firestore.v1.Document.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time at which the document was last changed.
+	//
+	//  This value is initially set to the `create_time` then increases
+	//  monotonically with each change to the document. It can also be
+	//  compared to values from other documents and the `read_time` of a query.
+	// +kcc:proto:field=google.firestore.v1.Document.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/

@@ -6,8 +6,11 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=DatabaseMigrationConversionWorkspace group=datamigration.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DatabaseMigrationConversionWorkspace group=datamigration.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}; confirm the resource is regional and that this is the name for it)
 kind=DatabaseMigrationMigrationJob group=datamigration.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DatabaseMigrationMigrationJob group=datamigration.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/migrationJobs/{migration_job}; confirm the resource is regional and that this is the name for it)
 kind=DatabaseMigrationPrivateConnection group=datamigration.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DatabaseMigrationPrivateConnection group=datamigration.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/privateConnections/{private_connection}; confirm the resource is regional and that this is the name for it)
 kind=DatabaseMigrationMigrationJob group=datamigration.cnrm.cloud.google.com: field ".spec.cmekKeyName" reason=possible-reference-by-description
 kind=DatabaseMigrationMigrationJob group=datamigration.cnrm.cloud.google.com: field ".spec.destination" reason=possible-reference-by-description-loose
 kind=DatabaseMigrationMigrationJob group=datamigration.cnrm.cloud.google.com: field ".spec.reverseSSHConnectivity.vpc" reason=possible-reference-by-name (ComputeNetworkRef)

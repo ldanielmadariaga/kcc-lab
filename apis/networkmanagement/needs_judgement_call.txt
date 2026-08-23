@@ -7,6 +7,7 @@
 
 kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=NetworkManagementVPCFlowLogsConfig group=networkmanagement.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NetworkManagementVPCFlowLogsConfig group=networkmanagement.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/vpcFlowLogsConfigs/{vpc_flow_logs_config}; confirm the resource is regional and that this is the name for it)
 kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: field ".spec.destination.cloudRunRevision.uri" reason=possible-reference-by-description
 kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: field ".spec.destination.forwardingRule" reason=possible-reference-by-description
 kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: field ".spec.destination.network" reason=possible-reference-by-name (ComputeNetworkRef)

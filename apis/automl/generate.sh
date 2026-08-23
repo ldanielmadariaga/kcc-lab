@@ -38,6 +38,7 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-required-from-proto \
   --emit-plural-acronyms \
   --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource AutoMLDataset:Dataset
 
 ${CONTROLLERBUILDER} generate-mapper --service google.cloud.automl.v1 --api-version automl.cnrm.cloud.google.com/v1alpha1

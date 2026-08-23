@@ -6,11 +6,18 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=BigtableAuthorizedView group=bigtable.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=BigtableAuthorizedView group=bigtable.cnrm.cloud.google.com: field ".spec.instance" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/instances/{instance}/tables/{table}/authorizedViews/{authorized_view}; upstream may model this as a reference instead)
+kind=BigtableAuthorizedView group=bigtable.cnrm.cloud.google.com: field ".spec.table" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/instances/{instance}/tables/{table}/authorizedViews/{authorized_view}; upstream may model this as a reference instead)
 kind=BigtableBackup group=bigtable.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=BigtableBackup group=bigtable.cnrm.cloud.google.com: field ".spec.instance" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/instances/{instance}/clusters/{cluster}/backups/{backup}; upstream may model this as a reference instead)
+kind=BigtableBackup group=bigtable.cnrm.cloud.google.com: field ".spec.clusterRef" reason=parent-ref-guessed (emitted as a reference to ClusterRef, assumed from the collection segment of projects/{project}/instances/{instance}/clusters/{cluster}/backups/{backup}; confirm the target type)
 kind=BigtableCluster group=bigtable.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=BigtableCluster group=bigtable.cnrm.cloud.google.com: field ".spec.location" reason=possible-reference (target=locations.googleapis.com/Location)
+kind=BigtableCluster group=bigtable.cnrm.cloud.google.com: field ".spec.instance" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/instances/{instance}/clusters/{cluster}; upstream may model this as a reference instead)
 kind=BigtableLogicalView group=bigtable.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=BigtableLogicalView group=bigtable.cnrm.cloud.google.com: field ".spec.instance" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/instances/{instance}/logicalViews/{logical_view}; upstream may model this as a reference instead)
 kind=BigtableMaterializedView group=bigtable.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=BigtableMaterializedView group=bigtable.cnrm.cloud.google.com: field ".spec.instance" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/instances/{instance}/materializedViews/{materialized_view}; upstream may model this as a reference instead)
 kind=BigtableAuthorizedView group=bigtable.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)
 kind=BigtableBackup group=bigtable.cnrm.cloud.google.com: field ".spec.sourceTable" reason=possible-reference-by-description
 kind=BigtableCluster group=bigtable.cnrm.cloud.google.com: field ".spec.encryptionConfig.kmsKeyName" reason=possible-reference-by-description

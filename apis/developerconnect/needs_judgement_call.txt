@@ -6,8 +6,11 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=DevConnectConnection group=developerconnect.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DevConnectConnection group=developerconnect.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/connections/{connection}; confirm the resource is regional and that this is the name for it)
 kind=DevConnectInsightsConfig group=developerconnect.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DevConnectInsightsConfig group=developerconnect.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/insightsConfigs/{insights_config}; confirm the resource is regional and that this is the name for it)
 kind=DevConnectAccountConnector group=developerconnect.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DevConnectAccountConnector group=developerconnect.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/accountConnectors/{account_connector}; confirm the resource is regional and that this is the name for it)
 kind=DevConnectConnection group=developerconnect.cnrm.cloud.google.com: field ".spec.bitbucketCloudConfig.authorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
 kind=DevConnectConnection group=developerconnect.cnrm.cloud.google.com: field ".spec.bitbucketCloudConfig.readAuthorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
 kind=DevConnectConnection group=developerconnect.cnrm.cloud.google.com: field ".spec.bitbucketCloudConfig.webhookSecretSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
