@@ -255,12 +255,32 @@ def classify(path, section, extras, arrays=()):
     if any(strip_section(e) == rel for e in extras.get(other, ())):
         return "moved"
 
+    # A proto map. Upstream renders one as a list with the key promoted into an
+    # element -- the Terraform inheritance, since TypeMap holds only primitives --
+    # while we emit a Go map, which crd-mcp-server writes with a .KEY segment. So
+    # a missing "foo[]" against an emitted "foo.KEY" is one field in two shapes.
+    if path.endswith("[]"):
+        as_map = path[:-2] + ".KEY"
+        if any(e == as_map or e.startswith(as_map + ".") for e in extras.get(section, ())):
+            return "intentionally-different"
+
     # Same parent, same name but for case: an acronym the generator cased
     # differently, e.g. we write bootDiskMIB where KCC writes bootDiskMiB.
+    #
+    # Suffix as well as equality, because upstream also drops a leading qualifier
+    # the proto carried: cloud_sql_instance is cloudSQLInstance to us and
+    # sqlInstance upstream. Anchored at the end and length-guarded so "instance"
+    # does not swallow every field ending in it.
     parent = path.rsplit(".", 1)[0] if "." in path else ""
     for e in extras.get(section, ()):
         e_parent = e.rsplit(".", 1)[0] if "." in e else ""
-        if e_parent == parent and e.rsplit(".", 1)[-1].lower() == leaf.lower():
+        if e_parent != parent:
+            continue
+        ours = e.rsplit(".", 1)[-1].lower()
+        theirs = leaf.lower()
+        if ours == theirs:
+            return "renamed"
+        if len(theirs) > 4 and ours.endswith(theirs):
             return "renamed"
     return "absent"
 

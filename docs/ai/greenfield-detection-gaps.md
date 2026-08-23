@@ -169,7 +169,7 @@ Characterized, so the residue is known rather than assumed:
 
 | cause | n | example |
 |---|---|---|
-| no mechanical explanation yet | 13 | `AnalyticsAccount.spec.redirectURI`, `CloudSecurityFramework.spec.labels` |
+| no mechanical explanation yet | 13 | now characterized in full — see [the ceiling](#the-ceiling-fields-no-generator-could-produce) |
 | parent/identity segment | 12 | `DataprocJob.spec.parent`, `DiscoveryEngineControl.spec.location` |
 | deep nested field | 9 | `CloudSecurityComplianceCloudControl.spec.parameterSpec[].subParameters[]` |
 | inside a map value | 3 | `HypercomputeClusterCluster.spec.storageResources.KEY.filestore.filestore` |
@@ -248,6 +248,64 @@ Three things that run did **not** reach, so the detector is worth more than 18 l
 * The DiscoveryEngine group, which is where this detector was aimed, is gated out. Those kinds have
   no resource-level queue entry to gate on, and queueing them would prune their ratchet. Their
   `spec.collection` stays unflagged until that is resolved on its own terms.
+
+## The ceiling: fields no generator could produce
+
+Nine of the sixteen fields that had no explanation turn out to have **no proto counterpart at all**.
+Upstream invented them.
+
+The test is one command. Take upstream's own Go type at the baseline and look for a
+`+kcc:proto:field=` annotation above the field:
+
+```sh
+git show c1df0b9326:apis/firestore/v1alpha1/firestorefield_types.go | grep -B3 'json:"enabled'
+```
+
+`FirestoreField.spec.ttlConfig.enabled` is the clearest case. The proto's `Field.TtlConfig` contains
+exactly one field, `state`, and it is `OUTPUT_ONLY` — the API expresses "TTL is on" by the *presence*
+of the message. Upstream invented a boolean to make that settable in KRM. Nothing in the proto says
+so, and nothing could.
+
+The others are the same shape:
+
+| field | what upstream invented |
+|---|---|
+| `CloudSecurityFramework.spec.labels` | a labels map the proto does not declare |
+| `CloudSecurityFramework.status.observedState.supportedEnforcementModes` | — |
+| `RunWorkerPool.status.observedState.customAudiences`, `.observedConditions` | — |
+| `VertexAITrainingPipeline.spec.modelToUpload.location`, `.resourceID` | KCC identity fields on an embedded resource |
+| `ParameterManagerParameter`, `VertexAISchedule` `.status.observedState.name` | the identity field, measured at 2% precision and rejected |
+
+**This is a ceiling, not a gap.** A generator reading protos cannot produce a field a human invented,
+and a detector reading protos cannot flag its absence. Counting them as failures makes the target
+unreachable by construction, so they are named here instead — and anyone re-investigating should run
+the annotation test first rather than working through them one at a time.
+
+### Three that are real, and bigger than a detector
+
+* **Upstream composes a CRD from more than one proto message.** `AnalyticsAccount.spec.redirectURI`
+  and `.status.observedState.accountTicketID` both carry proto annotations, but from
+  `ProvisionAccountTicketRequest`; we generate from `Account` alone. The same resource shows the
+  mirror image: we emit a `projectRef` upstream does not have, because an Analytics account is not
+  project-scoped and the template emits `projectRef` unconditionally.
+* **Upstream carries one message in both spec and observedState.**
+  `FirestoreField.status.observedState.indexConfig` — we have it in spec only. It carries no
+  `OUTPUT_ONLY` field, so `needsObservedState` sees no reason to split it. We *do* duplicate
+  `ttlConfig`, which does have one, so the rule works as written; the open question is whether the
+  rule is right.
+
+### Two the classifier was getting wrong
+
+Fixed, and worth knowing because both look like absences:
+
+* **Map versus array.** We emit `map[string]ShareSettingsProjectConfig`; upstream emits a list with
+  the key promoted into an element, inherited from Terraform, whose `TypeMap` holds only primitives.
+  `crd-mcp-server` writes ours with a `.KEY` segment, so a missing `foo[]` against an emitted
+  `foo.KEY` is one field in two shapes. Affects `ComputeFutureReservation.spec.shareSettings.projectMap`
+  and `VMwareEnginePrivateCloud.spec.managementCluster.nodeTypeConfigs`.
+* **A dropped qualifier.** Proto `cloud_sql_instance` is `cloudSQLInstance` to us and `sqlInstance`
+  upstream. The rename test compared lowercased leaves for equality; it now also accepts a suffix,
+  anchored and length-guarded so `instance` cannot swallow every field ending in it.
 
 ## This tree does not build
 
