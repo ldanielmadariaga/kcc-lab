@@ -59,6 +59,51 @@ spec:
           spec:
             description: SpeechPhraseSetSpec defines the desired state of SpeechPhraseSet
             properties:
+              annotations:
+                additionalProperties:
+                  type: string
+                description: Allows users to store small amounts of arbitrary data.
+                  Both the key and the value must be 63 characters or less each. At
+                  most 100 annotations.
+                type: object
+              boost:
+                description: Hint Boost. Positive value will increase the probability
+                  that a specific phrase will be recognized over other similar sounding
+                  phrases. The higher the boost, the higher the chance of false positive
+                  recognition as well. Valid `boost` values are between 0 (exclusive)
+                  and 20. We recommend using a binary search approach to finding the
+                  optimal value for your use case as well as adding phrases both with
+                  and without boost to your requests.
+                type: number
+              displayName:
+                description: User-settable, human-readable name for the PhraseSet.
+                  Must be 63 characters or less.
+                type: string
+              location:
+                description: The location of this resource.
+                type: string
+              phrases:
+                description: A list of word and phrases.
+                items:
+                  properties:
+                    boost:
+                      description: Hint Boost. Overrides the boost set at the phrase
+                        set level. Positive value will increase the probability that
+                        a specific phrase will be recognized over other similar sounding
+                        phrases. The higher the boost, the higher the chance of false
+                        positive recognition as well. Negative boost values would
+                        correspond to anti-biasing. Anti-biasing is not enabled, so
+                        negative boost values will return an error. Boost values must
+                        be between 0 and 20. Any values outside that range will return
+                        an error. We recommend using a binary search approach to finding
+                        the optimal value for your use case as well as adding phrases
+                        both with and without boost to your requests.
+                      type: number
+                    value:
+                      description: The phrase itself.
+                      type: string
+                  type: object
+                type: array
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -96,6 +141,7 @@ spec:
                   will be used.
                 type: string
             required:
+            - location
             - projectRef
             type: object
           status:
@@ -143,6 +189,49 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. Creation time.
+                    type: string
+                  deleteTime:
+                    description: Output only. The time at which this resource was
+                      requested for deletion.
+                    type: string
+                  etag:
+                    description: Output only. This checksum is computed by the server
+                      based on the value of other fields. This may be sent on update,
+                      undelete, and delete requests to ensure the client has an up-to-date
+                      value before proceeding.
+                    type: string
+                  expireTime:
+                    description: Output only. The time at which this resource will
+                      be purged.
+                    type: string
+                  kmsKeyName:
+                    description: Output only. The [KMS key name](https://cloud.google.com/kms/docs/resource-hierarchy#keys)
+                      with which the PhraseSet is encrypted. The expected format is
+                      `projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}`.
+                    type: string
+                  kmsKeyVersionName:
+                    description: Output only. The [KMS key version name](https://cloud.google.com/kms/docs/resource-hierarchy#key_versions)
+                      with which the PhraseSet is encrypted. The expected format is
+                      `projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}/cryptoKeyVersions/{crypto_key_version}`.
+                    type: string
+                  reconciling:
+                    description: Output only. Whether or not this PhraseSet is in
+                      the process of being updated.
+                    type: boolean
+                  state:
+                    description: Output only. The PhraseSet lifecycle state.
+                    type: string
+                  uid:
+                    description: Output only. System-assigned unique identifier for
+                      the PhraseSet.
+                    type: string
+                  updateTime:
+                    description: Output only. The most recent time this resource was
+                      modified.
+                    type: string
                 type: object
             type: object
         required:

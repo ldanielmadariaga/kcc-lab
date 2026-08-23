@@ -18,36 +18,34 @@ Three things had to hold first, and this page reports on each:
 
 ## 1. Coverage — met
 
-All 231 in-scope resources now generate both a types file and a CRD. That is the number to lead
-with: the previous measurement covered 189, because 42 produced nothing at all, and a resource that
-generates nothing cannot be scored.
-
-Measured over 231 resources against baseline `c1df0b9326`:
+All 231 in-scope resources generate both a types file and a CRD. Measured against baseline
+`c1df0b9326`:
 
 ```
-  1. implemented                      10176   (93.9%)
-  2. flagged                            298   (2.7%)
-        named in needs_judgement_call.txt               298
-        ...and also in the types file                   22
-  3. missed                             368   (3.4%)
-        truly missed                         232   (2.1%)
-        emitted, renamed or reshaped         102   (0.9%)
-        reference, name unpairable            34   (0.3%)
+  1. implemented                      10232   (94.2%)
+  2. flagged                            319   (2.9%)
+        named in needs_judgement_call.txt               319
+        ...and also in the types file                    22
+  3. missed                             306   (2.8%)
+        truly missed                     123   (1.1%)   we produce nothing at all
+        emitted, wrong section            30   (0.3%)   spec vs status.observedState
+        emitted as a plain string         17   (0.2%)   upstream references it, we did not
+        emitted, renamed or reshaped     102   (0.9%)   present, different name or shape
+        reference, name unpairable        34   (0.3%)   queue likely names it, unprovable
 ```
 
-232 is the gap. The other 136 are not absences: 102 we emit under a different name or shape, and 34
-are references upstream renamed rather than suffixed. `DatastreamPrivateConnection`'s `vpc` is
-upstream's `networkRef`, and no name match bridges those, so they are counted as missed, which
-overstates rather than flatters.
-
-**Do not compare these totals to the 189-resource ones.** The denominator grew by 22%, so every
-absolute number grew with it. By cause, `reference-shape` misses went 84 → 96 over those 42 extra
-resources, which is close to flat per resource, while `absent` went 34 → 125 — nearly all of that
-jump is in the newly generating resources, and it is the thing to look at next. A same-set
-comparison is not recoverable: the earlier run's `--verbose-dir` output was not kept.
+**123 is the gap.** Everything else under `missed` is a field we do produce, in a different section,
+shape or name. Those still break a user's YAML and still need work, but the work is detection or
+placement, not generation — and a headline that lumps them together sends people to build generation
+for fields the types file already carries. It did exactly that until recently: `truly missed` read
+232, and about a third of it was fields sitting in the types file all along.
 
 Run it with `hack/tools/greenfield/silence_report.py`; see
-[greenfield-coverage-invariant.md](greenfield-coverage-invariant.md) for what each state means.
+[greenfield-coverage-invariant.md](greenfield-coverage-invariant.md) for what each state means, and
+[greenfield-detection-gaps.md](greenfield-detection-gaps.md) for how the mislabelling arose.
+
+**Do not compare totals across corpus sizes.** An earlier measurement covered 189 resources rather
+than 231, because 42 generated nothing at all; every absolute number moved with the denominator.
 
 ## 2. Flagging — met, and enforced
 
@@ -102,23 +100,26 @@ That is correct behaviour: those resources are outside the experiment and wiping
 upstream work. But it means **the compile count includes resources we are not testing**, and a stale
 one can fail a package that also holds corpus resources. Read the count with that in mind.
 
-## The 148, by cause
+## The 123, by cause
 
 | cause | n |
 |---|---|
-| nested reference, nothing detects it | 36 |
-| top-level reference, nothing detects it | 27 |
-| output-only per upstream, proto never said so | 16 |
-| resource never went through the pipeline | 13 |
-| no mechanical explanation | 12 |
-| deep nested / recursive message | 9 |
-| parent segment, proto has no `google.api.resource` | 7 |
-| inside a map value | 2 |
+| absent, nested spec | 32 |
+| reference nothing detects, nested spec | 26 |
+| absent, nested status | 19 |
+| absent, top-level spec | 18 |
+| absent, top-level status | 15 |
+| reference nothing detects, top-level spec | 13 |
 
-References are 63 of 148 and remain the largest single class. The 12 with no mechanical explanation
-are the honest floor of the current pass; nine more turned out to be fields upstream invented with no
-proto counterpart, which no proto-driven generator could ever produce — see
-[greenfield-detection-gaps.md](greenfield-detection-gaps.md#the-ceiling-fields-no-generator-could-produce).
+Two thirds are nested, which is the shape of the remaining work: the detectors that generalise read a
+field's own description or its name against the service's resources, and both get weaker the deeper a
+field sits, because there is less context around it. No single Kind dominates — the largest is
+`NetworkSecurityAuthzPolicy` at 10, and the tail is long.
+
+References are 39 of the 123 and remain the largest coherent class. Their leaf names are long-tailed:
+38 distinct names across the reference misses, 24 of which appear exactly once, so a lookup table
+would have to grow one entry per field. That is the case for detectors that derive rather than
+remember. See the runbook's four-signal table.
 
 ## Two measures, and which to trust
 
@@ -135,9 +136,10 @@ comparison is the method that transfers.
 ## What I would do next
 
 1. **Generate a batch of genuinely greenfield resources.** The prerequisites are met, and nothing in
-   the remaining 7 packages blocks it.
-2. The 148, starting with references — 63 of them, and the largest coherent group.
-3. The parked packages, if they start costing time.
+   the remaining packages blocks it.
+2. The 123, starting with the nested references — 26 of them, and the largest coherent group.
+3. The 30 misplaced fields, which need placement rules rather than detection.
+4. The parked packages, if they start costing time.
 
 ## Related
 

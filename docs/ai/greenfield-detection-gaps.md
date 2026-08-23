@@ -45,6 +45,34 @@ Two of those are measurement fixes rather than coverage improvements. They are i
 the number they corrected was published, and quietly restating it would be worse than showing the
 correction.
 
+## A third of "truly missed" was mislabelled
+
+The report called 232 fields "truly missed — in neither our types nor the queue". That sentence was
+false for about a third of them, and the mislabelling mattered because it routed attention towards
+generation work for fields the types file already carried.
+
+| | n | what was actually true |
+|---|---|---|
+| `moved` | 45 | we generate **every one**, in `spec` where upstream has `status.observedState` |
+| `reference-shape`, name pairs | 19 | we generate it **as a plain string**: `spec.billingAccount` vs upstream `spec.billingAccountRef` |
+| `reference-shape`, rename we cannot pair | ~16 | we generate it: `encryptedVariables.keyName` → `kmsKeyRef`, `target.id` → `targetRef` |
+| `reference-shape`, nothing of ours at that stem | ~27 | genuinely no field |
+| `absent` | 125 | genuinely not generated, 43 of them Speech stubs |
+
+The cause was in `classify()`. Its reference branch checked `extras` for a **ref object** at the
+de-suffixed stem and returned `renamed` on a hit, `reference-shape` otherwise. It never asked whether
+we emitted a *plain* field there. `moved` had the opposite problem: the classifier proved the field
+exists — it returns `moved` only when the same section-stripped path is in the other section's
+`extras` — and then the reporting threw that knowledge away.
+
+Both now get their own headline lines, `reference-not-detected` and `moved`, still under `missed`
+because a user's YAML still breaks either way.
+
+**The label was not the only problem.** Of the 19 plain-string references, **zero** had a
+field-level queue entry. We emit `spec.billingAccount`, upstream references it, and nothing anywhere
+told a human to look. A real detection gap was sitting inside a mislabelled bucket, which is the
+argument for fixing labels: a wrong bucket hides work as effectively as a missing detector.
+
 ## The biggest hole was a tool nobody ran
 
 `scripts/queue-hints` — then called `queue-ref-hints` — already existed, already walked nested paths

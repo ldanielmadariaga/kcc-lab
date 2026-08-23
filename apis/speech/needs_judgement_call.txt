@@ -10,3 +10,12 @@
 # marker in types.generated.go. Shared nested messages, so they are listed
 # per service rather than against one Kind.
 # possible-reference-by-sibling: google.cloud.speech.v2.SpeechAdaptation.AdaptationPhraseSet.phraseSet target=SpeechPhraseSet
+kind=SpeechRecognizer group=speech.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=SpeechRecognizer group=speech.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=SpeechRecognizer group=speech.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/recognizers/{recognizer}; confirm the resource is regional and that this is the name for it)
+kind=SpeechCustomClass group=speech.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=SpeechCustomClass group=speech.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=SpeechCustomClass group=speech.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/customClasses/{custom_class}; confirm the resource is regional and that this is the name for it)
+kind=SpeechPhraseSet group=speech.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=SpeechPhraseSet group=speech.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=SpeechPhraseSet group=speech.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/phraseSets/{phrase_set}; confirm the resource is regional and that this is the name for it)

@@ -214,8 +214,13 @@ VALUE_ARMS = {"nullValue", "numberValue", "boolValue", "stringValue",
               "structValue", "listValue", "values"}
 
 # Ordered so the report reads target classes first, then the two we accept.
-TARGET_CLASSES = ("reference-shape", "moved", "absent")
+TARGET_CLASSES = ("reference-shape", "moved", "absent", "reference-not-detected")
 ACCEPTED_CLASSES = ("renamed", "intentionally-different")
+# Classes where the field IS in our output, just not where or how upstream has
+# it. They stay under "missed" -- a user's YAML still breaks -- but they are a
+# detection or placement problem, not a generation one, and the headline has to
+# say so or it sends people to build generation for fields we already generate.
+EMITTED_CLASSES = ("moved", "reference-not-detected")
 CLASSES = TARGET_CLASSES + ACCEPTED_CLASSES
 
 
@@ -245,6 +250,18 @@ def classify(path, section, extras, arrays=()):
         for cand in (stem, stem + "[]"):
             if cand + ".external" in extras.get(section, ()):
                 return "renamed"
+        # We produce the field, as a plain string, and never spotted that it is a
+        # reference. That is a different problem from not producing it at all:
+        # nothing has to be generated, only detected. Rolling the two together
+        # made 19 fields read as "in neither our types nor the queue" when they
+        # were sitting in the types file as strings.
+        #
+        # queue_candidates gives every spelling the trailing-noun rename can
+        # produce, so billingAccountRef finds our billingAccount and dataStoreRefs
+        # finds our dataStoreIDs.
+        emitted = {e.rstrip("[]") for e in extras.get(section, ())}
+        if {c.rstrip("[]") for c in queue_candidates(path)} & emitted:
+            return "reference-not-detected"
         return "reference-shape"
     leaf = path.rsplit(".", 1)[-1].rstrip("[]")
     if leaf in VALUE_ARMS:
@@ -309,6 +326,8 @@ def queue_entries():
       fields   kind -> field paths named explicitly
       sections kind -> the section names a resource-level entry covers
       queued   every kind the queue mentions at all
+      leaves   kind -> leaf names its service flagged in a comment, for the
+               shared-nested-message findings that name no Kind
 
     queued exists to separate two things that look identical in the output. A
     field can be unflagged because a detector looked and missed it, or because
@@ -322,11 +341,26 @@ def queue_entries():
     fields = defaultdict(set)
     sections = defaultdict(set)
     queued = set()
+    leaves = defaultdict(set)
     for f in glob.glob("apis/*/needs_judgement_call.txt"):
+        kinds_here, leaves_here = set(), set()
         for line in open(f):
+            # Findings against a shared nested message are written as comments,
+            # because a nested type belongs to no single Kind and every
+            # non-comment line here suppresses [refs] for the Kind it names. They
+            # carry the proto message, not the KRM path, so they can only be
+            # matched on the field's leaf name -- looser than the path matching
+            # above, and it credits every Kind in the service for a finding
+            # recorded against the service. Without it 7 fields read as unflagged
+            # while the queue named them.
+            m = re.match(r"#\s*possible-reference-by-sibling:\s*\S+\.(\w+)\s", line)
+            if m:
+                leaves_here.add(m.group(1).lower())
+                continue
             m = re.match(r"kind=(\S+) ", line)
             if m:
                 queued.add(m.group(1))
+                kinds_here.add(m.group(1))
             m = re.match(r'kind=(\S+) group=\S+: field "([^"]+)"', line)
             if m:
                 fields[m.group(1)].add(m.group(2).lstrip("."))
@@ -334,7 +368,9 @@ def queue_entries():
             m = re.match(r"kind=(\S+) group=\S+: resource reason=([a-zA-Z0-9-]+)", line)
             if m and m.group(2) in SECTION_REASONS:
                 sections[m.group(1)].add(SECTION_REASONS[m.group(2)])
-    return fields, sections, queued
+        for k in kinds_here:
+            leaves[k] |= leaves_here
+    return fields, sections, queued, leaves
 
 
 # When upstream turns a field into a reference it appends "Ref" -- and it also
@@ -403,6 +439,18 @@ def explained(entries, path):
             if want == e or want.startswith(base + ".") or want.startswith(base + "[]"):
                 return True
     return False
+
+
+def _leaf_flagged(leaves, path):
+    """Did a shared-nested-message comment name this field, by leaf name?
+
+    Matched after the exact-path checks, so it only ever rescues a field nothing
+    more precise accounted for.
+    """
+    if not leaves:
+        return False
+    return any(c.rsplit(".", 1)[-1].rstrip("[]").lower() in leaves
+               for c in queue_candidates(path))
 
 
 def names_something_nearby(entries, path):
@@ -478,7 +526,7 @@ def main():
     if args.verbose_dir:
         os.makedirs(args.verbose_dir, exist_ok=True)
 
-    q, qsections, queued_kinds = queue_entries()
+    q, qsections, queued_kinds, qleaves = queue_entries()
     matched = Counter()
     gap = {c: Counter() for c in CLASSES}   # field / section / unsure / weak / unflagged
     # Tracked apart from gap because it is a SUB-count of "field" -- a flagged
@@ -528,6 +576,8 @@ def main():
                         in_types_total += 1
                 elif section in qsections.get(kind, ()):
                     gap[c]["section"] += 1
+                elif _leaf_flagged(qleaves.get(kind, ()), p):
+                    gap[c]["field"] += 1
                 elif c == "reference-shape" and names_something_nearby(entries, p):
                     # Cannot tell: the queue spoke about this parent, but upstream
                     # renamed the field so the two cannot be paired by name. Split
@@ -556,7 +606,10 @@ def main():
     # five sum to what we miss and no arithmetic can drift.
     emitted_elsewhere = sum(gap[c]["unflagged"] for c in ACCEPTED_CLASSES)
     unpairable = sum(gap[c]["unsure"] + gap[c]["weak"] for c in CLASSES)
-    truly = sum(gap[c]["unflagged"] for c in TARGET_CLASSES)
+    wrong_section = gap["moved"]["unflagged"]
+    undetected_ref = gap["reference-not-detected"]["unflagged"]
+    truly = sum(gap[c]["unflagged"] for c in TARGET_CLASSES
+                if c not in EMITTED_CLASSES)
 
     print(f"Against KCC master at {args.ref}, every field in its CRDs is one of three things.\n")
     print(f"  {'1. implemented':34s} {produced:6d}   ({100 * produced / surface:.1f}%)")
@@ -566,11 +619,20 @@ def main():
     print(f"        ...and also in the types file{'':15s}{flagged_both:6d}")
     print(f"  {'3. missed':34s} {missed:6d}   ({100 * missed / surface:.1f}%)")
     pct = lambda x: f"({100 * x / surface:.1f}%)"
-    print(f"        truly missed{'':22s}{truly:6d} {pct(truly):8s} in neither our types nor the queue")
+    print(f"        truly missed{'':22s}{truly:6d} {pct(truly):8s} we produce nothing at all")
+    print(f"        emitted, wrong section{'':12s}{wrong_section:6d} {pct(wrong_section):8s} spec vs status.observedState")
+    print(f"        emitted as a plain string{'':9s}{undetected_ref:6d} {pct(undetected_ref):8s} upstream references it, we did not")
     print(f"        emitted, renamed or reshaped{'':6s}{emitted_elsewhere:6d} {pct(emitted_elsewhere):8s} present, different name or shape")
     print(f"        reference, name unpairable{'':8s}{unpairable:6d} {pct(unpairable):8s} queue likely names it, unprovable")
     print(f"  {'':34s} {'-' * 6}")
     print(f"  {'fields in KCC master CRDs':34s} {surface:6d}")
+
+    if wrong_section or undetected_ref:
+        print(f"\n  The middle two are in our output already, so they need detecting or")
+        print("  moving, not generating. A field we emit in spec where upstream has it in")
+        print("  status.observedState, or emit as a plain string where upstream references")
+        print("  it, still breaks a user's YAML -- but sending someone to build generation")
+        print("  for a field the types file already carries wastes the trip.")
 
     if unpairable:
         print(f"\n  The {unpairable} unpairable are references upstream renamed, not just suffixed:")

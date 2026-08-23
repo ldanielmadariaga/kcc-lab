@@ -23,13 +23,10 @@
 
 package v1alpha1
 
-/* unreachable type AutoDetectDecodingConfig
 // +kcc:proto=google.cloud.speech.v2.AutoDetectDecodingConfig
 type AutoDetectDecodingConfig struct {
 }
-*/
 
-/* unreachable type CustomClass
 // +kcc:proto=google.cloud.speech.v2.CustomClass
 type CustomClass struct {
 
@@ -48,18 +45,14 @@ type CustomClass struct {
 	// +kcc:proto:field=google.cloud.speech.v2.CustomClass.annotations
 	Annotations map[string]string `json:"annotations,omitempty"`
 }
-*/
 
-/* unreachable type CustomClass_ClassItem
 // +kcc:proto=google.cloud.speech.v2.CustomClass.ClassItem
 type CustomClass_ClassItem struct {
 	// The class item's value.
 	// +kcc:proto:field=google.cloud.speech.v2.CustomClass.ClassItem.value
 	Value *string `json:"value,omitempty"`
 }
-*/
 
-/* unreachable type DenoiserConfig
 // +kcc:proto=google.cloud.speech.v2.DenoiserConfig
 type DenoiserConfig struct {
 	// Denoise audio before sending to the transcription model.
@@ -75,13 +68,12 @@ type DenoiserConfig struct {
 	// +kcc:proto:field=google.cloud.speech.v2.DenoiserConfig.snr_threshold
 	SnrThreshold *float32 `json:"snrThreshold,omitempty"`
 }
-*/
 
-/* unreachable type ExplicitDecodingConfig
 // +kcc:proto=google.cloud.speech.v2.ExplicitDecodingConfig
 type ExplicitDecodingConfig struct {
 	// Required. Encoding of the audio data sent for recognition.
 	// +kcc:proto:field=google.cloud.speech.v2.ExplicitDecodingConfig.encoding
+	// +required
 	Encoding *string `json:"encoding,omitempty"`
 
 	// Optional. Sample rate in Hertz of the audio data sent for recognition.
@@ -101,9 +93,7 @@ type ExplicitDecodingConfig struct {
 	// +kcc:proto:field=google.cloud.speech.v2.ExplicitDecodingConfig.audio_channel_count
 	AudioChannelCount *int32 `json:"audioChannelCount,omitempty"`
 }
-*/
 
-/* unreachable type PhraseSet
 // +kcc:proto=google.cloud.speech.v2.PhraseSet
 type PhraseSet struct {
 
@@ -131,9 +121,7 @@ type PhraseSet struct {
 	// +kcc:proto:field=google.cloud.speech.v2.PhraseSet.annotations
 	Annotations map[string]string `json:"annotations,omitempty"`
 }
-*/
 
-/* unreachable type PhraseSet_Phrase
 // +kcc:proto=google.cloud.speech.v2.PhraseSet.Phrase
 type PhraseSet_Phrase struct {
 	// The phrase itself.
@@ -153,9 +141,7 @@ type PhraseSet_Phrase struct {
 	// +kcc:proto:field=google.cloud.speech.v2.PhraseSet.Phrase.boost
 	Boost *float32 `json:"boost,omitempty"`
 }
-*/
 
-/* unreachable type RecognitionConfig
 // +kcc:proto=google.cloud.speech.v2.RecognitionConfig
 type RecognitionConfig struct {
 	// Automatically detect decoding parameters.
@@ -220,9 +206,7 @@ type RecognitionConfig struct {
 	// +kcc:proto:field=google.cloud.speech.v2.RecognitionConfig.denoiser_config
 	DenoiserConfig *DenoiserConfig `json:"denoiserConfig,omitempty"`
 }
-*/
 
-/* unreachable type RecognitionFeatures
 // +kcc:proto=google.cloud.speech.v2.RecognitionFeatures
 type RecognitionFeatures struct {
 	// If set to `true`, the server will attempt to filter out profanities,
@@ -287,7 +271,6 @@ type RecognitionFeatures struct {
 	// +kcc:proto:field=google.cloud.speech.v2.RecognitionFeatures.max_alternatives
 	MaxAlternatives *int32 `json:"maxAlternatives,omitempty"`
 }
-*/
 
 /* unreachable type Recognizer
 // +kcc:proto=google.cloud.speech.v2.Recognizer
@@ -349,7 +332,6 @@ type Recognizer struct {
 }
 */
 
-/* unreachable type SpeakerDiarizationConfig
 // +kcc:proto=google.cloud.speech.v2.SpeakerDiarizationConfig
 type SpeakerDiarizationConfig struct {
 	// Required. Minimum number of speakers in the conversation. This range gives
@@ -359,6 +341,7 @@ type SpeakerDiarizationConfig struct {
 	//  To fix the number of speakers detected in the audio, set
 	//  `min_speaker_count` = `max_speaker_count`.
 	// +kcc:proto:field=google.cloud.speech.v2.SpeakerDiarizationConfig.min_speaker_count
+	// +required
 	MinSpeakerCount *int32 `json:"minSpeakerCount,omitempty"`
 
 	// Required. Maximum number of speakers in the conversation. Valid values are:
@@ -366,11 +349,10 @@ type SpeakerDiarizationConfig struct {
 	//  by allowing the system to automatically determine the correct number of
 	//  speakers.
 	// +kcc:proto:field=google.cloud.speech.v2.SpeakerDiarizationConfig.max_speaker_count
+	// +required
 	MaxSpeakerCount *int32 `json:"maxSpeakerCount,omitempty"`
 }
-*/
 
-/* unreachable type SpeechAdaptation
 // +kcc:proto=google.cloud.speech.v2.SpeechAdaptation
 type SpeechAdaptation struct {
 	// A list of inline or referenced PhraseSets.
@@ -382,9 +364,7 @@ type SpeechAdaptation struct {
 	// +kcc:proto:field=google.cloud.speech.v2.SpeechAdaptation.custom_classes
 	CustomClasses []CustomClass `json:"customClasses,omitempty"`
 }
-*/
 
-/* unreachable type SpeechAdaptation_AdaptationPhraseSet
 // +kcc:proto=google.cloud.speech.v2.SpeechAdaptation.AdaptationPhraseSet
 type SpeechAdaptation_AdaptationPhraseSet struct {
 	// The name of an existing PhraseSet resource. The user must have read
@@ -397,9 +377,7 @@ type SpeechAdaptation_AdaptationPhraseSet struct {
 	// +kcc:proto:field=google.cloud.speech.v2.SpeechAdaptation.AdaptationPhraseSet.inline_phrase_set
 	InlinePhraseSet *PhraseSet `json:"inlinePhraseSet,omitempty"`
 }
-*/
 
-/* unreachable type TranscriptNormalization
 // +kcc:proto=google.cloud.speech.v2.TranscriptNormalization
 type TranscriptNormalization struct {
 	// A list of replacement entries. We will perform replacement with one entry
@@ -409,9 +387,7 @@ type TranscriptNormalization struct {
 	// +kcc:proto:field=google.cloud.speech.v2.TranscriptNormalization.entries
 	Entries []TranscriptNormalization_Entry `json:"entries,omitempty"`
 }
-*/
 
-/* unreachable type TranscriptNormalization_Entry
 // +kcc:proto=google.cloud.speech.v2.TranscriptNormalization.Entry
 type TranscriptNormalization_Entry struct {
 	// What to replace. Max length is 100 characters.
@@ -426,18 +402,15 @@ type TranscriptNormalization_Entry struct {
 	// +kcc:proto:field=google.cloud.speech.v2.TranscriptNormalization.Entry.case_sensitive
 	CaseSensitive *bool `json:"caseSensitive,omitempty"`
 }
-*/
 
-/* unreachable type TranslationConfig
 // +kcc:proto=google.cloud.speech.v2.TranslationConfig
 type TranslationConfig struct {
 	// Required. The language code to translate to.
 	// +kcc:proto:field=google.cloud.speech.v2.TranslationConfig.target_language
+	// +required
 	TargetLanguage *string `json:"targetLanguage,omitempty"`
 }
-*/
 
-/* unreachable type CustomClassObservedState
 // +kcc:observedstate:proto=google.cloud.speech.v2.CustomClass
 type CustomClassObservedState struct {
 	// Output only. Identifier. The resource name of the CustomClass.
@@ -495,9 +468,7 @@ type CustomClassObservedState struct {
 	// +kcc:proto:field=google.cloud.speech.v2.CustomClass.kms_key_version_name
 	KMSKeyVersionName *string `json:"kmsKeyVersionName,omitempty"`
 }
-*/
 
-/* unreachable type PhraseSetObservedState
 // +kcc:observedstate:proto=google.cloud.speech.v2.PhraseSet
 type PhraseSetObservedState struct {
 	// Output only. Identifier. The resource name of the PhraseSet.
@@ -554,9 +525,7 @@ type PhraseSetObservedState struct {
 	// +kcc:proto:field=google.cloud.speech.v2.PhraseSet.kms_key_version_name
 	KMSKeyVersionName *string `json:"kmsKeyVersionName,omitempty"`
 }
-*/
 
-/* unreachable type RecognitionConfigObservedState
 // +kcc:observedstate:proto=google.cloud.speech.v2.RecognitionConfig
 type RecognitionConfigObservedState struct {
 	// Speech adaptation context that weights recognizer predictions for specific
@@ -564,7 +533,6 @@ type RecognitionConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.speech.v2.RecognitionConfig.adaptation
 	Adaptation *SpeechAdaptationObservedState `json:"adaptation,omitempty"`
 }
-*/
 
 /* unreachable type RecognizerObservedState
 // +kcc:observedstate:proto=google.cloud.speech.v2.Recognizer
@@ -632,7 +600,6 @@ type RecognizerObservedState struct {
 }
 */
 
-/* unreachable type SpeechAdaptationObservedState
 // +kcc:observedstate:proto=google.cloud.speech.v2.SpeechAdaptation
 type SpeechAdaptationObservedState struct {
 	// A list of inline or referenced PhraseSets.
@@ -644,13 +611,10 @@ type SpeechAdaptationObservedState struct {
 	// +kcc:proto:field=google.cloud.speech.v2.SpeechAdaptation.custom_classes
 	CustomClasses []CustomClassObservedState `json:"customClasses,omitempty"`
 }
-*/
 
-/* unreachable type SpeechAdaptation_AdaptationPhraseSetObservedState
 // +kcc:observedstate:proto=google.cloud.speech.v2.SpeechAdaptation.AdaptationPhraseSet
 type SpeechAdaptation_AdaptationPhraseSetObservedState struct {
 	// An inline defined PhraseSet.
 	// +kcc:proto:field=google.cloud.speech.v2.SpeechAdaptation.AdaptationPhraseSet.inline_phrase_set
 	InlinePhraseSet *PhraseSetObservedState `json:"inlinePhraseSet,omitempty"`
 }
-*/

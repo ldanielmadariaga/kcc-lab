@@ -60,6 +60,29 @@ spec:
           spec:
             description: SpeechCustomClassSpec defines the desired state of SpeechCustomClass
             properties:
+              annotations:
+                additionalProperties:
+                  type: string
+                description: Optional. Allows users to store small amounts of arbitrary
+                  data. Both the key and the value must be 63 characters or less each.
+                  At most 100 annotations.
+                type: object
+              displayName:
+                description: Optional. User-settable, human-readable name for the
+                  CustomClass. Must be 63 characters or less.
+                type: string
+              items:
+                description: A collection of class items.
+                items:
+                  properties:
+                    value:
+                      description: The class item's value.
+                      type: string
+                  type: object
+                type: array
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -97,6 +120,7 @@ spec:
                   will be used.
                 type: string
             required:
+            - location
             - projectRef
             type: object
           status:
@@ -144,6 +168,49 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. Creation time.
+                    type: string
+                  deleteTime:
+                    description: Output only. The time at which this resource was
+                      requested for deletion.
+                    type: string
+                  etag:
+                    description: Output only. This checksum is computed by the server
+                      based on the value of other fields. This may be sent on update,
+                      undelete, and delete requests to ensure the client has an up-to-date
+                      value before proceeding.
+                    type: string
+                  expireTime:
+                    description: Output only. The time at which this resource will
+                      be purged.
+                    type: string
+                  kmsKeyName:
+                    description: Output only. The [KMS key name](https://cloud.google.com/kms/docs/resource-hierarchy#keys)
+                      with which the CustomClass is encrypted. The expected format
+                      is `projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}`.
+                    type: string
+                  kmsKeyVersionName:
+                    description: Output only. The [KMS key version name](https://cloud.google.com/kms/docs/resource-hierarchy#key_versions)
+                      with which the CustomClass is encrypted. The expected format
+                      is `projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}/cryptoKeyVersions/{crypto_key_version}`.
+                    type: string
+                  reconciling:
+                    description: Output only. Whether or not this CustomClass is in
+                      the process of being updated.
+                    type: boolean
+                  state:
+                    description: Output only. The CustomClass lifecycle state.
+                    type: string
+                  uid:
+                    description: Output only. System-assigned unique identifier for
+                      the CustomClass.
+                    type: string
+                  updateTime:
+                    description: Output only. The most recent time this resource was
+                      modified.
+                    type: string
                 type: object
             type: object
         required:

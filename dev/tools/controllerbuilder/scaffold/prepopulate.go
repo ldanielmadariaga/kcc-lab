@@ -298,17 +298,34 @@ type OutputOnlyCandidate struct {
 	Comment string
 }
 
-// DetectOutputOnlyInComments finds spec fields whose proto comment opens with
-// "Output only." but whose field_behavior does not say OUTPUT_ONLY.
+// outputOnlyPrefixes are the ways a proto says "GCP sets this" in prose rather
+// than in a google.api.field_behavior annotation.
+//
+// Two spellings, because two families of API write it differently. Most protos
+// open the comment "Output only."; Compute opens it "[Output Only]", and for a
+// long time only the first was recognised, so every Compute resource lost the
+// signal entirely -- 1,605 fields in compute.proto alone, and all ten of
+// ComputeInterconnect's misplaced observed-state fields (googleIPAddress,
+// circuitInfos, expectedOutages and the rest).
+//
+// Both are matched as a prefix rather than anywhere in the comment. That is the
+// convention in practice: of the Compute fields carrying the marker, 1,600 open
+// with it and 5 mention it mid-sentence. Those 5 are left, because an anchored
+// test is the one whose false-positive rate was measured.
+var outputOnlyPrefixes = []string{"Output only.", "[Output Only]"}
+
+// DetectOutputOnlyInComments finds spec fields whose proto comment says the
+// field is output-only while its field_behavior does not.
 //
 // It reports rather than acts. Applying the inference directly would move 90
 // fields across 13 services, 29 of them in v1beta1, where relocating a field
 // from spec to status breaks a schema people already depend on. The reported
 // fields are moved by hand, in <kind>_types.go, once someone has agreed.
 //
-// The signal itself is trustworthy: across 3780 fields in hand-written Spec
-// structs, not one carries "Output only." in its comment, so there are no
-// measured false positives. What is missing is the review, not the accuracy.
+// The signal itself is trustworthy: across 4,673 fields in hand-written Spec
+// structs in the baseline tree, not one carries either spelling in its comment,
+// so there are no measured false positives for either. What is missing is the
+// review, not the accuracy.
 func DetectOutputOnlyInComments(msg protoreflect.MessageDescriptor) []OutputOnlyCandidate {
 	if msg == nil {
 		return nil
@@ -323,7 +340,14 @@ func DetectOutputOnlyInComments(msg protoreflect.MessageDescriptor) []OutputOnly
 			continue
 		}
 		comment := strings.TrimSpace(msg.ParentFile().SourceLocations().ByDescriptor(field).LeadingComments)
-		if !strings.HasPrefix(comment, "Output only.") {
+		said := false
+		for _, prefix := range outputOnlyPrefixes {
+			if strings.HasPrefix(comment, prefix) {
+				said = true
+				break
+			}
+		}
+		if !said {
 			continue
 		}
 		out = append(out, OutputOnlyCandidate{

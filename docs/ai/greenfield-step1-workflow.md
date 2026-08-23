@@ -330,13 +330,55 @@ Every service's `generate.sh` carries the same five:
 | `--prepopulate-spec` | fill the Spec from the proto instead of a three-field stub |
 | `--emit-required-from-proto` | `// +required` for fields the proto marks REQUIRED |
 | `--emit-plural-acronyms` | `relatedURIs` rather than `relatedUris` |
-| `--detect-output-only-in-comments` | report fields whose comment says output-only with no annotation |
+| `--detect-output-only-in-comments` | report fields whose comment says output-only with no annotation, in either spelling (see below) |
 | `--place-server-set-fields` | put `createTime`, `uid`, `selfLink`, `etag` and friends in ObservedState when the proto carries no `field_behavior` at all |
 
-The last one was built, tested and then wired into nothing for weeks — the other four were on all 94
-scripts and it was on zero, which is why server-set fields kept showing up as missed and
-`+kcc:guess=placement` appeared nowhere. If you add a generator flag, add it to the scripts in the
-same change.
+#### Two spellings of "output only"
+
+A proto that documents a field as server-set in prose, without a
+`google.api.field_behavior` annotation, gets that field generated into the Spec. The detector reads
+the comment, and there are **two conventions**:
+
+| spelling | who writes it |
+|---|---|
+| `Output only. …` | most Google APIs |
+| `[Output Only] …` | Compute |
+
+Only the first was recognised for a long time, so every Compute resource lost the signal entirely.
+`compute.proto` alone carries 1,605 fields with the bracketed form, and all ten of
+`ComputeInterconnect`'s misplaced observed-state fields — `googleIPAddress`, `circuitInfos`,
+`expectedOutages`, `availableFeatures` and the rest — were nothing more exotic than that.
+
+Both are matched as a **prefix**, not anywhere in the comment. That is the convention in practice:
+of the Compute fields carrying the marker, 1,600 open with it and 5 mention it mid-sentence. Those
+five are left alone, because the anchored test is the one whose false-positive rate was measured —
+across 4,673 fields in hand-written Spec structs in the baseline tree, neither spelling appears once.
+
+If you meet a third convention, add it to `outputOnlyPrefixes` in `scaffold/prepopulate.go` and
+re-run the false-positive count over the baseline before trusting it.
+
+#### A flag on no script does nothing, and says nothing
+
+`--place-server-set-fields` was built, tested and then wired into nothing for weeks. The other four
+were on all 94 scripts and it was on zero, which is why server-set fields kept showing up as missed
+and `+kcc:guess=placement` appeared nowhere.
+
+The same thing happens per service. **37 of 131 `generate.sh` scripts pass no `--prepopulate-spec`
+at all**, so their resources scaffold as three-field stubs and every upstream field scores as
+absent. `speech` was the one with in-scope resources, and its three Kinds alone accounted for 43 of
+the 232 unflagged misses — the single largest cause, and a one-line fix.
+
+Check with:
+
+```
+for f in apis/*/generate.sh; do grep -q prepopulate-spec "$f" || basename "$(dirname "$f")"; done
+```
+
+Add the flag to the **v1alpha1** invocation only, which is the house pattern. A service's v1beta1
+call deliberately runs without it: `--prepopulate-spec` scaffolds a types file that does not exist,
+so putting it on the beta invocation would invent beta resources upstream does not have.
+
+If you add a generator flag, add it to the scripts in the same change.
 
 ### Regenerating the whole corpus
 
