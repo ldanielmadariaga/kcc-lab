@@ -31,6 +31,16 @@ wrote against them.
 | run | packages failing | distinct fields the hand-written code needs and we lack |
 |---|---|---|
 | after the map + JSON well-known types run | 44 | 29 |
+| after parent-identity generation | 43 | **20** |
+
+**Read the second column, not the first.** A package fails whole on one type mismatch, so the
+package count barely moves while real progress happens: 44 → 43 against 29 → 20. `Spec.OrganizationRef`
+went 14 → 2, `EntryGroupRef` 6 → 0, `ClusterRef` 3 → 0, `Tenant` and `Collection` 4 → 0.
+
+Most of what is left is not a capability gap. 69 of the remaining errors are
+`cannot use location (*string) as string`, and upstream has no convention to match — across the
+baseline it is 93 `Location string` against 87 `Location *string`, a coin flip. For a greenfield
+resource either is fine, since the controller is written against whatever we generate.
 
 Almost all 29 are a parent segment or a parent reference — `Spec.OrganizationRef` 14,
 `Spec.Location` 14, `Spec.EntryGroupRef` 6, `Spec.DatabaseRef` 6. Reproduce with
@@ -75,9 +85,21 @@ than paths:
 
 | | fields |
 |---|---|
-| in KCC master's CRDs | 9,310 |
-| we produce | 8,727 (93.7%) |
-| **we miss** | **583 (6.3%)** |
+| in KCC master's CRDs | 9,357 |
+| we produce | 8,807 (94.1%) |
+| **we miss** | **550 (5.9%)** |
+
+Three states, after the parent-identity regeneration:
+
+| | count |
+|---|---|
+| 1. implemented | 8,807 (94.1%) |
+| 2. flagged in the queue | 293 (3.1%) |
+| 3. missed | 257 (2.7%) |
+
+`implemented` rose 8,727 → 8,807, which is the number that has to move when generated output
+changes. Of the 257 missed, 97 we do emit renamed or reshaped and 28 are references the queue
+probably names under an unpairable name.
 
 Two axes, not one, and they are independent: the class says *why* a field differs, the columns say
 *whether anyone was told*. A field can be `absent` and flagged at once — that is the queue working.

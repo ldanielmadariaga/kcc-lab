@@ -259,6 +259,27 @@ blob. Past knowledge generalised badly.
 not coverage generally, and the number to watch is the undetected count from
 `silence_report.py`, not the size of this list.
 
+### Regenerating the whole corpus
+
+```bash
+dev/tasks/greenfield-regenerate
+```
+
+Use the script, not the steps by hand. It wipes the types files, runs each `generate.sh` with
+`SKIP_GENERATE_CRDS=1`, rebuilds CRDs per service, post-processes and publishes them, **and re-seeds
+the judgement queue**.
+
+That last step is why the script exists. **Regeneration rewrites every `needs_judgement_call.txt`
+from scratch and silently discards everything `queue-hints` wrote.** It has now cost two runs: the
+original bulk generation never ran the seeder, and the run after it wiped 367 hints — `flagged` fell
+from 321 to 77 and `missed` jumped from 262 to 472 before anyone worked out the cause was procedural
+rather than real.
+
+CRDs are skipped during generation for a separate reason. `generate.sh` calls
+`dev/tasks/generate-crds`, which runs `controller-gen` over `./...` and fails wholesale the moment one
+package will not load. In this tree 43 do not, by design, so it can never succeed; the script rebuilds
+them per service instead.
+
 ### Compile the service before scoring it
 
 ```bash
@@ -273,6 +294,14 @@ reports a path.
 It is what would have surfaced the parent-identity gap on day one. Across the corpus it names 29
 distinct fields, and almost all of them are a parent segment or a parent reference:
 `Spec.OrganizationRef`, `Spec.Location`, `Spec.EntryGroupRef`, `Spec.DatabaseRef`, `Spec.Tenant`.
+
+**Count the distinct undefined fields, not the failing packages.** A package fails whole on a single
+type mismatch, so the package count moves far slower than real progress: one regeneration took the
+distinct fields from 29 to 20 while the package count went 44 to 43.
+
+```bash
+go build ./apis/... 2>&1 | grep -oP '\.(Spec|ObservedState)\.\w+ undefined' | sort -u | wc -l
+```
 
 Two things it will not tell you, so it supplements the score rather than replacing it. It only sees
 fields the controller code *dereferences*, which is 18% of what the CRD comparison finds — a missing

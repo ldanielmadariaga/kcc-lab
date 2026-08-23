@@ -334,6 +334,29 @@ Almost every one is a parent segment or a parent reference — the same defect c
 took a full scored run to surface. It also independently validates the parent-ref generation:
 `EntryGroupRef`, `DatabaseRef`, `ClusterRef` and `InstanceRef` are exactly what it now emits.
 
+### What the parent-identity regeneration showed
+
+Running it moved `implemented` 8,727 → 8,807 and the distinct undefined fields 29 → 20, with
+`Spec.OrganizationRef` 14 → 2, `EntryGroupRef` 6 → 0, `ClusterRef` 3 → 0. Three things came out of it
+that spot checks in scratch trees had not.
+
+**Count fields, not packages.** The package count went 44 → 43 while the field count fell 31%. A
+package fails whole on a single type mismatch, so it is far too coarse to show progress.
+
+**`Location` has no upstream convention to match.** 69 of the remaining errors are
+`cannot use location (*string) as string`, because upstream's hand-written identity code expects a
+non-pointer. Checking before flipping the type was worth it — across the baseline it is 93
+`Location string` against 87 `Location *string`, near enough a coin flip. Those errors are a
+convention divergence, not a capability gap, and for a greenfield resource either choice is fine
+since the controller is written against whatever we generate. Flipping would simply break the other
+87.
+
+**A root ref can be genuinely dual.** Making it exclusive was too strong.
+`CloudSecurityFramework` carries both `projectRef` and `organizationRef`, optional, and its identity
+code branches on whichever is set; `SecurityCenterMuteConfig` carries only `OrganizationRef`. The
+pattern cannot express that difference, so it stays a per-resource judgement rather than something to
+paper over by always emitting both.
+
 ### It does not replace the CRD comparison
 
 The obvious conclusion from the above is "we should have just compiled". Measured, that is only
