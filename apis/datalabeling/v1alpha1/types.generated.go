@@ -114,6 +114,7 @@ type BoundingBoxEvaluationOptions struct {
 // +kcc:proto=google.cloud.datalabeling.v1beta1.BoundingPolyConfig
 type BoundingPolyConfig struct {
 	// Required. Annotation spec set resource name.
+	// +kcc:guess=possible-reference target=DataLabelingAnnotationSpecSet
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.BoundingPolyConfig.annotation_spec_set
 	// +required
 	AnnotationSpecSet *string `json:"annotationSpecSet,omitempty"`
@@ -235,6 +236,7 @@ type EvaluationJob struct {
 	//  following format:
 	//
 	//  "projects/<var>{project_id}</var>/annotationSpecSets/<var>{annotation_spec_set_id}</var>"
+	// +kcc:guess=possible-reference target=DataLabelingAnnotationSpecSet
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.annotation_spec_set
 	AnnotationSpecSet *string `json:"annotationSpecSet,omitempty"`
 
@@ -390,6 +392,7 @@ type GCSSource struct {
 // +kcc:proto=google.cloud.datalabeling.v1beta1.HumanAnnotationConfig
 type HumanAnnotationConfig struct {
 	// Required. Instruction resource name.
+	// +kcc:guess=possible-reference target=DataLabelingInstruction
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.HumanAnnotationConfig.instruction
 	// +required
 	Instruction *string `json:"instruction,omitempty"`
@@ -448,6 +451,7 @@ type HumanAnnotationConfig struct {
 // +kcc:proto=google.cloud.datalabeling.v1beta1.ImageClassificationConfig
 type ImageClassificationConfig struct {
 	// Required. Annotation spec set resource name.
+	// +kcc:guess=possible-reference target=DataLabelingAnnotationSpecSet
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.ImageClassificationConfig.annotation_spec_set
 	// +required
 	AnnotationSpecSet *string `json:"annotationSpecSet,omitempty"`
@@ -566,6 +570,7 @@ type TextClassificationConfig struct {
 	AllowMultiLabel *bool `json:"allowMultiLabel,omitempty"`
 
 	// Required. Annotation spec set resource name.
+	// +kcc:guess=possible-reference target=DataLabelingAnnotationSpecSet
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.TextClassificationConfig.annotation_spec_set
 	// +required
 	AnnotationSpecSet *string `json:"annotationSpecSet,omitempty"`

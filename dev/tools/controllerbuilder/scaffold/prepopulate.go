@@ -73,7 +73,7 @@ type PrepopulateResult struct {
 //
 // ObservedState is filled separately, by PrepopulateObservedState, because it
 // needs data only the type generator has.
-func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptions, siblings map[string]string) (*PrepopulateResult, error) {
+func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptions) (*PrepopulateResult, error) {
 	if msg == nil {
 		return nil, fmt.Errorf("no message descriptor")
 	}
@@ -131,16 +131,18 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 		// "// TODO:" comment and moves on, and the field then never reaches the
 		// CRD. That is a silent drop unless somebody records it.
 		var field_ bytes.Buffer
+		codegen.WriteField(&field_, field, msg, emitted, false, opts, "")
+		buf.Write(field_.Bytes())
+		emitted++
+
 		// A string field whose name matches a resource this service declares is
-		// probably a reference to it. Derivable rather than learned: it needs no
-		// vocabulary of names anyone has seen before, so it works on a service
-		// nobody has looked at. Measured at 75% over fields upstream modelled.
+		// probably a reference to it. WriteField writes the marker, from
+		// opts.Siblings; this records the matching queue entry, so the marker and
+		// the entry cannot come from two predicates that drift apart.
 		//
 		// This flags; it does not generate. The field stays a string, and the
 		// marker plus the queue entry hand the decision to a person.
-		note := ""
-		if target, ok := siblingResource(field, siblings); ok {
-			note = "+kcc:guess=possible-reference target=" + target
+		if target, ok := codegen.SiblingResource(field, opts.Siblings); ok {
 			out.Judgement = append(out.Judgement, JudgementItem{
 				FieldPath: ".spec." + codegen.GetJSONForKRM(field),
 				Reason:    "possible-reference-by-sibling",
@@ -148,9 +150,6 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 					"confirm whether it should be a reference",
 			})
 		}
-		codegen.WriteField(&field_, field, msg, emitted, false, opts, note)
-		buf.Write(field_.Bytes())
-		emitted++
 
 		if reason, ok := unsupportedFieldReason(field_.String()); ok {
 			out.Judgement = append(out.Judgement, JudgementItem{
@@ -230,25 +229,6 @@ func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedSta
 	}
 
 	return fields, ExtraImportsFor(fields), judgement
-}
-
-// siblingResource reports the resource this service declares whose name matches
-// the field's, if any.
-//
-// siblings maps a lowercased Kind suffix to the Kind, built by scanning the
-// target package. The match is exact on the leaf rather than a suffix:
-// loosening it to endswith buys seven more at 68% instead of 75%, and picks up
-// spec.pipelineJob and localSsds[].interface.
-//
-// Known false positives, both DataLabeling: annotationSpecSet and instruction
-// match sibling Kinds and upstream keeps them plain. That is the trade for a
-// hint a person confirms.
-func siblingResource(field protoreflect.FieldDescriptor, siblings map[string]string) (string, bool) {
-	if len(siblings) == 0 || field.Kind() != protoreflect.StringKind {
-		return "", false
-	}
-	target, ok := siblings[strings.ToLower(codegen.GetJSONForKRM(field))]
-	return target, ok
 }
 
 // judgementFor reports whether a field needs a human decision that the generator

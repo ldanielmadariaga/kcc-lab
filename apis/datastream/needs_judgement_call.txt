@@ -30,3 +30,9 @@ kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field "
 kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.sqlServerProfile.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
 kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: field ".spec.pscInterfaceConfig.networkAttachment" reason=possible-reference-by-description
 kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: field ".spec.vpcPeeringConfig.vpc" reason=possible-reference-by-description
+kind=DatastreamRoute group=datastream.cnrm.cloud.google.com: field ".spec.privateConnectionRef" reason=parent-ref-guessed (emitted as a reference to PrivateConnectionRef, assumed from the collection segment of projects/{project}/locations/{location}/privateConnections/{private_connection}/routes/{route}; confirm the target type (DatastreamPrivateConnection, a resource this service declares, matches the name))
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.cloud.datastream.v1.PrivateConnectivity.privateConnection target=DatastreamPrivateConnection

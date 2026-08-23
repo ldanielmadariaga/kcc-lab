@@ -43,3 +43,9 @@ kind=VertexAIDeploymentResourcePool group=vertexai.cnrm.cloud.google.com: field 
 kind=VertexAIDeploymentResourcePool group=vertexai.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description
 kind=VertexAIFeaturestore group=vertexai.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
 kind=VertexAIMetadataStore group=vertexai.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAITensorboardExperiment group=vertexai.cnrm.cloud.google.com: field ".spec.tensorboard" reason=parent-segment-matches-sibling (emitted as a plain string from the pattern projects/{project}/locations/{location}/tensorboards/{tensorboard}/experiments/{experiment}, but the name matches VertexAITensorboard, a resource this service declares; confirm whether it should be a reference to it)
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.cloud.aiplatform.v1beta1.CustomJobSpec.tensorboard target=VertexAITensorboard

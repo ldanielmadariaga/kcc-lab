@@ -74,6 +74,7 @@ type DataprocSessionSpec struct {
 	//
 	//  The template must be in the same project and Dataproc region as the
 	//  session.
+	// +kcc:guess=possible-reference target=DataprocSessionTemplate
 	// +kcc:proto:field=google.cloud.dataproc.v1.Session.session_template
 	SessionTemplate *string `json:"sessionTemplate,omitempty"`
 }

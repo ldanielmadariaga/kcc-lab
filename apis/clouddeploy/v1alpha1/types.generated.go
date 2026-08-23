@@ -198,6 +198,7 @@ type CloudRunLocation struct {
 type CustomTarget struct {
 	// Required. The name of the CustomTargetType. Format must be
 	//  `projects/{project}/locations/{location}/customTargetTypes/{custom_target_type}`.
+	// +kcc:guess=possible-reference target=CloudDeployCustomTargetType
 	// +kcc:proto:field=google.cloud.deploy.v1.CustomTarget.custom_target_type
 	// +required
 	CustomTargetType *string `json:"customTargetType,omitempty"`

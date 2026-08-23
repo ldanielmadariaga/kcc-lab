@@ -40,6 +40,7 @@ type NetworkSecurityGatewaySecurityPolicySpec struct {
 
 	// Optional. Name of a TLS Inspection Policy resource that defines how TLS
 	//  inspection will be performed for any rule(s) which enables it.
+	// +kcc:guess=possible-reference target=NetworkSecurityTLSInspectionPolicy
 	// +kcc:proto:field=google.cloud.networksecurity.v1.GatewaySecurityPolicy.tls_inspection_policy
 	TLSInspectionPolicy *string `json:"tlsInspectionPolicy,omitempty"`
 }

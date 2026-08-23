@@ -33,7 +33,7 @@ type BatchTaskSpec struct {
 	Location *string `json:"location,omitempty"`
 
 	// The Job that this resource belongs to.
-	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/jobs/{job}/taskGroups/{task_group}/tasks/{task}
+	// +kcc:guess=parent-segment target=BatchJob
 	Job *string `json:"job,omitempty"`
 
 	// The TaskGroup that this resource belongs to.

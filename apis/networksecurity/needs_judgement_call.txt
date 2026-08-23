@@ -63,3 +63,15 @@ kind=NetworkSecurityBackendAuthenticationConfig group=networksecurity.cnrm.cloud
 kind=NetworkSecurityFirewallEndpointAssociation group=networksecurity.cnrm.cloud.google.com: field ".spec.network" reason=possible-reference-by-name (ComputeNetworkRef)
 kind=NetworkSecurityTLSInspectionPolicy group=networksecurity.cnrm.cloud.google.com: field ".spec.caPool" reason=possible-reference-by-description
 kind=NetworkSecurityTLSInspectionPolicy group=networksecurity.cnrm.cloud.google.com: field ".spec.trustConfig" reason=possible-reference-by-description
+kind=NetworkSecurityFirewallEndpointAssociation group=networksecurity.cnrm.cloud.google.com: field ".spec.firewallEndpoint" reason=possible-reference-by-sibling (the name matches NetworkSecurityFirewallEndpoint, a resource this service declares; confirm whether it should be a reference)
+kind=NetworkSecurityFirewallEndpointAssociation group=networksecurity.cnrm.cloud.google.com: field ".spec.tlsInspectionPolicy" reason=possible-reference-by-sibling (the name matches NetworkSecurityTLSInspectionPolicy, a resource this service declares; confirm whether it should be a reference)
+kind=NetworkSecurityGatewaySecurityPolicy group=networksecurity.cnrm.cloud.google.com: field ".spec.tlsInspectionPolicy" reason=possible-reference-by-sibling (the name matches NetworkSecurityTLSInspectionPolicy, a resource this service declares; confirm whether it should be a reference)
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.cloud.networksecurity.v1.CustomInterceptProfile.interceptEndpointGroup target=NetworkSecurityInterceptEndpointGroup
+# possible-reference-by-sibling: google.cloud.networksecurity.v1.CustomMirroringProfile.mirroringEndpointGroup target=NetworkSecurityMirroringEndpointGroup
+# possible-reference-by-sibling: google.cloud.networksecurity.v1.FirewallEndpointAssociation.firewallEndpoint target=NetworkSecurityFirewallEndpoint
+# possible-reference-by-sibling: google.cloud.networksecurity.v1.FirewallEndpointAssociation.tlsInspectionPolicy target=NetworkSecurityTLSInspectionPolicy
+# possible-reference-by-sibling: google.cloud.networksecurity.v1.GatewaySecurityPolicy.tlsInspectionPolicy target=NetworkSecurityTLSInspectionPolicy

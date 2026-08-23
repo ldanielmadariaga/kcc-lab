@@ -51,3 +51,8 @@ kind=NetworkConnectivityRegionalEndpoint group=networkconnectivity.cnrm.cloud.go
 kind=NetworkConnectivityServiceConnectionPolicy group=networkconnectivity.cnrm.cloud.google.com: field ".spec.network" reason=possible-reference-by-description
 kind=NetworkConnectivityServiceConnectionPolicy group=networkconnectivity.cnrm.cloud.google.com: field ".spec.pscConfig.allowedGoogleProducersResourceHierarchyLevel" reason=possible-reference-by-description
 kind=NetworkConnectivityServiceConnectionPolicy group=networkconnectivity.cnrm.cloud.google.com: field ".spec.pscConfig.subnetworks" reason=possible-reference-by-description
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: mockgcp.cloud.networkconnectivity.v1.AutoCreatedSubnetworkInfo.internalRange target=NetworkConnectivityInternalRange

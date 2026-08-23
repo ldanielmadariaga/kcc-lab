@@ -27,3 +27,13 @@ kind=GKEBackupBackupChannel group=gkebackup.cnrm.cloud.google.com: resource reas
 kind=GKEBackupBackupChannel group=gkebackup.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/backupChannels/{backup_channel}; confirm the resource is regional and that this is the name for it)
 kind=GKEBackupBackupChannel group=gkebackup.cnrm.cloud.google.com: field ".spec.destinationProject" reason=possible-reference-by-description
 kind=GKEBackupBackupPlan group=gkebackup.cnrm.cloud.google.com: field ".spec.backupConfig.encryptionKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=GKEBackupRestorePlan group=gkebackup.cnrm.cloud.google.com: field ".spec.backupPlan" reason=possible-reference-by-sibling (the name matches GKEBackupBackupPlan, a resource this service declares; confirm whether it should be a reference)
+kind=GKEBackupBackup group=gkebackup.cnrm.cloud.google.com: field ".spec.backupPlanRef" reason=parent-ref-guessed (emitted as a reference to BackupPlanRef, assumed from the collection segment of projects/{project}/locations/{location}/backupPlans/{backup_plan}/backups/{backup}; confirm the target type (GKEBackupBackupPlan, a resource this service declares, matches the name))
+kind=GKEBackupRestore group=gkebackup.cnrm.cloud.google.com: field ".spec.backup" reason=possible-reference-by-sibling (the name matches GKEBackupBackup, a resource this service declares; confirm whether it should be a reference)
+kind=GKEBackupRestore group=gkebackup.cnrm.cloud.google.com: field ".spec.restorePlanRef" reason=parent-ref-guessed (emitted as a reference to RestorePlanRef, assumed from the collection segment of projects/{project}/locations/{location}/restorePlans/{restore_plan}/restores/{restore}; confirm the target type (GKEBackupRestorePlan, a resource this service declares, matches the name))
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.cloud.gkebackup.v1.Restore.backup target=GKEBackupBackup
+# possible-reference-by-sibling: google.cloud.gkebackup.v1.RestorePlan.backupPlan target=GKEBackupBackupPlan

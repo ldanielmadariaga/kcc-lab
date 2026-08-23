@@ -141,6 +141,7 @@ type DiscoveryEngineDataStoreSpec struct {
 	//  This field can only be set for acl_enabled DataStores with `THIRD_PARTY` or
 	//  `GSUITE` IdP. Format:
 	//  `projects/{project}/locations/{location}/identityMappingStores/{identity_mapping_store}`.
+	// +kcc:guess=possible-reference target=DiscoveryEngineIdentityMappingStore
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.identity_mapping_store
 	IdentityMappingStore *string `json:"identityMappingStore,omitempty"`
 }

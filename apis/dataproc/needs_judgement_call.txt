@@ -34,7 +34,13 @@ kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.
 kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.stagingBucket" reason=possible-reference-by-description
 kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.metastoreService" reason=possible-reference-by-description-loose
 kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.sparkHistoryServerConfig.dataprocCluster" reason=possible-reference-by-description-loose
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.sessionTemplate" reason=possible-reference-by-sibling (the name matches DataprocSessionTemplate, a resource this service declares; confirm whether it should be a reference)
 # Fields dropped because the generator could not produce a Go type for
 # them. They are absent from the CRD. Shared nested messages, so they are
 # listed per service rather than against one Kind.
 # dropped: google.cloud.dataproc.v1.LoggingConfig.driverLogLevels reason=unsupported map type with key string and value enum
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.cloud.dataproc.v1.Session.sessionTemplate target=DataprocSessionTemplate

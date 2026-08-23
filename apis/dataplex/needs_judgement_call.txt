@@ -52,3 +52,15 @@ kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.executionSp
 kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.executionSpec.serviceAccount" reason=possible-reference-by-description
 kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.notebook.infrastructureSpec.vpcNetwork.network" reason=possible-reference-by-name (ComputeNetworkRef)
 kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.spark.infrastructureSpec.vpcNetwork.network" reason=possible-reference-by-name (ComputeNetworkRef)
+kind=DataplexZone group=dataplex.cnrm.cloud.google.com: field ".spec.lakeRef" reason=parent-ref-guessed (emitted as a reference to LakeRef, assumed from the collection segment of projects/{project}/locations/{location}/lakes/{lake}/zones/{zone}; confirm the target type (DataplexLake, a resource this service declares, matches the name))
+kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.lakeRef" reason=parent-ref-guessed (emitted as a reference to LakeRef, assumed from the collection segment of projects/{project}/locations/{location}/lakes/{lake}/tasks/{task}; confirm the target type (DataplexLake, a resource this service declares, matches the name))
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.ExportJobScope.entryGroups target=DataplexEntryGroup
+# possible-reference-by-sibling: google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.ExportJobScope.entryTypes target=DataplexEntryType
+# possible-reference-by-sibling: google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.ExportJobScope.aspectTypes target=DataplexAspectType
+# possible-reference-by-sibling: google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.ImportJobScope.entryGroups target=DataplexEntryGroup
+# possible-reference-by-sibling: google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.ImportJobScope.entryTypes target=DataplexEntryType
+# possible-reference-by-sibling: google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.ImportJobScope.aspectTypes target=DataplexAspectType

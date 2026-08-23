@@ -1,0 +1,279 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cnrm.cloud.google.com/version: 0.0.0-dev
+  creationTimestamp: null
+  labels:
+    cnrm.cloud.google.com/managed-by-kcc: "true"
+    cnrm.cloud.google.com/system: "true"
+  name: firestoredocuments.firestore.cnrm.cloud.google.com
+spec:
+  group: firestore.cnrm.cloud.google.com
+  names:
+    categories:
+    - gcp
+    kind: FirestoreDocument
+    listKind: FirestoreDocumentList
+    plural: firestoredocuments
+    shortNames:
+    - gcpfirestoredocument
+    - gcpfirestoredocuments
+    singular: firestoredocument
+  preserveUnknownFields: false
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    - description: When 'True', the most recent reconcile of the resource succeeded
+      jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: Ready
+      type: string
+    - description: The reason for the value in 'Ready'
+      jsonPath: .status.conditions[?(@.type=='Ready')].reason
+      name: Status
+      type: string
+    - description: The last transition time for the value in 'Status'
+      jsonPath: .status.conditions[?(@.type=='Ready')].lastTransitionTime
+      name: Status Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: FirestoreDocument is the Schema for the FirestoreDocument API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: FirestoreDocumentSpec defines the desired state of FirestoreDocument
+            properties:
+              fields:
+                additionalProperties:
+                  properties:
+                    arrayValue:
+                      description: |-
+                        An array value.
+
+                         Cannot directly contain another array value, though can contain a
+                         map which contains another array.
+                      properties:
+                        values:
+                          description: Values in the array.
+                          items: {}
+                          type: array
+                      type: object
+                    booleanValue:
+                      description: A boolean value.
+                      type: boolean
+                    bytesValue:
+                      description: |-
+                        A bytes value.
+
+                         Must not exceed 1 MiB - 89 bytes.
+                         Only the first 1,500 bytes are considered by queries.
+                      format: byte
+                      type: string
+                    doubleValue:
+                      description: A double value.
+                      type: number
+                    geoPointValue:
+                      description: A geo point value representing a point on the surface
+                        of Earth.
+                      properties:
+                        latitude:
+                          description: The latitude in degrees. It must be in the
+                            range [-90.0, +90.0].
+                          type: number
+                        longitude:
+                          description: The longitude in degrees. It must be in the
+                            range [-180.0, +180.0].
+                          type: number
+                      type: object
+                    integerValue:
+                      description: An integer value.
+                      format: int64
+                      type: integer
+                    mapValue:
+                      description: A map value.
+                      properties:
+                        fields:
+                          additionalProperties: {}
+                          description: |-
+                            The map's fields.
+
+                             The map keys represent field names. Field names matching the regular
+                             expression `__.*__` are reserved. Reserved field names are forbidden except
+                             in certain documented contexts. The map keys, represented as UTF-8, must
+                             not exceed 1,500 bytes and cannot be empty.
+                          type: object
+                      type: object
+                    nullValue:
+                      description: A null value.
+                      type: string
+                    referenceValue:
+                      description: 'A reference to a document. For example: `projects/{project_id}/databases/{database_id}/documents/{document_path}`.'
+                      type: string
+                    stringValue:
+                      description: |-
+                        A string value.
+
+                         The string, represented as UTF-8, must not exceed 1 MiB - 89 bytes.
+                         Only the first 1,500 bytes of the UTF-8 representation are considered by
+                         queries.
+                      type: string
+                    timestampValue:
+                      description: |-
+                        A timestamp value.
+
+                         Precise only to microseconds. When stored, any additional precision is
+                         rounded down.
+                      type: string
+                  type: object
+                description: |-
+                  The document's fields.
+
+                   The map keys represent field names.
+
+                   Field names matching the regular expression `__.*__` are reserved. Reserved
+                   field names are forbidden except in certain documented contexts. The field
+                   names, represented as UTF-8, must not exceed 1,500 bytes and cannot be
+                   empty.
+
+                   Field paths may be used in other contexts to refer to structured fields
+                   defined here. For `map_value`, the field path is represented by a
+                   dot-delimited (`.`) string of segments. Each segment is either a simple
+                   field name (defined below) or a quoted field name. For example, the
+                   structured field `"foo" : { map_value: { "x&y" : { string_value: "hello"
+                   }}}` would be represented by the field path `` foo.`x&y` ``.
+
+                   A simple field name contains only characters `a` to `z`, `A` to `Z`,
+                   `0` to `9`, or `_`, and must not start with `0` to `9`. For example,
+                   `foo_bar_17`.
+
+                   A quoted field name starts and ends with `` ` `` and
+                   may contain any character. Some characters, including `` ` ``, must be
+                   escaped using a `\`. For example, `` `x&y` `` represents `x&y` and
+                   `` `bak\`tik` `` represents `` bak`tik ``.
+                type: object
+              projectRef:
+                description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
+                    type: string
+                  name:
+                    description: The `name` field of a `Project` resource.
+                    type: string
+                  namespace:
+                    description: The `namespace` field of a `Project` resource.
+                    type: string
+                type: object
+              resourceID:
+                description: The FirestoreDocument name. If not given, the metadata.name
+                  will be used.
+                type: string
+            required:
+            - projectRef
+            type: object
+          status:
+            description: FirestoreDocumentStatus defines the config connector machine
+              state of FirestoreDocument
+            properties:
+              conditions:
+                description: Conditions represent the latest available observations
+                  of the object's current state.
+                items:
+                  properties:
+                    lastTransitionTime:
+                      description: Last time the condition transitioned from one status
+                        to another.
+                      type: string
+                    message:
+                      description: Human-readable message indicating details about
+                        last transition.
+                      type: string
+                    reason:
+                      description: Unique, one-word, CamelCase reason for the condition's
+                        last transition.
+                      type: string
+                    status:
+                      description: Status is the status of the condition. Can be True,
+                        False, Unknown.
+                      type: string
+                    type:
+                      description: Type is the type of the condition.
+                      type: string
+                  type: object
+                type: array
+              externalRef:
+                description: A unique specifier for the FirestoreDocument resource
+                  in GCP.
+                type: string
+              observedGeneration:
+                description: ObservedGeneration is the generation of the resource
+                  that was most recently observed by the Config Connector controller.
+                  If this is equal to metadata.generation, then that means that the
+                  current reported status reflects the most recent desired state of
+                  the resource.
+                format: int64
+                type: integer
+              observedState:
+                description: ObservedState is the state of the resource as most recently
+                  observed in GCP.
+                properties:
+                  createTime:
+                    description: |-
+                      Output only. The time at which the document was created.
+
+                       This value increases monotonically when a document is deleted then
+                       recreated. It can also be compared to values from other documents and
+                       the `read_time` of a query.
+                    type: string
+                  updateTime:
+                    description: |-
+                      Output only. The time at which the document was last changed.
+
+                       This value is initially set to the `create_time` then increases
+                       monotonically with each change to the document. It can also be
+                       compared to values from other documents and the `read_time` of a query.
+                    type: string
+                type: object
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

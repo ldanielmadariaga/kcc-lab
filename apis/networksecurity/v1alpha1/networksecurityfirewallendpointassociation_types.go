@@ -44,11 +44,13 @@ type NetworkSecurityFirewallEndpointAssociationSpec struct {
 	Network *string `json:"network,omitempty"`
 
 	// Required. The URL of the FirewallEndpoint that is being associated.
+	// +kcc:guess=possible-reference target=NetworkSecurityFirewallEndpoint
 	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpointAssociation.firewall_endpoint
 	// +required
 	FirewallEndpoint *string `json:"firewallEndpoint,omitempty"`
 
 	// Optional. The URL of the TlsInspectionPolicy that is being associated.
+	// +kcc:guess=possible-reference target=NetworkSecurityTLSInspectionPolicy
 	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpointAssociation.tls_inspection_policy
 	TLSInspectionPolicy *string `json:"tlsInspectionPolicy,omitempty"`
 

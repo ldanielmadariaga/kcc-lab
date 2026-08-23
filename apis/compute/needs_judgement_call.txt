@@ -40,3 +40,14 @@ kind=ComputeRegionAutoscaler group=compute.cnrm.cloud.google.com: field ".status
 kind=ComputeRegionAutoscaler group=compute.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-unknown-parent (the proto declares no google.api.resource, so the parent shape is unknown; add location if the resource is regional)
 kind=ComputeNetworkAttachment group=compute.cnrm.cloud.google.com: field ".spec.network" reason=possible-reference-by-name (ComputeNetworkRef)
 kind=ComputeNetworkEdgeSecurityService group=compute.cnrm.cloud.google.com: field ".spec.securityPolicy" reason=possible-reference-by-description-loose
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.cloud.compute.v1.AccessConfig.securityPolicy target=ComputeSecurityPolicy
+# possible-reference-by-sibling: google.cloud.compute.v1.AttachedDiskInitializeParams.resourcePolicies target=ComputeResourcePolicy
+# possible-reference-by-sibling: google.cloud.compute.v1.BackendServiceHAPolicyLeaderNetworkEndpoint.instance target=ComputeInstance
+# possible-reference-by-sibling: google.cloud.compute.v1.InstanceGroupManagerAutoHealingPolicy.healthCheck target=ComputeHealthCheck
+# possible-reference-by-sibling: google.cloud.compute.v1.NetworkInterface.network target=ComputeNetwork
+# possible-reference-by-sibling: google.cloud.compute.v1.NetworkInterface.subnetwork target=ComputeSubnetwork
+# possible-reference-by-sibling: google.cloud.compute.v1.NetworkInterface.networkAttachment target=ComputeNetworkAttachment

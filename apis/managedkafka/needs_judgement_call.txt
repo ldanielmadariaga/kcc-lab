@@ -25,6 +25,8 @@ kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field 
 kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: field ".spec.topics" reason=possible-reference-by-description
 kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)
 kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)
+kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: field ".spec.clusterRef" reason=parent-ref-guessed (emitted as a reference to ClusterRef, assumed from the collection segment of projects/{project}/locations/{location}/clusters/{cluster}/consumerGroups/{consumer_group}; confirm the target type (ManagedKafkaCluster, a resource this service declares, matches the name))
+kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: field ".spec.clusterRef" reason=parent-ref-guessed (emitted as a reference to ClusterRef, assumed from the collection segment of projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic}; confirm the target type (ManagedKafkaCluster, a resource this service declares, matches the name))
 # Fields dropped because the generator could not produce a Go type for
 # them. They are absent from the CRD. Shared nested messages, so they are
 # listed per service rather than against one Kind.

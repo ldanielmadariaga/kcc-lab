@@ -43,7 +43,12 @@ type TypeGenerator struct {
 	observedStateMessages sets.String
 	// unsupportedFields are fields the generator could not type, collected as
 	// they are written so the judgement queue can report them.
-	unsupportedFields       []UnsupportedField
+	unsupportedFields []UnsupportedField
+
+	// siblingGuesses are nested-message fields the sibling rule flagged, so the
+	// queue can name them. Collected here rather than in the scaffolder because
+	// the scaffolder only ever sees the resource's own top-level fields.
+	siblingGuesses          []SiblingGuess
 	generatedFileAnnotation *codegenannotations.FileAnnotation
 	includeSkippedOutput    bool
 	writeOptions            WriteOptions
@@ -97,6 +102,16 @@ type WriteOptions struct {
 	// ObservedState when the proto never said where they belong. See
 	// IsServerSetField.
 	PlaceServerSetFields bool
+	// Siblings maps a lowercased Kind suffix to a Kind this service declares, so
+	// a string field naming one can be marked as a probable reference. See
+	// SiblingResource.
+	//
+	// Unlike the flags above this one cannot change a CRD: it only ever adds a
+	// +kcc:guess comment, which controller-gen strips before publishing. The
+	// shared-nested-message hazard in the doc comment above does not apply
+	// either, because the map is a property of the service and a nested message
+	// is shared only within one.
+	Siblings map[string]string
 }
 
 func NewTypeGenerator(goPackage string, outputBaseDir string, api *protoapi.Proto) *TypeGenerator {
@@ -426,6 +441,7 @@ func (g *TypeGenerator) WriteVisitedMessages() error {
 		var body bytes.Buffer
 		WriteMessage(&body, msg, g.writeOptions)
 		g.unsupportedFields = append(g.unsupportedFields, scanUnsupported(string(msg.FullName()), body.String())...)
+		g.siblingGuesses = append(g.siblingGuesses, scanSiblingGuesses(string(msg.FullName()), body.String())...)
 		out.body.Write(body.Bytes())
 	}
 	return errors.Join(g.errors...)
@@ -498,6 +514,13 @@ func (g *TypeGenerator) WriteOutputMessages() error {
 
 func WriteMessageAsComment(out io.Writer, msg protoreflect.MessageDescriptor, reason string, opts WriteOptions) {
 	var b bytes.Buffer
+	// No sibling markers in here. This block is a dump of what the generator
+	// would have written for a type the package already declares by hand, so
+	// nothing in it reaches the CRD and there is no guess for anyone to review.
+	// Left on, it produced 63 of the 82 sibling markers in the tree and every one
+	// of them broke "a marker always has a queue entry", because the collector
+	// only scans messages that are really emitted.
+	opts.Siblings = nil
 	WriteMessage(&b, msg, opts)
 	fmt.Fprintf(out, "\n/* %s\n", reason)
 	fmt.Fprintf(out, "%s", strings.ReplaceAll(b.String(), "*/", "* /"))
@@ -696,6 +719,14 @@ func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protorefl
 
 	jsonName := getJSONForKRM(field, opts)
 	GoFieldName := goFieldNameOpts(field, opts)
+
+	// The caller's own note wins: it knows something more specific than a name
+	// match, such as why a field was placed in ObservedState.
+	if note == "" {
+		if target, ok := SiblingResource(field, opts.Siblings); ok {
+			note = SiblingGuessMarker + target
+		}
+	}
 
 	goType, err := GoTypeForField(field, isTransitiveOutput)
 	if err != nil {
@@ -1100,6 +1131,12 @@ type UnsupportedField struct {
 // run, for the judgement queue.
 func (g *TypeGenerator) UnsupportedFields() []UnsupportedField {
 	return g.unsupportedFields
+}
+
+// SiblingGuesses returns the nested-message fields the sibling rule flagged
+// during this run.
+func (g *TypeGenerator) SiblingGuesses() []SiblingGuess {
+	return g.siblingGuesses
 }
 
 // scanUnsupported pulls the "// TODO: <field>: <reason>" markers out of a

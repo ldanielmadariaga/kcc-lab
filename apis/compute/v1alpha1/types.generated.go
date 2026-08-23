@@ -1314,6 +1314,7 @@ type NetworkInterface struct {
 	Network *string `json:"network,omitempty"`
 
 	// The URL of the network attachment that this interface should connect to in the following format: projects/{project_number}/regions/{region_name}/networkAttachments/{network_attachment_name}.
+	// +kcc:guess=possible-reference target=ComputeNetworkAttachment
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkInterface.network_attachment
 	NetworkAttachment *string `json:"networkAttachment,omitempty"`
 

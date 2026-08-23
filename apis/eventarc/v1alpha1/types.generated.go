@@ -64,6 +64,7 @@ type ChannelConnection struct {
 	//  This is a weak reference to avoid cross project and cross accounts
 	//  references. This must be in
 	//  `projects/{project}/location/{location}/channels/{channel_id}` format.
+	// +kcc:guess=possible-reference target=EventarcChannel
 	// +kcc:proto:field=google.cloud.eventarc.v1.ChannelConnection.channel
 	// +required
 	Channel *string `json:"channel,omitempty"`

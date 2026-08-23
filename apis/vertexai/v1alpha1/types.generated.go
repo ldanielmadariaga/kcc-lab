@@ -243,6 +243,7 @@ type CustomJobSpec struct {
 	//  [Tensorboard][google.cloud.aiplatform.v1beta1.Tensorboard] resource to
 	//  which this CustomJob will upload Tensorboard logs. Format:
 	//  `projects/{project}/locations/{location}/tensorboards/{tensorboard}`
+	// +kcc:guess=possible-reference target=VertexAITensorboard
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.CustomJobSpec.tensorboard
 	Tensorboard *string `json:"tensorboard,omitempty"`
 

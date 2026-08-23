@@ -1376,6 +1376,7 @@ type MetadataJob_ExportJobSpec_ExportJobScope struct {
 	//  If you set the job scope to be a list of entry groups, then set the
 	//  organization-level export flag to false and don't provide a list of
 	//  projects.
+	// +kcc:guess=possible-reference target=DataplexEntryGroup
 	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.ExportJobScope.entry_groups
 	EntryGroups []string `json:"entryGroups,omitempty"`
 
@@ -1384,6 +1385,7 @@ type MetadataJob_ExportJobSpec_ExportJobScope struct {
 	//  `projects/{project_id_or_number}/locations/{location}/entryTypes/{entry_type_id}`.
 	//  Only entries that belong to the specified entry types are affected by
 	//  the job.
+	// +kcc:guess=possible-reference target=DataplexEntryType
 	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.ExportJobScope.entry_types
 	EntryTypes []string `json:"entryTypes,omitempty"`
 
@@ -1392,6 +1394,7 @@ type MetadataJob_ExportJobSpec_ExportJobScope struct {
 	//  `projects/{project_id_or_number}/locations/{location}/aspectTypes/{aspect_type_id}`.
 	//  Only aspects that belong to the specified aspect types are affected by
 	//  the job.
+	// +kcc:guess=possible-reference target=DataplexAspectType
 	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ExportJobSpec.ExportJobScope.aspect_types
 	AspectTypes []string `json:"aspectTypes,omitempty"`
 }
@@ -1469,6 +1472,7 @@ type MetadataJob_ImportJobSpec_ImportJobScope struct {
 	//
 	//  Must contain exactly one element. The entry group and the job
 	//  must be in the same location.
+	// +kcc:guess=possible-reference target=DataplexEntryGroup
 	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.ImportJobScope.entry_groups
 	// +required
 	EntryGroups []string `json:"entryGroups,omitempty"`
@@ -1485,6 +1489,7 @@ type MetadataJob_ImportJobSpec_ImportJobScope struct {
 	//
 	//  The location of an entry type must either match the location of the
 	//  job, or the entry type must be global.
+	// +kcc:guess=possible-reference target=DataplexEntryType
 	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.ImportJobScope.entry_types
 	// +required
 	EntryTypes []string `json:"entryTypes,omitempty"`
@@ -1502,6 +1507,7 @@ type MetadataJob_ImportJobSpec_ImportJobScope struct {
 	//
 	//  The location of an aspect type must either match the location of the
 	//  job, or the aspect type must be global.
+	// +kcc:guess=possible-reference target=DataplexAspectType
 	// +kcc:proto:field=google.cloud.dataplex.v1.MetadataJob.ImportJobSpec.ImportJobScope.aspect_types
 	AspectTypes []string `json:"aspectTypes,omitempty"`
 }

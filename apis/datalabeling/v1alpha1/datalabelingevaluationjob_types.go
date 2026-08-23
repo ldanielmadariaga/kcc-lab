@@ -74,6 +74,7 @@ type DataLabelingEvaluationJobSpec struct {
 	//  following format:
 	//
 	//  "projects/<var>{project_id}</var>/annotationSpecSets/<var>{annotation_spec_set_id}</var>"
+	// +kcc:guess=possible-reference target=DataLabelingAnnotationSpecSet
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.annotation_spec_set
 	AnnotationSpecSet *string `json:"annotationSpecSet,omitempty"`
 

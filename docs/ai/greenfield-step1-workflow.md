@@ -194,23 +194,23 @@ resource, so they are worth a moment's thought rather than a reflex dismissal.
 
 ### How the reference detectors work, and how to extend them
 
-Three detectors feed the queue. They differ in what they can reach, and the difference decides where
+Four detectors feed the queue. They differ in what they can reach, and the difference decides where
 to put effort.
 
-| detector | source | reaches |
-|---|---|---|
-| `google.api.resource_reference` | the proto — a statement, not a guess; names the exact target | `possible-reference` |
-| `refs.Classify` | the field's **description** | `possible-reference-by-description`, and gates `TestMissingRefs` |
-| `refs.MatchName` / `refs.NameRules` | the field's **name** | `possible-reference-by-name`, seeder only |
+| detector | source | reaches | derivable? |
+|---|---|---|---|
+| `google.api.resource_reference` | the proto — a statement, not a guess; names the exact target | `possible-reference` | it is a fact, not a rule |
+| `refs.Classify` | the field's **description** | `possible-reference-by-description`, and gates `TestMissingRefs` | yes |
+| **sibling resource in the same service** | the field's **name**, against the service's own Kinds | `possible-reference-by-sibling`, generator | yes |
+| `refs.MatchName` / `refs.NameRules` | the field's **name**, against a list of known spellings | `possible-reference-by-name`, seeder only | no — learned |
 
-**`refs.NameRules` only ever finds a reference somebody has already seen.** That is its structural
-limit and the reason it should stay small. It is a lookup table of spellings; a service using a
-spelling nobody has met yet gets nothing. `Classify` is the one that generalises, because a
-description containing `projects/{project}/…` says "this is a resource name" whatever the field is
-called and whatever service it is in.
+That last column is the one that matters. **`refs.NameRules` only ever finds a reference somebody has
+already seen.** It is a lookup table of spellings; a service using a spelling nobody has met yet gets
+nothing. The other three work on a service no one has looked at, because each reads something the
+service itself supplies: an annotation, a description, or its own list of resources.
 
-So: **a growing `NameRules` list is a signal that `Classify` is missing something, not a sign of
-progress.** Check the descriptions first, every time.
+So: **a growing `NameRules` list is a signal that one of the other three is missing something, not a
+sign of progress.** Check the descriptions first, every time.
 
 The three rules that exist each came from a measurement:
 
@@ -222,6 +222,68 @@ The three rules that exist each came from a measurement:
 * `eq("kmsKey", "cmekKeyName", "encryptionKey", "kmsKeyName")` — four observed spellings of one
   thing. `EventarcChannel` calls it `cryptoKeyName`, a fifth, and it is missed today. That one line
   is the limitation in miniature.
+
+#### The sibling rule
+
+If a service declares a resource called `DataStore`, then a string field called `dataStore` is
+probably a reference to it. That is the whole rule. It lives in the generator rather than the seeder,
+in `codegen.SiblingResource`, so it can write a `+kcc:guess=possible-reference target=…` marker onto
+the field as well as a queue entry. The seeder is a post-generation pass over CRDs and can only do
+the second.
+
+As built, it marks 25 fields across 18 distinct names, at **77% precision** over the ones upstream
+actually modelled: 10 references, 3 kept plain, 5 upstream never modelled and so excluded. That
+matches the 75% predicted from the CRDs before any of it was written, which is the reassuring part.
+Loosening the exact match to `endswith` buys seven more at 68%, and starts pulling in
+`spec.pipelineJob` and `localSsds[].interface`, so the exact form is what is implemented. The false
+positives are honest and worth knowing: DataLabeling's `annotationSpecSet` and `instruction` both
+match sibling Kinds and upstream keeps them plain.
+
+Measure it with `hack/tools/greenfield/sibling_precision.py`, which scores every marker against the
+baseline CRDs and excludes fields upstream had no opinion on — a rule cannot be wrong about a field
+nobody modelled.
+
+It reaches three places, and each was needed separately. Built for the top-level loop alone, the
+rule fired on nothing at all:
+
+* nested message fields, in `WriteField` via `WriteOptions.Siblings`. 16 of the 25, in shapes like
+  `spec.selector.targets[].targetRef`.
+* top-level spec fields, in `PrepopulateSpec`. 9 of the 25.
+* synthesised parent segments, in `AddTypeFile`, 7 of which now name a sibling. `FirestoreDocument`'s
+  `database` and `DiscoveryEngineDataStoreTargetSite`'s `dataStore` come from the resource pattern
+  rather than from any proto field, so the name has to be matched directly with
+  `SiblingResourceByName`.
+
+One thing the nested path must not do is mark the `/* found existing non-generated go type …
+skipping */` dumps. Those show what the generator would have written for a type the package already
+declares by hand; nothing in them reaches the CRD, and the collector only scans messages that are
+really emitted. Left on, they produced 63 of 82 markers and every one broke the marker-implies-entry
+rule. `WriteMessageAsComment` clears `Siblings` for exactly that reason, and both the checker and the
+precision tool skip `/* */` regions.
+
+Plurals are matched too, by a deliberately narrow singulariser: `subnetworks` finds `ComputeSubnetwork`,
+`dnsAuthorizations` finds `CertificateManagerDNSAuthorization`. It gives up on anything
+irregular, and refuses to touch a word ending `ss`, `us` or `is` so that `status` and `access` are
+left alone.
+
+The list grows itself, which is the property that makes this worth having. The sibling set is built by
+`scaffold.SiblingResources`, from the Kinds the service package declares plus the Kinds of the run in
+progress. Nobody maintains it. Every resource added to a service makes the rule stronger for every
+other resource in that service, which is exactly the property you want when generating a service's
+resources in bulk. Contrast `NameRules`, which only improves when a person notices something and
+writes it down.
+
+Two things to know when reading the output. Nested matches are written into
+`needs_judgement_call.txt` as `#` comments rather than entries, because a nested message is shared by
+every resource that references it and there is no single Kind to attribute it to. Every
+non-comment line in that file suppresses `[refs]` for the Kind it names, so a made-up Kind would
+quietly switch off a real check. The marker itself is a comment, so `controller-gen` strips it before
+the CRD is published; it cannot affect the schema, which is why this one is on for every service
+rather than opt-in like `--emit-required-from-proto`.
+
+If you meet a reference the detectors missed, the order to try is: fix `Classify` if the
+description gives it away, check whether the target is a resource the service declares and the
+sibling rule simply has not been generated yet, and only then add the spelling to `NameRules`.
 
 #### Adding a rule
 
@@ -542,6 +604,19 @@ designed yet, and the first prerequisite is gap 2 above.
   one and upstream is split 8 to 7 on repeating it; the queue records that as
   `location-omitted-nested-parent` for you to settle. A resource whose proto carries no
   `google.api.resource` gets none either, recorded as `location-omitted-unknown-parent`.
+- **A finding written as a comment in the queue used to be discarded by the next invocation.** The
+  merge in `writeJudgementQueue` skipped every `#` line when reading the existing file, so only the
+  invocation that happened to run last kept its comment-form findings — and comment form is exactly
+  what the shared-nested-message findings use, because a non-comment line suppresses `[refs]` for
+  the Kind it names. `compute` kept 6 of its 56 sibling matches that way and `backupdr` none of its
+  2. Fixed by preserving everything but the header, which is rewritten. If you add a finding that
+  cannot be attributed to a single Kind, write it as a comment and check it survives a service with
+  two `generate-types` calls.
+- **A marker and its queue entry must share a gate.** `WriteField` writes `+kcc:guess` on every
+  invocation, but the queue block for the sibling rule was written only under `--prepopulate-spec`.
+  `backupdr` scaffolds `v1alpha1` with that flag and regenerates `v1beta1` without it, so two real
+  references landed in `types.generated.go` with a marker no queue file mentioned.
+  `check_guess_entries.py` is what caught it; run it after any change to what the generator emits.
 - **Never delete a resource whose invocation passes `--skip-scaffold-files`.** The generator does
   not write its types file, so deleting one removes something nothing will restore. Two resources
   were lost this way in the 239-resource run before anyone noticed.

@@ -511,6 +511,7 @@ type PrivateConnection struct {
 type PrivateConnectivity struct {
 	// Required. A reference to a private connection resource.
 	//  Format: `projects/{project}/locations/{location}/privateConnections/{name}`
+	// +kcc:guess=possible-reference target=DatastreamPrivateConnection
 	// +kcc:proto:field=google.cloud.datastream.v1.PrivateConnectivity.private_connection
 	// +required
 	PrivateConnection *string `json:"privateConnection,omitempty"`

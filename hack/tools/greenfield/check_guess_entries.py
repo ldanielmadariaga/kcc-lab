@@ -86,6 +86,68 @@ def queue_fields():
     return out
 
 
+def queue_nested(service_dir):
+    """The nested-message fields one service's queue names, as (message, field).
+
+    A nested message is shared by every resource that references it, so there is
+    no single Kind to attribute it to, and every non-comment line in the queue
+    file suppresses [refs] for the Kind it names -- a made-up Kind would quietly
+    switch off a real check. So these are written as comments, exactly like the
+    dropped-field lines beside them, and read back the same way.
+    """
+    out = set()
+    path = os.path.join(service_dir, "needs_judgement_call.txt")
+    if not os.path.exists(path):
+        return out
+    for line in open(path):
+        m = re.match(r"#\s*possible-reference-by-sibling:\s*(\S+)\.(\w+)\s", line)
+        if m:
+            out.add((m.group(1), m.group(2)))
+    return out
+
+
+def nested_markers(path):
+    """(proto message, json name, guess kind) for each marked field, by struct.
+
+    types.generated.go declares many types in one file, and the queue names the
+    proto message rather than the Go type, so the // +kcc:proto=... annotation
+    above each struct is what ties a marker back to a queue line.
+    """
+    out = []
+    message = None
+    pending = None
+    # Skip /* ... */ blocks. The generator dumps what it would have written for a
+    # type the package already declares by hand, markers and all, and none of it
+    # reaches the CRD -- so a marker in there names no field anyone can act on.
+    depth = 0
+    for line in open(path, errors="ignore"):
+        stripped = line.strip()
+        if stripped.startswith("/*"):
+            depth += 1
+            continue
+        if stripped.startswith("*/"):
+            depth = max(0, depth - 1)
+            continue
+        if depth:
+            continue
+        if stripped.startswith("//"):
+            m = re.search(r"\+kcc:proto=(\S+)", stripped)
+            if m:
+                message = m.group(1)
+            m = MARKER.search(stripped)
+            if m:
+                pending = m.group(1)
+            continue
+        m = JSON_TAG.search(line)
+        if m:
+            if pending:
+                out.append((message, m.group(1), pending))
+            pending = None
+        elif stripped and not stripped.startswith("//"):
+            pending = None
+    return out
+
+
 def main():
     show = "--list" in sys.argv
     queue = queue_fields()
@@ -103,6 +165,15 @@ def main():
             if not any(e == "spec." + jsonname or e == "status.observedState." + jsonname
                        for e in named):
                 missing.append((kind, jsonname, guess))
+
+    # Nested messages, in types.generated.go rather than a Kind's own file.
+    for path in glob.glob(os.path.join(ROOT, "apis", "*", "v1*", "types.generated.go")):
+        named = queue_nested(os.path.dirname(os.path.dirname(path)))
+        for message, jsonname, guess in nested_markers(path):
+            total += 1
+            by_kind[guess] += 1
+            if (message, jsonname) not in named:
+                missing.append((message or "?", jsonname, guess))
 
     print(f"+kcc:guess markers: {total}")
     for g, n in by_kind.most_common():

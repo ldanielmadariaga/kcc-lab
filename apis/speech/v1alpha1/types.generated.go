@@ -389,6 +389,7 @@ type SpeechAdaptation struct {
 type SpeechAdaptation_AdaptationPhraseSet struct {
 	// The name of an existing PhraseSet resource. The user must have read
 	//  access to the resource and it must not be deleted.
+	// +kcc:guess=possible-reference target=SpeechPhraseSet
 	// +kcc:proto:field=google.cloud.speech.v2.SpeechAdaptation.AdaptationPhraseSet.phrase_set
 	PhraseSet *string `json:"phraseSet,omitempty"`
 

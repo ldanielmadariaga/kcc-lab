@@ -33,7 +33,7 @@ type DiscoveryEngineServingConfigSpec struct {
 	Location *string `json:"location,omitempty"`
 
 	// The DataStore that this resource belongs to.
-	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/dataStores/{data_store}/servingConfigs/{serving_config}
+	// +kcc:guess=parent-segment target=DiscoveryEngineDataStore
 	DataStore *string `json:"dataStore,omitempty"`
 
 	// The DiscoveryEngineServingConfig name. If not given, the metadata.name will be used.

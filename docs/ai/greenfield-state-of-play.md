@@ -18,30 +18,40 @@ Three things had to hold first, and this page reports on each:
 
 ## 1. Coverage — met
 
-Measured over 189 resources against baseline `c1df0b9326`:
+All 231 in-scope resources now generate both a types file and a CRD. That is the number to lead
+with: the previous measurement covered 189, because 42 produced nothing at all, and a resource that
+generates nothing cannot be scored.
+
+Measured over 231 resources against baseline `c1df0b9326`:
 
 ```
-  1. implemented                       8861   (94.4%)
-  2. flagged                            251   (2.7%)
-        named in needs_judgement_call.txt               251
-        ...and also in the types file                   16
-  3. missed                             274   (2.9%)
-        truly missed                         148
-        emitted, renamed or reshaped          97
-        reference, name unpairable            29
+  1. implemented                      10176   (93.9%)
+  2. flagged                            298   (2.7%)
+        named in needs_judgement_call.txt               298
+        ...and also in the types file                   22
+  3. missed                             368   (3.4%)
+        truly missed                         232   (2.1%)
+        emitted, renamed or reshaped         102   (0.9%)
+        reference, name unpairable            34   (0.3%)
 ```
 
-**148 is the gap.** The other 126 are not absences: 97 we emit under a different name or shape, and
-29 are references upstream renamed rather than suffixed — `DatastreamPrivateConnection`'s `vpc` is
+232 is the gap. The other 136 are not absences: 102 we emit under a different name or shape, and 34
+are references upstream renamed rather than suffixed. `DatastreamPrivateConnection`'s `vpc` is
 upstream's `networkRef`, and no name match bridges those, so they are counted as missed, which
 overstates rather than flatters.
+
+**Do not compare these totals to the 189-resource ones.** The denominator grew by 22%, so every
+absolute number grew with it. By cause, `reference-shape` misses went 84 → 96 over those 42 extra
+resources, which is close to flat per resource, while `absent` went 34 → 125 — nearly all of that
+jump is in the newly generating resources, and it is the thing to look at next. A same-set
+comparison is not recoverable: the earlier run's `--verbose-dir` output was not kept.
 
 Run it with `hack/tools/greenfield/silence_report.py`; see
 [greenfield-coverage-invariant.md](greenfield-coverage-invariant.md) for what each state means.
 
 ## 2. Flagging — met, and enforced
 
-268 `+kcc:guess` markers, **every one with a judgement-queue entry**, checked by
+295 `+kcc:guess` markers, **every one with a judgement-queue entry**, checked by
 `hack/tools/greenfield/check_guess_entries.py` as the last step of `dev/tasks/greenfield-regenerate`.
 
 The rule is: anything the generator marks as a guess needs a human, so it belongs in the queue —

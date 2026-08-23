@@ -33,7 +33,7 @@ type VertexAITensorboardExperimentSpec struct {
 	Location *string `json:"location,omitempty"`
 
 	// The Tensorboard that this resource belongs to.
-	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/tensorboards/{tensorboard}/experiments/{experiment}
+	// +kcc:guess=parent-segment target=VertexAITensorboard
 	Tensorboard *string `json:"tensorboard,omitempty"`
 
 	// The VertexAITensorboardExperiment name. If not given, the metadata.name will be used.

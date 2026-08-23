@@ -33,7 +33,7 @@ type DiscoveryEngineSampleQuerySpec struct {
 	Location *string `json:"location,omitempty"`
 
 	// The SampleQuerySet that this resource belongs to.
-	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/sampleQuerySets/{sample_query_set}/sampleQueries/{sample_query}
+	// +kcc:guess=parent-segment target=DiscoveryEngineSampleQuerySet
 	SampleQuerySet *string `json:"sampleQuerySet,omitempty"`
 
 	// The DiscoveryEngineSampleQuery name. If not given, the metadata.name will be used.

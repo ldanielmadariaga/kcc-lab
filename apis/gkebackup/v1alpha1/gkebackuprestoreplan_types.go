@@ -42,6 +42,7 @@ type GKEBackupRestorePlanSpec struct {
 	//  [BackupPlan][google.cloud.gkebackup.v1.BackupPlan] from which Backups may
 	//  be used as the source for Restores created via this RestorePlan. Format:
 	//  `projects/*/locations/*/backupPlans/*`.
+	// +kcc:guess=possible-reference target=GKEBackupBackupPlan
 	// +kcc:proto:field=google.cloud.gkebackup.v1.RestorePlan.backup_plan
 	// +required
 	BackupPlan *string `json:"backupPlan,omitempty"`

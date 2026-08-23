@@ -149,10 +149,29 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 		}
 	}
 
+	// Resources this service declares, so a string field naming one can be
+	// flagged as a probable reference. Two sources, because neither is complete:
+	// the package scan sees a service split across several generate-types calls,
+	// and this run's own list survives a wipe-based regeneration, which deletes
+	// every _types.go before the generator runs.
+	//
+	// Computed here rather than beside the scaffolding loop below because
+	// WriteVisitedMessages needs it too, and that runs first.
+	var thisRun []string
+	for _, resource := range o.Resources {
+		thisRun = append(thisRun, resource.Kind)
+	}
+	siblings := scaffold.SiblingResources(
+		filepath.Join(o.OutputAPIDirectory, goPackage),
+		strings.TrimSuffix(gv.Group, ".cnrm.cloud.google.com"),
+		thisRun...)
+	scaffolder.Siblings = siblings
+
 	writeOptions := codegen.WriteOptions{
 		EmitRequired:         o.EmitRequiredFromProto,
 		EmitPluralAcronyms:   o.EmitPluralAcronyms,
 		PlaceServerSetFields: o.PlaceServerSetFields,
+		Siblings:             siblings,
 	}
 
 	typeGenerator := codegen.NewTypeGenerator(goPackage, o.OutputAPIDirectory, api)
@@ -201,18 +220,6 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 		return err
 	}
 
-	// Resources this service declares, so a string field naming one can be
-	// flagged as a probable reference. Scanned from the package so a service
-	// split across several generate-types calls sees all of its own Kinds.
-	var thisRun []string
-	for _, resource := range o.Resources {
-		thisRun = append(thisRun, resource.Kind)
-	}
-	siblings := scaffold.SiblingResources(
-		filepath.Join(o.OutputAPIDirectory, goPackage),
-		strings.TrimSuffix(gv.Group, ".cnrm.cloud.google.com"),
-		thisRun...)
-
 	for _, resource := range o.Resources { // A separate loop is needed to scaffold files AFTER all the visited messages have been generated.
 		skipScaffold := o.SkipScaffoldFiles || resource.SkipScaffoldFiles
 		if skipScaffold {
@@ -227,7 +234,7 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 					if err != nil {
 						return err
 					}
-					prepopulated, err = scaffold.PrepopulateSpec(msg, writeOptions, siblings)
+					prepopulated, err = scaffold.PrepopulateSpec(msg, writeOptions)
 					if err != nil {
 						return fmt.Errorf("prepopulating spec for %s: %w", resource.Kind, err)
 					}
@@ -298,6 +305,33 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 			}
 			judgement = append(judgement, b.String())
 		}
+	}
+
+	// Nested-message matches for the sibling rule, written as comments for the
+	// same reason the dropped fields above are: a nested message is shared by any
+	// resource that references it, so there is no single Kind to attribute it to,
+	// and every non-comment line in this file suppresses [refs] for the Kind it
+	// names.
+	//
+	// Outside the --prepopulate-spec gate above, unlike everything else here,
+	// because WriteField writes the marker on every invocation. Gating only the
+	// entry breaks "a marker always has an entry", and it broke exactly that way:
+	// backupdr scaffolds its v1alpha1 resources with --prepopulate-spec and
+	// regenerates v1beta1 without it, so two real references landed in
+	// types.generated.go carrying a marker that no queue file mentioned.
+	if sg := typeGenerator.SiblingGuesses(); len(sg) > 0 {
+		var b strings.Builder
+		b.WriteString("\n# Fields inside nested messages whose name matches a resource this service\n")
+		b.WriteString("# declares, so they may want to be references. Each carries a +kcc:guess\n")
+		b.WriteString("# marker in types.generated.go. Shared nested messages, so they are listed\n")
+		b.WriteString("# per service rather than against one Kind.\n")
+		for _, f := range sg {
+			fmt.Fprintf(&b, "# possible-reference-by-sibling: %s.%s target=%s\n", f.Message, f.Field, f.Target)
+		}
+		judgement = append(judgement, b.String())
+	}
+
+	if o.PrepopulateSpec || len(judgement) > 0 {
 		if err := writeJudgementQueue(o.OutputAPIDirectory, goPackage, judgement); err != nil {
 			return fmt.Errorf("writing judgement queue: %w", err)
 		}
@@ -456,14 +490,27 @@ func writeJudgementQueue(apiDir, goPackage string, entries []string) error {
 	//
 	// Keyed on the whole line, so re-running is idempotent, and existing lines
 	// come first so a hand-edited queue keeps its order.
+	//
+	// Comment lines are kept, except the header, which is rewritten. Dropping
+	// every "#" line was simpler and wrong: the findings that cannot be
+	// attributed to a single Kind are written as comments precisely so they do
+	// not suppress [refs], and discarding them meant only the last invocation's
+	// survived. compute kept 6 of its 56 sibling matches that way, and backupdr
+	// none of its 2.
 	existing := ""
 	if prior, err := os.ReadFile(path); err == nil {
 		existing = string(prior)
 	}
+	isHeader := map[string]bool{}
+	for _, line := range strings.Split(header, "\n") {
+		if line != "" {
+			isHeader[line] = true
+		}
+	}
 	seen := map[string]bool{}
 	var out []string
 	for _, line := range strings.Split(existing, "\n") {
-		if line == "" || strings.HasPrefix(line, "#") {
+		if line == "" || isHeader[line] {
 			continue
 		}
 		if !seen[line] {

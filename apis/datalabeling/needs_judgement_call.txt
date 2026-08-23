@@ -27,3 +27,13 @@ kind=DataLabelingEvaluationJob group=datalabeling.cnrm.cloud.google.com: field "
 kind=DataLabelingAnnotationSpecSet group=datalabeling.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)
 kind=DataLabelingEvaluationJob group=datalabeling.cnrm.cloud.google.com: field ".spec.annotationSpecSet" reason=possible-reference-by-description
 kind=DataLabelingEvaluationJob group=datalabeling.cnrm.cloud.google.com: field ".spec.modelVersion" reason=possible-reference-by-description
+kind=DataLabelingEvaluationJob group=datalabeling.cnrm.cloud.google.com: field ".spec.annotationSpecSet" reason=possible-reference-by-sibling (the name matches DataLabelingAnnotationSpecSet, a resource this service declares; confirm whether it should be a reference)
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.cloud.datalabeling.v1beta1.BoundingPolyConfig.annotationSpecSet target=DataLabelingAnnotationSpecSet
+# possible-reference-by-sibling: google.cloud.datalabeling.v1beta1.EvaluationJob.annotationSpecSet target=DataLabelingAnnotationSpecSet
+# possible-reference-by-sibling: google.cloud.datalabeling.v1beta1.HumanAnnotationConfig.instruction target=DataLabelingInstruction
+# possible-reference-by-sibling: google.cloud.datalabeling.v1beta1.ImageClassificationConfig.annotationSpecSet target=DataLabelingAnnotationSpecSet
+# possible-reference-by-sibling: google.cloud.datalabeling.v1beta1.TextClassificationConfig.annotationSpecSet target=DataLabelingAnnotationSpecSet

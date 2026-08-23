@@ -24,6 +24,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/pkg/codegen"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/pkg/options"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/pkg/protoapi"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/template/apis"
@@ -46,6 +47,11 @@ type APIScaffolder struct {
 	// the declared pattern for 752 of 1417 annotated messages, and the assumed
 	// projects/locations parent holds for about a third.
 	Proto *protoapi.Proto
+
+	// Siblings maps a lowercased Kind suffix to a Kind this service declares, so
+	// a parent segment naming one can be flagged as a probable reference. See
+	// codegen.SiblingResource.
+	Siblings map[string]string
 }
 
 // resourceMetadata looks up what the proto states about a resource, or nil if we
@@ -293,9 +299,18 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 			name := lowerCamel(variable)
 			goType := strings.ToUpper(name[:1]) + name[1:] + "Ref"
 			qualifier, ok := known[goType]
+			// A parent segment is synthesised from the resource pattern, so no
+			// proto field carries its name and the sibling rule has to be asked
+			// about the name directly.
+			sibling, isSibling := codegen.SiblingResourceByName(name, a.Siblings)
 			reason, detail := "parent-ref-guessed",
 				"emitted as a reference to "+goType+", assumed from the collection segment of "+
 					cArgs.ResourcePattern+"; confirm the target type"
+			if ok && isSibling {
+				// Two independent signals agreeing. Worth saying so: it tells a
+				// reviewer the target was not merely read off a plural noun.
+				detail += " (" + sibling + ", a resource this service declares, matches the name)"
+			}
 			if !ok {
 				// No ref type anywhere, so a plain string. Still better than
 				// nothing, and upstream may well want a reference here.
@@ -303,8 +318,18 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 				reason, detail = "parent-segment-guessed",
 					"emitted as a plain string from the pattern "+cArgs.ResourcePattern+
 						"; upstream may model this as a reference instead"
+				if isSibling {
+					// The strongest case for a reference that this path produces:
+					// a segment of the resource's own name that is also a resource
+					// this service manages. FirestoreDocument's database and
+					// DiscoveryEngineDataStoreTargetSite's dataStore are both this.
+					reason = "parent-segment-matches-sibling"
+					detail = "emitted as a plain string from the pattern " + cArgs.ResourcePattern +
+						", but the name matches " + sibling + ", a resource this service " +
+						"declares; confirm whether it should be a reference to it"
+				}
 			}
-			parentRefs.WriteString(parentRefField(name, goType, qualifier, cArgs.ResourcePattern))
+			parentRefs.WriteString(parentRefField(name, goType, qualifier, cArgs.ResourcePattern, sibling))
 			suffix := ""
 			if goType != "" {
 				suffix = "Ref"
@@ -515,14 +540,27 @@ var locationFieldNames = map[string]string{
 // field is for. The rest is a +kcc: marker, which controller-gen strips from
 // the description -- a reviewer reading the type sees the guess, a user running
 // kubectl explain is not told our TODO.
-func parentRefField(segment, goType, qualifier, pattern string) string {
+func parentRefField(segment, goType, qualifier, pattern, sibling string) string {
 	name := strings.ToUpper(segment[:1]) + segment[1:]
 	if goType == "" {
+		// Naming the sibling in the marker, not only in the queue: the queue is a
+		// work list somebody clears, the types file is what a reader opens, and
+		// "this is probably a ref to FirestoreDatabase" is the whole finding.
+		//
+		// It replaces the pattern rather than joining it. A marker cannot be
+		// wrapped, patterns run long -- 44 of these lines already pass 80 columns
+		// on the pattern alone -- and the target is both shorter and the more
+		// actionable half. Nothing parses pattern=, and the queue entry still
+		// carries it.
+		detail := "pattern=" + pattern
+		if sibling != "" {
+			detail = "target=" + sibling
+		}
 		return fmt.Sprintf(`
 	// The %s that this resource belongs to.
-	// +kcc:guess=parent-segment pattern=%s
+	// +kcc:guess=parent-segment %s
 	%s *string `+"`"+`json:"%s,omitempty"`+"`"+`
-`, name, pattern, name, segment)
+`, name, detail, name, segment)
 	}
 	qualified := goType
 	if qualifier != "" {

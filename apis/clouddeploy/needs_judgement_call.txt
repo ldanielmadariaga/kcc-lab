@@ -28,3 +28,8 @@ kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.exe
 kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].serviceAccount" reason=possible-reference-by-description
 kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].workerPool" reason=possible-reference-by-description
 kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.gke.cluster" reason=possible-reference-by-description
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.cloud.deploy.v1.CustomTarget.customTargetType target=CloudDeployCustomTargetType

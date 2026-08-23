@@ -434,6 +434,7 @@ type BuildOptions struct {
 	LogStreamingOption *string `json:"logStreamingOption,omitempty"`
 
 	// This field deprecated; please use `pool.name` instead.
+	// +kcc:guess=possible-reference target=CloudBuildWorkerPool
 	// +kcc:proto:field=google.devtools.cloudbuild.v1.BuildOptions.worker_pool
 	WorkerPool *string `json:"workerPool,omitempty"`
 

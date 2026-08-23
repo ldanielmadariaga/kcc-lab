@@ -90,7 +90,7 @@ func testMessage(t *testing.T) protoreflect.MessageDescriptor {
 func TestPrepopulateSpec(t *testing.T) {
 	msg := testMessage(t)
 
-	got, err := PrepopulateSpec(msg, codegen.WriteOptions{EmitRequired: true}, nil)
+	got, err := PrepopulateSpec(msg, codegen.WriteOptions{EmitRequired: true})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -131,7 +131,7 @@ func TestPrepopulateSpec(t *testing.T) {
 func TestPrepopulateSpecAlwaysQueuesTheResource(t *testing.T) {
 	msg := testMessage(t)
 
-	got, err := PrepopulateSpec(msg, codegen.WriteOptions{}, nil)
+	got, err := PrepopulateSpec(msg, codegen.WriteOptions{})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -152,7 +152,7 @@ func TestPrepopulateSpecAlwaysQueuesTheResource(t *testing.T) {
 }
 
 func TestPrepopulateSpecRequiresAMessage(t *testing.T) {
-	if _, err := PrepopulateSpec(nil, codegen.WriteOptions{}, nil); err == nil {
+	if _, err := PrepopulateSpec(nil, codegen.WriteOptions{}); err == nil {
 		t.Fatal("expected an error for a nil message")
 	}
 }

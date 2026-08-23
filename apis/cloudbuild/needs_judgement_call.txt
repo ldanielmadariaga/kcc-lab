@@ -22,3 +22,8 @@ kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.g
 kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.gitlabConfig.readAuthorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
 kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.gitlabConfig.serviceDirectoryConfig.service" reason=possible-reference-by-description
 kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.gitlabConfig.webhookSecretSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.devtools.cloudbuild.v1.BuildOptions.workerPool target=CloudBuildWorkerPool

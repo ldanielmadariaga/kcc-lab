@@ -393,6 +393,7 @@ type Restore struct {
 	//  the RestorePlan's
 	//  [backup_plan][google.cloud.gkebackup.v1.RestorePlan.backup_plan]. Format:
 	//  `projects/-*-/locations/-*-/backupPlans/-*-/backups/-*`.
+	// +kcc:guess=possible-reference target=GKEBackupBackup
 	// +kcc:proto:field=google.cloud.gkebackup.v1.Restore.backup
 	// +required
 	Backup *string `json:"backup,omitempty"`
@@ -732,6 +733,7 @@ type RestorePlan struct {
 	//  [BackupPlan][google.cloud.gkebackup.v1.BackupPlan] from which Backups may
 	//  be used as the source for Restores created via this RestorePlan. Format:
 	//  `projects/-*-/locations/-*-/backupPlans/-*`.
+	// +kcc:guess=possible-reference target=GKEBackupBackupPlan
 	// +kcc:proto:field=google.cloud.gkebackup.v1.RestorePlan.backup_plan
 	// +required
 	BackupPlan *string `json:"backupPlan,omitempty"`

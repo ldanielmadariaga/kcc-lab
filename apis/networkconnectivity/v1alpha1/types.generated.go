@@ -81,6 +81,7 @@ type AutoCreatedSubnetworkInfo struct {
 	Delinked *bool `json:"delinked,omitempty"`
 
 	// Output only. URI of the automatically created Internal Range. Only set if the subnetwork mode is AUTO_CREATED during creation.
+	// +kcc:guess=possible-reference target=NetworkConnectivityInternalRange
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.AutoCreatedSubnetworkInfo.internal_range
 	InternalRange *string `json:"internalRange,omitempty"`
 

@@ -794,6 +794,7 @@ type Control_BoostAction struct {
 	// Required. Specifies which data store's documents can be boosted by this
 	//  control. Full data store name e.g.
 	//  projects/123/locations/global/collections/default_collection/dataStores/default_data_store
+	// +kcc:guess=possible-reference target=DiscoveryEngineDataStore
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.BoostAction.data_store
 	// +required
 	DataStore *string `json:"dataStore,omitempty"`
@@ -859,6 +860,7 @@ type Control_FilterAction struct {
 	// Required. Specifies which data store's documents can be filtered by this
 	//  control. Full data store name e.g.
 	//  projects/123/locations/global/collections/default_collection/dataStores/default_data_store
+	// +kcc:guess=possible-reference target=DiscoveryEngineDataStore
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.FilterAction.data_store
 	// +required
 	DataStore *string `json:"dataStore,omitempty"`
@@ -867,6 +869,7 @@ type Control_FilterAction struct {
 // +kcc:proto=google.cloud.discoveryengine.v1.Control.PromoteAction
 type Control_PromoteAction struct {
 	// Required. Data store with which this promotion is attached to.
+	// +kcc:guess=possible-reference target=DiscoveryEngineDataStore
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.Control.PromoteAction.data_store
 	// +required
 	DataStore *string `json:"dataStore,omitempty"`
@@ -1066,6 +1069,7 @@ type DataStore struct {
 	//  This field can only be set for acl_enabled DataStores with `THIRD_PARTY` or
 	//  `GSUITE` IdP. Format:
 	//  `projects/{project}/locations/{location}/identityMappingStores/{identity_mapping_store}`.
+	// +kcc:guess=possible-reference target=DiscoveryEngineIdentityMappingStore
 	// +kcc:proto:field=google.cloud.discoveryengine.v1.DataStore.identity_mapping_store
 	IdentityMappingStore *string `json:"identityMappingStore,omitempty"`
 }
