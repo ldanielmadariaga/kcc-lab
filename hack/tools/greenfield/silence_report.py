@@ -318,6 +318,38 @@ def explained(entries, path):
     return False
 
 
+def names_something_nearby(entries, path):
+    """Does the queue name any field at or under this field's parent?
+
+    Only meaningful for references, and only as an admission of uncertainty.
+    Queue entries name a field as *we* generated it; the baseline names it as
+    upstream renamed it. Stripping "Ref" and a trailing noun pairs kmsKeyName with
+    kmsKeyRef, but nothing pairs cryptoKeyName with kmsKeyRef, or vpc with
+    networkRef -- both of which are flagged today and both of which read as
+    unflagged.
+
+    So this is a third answer, not a second: the queue said something about this
+    part of the resource, and we cannot tell whether it was about this field.
+    Positional pairing was tried instead and rejected. Matching on the parent
+    alone credits billingAccountRef to provisionedResourcesParent; restricting to
+    an unambiguous one-missing-one-extra parent still mispairs clusterRef with
+    topics, roughly 3 wrong in 15. A lossy guess inside the metric is worse than
+    an honest column, and this number has already had to be corrected twice.
+
+    The real fix is at the source: if a queue entry recorded the reference target
+    type, this bucket could be resolved by target rather than by name. See
+    greenfield-reference-generation.md.
+    """
+    parent = path.rsplit(".", 1)[0] if "." in path else ""
+    if not parent:
+        return False
+    parent = parent.lstrip(".")
+    for e in entries:
+        if e == parent or e.startswith(parent + ".") or e.startswith(parent + "[]"):
+            return True
+    return False
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -339,6 +371,7 @@ def main():
     matched = Counter()
     gap = {c: Counter() for c in CLASSES}   # field-flagged / section-flagged / unflagged
     unflagged_list = defaultdict(list)
+    unsure_list = defaultdict(list)
     n = skipped = 0
 
     for line in open(args.resources):
@@ -368,10 +401,16 @@ def main():
             arrays = ref_arrays(paths)
             for p in roots(paths):
                 c = classify(p, section, extra, arrays)
-                if explained(q.get(kind, ()), p):
+                entries = q.get(kind, ())
+                if explained(entries, p):
                     gap[c]["field"] += 1
                 elif section in qsections.get(kind, ()):
                     gap[c]["section"] += 1
+                elif c == "reference-shape" and names_something_nearby(entries, p):
+                    # Cannot tell: the queue spoke about this parent, but upstream
+                    # renamed the field so the two cannot be paired by name.
+                    gap[c]["unsure"] += 1
+                    unsure_list[c].append((kind, p))
                 else:
                     gap[c]["unflagged"] += 1
                     unflagged_list[c].append((kind, p))
@@ -394,17 +433,18 @@ def main():
     print()
 
     def row(label, counters):
-        f, sec, u = counters["field"], counters["section"], counters["unflagged"]
-        print(f"  {label:24s} {f + sec + u:8d} {f:9d} {sec:11d} {u:10d}")
+        f, sec, uns, u = (counters["field"], counters["section"],
+                          counters["unsure"], counters["unflagged"])
+        print(f"  {label:24s} {f + sec + uns + u:8d} {f:9d} {sec:11d} {uns:8d} {u:10d}")
 
     print(f"  {'why it differs':24s} {'we miss':>8s} {'by field':>9s} "
-          f"{'by section':>11s} {'unflagged':>10s}")
+          f"{'by section':>11s} {'unsure':>8s} {'undetected':>10s}")
     for c in TARGET_CLASSES:
         row(c, gap[c])
     target = Counter()
     for c in TARGET_CLASSES:
         target.update(gap[c])
-    print("  " + "-" * 63)
+    print("  " + "-" * 72)
     row("subtotal, the target", target)
 
     accepted = Counter()
@@ -420,6 +460,10 @@ def main():
     print(f"\n{unflagged} fields we miss with nobody told. That is the number to drive to")
     print(f"zero -- a share of the {tmiss} we miss in the target classes, not of the")
     print(f"{surface} fields KCC has.")
+    if target["unsure"]:
+        print(f"\nThe {target['unsure']} in \"unsure\" are references where the queue named a field at")
+        print("the same parent, but upstream renamed it so the two cannot be paired.")
+        print("Counted separately rather than guessed either way; see the docstring.")
     print('Watch "we produce" alongside it: a change that flags fields by no longer')
     print("producing them improves this report and takes working fields away.")
 
@@ -429,6 +473,12 @@ def main():
                 continue
             print(f"\n### missed without flagging, {c} ({len(unflagged_list[c])})")
             for kind, p in sorted(unflagged_list[c]):
+                print(f"  {kind}\t{p}")
+        for c in CLASSES:
+            if not unsure_list[c]:
+                continue
+            print(f"\n### unsure, {c} ({len(unsure_list[c])})")
+            for kind, p in sorted(unsure_list[c]):
                 print(f"  {kind}\t{p}")
     return 0
 

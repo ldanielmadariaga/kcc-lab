@@ -106,14 +106,15 @@ turned into a reference:
 | `target` | 4 | 0 | 0% |
 | `database` | 4 | 0 | 0% |
 
-The perfect-precision rules would recover about 12 fields. That is not the reason to hold off — this
-is: `NameRules` also feeds `TestMissingRefs`, which gates the **whole tree**, where `project`,
-`cluster` and `topic` appear far more often and in contexts that are not references. Measuring
-precision on 189 resources and shipping a rule that acts on 450 is the mistake that produced the
-rejected 2,164-finding heuristic. The existing comment on `MatchName` says tightening the check is a
-separate decision that has to come with implementations or reviewed `refs_deferred.txt` entries,
-and `TestMissingRefs` cannot even be run in this tree today (see below). Left for someone who can
-run that check.
+**Correction — the reason given here for holding off was wrong.** It said `NameRules` also feeds
+`TestMissingRefs` and so gates the whole tree. It does not. `refs.MatchName` has exactly one
+consumer, `scripts/queue-hints/main.go:217`; `crds_test.go` never mentions it. `refs.Classify` is
+the one with two consumers, and the comment at `refs.go:393` says as much: *"The queue seeder
+proposes work and gates nothing, so it can use them today."*
+
+Extending `NameRules` therefore adds queue hints and touches no ratchet. The precision numbers still
+govern which rules are worth adding — a rule at 12% fills the queue with noise — but the ratchet
+objection does not apply, and it blocked work that should have gone ahead.
 
 ### moved, 25
 
