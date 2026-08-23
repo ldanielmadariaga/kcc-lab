@@ -66,14 +66,16 @@ reported below the subtotal and left out of it:
 
 Current state of the target classes:
 
-| | we miss | by field | by section | unflagged |
-|---|---|---|---|---|
-| `reference-shape` | 314 | 180 | 0 | 134 |
-| `moved` | 102 | 36 | 41 | 25 |
-| `absent` | 85 | 40 | 1 | 44 |
-| **subtotal** | **501** | **256** | **42** | **203** |
+| | we miss | by field | by section | unsure | undetected |
+|---|---|---|---|---|---|
+| `reference-shape` | 303 | 191 | 0 | 86 | 26 |
+| `moved` | 102 | 36 | 41 | 0 | 25 |
+| `absent` | 85 | 43 | 1 | 0 | 41 |
+| **subtotal** | **490** | **270** | **42** | **86** | **92** |
 
-203 unflagged, down from 450 when this was first measured. What moved it is
+92 undetected, down from 450 when this was first measured. "unsure" is references where the queue
+named a field at the same parent but upstream renamed it, so the two cannot be paired — counted
+apart rather than guessed either way. What moved it is
 recorded in [greenfield-detection-gaps.md](greenfield-detection-gaps.md).
 
 ## Why each field differs

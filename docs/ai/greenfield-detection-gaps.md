@@ -22,7 +22,11 @@ Two consequences for how changes here are judged:
   detection when it starts emitting refs rather than naming candidates.
 
 Baseline `c1df0b9326`, 189 greenfield resources, target classes `reference-shape` + `moved` +
-`absent`.
+`absent`. **92 fields are undetected today**, of which 18 are in 8 Kinds that have no queue entry at
+all — their types file already existed when `--prepopulate-spec` ran, so nothing was written and
+`queue-hints` skips them by design. No detector missed those; nothing ran. Fixing them means getting
+the resource through the pipeline, which is a different job from improving detection, and the report
+now says so under the table.
 
 | | unflagged | what changed |
 |---|---|---|
@@ -32,7 +36,10 @@ Baseline `c1df0b9326`, 189 greenfield resources, target classes `reference-shape
 | pair the suffix upstream drops when it adds `Ref` | 256 | measurement fix |
 | gate the seeder per Kind | 259 | costs 3, avoids pruning a ratchet |
 | flag `empty-observedstate` | 217 | 36 resources, one fact each |
-| name every omitted parent segment | **203** | 18 lines merged from a scratch regeneration |
+| name every omitted parent segment | 203 | 18 lines merged from a scratch regeneration |
+| separate renamed refs from undetected ones | 109 | measurement fix; see below |
+| walk map values in `queue-hints` | 97 | a detector that never entered a map |
+| two measured name rules | **92** | `secret` and `project`, 4-for-4 each |
 
 Two of those are measurement fixes rather than coverage improvements. They are in the table because
 the number they corrected was published, and quietly restating it would be worse than showing the
@@ -82,39 +89,42 @@ separate lines saying the same thing. `moved` unflagged fell from 66 to 25.
 
 ## Where the remaining 217 sit
 
-### reference-shape, 147
+### references: 26 undetected, not 147
 
-The head of the distribution is gone. What is left is a flat tail of service-specific target types —
-`dataStoreRef` 7, `organizationRef` 7, `secretRef` 5, then a long list at 4 and below including
-`cloudControlRef`, `lakeRef` and `entryTypeRefs`. No generic name rule reaches those.
+The single number was three states. Queue entries name a field as *we* generated it; the baseline
+names it as *upstream* renamed it. Stripping `Ref` and a trailing noun pairs `kmsKeyName` with
+`kmsKeyRef`, but nothing pairs `cryptoKeyName` with `kmsKeyRef`, or `vpc` with `networkRef` — and
+both of those are flagged already while reading as misses. Of the 303 reference fields we miss:
 
-**Adding more `refs.NameRules` was measured and rejected for now.** Precision across the 189
-resources, counting every field we generate with that leaf name against the ones upstream actually
-turned into a reference:
+| | count |
+|---|---|
+| flagged, paired by name | 191 |
+| queue named something at that parent, cannot tell if it is this field | 86 |
+| **nothing named anywhere near it** | **26** |
 
-| leaf | fields we generate | upstream made a Ref | precision |
-|---|---|---|---|
-| `project` | 4 | 4 | 100% |
-| `dataStore` | 3 | 3 | 100% |
-| `cluster` | 3 | 3 | 100% |
-| `topic` | 2 | 2 | 100% |
-| `subnetwork` | 6 | 4 | 67% |
-| `network` (existing rule) | 17 | 10 | 59% |
-| `service` | 19 | 8 | 42% |
-| `source` | 10 | 2 | 20% |
-| `version` | 17 | 2 | 12% |
-| `target` | 4 | 0 | 0% |
-| `database` | 4 | 0 | 0% |
+Positional pairing was tried for the middle bucket and rejected. Matching on the parent alone
+credits `billingAccountRef` to `provisionedResourcesParent`; restricting to an unambiguous
+one-missing-one-extra parent still mispairs `clusterRef` with `topics`, about 3 wrong in 15. A lossy
+guess inside the metric is worse than an honest column. The real fix is at the source: a queue entry
+recording the reference *target type* could be resolved by target rather than by name — see
+[greenfield-reference-generation.md](greenfield-reference-generation.md).
 
-**Correction — the reason given here for holding off was wrong.** It said `NameRules` also feeds
-`TestMissingRefs` and so gates the whole tree. It does not. `refs.MatchName` has exactly one
-consumer, `scripts/queue-hints/main.go:217`; `crds_test.go` never mentions it. `refs.Classify` is
-the one with two consumers, and the comment at `refs.go:393` says as much: *"The queue seeder
-proposes work and gates nothing, so it can use them today."*
+Two findings got the count from 147 to 26.
 
-Extending `NameRules` therefore adds queue hints and touches no ratchet. The precision numbers still
-govern which rules are worth adding — a rule at 12% fills the queue with noise — but the ratchet
-objection does not apply, and it blocked work that should have gone ahead.
+**A reference we emit under the wrong name is a rename, not a gap.** `ConnectorsConnection`'s CRD
+already has `spec.configVariables[].secretValue` as a reference object — external, name, namespace —
+where upstream has `secretValueRef`. Eleven of its twelve "undetected references" were that. Still a
+real CRD difference, since a user writing `secretValueRef` gets nothing, but filing it as undetected
+sends someone off to build detection for a field we already reference.
+
+**`queue-hints` never entered a map.** `visitProps` walked `Properties` and `Items` and stopped, but
+a map's value schema lives in `AdditionalProperties`. Every one of `HypercomputeClusterCluster`'s
+seven undetected references was inside `networkResources` or `storageResources`, both
+`map<string, Message>`, plus two of `CloudDeployTarget`'s. Twenty new hints from four lines.
+
+That second one is the shape of fix worth preferring: it finds references in services nobody has
+looked at, rather than encoding the ones already seen. See the runbook section on extending the
+detectors for why `NameRules` is the last resort and not the first.
 
 ### moved, 25
 
@@ -153,7 +163,7 @@ The guard is that the message carries **no** `field_behavior` on any field. Rela
 field is unannotated" recovers 9 more, almost all `etag` in protos that do annotate other fields,
 which is where silence is most likely deliberate. Not taken.
 
-### absent, 45
+### absent, 41
 
 | cause | count | note |
 |---|---|---|
