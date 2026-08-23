@@ -248,6 +248,17 @@ func visitProps(props *apiextensions.JSONSchemaProps, path string, fn func(strin
 	if props.Items != nil && props.Items.Schema != nil {
 		visitProps(props.Items.Schema, path+"[]", fn)
 	}
+	// A map's value schema lives in AdditionalProperties, not Properties, so
+	// without this nothing inside a map is ever visited and no hint can be
+	// written for it. Every one of HypercomputeClusterCluster's seven undetected
+	// references was inside a map -- networkResources and storageResources are
+	// both map<string, Message> -- and so were two of CloudDeployTarget's.
+	//
+	// ".KEY" rather than an invented key name, to match how crd-mcp-server writes
+	// a map path, so the two can be compared.
+	if props.AdditionalProperties != nil && props.AdditionalProperties.Schema != nil {
+		visitProps(props.AdditionalProperties.Schema, path+".KEY", fn)
+	}
 }
 
 func propertyNames(props *apiextensions.JSONSchemaProps) []string {

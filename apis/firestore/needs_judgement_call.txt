@@ -16,3 +16,4 @@ kind=FirestoreBackupSchedule group=firestore.cnrm.cloud.google.com: field ".stat
 kind=FirestoreBackupSchedule group=firestore.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/databases/{database}/backupSchedules/{backup_schedule}; location is implied by the parent, add it only if the API needs it stated)
 kind=FirestoreField group=firestore.cnrm.cloud.google.com: field ".spec.indexConfig.indexes[].name" reason=possible-reference-by-description
 kind=FirestoreDocument group=firestore.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)
+kind=FirestoreDocument group=firestore.cnrm.cloud.google.com: field ".spec.fields.KEY.referenceValue" reason=possible-reference-by-description

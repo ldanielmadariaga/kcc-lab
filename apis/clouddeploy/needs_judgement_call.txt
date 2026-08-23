@@ -22,3 +22,5 @@ kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.exe
 kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].serviceAccount" reason=possible-reference-by-description
 kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].workerPool" reason=possible-reference-by-description
 kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.gke.cluster" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.associatedEntities.KEY.anthosClusters[].membership" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.associatedEntities.KEY.gkeClusters[].cluster" reason=possible-reference-by-description

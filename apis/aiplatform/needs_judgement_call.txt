@@ -53,3 +53,5 @@ kind=VertexAITrainingPipeline group=aiplatform.cnrm.cloud.google.com: field ".sp
 kind=VertexAITrainingPipeline group=aiplatform.cnrm.cloud.google.com: field ".spec.modelToUpload.versionAliases" reason=possible-reference-by-description
 kind=VertexAITuningJob group=aiplatform.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
 kind=VertexAITuningJob group=aiplatform.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description
+kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: field ".spec.runtimeConfig.inputArtifacts.KEY.artifactID" reason=possible-reference-by-description
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createPipelineJobRequest.pipelineJob.runtimeConfig.inputArtifacts.KEY.artifactID" reason=possible-reference-by-description
