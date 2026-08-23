@@ -185,3 +185,10 @@ operator/channels/packages/configconnector/*/namespaced/0-cnrm-system.yaml
 operator/autopilot-channels/packages/configconnector/*/cluster/
 operator/autopilot-channels/packages/configconnector/*/crds.yaml
 operator/autopilot-channels/packages/configconnector/*/namespaced/0-cnrm-system.yaml
+
+# Intermediate CRD output. dev/tasks/greenfield-regenerate runs controller-gen
+# from inside apis/ with output:crd:artifacts:config=config/crd/, so the raw CRDs
+# land here before add-validation-to-crds post-processes them and publishes the
+# real ones to config/crds/resources/. 331 files of scratch that a "git add -A"
+# will happily commit.
+apis/config/
