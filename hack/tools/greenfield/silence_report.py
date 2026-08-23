@@ -124,6 +124,9 @@ def is_reference_path(path, arrays=()):
 
 BUCKETS = ("spec-reference", "spec-other", "observedState")
 
+# The section roots. A path whose parent is one of these is a top-level field.
+SECTIONS = ("spec", "status.observedState")
+
 
 def score_resource(binary, crd, ref):
     out = subprocess.run(
@@ -368,15 +371,27 @@ def names_something_nearby(entries, path):
     The real fix is at the source: if a queue entry recorded the reference target
     type, this bucket could be resolved by target rather than by name. See
     greenfield-reference-generation.md.
+
+    Returns "nested", "top-level" or "" -- the first two are both uncertain, but
+    not equally so, and reporting them as one number flatters the result. For a
+    reference inside a sub-message, a queue entry in that same sub-message is
+    probably about it. For a top-level reference the parent is "spec" itself, so
+    any entry anywhere in the resource qualifies, which is barely evidence at all.
+    Half the bucket is the weak kind.
     """
     parent = path.rsplit(".", 1)[0] if "." in path else ""
     if not parent:
-        return False
+        return ""
     parent = parent.lstrip(".")
+    hit = False
     for e in entries:
         if e == parent or e.startswith(parent + ".") or e.startswith(parent + "[]"):
-            return True
-    return False
+            hit = True
+            break
+    if not hit:
+        return ""
+    # "spec" / "status.observedState" with nothing below it is the whole section.
+    return "top-level" if parent in SECTIONS else "nested"
 
 
 def main():
@@ -438,9 +453,11 @@ def main():
                     gap[c]["section"] += 1
                 elif c == "reference-shape" and names_something_nearby(entries, p):
                     # Cannot tell: the queue spoke about this parent, but upstream
-                    # renamed the field so the two cannot be paired by name.
-                    gap[c]["unsure"] += 1
-                    unsure_list[c].append((kind, p))
+                    # renamed the field so the two cannot be paired by name. Split
+                    # by how much the parent narrows it down.
+                    where = names_something_nearby(entries, p)
+                    gap[c]["unsure" if where == "nested" else "weak"] += 1
+                    unsure_list[c if where == "nested" else "weak"].append((kind, p))
                 else:
                     gap[c]["unflagged"] += 1
                     unflagged_list[c].append((kind, p))
@@ -465,18 +482,20 @@ def main():
     print()
 
     def row(label, counters):
-        f, sec, uns, u = (counters["field"], counters["section"],
-                          counters["unsure"], counters["unflagged"])
-        print(f"  {label:24s} {f + sec + uns + u:8d} {f:9d} {sec:11d} {uns:8d} {u:10d}")
+        f, sec, uns, weak, u = (counters["field"], counters["section"],
+                                counters["unsure"], counters["weak"],
+                                counters["unflagged"])
+        print(f"  {label:24s} {f + sec + uns + weak + u:8d} {f:9d} {sec:11d} "
+              f"{uns:8d} {weak:6d} {u:10d}")
 
     print(f"  {'why it differs':24s} {'we miss':>8s} {'by field':>9s} "
-          f"{'by section':>11s} {'unsure':>8s} {'undetected':>10s}")
+          f"{'by section':>11s} {'unsure':>8s} {'weak':>6s} {'undetected':>10s}")
     for c in TARGET_CLASSES:
         row(c, gap[c])
     target = Counter()
     for c in TARGET_CLASSES:
         target.update(gap[c])
-    print("  " + "-" * 72)
+    print("  " + "-" * 79)
     row("subtotal, the target", target)
 
     accepted = Counter()
@@ -502,10 +521,14 @@ def main():
         print("not improving detection:")
         print("  " + ", ".join(kinds))
 
-    if target["unsure"]:
-        print(f"\nThe {target['unsure']} in \"unsure\" are references where the queue named a field at")
-        print("the same parent, but upstream renamed it so the two cannot be paired.")
-        print("Counted separately rather than guessed either way; see the docstring.")
+    if target["unsure"] or target["weak"]:
+        print(f"\n\"unsure\" and \"weak\" are both references where the queue named a field at the")
+        print("same parent but upstream renamed it, so the two cannot be paired by name.")
+        print(f"The {target['unsure']} in \"unsure\" sit inside a sub-message, where an entry at the same")
+        print(f"parent probably is about them. The {target['weak']} in \"weak\" are top-level, where the")
+        print("parent is the whole section and any entry anywhere in the resource counts --")
+        print("barely evidence at all. Split rather than reported as one number, which")
+        print("would flatter the result.")
     print('Watch "we produce" alongside it: a change that flags fields by no longer')
     print("producing them improves this report and takes working fields away.")
 
@@ -516,7 +539,7 @@ def main():
             print(f"\n### missed without flagging, {c} ({len(unflagged_list[c])})")
             for kind, p in sorted(unflagged_list[c]):
                 print(f"  {kind}\t{p}")
-        for c in CLASSES:
+        for c in list(CLASSES) + ["weak"]:
             if not unsure_list[c]:
                 continue
             print(f"\n### unsure, {c} ({len(unsure_list[c])})")
