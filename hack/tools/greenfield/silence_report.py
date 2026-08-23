@@ -480,7 +480,11 @@ def main():
 
     q, qsections, queued_kinds = queue_entries()
     matched = Counter()
-    gap = {c: Counter() for c in CLASSES}   # field-flagged / section-flagged / unflagged
+    gap = {c: Counter() for c in CLASSES}   # field / section / unsure / weak / unflagged
+    # Tracked apart from gap because it is a SUB-count of "field" -- a flagged
+    # field that also carries a marker -- not a bucket of its own. Summing it
+    # into the totals double-counted 16 fields and put "truly missed" 19 out.
+    in_types_total = 0
     unflagged_list = defaultdict(list)
     unsure_list = defaultdict(list)
     never_queued = []
@@ -521,7 +525,7 @@ def main():
                     leaf = strip_section(p).rsplit(".", 1)[-1].rstrip("[]")
                     leaf = REF_SUFFIX.sub(lambda m: m.group(1) or "", leaf)
                     if leaf in markers:
-                        gap[c]["in_types"] += 1
+                        in_types_total += 1
                 elif section in qsections.get(kind, ()):
                     gap[c]["section"] += 1
                 elif c == "reference-shape" and names_something_nearby(entries, p):
@@ -545,11 +549,14 @@ def main():
 
     # The headline: three states, one field in exactly one of them.
     flagged_q = sum(gap[c]["field"] + gap[c]["section"] for c in CLASSES)
-    flagged_both = sum(gap[c]["in_types"] for c in CLASSES)
+    flagged_both = in_types_total
     missed = missing_total - flagged_q
 
-    emitted_elsewhere = sum(sum(gap[c].values()) for c in ACCEPTED_CLASSES)
+    # Counted, not derived. Every field lands in exactly one of these, so the
+    # five sum to what we miss and no arithmetic can drift.
+    emitted_elsewhere = sum(gap[c]["unflagged"] for c in ACCEPTED_CLASSES)
     unpairable = sum(gap[c]["unsure"] + gap[c]["weak"] for c in CLASSES)
+    truly = sum(gap[c]["unflagged"] for c in TARGET_CLASSES)
 
     print(f"Against KCC master at {args.ref}, every field in its CRDs is one of three things.\n")
     print(f"  {'1. implemented':34s} {produced:6d}   ({100 * produced / surface:.1f}%)")
@@ -557,11 +564,11 @@ def main():
     print(f"  {'2. flagged':34s} {flagged_q:6d}   ({100 * flagged_q / surface:.1f}%)")
     print(f"        named in needs_judgement_call.txt{'':12s}{flagged_q:6d}")
     print(f"        ...and also in the types file{'':15s}{flagged_both:6d}")
-    truly = missed - emitted_elsewhere - unpairable
     print(f"  {'3. missed':34s} {missed:6d}   ({100 * missed / surface:.1f}%)")
-    print(f"        truly missed{'':22s}{truly:6d}   in neither our types nor the queue")
-    print(f"        emitted, renamed or reshaped{'':6s}{emitted_elsewhere:6d}   present, different name or shape")
-    print(f"        reference, name unpairable{'':8s}{unpairable:6d}   queue likely names it, we cannot prove it")
+    pct = lambda x: f"({100 * x / surface:.1f}%)"
+    print(f"        truly missed{'':22s}{truly:6d} {pct(truly):8s} in neither our types nor the queue")
+    print(f"        emitted, renamed or reshaped{'':6s}{emitted_elsewhere:6d} {pct(emitted_elsewhere):8s} present, different name or shape")
+    print(f"        reference, name unpairable{'':8s}{unpairable:6d} {pct(unpairable):8s} queue likely names it, unprovable")
     print(f"  {'':34s} {'-' * 6}")
     print(f"  {'fields in KCC master CRDs':34s} {surface:6d}")
 
