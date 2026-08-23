@@ -29,6 +29,7 @@ type NetworkSecurityInterceptEndpointGroupSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/interceptEndpointGroups/{intercept_endpoint_group}
 	Location *string `json:"location"`
 
 	// The NetworkSecurityInterceptEndpointGroup name. If not given, the metadata.name will be used.

@@ -285,6 +285,16 @@ func (in *BigLakeDatabaseSpec) DeepCopyInto(out *BigLakeDatabaseSpec) {
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.Catalog != nil {
+		in, out := &in.Catalog, &out.Catalog
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)

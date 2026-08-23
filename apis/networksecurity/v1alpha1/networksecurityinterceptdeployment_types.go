@@ -29,6 +29,7 @@ type NetworkSecurityInterceptDeploymentSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/interceptDeployments/{intercept_deployment}
 	Location *string `json:"location"`
 
 	// The NetworkSecurityInterceptDeployment name. If not given, the metadata.name will be used.

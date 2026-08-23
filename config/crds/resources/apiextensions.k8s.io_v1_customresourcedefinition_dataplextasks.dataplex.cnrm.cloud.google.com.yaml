@@ -111,6 +111,37 @@ spec:
                   type: string
                 description: Optional. User-defined labels for the task.
                 type: object
+              lakeRef:
+                description: The Lake that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed DataplexLake
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/lakes/{{lakeID}}".
+                    type: string
+                  name:
+                    description: The name of a DataplexLake resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a DataplexLake resource.
+                    type: string
+                type: object
+              location:
+                description: The location of this resource.
+                type: string
               notebook:
                 description: Config related to running scheduled Notebooks.
                 properties:

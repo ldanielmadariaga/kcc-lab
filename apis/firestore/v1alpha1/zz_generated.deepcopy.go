@@ -240,6 +240,11 @@ func (in *FirestoreBackupScheduleSpec) DeepCopyInto(out *FirestoreBackupSchedule
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Database != nil {
+		in, out := &in.Database, &out.Database
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -558,6 +563,16 @@ func (in *FirestoreFieldSpec) DeepCopyInto(out *FirestoreFieldSpec) {
 	if in.ProjectRef != nil {
 		in, out := &in.ProjectRef, &out.ProjectRef
 		*out = new(v1beta1.ProjectRef)
+		**out = **in
+	}
+	if in.Database != nil {
+		in, out := &in.Database, &out.Database
+		*out = new(string)
+		**out = **in
+	}
+	if in.Collection != nil {
+		in, out := &in.Collection, &out.Collection
+		*out = new(string)
 		**out = **in
 	}
 	if in.ResourceID != nil {

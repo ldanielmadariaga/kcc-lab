@@ -313,6 +313,16 @@ func (in *ParameterManagerParameterVersionSpec) DeepCopyInto(out *ParameterManag
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.ParameterRef != nil {
+		in, out := &in.ParameterRef, &out.ParameterRef
+		*out = new(ParameterRef)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)

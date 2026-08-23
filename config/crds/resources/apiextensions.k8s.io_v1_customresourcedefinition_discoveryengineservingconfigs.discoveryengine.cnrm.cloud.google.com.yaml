@@ -113,6 +113,9 @@ spec:
                 items:
                   type: string
                 type: array
+              dataStore:
+                description: The DataStore that this resource belongs to.
+                type: string
               displayName:
                 description: |-
                   Required. The human readable serving config display name. Used in Discovery
@@ -434,6 +437,9 @@ spec:
                 items:
                   type: string
                 type: array
+              location:
+                description: The location of this resource.
+                type: string
               mediaConfig:
                 description: The MediaConfig of the serving configuration.
                 properties:

@@ -1065,6 +1065,16 @@ func (in *GKEBackupBackupSpec) DeepCopyInto(out *GKEBackupBackupSpec) {
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.BackupPlanRef != nil {
+		in, out := &in.BackupPlanRef, &out.BackupPlanRef
+		*out = new(BackupPlanRef)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -1485,6 +1495,16 @@ func (in *GKEBackupRestoreSpec) DeepCopyInto(out *GKEBackupRestoreSpec) {
 	if in.ProjectRef != nil {
 		in, out := &in.ProjectRef, &out.ProjectRef
 		*out = new(v1beta1.ProjectRef)
+		**out = **in
+	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.RestorePlanRef != nil {
+		in, out := &in.RestorePlanRef, &out.RestorePlanRef
+		*out = new(RestorePlanRef)
 		**out = **in
 	}
 	if in.ResourceID != nil {

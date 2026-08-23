@@ -28,6 +28,10 @@ type DiscoveryEngineDataStoreTargetSiteSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/dataStores/{data_store}/siteSearchEngine/targetSites/{target_site}
+	Location *string `json:"location,omitempty"`
+
 	// The DiscoveryEngineDataStoreTargetSite name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. Input only. The user provided URI pattern from which the

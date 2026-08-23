@@ -197,6 +197,9 @@ spec:
                       type: array
                   type: object
                 type: array
+              dataStore:
+                description: The DataStore that this resource belongs to.
+                type: string
               displayName:
                 description: |-
                   Required. Human readable name. The identifier used in UI views.
@@ -226,6 +229,9 @@ spec:
                 - dataStore
                 - filter
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:

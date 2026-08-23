@@ -29,6 +29,7 @@ type VertexAIFeaturestoreSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/featurestores/{featurestore}
 	Location *string `json:"location"`
 
 	// The VertexAIFeaturestore name. If not given, the metadata.name will be used.

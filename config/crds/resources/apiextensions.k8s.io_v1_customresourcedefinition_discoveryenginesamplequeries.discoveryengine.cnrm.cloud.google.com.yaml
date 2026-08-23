@@ -63,6 +63,9 @@ spec:
             description: DiscoveryEngineSampleQuerySpec defines the desired state
               of DiscoveryEngineSampleQuery
             properties:
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -135,6 +138,9 @@ spec:
               resourceID:
                 description: The DiscoveryEngineSampleQuery name. If not given, the
                   metadata.name will be used.
+                type: string
+              sampleQuerySet:
+                description: The SampleQuerySet that this resource belongs to.
                 type: string
             required:
             - projectRef

@@ -28,6 +28,14 @@ type DatastreamRouteSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/privateConnections/{private_connection}/routes/{route}
+	Location *string `json:"location,omitempty"`
+
+	// The PrivateConnection that this resource belongs to.
+	// +kcc:guess=parent-ref target=PrivateConnectionRef pattern=projects/{project}/locations/{location}/privateConnections/{private_connection}/routes/{route}
+	PrivateConnectionRef *PrivateConnectionRef `json:"privateConnectionRef,omitempty"`
+
 	// The DatastreamRoute name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Labels.

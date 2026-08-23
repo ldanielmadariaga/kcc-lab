@@ -28,6 +28,14 @@ type DataplexZoneSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/lakes/{lake}/zones/{zone}
+	Location *string `json:"location,omitempty"`
+
+	// The Lake that this resource belongs to.
+	// +kcc:guess=parent-ref target=LakeRef pattern=projects/{project}/locations/{location}/lakes/{lake}/zones/{zone}
+	LakeRef *LakeRef `json:"lakeRef,omitempty"`
+
 	// The DataplexZone name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. User friendly display name.

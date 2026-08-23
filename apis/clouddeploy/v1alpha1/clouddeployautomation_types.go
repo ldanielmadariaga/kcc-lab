@@ -28,6 +28,14 @@ type CloudDeployAutomationSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}/automations/{automation}
+	Location *string `json:"location,omitempty"`
+
+	// The DeliveryPipeline that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}/automations/{automation}
+	DeliveryPipeline *string `json:"deliveryPipeline,omitempty"`
+
 	// The CloudDeployAutomation name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. Description of the `Automation`. Max length is 255 characters.

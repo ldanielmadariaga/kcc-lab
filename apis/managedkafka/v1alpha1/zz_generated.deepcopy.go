@@ -744,6 +744,16 @@ func (in *ManagedKafkaConsumerGroupSpec) DeepCopyInto(out *ManagedKafkaConsumerG
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.ClusterRef != nil {
+		in, out := &in.ClusterRef, &out.ClusterRef
+		*out = new(ClusterRef)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -883,6 +893,16 @@ func (in *ManagedKafkaTopicSpec) DeepCopyInto(out *ManagedKafkaTopicSpec) {
 	if in.ProjectRef != nil {
 		in, out := &in.ProjectRef, &out.ProjectRef
 		*out = new(v1beta1.ProjectRef)
+		**out = **in
+	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.ClusterRef != nil {
+		in, out := &in.ClusterRef, &out.ClusterRef
+		*out = new(ClusterRef)
 		**out = **in
 	}
 	if in.ResourceID != nil {

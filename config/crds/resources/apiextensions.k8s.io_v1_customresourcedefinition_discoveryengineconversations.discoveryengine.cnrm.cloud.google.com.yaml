@@ -63,6 +63,12 @@ spec:
             description: DiscoveryEngineConversationSpec defines the desired state
               of DiscoveryEngineConversation
             properties:
+              dataStore:
+                description: The DataStore that this resource belongs to.
+                type: string
+              location:
+                description: The location of this resource.
+                type: string
               messages:
                 description: Conversation messages.
                 items:

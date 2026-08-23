@@ -29,6 +29,7 @@ type NetworkSecurityGatewaySecurityPolicySpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/gatewaySecurityPolicies/{gateway_security_policy}
 	Location *string `json:"location"`
 
 	// The NetworkSecurityGatewaySecurityPolicy name. If not given, the metadata.name will be used.

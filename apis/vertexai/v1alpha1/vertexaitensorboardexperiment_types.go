@@ -28,6 +28,14 @@ type VertexAITensorboardExperimentSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/tensorboards/{tensorboard}/experiments/{experiment}
+	Location *string `json:"location,omitempty"`
+
+	// The Tensorboard that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/tensorboards/{tensorboard}/experiments/{experiment}
+	Tensorboard *string `json:"tensorboard,omitempty"`
+
 	// The VertexAITensorboardExperiment name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// User provided name of this TensorboardExperiment.

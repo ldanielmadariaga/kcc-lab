@@ -10,7 +10,6 @@ kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".status.observed
 kind=DataprocJob group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DataprocJob group=dataproc.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-unknown-parent (the proto declares no google.api.resource, so the parent shape is unknown; add location if the resource is regional)
 kind=DataprocNodeGroup group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=DataprocNodeGroup group=dataproc.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/regions/{region}/clusters/{cluster}/nodeGroups/{node_group}; location is implied by the parent, add it only if the API needs it stated)
 kind=DataprocSession group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.sessionTemplate" reason=possible-reference (target=dataproc.googleapis.com/SessionTemplate)
 kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
@@ -22,16 +21,16 @@ kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: resource reas
 kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.kmsKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
 kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.serviceAccount" reason=possible-reference-by-description
 kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.stagingBucket" reason=possible-reference-by-description
+kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.metastoreService" reason=possible-reference-by-description-loose
+kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.sparkHistoryServerConfig.dataprocCluster" reason=possible-reference-by-description-loose
 kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.kmsKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
 kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.serviceAccount" reason=possible-reference-by-description
 kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.stagingBucket" reason=possible-reference-by-description
-kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.kmsKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
-kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.serviceAccount" reason=possible-reference-by-description
-kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.stagingBucket" reason=possible-reference-by-description
-kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.metastoreService" reason=possible-reference-by-description-loose
-kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.sparkHistoryServerConfig.dataprocCluster" reason=possible-reference-by-description-loose
 kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.metastoreService" reason=possible-reference-by-description-loose
 kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.sparkHistoryServerConfig.dataprocCluster" reason=possible-reference-by-description-loose
 kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.sessionTemplate" reason=possible-reference-by-description-loose
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.kmsKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.serviceAccount" reason=possible-reference-by-description
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.stagingBucket" reason=possible-reference-by-description
 kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.metastoreService" reason=possible-reference-by-description-loose
 kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.sparkHistoryServerConfig.dataprocCluster" reason=possible-reference-by-description-loose

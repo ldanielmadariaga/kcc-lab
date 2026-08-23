@@ -9,10 +9,8 @@ kind=DataplexLake group=dataplex.cnrm.cloud.google.com: resource reason=untriage
 kind=DataplexLake group=dataplex.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
 kind=DataplexZone group=dataplex.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DataplexZone group=dataplex.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
-kind=DataplexZone group=dataplex.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/lakes/{lake}/zones/{zone}; location is implied by the parent, add it only if the API needs it stated)
 kind=DataplexTask group=dataplex.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
-kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/lakes/{lake}/tasks/{task}; location is implied by the parent, add it only if the API needs it stated)
 kind=DataplexEntryGroup group=dataplex.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DataplexEntryGroup group=dataplex.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
 kind=DataplexEntryType group=dataplex.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
@@ -26,6 +24,7 @@ kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: field ".status.obser
 kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
 kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: field ".spec.data.entity" reason=possible-reference-by-description
+kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: field ".spec.data.resource" reason=possible-reference-by-description-loose
 kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: field ".spec.dataDiscoverySpec.bigqueryPublishingConfig.connection" reason=possible-reference-by-description
 kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: field ".spec.dataProfileSpec.postScanActions.bigqueryExport.resultsTable" reason=possible-reference-by-description
 kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: field ".spec.dataQualitySpec.postScanActions.bigqueryExport.resultsTable" reason=possible-reference-by-description
@@ -38,10 +37,7 @@ kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: field ".spec.impo
 kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: field ".spec.importSpec.scope.entryGroups" reason=possible-reference-by-description
 kind=DataplexMetadataJob group=dataplex.cnrm.cloud.google.com: field ".spec.importSpec.scope.entryTypes" reason=possible-reference-by-description
 kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.executionSpec.kmsKey" reason=possible-reference-by-description
+kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.executionSpec.project" reason=possible-reference-by-name (ProjectRef)
 kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.executionSpec.serviceAccount" reason=possible-reference-by-description
 kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.notebook.infrastructureSpec.vpcNetwork.network" reason=possible-reference-by-name (ComputeNetworkRef)
 kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.spark.infrastructureSpec.vpcNetwork.network" reason=possible-reference-by-name (ComputeNetworkRef)
-kind=DataplexZone group=dataplex.cnrm.cloud.google.com: field ".spec.lake" reason=parent-segment-omitted (the resource pattern is projects/{project}/locations/{location}/lakes/{lake}/zones/{zone}; upstream carries each part of the name as a spec field)
-kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.lake" reason=parent-segment-omitted (the resource pattern is projects/{project}/locations/{location}/lakes/{lake}/tasks/{task}; upstream carries each part of the name as a spec field)
-kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.executionSpec.project" reason=possible-reference-by-name (ProjectRef)
-kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: field ".spec.data.resource" reason=possible-reference-by-description-loose

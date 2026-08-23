@@ -28,6 +28,14 @@ type DataprocNodeGroupSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/regions/{region}/clusters/{cluster}/nodeGroups/{node_group}
+	Region *string `json:"region,omitempty"`
+
+	// The Cluster that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/regions/{region}/clusters/{cluster}/nodeGroups/{node_group}
+	Cluster *string `json:"cluster,omitempty"`
+
 	// The DataprocNodeGroup name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. Node group roles.

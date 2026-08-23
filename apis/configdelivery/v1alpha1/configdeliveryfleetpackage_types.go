@@ -29,6 +29,7 @@ type ConfigDeliveryFleetPackageSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/fleetPackages/{fleet_package}
 	Location *string `json:"location"`
 
 	// The ConfigDeliveryFleetPackage name. If not given, the metadata.name will be used.

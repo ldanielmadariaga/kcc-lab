@@ -258,6 +258,16 @@ func (in *BigtableAuthorizedViewSpec) DeepCopyInto(out *BigtableAuthorizedViewSp
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Instance != nil {
+		in, out := &in.Instance, &out.Instance
+		*out = new(string)
+		**out = **in
+	}
+	if in.Table != nil {
+		in, out := &in.Table, &out.Table
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -437,6 +447,16 @@ func (in *BigtableBackupSpec) DeepCopyInto(out *BigtableBackupSpec) {
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Instance != nil {
+		in, out := &in.Instance, &out.Instance
+		*out = new(string)
+		**out = **in
+	}
+	if in.ClusterRef != nil {
+		in, out := &in.ClusterRef, &out.ClusterRef
+		*out = new(ClusterRef)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -594,6 +614,11 @@ func (in *BigtableClusterSpec) DeepCopyInto(out *BigtableClusterSpec) {
 	if in.ProjectRef != nil {
 		in, out := &in.ProjectRef, &out.ProjectRef
 		*out = new(v1beta1.ProjectRef)
+		**out = **in
+	}
+	if in.Instance != nil {
+		in, out := &in.Instance, &out.Instance
+		*out = new(string)
 		**out = **in
 	}
 	if in.ResourceID != nil {
@@ -760,6 +785,11 @@ func (in *BigtableLogicalViewSpec) DeepCopyInto(out *BigtableLogicalViewSpec) {
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Instance != nil {
+		in, out := &in.Instance, &out.Instance
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -907,6 +937,11 @@ func (in *BigtableMaterializedViewSpec) DeepCopyInto(out *BigtableMaterializedVi
 	if in.ProjectRef != nil {
 		in, out := &in.ProjectRef, &out.ProjectRef
 		*out = new(v1beta1.ProjectRef)
+		**out = **in
+	}
+	if in.Instance != nil {
+		in, out := &in.Instance, &out.Instance
+		*out = new(string)
 		**out = **in
 	}
 	if in.ResourceID != nil {

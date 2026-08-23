@@ -61,6 +61,34 @@ spec:
           spec:
             description: ManagedKafkaTopicSpec defines the desired state of ManagedKafkaTopic
             properties:
+              clusterRef:
+                description: The Cluster that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed ManagedKafkaCluster
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/clusters/{{clusterID}}".
+                    type: string
+                  name:
+                    description: The name of a ManagedKafkaCluster resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a ManagedKafkaCluster resource.
+                    type: string
+                type: object
               configs:
                 additionalProperties:
                   type: string
@@ -68,6 +96,9 @@ spec:
                   from the cluster defaults. The key of the map is a Kafka topic property
                   name, for example: `cleanup.policy`, `compression.type`.'
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               partitionCount:
                 description: Required. The number of partitions this topic has. The
                   partition count can only be increased, not decreased. Please note

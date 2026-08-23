@@ -61,6 +61,34 @@ spec:
           spec:
             description: GKEBackupBackupSpec defines the desired state of GKEBackupBackup
             properties:
+              backupPlanRef:
+                description: The BackupPlan that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed GKEBackupBackupPlan
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/backupPlans/{{backupplanID}}".
+                    type: string
+                  name:
+                    description: The name of a GKEBackupBackupPlan resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a GKEBackupBackupPlan resource.
+                    type: string
+                type: object
               deleteLockDays:
                 description: |-
                   Optional. Minimum age for this Backup (in days). If this field is set to a
@@ -84,6 +112,9 @@ spec:
                   type: string
                 description: Optional. A set of custom labels supplied by user.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:

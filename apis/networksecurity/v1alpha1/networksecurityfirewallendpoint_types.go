@@ -25,8 +25,12 @@ var NetworkSecurityFirewallEndpointGVK = GroupVersion.WithKind("NetworkSecurityF
 // NetworkSecurityFirewallEndpointSpec defines the desired state of NetworkSecurityFirewallEndpoint
 // +kcc:spec:proto=google.cloud.networksecurity.v1.FirewallEndpoint
 type NetworkSecurityFirewallEndpointSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	// The organization that this resource belongs to.
+	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=organizations/{organization}/locations/{location}/firewallEndpoints/{firewall_endpoint}
+	Location *string `json:"location,omitempty"`
 
 	// The NetworkSecurityFirewallEndpoint name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`

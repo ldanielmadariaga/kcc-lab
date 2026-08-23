@@ -28,6 +28,10 @@ type BigtableLogicalViewSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The Instance that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/instances/{instance}/logicalViews/{logical_view}
+	Instance *string `json:"instance,omitempty"`
+
 	// The BigtableLogicalView name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. The logical view's select query.

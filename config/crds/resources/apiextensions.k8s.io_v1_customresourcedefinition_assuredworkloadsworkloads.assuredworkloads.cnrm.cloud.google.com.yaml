@@ -120,41 +120,22 @@ spec:
                   type: string
                 description: Optional. Labels applied to the workload.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
+              organizationRef:
+                description: The organization that this resource belongs to.
+                properties:
+                  external:
+                    description: The 'name' field of an organization, when not managed
+                      by Config Connector.
+                    type: string
+                required:
+                - external
+                type: object
               partner:
                 description: Optional. Compliance Regime associated with this workload.
                 type: string
-              projectRef:
-                description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: The `projectID` field of a project, when not managed
-                      by Config Connector.
-                    type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
-                  name:
-                    description: The `name` field of a `Project` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `Project` resource.
-                    type: string
-                type: object
               provisionedResourcesParent:
                 description: 'Input only. The parent resource for the resources managed
                   by this Assured Workload. May be either empty or a folder resource
@@ -193,7 +174,7 @@ spec:
             required:
             - complianceRegime
             - displayName
-            - projectRef
+            - organizationRef
             type: object
           status:
             description: AssuredWorkloadsWorkloadStatus defines the config connector

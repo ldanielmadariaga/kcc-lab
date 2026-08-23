@@ -741,6 +741,16 @@ func (in *DataCatalogEntrySpec) DeepCopyInto(out *DataCatalogEntrySpec) {
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.EntryGroupRef != nil {
+		in, out := &in.EntryGroupRef, &out.EntryGroupRef
+		*out = new(EntryGroupRef)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -1005,6 +1015,21 @@ func (in *DataCatalogTagSpec) DeepCopyInto(out *DataCatalogTagSpec) {
 	if in.ProjectRef != nil {
 		in, out := &in.ProjectRef, &out.ProjectRef
 		*out = new(v1beta1.ProjectRef)
+		**out = **in
+	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.EntryGroupRef != nil {
+		in, out := &in.EntryGroupRef, &out.EntryGroupRef
+		*out = new(EntryGroupRef)
+		**out = **in
+	}
+	if in.EntryRef != nil {
+		in, out := &in.EntryRef, &out.EntryRef
+		*out = new(EntryRef)
 		**out = **in
 	}
 	if in.ResourceID != nil {

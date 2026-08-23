@@ -256,11 +256,6 @@ func (in *SpeechCustomClassSpec) DeepCopyInto(out *SpeechCustomClassSpec) {
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
-	if in.Location != nil {
-		in, out := &in.Location, &out.Location
-		*out = new(string)
-		**out = **in
-	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -395,11 +390,6 @@ func (in *SpeechPhraseSetSpec) DeepCopyInto(out *SpeechPhraseSetSpec) {
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
-	if in.Location != nil {
-		in, out := &in.Location, &out.Location
-		*out = new(string)
-		**out = **in
-	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -532,11 +522,6 @@ func (in *SpeechRecognizerSpec) DeepCopyInto(out *SpeechRecognizerSpec) {
 	if in.ProjectRef != nil {
 		in, out := &in.ProjectRef, &out.ProjectRef
 		*out = new(v1beta1.ProjectRef)
-		**out = **in
-	}
-	if in.Location != nil {
-		in, out := &in.Location, &out.Location
-		*out = new(string)
 		**out = **in
 	}
 	if in.ResourceID != nil {

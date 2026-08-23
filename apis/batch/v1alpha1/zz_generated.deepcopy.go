@@ -679,6 +679,21 @@ func (in *BatchTaskSpec) DeepCopyInto(out *BatchTaskSpec) {
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.Job != nil {
+		in, out := &in.Job, &out.Job
+		*out = new(string)
+		**out = **in
+	}
+	if in.TaskGroup != nil {
+		in, out := &in.TaskGroup, &out.TaskGroup
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)

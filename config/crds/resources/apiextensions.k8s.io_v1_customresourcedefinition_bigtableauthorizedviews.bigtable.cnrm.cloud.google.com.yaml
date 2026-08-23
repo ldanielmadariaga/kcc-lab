@@ -72,6 +72,9 @@ spec:
                   on update, it must match the server's etag. The server returns ABORTED
                   error on a mismatched etag.
                 type: string
+              instance:
+                description: The Instance that this resource belongs to.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -145,6 +148,9 @@ spec:
                       type: string
                     type: array
                 type: object
+              table:
+                description: The Table that this resource belongs to.
+                type: string
             required:
             - projectRef
             type: object

@@ -28,6 +28,14 @@ type DiscoveryEngineConversationSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/dataStores/{data_store}/conversations/{conversation}
+	Location *string `json:"location,omitempty"`
+
+	// The DataStore that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/dataStores/{data_store}/conversations/{conversation}
+	DataStore *string `json:"dataStore,omitempty"`
+
 	// The DiscoveryEngineConversation name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// The state of the Conversation.

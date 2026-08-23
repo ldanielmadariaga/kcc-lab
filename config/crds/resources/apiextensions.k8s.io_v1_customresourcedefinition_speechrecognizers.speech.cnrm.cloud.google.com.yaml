@@ -61,9 +61,6 @@ spec:
           spec:
             description: SpeechRecognizerSpec defines the desired state of SpeechRecognizer
             properties:
-              location:
-                description: The location of this resource.
-                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -101,7 +98,6 @@ spec:
                   will be used.
                 type: string
             required:
-            - location
             - projectRef
             type: object
           status:

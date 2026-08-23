@@ -2572,6 +2572,16 @@ func (in *VertexAITensorboardExperimentSpec) DeepCopyInto(out *VertexAITensorboa
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.Tensorboard != nil {
+		in, out := &in.Tensorboard, &out.Tensorboard
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)

@@ -28,6 +28,10 @@ type EventarcGoogleChannelConfigSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/googleChannelConfig
+	Location *string `json:"location,omitempty"`
+
 	// The EventarcGoogleChannelConfig name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. Resource name of a KMS crypto key (managed by the user) used to

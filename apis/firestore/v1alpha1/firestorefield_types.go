@@ -28,6 +28,14 @@ type FirestoreFieldSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The Database that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/databases/{database}/collectionGroups/{collection}/fields/{field}
+	Database *string `json:"database,omitempty"`
+
+	// The Collection that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/databases/{database}/collectionGroups/{collection}/fields/{field}
+	Collection *string `json:"collection,omitempty"`
+
 	// The FirestoreField name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// The index configuration for this field. If unset, field indexing will

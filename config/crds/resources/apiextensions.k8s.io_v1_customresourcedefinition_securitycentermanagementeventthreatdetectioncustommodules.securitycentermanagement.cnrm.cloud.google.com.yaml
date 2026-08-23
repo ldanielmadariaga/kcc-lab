@@ -80,37 +80,18 @@ spec:
                 description: Optional. The state of enablement for the module at the
                   given level of the hierarchy.
                 type: string
-              projectRef:
-                description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
+              location:
+                description: The location of this resource.
+                type: string
+              organizationRef:
+                description: The organization that this resource belongs to.
                 properties:
                   external:
-                    description: The `projectID` field of a project, when not managed
+                    description: The 'name' field of an organization, when not managed
                       by Config Connector.
                     type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
-                  name:
-                    description: The `name` field of a `Project` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `Project` resource.
-                    type: string
+                required:
+                - external
                 type: object
               resourceID:
                 description: The SecurityCenterManagementEventThreatDetectionCustomModule
@@ -120,7 +101,7 @@ spec:
                 description: Optional. Type for the module. For example, `CONFIGURABLE_BAD_IP`.
                 type: string
             required:
-            - projectRef
+            - organizationRef
             type: object
           status:
             description: SecurityCenterManagementEventThreatDetectionCustomModuleStatus

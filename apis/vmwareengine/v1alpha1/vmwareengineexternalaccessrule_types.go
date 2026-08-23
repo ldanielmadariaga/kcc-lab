@@ -28,6 +28,14 @@ type VMwareEngineExternalAccessRuleSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/networkPolicies/{network_policy}/externalAccessRules/{external_access_rule}
+	Location *string `json:"location,omitempty"`
+
+	// The NetworkPolicy that this resource belongs to.
+	// +kcc:guess=parent-ref target=NetworkPolicyRef pattern=projects/{project}/locations/{location}/networkPolicies/{network_policy}/externalAccessRules/{external_access_rule}
+	NetworkPolicyRef *NetworkPolicyRef `json:"networkPolicyRef,omitempty"`
+
 	// The VMwareEngineExternalAccessRule name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// User-provided description for this external access rule.

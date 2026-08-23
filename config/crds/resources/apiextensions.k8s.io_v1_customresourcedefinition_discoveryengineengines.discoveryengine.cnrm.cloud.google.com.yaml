@@ -137,6 +137,9 @@ spec:
                        for actual agent association after Engine is created.
                     type: string
                 type: object
+              collection:
+                description: The Collection that this resource belongs to.
+                type: string
               commonConfig:
                 description: Common config spec that specifies the metadata of the
                   engine.
@@ -183,6 +186,9 @@ spec:
                   The restriction of the Engine industry vertical is based on [DataStore][google.cloud.discoveryengine.v1.DataStore]:
                   Vertical on Engine has to match vertical of the DataStore linked
                   to the engine.'
+                type: string
+              location:
+                description: The location of this resource.
                 type: string
               mediaRecommendationEngineConfig:
                 description: Configurations for the Media Engine. Only applicable

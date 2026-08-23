@@ -6,7 +6,6 @@
 # findings. Clearing them graduates the resource and the ratchet applies.
 
 kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/global/connectivityTests/{test}; location is implied by the parent, add it only if the API needs it stated)
 kind=NetworkManagementVPCFlowLogsConfig group=networkmanagement.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: field ".spec.destination.cloudRunRevision.uri" reason=possible-reference-by-description
 kind=NetworkManagementConnectivityTest group=networkmanagement.cnrm.cloud.google.com: field ".spec.destination.forwardingRule" reason=possible-reference-by-description

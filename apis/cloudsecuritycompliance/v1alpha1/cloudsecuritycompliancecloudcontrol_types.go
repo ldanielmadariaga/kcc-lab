@@ -25,8 +25,12 @@ var CloudSecurityComplianceCloudControlGVK = GroupVersion.WithKind("CloudSecurit
 // CloudSecurityComplianceCloudControlSpec defines the desired state of CloudSecurityComplianceCloudControl
 // +kcc:spec:proto=google.cloud.cloudsecuritycompliance.v1.CloudControl
 type CloudSecurityComplianceCloudControlSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	// The organization that this resource belongs to.
+	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=organizations/{organization}/locations/{location}/cloudControls/{cloud_control}
+	Location *string `json:"location,omitempty"`
 
 	// The CloudSecurityComplianceCloudControl name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`

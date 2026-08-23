@@ -69,6 +69,62 @@ spec:
                    To attach a tag to a nested column, separate column names with a dot
                    (`.`). Example: `column.nested_column`.
                 type: string
+              entryGroupRef:
+                description: The EntryGroup that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed DataCatalogEntryGroup
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/entrygroups/{{entrygroupID}}".
+                    type: string
+                  name:
+                    description: The name of a DataCatalogEntryGroup resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a DataCatalogEntryGroup resource.
+                    type: string
+                type: object
+              entryRef:
+                description: The Entry that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed DataCatalogEntry
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/entrys/{{entryID}}".
+                    type: string
+                  name:
+                    description: The name of a DataCatalogEntry resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a DataCatalogEntry resource.
+                    type: string
+                type: object
               fields:
                 additionalProperties:
                   properties:
@@ -113,6 +169,9 @@ spec:
                    Tag template defines valid field IDs. A tag
                    must have at least 1 field and at most 500 fields.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:

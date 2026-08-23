@@ -84,6 +84,9 @@ spec:
                    https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/#syntax-and-character-set
                    for more details.
                 type: object
+              deliveryPipeline:
+                description: The DeliveryPipeline that this resource belongs to.
+                type: string
               description:
                 description: Optional. Description of the `Automation`. Max length
                   is 255 characters.
@@ -110,6 +113,9 @@ spec:
 
                    Both keys and values are additionally constrained to be <= 63 characters.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:

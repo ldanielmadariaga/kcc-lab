@@ -29,6 +29,7 @@ type VMwareEngineNetworkSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network}
 	Location *string `json:"location"`
 
 	// The VMwareEngineNetwork name. If not given, the metadata.name will be used.

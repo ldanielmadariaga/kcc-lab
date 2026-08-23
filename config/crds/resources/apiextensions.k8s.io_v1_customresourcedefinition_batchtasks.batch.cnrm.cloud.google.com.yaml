@@ -61,6 +61,12 @@ spec:
           spec:
             description: BatchTaskSpec defines the desired state of BatchTask
             properties:
+              job:
+                description: The Job that this resource belongs to.
+                type: string
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -96,6 +102,9 @@ spec:
               resourceID:
                 description: The BatchTask name. If not given, the metadata.name will
                   be used.
+                type: string
+              taskGroup:
+                description: The TaskGroup that this resource belongs to.
                 type: string
             required:
             - projectRef

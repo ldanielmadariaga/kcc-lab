@@ -31,11 +31,14 @@ kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.priv
 kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.runtimeConfig.codeInterpreterRuntimeConfig.fileInputGCSBucket" reason=possible-reference-by-description
 kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.runtimeConfig.codeInterpreterRuntimeConfig.fileOutputGCSBucket" reason=possible-reference-by-description
 kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.runtimeConfig.vertexAiSearchRuntimeConfig.servingConfigName" reason=possible-reference-by-description
+kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.toolUseExamples[].extensionOperation.extension" reason=possible-reference-by-description-loose
 kind=VertexAIFeatureOnlineStore group=aiplatform.cnrm.cloud.google.com: field ".spec.dedicatedServingEndpoint.privateServiceConnectConfig.pscAutomationConfigs[].network" reason=possible-reference-by-description
 kind=VertexAIFeatureOnlineStore group=aiplatform.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
 kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
 kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: field ".spec.network" reason=possible-reference-by-description
+kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: field ".spec.runtimeConfig.inputArtifacts.KEY.artifactID" reason=possible-reference-by-description
 kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createNotebookExecutionJobRequest.notebookExecutionJob.customEnvironmentSpec.machineSpec.reservationAffinity.values" reason=possible-reference-by-description-loose
 kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createNotebookExecutionJobRequest.notebookExecutionJob.customEnvironmentSpec.networkSpec.network" reason=possible-reference-by-name (ComputeNetworkRef)
 kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createNotebookExecutionJobRequest.notebookExecutionJob.customEnvironmentSpec.networkSpec.subnetwork" reason=possible-reference-by-description
 kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createNotebookExecutionJobRequest.notebookExecutionJob.dataformRepositorySource.dataformRepositoryResourceName" reason=possible-reference-by-description
@@ -47,13 +50,10 @@ kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.creat
 kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createPipelineJobRequest.parent" reason=possible-reference-by-description
 kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createPipelineJobRequest.pipelineJob.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
 kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createPipelineJobRequest.pipelineJob.network" reason=possible-reference-by-description
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createPipelineJobRequest.pipelineJob.runtimeConfig.inputArtifacts.KEY.artifactID" reason=possible-reference-by-description
 kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createPipelineJobRequest.pipelineJob.serviceAccount" reason=possible-reference-by-description
 kind=VertexAITrainingPipeline group=aiplatform.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
 kind=VertexAITrainingPipeline group=aiplatform.cnrm.cloud.google.com: field ".spec.modelToUpload.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
 kind=VertexAITrainingPipeline group=aiplatform.cnrm.cloud.google.com: field ".spec.modelToUpload.versionAliases" reason=possible-reference-by-description
 kind=VertexAITuningJob group=aiplatform.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
 kind=VertexAITuningJob group=aiplatform.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description
-kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: field ".spec.runtimeConfig.inputArtifacts.KEY.artifactID" reason=possible-reference-by-description
-kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createPipelineJobRequest.pipelineJob.runtimeConfig.inputArtifacts.KEY.artifactID" reason=possible-reference-by-description
-kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.toolUseExamples[].extensionOperation.extension" reason=possible-reference-by-description-loose
-kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createNotebookExecutionJobRequest.notebookExecutionJob.customEnvironmentSpec.machineSpec.reservationAffinity.values" reason=possible-reference-by-description-loose

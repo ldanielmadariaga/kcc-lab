@@ -71,6 +71,9 @@ spec:
                    It must match the pattern
                    `projects/*/locations/*/keyRings/*/cryptoKeys/*`.
                 type: string
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:

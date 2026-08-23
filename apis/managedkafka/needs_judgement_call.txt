@@ -8,9 +8,7 @@
 kind=ManagedKafkaCluster group=managedkafka.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/clusters/{cluster}/consumerGroups/{consumer_group}; location is implied by the parent, add it only if the API needs it stated)
 kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
-kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic}; location is implied by the parent, add it only if the API needs it stated)
 
 # Fields dropped because the generator could not produce a Go type for
 # them. They are absent from the CRD. Shared nested messages, so they are
@@ -21,9 +19,8 @@ kind=ManagedKafkaCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.
 kind=ManagedKafkaCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.tlsConfig.trustConfig.casConfigs[].caPool" reason=possible-reference-by-description
 kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.accessConfig.networkConfigs[].primarySubnet" reason=possible-reference-by-description
 kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.secretPaths" reason=possible-reference-by-description
+kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.secretPaths[]" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
 kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.kafkaCluster" reason=possible-reference-by-description
 kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: field ".spec.topics" reason=possible-reference-by-description
 kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)
 kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)
-kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: field ".spec.cluster" reason=parent-segment-omitted (the resource pattern is projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic}; upstream carries each part of the name as a spec field)
-kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.secretPaths[]" reason=possible-reference-by-name (SecretManagerSecretVersionRef)

@@ -98,37 +98,15 @@ spec:
                    * indicator.ip_addresses: `=`, `:`
                    * indicator.domains: `=`, `:`
                 type: string
-              projectRef:
-                description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
+              organizationRef:
+                description: The organization that this resource belongs to.
                 properties:
                   external:
-                    description: The `projectID` field of a project, when not managed
+                    description: The 'name' field of an organization, when not managed
                       by Config Connector.
                     type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
-                  name:
-                    description: The `name` field of a `Project` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `Project` resource.
-                    type: string
+                required:
+                - external
                 type: object
               resourceID:
                 description: The SecurityCenterMuteConfig name. If not given, the
@@ -142,7 +120,7 @@ spec:
                 type: string
             required:
             - filter
-            - projectRef
+            - organizationRef
             type: object
           status:
             description: SecurityCenterMuteConfigStatus defines the config connector

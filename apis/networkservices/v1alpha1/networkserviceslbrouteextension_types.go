@@ -30,6 +30,7 @@ type NetworkServicesLBRouteExtensionSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/lbRouteExtensions/{lb_route_extension}
 	Location *string `json:"location"`
 
 	// The NetworkServicesLBRouteExtension name. If not given, the metadata.name will be used.

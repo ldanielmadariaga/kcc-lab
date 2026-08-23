@@ -109,6 +109,37 @@ spec:
                   This value can be one of the following three protocol strings (not
                   case-sensitive): `tcp`, `udp`, or `icmp`.'
                 type: string
+              location:
+                description: The location of this resource.
+                type: string
+              networkPolicyRef:
+                description: The NetworkPolicy that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed VMwareEngineNetworkPolicy
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/networkPolicies/{{networkpolicyID}}".
+                    type: string
+                  name:
+                    description: The name of a VMwareEngineNetworkPolicy resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a VMwareEngineNetworkPolicy resource.
+                    type: string
+                type: object
               priority:
                 description: External access rule priority, which determines the external
                   access rule to use when multiple rules apply. If multiple rules

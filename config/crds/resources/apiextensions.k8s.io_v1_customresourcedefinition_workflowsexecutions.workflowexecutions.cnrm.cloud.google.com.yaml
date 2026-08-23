@@ -83,6 +83,9 @@ spec:
                   are allowed. By default, labels are inherited from the workflow
                   but are overridden by any labels associated with the execution.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -118,6 +121,9 @@ spec:
               resourceID:
                 description: The WorkflowsExecution name. If not given, the metadata.name
                   will be used.
+                type: string
+              workflow:
+                description: The Workflow that this resource belongs to.
                 type: string
             required:
             - projectRef

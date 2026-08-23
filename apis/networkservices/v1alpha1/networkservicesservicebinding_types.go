@@ -29,6 +29,7 @@ type NetworkServicesServiceBindingSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/serviceBindings/{service_binding}
 	Location *string `json:"location"`
 
 	// The NetworkServicesServiceBinding name. If not given, the metadata.name will be used.

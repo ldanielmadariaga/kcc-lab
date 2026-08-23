@@ -76,6 +76,37 @@ spec:
                   type: string
                 description: Labels.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
+              privateConnectionRef:
+                description: The PrivateConnection that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed DatastreamPrivateConnection
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/privateConnections/{{privateconnectionID}}".
+                    type: string
+                  name:
+                    description: The name of a DatastreamPrivateConnection resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a DatastreamPrivateConnection resource.
+                    type: string
+                type: object
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:

@@ -29,6 +29,7 @@ type DatabaseMigrationConversionWorkspaceSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}
 	Location *string `json:"location"`
 
 	// The DatabaseMigrationConversionWorkspace name. If not given, the metadata.name will be used.

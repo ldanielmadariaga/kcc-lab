@@ -64,6 +64,34 @@ spec:
               backupType:
                 description: Indicates the backup type of the backup.
                 type: string
+              clusterRef:
+                description: The Cluster that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed BigtableCluster
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/clusters/{{clusterID}}".
+                    type: string
+                  name:
+                    description: The name of a BigtableCluster resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a BigtableCluster resource.
+                    type: string
+                type: object
               expireTime:
                 description: |-
                   Required. The expiration time of the backup.
@@ -84,6 +112,9 @@ spec:
 
                    This field only applies for hot backups. When creating or updating a
                    standard backup, attempting to set this field will fail the request.
+                type: string
+              instance:
+                description: The Instance that this resource belongs to.
                 type: string
               projectRef:
                 description: The project that this resource belongs to.

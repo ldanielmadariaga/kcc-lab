@@ -61,6 +61,12 @@ spec:
           spec:
             description: FirestoreFieldSpec defines the desired state of FirestoreField
             properties:
+              collection:
+                description: The Collection that this resource belongs to.
+                type: string
+              database:
+                description: The Database that this resource belongs to.
+                type: string
               indexConfig:
                 description: The index configuration for this field. If unset, field
                   indexing will revert to the configuration defined by the `ancestor_field`.

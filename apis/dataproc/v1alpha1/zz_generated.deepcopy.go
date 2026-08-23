@@ -734,6 +734,16 @@ func (in *DataprocNodeGroupSpec) DeepCopyInto(out *DataprocNodeGroupSpec) {
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Region != nil {
+		in, out := &in.Region, &out.Region
+		*out = new(string)
+		**out = **in
+	}
+	if in.Cluster != nil {
+		in, out := &in.Cluster, &out.Cluster
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)

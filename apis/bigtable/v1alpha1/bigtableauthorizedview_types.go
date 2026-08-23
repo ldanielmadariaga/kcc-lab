@@ -28,6 +28,14 @@ type BigtableAuthorizedViewSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The Instance that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/instances/{instance}/tables/{table}/authorizedViews/{authorized_view}
+	Instance *string `json:"instance,omitempty"`
+
+	// The Table that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/instances/{instance}/tables/{table}/authorizedViews/{authorized_view}
+	Table *string `json:"table,omitempty"`
+
 	// The BigtableAuthorizedView name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// An AuthorizedView permitting access to an explicit subset of a Table.

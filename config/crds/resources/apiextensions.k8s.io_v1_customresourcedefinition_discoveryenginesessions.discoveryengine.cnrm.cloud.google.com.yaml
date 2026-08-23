@@ -62,6 +62,9 @@ spec:
           spec:
             description: DiscoveryEngineSessionSpec defines the desired state of DiscoveryEngineSession
             properties:
+              dataStore:
+                description: The DataStore that this resource belongs to.
+                type: string
               displayName:
                 description: |-
                   Optional. The display name of the session.
@@ -79,6 +82,9 @@ spec:
                 items:
                   type: string
                 type: array
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:

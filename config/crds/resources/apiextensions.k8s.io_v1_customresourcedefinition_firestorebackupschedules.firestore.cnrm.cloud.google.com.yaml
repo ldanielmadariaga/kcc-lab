@@ -66,6 +66,9 @@ spec:
               dailyRecurrence:
                 description: For a schedule that runs daily.
                 type: object
+              database:
+                description: The Database that this resource belongs to.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:

@@ -28,6 +28,14 @@ type BigtableBackupSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The Instance that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/instances/{instance}/clusters/{cluster}/backups/{backup}
+	Instance *string `json:"instance,omitempty"`
+
+	// The Cluster that this resource belongs to.
+	// +kcc:guess=parent-ref target=ClusterRef pattern=projects/{project}/instances/{instance}/clusters/{cluster}/backups/{backup}
+	ClusterRef *ClusterRef `json:"clusterRef,omitempty"`
+
 	// The BigtableBackup name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. Immutable. Name of the table from which this backup was created.

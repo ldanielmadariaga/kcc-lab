@@ -28,6 +28,14 @@ type GKEBackupRestoreSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/restorePlans/{restore_plan}/restores/{restore}
+	Location *string `json:"location,omitempty"`
+
+	// The RestorePlan that this resource belongs to.
+	// +kcc:guess=parent-ref target=RestorePlanRef pattern=projects/{project}/locations/{location}/restorePlans/{restore_plan}/restores/{restore}
+	RestorePlanRef *RestorePlanRef `json:"restorePlanRef,omitempty"`
+
 	// The GKEBackupRestore name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. User specified descriptive string for this Restore.

@@ -3770,6 +3770,16 @@ func (in *DataplexTaskSpec) DeepCopyInto(out *DataplexTaskSpec) {
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.LakeRef != nil {
+		in, out := &in.LakeRef, &out.LakeRef
+		*out = new(LakeRef)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -3964,6 +3974,16 @@ func (in *DataplexZoneSpec) DeepCopyInto(out *DataplexZoneSpec) {
 	if in.ProjectRef != nil {
 		in, out := &in.ProjectRef, &out.ProjectRef
 		*out = new(v1beta1.ProjectRef)
+		**out = **in
+	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.LakeRef != nil {
+		in, out := &in.LakeRef, &out.LakeRef
+		*out = new(LakeRef)
 		**out = **in
 	}
 	if in.ResourceID != nil {

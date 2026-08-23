@@ -28,6 +28,10 @@ type FirestoreBackupScheduleSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The Database that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/databases/{database}/backupSchedules/{backup_schedule}
+	Database *string `json:"database,omitempty"`
+
 	// The FirestoreBackupSchedule name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// At what relative time in the future, compared to its creation time,

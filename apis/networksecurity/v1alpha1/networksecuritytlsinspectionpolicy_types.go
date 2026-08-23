@@ -29,6 +29,7 @@ type NetworkSecurityTLSInspectionPolicySpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/tlsInspectionPolicies/{tls_inspection_policy}
 	Location *string `json:"location"`
 
 	// The NetworkSecurityTLSInspectionPolicy name. If not given, the metadata.name will be used.

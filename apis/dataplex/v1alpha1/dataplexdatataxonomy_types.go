@@ -29,6 +29,7 @@ type DataplexDataTaxonomySpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/dataTaxonomies/{data_taxonomy_id}
 	Location *string `json:"location"`
 
 	// The DataplexDataTaxonomy name. If not given, the metadata.name will be used.

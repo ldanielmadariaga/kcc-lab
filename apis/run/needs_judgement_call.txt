@@ -12,7 +12,7 @@ kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.encryp
 kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.serviceAccount" reason=possible-reference-by-description
 kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.serviceMesh.mesh" reason=possible-reference-by-description
 kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.volumes[].gcs.bucket" reason=possible-reference-by-description
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.volumes[].secret" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
 kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.volumes[].secret.secret" reason=possible-reference-by-description
 kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.vpcAccess.connector" reason=possible-reference-by-description
 kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.vpcAccess.networkInterfaces[].network" reason=possible-reference-by-name (ComputeNetworkRef)
-kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.volumes[].secret" reason=possible-reference-by-name (SecretManagerSecretVersionRef)

@@ -72,6 +72,9 @@ spec:
                   always normalized to generate the URI pattern to be used by the
                   search engine.
                 type: boolean
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:

@@ -29,6 +29,7 @@ type GKEBackupBackupChannelSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/backupChannels/{backup_channel}
 	Location *string `json:"location"`
 
 	// The GKEBackupBackupChannel name. If not given, the metadata.name will be used.

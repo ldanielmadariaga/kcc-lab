@@ -73,6 +73,9 @@ spec:
                   value before proceeding. The server returns an ABORTED error on
                   a mismatched etag.
                 type: string
+              instance:
+                description: The Instance that this resource belongs to.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:

@@ -77,37 +77,18 @@ spec:
                   type: string
                 description: Optional. Labels as key value pairs.
                 type: object
-              projectRef:
-                description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
+              location:
+                description: The location of this resource.
+                type: string
+              organizationRef:
+                description: The organization that this resource belongs to.
                 properties:
                   external:
-                    description: The `projectID` field of a project, when not managed
+                    description: The 'name' field of an organization, when not managed
                       by Config Connector.
                     type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
-                  name:
-                    description: The `name` field of a `Project` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `Project` resource.
-                    type: string
+                required:
+                - external
                 type: object
               resourceID:
                 description: The NetworkSecuritySecurityProfile name. If not given,
@@ -122,7 +103,7 @@ spec:
               urlFilteringProfile:
                 description: The URL filtering configuration for the SecurityProfile.
             required:
-            - projectRef
+            - organizationRef
             type: object
           status:
             description: NetworkSecuritySecurityProfileStatus defines the config connector

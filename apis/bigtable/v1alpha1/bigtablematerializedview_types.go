@@ -28,6 +28,10 @@ type BigtableMaterializedViewSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The Instance that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/instances/{instance}/materializedViews/{materialized_view}
+	Instance *string `json:"instance,omitempty"`
+
 	// The BigtableMaterializedView name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. Immutable. The materialized view's select query.

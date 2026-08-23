@@ -29,6 +29,7 @@ type NetworkSecurityAuthzPolicySpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/authzPolicies/{authz_policy}
 	Location *string `json:"location"`
 
 	// The NetworkSecurityAuthzPolicy name. If not given, the metadata.name will be used.

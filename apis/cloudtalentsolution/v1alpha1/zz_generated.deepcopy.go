@@ -131,6 +131,11 @@ func (in *CloudTalentSolutionCompanySpec) DeepCopyInto(out *CloudTalentSolutionC
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Tenant != nil {
+		in, out := &in.Tenant, &out.Tenant
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)

@@ -158,6 +158,9 @@ spec:
               size:
                 description: The employer's company size.
                 type: string
+              tenant:
+                description: The Tenant that this resource belongs to.
+                type: string
               websiteURI:
                 description: |-
                   The URI representing the company's primary web site or home page,

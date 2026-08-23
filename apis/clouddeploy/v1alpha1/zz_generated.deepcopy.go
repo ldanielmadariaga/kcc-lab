@@ -395,6 +395,16 @@ func (in *CloudDeployAutomationSpec) DeepCopyInto(out *CloudDeployAutomationSpec
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.DeliveryPipeline != nil {
+		in, out := &in.DeliveryPipeline, &out.DeliveryPipeline
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)

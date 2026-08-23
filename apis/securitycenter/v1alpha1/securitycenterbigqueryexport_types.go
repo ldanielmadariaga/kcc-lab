@@ -25,8 +25,8 @@ var SecurityCenterBigQueryExportGVK = GroupVersion.WithKind("SecurityCenterBigQu
 // SecurityCenterBigQueryExportSpec defines the desired state of SecurityCenterBigQueryExport
 // +kcc:spec:proto=google.cloud.securitycenter.v1.BigQueryExport
 type SecurityCenterBigQueryExportSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	// The organization that this resource belongs to.
+	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef"`
 
 	// The SecurityCenterBigQueryExport name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`

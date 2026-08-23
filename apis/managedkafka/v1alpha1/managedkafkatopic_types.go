@@ -28,6 +28,14 @@ type ManagedKafkaTopicSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic}
+	Location *string `json:"location,omitempty"`
+
+	// The Cluster that this resource belongs to.
+	// +kcc:guess=parent-ref target=ClusterRef pattern=projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic}
+	ClusterRef *ClusterRef `json:"clusterRef,omitempty"`
+
 	// The ManagedKafkaTopic name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. The number of partitions this topic has. The partition count can

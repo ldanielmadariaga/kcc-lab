@@ -95,6 +95,9 @@ spec:
                       [metadata_schema's][google.cloud.aiplatform.v1beta1.Dataset.metadata_schema_uri]
                       title.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -134,6 +137,9 @@ spec:
               source:
                 description: 'Immutable. Source of the TensorboardExperiment. Example:
                   a custom training job.'
+                type: string
+              tensorboard:
+                description: The Tensorboard that this resource belongs to.
                 type: string
             required:
             - projectRef

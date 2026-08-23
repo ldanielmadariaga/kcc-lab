@@ -28,6 +28,14 @@ type GKEBackupBackupSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/backupPlans/{backup_plan}/backups/{backup}
+	Location *string `json:"location,omitempty"`
+
+	// The BackupPlan that this resource belongs to.
+	// +kcc:guess=parent-ref target=BackupPlanRef pattern=projects/{project}/locations/{location}/backupPlans/{backup_plan}/backups/{backup}
+	BackupPlanRef *BackupPlanRef `json:"backupPlanRef,omitempty"`
+
 	// The GKEBackupBackup name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. A set of custom labels supplied by user.

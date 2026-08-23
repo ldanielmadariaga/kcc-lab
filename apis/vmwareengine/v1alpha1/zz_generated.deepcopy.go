@@ -638,6 +638,16 @@ func (in *VMwareEngineExternalAccessRuleSpec) DeepCopyInto(out *VMwareEngineExte
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.NetworkPolicyRef != nil {
+		in, out := &in.NetworkPolicyRef, &out.NetworkPolicyRef
+		*out = new(NetworkPolicyRef)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)

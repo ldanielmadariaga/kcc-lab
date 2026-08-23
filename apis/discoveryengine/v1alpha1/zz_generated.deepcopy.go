@@ -1745,6 +1745,16 @@ func (in *DiscoveryEngineControlSpec) DeepCopyInto(out *DiscoveryEngineControlSp
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.DataStore != nil {
+		in, out := &in.DataStore, &out.DataStore
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -1941,6 +1951,16 @@ func (in *DiscoveryEngineConversationSpec) DeepCopyInto(out *DiscoveryEngineConv
 	if in.ProjectRef != nil {
 		in, out := &in.ProjectRef, &out.ProjectRef
 		*out = new(v1beta1.ProjectRef)
+		**out = **in
+	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.DataStore != nil {
+		in, out := &in.DataStore, &out.DataStore
+		*out = new(string)
 		**out = **in
 	}
 	if in.ResourceID != nil {
@@ -2383,6 +2403,11 @@ func (in *DiscoveryEngineDataStoreTargetSiteSpec) DeepCopyInto(out *DiscoveryEng
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -2580,6 +2605,16 @@ func (in *DiscoveryEngineEngineSpec) DeepCopyInto(out *DiscoveryEngineEngineSpec
 	if in.ProjectRef != nil {
 		in, out := &in.ProjectRef, &out.ProjectRef
 		*out = new(v1beta1.ProjectRef)
+		**out = **in
+	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.Collection != nil {
+		in, out := &in.Collection, &out.Collection
+		*out = new(string)
 		**out = **in
 	}
 	if in.ResourceID != nil {
@@ -3308,6 +3343,16 @@ func (in *DiscoveryEngineSampleQuerySpec) DeepCopyInto(out *DiscoveryEngineSampl
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.SampleQuerySet != nil {
+		in, out := &in.SampleQuerySet, &out.SampleQuerySet
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -3621,6 +3666,16 @@ func (in *DiscoveryEngineServingConfigSpec) DeepCopyInto(out *DiscoveryEngineSer
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.DataStore != nil {
+		in, out := &in.DataStore, &out.DataStore
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -3865,6 +3920,16 @@ func (in *DiscoveryEngineSessionSpec) DeepCopyInto(out *DiscoveryEngineSessionSp
 	if in.ProjectRef != nil {
 		in, out := &in.ProjectRef, &out.ProjectRef
 		*out = new(v1beta1.ProjectRef)
+		**out = **in
+	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.DataStore != nil {
+		in, out := &in.DataStore, &out.DataStore
+		*out = new(string)
 		**out = **in
 	}
 	if in.ResourceID != nil {

@@ -184,44 +184,25 @@ spec:
                 description: Optional. Display name of the framework. The maximum
                   length is 200 characters.
                 type: string
-              projectRef:
-                description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
+              location:
+                description: The location of this resource.
+                type: string
+              organizationRef:
+                description: The organization that this resource belongs to.
                 properties:
                   external:
-                    description: The `projectID` field of a project, when not managed
+                    description: The 'name' field of an organization, when not managed
                       by Config Connector.
                     type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
-                  name:
-                    description: The `name` field of a `Project` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `Project` resource.
-                    type: string
+                required:
+                - external
                 type: object
               resourceID:
                 description: The CloudSecurityComplianceFramework name. If not given,
                   the metadata.name will be used.
                 type: string
             required:
-            - projectRef
+            - organizationRef
             type: object
           status:
             description: CloudSecurityComplianceFrameworkStatus defines the config

@@ -25,8 +25,8 @@ var SecurityCenterMuteConfigGVK = GroupVersion.WithKind("SecurityCenterMuteConfi
 // SecurityCenterMuteConfigSpec defines the desired state of SecurityCenterMuteConfig
 // +kcc:spec:proto=google.cloud.securitycenter.v1.MuteConfig
 type SecurityCenterMuteConfigSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	// The organization that this resource belongs to.
+	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef"`
 
 	// The SecurityCenterMuteConfig name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`

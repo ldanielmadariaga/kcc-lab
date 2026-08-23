@@ -63,6 +63,37 @@ spec:
             description: ManagedKafkaConsumerGroupSpec defines the desired state of
               ManagedKafkaConsumerGroup
             properties:
+              clusterRef:
+                description: The Cluster that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed ManagedKafkaCluster
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/clusters/{{clusterID}}".
+                    type: string
+                  name:
+                    description: The name of a ManagedKafkaCluster resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a ManagedKafkaCluster resource.
+                    type: string
+                type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:

@@ -61,6 +61,9 @@ spec:
           spec:
             description: DataprocNodeGroupSpec defines the desired state of DataprocNodeGroup
             properties:
+              cluster:
+                description: The Cluster that this resource belongs to.
+                type: string
               labels:
                 additionalProperties:
                   type: string
@@ -337,6 +340,9 @@ spec:
                     description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
+              region:
+                description: The location of this resource.
+                type: string
               resourceID:
                 description: The DataprocNodeGroup name. If not given, the metadata.name
                   will be used.

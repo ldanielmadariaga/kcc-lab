@@ -28,6 +28,14 @@ type DiscoveryEngineEngineSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/collections/{collection}/engines/{engine}
+	Location *string `json:"location,omitempty"`
+
+	// The Collection that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/collections/{collection}/engines/{engine}
+	Collection *string `json:"collection,omitempty"`
+
 	// The DiscoveryEngineEngine name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Configurations for the Chat Engine. Only applicable if

@@ -29,6 +29,7 @@ type APIHubInstanceSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/apiHubInstances/{api_hub_instance}
 	Location *string `json:"location"`
 
 	// The APIHubInstance name. If not given, the metadata.name will be used.

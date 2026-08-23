@@ -29,6 +29,7 @@ type DataplexMetadataJobSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/metadataJobs/{metadataJob}
 	Location *string `json:"location"`
 
 	// The DataplexMetadataJob name. If not given, the metadata.name will be used.

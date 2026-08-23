@@ -80,6 +80,19 @@ spec:
                 description: Optional. The finding_category of the cloud control.
                   The maximum length is 255 characters.
                 type: string
+              location:
+                description: The location of this resource.
+                type: string
+              organizationRef:
+                description: The organization that this resource belongs to.
+                properties:
+                  external:
+                    description: The 'name' field of an organization, when not managed
+                      by Config Connector.
+                    type: string
+                required:
+                - external
+                type: object
               parameterSpec:
                 description: Optional. The parameter spec of the cloud control.
                 items:
@@ -246,38 +259,6 @@ spec:
                   - valueType
                   type: object
                 type: array
-              projectRef:
-                description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: The `projectID` field of a project, when not managed
-                      by Config Connector.
-                    type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
-                  name:
-                    description: The `name` field of a `Project` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `Project` resource.
-                    type: string
-                type: object
               remediationSteps:
                 description: Optional. The remediation steps for the findings generated
                   by the cloud control. The maximum length is 400 characters.
@@ -342,7 +323,7 @@ spec:
                   type: string
                 type: array
             required:
-            - projectRef
+            - organizationRef
             type: object
           status:
             description: CloudSecurityComplianceCloudControlStatus defines the config

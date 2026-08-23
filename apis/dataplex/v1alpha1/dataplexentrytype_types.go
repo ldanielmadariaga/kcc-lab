@@ -29,6 +29,7 @@ type DataplexEntryTypeSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/entryTypes/{entry_type}
 	Location *string `json:"location"`
 
 	// The DataplexEntryType name. If not given, the metadata.name will be used.

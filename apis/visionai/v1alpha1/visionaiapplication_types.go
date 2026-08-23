@@ -29,6 +29,7 @@ type VisionAIApplicationSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/applications/{application}
 	Location *string `json:"location"`
 
 	// The VisionAIApplication name. If not given, the metadata.name will be used.

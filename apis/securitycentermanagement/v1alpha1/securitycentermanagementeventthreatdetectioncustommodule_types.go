@@ -26,8 +26,12 @@ var SecurityCenterManagementEventThreatDetectionCustomModuleGVK = GroupVersion.W
 // SecurityCenterManagementEventThreatDetectionCustomModuleSpec defines the desired state of SecurityCenterManagementEventThreatDetectionCustomModule
 // +kcc:spec:proto=google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule
 type SecurityCenterManagementEventThreatDetectionCustomModuleSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	// The organization that this resource belongs to.
+	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=organizations/{organization}/locations/{location}/eventThreatDetectionCustomModules/{event_threat_detection_custom_module}
+	Location *string `json:"location,omitempty"`
 
 	// The SecurityCenterManagementEventThreatDetectionCustomModule name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`

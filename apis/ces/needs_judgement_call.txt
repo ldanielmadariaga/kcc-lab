@@ -13,9 +13,9 @@ kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.clientCertificateSetti
 kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.evaluationPersonas[].name" reason=possible-reference-by-description
 kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.guardrails" reason=possible-reference-by-description
 kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.audioRecordingConfig.gcsBucket" reason=possible-reference-by-description
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.bigqueryExportSettings.project" reason=possible-reference-by-name (ProjectRef)
 kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.evaluationAudioRecordingConfig.gcsBucket" reason=possible-reference-by-description
 kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.redactionConfig.deidentifyTemplate" reason=possible-reference-by-description
 kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.redactionConfig.inspectTemplate" reason=possible-reference-by-description
 kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.unredactedAudioRecordingConfig.gcsBucket" reason=possible-reference-by-description
 kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.rootAgent" reason=possible-reference-by-description
-kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.bigqueryExportSettings.project" reason=possible-reference-by-name (ProjectRef)

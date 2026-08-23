@@ -28,6 +28,14 @@ type ManagedKafkaConsumerGroupSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/clusters/{cluster}/consumerGroups/{consumer_group}
+	Location *string `json:"location,omitempty"`
+
+	// The Cluster that this resource belongs to.
+	// +kcc:guess=parent-ref target=ClusterRef pattern=projects/{project}/locations/{location}/clusters/{cluster}/consumerGroups/{consumer_group}
+	ClusterRef *ClusterRef `json:"clusterRef,omitempty"`
+
 	// The ManagedKafkaConsumerGroup name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. Metadata for this consumer group for all topics it has metadata

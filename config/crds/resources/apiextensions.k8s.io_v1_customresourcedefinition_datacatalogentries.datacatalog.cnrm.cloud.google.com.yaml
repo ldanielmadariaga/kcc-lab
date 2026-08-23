@@ -195,6 +195,34 @@ spec:
                    The maximum size is 500 bytes when encoded in UTF-8.
                    Default value is an empty string.
                 type: string
+              entryGroupRef:
+                description: The EntryGroup that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed DataCatalogEntryGroup
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/entrygroups/{{entrygroupID}}".
+                    type: string
+                  name:
+                    description: The name of a DataCatalogEntryGroup resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a DataCatalogEntryGroup resource.
+                    type: string
+                type: object
               featureOnlineStoreSpec:
                 description: FeatureonlineStore spec for Vertex AI Feature Store.
                 type: object
@@ -339,6 +367,9 @@ spec:
                    underscores (_), periods (.), colons (:), slashes (/), dashes (-),
                    and hashes (#).
                    The maximum size is 200 bytes when encoded in UTF-8.
+                type: string
+              location:
+                description: The location of this resource.
                 type: string
               lookerSystemSpec:
                 description: Specification that applies to Looker sysstem. Only settable

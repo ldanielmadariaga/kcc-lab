@@ -28,6 +28,14 @@ type DiscoveryEngineSampleQuerySpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/sampleQuerySets/{sample_query_set}/sampleQueries/{sample_query}
+	Location *string `json:"location,omitempty"`
+
+	// The SampleQuerySet that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/sampleQuerySets/{sample_query_set}/sampleQueries/{sample_query}
+	SampleQuerySet *string `json:"sampleQuerySet,omitempty"`
+
 	// The DiscoveryEngineSampleQuery name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// The query entry.

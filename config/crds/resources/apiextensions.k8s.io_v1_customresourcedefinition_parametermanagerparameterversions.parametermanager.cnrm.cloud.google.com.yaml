@@ -71,6 +71,37 @@ spec:
                   A render call on a disabled resource fails with an error. Default
                   value is False.
                 type: boolean
+              location:
+                description: The location of this resource.
+                type: string
+              parameterRef:
+                description: The Parameter that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed ParameterManagerParameter
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/parameters/{{parameterID}}".
+                    type: string
+                  name:
+                    description: The name of a ParameterManagerParameter resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a ParameterManagerParameter resource.
+                    type: string
+                type: object
               payload:
                 description: Required. Immutable. Payload content of a ParameterVersion
                   resource.  This is only returned when the request provides the View

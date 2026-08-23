@@ -188,6 +188,9 @@ spec:
                   type: string
                 description: A set of custom labels supplied by user.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -224,6 +227,34 @@ spec:
                 description: The GKEBackupRestore name. If not given, the metadata.name
                   will be used.
                 type: string
+              restorePlanRef:
+                description: The RestorePlan that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed GKEBackupRestorePlan
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/restorePlans/{{restoreplanID}}".
+                    type: string
+                  name:
+                    description: The name of a GKEBackupRestorePlan resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a GKEBackupRestorePlan resource.
+                    type: string
+                type: object
               volumeDataRestorePolicyOverrides:
                 description: Optional. Immutable. Overrides the volume data restore
                   policies selected in the Restore Config for override-scoped resources.

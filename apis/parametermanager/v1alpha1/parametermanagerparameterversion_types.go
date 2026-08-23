@@ -28,6 +28,14 @@ type ParameterManagerParameterVersionSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/parameters/{parameter}/versions/{parameter_version}
+	Location *string `json:"location,omitempty"`
+
+	// The Parameter that this resource belongs to.
+	// +kcc:guess=parent-ref target=ParameterRef pattern=projects/{project}/locations/{location}/parameters/{parameter}/versions/{parameter_version}
+	ParameterRef *ParameterRef `json:"parameterRef,omitempty"`
+
 	// The ParameterManagerParameterVersion name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. Disabled boolean to determine if a ParameterVersion acts as a

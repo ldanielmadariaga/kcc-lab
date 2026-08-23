@@ -131,6 +131,9 @@ spec:
                       the form `projects/{project}/locations/{location}/keyRings/{keyring}/cryptoKeys/{key}`'
                     type: string
                 type: object
+              instance:
+                description: The Instance that this resource belongs to.
+                type: string
               location:
                 description: Immutable. The location where this cluster's nodes and
                   storage reside. For best performance, clients should be located
