@@ -340,6 +340,41 @@ def queue_candidates(path):
     return out
 
 
+# Markers the generator writes into a types file when it made a call it cannot
+# justify from the proto. A flagged field ought to carry one: the queue is a work
+# list somebody clears, the types file is what a reader opens.
+TYPES_MARKERS = ("PLACEMENT GUESSED", "REFERENCE GENERATED", "NEEDS JUDGEMENT")
+
+
+def types_markers(path):
+    """The JSON names in one types file that carry a generator note.
+
+    Read from the Go source rather than the CRD because that is where the note is
+    written; the CRD description inherits it, but only for fields that reached the
+    CRD at all.
+    """
+    out = set()
+    try:
+        src = open(path).read()
+    except OSError:
+        return out
+    pending = False
+    for line in src.split("\n"):
+        stripped = line.strip()
+        if stripped.startswith("//"):
+            if any(m in stripped for m in TYPES_MARKERS):
+                pending = True
+            continue
+        m = re.search(r'json:"([A-Za-z0-9_]+)', line)
+        if m:
+            if pending:
+                out.add(m.group(1))
+            pending = False
+        elif stripped and not stripped.startswith("//"):
+            pending = False
+    return out
+
+
 def explained(entries, path):
     """Does any queue entry name this field, allowing for the reference rename?"""
     for want in queue_candidates(path):
@@ -422,7 +457,7 @@ def main():
     for line in open(args.resources):
         if not line.strip():
             continue
-        kind, svc, _types, crd = line.rstrip("\n").split("\t")[:4]
+        kind, svc, types_path, crd = line.rstrip("\n").split("\t")[:4]
         if only is not None and kind not in only:
             continue
         cached = os.path.join(args.verbose_dir, kind + ".txt") if args.verbose_dir else None
@@ -440,6 +475,7 @@ def main():
             if cached:
                 open(cached, "w").write(text)
         n += 1
+        markers = types_markers(types_path)
         m, missing, extra = parse_score(text)
         matched.update(m)
         for section, paths in missing.items():
@@ -449,6 +485,11 @@ def main():
                 entries = q.get(kind, ())
                 if explained(entries, p):
                     gap[c]["field"] += 1
+                    # Does the generated source say anything about it too?
+                    leaf = strip_section(p).rsplit(".", 1)[-1].rstrip("[]")
+                    leaf = REF_SUFFIX.sub(lambda m: m.group(1) or "", leaf)
+                    if leaf in markers:
+                        gap[c]["in_types"] += 1
                 elif section in qsections.get(kind, ()):
                     gap[c]["section"] += 1
                 elif c == "reference-shape" and names_something_nearby(entries, p):
@@ -470,32 +511,58 @@ def main():
     missing_total = sum(sum(gap[c].values()) for c in CLASSES)
     surface = produced + missing_total
 
-    print(f"fields in KCC master's CRDs      {surface}")
-    print(f"  we produce                     {produced}"
-          f"   ({100 * produced / surface:.1f}%)")
-    print(f"  we miss                        {missing_total}"
-          f"   ({100 * missing_total / surface:.1f}%)")
-    print()
-    print(f"Two independent questions about those {missing_total}. The rows say WHY a field")
-    print("differs; the columns say WHETHER anyone was told. A field can be absent")
-    print("AND flagged -- that is the queue doing its job, not a contradiction.")
-    print()
+    # The headline: three states, one field in exactly one of them.
+    flagged_q = sum(gap[c]["field"] + gap[c]["section"] for c in CLASSES)
+    flagged_both = sum(gap[c]["in_types"] for c in CLASSES)
+    missed = missing_total - flagged_q
+
+    print(f"Against KCC master at {args.ref}, every field in its CRDs is one of three things.\n")
+    print(f"  {'1. implemented':34s} {produced:6d}   ({100 * produced / surface:.1f}%)")
+    print("        in our types and CRD, at the same path")
+    print(f"  {'2. flagged':34s} {flagged_q:6d}   ({100 * flagged_q / surface:.1f}%)")
+    print(f"        named in needs_judgement_call.txt{'':12s}{flagged_q:6d}")
+    print(f"        ...and also in the types file{'':15s}{flagged_both:6d}")
+    print(f"  {'3. missed':34s} {missed:6d}   ({100 * missed / surface:.1f}%)")
+    print("        in neither. Nobody would find out.")
+    print(f"  {'':34s} {'-' * 6}")
+    print(f"  {'fields in KCC master CRDs':34s} {surface:6d}")
+
+    emitted_elsewhere = sum(sum(gap[c].values()) for c in ACCEPTED_CLASSES)
+    unpairable = sum(gap[c]["unsure"] + gap[c]["weak"] for c in CLASSES)
+    if emitted_elsewhere or unpairable:
+        print("\n  Two things inside \"missed\" that are not quite missing:")
+        if emitted_elsewhere:
+            print(f"    {emitted_elsewhere:4d}  we do emit, but renamed or modelled differently -- a mis-cased")
+            print("          acronym, a reference without the Ref suffix, a Value union we map")
+            print("          to JSON on purpose. Broken for a user, but not absent.")
+        if unpairable:
+            print(f"    {unpairable:4d}  references the queue may well name, under a name we cannot pair")
+            print("          to upstream's. DatastreamPrivateConnection's vpc is upstream's")
+            print("          networkRef; nothing matches those by name. Counted as missed,")
+            print("          which overstates the gap rather than flattering it.")
+
+    if flagged_both < flagged_q:
+        print(f"\nThe second line of state 2 is the one to watch. {flagged_q - flagged_both} fields are named in")
+        print("the queue and nowhere in the generated source, so a person reading the type")
+        print("sees a plain string with nothing to suggest it is unfinished. The queue is a")
+        print("work list somebody clears; the types file is what a reader opens.")
+
+    print(f"\n\nBelow: why each of the {missing_total} we did not implement differs, which routes the")
+    print("fix rather than excusing it. Columns say how we know about it.\n")
 
     def row(label, counters):
-        f, sec, uns, weak, u = (counters["field"], counters["section"],
-                                counters["unsure"], counters["weak"],
-                                counters["unflagged"])
-        print(f"  {label:24s} {f + sec + uns + weak + u:8d} {f:9d} {sec:11d} "
-              f"{uns:8d} {weak:6d} {u:10d}")
+        f, sec = counters["field"], counters["section"]
+        total = sum(counters.values()) - counters["in_types"]
+        print(f"  {label:24s} {total:8d} {f:9d} {sec:11d} {total - f - sec:9d}")
 
     print(f"  {'why it differs':24s} {'we miss':>8s} {'by field':>9s} "
-          f"{'by section':>11s} {'unsure':>8s} {'weak':>6s} {'undetected':>10s}")
+          f"{'by section':>11s} {'missed':>9s}")
     for c in TARGET_CLASSES:
         row(c, gap[c])
     target = Counter()
     for c in TARGET_CLASSES:
         target.update(gap[c])
-    print("  " + "-" * 79)
+    print("  " + "-" * 63)
     row("subtotal, the target", target)
 
     accepted = Counter()
@@ -506,31 +573,10 @@ def main():
         for c in ACCEPTED_CLASSES:
             row(c, gap[c])
 
-    unflagged = target["unflagged"]
-    tmiss = sum(target.values())
-    print(f"\n{unflagged} fields we miss with nobody told. That is the number to drive to")
-    print(f"zero -- a share of the {tmiss} we miss in the target classes, not of the")
-    print(f"{surface} fields KCC has.")
-    if never_queued:
-        kinds = sorted({k for k, _ in never_queued})
-        print(f"\nOf those {unflagged}, {len(never_queued)} are in {len(kinds)} Kinds with no queue entry at")
-        print("all, so no detector missed them -- nothing ran. Their types file already")
-        print("existed when --prepopulate-spec went past, so no queue was written, and")
-        print("queue-hints then skips them because it will not queue a resource nobody is")
-        print("generating. Fixing these means getting the resource through the pipeline,")
-        print("not improving detection:")
-        print("  " + ", ".join(kinds))
-
-    if target["unsure"] or target["weak"]:
-        print(f"\n\"unsure\" and \"weak\" are both references where the queue named a field at the")
-        print("same parent but upstream renamed it, so the two cannot be paired by name.")
-        print(f"The {target['unsure']} in \"unsure\" sit inside a sub-message, where an entry at the same")
-        print(f"parent probably is about them. The {target['weak']} in \"weak\" are top-level, where the")
-        print("parent is the whole section and any entry anywhere in the resource counts --")
-        print("barely evidence at all. Split rather than reported as one number, which")
-        print("would flatter the result.")
-    print('Watch "we produce" alongside it: a change that flags fields by no longer')
-    print("producing them improves this report and takes working fields away.")
+    print("\nThe target is state 3 at zero: a field a human must decide is a fine")
+    print("outcome, a field nobody was told about is not. Watch \"implemented\"")
+    print("alongside it -- flagging fields by no longer emitting them improves this")
+    print("report and takes working fields away.")
 
     if args.list_silent:
         for c in CLASSES:
