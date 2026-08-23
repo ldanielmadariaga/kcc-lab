@@ -83,7 +83,7 @@ func getIdentityFromVertexAITensorboardSpec(ctx context.Context, reader client.R
 		}
 	}
 
-	location := obj.Spec.Region
+	location := common.ValueOf(obj.Spec.Region)
 	if location == "" {
 		return nil, fmt.Errorf("cannot resolve region")
 	}

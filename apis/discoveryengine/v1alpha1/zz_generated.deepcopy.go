@@ -3507,6 +3507,16 @@ func (in *DiscoveryEngineSearchEngineSpec) DeepCopyInto(out *DiscoveryEngineSear
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
+	if in.DataStore != nil {
+		in, out := &in.DataStore, &out.DataStore
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)

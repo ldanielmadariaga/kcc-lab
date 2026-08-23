@@ -20,13 +20,19 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-var DiscoveryEngineSearchEngineGVK = GroupVersion.WithKind("DiscoveryEngineSearchEngine")
-
 // DiscoveryEngineSearchEngineSpec defines the desired state of DiscoveryEngineSearchEngine
 // +kcc:spec:proto=google.cloud.discoveryengine.v1.SiteSearchEngine
 type DiscoveryEngineSearchEngineSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/dataStores/{data_store}/siteSearchEngine
+	Location *string `json:"location,omitempty"`
+
+	// The DataStore that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/dataStores/{data_store}/siteSearchEngine
+	DataStore *string `json:"dataStore,omitempty"`
 
 	// The DiscoveryEngineSearchEngine name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`

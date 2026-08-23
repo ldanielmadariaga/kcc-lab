@@ -61,38 +61,161 @@ spec:
           spec:
             description: APIHubDeploymentSpec defines the desired state of APIHubDeployment
             properties:
-              deploymentTypeRef:
+              attributes:
+                additionalProperties:
+                  properties:
+                    enumValues:
+                      description: The attribute values associated with a resource
+                        in case attribute data type is enum.
+                      properties:
+                        values:
+                          description: Required. The attribute values in case attribute
+                            data type is enum.
+                          items:
+                            properties:
+                              description:
+                                description: Optional. The detailed description of
+                                  the allowed value.
+                                type: string
+                              displayName:
+                                description: Required. The display name of the allowed
+                                  value.
+                                type: string
+                              id:
+                                description: |-
+                                  Required. The ID of the allowed value.
+                                   * If provided, the same will be used. The service will throw an error if
+                                   the specified id is already used by another allowed value in the same
+                                   attribute resource.
+                                   * If not provided, a system generated id derived from the display name
+                                   will be used. In this case, the service will handle conflict resolution
+                                   by adding a system generated suffix in case of duplicates.
+
+                                   This value should be 4-63 characters, and valid characters
+                                   are /[a-z][0-9]-/.
+                                type: string
+                              immutable:
+                                description: Optional. When set to true, the allowed
+                                  value cannot be updated or deleted by the user.
+                                  It can only be true for System defined attributes.
+                                type: boolean
+                            required:
+                            - displayName
+                            - id
+                            type: object
+                          type: array
+                      required:
+                      - values
+                      type: object
+                    jsonValues:
+                      description: The attribute values associated with a resource
+                        in case attribute data type is JSON.
+                      properties:
+                        values:
+                          description: Required. The attribute values in case attribute
+                            data type is string or JSON.
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - values
+                      type: object
+                    stringValues:
+                      description: The attribute values associated with a resource
+                        in case attribute data type is string.
+                      properties:
+                        values:
+                          description: Required. The attribute values in case attribute
+                            data type is string or JSON.
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - values
+                      type: object
+                  type: object
+                description: 'Optional. The list of user defined attributes associated
+                  with the deployment resource. The key is the attribute name. It
+                  will be of the format: `projects/{project}/locations/{location}/attributes/{attribute}`.
+                  The value is the attribute values associated with the resource.'
+                type: object
+              deploymentType:
                 description: 'Required. The type of deployment. This maps to the following
                   system defined attribute: `projects/{project}/locations/{location}/attributes/system-deployment-type`
                   attribute. The number of values for this attribute will be based
                   on the cardinality of the attribute. The same can be retrieved via
                   GetAttribute API. All values should be from the list of allowed
                   values defined for the attribute.'
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
-                  external:
-                    description: The `id` of an allowed value of an attribute, when
-                      not managed by Config Connector.
-                    type: string
-                  name:
-                    description: The `name` field of a `APIHubAttribute` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `APIHubAttribute` resource.
-                    type: string
+                  enumValues:
+                    description: The attribute values associated with a resource in
+                      case attribute data type is enum.
+                    properties:
+                      values:
+                        description: Required. The attribute values in case attribute
+                          data type is enum.
+                        items:
+                          properties:
+                            description:
+                              description: Optional. The detailed description of the
+                                allowed value.
+                              type: string
+                            displayName:
+                              description: Required. The display name of the allowed
+                                value.
+                              type: string
+                            id:
+                              description: |-
+                                Required. The ID of the allowed value.
+                                 * If provided, the same will be used. The service will throw an error if
+                                 the specified id is already used by another allowed value in the same
+                                 attribute resource.
+                                 * If not provided, a system generated id derived from the display name
+                                 will be used. In this case, the service will handle conflict resolution
+                                 by adding a system generated suffix in case of duplicates.
+
+                                 This value should be 4-63 characters, and valid characters
+                                 are /[a-z][0-9]-/.
+                              type: string
+                            immutable:
+                              description: Optional. When set to true, the allowed
+                                value cannot be updated or deleted by the user. It
+                                can only be true for System defined attributes.
+                              type: boolean
+                          required:
+                          - displayName
+                          - id
+                          type: object
+                        type: array
+                    required:
+                    - values
+                    type: object
+                  jsonValues:
+                    description: The attribute values associated with a resource in
+                      case attribute data type is JSON.
+                    properties:
+                      values:
+                        description: Required. The attribute values in case attribute
+                          data type is string or JSON.
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - values
+                    type: object
+                  stringValues:
+                    description: The attribute values associated with a resource in
+                      case attribute data type is string.
+                    properties:
+                      values:
+                        description: Required. The attribute values in case attribute
+                          data type is string or JSON.
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - values
+                    type: object
                 type: object
               description:
                 description: Optional. The description of the deployment.
@@ -114,38 +237,83 @@ spec:
                 items:
                   type: string
                 type: array
-              environmentRef:
+              environment:
                 description: 'Optional. The environment mapping to this deployment.
                   This maps to the following system defined attribute: `projects/{project}/locations/{location}/attributes/system-environment`
                   attribute. The number of values for this attribute will be based
                   on the cardinality of the attribute. The same can be retrieved via
                   GetAttribute API. All values should be from the list of allowed
                   values defined for the attribute.'
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
-                  external:
-                    description: The `id` of an allowed value of an attribute, when
-                      not managed by Config Connector.
-                    type: string
-                  name:
-                    description: The `name` field of a `APIHubAttribute` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `APIHubAttribute` resource.
-                    type: string
+                  enumValues:
+                    description: The attribute values associated with a resource in
+                      case attribute data type is enum.
+                    properties:
+                      values:
+                        description: Required. The attribute values in case attribute
+                          data type is enum.
+                        items:
+                          properties:
+                            description:
+                              description: Optional. The detailed description of the
+                                allowed value.
+                              type: string
+                            displayName:
+                              description: Required. The display name of the allowed
+                                value.
+                              type: string
+                            id:
+                              description: |-
+                                Required. The ID of the allowed value.
+                                 * If provided, the same will be used. The service will throw an error if
+                                 the specified id is already used by another allowed value in the same
+                                 attribute resource.
+                                 * If not provided, a system generated id derived from the display name
+                                 will be used. In this case, the service will handle conflict resolution
+                                 by adding a system generated suffix in case of duplicates.
+
+                                 This value should be 4-63 characters, and valid characters
+                                 are /[a-z][0-9]-/.
+                              type: string
+                            immutable:
+                              description: Optional. When set to true, the allowed
+                                value cannot be updated or deleted by the user. It
+                                can only be true for System defined attributes.
+                              type: boolean
+                          required:
+                          - displayName
+                          - id
+                          type: object
+                        type: array
+                    required:
+                    - values
+                    type: object
+                  jsonValues:
+                    description: The attribute values associated with a resource in
+                      case attribute data type is JSON.
+                    properties:
+                      values:
+                        description: Required. The attribute values in case attribute
+                          data type is string or JSON.
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - values
+                    type: object
+                  stringValues:
+                    description: The attribute values associated with a resource in
+                      case attribute data type is string.
+                    properties:
+                      values:
+                        description: Required. The attribute values in case attribute
+                          data type is string or JSON.
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - values
+                    type: object
                 type: object
               location:
                 description: The location of this resource.
@@ -192,41 +360,86 @@ spec:
                   is of type APIGEE_PROXY, then this field will contain the URI to
                   the management UI of the proxy.
                 type: string
-              sloRef:
+              slo:
                 description: 'Optional. The SLO for this deployment. This maps to
                   the following system defined attribute: `projects/{project}/locations/{location}/attributes/system-slo`
                   attribute. The number of values for this attribute will be based
                   on the cardinality of the attribute. The same can be retrieved via
                   GetAttribute API. All values should be from the list of allowed
                   values defined for the attribute.'
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
                 properties:
-                  external:
-                    description: The `id` of an allowed value of an attribute, when
-                      not managed by Config Connector.
-                    type: string
-                  name:
-                    description: The `name` field of a `APIHubAttribute` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `APIHubAttribute` resource.
-                    type: string
+                  enumValues:
+                    description: The attribute values associated with a resource in
+                      case attribute data type is enum.
+                    properties:
+                      values:
+                        description: Required. The attribute values in case attribute
+                          data type is enum.
+                        items:
+                          properties:
+                            description:
+                              description: Optional. The detailed description of the
+                                allowed value.
+                              type: string
+                            displayName:
+                              description: Required. The display name of the allowed
+                                value.
+                              type: string
+                            id:
+                              description: |-
+                                Required. The ID of the allowed value.
+                                 * If provided, the same will be used. The service will throw an error if
+                                 the specified id is already used by another allowed value in the same
+                                 attribute resource.
+                                 * If not provided, a system generated id derived from the display name
+                                 will be used. In this case, the service will handle conflict resolution
+                                 by adding a system generated suffix in case of duplicates.
+
+                                 This value should be 4-63 characters, and valid characters
+                                 are /[a-z][0-9]-/.
+                              type: string
+                            immutable:
+                              description: Optional. When set to true, the allowed
+                                value cannot be updated or deleted by the user. It
+                                can only be true for System defined attributes.
+                              type: boolean
+                          required:
+                          - displayName
+                          - id
+                          type: object
+                        type: array
+                    required:
+                    - values
+                    type: object
+                  jsonValues:
+                    description: The attribute values associated with a resource in
+                      case attribute data type is JSON.
+                    properties:
+                      values:
+                        description: Required. The attribute values in case attribute
+                          data type is string or JSON.
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - values
+                    type: object
+                  stringValues:
+                    description: The attribute values associated with a resource in
+                      case attribute data type is string.
+                    properties:
+                      values:
+                        description: Required. The attribute values in case attribute
+                          data type is string or JSON.
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - values
+                    type: object
                 type: object
             required:
-            - deploymentTypeRef
+            - deploymentType
             - displayName
             - endpoints
             - location
@@ -290,6 +503,45 @@ spec:
                     description: Output only. The time at which the deployment was
                       created.
                     type: string
+                  deploymentType:
+                    description: 'Required. The type of deployment. This maps to the
+                      following system defined attribute: `projects/{project}/locations/{location}/attributes/system-deployment-type`
+                      attribute. The number of values for this attribute will be based
+                      on the cardinality of the attribute. The same can be retrieved
+                      via GetAttribute API. All values should be from the list of
+                      allowed values defined for the attribute.'
+                    properties:
+                      attribute:
+                        description: 'Output only. The name of the attribute. Format:
+                          projects/{project}/locations/{location}/attributes/{attribute}'
+                        type: string
+                    type: object
+                  environment:
+                    description: 'Optional. The environment mapping to this deployment.
+                      This maps to the following system defined attribute: `projects/{project}/locations/{location}/attributes/system-environment`
+                      attribute. The number of values for this attribute will be based
+                      on the cardinality of the attribute. The same can be retrieved
+                      via GetAttribute API. All values should be from the list of
+                      allowed values defined for the attribute.'
+                    properties:
+                      attribute:
+                        description: 'Output only. The name of the attribute. Format:
+                          projects/{project}/locations/{location}/attributes/{attribute}'
+                        type: string
+                    type: object
+                  slo:
+                    description: 'Optional. The SLO for this deployment. This maps
+                      to the following system defined attribute: `projects/{project}/locations/{location}/attributes/system-slo`
+                      attribute. The number of values for this attribute will be based
+                      on the cardinality of the attribute. The same can be retrieved
+                      via GetAttribute API. All values should be from the list of
+                      allowed values defined for the attribute.'
+                    properties:
+                      attribute:
+                        description: 'Output only. The name of the attribute. Format:
+                          projects/{project}/locations/{location}/attributes/{attribute}'
+                        type: string
+                    type: object
                   updateTime:
                     description: Output only. The time at which the deployment was
                       last updated.

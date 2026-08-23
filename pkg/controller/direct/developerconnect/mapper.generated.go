@@ -25,6 +25,7 @@ package developerconnect
 
 import (
 	pb "cloud.google.com/go/developerconnect/apiv1/developerconnectpb"
+	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/developerconnect/v1alpha1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )

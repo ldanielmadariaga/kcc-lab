@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common/identity"
 	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/gcpurls"
@@ -70,7 +71,7 @@ func getIdentityFromComputeAutoscalerSpec(ctx context.Context, reader client.Rea
 		return nil, fmt.Errorf("cannot resolve resource ID")
 	}
 
-	zone := obj.Spec.Zone
+	zone := common.ValueOf(obj.Spec.Zone)
 	if zone == "" {
 		return nil, fmt.Errorf("cannot resolve zone: spec.zone is empty")
 	}

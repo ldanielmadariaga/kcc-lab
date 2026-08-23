@@ -157,30 +157,6 @@ func APIHubInstanceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIH
 	out.StateMessage = direct.ValueOf(in.StateMessage)
 	return out
 }
-func APIHubInstanceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ApiHubInstance) *krm.APIHubInstanceObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.APIHubInstanceObservedState{}
-	// MISSING: Name
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.StateMessage = direct.LazyPtr(in.GetStateMessage())
-	return out
-}
-func APIHubInstanceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIHubInstanceObservedState) *pb.ApiHubInstance {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ApiHubInstance{}
-	// MISSING: Name
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	out.State = direct.Enum_ToProto[pb.ApiHubInstance_State](mapCtx, in.State)
-	out.StateMessage = direct.ValueOf(in.StateMessage)
-	return out
-}
 func APIHubInstanceSpec_FromProto(mapCtx *direct.MapContext, in *pb.ApiHubInstance) *krm.APIHubInstanceSpec {
 	if in == nil {
 		return nil

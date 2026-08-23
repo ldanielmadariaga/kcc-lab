@@ -19,3 +19,17 @@ kind=APIHubExternalAPI group=apihub.cnrm.cloud.google.com: resource reason=untri
 kind=APIHubExternalAPI group=apihub.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/externalApis/{external_api}; confirm the resource is regional and that this is the name for it)
 kind=APIHubInstance group=apihub.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=APIHubInstance group=apihub.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/apiHubInstances/{api_hub_instance}; confirm the resource is regional and that this is the name for it)
+kind=APIHubAPI group=apihub.cnrm.cloud.google.com: field ".spec.apiStyle" reason=possible-reference-by-description
+kind=APIHubAPI group=apihub.cnrm.cloud.google.com: field ".spec.attributes" reason=possible-reference-by-description
+kind=APIHubAPI group=apihub.cnrm.cloud.google.com: field ".spec.businessUnit" reason=possible-reference-by-description
+kind=APIHubAPI group=apihub.cnrm.cloud.google.com: field ".spec.maturityLevel" reason=possible-reference-by-description
+kind=APIHubAPI group=apihub.cnrm.cloud.google.com: field ".spec.selectedVersion" reason=possible-reference-by-description
+kind=APIHubAPI group=apihub.cnrm.cloud.google.com: field ".spec.targetUser" reason=possible-reference-by-description
+kind=APIHubAPI group=apihub.cnrm.cloud.google.com: field ".spec.team" reason=possible-reference-by-description
+kind=APIHubDeployment group=apihub.cnrm.cloud.google.com: field ".spec.attributes" reason=possible-reference-by-description
+kind=APIHubDeployment group=apihub.cnrm.cloud.google.com: field ".spec.deploymentType" reason=possible-reference-by-description
+kind=APIHubDeployment group=apihub.cnrm.cloud.google.com: field ".spec.environment" reason=possible-reference-by-description
+kind=APIHubDeployment group=apihub.cnrm.cloud.google.com: field ".spec.slo" reason=possible-reference-by-description
+kind=APIHubExternalAPI group=apihub.cnrm.cloud.google.com: field ".spec.attributes" reason=possible-reference-by-description
+kind=APIHubInstance group=apihub.cnrm.cloud.google.com: field ".spec.config.cmekKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=APIHubPlugin group=apihub.cnrm.cloud.google.com: field ".spec.type" reason=possible-reference-by-description

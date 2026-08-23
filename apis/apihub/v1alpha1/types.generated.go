@@ -454,26 +454,6 @@ type APIObservedState struct {
 	APIStyle *AttributeValuesObservedState `json:"apiStyle,omitempty"`
 }
 
-// +kcc:observedstate:proto=google.cloud.apihub.v1.ApiHubInstance
-type APIHubInstanceObservedState struct {
-	// Output only. Creation timestamp.
-	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. Last update timestamp.
-	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. The current state of the ApiHub instance.
-	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.state
-	State *string `json:"state,omitempty"`
-
-	// Output only. Extra information about ApiHub instance state. Currently the
-	//  message would be populated when state is `FAILED`.
-	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.state_message
-	StateMessage *string `json:"stateMessage,omitempty"`
-}
-
 // +kcc:observedstate:proto=google.cloud.apihub.v1.AttributeValues
 type AttributeValuesObservedState struct {
 	// Output only. The name of the attribute.

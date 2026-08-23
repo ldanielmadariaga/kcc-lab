@@ -156,6 +156,7 @@ spec:
                             experimentalConfig:
                               description: Experimental configurations. Structured
                                 object containing not-yet-stable processor parameters.
+                              x-kubernetes-preserve-unknown-fields: true
                             gcsOutputConfig:
                               description: Configs of Cloud Storage output processor.
                               properties:

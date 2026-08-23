@@ -833,6 +833,7 @@ spec:
                           type: array
                         default:
                           description: Optional. Default value of the data.
+                          x-kubernetes-preserve-unknown-fields: true
                         defs:
                           additionalProperties: {}
                           description: Optional. A map of definitions for use by `ref`.
@@ -1051,6 +1052,7 @@ spec:
                               type: array
                             default:
                               description: Optional. Default value of the data.
+                              x-kubernetes-preserve-unknown-fields: true
                             defs:
                               additionalProperties:
                                 properties:
@@ -1066,6 +1068,7 @@ spec:
                                     type: array
                                   default:
                                     description: Optional. Default value of the data.
+                                    x-kubernetes-preserve-unknown-fields: true
                                   defs:
                                     additionalProperties: {}
                                     description: Optional. A map of definitions for
@@ -1226,6 +1229,7 @@ spec:
                                     type: array
                                   default:
                                     description: Optional. Default value of the data.
+                                    x-kubernetes-preserve-unknown-fields: true
                                   defs:
                                     additionalProperties: {}
                                     description: Optional. A map of definitions for

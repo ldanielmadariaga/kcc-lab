@@ -548,30 +548,28 @@ def main():
     flagged_both = sum(gap[c]["in_types"] for c in CLASSES)
     missed = missing_total - flagged_q
 
+    emitted_elsewhere = sum(sum(gap[c].values()) for c in ACCEPTED_CLASSES)
+    unpairable = sum(gap[c]["unsure"] + gap[c]["weak"] for c in CLASSES)
+
     print(f"Against KCC master at {args.ref}, every field in its CRDs is one of three things.\n")
     print(f"  {'1. implemented':34s} {produced:6d}   ({100 * produced / surface:.1f}%)")
     print("        in our types and CRD, at the same path")
     print(f"  {'2. flagged':34s} {flagged_q:6d}   ({100 * flagged_q / surface:.1f}%)")
     print(f"        named in needs_judgement_call.txt{'':12s}{flagged_q:6d}")
     print(f"        ...and also in the types file{'':15s}{flagged_both:6d}")
+    truly = missed - emitted_elsewhere - unpairable
     print(f"  {'3. missed':34s} {missed:6d}   ({100 * missed / surface:.1f}%)")
-    print("        in neither. Nobody would find out.")
+    print(f"        truly missed{'':22s}{truly:6d}   in neither our types nor the queue")
+    print(f"        emitted, renamed or reshaped{'':6s}{emitted_elsewhere:6d}   present, different name or shape")
+    print(f"        reference, name unpairable{'':8s}{unpairable:6d}   queue likely names it, we cannot prove it")
     print(f"  {'':34s} {'-' * 6}")
     print(f"  {'fields in KCC master CRDs':34s} {surface:6d}")
 
-    emitted_elsewhere = sum(sum(gap[c].values()) for c in ACCEPTED_CLASSES)
-    unpairable = sum(gap[c]["unsure"] + gap[c]["weak"] for c in CLASSES)
-    if emitted_elsewhere or unpairable:
-        print("\n  Two things inside \"missed\" that are not quite missing:")
-        if emitted_elsewhere:
-            print(f"    {emitted_elsewhere:4d}  we do emit, but renamed or modelled differently -- a mis-cased")
-            print("          acronym, a reference without the Ref suffix, a Value union we map")
-            print("          to JSON on purpose. Broken for a user, but not absent.")
-        if unpairable:
-            print(f"    {unpairable:4d}  references the queue may well name, under a name we cannot pair")
-            print("          to upstream's. DatastreamPrivateConnection's vpc is upstream's")
-            print("          networkRef; nothing matches those by name. Counted as missed,")
-            print("          which overstates the gap rather than flattering it.")
+    if unpairable:
+        print(f"\n  The {unpairable} unpairable are references upstream renamed, not just suffixed:")
+        print("  DatastreamPrivateConnection's vpc is upstream's networkRef, and no name")
+        print("  match bridges those. Counted as missed, which overstates the gap rather")
+        print("  than flattering it.")
 
     if flagged_both < flagged_q:
         print(f"\nThe second line of state 2 is the one to watch. {flagged_q - flagged_both} fields are named in")

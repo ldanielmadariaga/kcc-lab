@@ -462,6 +462,10 @@ func (g *TypeGenerator) WriteOutputMessages() error {
 		out.fileAnnotation = g.generatedFileAnnotation
 
 		goTypeName := goNameForOutputProtoMessage(msg)
+		if g.reservedTypeNames[goTypeName] {
+			klog.V(1).Infof("go type %q is a Kind the scaffolder will declare, won't generate", goTypeName)
+			continue
+		}
 		skipGenerated := true
 		goType, err := g.findTypeDeclaration(goTypeName, out.OutputDir(), skipGenerated)
 		if err != nil {

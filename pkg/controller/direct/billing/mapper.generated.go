@@ -49,26 +49,6 @@ func BillingAccountObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Bill
 	out.Parent = direct.ValueOf(in.Parent)
 	return out
 }
-func BillingAccountObservedState_FromProto(mapCtx *direct.MapContext, in *pb.BillingAccount) *krm.BillingAccountObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.BillingAccountObservedState{}
-	out.Name = direct.LazyPtr(in.GetName())
-	out.Open = direct.LazyPtr(in.GetOpen())
-	out.Parent = direct.LazyPtr(in.GetParent())
-	return out
-}
-func BillingAccountObservedState_ToProto(mapCtx *direct.MapContext, in *krm.BillingAccountObservedState) *pb.BillingAccount {
-	if in == nil {
-		return nil
-	}
-	out := &pb.BillingAccount{}
-	out.Name = direct.ValueOf(in.Name)
-	out.Open = direct.ValueOf(in.Open)
-	out.Parent = direct.ValueOf(in.Parent)
-	return out
-}
 func BillingAccountSpec_FromProto(mapCtx *direct.MapContext, in *pb.BillingAccount) *krm.BillingAccountSpec {
 	if in == nil {
 		return nil

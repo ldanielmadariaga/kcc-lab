@@ -20,31 +20,3 @@
 // resource: BillingAccount:BillingAccount
 
 package v1alpha1
-
-// +kcc:observedstate:proto=google.cloud.billing.v1.BillingAccount
-type BillingAccountObservedState struct {
-	// Output only. The resource name of the billing account. The resource name
-	//  has the form `billingAccounts/{billing_account_id}`. For example,
-	//  `billingAccounts/012345-567890-ABCDEF` would be the resource name for
-	//  billing account `012345-567890-ABCDEF`.
-	// +kcc:proto:field=google.cloud.billing.v1.BillingAccount.name
-	Name *string `json:"name,omitempty"`
-
-	// Output only. True if the billing account is open, and will therefore be
-	//  charged for any usage on associated projects. False if the billing account
-	//  is closed, and therefore projects associated with it are unable to use paid
-	//  services.
-	// +kcc:proto:field=google.cloud.billing.v1.BillingAccount.open
-	Open *bool `json:"open,omitempty"`
-
-	// Output only. The billing account's parent resource identifier.
-	//  Use the `MoveBillingAccount` method to update the account's parent resource
-	//  if it is a organization.
-	//  Format:
-	//    - `organizations/{organization_id}`, for example,
-	//      `organizations/12345678`
-	//    - `billingAccounts/{billing_account_id}`, for example,
-	//      `billingAccounts/012345-567890-ABCDEF`
-	// +kcc:proto:field=google.cloud.billing.v1.BillingAccount.parent
-	Parent *string `json:"parent,omitempty"`
-}

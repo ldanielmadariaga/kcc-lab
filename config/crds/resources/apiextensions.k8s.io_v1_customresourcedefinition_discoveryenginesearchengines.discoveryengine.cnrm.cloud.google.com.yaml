@@ -63,6 +63,12 @@ spec:
             description: DiscoveryEngineSearchEngineSpec defines the desired state
               of DiscoveryEngineSearchEngine
             properties:
+              dataStore:
+                description: The DataStore that this resource belongs to.
+                type: string
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:

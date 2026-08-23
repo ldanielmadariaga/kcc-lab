@@ -182,10 +182,29 @@ func (f *generatedFile) addImport(alias string, pkgName string) {
 // string appears in a comment, and keeping one costs nothing next to emitting an
 // import that breaks the build.
 func (f *generatedFile) usedImports() map[string]string {
+	body := f.body.String()
+
+	// Pick up any well-known qualifier the body uses but nothing registered.
+	//
+	// Imports are otherwise added per proto message name -- google.rpc.Status
+	// brings in "common", connectors' Secret brings in secretmanagerv1beta1 --
+	// which cannot cover a type chosen by shape rather than by name.
+	// google.protobuf.Value and friends become apiextensionsv1.JSON, and nothing
+	// added that import, so ces and visionai generated a file that would not
+	// compile. Registering from QualifierImports and letting the filter below
+	// drop the unused ones covers the whole class rather than one case.
+	for qualifier, pkgName := range QualifierImports {
+		if _, already := f.imports[pkgName]; already {
+			continue
+		}
+		if strings.Contains(body, qualifier+".") {
+			f.addImport(qualifier, pkgName)
+		}
+	}
+
 	if len(f.imports) == 0 {
 		return nil
 	}
-	body := f.body.String()
 	used := make(map[string]string, len(f.imports))
 	for pkgName, alias := range f.imports {
 		qualifier := alias
