@@ -1037,6 +1037,42 @@ func UpgradeHistoryEntryObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext
 	out.TargetVersion = direct.ValueOf(in.TargetVersion)
 	return out
 }
+func VMImage_v1alpha1_FromProto(mapCtx *direct.MapContext, in *notebookspb.VmImage) *krmnotebooksv1alpha1.VMImage {
+	if in == nil {
+		return nil
+	}
+	out := &krmnotebooksv1alpha1.VMImage{}
+	out.Project = direct.LazyPtr(in.GetProject())
+	out.Name = direct.LazyPtr(in.GetName())
+	out.Family = direct.LazyPtr(in.GetFamily())
+	return out
+}
+func VMImage_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnotebooksv1alpha1.VMImage) *notebookspb.VmImage {
+	if in == nil {
+		return nil
+	}
+	out := &notebookspb.VmImage{}
+	out.Project = direct.ValueOf(in.Project)
+	if oneof := VMImage_Name_ToProto(mapCtx, in.Name); oneof != nil {
+		out.Image = oneof
+	}
+	if oneof := VMImage_Family_ToProto(mapCtx, in.Family); oneof != nil {
+		out.Image = oneof
+	}
+	return out
+}
+func VMImage_Name_ToProto(mapCtx *direct.MapContext, in *string) *notebookspb.VmImage_Name {
+	if in == nil {
+		return nil
+	}
+	return &notebookspb.VmImage_Name{Name: *in}
+}
+func VMImage_Family_ToProto(mapCtx *direct.MapContext, in *string) *notebookspb.VmImage_Family {
+	if in == nil {
+		return nil
+	}
+	return &notebookspb.VmImage_Family{Family: *in}
+}
 func VMImage_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.VmImage) *krmnotebooksv1alpha1.VMImage {
 	if in == nil {
 		return nil
@@ -1081,42 +1117,6 @@ found existing non-generated mapping function "VMImage_ImageFamily_ToProto", ski
 		return &pb.VmImage_ImageFamily{ImageFamily: *in}
 	}
 */
-func VMImage_v1alpha1_FromProto(mapCtx *direct.MapContext, in *notebookspb.VmImage) *krmnotebooksv1alpha1.VMImage {
-	if in == nil {
-		return nil
-	}
-	out := &krmnotebooksv1alpha1.VMImage{}
-	out.Project = direct.LazyPtr(in.GetProject())
-	out.Name = direct.LazyPtr(in.GetName())
-	out.Family = direct.LazyPtr(in.GetFamily())
-	return out
-}
-func VMImage_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnotebooksv1alpha1.VMImage) *notebookspb.VmImage {
-	if in == nil {
-		return nil
-	}
-	out := &notebookspb.VmImage{}
-	out.Project = direct.ValueOf(in.Project)
-	if oneof := VMImage_Name_ToProto(mapCtx, in.Name); oneof != nil {
-		out.Image = oneof
-	}
-	if oneof := VMImage_Family_ToProto(mapCtx, in.Family); oneof != nil {
-		out.Image = oneof
-	}
-	return out
-}
-func VMImage_Name_ToProto(mapCtx *direct.MapContext, in *string) *notebookspb.VmImage_Name {
-	if in == nil {
-		return nil
-	}
-	return &notebookspb.VmImage_Name{Name: *in}
-}
-func VMImage_Family_ToProto(mapCtx *direct.MapContext, in *string) *notebookspb.VmImage_Family {
-	if in == nil {
-		return nil
-	}
-	return &notebookspb.VmImage_Family{Family: *in}
-}
 func VMImage_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.VmImage) *krmnotebooksv1beta1.VMImage {
 	if in == nil {
 		return nil

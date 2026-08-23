@@ -15,6 +15,8 @@
 package scaffold
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/pkg/protoapi"
@@ -149,5 +151,31 @@ func TestParentSegments(t *testing.T) {
 				t.Errorf("location field = %q, want %q", loc, g.location)
 			}
 		})
+	}
+}
+
+func TestSiblingResourceKeying(t *testing.T) {
+	dir := t.TempDir()
+	os.WriteFile(filepath.Join(dir, "discoveryenginedatastore_types.go"),
+		[]byte("package v1alpha1\n\ntype DiscoveryEngineDataStoreSpec struct{}\n"), 0644)
+	os.WriteFile(filepath.Join(dir, "discoveryenginecontrol_types.go"),
+		[]byte("package v1alpha1\n\ntype DiscoveryEngineControlSpec struct{}\n"), 0644)
+	// Not a _types.go file, so not a resource.
+	os.WriteFile(filepath.Join(dir, "helpers.go"),
+		[]byte("package v1alpha1\n\ntype NotAResourceSpec struct{}\n"), 0644)
+
+	got := SiblingResources(dir, "discoveryengine")
+	if got["datastore"] != "DiscoveryEngineDataStore" {
+		t.Errorf(`siblings["datastore"] = %q, want DiscoveryEngineDataStore`, got["datastore"])
+	}
+	if got["control"] != "DiscoveryEngineControl" {
+		t.Errorf(`siblings["control"] = %q, want DiscoveryEngineControl`, got["control"])
+	}
+	if _, ok := got["notaresource"]; ok {
+		t.Error("a type outside a _types.go file must not count as a resource")
+	}
+	// A Kind that is only the service name leaves nothing to key on.
+	if len(got) != 2 {
+		t.Errorf("got %d siblings, want 2: %v", len(got), got)
 	}
 }

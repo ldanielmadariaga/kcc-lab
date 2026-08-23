@@ -201,6 +201,18 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 		return err
 	}
 
+	// Resources this service declares, so a string field naming one can be
+	// flagged as a probable reference. Scanned from the package so a service
+	// split across several generate-types calls sees all of its own Kinds.
+	var thisRun []string
+	for _, resource := range o.Resources {
+		thisRun = append(thisRun, resource.Kind)
+	}
+	siblings := scaffold.SiblingResources(
+		filepath.Join(o.OutputAPIDirectory, goPackage),
+		strings.TrimSuffix(gv.Group, ".cnrm.cloud.google.com"),
+		thisRun...)
+
 	for _, resource := range o.Resources { // A separate loop is needed to scaffold files AFTER all the visited messages have been generated.
 		skipScaffold := o.SkipScaffoldFiles || resource.SkipScaffoldFiles
 		if skipScaffold {
@@ -215,7 +227,7 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 					if err != nil {
 						return err
 					}
-					prepopulated, err = scaffold.PrepopulateSpec(msg, writeOptions)
+					prepopulated, err = scaffold.PrepopulateSpec(msg, writeOptions, siblings)
 					if err != nil {
 						return fmt.Errorf("prepopulating spec for %s: %w", resource.Kind, err)
 					}
