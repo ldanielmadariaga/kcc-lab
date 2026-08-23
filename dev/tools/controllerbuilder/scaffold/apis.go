@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"text/template"
 
@@ -233,8 +234,32 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 		// Omitting rather than emitting is still the right default. Adding a field
 		// later is easy; removing a required one is a breaking change. The point is
 		// only that the choice gets written down instead of made silently.
-		prepopulated.Judgement = append(prepopulated.Judgement,
-			parentSegmentJudgement(cArgs.ResourcePattern, cArgs.ParentStyle)...)
+		// Emit a ref for any parent segment whose ref type this package already
+		// declares; queue the rest, which is all that used to happen.
+		known := refTypesInPackage(filepath.Join(a.BaseDir, a.GoPackage))
+		var parentRefs bytes.Buffer
+		emitted := map[string]bool{}
+		for _, v := range protoapi.ParentVariables(cArgs.ResourcePattern) {
+			if v == "project" || (v == "location" &&
+				cArgs.ParentStyle == string(protoapi.ParentProjectLocation)) {
+				continue
+			}
+			name := lowerCamel(v)
+			goType := strings.ToUpper(name[:1]) + name[1:] + "Ref"
+			if !known[goType] {
+				continue
+			}
+			parentRefs.WriteString(parentRefField(name, goType, cArgs.ResourcePattern))
+			emitted[name] = true
+		}
+		cArgs.ParentRefFields = parentRefs.String()
+
+		for _, item := range parentSegmentJudgement(cArgs.ResourcePattern, cArgs.ParentStyle) {
+			if emitted[strings.TrimPrefix(item.FieldPath, ".spec.")] {
+				continue
+			}
+			prepopulated.Judgement = append(prepopulated.Judgement, item)
+		}
 		cArgs.SpecFields = prepopulated.SpecFields
 		cArgs.ObservedStateFields = prepopulated.ObservedStateFields
 		// Computed from both bodies here rather than taken from the result,
@@ -249,6 +274,56 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 //
 // GrafeasNote is the worked example for the unknown case: unannotated, project
 // parented, and upstream gives it no location either.
+// refTypesInPackage lists the <X>Ref types the target package already declares.
+//
+// scaffoldRefsFile writes one of these per resource, so a resource whose parent
+// has been generated already has a ref type to point at. One that has not does
+// not, and emitting the field anyway would not compile -- bigtable declares no
+// InstanceRef today, datacatalog does declare EntryGroupRef.
+func refTypesInPackage(dir string) map[string]bool {
+	out := map[string]bool{}
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return out
+	}
+	re := regexp.MustCompile(`(?m)^type (\w+Ref) struct`)
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".go") {
+			continue
+		}
+		body, err := os.ReadFile(filepath.Join(dir, e.Name()))
+		if err != nil {
+			continue
+		}
+		for _, m := range re.FindAllStringSubmatch(string(body), -1) {
+			out[m[1]] = true
+		}
+	}
+	return out
+}
+
+// parentRefField renders a spec field pointing at the resource's parent.
+//
+// The types template emits projectRef and resourceID and nothing else, so a
+// resource nested under another resource -- a Bigtable Cluster under an
+// Instance, a Firestore Field under a Database -- had no way to say which
+// parent it belongs to. Upstream carries <parent>Ref for exactly these.
+//
+// The target type is a guess: the pattern gives the collection segment, and the
+// segment is assumed to name a resource in this package. That is why the field
+// carries a marker comment. Emitting it wrong and saying so beats omitting it
+// silently, but only a reviewer can confirm the target.
+func parentRefField(segment, goType, pattern string) string {
+	name := strings.ToUpper(segment[:1]) + segment[1:]
+	return fmt.Sprintf(`
+	// PARENT GUESSED: this resource is nested under %s. The target type was
+	// assumed from the collection segment of
+	//   %s
+	// Confirm it before relying on it.
+	%sRef *%s `+"`"+`json:"%sRef,omitempty"`+"`"+`
+`, name, pattern, name, goType, segment)
+}
+
 func parentSegmentJudgement(pattern, parentStyle string) []JudgementItem {
 	if parentStyle == string(protoapi.ParentUnknown) || pattern == "" {
 		// No google.api.resource, so there is no pattern to walk. Say that much,

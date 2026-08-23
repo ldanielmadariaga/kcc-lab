@@ -31,6 +31,10 @@ type APIArgs struct {
 	// from google.api.resource, e.g. "lbTrafficExtensions". Empty when the proto
 	// declares no pattern, in which case templates fall back to guessing.
 	Collection string
+	// ParentRefFields holds refs to the resource's parent, for a parent that is
+	// itself a resource. Rendered by the scaffolder, since only it can tell
+	// which ref types the target package declares.
+	ParentRefFields string
 	// ParentStyle is the shape of the resource's parent: "project_location",
 	// "project", "organization", "folder", "other" or "unknown".
 	ParentStyle string
@@ -96,6 +100,7 @@ var {{ .Kind }}GVK = GroupVersion.WithKind("{{ .Kind }}")
 type {{ .Kind }}Spec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef ` + "`" + `json:"projectRef"` + "`" + `
+{{ .ParentRefFields }}
 {{- if eq .ParentStyle "project_location" }}
 
 	// The location of this resource.
