@@ -17,3 +17,4 @@ kind=FirestoreBackupSchedule group=firestore.cnrm.cloud.google.com: field ".spec
 kind=FirestoreField group=firestore.cnrm.cloud.google.com: field ".spec.indexConfig.indexes[].name" reason=possible-reference-by-description
 kind=FirestoreDocument group=firestore.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)
 kind=FirestoreDocument group=firestore.cnrm.cloud.google.com: field ".spec.fields.KEY.referenceValue" reason=possible-reference-by-description
+kind=FirestoreField group=firestore.cnrm.cloud.google.com: field ".spec.indexConfig.ancestorField" reason=possible-reference-by-description-loose

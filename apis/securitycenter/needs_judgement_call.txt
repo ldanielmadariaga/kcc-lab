@@ -9,3 +9,4 @@ kind=SecurityCenterMuteConfig group=securitycenter.cnrm.cloud.google.com: resour
 kind=SecurityCenterBigQueryExport group=securitycenter.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=SecurityCenterMuteConfig group=securitycenter.cnrm.cloud.google.com: field ".spec.organization" reason=parent-segment-omitted (the resource pattern is organizations/{organization}/muteConfigs/{mute_config}; upstream carries each part of the name as a spec field)
 kind=SecurityCenterBigQueryExport group=securitycenter.cnrm.cloud.google.com: field ".spec.organization" reason=parent-segment-omitted (the resource pattern is organizations/{organization}/bigQueryExports/{export}; upstream carries each part of the name as a spec field)
+kind=SecurityCenterBigQueryExport group=securitycenter.cnrm.cloud.google.com: field ".spec.dataset" reason=possible-reference-by-description-loose

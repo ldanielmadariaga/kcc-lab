@@ -22,3 +22,6 @@ kind=EventarcChannelConnection group=eventarc.cnrm.cloud.google.com: field ".spe
 kind=EventarcEnrollment group=eventarc.cnrm.cloud.google.com: field ".spec.destination" reason=possible-reference-by-description
 kind=EventarcEnrollment group=eventarc.cnrm.cloud.google.com: field ".spec.messageBus" reason=possible-reference-by-description
 kind=EventarcGoogleAPISource group=eventarc.cnrm.cloud.google.com: field ".spec.destination" reason=possible-reference-by-description
+kind=EventarcChannel group=eventarc.cnrm.cloud.google.com: field ".spec.cryptoKeyName" reason=possible-reference-by-description-loose
+kind=EventarcGoogleAPISource group=eventarc.cnrm.cloud.google.com: field ".spec.cryptoKeyName" reason=possible-reference-by-description-loose
+kind=EventarcGoogleChannelConfig group=eventarc.cnrm.cloud.google.com: field ".spec.cryptoKeyName" reason=possible-reference-by-description-loose

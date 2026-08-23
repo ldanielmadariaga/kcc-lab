@@ -7,3 +7,4 @@
 
 kind=VisionAIApplication group=visionai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=VisionAIApplication group=visionai.cnrm.cloud.google.com: field ".spec.applicationConfigs.nodes[].nodeConfig.mediaWarehouseConfig.corpus" reason=possible-reference-by-description
+kind=VisionAIApplication group=visionai.cnrm.cloud.google.com: field ".spec.applicationConfigs.nodes[].nodeConfig.productRecognizerConfig.retailEndpoint" reason=possible-reference-by-description-loose

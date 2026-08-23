@@ -33,3 +33,5 @@ kind=VertexAIDeploymentResourcePool group=vertexai.cnrm.cloud.google.com: field 
 kind=VertexAIDeploymentResourcePool group=vertexai.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description
 kind=VertexAIFeaturestore group=vertexai.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
 kind=VertexAIMetadataStore group=vertexai.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAICustomJob group=vertexai.cnrm.cloud.google.com: field ".spec.jobSpec.workerPoolSpecs[].machineSpec.reservationAffinity.values" reason=possible-reference-by-description-loose
+kind=VertexAIDeploymentResourcePool group=vertexai.cnrm.cloud.google.com: field ".spec.dedicatedResources.machineSpec.reservationAffinity.values" reason=possible-reference-by-description-loose

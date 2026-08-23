@@ -209,6 +209,15 @@ func hintsFor(crd apiextensions.CustomResourceDefinition, version apiextensions.
 		}
 		verdict, _ := refs.Classify(path, props.Description)
 		reason := "possible-reference-by-description"
+		if verdict != refs.IsReference && refs.MatchDescriptionLoose(path, props.Description) {
+			// Classify wants a literal path template so that it can also gate
+			// TestMissingRefs. These are the same statement in prose -- "the
+			// resource name (URI) of", "the resource URL for" -- plus the
+			// square-bracket spelling of a template. Seeder only, so nothing
+			// reaches the ratchet.
+			verdict = refs.IsReference
+			reason = "possible-reference-by-description-loose"
+		}
 		if verdict != refs.IsReference {
 			// The description rules miss a whole class: a Secret Manager version
 			// or a VPC is often named plainly with no resource-name template to

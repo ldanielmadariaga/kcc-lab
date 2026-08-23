@@ -44,3 +44,4 @@ kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.spark.infra
 kind=DataplexZone group=dataplex.cnrm.cloud.google.com: field ".spec.lake" reason=parent-segment-omitted (the resource pattern is projects/{project}/locations/{location}/lakes/{lake}/zones/{zone}; upstream carries each part of the name as a spec field)
 kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.lake" reason=parent-segment-omitted (the resource pattern is projects/{project}/locations/{location}/lakes/{lake}/tasks/{task}; upstream carries each part of the name as a spec field)
 kind=DataplexTask group=dataplex.cnrm.cloud.google.com: field ".spec.executionSpec.project" reason=possible-reference-by-name (ProjectRef)
+kind=DataplexDataScan group=dataplex.cnrm.cloud.google.com: field ".spec.data.resource" reason=possible-reference-by-description-loose

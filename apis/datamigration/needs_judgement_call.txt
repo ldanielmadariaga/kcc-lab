@@ -12,3 +12,5 @@ kind=DatabaseMigrationMigrationJob group=datamigration.cnrm.cloud.google.com: fi
 kind=DatabaseMigrationMigrationJob group=datamigration.cnrm.cloud.google.com: field ".spec.reverseSSHConnectivity.vpc" reason=possible-reference-by-name (ComputeNetworkRef)
 kind=DatabaseMigrationMigrationJob group=datamigration.cnrm.cloud.google.com: field ".spec.vpcPeeringConnectivity.vpc" reason=possible-reference-by-name (ComputeNetworkRef)
 kind=DatabaseMigrationPrivateConnection group=datamigration.cnrm.cloud.google.com: field ".spec.vpcPeeringConfig.vpcName" reason=possible-reference-by-name (ComputeNetworkRef)
+kind=DatabaseMigrationMigrationJob group=datamigration.cnrm.cloud.google.com: field ".spec.destination" reason=possible-reference-by-description-loose
+kind=DatabaseMigrationMigrationJob group=datamigration.cnrm.cloud.google.com: field ".spec.source" reason=possible-reference-by-description-loose

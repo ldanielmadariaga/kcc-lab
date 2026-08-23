@@ -28,7 +28,10 @@
 // abandoned.
 package refs
 
-import "strings"
+import (
+	"regexp"
+	"strings"
+)
 
 // Verdict is what the rules concluded about a field.
 type Verdict int
@@ -419,6 +422,59 @@ func wholeWordNotSuffix(word, exclude string) func(string) bool {
 		}
 		return false
 	}
+}
+
+// looseDescriptionRules recognise a description that says "this is a resource
+// name" in prose rather than by spelling out a path template.
+//
+// hasResourceNameTemplate is deliberately narrow: it wants projects/{ or
+// projects/< so that ordinary prose cannot match. That misses three forms that
+// occur across the corpus and mean exactly the same thing:
+//
+//	"The resource name (URI) of the destination connection profile"
+//	"The resource URL for the network edge security service"
+//	"Its format is projects/[project_id]/datasets/[bigquery_dataset_id]"
+//
+// The last is the same template with square brackets. The first two are prose.
+var (
+	looseResourceName = regexp.MustCompile(`(?i)resource name(\s*\(URI\))?\s+(of|for)\b`)
+	looseResourceURL  = regexp.MustCompile(`(?i)resource URL`)
+	looseBracketPath  = regexp.MustCompile(`(projects|locations|organizations|folders)/\[`)
+	// A catalogue entry rather than an object anyone owns. exemptSuffixes covers
+	// the bare spellings; these are the same names carrying a URI suffix, which
+	// is how Dataproc writes them -- machineTypeURI, acceleratorTypeURI, imageURI.
+	looseCatalogueEntry = regexp.MustCompile(`(?i)(zone|location|machineType|acceleratorType|image|nodeType|diskType)(URI|Url)?$`)
+)
+
+// MatchDescriptionLoose reports whether a description describes a resource name
+// in one of the prose forms above.
+//
+// Deliberately NOT consulted by Classify, for the same reason as MatchName:
+// Classify feeds TestMissingRefs, whose findings land in missingrefs.txt, a
+// ratchet that refuses new entries. The queue seeder proposes work and gates
+// nothing, so it can use this today.
+//
+// Measured over the greenfield corpus, counting only fields upstream actually
+// modelled: 20 references against 14 it would call references that upstream
+// kept plain, so 59%. Several of those 14 -- peerNetwork, metastoreService,
+// sessionTemplate -- are references in all but upstream's modelling, which is
+// the kind of thing a person confirming a hint should see.
+func MatchDescriptionLoose(fieldPath, desc string) bool {
+	leaf := fieldPath
+	if i := strings.LastIndex(leaf, "."); i >= 0 {
+		leaf = leaf[i+1:]
+	}
+	leaf = strings.TrimSuffix(leaf, "[]")
+	if looseCatalogueEntry.MatchString(leaf) {
+		return false
+	}
+	if looseResourceURL.MatchString(desc) || looseBracketPath.MatchString(desc) {
+		return true
+	}
+	// A sub-message's own "name" is the commonest false positive by far: a
+	// description saying "resource name of the conversion workspace" sits on
+	// conversionWorkspace.name, which upstream keeps plain.
+	return !strings.EqualFold(leaf, "name") && looseResourceName.MatchString(desc)
 }
 
 // MatchName returns the reference target a field's name indicates, if any.
