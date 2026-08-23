@@ -147,12 +147,33 @@ set, that was 156 defects against zero entries. These reasons now appear too:
 | `unsupported-field-type` | the type was declined; the field is a `// TODO:` and never reaches the CRD. Emitted for spec and observedState alike |
 | `observedstate-identity-field-omitted` | the proto marks it OUTPUT_ONLY, but KCC carries the resource name in `status.externalRef`. A decision, not a bug — but it was an invisible one |
 | `output-only-in-comment-only` | the proto comment says output only while carrying no `field_behavior` annotation, so the field was generated into the Spec. The entry names `.status.observedState.<field>`, where it belongs, not where it currently sits |
+| `possible-reference-by-sibling` | the field's name matches a resource this service declares, so it may want to be a reference. See the sibling rule below |
+| `parent-segment-matches-sibling` | a segment of the resource's own name is also a resource this service manages — the strongest reference hint the parent walk produces |
+
+**Some entries are comments, and that is deliberate.** A finding against a *shared nested message*
+names no single Kind, and every non-comment line in this file suppresses `[refs]` for the Kind it
+names, so inventing one would quietly switch off a real check. Those are written as `#` lines
+instead:
+
+```
+# possible-reference-by-sibling: google.cloud.compute.v1.NetworkInterface.subnetwork target=ComputeSubnetwork
+# dropped: google.cloud.bigquery.migration.v2alpha.TranslationTaskDetails.specialTokenMap reason=unsupported map type with key string and value enum
+```
+
+Read them; they are findings, not decoration. `silence_report.py` parses the sibling ones by leaf
+name, which is looser than the path matching it uses for real entries.
 
 **A resource is not finished when its fields are generated. It is finished when nothing about it is
 silent.** A field a human must decide is a fine outcome; a field nobody was told about is not. See
 [greenfield-coverage-invariant.md](greenfield-coverage-invariant.md) for what that means and how to
-measure it — `hack/tools/greenfield/silence_report.py` reports produced / flagged / unflagged
-against KCC master, and unflagged is the number to drive down.
+measure it — `hack/tools/greenfield/silence_report.py` compares every field of every baseline CRD
+against ours and reports implemented / flagged / missed.
+
+Read the `missed` breakdown rather than the total. Only its first line, **truly missed**, is a field
+we produce nowhere; the lines under it are fields we do produce, in the wrong section or as a plain
+string where upstream has a reference. Those need detection or placement work, not generation, and
+treating them as one number sends people to write generators for fields the types file already
+carries.
 
 ## Stage 2b — Seed the queue with hints
 
@@ -179,6 +200,7 @@ Entries say how confident they are, and the difference matters when you work thr
 | `possible-reference` | the proto's own `resource_reference` annotation — a fact |
 | `possible-reference-by-description` | the description names a resource path — strong |
 | `possible-reference-by-name (TargetRef)` | the field name matches a known target — a hint |
+| `possible-reference-by-sibling` | the name matches a resource the service declares — a hint, 77% right |
 
 It also flags a resource whose generated `status.observedState` came out with **no fields at all**,
 as `resource reason=empty-observedstate`. That is a fact rather than a guess — the CRD either has
@@ -204,8 +226,8 @@ to put effort.
 | **sibling resource in the same service** | the field's **name**, against the service's own Kinds | `possible-reference-by-sibling`, generator | yes |
 | `refs.MatchName` / `refs.NameRules` | the field's **name**, against a list of known spellings | `possible-reference-by-name`, seeder only | no — learned |
 
-That last column is the one that matters. **`refs.NameRules` only ever finds a reference somebody has
-already seen.** It is a lookup table of spellings; a service using a spelling nobody has met yet gets
+That last column is the one that matters. **`refs.NameRules` only ever finds a reference somebody
+has already seen.** It is a lookup table of spellings; a service using a spelling nobody has met gets
 nothing. The other three work on a service no one has looked at, because each reads something the
 service itself supplies: an annotation, a description, or its own list of resources.
 
@@ -226,7 +248,7 @@ The three rules that exist each came from a measurement:
 #### The sibling rule
 
 If a service declares a resource called `DataStore`, then a string field called `dataStore` is
-probably a reference to it. That is the whole rule. It lives in the generator rather than the seeder,
+probably a reference to it. That is the whole rule. It lives in the generator not the seeder,
 in `codegen.SiblingResource`, so it can write a `+kcc:guess=possible-reference target=…` marker onto
 the field as well as a queue entry. The seeder is a post-generation pass over CRDs and can only do
 the second.
@@ -366,7 +388,8 @@ and `+kcc:guess=placement` appeared nowhere.
 The same thing happens per service. **37 of 131 `generate.sh` scripts pass no `--prepopulate-spec`
 at all**, so their resources scaffold as three-field stubs and every upstream field scores as
 absent. `speech` was the one with in-scope resources, and its three Kinds alone accounted for 43 of
-the 232 unflagged misses — the single largest cause, and a one-line fix.
+the 232 unflagged misses at the time — the single largest cause, and a one-line fix.
+`SpeechRecognizer` went from 3 fields to 30 the moment the flag was added.
 
 Check with:
 
@@ -592,6 +615,21 @@ scaffolding a controller. See [Gaps](#gaps) and [What comes next](#what-comes-ne
 | Identity collection casing | `testdata/exceptions/identity_collection_casing.txt` | recomputed each run | `TestIdentityCollectionCasing` | **ratchet** |
 | Uncovered alpha fields | `testdata/exceptions/alpha-missingfields.txt` | recomputed each run | `TestCRDFieldPresenceInTestsForAlpha` | golden |
 | Accepted coverage gaps | `testdata/exceptions/greenfield_fields_accepted.txt` | you, with a reason | `TestGreenfieldBulkFieldCoverage` | hand-maintained input |
+
+### The measurement tools
+
+Separate from the artifacts above, because these produce numbers rather than files the build reads.
+All live in `hack/tools/greenfield/`.
+
+| tool | answers |
+|---|---|
+| `silence_report.py` | how much of upstream's CRD surface we reproduce, and how the rest is accounted for. The one to run before and after any generator change |
+| `check_guess_entries.py` | does every `+kcc:guess` marker have a judgement-queue entry? Must stay at 0. Run it after any change to what the generator emits |
+| `sibling_precision.py` | scores the sibling rule against what upstream actually did, excluding fields upstream never modelled |
+| `calculate_coverage.py` | the wider resource-level coverage number, not this per-field one |
+
+`dev/tasks/greenfield-regenerate` runs the whole corpus and finishes with `check_guess_entries.py`,
+so a broken invariant fails the run rather than waiting to be noticed.
 
 The **ratchet versus golden** distinction is the one most likely to trip you up, because it is
 invisible from the filenames and both kinds live in `testdata/exceptions/`. A golden absorbs new

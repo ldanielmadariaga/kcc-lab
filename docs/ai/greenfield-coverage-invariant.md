@@ -54,29 +54,36 @@ counts for nothing.
 
 ## The target, and what is excluded from it
 
-Three of the five classes are the target. The other two are differences we accept,
+Four of the six classes are the target. The other two are differences we accept,
 reported below the subtotal and left out of it:
 
-* `renamed` (22) is a casing table — `bootDiskMIB` against upstream's
+* `renamed` (40) is a casing table — `bootDiskMIB` against upstream's
   `bootDiskMiB`. A fix, not a judgement call.
-* `intentionally-different` (60) is the `google.protobuf.Value` union arms, which
+* `intentionally-different` (62) is the `google.protobuf.Value` union arms, which
   we map to `apiextensionsv1.JSON` on purpose. Whether to keep doing that is an
   open question and is **deliberately deferred**; it is recorded rather than
   counted as a miss.
 
 Current state of the target classes:
 
-| | we miss | by field | by section | unsure | undetected |
+| | we miss | by field | by section | unsure | unflagged |
 |---|---|---|---|---|---|
-| `reference-shape` | 303 | 191 | 0 | 86 | 26 |
-| `moved` | 102 | 36 | 41 | 0 | 25 |
-| `absent` | 85 | 43 | 1 | 0 | 41 |
-| **subtotal** | **490** | **270** | **42** | **86** | **92** |
+| `reference-shape` | 82 | 9 | 0 | 34 | 39 |
+| `moved` | 64 | 32 | 2 | 0 | 30 |
+| `absent` | 114 | 29 | 1 | 0 | 84 |
+| `reference-not-detected` | 263 | 246 | 0 | 0 | 17 |
+| **subtotal** | **523** | **316** | **3** | **34** | **170** |
 
-92 undetected, down from 450 when this was first measured. "unsure" is references where the queue
-named a field at the same parent but upstream renamed it, so the two cannot be paired — counted
-apart rather than guessed either way. What moved it is
-recorded in [greenfield-detection-gaps.md](greenfield-detection-gaps.md).
+"unsure" is references where the queue named a field at the same parent but upstream renamed it, so
+the two cannot be paired — counted apart rather than guessed either way.
+
+**The 170 unflagged split two ways, and the split is the point.** 123 are fields we produce nowhere
+at all; the other 47 are `moved` or `reference-not-detected`, meaning the field *is* in our output,
+in the wrong section or as a plain string. The report prints them on separate lines, because rolling
+them together sends people to build generation for fields the types file already carries. That was
+not always true: `truly missed` read 232 until the two emitted classes were separated out. What
+moved the numbers is recorded in
+[greenfield-detection-gaps.md](greenfield-detection-gaps.md).
 
 ## Why each field differs
 
@@ -85,9 +92,17 @@ they need different work.
 
 | class | what it means | where the fix lives |
 |---|---|---|
-| `reference-shape` | we emit a plain string, KCC has a `Ref` object | judgement; `scripts/queue-hints` |
+| `reference-not-detected` | **we emit the field as a plain string**, KCC has a `Ref` object | detection; `scripts/queue-hints` |
+| `reference-shape` | KCC has a `Ref` and we have **no field at that stem at all** | generation, then detection |
 | `moved` | we emit it in Spec, KCC has it in `status.observedState` | placement rules |
 | `absent` | it appears nowhere in our output | generation |
+
+The first two are easy to confuse and want different work. `reference-not-detected` is the field
+being *there* and unrecognised, which a detector fixes. `reference-shape` is the field being absent
+in any form, which generation has to fix before detection has anything to look at. They were one
+class until the classifier was taught to check `extras` for a plain field at the de-suffixed stem,
+and the merged number made the detection gap look four times larger than it is: of 263 plain-string
+references, 246 are already flagged.
 | `intentionally-different` | we model it deliberately otherwise, e.g. `google.protobuf.Value` as `apiextensionsv1.JSON` | a decision to record — still a CRD difference |
 | `renamed` | same field, different name: `bootDiskMIB` vs `bootDiskMiB` | the acronym list |
 
