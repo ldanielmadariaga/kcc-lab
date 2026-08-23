@@ -7,3 +7,4 @@
 
 kind=GKEMulticloudAttachedCluster group=gkemulticloud.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=GKEMulticloudAttachedCluster group=gkemulticloud.cnrm.cloud.google.com: field ".spec.fleet.project" reason=possible-reference-by-description
+kind=GKEMulticloudAttachedCluster group=gkemulticloud.cnrm.cloud.google.com: field ".spec.proxyConfig.kubernetesSecret" reason=possible-reference-by-name (SecretManagerSecretVersionRef)

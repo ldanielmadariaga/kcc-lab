@@ -388,6 +388,37 @@ var NameRules = []NameRule{
 	// networkConfig or networkPolicy is not a network.
 	{Target: "ComputeNetworkRef", Match: eq("network", "vpc", "vpcName")},
 	{Target: "KMSCryptoKeyRef", Match: eq("kmsKey", "cmekKeyName", "encryptionKey", "kmsKeyName")},
+	// A field whose name calls itself a secret, other than the SecretVersion
+	// suffix the rule above already owns. Measured over fields upstream actually
+	// modelled: 4 references, 0 kept plain. The exclusion matters -- without it
+	// the same measurement reads 16 and 16, because it picks up DevConnect's
+	// userTokenSecretVersion fields, which the suffix rule already hints and
+	// which upstream did keep plain.
+	//
+	// Names around these were measured and rejected: "ends Certificate" is 0 for
+	// 6 and "ends PrivateKey" 0 for 3, because pemCertificate and privateKey are
+	// contents rather than references, whatever ConnectorsConnection does with
+	// its own.
+	{Target: "SecretManagerSecretVersionRef", Match: wholeWordNotSuffix("secret", "SecretVersion")},
+	// Measured 4 for 4. Kept to the exact leaf: "projectNumber" and "projectID"
+	// are values, and this must not become a substring rule.
+	{Target: "ProjectRef", Match: eq("project")},
+}
+
+// wholeWordNotSuffix matches a leaf containing word as a camelCase word, unless
+// the leaf ends in exclude -- which another rule owns.
+func wholeWordNotSuffix(word, exclude string) func(string) bool {
+	return func(leaf string) bool {
+		if strings.EqualFold(leaf[max(0, len(leaf)-len(exclude)):], exclude) {
+			return false
+		}
+		for _, w := range splitCamelWords(leaf) {
+			if w == word {
+				return true
+			}
+		}
+		return false
+	}
 }
 
 // MatchName returns the reference target a field's name indicates, if any.

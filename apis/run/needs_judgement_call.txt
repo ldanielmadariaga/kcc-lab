@@ -15,3 +15,4 @@ kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.volume
 kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.volumes[].secret.secret" reason=possible-reference-by-description
 kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.vpcAccess.connector" reason=possible-reference-by-description
 kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.vpcAccess.networkInterfaces[].network" reason=possible-reference-by-name (ComputeNetworkRef)
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.volumes[].secret" reason=possible-reference-by-name (SecretManagerSecretVersionRef)

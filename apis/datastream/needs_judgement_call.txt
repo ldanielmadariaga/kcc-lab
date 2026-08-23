@@ -17,3 +17,14 @@ kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field "
 kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: field ".spec.pscInterfaceConfig.networkAttachment" reason=possible-reference-by-description
 kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: field ".spec.vpcPeeringConfig.vpc" reason=possible-reference-by-description
 kind=DatastreamRoute group=datastream.cnrm.cloud.google.com: field ".spec.privateConnection" reason=parent-segment-omitted (the resource pattern is projects/{project}/locations/{location}/privateConnections/{private_connection}/routes/{route}; upstream carries each part of the name as a spec field)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.mongodbProfile.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.mongodbProfile.sslConfig.secretManagerStoredClientKey" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.mysqlProfile.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.oracleProfile.oracleAsmConfig.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.oracleProfile.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.postgresqlProfile.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.salesforceProfile.oauth2ClientCredentials.clientSecret" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.salesforceProfile.oauth2ClientCredentials.secretManagerStoredClientSecret" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.salesforceProfile.userCredentials.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.salesforceProfile.userCredentials.secretManagerStoredSecurityToken" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.sqlServerProfile.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)

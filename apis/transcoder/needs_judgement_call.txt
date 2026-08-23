@@ -8,3 +8,4 @@
 kind=TranscoderJob group=transcoder.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
 kind=TranscoderJob group=transcoder.cnrm.cloud.google.com: field ".spec.config.encryptions[].secretManagerKeySource.secretVersion" reason=possible-reference-by-description
 kind=TranscoderJob group=transcoder.cnrm.cloud.google.com: field ".spec.config.pubsubDestination.topic" reason=possible-reference-by-description
+kind=TranscoderJob group=transcoder.cnrm.cloud.google.com: field ".spec.config.encryptions[].secretManagerKeySource" reason=possible-reference-by-name (SecretManagerSecretVersionRef)

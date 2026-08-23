@@ -192,6 +192,73 @@ confirms.
 Most of the wrong ones are fields whose exact name upstream made a reference in a *different*
 resource, so they are worth a moment's thought rather than a reflex dismissal.
 
+### How the reference detectors work, and how to extend them
+
+Three detectors feed the queue. They differ in what they can reach, and the difference decides where
+to put effort.
+
+| detector | source | reaches |
+|---|---|---|
+| `google.api.resource_reference` | the proto — a statement, not a guess; names the exact target | `possible-reference` |
+| `refs.Classify` | the field's **description** | `possible-reference-by-description`, and gates `TestMissingRefs` |
+| `refs.MatchName` / `refs.NameRules` | the field's **name** | `possible-reference-by-name`, seeder only |
+
+**`refs.NameRules` only ever finds a reference somebody has already seen.** That is its structural
+limit and the reason it should stay small. It is a lookup table of spellings; a service using a
+spelling nobody has met yet gets nothing. `Classify` is the one that generalises, because a
+description containing `projects/{project}/…` says "this is a resource name" whatever the field is
+called and whatever service it is in.
+
+So: **a growing `NameRules` list is a signal that `Classify` is missing something, not a sign of
+progress.** Check the descriptions first, every time.
+
+The three rules that exist each came from a measurement:
+
+* `hasSuffix("SecretVersion")` — every confirmed instance in the corpus ended that way, and the
+  suffix is long enough not to collide with anything else.
+* `eq("network", "vpc", "vpcName")` — admitted as a **whole leaf only**, never a substring, because
+  `network` is the exact name the rejected 2,164-finding heuristic was built on. `networkConfig` and
+  `networkPolicy` are not networks.
+* `eq("kmsKey", "cmekKeyName", "encryptionKey", "kmsKeyName")` — four observed spellings of one
+  thing. `EventarcChannel` calls it `cryptoKeyName`, a fifth, and it is missed today. That one line
+  is the limitation in miniature.
+
+#### Adding a rule
+
+1. **Read the descriptions of the fields you are trying to catch.** If they carry a resource-name
+   template, or say something like "Secret version reference", fix `Classify` instead — it will
+   catch the same fields everywhere, including services nobody has generated yet.
+2. **Measure precision before adding**, over fields upstream actually modelled: how many fields we
+   generate carry that leaf name, against how many upstream turned into a reference. Exclude fields
+   upstream has no opinion on — a rule cannot be wrong about a field nobody modelled — and exclude
+   what an existing rule already covers, or you will measure that rule instead of yours.
+3. **One rule at a time**, with `go run ./scripts/queue-hints -dry-run` before and after, so the
+   added hint count is attributable.
+4. **Record the number next to the rule.**
+
+Measurements already done, so nobody repeats them:
+
+| candidate | upstream made a Ref | upstream kept it plain | verdict |
+|---|---|---|---|
+| word `secret`, excluding the `SecretVersion` suffix | 4 | 0 | worth adding |
+| `project` | 4 | 0 | worth adding |
+| `dataStore`, `cluster`, `topic` | 3, 3, 2 | 0 | worth adding |
+| `subnetwork` | 4 | 2 | marginal |
+| `service` | 8 | 11 | no |
+| `source`, `version` | 2, 2 | 8, 15 | no |
+| ends `Certificate` | 0 | 6 | **no** — `pemCertificate`, `caCertificate` are contents, not refs |
+| ends `PrivateKey` | 0 | 3 | **no** |
+| `password` / `pass` | 0 | 0 | no evidence either way |
+
+The last three are the trap worth naming. `ConnectorsConnection` models `clientCertificate` and
+`clientPrivateKey` as references, and a rule learned from it fires on
+`CertificateManagerTrustConfig.spec.trustStores[].intermediateCAs[].pemCertificate`, which is a PEM
+blob. Past knowledge generalised badly.
+
+**What `NameRules` cannot do**: find a reference in a service nobody has looked at. Coverage here is
+not coverage generally, and the number to watch is the undetected count from
+`silence_report.py`, not the size of this list.
+
 ## Stage 3 — The judgement pass
 
 Three decisions cannot be derived from anything, and this stage is where they get made:

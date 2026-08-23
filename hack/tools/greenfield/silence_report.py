@@ -281,13 +281,29 @@ SECTION_REASONS = {
 def queue_entries():
     """Judgement entries, keyed by kind.
 
-    Returns (fields, sections): fields maps kind -> field paths named explicitly,
-    sections maps kind -> the section names a resource-level entry covers.
+    Returns (fields, sections, queued):
+
+      fields   kind -> field paths named explicitly
+      sections kind -> the section names a resource-level entry covers
+      queued   every kind the queue mentions at all
+
+    queued exists to separate two things that look identical in the output. A
+    field can be unflagged because a detector looked and missed it, or because
+    nothing ever ran for that resource. 15 of the 189 measured resources have no
+    queue entry of any kind: their types file already existed when
+    --prepopulate-spec ran, so AddTypeFile skipped and no queue was written, and
+    scripts/queue-hints then skips them by design because it will not queue a
+    resource nobody is generating. Both produce silence, and only one is a
+    detection problem.
     """
     fields = defaultdict(set)
     sections = defaultdict(set)
+    queued = set()
     for f in glob.glob("apis/*/needs_judgement_call.txt"):
         for line in open(f):
+            m = re.match(r"kind=(\S+) ", line)
+            if m:
+                queued.add(m.group(1))
             m = re.match(r'kind=(\S+) group=\S+: field "([^"]+)"', line)
             if m:
                 fields[m.group(1)].add(m.group(2).lstrip("."))
@@ -295,7 +311,7 @@ def queue_entries():
             m = re.match(r"kind=(\S+) group=\S+: resource reason=([a-zA-Z0-9-]+)", line)
             if m and m.group(2) in SECTION_REASONS:
                 sections[m.group(1)].add(SECTION_REASONS[m.group(2)])
-    return fields, sections
+    return fields, sections, queued
 
 
 # When upstream turns a field into a reference it appends "Ref" -- and it also
@@ -380,11 +396,12 @@ def main():
     if args.verbose_dir:
         os.makedirs(args.verbose_dir, exist_ok=True)
 
-    q, qsections = queue_entries()
+    q, qsections, queued_kinds = queue_entries()
     matched = Counter()
     gap = {c: Counter() for c in CLASSES}   # field-flagged / section-flagged / unflagged
     unflagged_list = defaultdict(list)
     unsure_list = defaultdict(list)
+    never_queued = []
     n = skipped = 0
 
     for line in open(args.resources):
@@ -427,6 +444,8 @@ def main():
                 else:
                     gap[c]["unflagged"] += 1
                     unflagged_list[c].append((kind, p))
+                    if kind not in queued_kinds:
+                        never_queued.append((kind, p))
 
     print(f"resources scored: {n}" + (f"   skipped: {skipped}" if skipped else ""))
     print(f"baseline: {args.ref}\n")
@@ -473,6 +492,16 @@ def main():
     print(f"\n{unflagged} fields we miss with nobody told. That is the number to drive to")
     print(f"zero -- a share of the {tmiss} we miss in the target classes, not of the")
     print(f"{surface} fields KCC has.")
+    if never_queued:
+        kinds = sorted({k for k, _ in never_queued})
+        print(f"\nOf those {unflagged}, {len(never_queued)} are in {len(kinds)} Kinds with no queue entry at")
+        print("all, so no detector missed them -- nothing ran. Their types file already")
+        print("existed when --prepopulate-spec went past, so no queue was written, and")
+        print("queue-hints then skips them because it will not queue a resource nobody is")
+        print("generating. Fixing these means getting the resource through the pipeline,")
+        print("not improving detection:")
+        print("  " + ", ".join(kinds))
+
     if target["unsure"]:
         print(f"\nThe {target['unsure']} in \"unsure\" are references where the queue named a field at")
         print("the same parent, but upstream renamed it so the two cannot be paired.")

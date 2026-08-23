@@ -27,3 +27,5 @@ kind=NotebooksSchedule group=notebooks.cnrm.cloud.google.com: field ".spec.execu
 kind=NotebooksSchedule group=notebooks.cnrm.cloud.google.com: field ".spec.executionTemplate.serviceAccount" reason=possible-reference-by-description
 kind=NotebooksSchedule group=notebooks.cnrm.cloud.google.com: field ".spec.executionTemplate.tensorboard" reason=possible-reference-by-description
 kind=NotebooksSchedule group=notebooks.cnrm.cloud.google.com: field ".spec.executionTemplate.vertexAiParameters.network" reason=possible-reference-by-description
+kind=NotebookInstanceV2 group=notebooks.cnrm.cloud.google.com: field ".spec.vmImage.project" reason=possible-reference-by-name (ProjectRef)
+kind=NotebooksEnvironment group=notebooks.cnrm.cloud.google.com: field ".spec.vmImage.project" reason=possible-reference-by-name (ProjectRef)

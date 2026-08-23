@@ -18,3 +18,4 @@ kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.redact
 kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.redactionConfig.inspectTemplate" reason=possible-reference-by-description
 kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.unredactedAudioRecordingConfig.gcsBucket" reason=possible-reference-by-description
 kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.rootAgent" reason=possible-reference-by-description
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.bigqueryExportSettings.project" reason=possible-reference-by-name (ProjectRef)
