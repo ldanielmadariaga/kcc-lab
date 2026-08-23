@@ -143,6 +143,8 @@ comparison is the method that transfers.
 
 ## Related
 
+* [greenfield-experiment-report.md](greenfield-experiment-report.md) — the write-up for leads: what
+  the experiment proves, what it does not, and the decisions we want made
 * [greenfield-coverage-strategy.md](greenfield-coverage-strategy.md) — the acceptance bar and sequencing
 * [greenfield-coverage-invariant.md](greenfield-coverage-invariant.md) — what the three states mean
 * [greenfield-detection-gaps.md](greenfield-detection-gaps.md) — what the missed fields are made of
