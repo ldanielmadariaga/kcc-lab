@@ -92,3 +92,62 @@ func paths(items []JudgementItem) []string {
 	}
 	return out
 }
+
+func TestParentSegments(t *testing.T) {
+	grid := []struct {
+		name     string
+		pattern  string
+		want     [][2]string
+		location string
+	}{
+		{
+			name:     "projects and locations",
+			pattern:  "projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic}",
+			want:     [][2]string{{"projects", "project"}, {"locations", "location"}, {"clusters", "cluster"}},
+			location: "location",
+		},
+		{
+			// The placeholder is "location" but the collection is "regions", and
+			// upstream names the field after the collection.
+			name:     "regions, not locations",
+			pattern:  "projects/{project}/regions/{location}/jobs/{job}",
+			want:     [][2]string{{"projects", "project"}, {"regions", "location"}},
+			location: "region",
+		},
+		{
+			name:    "organization root",
+			pattern: "organizations/{organization}/muteConfigs/{mute_config}",
+			want:    [][2]string{{"organizations", "organization"}},
+		},
+		{
+			name:    "no parent",
+			pattern: "foos/{foo}",
+			want:    nil,
+		},
+	}
+	for _, g := range grid {
+		t.Run(g.name, func(t *testing.T) {
+			got := parentSegments(g.pattern)
+			if len(got) != len(g.want) {
+				t.Fatalf("parentSegments(%q) = %v, want %v", g.pattern, got, g.want)
+			}
+			for i := range got {
+				if got[i] != g.want[i] {
+					t.Fatalf("parentSegments(%q) = %v, want %v", g.pattern, got, g.want)
+				}
+			}
+			var loc string
+			for i, s := range got {
+				if i == 0 {
+					continue
+				}
+				if f, ok := locationFieldNames[s[0]]; ok {
+					loc = f
+				}
+			}
+			if loc != g.location {
+				t.Errorf("location field = %q, want %q", loc, g.location)
+			}
+		})
+	}
+}

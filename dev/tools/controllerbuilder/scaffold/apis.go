@@ -176,8 +176,24 @@ func (a *APIScaffolder) buildAPIArgs(resource *options.Resource) *apis.APIArgs {
 			args.ParentStyle = string(protoapi.ParentUnknown)
 		}
 	}
+	// Default for every path, including the stub with no proto at all: nearly
+	// every resource is project-rooted, and AddTypeFile overrides this when the
+	// pattern says otherwise.
+	if args.RootRefType == "" {
+		args.RootRefType, args.RootRefField = "ProjectRef", "projectRef"
+		args.RootRefDescription = "The project that this resource belongs to."
+	}
 
 	return args
+}
+
+// repoRoot is the tree BaseDir sits in, so the shared refs package can be found
+// whether we are writing to apis/ or to a scratch tree via --output-api.
+func (a *APIScaffolder) repoRoot() string {
+	if abs, err := filepath.Abs(a.BaseDir); err == nil {
+		return filepath.Dir(abs)
+	}
+	return filepath.Dir(a.BaseDir)
 }
 
 func (a *APIScaffolder) AddIdentityFile(resource options.Resource) error {
@@ -234,25 +250,54 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 		// Omitting rather than emitting is still the right default. Adding a field
 		// later is easy; removing a required one is a breaking change. The point is
 		// only that the choice gets written down instead of made silently.
-		// Emit a ref for any parent segment whose ref type this package already
-		// declares; queue the rest, which is all that used to happen.
-		known := refTypesInPackage(filepath.Join(a.BaseDir, a.GoPackage))
+		// Emit every part of the resource's name that the Spec can carry, and
+		// queue whatever is left. Only naming them was the weaker fix: for
+		// greenfield the point is to generate the field.
+		known := refTypesInPackage(a.repoRoot(), filepath.Join(a.BaseDir, a.GoPackage))
 		var parentRefs bytes.Buffer
 		emitted := map[string]bool{}
-		for _, v := range protoapi.ParentVariables(cArgs.ResourcePattern) {
-			if v == "project" || (v == "location" &&
-				cArgs.ParentStyle == string(protoapi.ParentProjectLocation)) {
+		segments := parentSegments(cArgs.ResourcePattern)
+		for i, seg := range segments {
+			collection, variable := seg[0], seg[1]
+			// The root segment becomes projectRef / organizationRef / folderRef,
+			// which the template renders.
+			if i == 0 {
 				continue
 			}
-			name := lowerCamel(v)
+			if field, ok := locationFieldNames[collection]; ok {
+				// Required only for the projects/locations shape the template used
+				// to render, so that case stays byte-identical. Everywhere else the
+				// parent already fixes a location, so requiring it would be new.
+				required := cArgs.ParentStyle == string(protoapi.ParentProjectLocation)
+				parentRefs.WriteString(locationField(field, cArgs.ResourcePattern, required))
+				emitted[field] = true
+				emitted[lowerCamel(variable)] = true
+				continue
+			}
+			name := lowerCamel(variable)
 			goType := strings.ToUpper(name[:1]) + name[1:] + "Ref"
-			if !known[goType] {
-				continue
+			qualifier, ok := known[goType]
+			if !ok {
+				goType = "" // no ref type anywhere; a plain string still beats nothing
 			}
-			parentRefs.WriteString(parentRefField(name, goType, cArgs.ResourcePattern))
+			parentRefs.WriteString(parentRefField(name, goType, qualifier, cArgs.ResourcePattern))
 			emitted[name] = true
 		}
 		cArgs.ParentRefFields = parentRefs.String()
+
+		// An organization- or folder-rooted resource has no project, and emitting
+		// projectRef for one gives it a field upstream does not have while leaving
+		// out the one it does.
+		if len(segments) > 0 {
+			switch segments[0][0] {
+			case "organizations":
+				cArgs.RootRefType, cArgs.RootRefField = "OrganizationRef", "organizationRef"
+				cArgs.RootRefDescription = "The organization that this resource belongs to."
+			case "folders":
+				cArgs.RootRefType, cArgs.RootRefField = "FolderRef", "folderRef"
+				cArgs.RootRefDescription = "The folder that this resource belongs to."
+			}
+		}
 
 		for _, item := range parentSegmentJudgement(cArgs.ResourcePattern, cArgs.ParentStyle) {
 			if emitted[strings.TrimPrefix(item.FieldPath, ".spec.")] {
@@ -260,6 +305,7 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 			}
 			prepopulated.Judgement = append(prepopulated.Judgement, item)
 		}
+
 		cArgs.SpecFields = prepopulated.SpecFields
 		cArgs.ObservedStateFields = prepopulated.ObservedStateFields
 		// Computed from both bodies here rather than taken from the result,
@@ -274,56 +320,128 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 //
 // GrafeasNote is the worked example for the unknown case: unannotated, project
 // parented, and upstream gives it no location either.
-// refTypesInPackage lists the <X>Ref types the target package already declares.
+// sharedRefsPackage holds the ref types every service can point at --
+// OrganizationRef, FolderRef, ProjectRef and about thirty more.
+const sharedRefsPackage = "apis/refs/v1beta1"
+
+// refTypesInPackage lists the <X>Ref types available to the target package,
+// mapping each to the qualifier it must be written with.
 //
-// scaffoldRefsFile writes one of these per resource, so a resource whose parent
-// has been generated already has a ref type to point at. One that has not does
-// not, and emitting the field anyway would not compile -- bigtable declares no
-// InstanceRef today, datacatalog does declare EntryGroupRef.
-func refTypesInPackage(dir string) map[string]bool {
-	out := map[string]bool{}
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		return out
-	}
-	re := regexp.MustCompile(`(?m)^type (\w+Ref) struct`)
-	for _, e := range entries {
-		if e.IsDir() || !strings.HasSuffix(e.Name(), ".go") {
-			continue
-		}
-		body, err := os.ReadFile(filepath.Join(dir, e.Name()))
+// Two directories, because a ref type can live in either. scaffoldRefsFile
+// writes one per resource into the service package, so a resource whose parent
+// has been generated has a local type to point at. The shared package holds the
+// ones every service needs. Missing the shared package was the single biggest
+// hole this scanner had: OrganizationRef accounts for 14 of the compile errors
+// and has existed all along.
+func refTypesInPackage(repoRoot, serviceDir string) map[string]string {
+	out := map[string]string{}
+	scan := func(dir, qualifier string) {
+		entries, err := os.ReadDir(dir)
 		if err != nil {
-			continue
+			return
 		}
-		for _, m := range re.FindAllStringSubmatch(string(body), -1) {
-			out[m[1]] = true
+		re := regexp.MustCompile(`(?m)^type (\w+Ref) struct`)
+		for _, e := range entries {
+			if e.IsDir() || !strings.HasSuffix(e.Name(), ".go") {
+				continue
+			}
+			body, err := os.ReadFile(filepath.Join(dir, e.Name()))
+			if err != nil {
+				continue
+			}
+			for _, m := range re.FindAllStringSubmatch(string(body), -1) {
+				// A type in the service package wins: it is more specific than
+				// the shared one and needs no import.
+				if _, seen := out[m[1]]; !seen || qualifier == "" {
+					out[m[1]] = qualifier
+				}
+			}
 		}
 	}
+	scan(filepath.Join(repoRoot, sharedRefsPackage), "refsv1beta1")
+	scan(serviceDir, "")
 	return out
 }
 
-// parentRefField renders a spec field pointing at the resource's parent.
+// parentSegments returns the (collection, placeholder) pairs of a pattern's
+// parent, in order. The resource's own trailing segment is dropped.
 //
-// The types template emits projectRef and resourceID and nothing else, so a
-// resource nested under another resource -- a Bigtable Cluster under an
+//	projects/{project}/regions/{location}/jobs/{job}
+//	  -> [{projects project} {regions location}]
+//
+// The collection matters as well as the placeholder because they disagree:
+// Dataproc's placeholder is "location" while the collection is "regions", and
+// upstream names that field "region".
+func parentSegments(pattern string) [][2]string {
+	toks := strings.Split(pattern, "/")
+	var pairs [][2]string
+	for i := 0; i+1 < len(toks); i += 2 {
+		if !strings.HasPrefix(toks[i+1], "{") {
+			break
+		}
+		pairs = append(pairs, [2]string{toks[i], strings.Trim(toks[i+1], "{}")})
+	}
+	if len(pairs) > 0 && strings.HasSuffix(pattern, "}") {
+		pairs = pairs[:len(pairs)-1] // the resource's own id
+	}
+	return pairs
+}
+
+// locationFieldNames maps a location-ish collection to the field name upstream
+// uses for it. Anything not here is not a location.
+var locationFieldNames = map[string]string{
+	"locations": "location",
+	"regions":   "region",
+	"zones":     "zone",
+}
+
+// parentRefField renders a spec field pointing at part of the resource's
+// parent.
+//
+// The types template used to emit projectRef and resourceID and nothing else,
+// so a resource nested under another resource -- a Bigtable Cluster under an
 // Instance, a Firestore Field under a Database -- had no way to say which
-// parent it belongs to. Upstream carries <parent>Ref for exactly these.
+// parent it belongs to. Upstream carries these for exactly that.
 //
-// The target type is a guess: the pattern gives the collection segment, and the
-// segment is assumed to name a resource in this package. That is why the field
-// carries a +kcc:guess marker. Emitting it wrong and saying so beats omitting
-// it silently, but only a reviewer can confirm the target.
-func parentRefField(segment, goType, pattern string) string {
+// goType empty means no ref type resolved, and the segment is emitted as a
+// plain string: the compiler asks for Spec.Tenant and Spec.KeyRing by those
+// names, not as refs, so that is how upstream models them.
+//
+// The first line is prose and becomes the CRD description, so it says what the
+// field is for. The rest is a +kcc: marker, which controller-gen strips from
+// the description -- a reviewer reading the type sees the guess, a user running
+// kubectl explain is not told our TODO.
+func parentRefField(segment, goType, qualifier, pattern string) string {
 	name := strings.ToUpper(segment[:1]) + segment[1:]
-	// The first line is prose and becomes the CRD description, so it says what
-	// the field is for. The rest is a +kcc: marker, which controller-gen strips
-	// from the description -- a reviewer reading the type sees the guess, a user
-	// running kubectl explain does not get told our TODO.
+	if goType == "" {
+		return fmt.Sprintf(`
+	// The %s that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=%s
+	%s *string `+"`"+`json:"%s,omitempty"`+"`"+`
+`, name, pattern, name, segment)
+	}
+	qualified := goType
+	if qualifier != "" {
+		qualified = qualifier + "." + goType
+	}
 	return fmt.Sprintf(`
 	// The %s that this resource belongs to.
 	// +kcc:guess=parent-ref target=%s pattern=%s
 	%sRef *%s `+"`"+`json:"%sRef,omitempty"`+"`"+`
-`, name, goType, pattern, name, goType, segment)
+`, name, qualified, pattern, name, qualified, segment)
+}
+
+// locationField renders the resource's own location, named as upstream does.
+func locationField(name, pattern string, required bool) string {
+	tag := name + ",omitempty"
+	if required {
+		tag = name
+	}
+	return fmt.Sprintf(`
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=%s
+	%s *string `+"`"+`json:"%s"`+"`"+`
+`, pattern, strings.ToUpper(name[:1])+name[1:], tag)
 }
 
 func parentSegmentJudgement(pattern, parentStyle string) []JudgementItem {

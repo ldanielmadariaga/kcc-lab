@@ -31,10 +31,18 @@ type APIArgs struct {
 	// from google.api.resource, e.g. "lbTrafficExtensions". Empty when the proto
 	// declares no pattern, in which case templates fall back to guessing.
 	Collection string
-	// ParentRefFields holds refs to the resource's parent, for a parent that is
-	// itself a resource. Rendered by the scaffolder, since only it can tell
-	// which ref types the target package declares.
+	// ParentRefFields holds every part of the resource's name below the root:
+	// refs to parent resources, plain strings where no ref type exists, and the
+	// location. Rendered by the scaffolder, since only it can tell which ref
+	// types are available.
 	ParentRefFields string
+	// RootRefType, RootRefField and RootRefDescription name the ref for the root
+	// of the resource's name -- ProjectRef for nearly everything, OrganizationRef
+	// or FolderRef for a resource rooted outside a project, which has no project
+	// to point at.
+	RootRefType        string
+	RootRefField       string
+	RootRefDescription string
 	// ParentStyle is the shape of the resource's parent: "project_location",
 	// "project", "organization", "folder", "other" or "unknown".
 	ParentStyle string
@@ -98,14 +106,9 @@ var {{ .Kind }}GVK = GroupVersion.WithKind("{{ .Kind }}")
 // +kcc:spec:proto={{ .KindProtoTag }}
 {{- end }}
 type {{ .Kind }}Spec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef ` + "`" + `json:"projectRef"` + "`" + `
+	// {{ .RootRefDescription }}
+	{{ .RootRefType }} *refsv1beta1.{{ .RootRefType }} ` + "`" + `json:"{{ .RootRefField }}"` + "`" + `
 {{ .ParentRefFields }}
-{{- if eq .ParentStyle "project_location" }}
-
-	// The location of this resource.
-	Location *string ` + "`" + `json:"location"` + "`" + `
-{{- end }}
 
 	// The {{ .Kind }} name. If not given, the metadata.name will be used.
 	ResourceID *string ` + "`" + `json:"resourceID,omitempty"` + "`" + `
