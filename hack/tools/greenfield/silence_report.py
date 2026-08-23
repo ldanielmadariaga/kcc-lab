@@ -47,8 +47,11 @@ Three of the five classes are the target:
 The other two are differences we accept, reported below the subtotal and excluded
 from it:
 
-  renamed                  same field, different name (bootDiskMIB/bootDiskMiB);
-                           a casing table fixes these
+  renamed                  same field, different name. Two shapes: an acronym
+                           cased differently (bootDiskMIB/bootDiskMiB), and a
+                           reference we emit un-suffixed (secretValue against
+                           upstream's secretValueRef). Both are real CRD
+                           differences; neither is a detection gap
   intentionally-different  google.protobuf.Value arms, which we map to
                            apiextensionsv1.JSON on purpose. Whether to keep doing
                            that is an open decision, deliberately deferred.
@@ -229,6 +232,16 @@ def classify(path, section, extras, arrays=()):
     up as missing in one place and extra in another.
     """
     if is_reference_path(path, arrays):
+        # A reference we did produce, under the name upstream did not use.
+        # ConnectorsConnection is the whole of this case: we emit a ref object at
+        # spec.configVariables[].secretValue where upstream has secretValueRef.
+        # The user's YAML still breaks, so it is a real CRD difference -- but it
+        # is a rename, not a missing reference, and reporting it as undetected
+        # sends someone to build detection for a field we already reference.
+        stem = REF_SUFFIX.sub(lambda m: m.group(1) or "", path)
+        for cand in (stem, stem + "[]"):
+            if cand + ".external" in extras.get(section, ()):
+                return "renamed"
         return "reference-shape"
     leaf = path.rsplit(".", 1)[-1].rstrip("[]")
     if leaf in VALUE_ARMS:
