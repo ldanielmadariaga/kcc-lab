@@ -582,8 +582,11 @@ func placementNote(field protoreflect.FieldDescriptor, msg protoreflect.MessageD
 	if !IsServerSetField(field, msg, opts) {
 		return ""
 	}
-	return "PLACEMENT GUESSED: no google.api.field_behavior anywhere on this message, so\n" +
-		"nothing said where this belongs. Placed by name, as a field GCP computes."
+	// A +kcc: marker rather than prose: controller-gen strips these from the CRD
+	// description, so a reviewer reading the type sees the guess while a user
+	// running kubectl explain is not told about our TODO. The field keeps its
+	// own proto comment as the description.
+	return "+kcc:guess=placement reason=no-field-behavior-on-message"
 }
 
 func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool) (string, error) {

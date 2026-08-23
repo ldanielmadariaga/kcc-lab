@@ -343,8 +343,7 @@ def queue_candidates(path):
 # Markers the generator writes into a types file when it made a call it cannot
 # justify from the proto. A flagged field ought to carry one: the queue is a work
 # list somebody clears, the types file is what a reader opens.
-TYPES_MARKERS = ("PLACEMENT GUESSED", "PARENT GUESSED", "REFERENCE GENERATED",
-                 "NEEDS JUDGEMENT")
+TYPES_MARKERS = ("+kcc:guess=",)
 
 
 def types_markers(path):

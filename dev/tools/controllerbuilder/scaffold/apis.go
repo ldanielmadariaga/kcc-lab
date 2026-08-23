@@ -311,17 +311,19 @@ func refTypesInPackage(dir string) map[string]bool {
 //
 // The target type is a guess: the pattern gives the collection segment, and the
 // segment is assumed to name a resource in this package. That is why the field
-// carries a marker comment. Emitting it wrong and saying so beats omitting it
-// silently, but only a reviewer can confirm the target.
+// carries a +kcc:guess marker. Emitting it wrong and saying so beats omitting
+// it silently, but only a reviewer can confirm the target.
 func parentRefField(segment, goType, pattern string) string {
 	name := strings.ToUpper(segment[:1]) + segment[1:]
+	// The first line is prose and becomes the CRD description, so it says what
+	// the field is for. The rest is a +kcc: marker, which controller-gen strips
+	// from the description -- a reviewer reading the type sees the guess, a user
+	// running kubectl explain does not get told our TODO.
 	return fmt.Sprintf(`
-	// PARENT GUESSED: this resource is nested under %s. The target type was
-	// assumed from the collection segment of
-	//   %s
-	// Confirm it before relying on it.
+	// The %s that this resource belongs to.
+	// +kcc:guess=parent-ref target=%s pattern=%s
 	%sRef *%s `+"`"+`json:"%sRef,omitempty"`+"`"+`
-`, name, pattern, name, goType, segment)
+`, name, goType, pattern, name, goType, segment)
 }
 
 func parentSegmentJudgement(pattern, parentStyle string) []JudgementItem {
