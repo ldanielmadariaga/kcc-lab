@@ -104,6 +104,27 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 			continue
 		}
 		if identityFields[string(field.Name())] {
+			// Say so, unless the ObservedState side is going to.
+			//
+			// PrepopulateObservedState files observedstate-identity-field-omitted
+			// for a skipped identity field, but only reaches one that is
+			// OUTPUT_ONLY, since that is what puts a field in OutputFields. Where
+			// the proto does not mark "name" output-only -- ParameterManagerParameter,
+			// VertexAISchedule and DialogflowKnowledgeBase in the measured corpus --
+			// it was dropped here, never reached there, and nothing recorded it
+			// anywhere. Upstream carries the field in status.observedState, so
+			// name the path it belongs at rather than the spec path it was
+			// dropped from.
+			if !codegen.IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
+				out.Judgement = append(out.Judgement, JudgementItem{
+					FieldPath: ".status.observedState." + codegen.GetJSONForKRM(field),
+					Reason:    "identity-field-omitted",
+					Detail: "the resource's own name, which KCC carries in status.externalRef, " +
+						"so it was left out of the Spec. The proto does not mark it OUTPUT_ONLY " +
+						"either, so it is in no struct at all. Add it to ObservedState if the " +
+						"API returns it",
+				})
+			}
 			continue
 		}
 

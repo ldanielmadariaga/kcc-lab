@@ -165,13 +165,37 @@ which is where silence is most likely deliberate. Not taken.
 
 ### absent, 41
 
-| cause | count | note |
+Characterized, so the residue is known rather than assumed:
+
+| cause | n | example |
 |---|---|---|
-| parent segments never named | ~15 | `spec.location`, `spec.collection`, `spec.collectionGroup`, `spec.tenant`, `spec.parent`, `spec.region` |
-| map-value interiors | 6 | `HypercomputeClusterCluster.spec.networkResources.KEY.…` |
-| `status.observedState.name` | 3 | `observedstate-identity-field-omitted` should have fired |
-| `resourceID` on an embedded resource | 2 | a nested message that itself carries `google.api.resource` |
-| no mechanical explanation | ~19 | including a self-recursive message the generator truncates |
+| no mechanical explanation yet | 13 | `AnalyticsAccount.spec.redirectURI`, `CloudSecurityFramework.spec.labels` |
+| parent/identity segment | 12 | `DataprocJob.spec.parent`, `DiscoveryEngineControl.spec.location` |
+| deep nested field | 9 | `CloudSecurityComplianceCloudControl.spec.parameterSpec[].subParameters[]` |
+| inside a map value | 3 | `HypercomputeClusterCluster.spec.storageResources.KEY.filestore.filestore` |
+| `status.observedState.name` | 3 | `ParameterManagerParameter`, `VertexAISchedule`, `DialogflowKnowledgeBase` |
+| `resourceID` on an embedded resource | 1 | `VertexAITrainingPipeline.spec.modelToUpload.resourceID` |
+
+Three of these are not detector gaps:
+
+* The **12 parent segments** are the residue `parentSegmentJudgement` could not reach. Eight belong
+  to Kinds with no queue entry at all, and `DataprocJob` and `FirestoreDocument` declare no
+  `google.api.resource`, so there is no pattern to walk. Their `spec.parent` and `spec.collection`
+  are not derivable from the proto by any means.
+* The **9 deep-nested** fields are one resource,
+  `CloudSecurityComplianceCloudControl.spec.parameterSpec[].subParameters[]` — a self-recursive
+  message the generator truncates. A generator limit that currently leaves no trace anywhere, which
+  is the thing worth fixing rather than the fields themselves.
+* The **3 `observedState.name`** were a real silent drop and are fixed. `PrepopulateSpec` skips the
+  identity field with `identityFields`, and `PrepopulateObservedState` files
+  `observedstate-identity-field-omitted` for it — but only reaches a field that is `OUTPUT_ONLY`,
+  since that is what puts it in `OutputFields`. Where the proto does not mark `name` output-only, it
+  was dropped on one side, never seen on the other, and recorded nowhere. `ParameterManagerParameter`
+  is the clearest case: its ObservedState has `createTime` and no `name`. Now emits
+  `identity-field-omitted`.
+
+That leaves **13 with no mechanical explanation**, which is the honest floor of this pass. They need
+reading one at a time rather than forcing into a bucket.
 
 ### The parent-segment detector
 
