@@ -158,6 +158,12 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 	typeGenerator := codegen.NewTypeGenerator(goPackage, o.OutputAPIDirectory, api)
 	typeGenerator.WithIncludeSkippedOutput(o.GenerateOptions.IncludeSkippedOutput)
 	typeGenerator.WithWriteOptions(writeOptions)
+	// The scaffolder writes each Kind's struct after this generator runs, so
+	// reserve those names now; a wipe-based regeneration means the files it will
+	// write do not exist yet for findTypeDeclaration to find.
+	for _, resource := range o.Resources {
+		typeGenerator.WithReservedTypeNames(resource.Kind)
+	}
 
 	// Queue entries accumulate across every resource in this invocation and are
 	// written once at the end, so a service's file is replaced wholesale rather

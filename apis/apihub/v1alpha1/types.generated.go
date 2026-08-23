@@ -122,29 +122,6 @@ type API struct {
 	SelectedVersion *string `json:"selectedVersion,omitempty"`
 }
 
-// +kcc:proto=google.cloud.apihub.v1.ApiHubInstance
-type APIHubInstance struct {
-	// Identifier. Format:
-	//  `projects/{project}/locations/{location}/apiHubInstances/{apiHubInstance}`.
-	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.name
-	Name *string `json:"name,omitempty"`
-
-	// Required. Config of the ApiHub instance.
-	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.config
-	// +required
-	Config *APIHubInstance_Config `json:"config,omitempty"`
-
-	// Optional. Instance labels to represent user-provided metadata.
-	//  Refer to cloud documentation on labels for more details.
-	//  https://cloud.google.com/compute/docs/labeling-resources
-	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// Optional. Description of the ApiHub instance.
-	// +kcc:proto:field=google.cloud.apihub.v1.ApiHubInstance.description
-	Description *string `json:"description,omitempty"`
-}
-
 // +kcc:proto=google.cloud.apihub.v1.ApiHubInstance.Config
 type APIHubInstance_Config struct {
 	// Required. The Customer Managed Encryption Key (CMEK) used for data

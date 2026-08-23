@@ -21,35 +21,6 @@
 
 package v1alpha1
 
-// +kcc:proto=google.cloud.billing.v1.BillingAccount
-type BillingAccount struct {
-
-	// The display name given to the billing account, such as `My Billing
-	//  Account`. This name is displayed in the Google Cloud Console.
-	// +kcc:proto:field=google.cloud.billing.v1.BillingAccount.display_name
-	DisplayName *string `json:"displayName,omitempty"`
-
-	// If this account is a
-	//  [subaccount](https://cloud.google.com/billing/docs/concepts), then this
-	//  will be the resource name of the parent billing account that it is being
-	//  resold through.
-	//  Otherwise this will be empty.
-	// +kcc:proto:field=google.cloud.billing.v1.BillingAccount.master_billing_account
-	MasterBillingAccount *string `json:"masterBillingAccount,omitempty"`
-
-	// Optional. The currency in which the billing account is billed and charged,
-	//  represented as an ISO 4217 code such as `USD`.
-	//
-	//  Billing account currency is determined at the time of billing account
-	//  creation and cannot be updated subsequently, so this field should not be
-	//  set on update requests. In addition, a subaccount always matches the
-	//  currency of its parent billing account, so this field should not be set on
-	//  subaccount creation requests. Clients can read this field to determine the
-	//  currency of an existing billing account.
-	// +kcc:proto:field=google.cloud.billing.v1.BillingAccount.currency_code
-	CurrencyCode *string `json:"currencyCode,omitempty"`
-}
-
 // +kcc:observedstate:proto=google.cloud.billing.v1.BillingAccount
 type BillingAccountObservedState struct {
 	// Output only. The resource name of the billing account. The resource name

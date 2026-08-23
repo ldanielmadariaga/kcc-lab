@@ -20,8 +20,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-var CloudSecurityComplianceCloudControlGVK = GroupVersion.WithKind("CloudSecurityComplianceCloudControl")
-
 // CloudSecurityComplianceCloudControlSpec defines the desired state of CloudSecurityComplianceCloudControl
 // +kcc:spec:proto=google.cloud.cloudsecuritycompliance.v1.CloudControl
 type CloudSecurityComplianceCloudControlSpec struct {

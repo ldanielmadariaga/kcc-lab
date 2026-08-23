@@ -71,7 +71,7 @@ func getIdentityFromManagementServerSpec(ctx context.Context, reader client.Read
 		return nil, fmt.Errorf("cannot resolve resource ID")
 	}
 
-	location := obj.Spec.Location
+	location := common.ValueOf(obj.Spec.Location)
 	if location == "" {
 		return nil, fmt.Errorf("cannot resolve location")
 	}

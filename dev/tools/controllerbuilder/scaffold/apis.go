@@ -237,6 +237,7 @@ func (a *APIScaffolder) PathToTypeFile(resource options.Resource) string {
 func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *PrepopulateResult) error {
 	typeFilePath := a.PathToTypeFile(resource)
 	cArgs := a.buildAPIArgs(&resource)
+	cArgs.SkipGVK = packageDeclaresGVK(filepath.Join(a.BaseDir, a.GoPackage), cArgs.Kind)
 	if prepopulated != nil {
 		// Name every part of the resource's name that the Spec does not carry.
 		//
@@ -395,6 +396,32 @@ func refTypesInPackage(repoRoot, serviceDir string) map[string]string {
 	scan(filepath.Join(repoRoot, sharedRefsPackage), "refsv1beta1")
 	scan(serviceDir, "")
 	return out
+}
+
+// packageDeclaresGVK reports whether the target package already declares
+// <Kind>GVK.
+//
+// scaffoldRefsFile writes the GVK into <kind>_reference.go, which is where
+// upstream keeps it, and the types template writes one too. For the handful of
+// resources that have both files that is a redeclaration, and it only shows
+// up for those, which is why it went unnoticed.
+func packageDeclaresGVK(dir, kind string) bool {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return false
+	}
+	want := regexp.MustCompile(`(?m)^var ` + regexp.QuoteMeta(kind) + `GVK\b`)
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".go") ||
+			strings.HasSuffix(e.Name(), "_types.go") {
+			continue
+		}
+		body, err := os.ReadFile(filepath.Join(dir, e.Name()))
+		if err == nil && want.Match(body) {
+			return true
+		}
+	}
+	return false
 }
 
 // parentSegments returns the (collection, placeholder) pairs of a pattern's

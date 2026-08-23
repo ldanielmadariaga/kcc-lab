@@ -40,6 +40,9 @@ type APIArgs struct {
 	// of the resource's name -- ProjectRef for nearly everything, OrganizationRef
 	// or FolderRef for a resource rooted outside a project, which has no project
 	// to point at.
+	// SkipGVK suppresses the GVK var when the package already declares one,
+	// which scaffoldRefsFile does in <kind>_reference.go.
+	SkipGVK            bool
 	RootRefType        string
 	RootRefField       string
 	RootRefDescription string
@@ -99,7 +102,9 @@ import (
 {{- end }}
 )
 
+{{- if not .SkipGVK }}
 var {{ .Kind }}GVK = GroupVersion.WithKind("{{ .Kind }}")
+{{- end }}
 
 // {{ .Kind }}Spec defines the desired state of {{ .Kind }}
 {{- if .KindProtoTag }}

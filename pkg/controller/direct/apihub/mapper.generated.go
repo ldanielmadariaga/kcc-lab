@@ -133,36 +133,6 @@ func APIHubExternalAPIObservedState_ToProto(mapCtx *direct.MapContext, in *krm.A
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	return out
 }
-func APIHubInstance_FromProto(mapCtx *direct.MapContext, in *pb.ApiHubInstance) *krm.APIHubInstance {
-	if in == nil {
-		return nil
-	}
-	out := &krm.APIHubInstance{}
-	out.Name = direct.LazyPtr(in.GetName())
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: State
-	// MISSING: StateMessage
-	out.Config = APIHubInstance_Config_FromProto(mapCtx, in.GetConfig())
-	out.Labels = in.Labels
-	out.Description = direct.LazyPtr(in.GetDescription())
-	return out
-}
-func APIHubInstance_ToProto(mapCtx *direct.MapContext, in *krm.APIHubInstance) *pb.ApiHubInstance {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ApiHubInstance{}
-	out.Name = direct.ValueOf(in.Name)
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: State
-	// MISSING: StateMessage
-	out.Config = APIHubInstance_Config_ToProto(mapCtx, in.Config)
-	out.Labels = in.Labels
-	out.Description = direct.ValueOf(in.Description)
-	return out
-}
 func APIHubInstanceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ApiHubInstance) *krm.APIHubInstanceObservedState {
 	if in == nil {
 		return nil

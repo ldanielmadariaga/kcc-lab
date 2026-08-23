@@ -53,6 +53,17 @@ type TypeGenerator struct {
 	// decision to write it both have to read from here.
 	handWritten *handWrittenTypes
 
+	// reservedTypeNames are Go type names the scaffolder will declare later in
+	// this run, so the generator must not emit them into types.generated.go.
+	//
+	// findTypeDeclaration already skips a name the package declares by hand, but
+	// it cannot see a file that does not exist yet: a wipe-based regeneration
+	// removes <kind>_types.go, the generator runs, and the scaffolder writes the
+	// Kind's struct afterwards. Where the Kind's name equals the Go name of its
+	// own proto message -- billing's BillingAccount, apihub's APIHubInstance --
+	// that is a redeclaration.
+	reservedTypeNames map[string]bool
+
 	// rootMessageFQN is the resource's own message for the visit in progress.
 	// IsServerSetField may only be applied there: identifyOutputs recurses, and
 	// a nested message's "id" or "kind" is often genuine user input.
@@ -107,6 +118,19 @@ func (g *TypeGenerator) WithGeneratedFileAnnotation(generatedFileAnnotation *cod
 // WithIncludeSkippedOutput sets whether to output skipped types as commented-out code
 func (g *TypeGenerator) WithIncludeSkippedOutput(includeSkippedOutput bool) *TypeGenerator {
 	g.includeSkippedOutput = includeSkippedOutput
+	return g
+}
+
+// WithReservedTypeNames names the Go types the scaffolder will write later, so
+// the generator leaves them alone.
+func (g *TypeGenerator) WithReservedTypeNames(names ...string) *TypeGenerator {
+	if g.reservedTypeNames == nil {
+		g.reservedTypeNames = map[string]bool{}
+	}
+	for _, n := range names {
+		g.reservedTypeNames[n] = true
+		g.reservedTypeNames[n+"ObservedState"] = true
+	}
 	return g
 }
 
@@ -367,6 +391,10 @@ func (g *TypeGenerator) WriteVisitedMessages() error {
 		out.fileAnnotation = g.generatedFileAnnotation
 
 		goTypeName := GoNameForProtoMessage(msg)
+		if g.reservedTypeNames[goTypeName] {
+			klog.V(1).Infof("go type %q is a Kind the scaffolder will declare, won't generate", goTypeName)
+			continue
+		}
 		skipGenerated := true
 		goType, err := g.findTypeDeclaration(goTypeName, out.OutputDir(), skipGenerated)
 		if err != nil {

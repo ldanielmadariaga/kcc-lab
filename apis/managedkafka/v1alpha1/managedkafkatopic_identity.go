@@ -63,7 +63,7 @@ func NewTopicIdentity(ctx context.Context, reader client.Reader, obj *ManagedKaf
 	if projectID == "" {
 		return nil, fmt.Errorf("cannot resolve project")
 	}
-	location := obj.Spec.Location
+	location := common.ValueOf(obj.Spec.Location)
 	clusterExternalRef, err := obj.Spec.ClusterRef.NormalizedExternal(ctx, reader, obj.GetNamespace())
 	if err != nil {
 		return nil, err

@@ -67,7 +67,7 @@ func NewChannelIdentity(ctx context.Context, reader client.Reader, obj *Eventarc
 	if projectID == "" {
 		return nil, fmt.Errorf("cannot resolve project")
 	}
-	location := obj.Spec.Location
+	location := common.ValueOf(obj.Spec.Location)
 
 	// Get desired ID
 	resourceID := common.ValueOf(obj.Spec.ResourceID)

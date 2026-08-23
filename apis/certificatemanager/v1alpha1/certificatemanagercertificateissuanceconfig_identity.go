@@ -69,7 +69,7 @@ func getIdentityFromCertificateManagerCertificateIssuanceConfigSpec(ctx context.
 		return nil, fmt.Errorf("resolving projectRef: %w", err)
 	}
 
-	location := obj.Spec.Location
+	location := common.ValueOf(obj.Spec.Location)
 	if location == "" {
 		return nil, fmt.Errorf("spec.location must be specified")
 	}
