@@ -259,6 +259,27 @@ blob. Past knowledge generalised badly.
 not coverage generally, and the number to watch is the undetected count from
 `silence_report.py`, not the size of this list.
 
+### Compile the service before scoring it
+
+```bash
+go build ./apis/<service>/...
+```
+
+Do this first, every time. Where a resource has hand-written `_identity.go` or `_reference.go` files
+— which every resource upstream has already implemented does — those files are the strictest oracle
+available, and the compiler names a missing field in seconds where a scored run takes minutes and
+reports a path.
+
+It is what would have surfaced the parent-identity gap on day one. Across the corpus it names 29
+distinct fields, and almost all of them are a parent segment or a parent reference:
+`Spec.OrganizationRef`, `Spec.Location`, `Spec.EntryGroupRef`, `Spec.DatabaseRef`, `Spec.Tenant`.
+
+Two things it will not tell you, so it supplements the score rather than replacing it. It only sees
+fields the controller code *dereferences*, which is 18% of what the CRD comparison finds — a missing
+`spec.labels` or a field placed in status compiles perfectly. And it needs a hand-written companion
+to exist at all, so it says nothing about a genuinely new resource, which is the case this whole
+process is for.
+
 ## Stage 3 — The judgement pass
 
 Three decisions cannot be derived from anything, and this stage is where they get made:

@@ -21,6 +21,24 @@ Measured on the 93 resources scorable in every run to date.
 The 239-run figures are quoted here over the 93-resource intersection, not the 98 the original
 write-up used, so the columns are comparable. Over its own 98 that run read 73.7 / 82.8 / 91.4.
 
+## Compile conformance
+
+The measure closest to "would this resource actually work". Every resource upstream implemented has
+hand-written `_identity.go` / `_reference.go` files, left at upstream's version while the types
+underneath were regenerated; if the package builds, the generated types satisfy the code a person
+wrote against them.
+
+| run | packages failing | distinct fields the hand-written code needs and we lack |
+|---|---|---|
+| after the map + JSON well-known types run | 44 | 29 |
+
+Almost all 29 are a parent segment or a parent reference — `Spec.OrganizationRef` 14,
+`Spec.Location` 14, `Spec.EntryGroupRef` 6, `Spec.DatabaseRef` 6. Reproduce with
+`go build ./apis/... 2>&1 | grep -c '^#'`.
+
+It covers 18% of what the CRD comparison finds and only 44 of 189 resources, because it sees only
+fields the controller code dereferences. Track both.
+
 ## Population, not sample
 
 The rows above track a fixed 93-resource intersection so the trend is honest. Separately, the whole

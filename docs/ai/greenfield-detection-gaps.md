@@ -307,17 +307,66 @@ Fixed, and worth knowing because both look like absences:
   upstream. The rename test compared lowercased leaves for equality; it now also accepts a suffix,
   anchored and length-guarded so `instance` cannot swallow every field ending in it.
 
-## This tree does not build
+## The tree does not build, and that is the measurement
 
-44 packages fail to compile, mostly `_identity.go` files written against types the regeneration
-changed — `firestorefield_identity.go` reads `obj.Spec.CollectionGroup` where the regenerated Spec
-has no such field, and `certificatemanager` compares a `*string` to `""`. One was a straight
-regression the run introduced and has been fixed: `pkg/controller/direct/tpu/mapper.generated.go`
-had been rewritten to import `cloud.google.com/go/tpu/apiv2/tpupb`, which does not exist.
+44 packages fail to compile. That is the experiment working, not a fault to repair.
 
-The consequence for this work is that `go test ./tests/apichecks/...` cannot run the root package,
-which is where `TestMissingRefs` lives. `tests/apichecks/refs` and `tests/apichecks/greenfield` both
-pass. Any change to `refs.NameRules` is unverifiable until the tree builds.
+The method is to delete resources upstream implemented by hand and regenerate them, while leaving
+their hand-written `_identity.go` and `_reference.go` files at upstream's version. Those files are
+upstream's own controller code, written against the types a person designed — which makes them the
+strictest oracle available. If our regenerated types do not satisfy them, generation is short
+exactly there, and the compiler says so in seconds and names the field.
+
+`go build ./apis/...` reports 29 distinct fields the hand-written code needs and our types lack:
+
+| n | field | | n | field |
+|---|---|---|---|---|
+| 14 | `Spec.OrganizationRef` | | 3 | `Spec.ClusterRef` |
+| 14 | `Spec.Location` | | 3 | `Spec.InstanceRef` |
+| 6 | `Spec.EntryGroupRef` | | 2 | `Spec.Tenant`, `Spec.Collection` |
+| 6 | `Spec.DatabaseRef` | | 2 | `Spec.EntryRef`, `Spec.FolderRef` |
+| 4 | `Spec.Parent` | | 2 | `Spec.LakeRef`, `Spec.Region` |
+| 4 | `Spec.DataStoreRef` | | 1 | `Spec.TableRef`, `Spec.CollectionGroup`, … |
+| 3 | `Spec.ParentRef` | | 1 | `ObservedState.Name` |
+| 3 | `Spec.CryptoKey`, `Spec.KeyRing` | | | |
+
+Almost every one is a parent segment or a parent reference — the same defect class the CRD scoring
+took a full scored run to surface. It also independently validates the parent-ref generation:
+`EntryGroupRef`, `DatabaseRef`, `ClusterRef` and `InstanceRef` are exactly what it now emits.
+
+### It does not replace the CRD comparison
+
+The obvious conclusion from the above is "we should have just compiled". Measured, that is only
+partly right:
+
+| | |
+|---|---|
+| fields the CRD comparison says we miss or differ on | 583 |
+| of those, named by a compile error | **106 (18%)** |
+| resources whose package the compiler says anything about | 44 of 189 |
+
+The compiler only sees fields the hand-written controller code actually *dereferences* — the
+identity and reference construction path. A missing `spec.labels`, a nested config field, a
+reference upstream models that identity code never touches, a field placed in spec instead of
+status: all compile cleanly and are all still wrong. It reports that a name is absent, never what
+the field should have been.
+
+And the limit that settles it: **the compiler oracle exists only because upstream implemented these
+resources.** For the ~550 greenfield resources with no implementation there is no `_identity.go` to
+compile against — and that is the population this whole exercise is preparing for. The CRD
+comparison is the method that transfers; the compiler is a sharp, free bonus on the held-out set.
+
+Use it as the fast first check after regenerating a service; keep the comparison as the measure.
+
+### Two footnotes
+
+`go test ./tests/apichecks/...` cannot build its root package, so `TestMissingRefs` does not run
+here. Every `refs.NameRules` claim in this document was therefore verified by diffing
+`missingrefs.txt` before and after instead.
+
+One genuine regression the run introduced, unrelated to the above and since fixed:
+`pkg/controller/direct/tpu/mapper.generated.go` had been rewritten to import
+`cloud.google.com/go/tpu/apiv2/tpupb`, which is not a package that exists.
 
 ## Related
 
