@@ -104,27 +104,25 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 			continue
 		}
 		if identityFields[string(field.Name())] {
-			// Say so, unless the ObservedState side is going to.
+			// Dropped here with no entry, deliberately.
 			//
 			// PrepopulateObservedState files observedstate-identity-field-omitted
-			// for a skipped identity field, but only reaches one that is
-			// OUTPUT_ONLY, since that is what puts a field in OutputFields. Where
-			// the proto does not mark "name" output-only -- ParameterManagerParameter,
-			// VertexAISchedule and DialogflowKnowledgeBase in the measured corpus --
-			// it was dropped here, never reached there, and nothing recorded it
-			// anywhere. Upstream carries the field in status.observedState, so
-			// name the path it belongs at rather than the spec path it was
-			// dropped from.
-			if !codegen.IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
-				out.Judgement = append(out.Judgement, JudgementItem{
-					FieldPath: ".status.observedState." + codegen.GetJSONForKRM(field),
-					Reason:    "identity-field-omitted",
-					Detail: "the resource's own name, which KCC carries in status.externalRef, " +
-						"so it was left out of the Spec. The proto does not mark it OUTPUT_ONLY " +
-						"either, so it is in no struct at all. Add it to ObservedState if the " +
-						"API returns it",
-				})
-			}
+			// for a skipped identity field, but only ever reaches one that is
+			// OUTPUT_ONLY, since that is what puts a field in OutputFields. Where the
+			// proto does not mark "name" output-only it is dropped here, never seen
+			// there, and recorded nowhere -- ParameterManagerParameter is the clearest
+			// case, its ObservedState carrying createTime and no name.
+			//
+			// Flagging that was implemented and then measured, which killed it: the
+			// rule fires on every resource whose proto leaves "name" unannotated,
+			// which is most of them. 219 entries tree-wide, 81 inside the measured
+			// corpus, and upstream actually carries status.observedState.name for two
+			// of those 81. Two percent. KCC carries the resource name in
+			// status.externalRef, so "should name also be in ObservedState" is the same
+			// judgement call every time and the answer is nearly always no.
+			//
+			// Left as a known silent drop rather than paid for with a queue nobody can
+			// read. See docs/ai/greenfield-detection-gaps.md.
 			continue
 		}
 

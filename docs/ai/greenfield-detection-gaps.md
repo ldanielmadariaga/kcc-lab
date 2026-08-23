@@ -173,7 +173,7 @@ Characterized, so the residue is known rather than assumed:
 | parent/identity segment | 12 | `DataprocJob.spec.parent`, `DiscoveryEngineControl.spec.location` |
 | deep nested field | 9 | `CloudSecurityComplianceCloudControl.spec.parameterSpec[].subParameters[]` |
 | inside a map value | 3 | `HypercomputeClusterCluster.spec.storageResources.KEY.filestore.filestore` |
-| `status.observedState.name` | 3 | `ParameterManagerParameter`, `VertexAISchedule`, `DialogflowKnowledgeBase` |
+| `status.observedState.name` | 3 | `ParameterManagerParameter`, `VertexAISchedule`, `DialogflowKnowledgeBase` — flagging measured at 2%, rejected |
 | `resourceID` on an embedded resource | 1 | `VertexAITrainingPipeline.spec.modelToUpload.resourceID` |
 
 Three of these are not detector gaps:
@@ -186,13 +186,20 @@ Three of these are not detector gaps:
   `CloudSecurityComplianceCloudControl.spec.parameterSpec[].subParameters[]` — a self-recursive
   message the generator truncates. A generator limit that currently leaves no trace anywhere, which
   is the thing worth fixing rather than the fields themselves.
-* The **3 `observedState.name`** were a real silent drop and are fixed. `PrepopulateSpec` skips the
-  identity field with `identityFields`, and `PrepopulateObservedState` files
-  `observedstate-identity-field-omitted` for it — but only reaches a field that is `OUTPUT_ONLY`,
-  since that is what puts it in `OutputFields`. Where the proto does not mark `name` output-only, it
-  was dropped on one side, never seen on the other, and recorded nowhere. `ParameterManagerParameter`
-  is the clearest case: its ObservedState has `createTime` and no `name`. Now emits
-  `identity-field-omitted`.
+* The **3 `observedState.name`** are a real silent drop, and flagging them was **measured and
+  rejected**. `PrepopulateSpec` skips the identity field with `identityFields`, and
+  `PrepopulateObservedState` files `observedstate-identity-field-omitted` for it — but only reaches a
+  field that is `OUTPUT_ONLY`, since that is what puts it in `OutputFields`. Where the proto does not
+  mark `name` output-only it is dropped on one side, never seen on the other, and recorded nowhere.
+  `ParameterManagerParameter` is the clearest case: ObservedState carrying `createTime` and no `name`.
+
+  The fix was implemented, and then measuring it killed it. The rule fires on every resource whose
+  proto leaves `name` unannotated, which is most of them: **219 entries tree-wide, 81 inside the
+  measured corpus, and upstream actually carries `status.observedState.name` for 2 of those 81.**
+  Two percent. KCC keeps the resource name in `status.externalRef`, so "should `name` also be in
+  ObservedState" is the same judgement call every time and the answer is nearly always no. Left as a
+  known silent drop rather than paid for with a queue nobody can read — the same trade as the
+  rejected `Certificate` and `PrivateKey` name rules.
 
 That leaves **13 with no mechanical explanation**, which is the honest floor of this pass. They need
 reading one at a time rather than forcing into a bucket.
