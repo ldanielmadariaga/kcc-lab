@@ -17,6 +17,7 @@ package scaffold
 import (
 	"bytes"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/pkg/codegen"
@@ -24,6 +25,7 @@ import (
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"k8s.io/apimachinery/pkg/util/sets"
 )
 
 // identityFields are proto fields that the KRM object expresses through its own
@@ -49,6 +51,13 @@ type PrepopulateResult struct {
 	// SpecFields is Go source for the body of the Spec struct: one field per
 	// proto field, already indented, ready to paste between the braces.
 	SpecFields string
+	// ObservedStateFields is the same thing for the resource-level
+	// <Kind>ObservedState struct. Empty when the proto marks nothing OUTPUT_ONLY,
+	// which leaves the scaffolded struct empty as before.
+	ObservedStateFields string
+	// ExtraImports are import paths the rendered fields need beyond the three the
+	// template always writes.
+	ExtraImports []string
 	// Judgement lists fields the generator emitted mechanically but cannot
 	// vouch for.
 	Judgement []JudgementItem
@@ -62,9 +71,8 @@ type PrepopulateResult struct {
 // every other check: a field absent from the CRD cannot be reported as missing
 // from it.
 //
-// ObservedState is not pre-populated. Output fields reached through nested
-// messages need the generated <Proto>ObservedState variants rather than the
-// plain structs, and picking the right one per field is its own problem.
+// ObservedState is filled separately, by PrepopulateObservedState, because it
+// needs data only the type generator has.
 func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptions) (*PrepopulateResult, error) {
 	if msg == nil {
 		return nil, fmt.Errorf("no message descriptor")
@@ -82,13 +90,74 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 		if codegen.IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
 			continue
 		}
+		// Same, for a field GCP computes whose proto never said so. This must
+		// agree with the type generator exactly: it puts the field into
+		// ObservedState, and leaving it here as well would emit it twice.
+		if codegen.IsServerSetField(field, msg, opts) {
+			out.Judgement = append(out.Judgement, JudgementItem{
+				FieldPath: ".status.observedState." + codegen.GetJSONForKRM(field),
+				Reason:    "server-set-field-placed",
+				Detail: "GCP computes this, but the proto carries no field_behavior " +
+					"anywhere on the message, so it was placed by name. Confirm it is " +
+					"not something a user sets",
+			})
+			continue
+		}
 		if identityFields[string(field.Name())] {
+			// Dropped here with no entry, deliberately.
+			//
+			// PrepopulateObservedState files observedstate-identity-field-omitted
+			// for a skipped identity field, but only ever reaches one that is
+			// OUTPUT_ONLY, since that is what puts a field in OutputFields. Where the
+			// proto does not mark "name" output-only it is dropped here, never seen
+			// there, and recorded nowhere -- ParameterManagerParameter is the clearest
+			// case, its ObservedState carrying createTime and no name.
+			//
+			// Flagging that was implemented and then measured, which killed it: the
+			// rule fires on every resource whose proto leaves "name" unannotated,
+			// which is most of them. 219 entries tree-wide, 81 inside the measured
+			// corpus, and upstream actually carries status.observedState.name for two
+			// of those 81. Two percent. KCC carries the resource name in
+			// status.externalRef, so "should name also be in ObservedState" is the same
+			// judgement call every time and the answer is nearly always no.
+			//
+			// Left as a known silent drop rather than paid for with a queue nobody can
+			// read. See docs/ai/greenfield-detection-gaps.md.
 			continue
 		}
 
-		codegen.WriteField(&buf, field, msg, emitted, false, opts)
+		// Rendered separately so the field's own output can be inspected before
+		// it is appended. When the generator cannot type a field it writes a
+		// "// TODO:" comment and moves on, and the field then never reaches the
+		// CRD. That is a silent drop unless somebody records it.
+		var field_ bytes.Buffer
+		codegen.WriteField(&field_, field, msg, emitted, false, opts, "")
+		buf.Write(field_.Bytes())
 		emitted++
 
+		// A string field whose name matches a resource this service declares is
+		// probably a reference to it. WriteField writes the marker, from
+		// opts.Siblings; this records the matching queue entry, so the marker and
+		// the entry cannot come from two predicates that drift apart.
+		//
+		// This flags; it does not generate. The field stays a string, and the
+		// marker plus the queue entry hand the decision to a person.
+		if target, ok := codegen.SiblingResource(field, opts.Siblings); ok {
+			out.Judgement = append(out.Judgement, JudgementItem{
+				FieldPath: ".spec." + codegen.GetJSONForKRM(field),
+				Reason:    "possible-reference-by-sibling",
+				Detail: "the name matches " + target + ", a resource this service declares; " +
+					"confirm whether it should be a reference",
+			})
+		}
+
+		if reason, ok := unsupportedFieldReason(field_.String()); ok {
+			out.Judgement = append(out.Judgement, JudgementItem{
+				FieldPath: ".spec." + codegen.GetJSONForKRM(field),
+				Reason:    "unsupported-field-type",
+				Detail:    reason,
+			})
+		}
 		if item, ok := judgementFor(field); ok {
 			out.Judgement = append(out.Judgement, item)
 		}
@@ -112,6 +181,54 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 	}}, out.Judgement...)
 
 	return out, nil
+}
+
+// PrepopulateObservedState renders the body of the resource-level
+// <Kind>ObservedState struct, and reports any import the rendered fields need.
+//
+// This is mechanical, not a judgement call. Measured on the pilot: for
+// NetworkSecurityURLList and TranscoderJob the proto alone gives the complete and
+// correct answer, and producing it by hand consisted of copying what the generator
+// had already worked out.
+//
+// details comes from the type generator's identifyOutputs, so the transitive rule
+// -- a field is output-only if reached through an OUTPUT_ONLY parent -- is applied
+// once, in one place.
+func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedStateMessages sets.String, opts codegen.WriteOptions) (fields string, extraImports []string, judgement []JudgementItem) {
+	if details == nil {
+		return "", nil, nil
+	}
+
+	var buf bytes.Buffer
+	// identityFields is skipped here for the same reason as in the Spec: "name" is
+	// the resource's own resource name, which KCC carries in status.externalRef
+	// rather than as an observed field, even where the proto marks it OUTPUT_ONLY.
+	notes := codegen.WriteObservedStateFields(&buf, details, observedStateMessages, identityFields, opts)
+	fields = buf.String()
+
+	// Report what did not make it. Until this existed, ObservedState was the only
+	// part of the generator that dropped fields without saying so, which made a
+	// resource with a half-empty status indistinguishable from a complete one.
+	for _, n := range notes {
+		switch {
+		case n.Skipped:
+			judgement = append(judgement, JudgementItem{
+				FieldPath: ".status.observedState." + n.JSONName,
+				Reason:    "observedstate-identity-field-omitted",
+				Detail:    "proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource",
+			})
+		default:
+			if reason, ok := unsupportedFieldReason(n.Rendered); ok {
+				judgement = append(judgement, JudgementItem{
+					FieldPath: ".status.observedState." + n.JSONName,
+					Reason:    "unsupported-field-type",
+					Detail:    reason,
+				})
+			}
+		}
+	}
+
+	return fields, ExtraImportsFor(fields), judgement
 }
 
 // judgementFor reports whether a field needs a human decision that the generator
@@ -169,4 +286,134 @@ func FormatJudgementEntries(kind, group string, items []JudgementItem) string {
 		sb.WriteString("\n")
 	}
 	return sb.String()
+}
+
+// OutputOnlyCandidate is a field the proto documents as output-only in prose
+// while carrying no google.api.field_behavior annotation to say so.
+type OutputOnlyCandidate struct {
+	// FieldPath is the KRM path the field was emitted at, e.g. ".spec.createTime".
+	FieldPath string
+	// Comment is the proto's leading comment, so a reviewer can decide without
+	// opening the proto.
+	Comment string
+}
+
+// outputOnlyPrefixes are the ways a proto says "GCP sets this" in prose rather
+// than in a google.api.field_behavior annotation.
+//
+// Two spellings, because two families of API write it differently. Most protos
+// open the comment "Output only."; Compute opens it "[Output Only]", and for a
+// long time only the first was recognised, so every Compute resource lost the
+// signal entirely -- 1,605 fields in compute.proto alone, and all ten of
+// ComputeInterconnect's misplaced observed-state fields (googleIPAddress,
+// circuitInfos, expectedOutages and the rest).
+//
+// Both are matched as a prefix rather than anywhere in the comment. That is the
+// convention in practice: of the Compute fields carrying the marker, 1,600 open
+// with it and 5 mention it mid-sentence. Those 5 are left, because an anchored
+// test is the one whose false-positive rate was measured.
+var outputOnlyPrefixes = []string{"Output only.", "[Output Only]"}
+
+// DetectOutputOnlyInComments finds spec fields whose proto comment says the
+// field is output-only while its field_behavior does not.
+//
+// It reports rather than acts. Applying the inference directly would move 90
+// fields across 13 services, 29 of them in v1beta1, where relocating a field
+// from spec to status breaks a schema people already depend on. The reported
+// fields are moved by hand, in <kind>_types.go, once someone has agreed.
+//
+// The signal itself is trustworthy: across 4,673 fields in hand-written Spec
+// structs in the baseline tree, not one carries either spelling in its comment,
+// so there are no measured false positives for either. What is missing is the
+// review, not the accuracy.
+func DetectOutputOnlyInComments(msg protoreflect.MessageDescriptor) []OutputOnlyCandidate {
+	if msg == nil {
+		return nil
+	}
+	var out []OutputOnlyCandidate
+	for i := 0; i < msg.Fields().Len(); i++ {
+		field := msg.Fields().Get(i)
+		if codegen.IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
+			continue
+		}
+		if identityFields[string(field.Name())] {
+			continue
+		}
+		comment := strings.TrimSpace(msg.ParentFile().SourceLocations().ByDescriptor(field).LeadingComments)
+		said := false
+		for _, prefix := range outputOnlyPrefixes {
+			if strings.HasPrefix(comment, prefix) {
+				said = true
+				break
+			}
+		}
+		if !said {
+			continue
+		}
+		out = append(out, OutputOnlyCandidate{
+			FieldPath: ".spec." + codegen.GetJSONForKRM(field),
+			Comment:   strings.Join(strings.Fields(comment), " "),
+		})
+	}
+	return out
+}
+
+// FormatOutputOnlyCandidates renders detector output for the report file.
+func FormatOutputOnlyCandidates(kind, group string, items []OutputOnlyCandidate) string {
+	var sb strings.Builder
+	for _, it := range items {
+		sb.WriteString(fmt.Sprintf("kind=%s group=%s: field %q comment=%q\n",
+			kind, group, it.FieldPath, it.Comment))
+	}
+	return sb.String()
+}
+
+// ExtraImportsFor reports the imports a rendered field body needs beyond the
+// three the types template always writes.
+//
+// A handful of proto types map to Go types from other packages -- google.rpc.Status
+// to common.Status, google.protobuf.Struct to apiextensionsv1.JSON. The template
+// imports none of them, so anything the rendered Spec or ObservedState references
+// has to be declared or the scaffolded file does not compile. Both bodies are
+// scanned, because either can contain such a field: securitycentermanagement puts
+// an apiextensionsv1.JSON in the Spec, transcoder a common.Status in the
+// ObservedState.
+func ExtraImportsFor(bodies ...string) []string {
+	var out []string
+	for qualifier, importPath := range codegen.QualifierImports {
+		for _, body := range bodies {
+			if strings.Contains(body, qualifier+".") {
+				// Emit the alias, always. The path's last segment is often not the
+				// qualifier the field uses -- apiextensions-apiserver/.../v1 provides
+				// package "v1", while the field says apiextensionsv1.JSON -- and
+				// goimports then removes the import as unused rather than fixing it.
+				out = append(out, fmt.Sprintf("%s %q", qualifier, importPath))
+				break
+			}
+		}
+	}
+	sort.Strings(out)
+	return out
+}
+
+// unsupportedFieldReason reports the generator's own explanation when it could
+// not produce a Go type for a field.
+//
+// WriteField emits "// TODO: <err>" in place of the field and carries on, so the
+// field is absent from the CRD with nothing but a comment in generated source to
+// say why. Measured on the 239-resource run: 15 such markers in scaffolded type
+// files and 37 more in types.generated.go, between them accounting for 124 lost
+// CRD field paths, none of it recorded anywhere a person would look.
+func unsupportedFieldReason(rendered string) (string, bool) {
+	for _, line := range strings.Split(rendered, "\n") {
+		line = strings.TrimSpace(line)
+		if after, ok := strings.CutPrefix(line, "// TODO: "); ok {
+			// WriteField prefixes the field name; FieldPath already carries it.
+			if _, reason, found := strings.Cut(after, ": "); found {
+				return reason, true
+			}
+			return after, true
+		}
+	}
+	return "", false
 }

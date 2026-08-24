@@ -9,8 +9,8 @@ measurements behind each decision, and the approaches that were tried and abando
 
 ## Status
 
-All four phases are implemented, in PRs #14–#17 — all open, none merged yet. **Scope:** the
-experimental sandbox (`kcc-lab`), not upstream policy.
+Phases 1-4 are implemented and merged, in PRs #14-#17. Phase 5 is designed and not built. This
+covers the experimental sandbox (`kcc-lab`), not upstream policy.
 
 | Phase | Change | PR | Gated? |
 |---|---|---|---|
@@ -18,6 +18,7 @@ experimental sandbox (`kcc-lab`), not upstream policy.
 | 2 | `google.api.resource` into the scaffolder | #15 | no — only writes new files |
 | 3 | pre-populate the Spec | #17 | `--prepopulate-spec` |
 | 4 | judgement queue + `[refs]` suppression | #16 | n/a |
+| 5 | prepopulate ObservedState | — | not built |
 
 Companion to [`greenfield-bulk-generation.md`](greenfield-bulk-generation.md). That document is the
 *procedure* an agent follows per resource; this one is about changing the generator so the procedure
@@ -80,7 +81,8 @@ behaviour mechanically and route references to a human.
 | Element | Source | Status before this work |
 |---|---|---|
 | Field list, Go types, pointer rules | typegenerator | computed |
-| Spec vs ObservedState split | `OUTPUT_ONLY` | computed |
+| Spec vs ObservedState split, nested types | `OUTPUT_ONLY` | computed |
+| Resource-level `<Kind>ObservedState` body | `OUTPUT_ONLY`, ~84% | **available, unused** |
 | `+required` | `field_behavior` | **parsed, then unused** |
 | Parent shape (project / location / org / folder) | `google.api.resource.pattern` | **available, unused** |
 | Collection segment and plural | `google.api.resource.plural` | **available, unused** |
@@ -102,13 +104,13 @@ human the judgement calls in the remainder.
 
 ### Principles
 
-**Defer behaviour decisions to the API.** KCC will never know an API's rules as well as the team
+Defer behaviour decisions to the API. KCC will never know an API's rules as well as the team
 that owns it, so where the two could disagree, the safer default is to let the API decide.
 Tightening a CRD is also backwards-incompatible in a way loosening it is not, so absent certainty,
 lax presence validation is preferable. Agreeing with what the proto declares is a fact about
 consistency, not an argument that the constraint is desirable.
 
-**Every phase that changes generated output is opt-in per service.** Anything that reshapes an
+Every phase that changes generated output is opt-in per service. Anything that reshapes an
 existing CRD gets a flag and stays off by default; only phases that write genuinely new files run
 unconditionally.
 
@@ -155,7 +157,7 @@ than half the messages that declare a pattern: `lbtrafficextensions` where the A
 `lbTrafficExtensions`, `batchs` where it says `batches`. Measured in the
 [findings doc](greenfield-generator-findings.md#phase-2-how-wrong-the-guess-is).
 
-**This is a GCP resource name, not a KRM field name.** Two separate namespaces, and only the second
+This is a GCP resource name, not a KRM field name. Two separate namespaces, and only the second
 is in scope:
 
 | | Example | Set by | Checked by |
@@ -167,20 +169,24 @@ Field names must *not* follow proto casing, and nothing here touches them — `G
 unchanged and no CRD field moves. The collection segment goes into `status.externalRef` and into
 request URLs, so it has to match GCP byte for byte.
 
-**Nine resources already ship with the wrong segment**, one of them reachable through a
+Nine resources already ship with the wrong segment, one of them reachable through a
 user-supplied `external:` value. This phase changes the template, not those files: the scaffolder
 never rewrites an existing resource, and correcting one would change a published
 `status.externalRef`, so PR #18 ratchets four of the nine rather than fixing them. Evidence and
 remaining work in
 [`experiments/identity-collection-casing.md`](experiments/identity-collection-casing.md).
 
-**Parent handling stays narrow on purpose.** Only `projects/*` and `projects/*/locations/*` get
-specialised treatment, because those are the shapes the scaffolded spec has fields for. An org- or
-folder-parented resource has nowhere to put its parent, so generated code for it would not compile;
-everything else keeps the projects/locations shape and gains a TODO naming its real pattern. The
-collection segment is fixed either way.
+Parent handling stays narrow on purpose. Only `projects/*` and `projects/*/locations/*` get
+specialised treatment, because those are the shapes the scaffolded Spec has fields for. Everything
+else still gets the projects/locations Parent struct, and for an org- or folder-parented resource
+that struct is simply wrong. It compiles — it references `spec.projectRef` and `spec.location`, and
+the scaffolded Spec provides both — it just names a parent the resource does not have. Being wrong
+rather than broken is what makes it worth flagging, since no compiler will catch it. Those resources
+get a TODO naming their real pattern and stating that the Parent struct and the Spec both need
+rewriting. The TODO fires for `organization`, `folder` and `other`, and not for `project_location`,
+which needs no warning. The collection segment is correct either way.
 
-**No flag here**, unlike phase 1: every scaffold path is guarded by an "already exists, skipping"
+No flag here, unlike phase 1: every scaffold path is guarded by an "already exists, skipping"
 check, so this phase can only add new files. There is no existing resource for it to change.
 
 ### Phase 3 — pre-populate the Spec
@@ -199,7 +205,7 @@ strings are really references, which fields KCC deliberately leaves out, and whi
 suit KRM conventions. Required versus optional is not one of them — phase 1 answers it from the
 annotation, and only a deliberate contradiction of the proto needs a person.
 
-**The queue must mark the resource whether or not the detector found anything.** The entry is
+Every resource gets a queue entry, whatever the detector turned up. The entry is
 written at resource level unconditionally, and field-level entries are a bonus on top, because the
 annotations that would drive field-level detection are routinely missing on exactly the fields that
 matter — see
@@ -207,15 +213,15 @@ matter — see
 that fired only on annotations would write nothing for such a resource, suppress nothing, and send
 it into the ratchet to fail, which is the one outcome the queue exists to prevent.
 
-**Undecided fields get emitted, not omitted.** A field that ships with an open question against it
+Undecided fields get emitted, not omitted. A field that ships with an open question against it
 is visible to everyone. A field left out is invisible to every other check, because nothing can
 report a field missing from a CRD it was never in.
 
-**ObservedState is left alone.** Output fields reached through nested messages need the generated
-`<Proto>ObservedState` variants rather than the plain structs, and deciding that per field is a
-problem of its own.
+ObservedState is left alone, and the phase 5 section below explains why that is a smaller problem
+than it looks. Nothing here changes the nested `<Proto>ObservedState` structs, which
+`identifyOutputs` and `needsObservedState` already produce without help.
 
-**Gated behind `--prepopulate-spec`** on `generate-types`, alongside the existing
+Gated behind `--prepopulate-spec` on `generate-types`, alongside the existing
 `--skip-scaffold-files`, and set per service in `apis/<service>/generate.sh`. The bulk manifest
 cannot be the switch: the documented procedure adds the Kind to `greenfield_bulk.txt` only *after*
 generation has run, so a generator reading it would never fire for the resource being generated.
@@ -227,6 +233,67 @@ dependency backwards.
 Add `apis/<service>/needs_judgement_call.txt`, **per service** so parallel generation of different
 services never conflicts, and a compile script can glob `apis/*/needs_judgement_call.txt` to pick
 the next resource to refine.
+
+### Phase 5 — prepopulate ObservedState (not built)
+
+The scaffolder fills the Spec and leaves `<Kind>ObservedState` empty. That was justified above by
+saying the plain-versus-`ObservedState` type choice is a problem of its own, which is not true: the
+generator already makes exactly that choice at `pkg/codegen/typegenerator.go:445`, looking each
+field's message up in `observedStateMessages`. The information was always there; the scaffolder
+never asked for it.
+
+The cost of leaving it is not obvious either, because nothing catches it.
+`TestOutputOnlyFieldsAreUnderObservedState` checks only the *shape* of `status` — that output fields
+sit under `observedState` rather than loose — and is driven by the TF/DCL resource config, so it
+says nothing about completeness against the proto. Twenty-three alpha resources ship with an empty
+ObservedState and no check complains.
+
+**The flag.** `--prepopulate-observed-state`, a sibling to `--prepopulate-spec`, opt-in per service.
+The wiring already favours it. The scaffold loop in
+`pkg/commands/generatetypes/generatetypescommand.go:183` runs *after* `WriteVisitedMessages()` and
+`WriteOutputMessages()`, so both `observedStateMessages` and the root message's
+`OutputMessageDetails` are computed by the time the scaffolder is called, and the template at
+`template/apis/types.go:106` already emits the empty struct. It is an `ObservedStateFields` rendered
+the way `SpecFields` is. Reuse `identifyOutputs` rather than re-walking the proto: its transitive
+rule — a field is output-only if reached through an `OUTPUT_ONLY` parent — is subtle, and a second
+implementation would drift from the first.
+
+**The allowlist.** `OUTPUT_ONLY` covers 84.3% of the 1,449 fields in the tree's 359 resource-level
+ObservedState structs. Much of the residue is server-computed fields whose proto simply forgot to
+say so, and those are recoverable from a name allowlist applied only where the proto gives **no**
+`field_behavior` at all. A field the proto marks `REQUIRED`, `INPUT_ONLY` or `IMMUTABLE` is spec by
+declaration and the allowlist must never override it.
+
+Split the allowlist by family rather than by risk, because the two families deserve different
+treatment:
+
+| Family | Names | Queue entry? |
+|---|---|---|
+| Timestamps | `create_time`, `update_time`, `delete_time`, `creation_timestamp` | no |
+| Identifiers | `id`, `uid`, `self_link`, `self_link_with_id`, `name`, `etag` | one per resource |
+
+Timestamps are 26 of the 40 fields the safe half of the allowlist recovers, and there is genuinely
+nothing about them for a person to decide, so queueing them is noise. Identifiers are the opposite.
+Twenty resources carry more than one — compute has `id`, `selfLink` and `selfLinkWithID` together,
+and elsewhere it is `uid` and `etag` — and choosing which one is the resource's identity is the
+substantive call, the same one Step 2 has to make. One entry per resource, not one per field.
+
+`type` is excluded outright: it appears in 36 resource-level Spec structs. Below that the residue is
+a 153-name tail with no signal in it.
+
+**What stays judgement.** Forty-two fields are deliberate spec mirrors, where GCP normalizes a value
+and KCC echoes it back into status. No annotation can tell you that. Services whose protos come from
+a discovery document carry no `field_behavior` at all: `apis/compute/v1alpha1/types.generated.go`
+holds a single `Output only.` in the whole file, and at least ten other services hold none. There
+the honest output is a resource-level queue entry saying nothing could be derived, rather than an
+empty struct that looks finished.
+
+**A fifth ratchet.** Nine of the 2,045 message-typed fields in hand-written ObservedState structs
+point at a plain type where an `XObservedState` variant exists in the same package. That is the
+`CmekConfig` bug class the findings doc describes, and it is mechanically detectable. A check
+following `tests/apichecks/identity_test.go:105`, seeded with the nine current cases, stops the
+tenth. Fixing the nine is a separate conversation: two are in `v1beta1`, so it would change served
+CRD schemas.
 
 ## Where a decision gets recorded
 
@@ -250,7 +317,7 @@ The queue adds a fourth state, and a resource sits in exactly one of them:
 | triaged: still owed, actionable | `missingrefs.txt` | computed ratchet | no — recomputed each run |
 | structurally impossible | `refs_not_representable.txt` | computed golden | reason set by the classifier |
 
-**Suppression is load-bearing, not bookkeeping.** `missingrefs.txt` fails on new entries, and a
+Suppression is load-bearing, not bookkeeping. `missingrefs.txt` fails on new entries, and a
 mechanically generated resource arrives full of ref-shaped strings that are exactly that. Without
 suppression the first mechanical-pass PR is blocked on the day it opens.
 
@@ -263,20 +330,68 @@ Only `[refs]` is suppressed. Proto annotations, `observedGeneration`, copyright,
 conformance all still apply, so a mechanical defect surfaces on the PR that generated it rather than
 waiting for the judgement pass.
 
-**Suppression must not read as a fix.** A queued resource reports nothing, so whatever it already
+Suppression must not read as a fix. A queued resource reports nothing, so whatever it already
 owed looks resolved, gets pruned from the ratchet, and returns as a *new* violation the moment it
 graduates — failing the check for work nobody did. Baseline entries therefore carry forward:
 queueing can stop a finding being added, never remove one already recorded.
 
+## Two things about the checks that are easy to get wrong
+
+Neither of these is visible from the code, and both were learned by getting them wrong.
+
+### Golden files and ratchets are not the same thing
+
+Both write a file into `tests/apichecks/testdata/exceptions/`, so the filenames tell you nothing.
+The difference is which helper the test calls at the end.
+
+| | `CompareGoldenFile` | `CompareRatchetFile` |
+|---|---|---|
+| A new violation appears | written into the file under `WRITE_GOLDEN_OUTPUT=1` | the test fails, even with that flag set |
+| A violation is fixed | disappears when the file is rewritten | pruned, and the test logs that it did |
+| Which way the file moves | either way | it can only shrink |
+
+Master has 17 goldens and 4 ratchets: `missingrefs.txt`, `greenfield_dropped_fields.txt`,
+`deprecated_refs_v1beta1.txt` and `identity_collection_casing.txt`.
+
+The rule for choosing between them is whether work currently in flight can produce a new entry. If
+it can, it needs a ratchet, because a new entry means somebody did the work incorrectly today. If it
+cannot — the class is large, spread across the corpus and nobody is touching it — a golden is honest
+and cheaper, and growth is still visible in review. `missingrefs.txt` was converted from a golden to
+a ratchet on exactly that basis: deciding which fields are references is the judgement bulk
+generation most often gets wrong.
+
+The practical symptom: if a check fails and rerunning under `WRITE_GOLDEN_OUTPUT=1` does not clear
+it, you have hit a ratchet, and the answer is to fix the finding rather than record it.
+
+### What a check compares against decides whether it can run at all
+
+That matters more than picking the most authoritative source available.
+
+| Source | Authoritative? | In the repo? |
+|---|---|---|
+| Proto descriptor (`.build/googleapis.pb`) | yes | no — gitignored, so a check needing it skips silently in CI |
+| Recorded traffic (`_http.log`) | nearly | yes — 894 files, about 23 MB |
+| The CRDs | no | yes — derived from KRM types, so blind to GCP's own formats |
+
+`TestIdentityCollectionCasing` is the worked example. The authoritative answer to "does this
+collection segment match GCP" is the proto pattern, but a check reading the descriptor would skip in
+CI, where the file does not exist. So it uses recorded traffic instead and writes its limitation
+into the test: it can only catch a wrong casing when some other part of KCC gets that casing right.
+A resource wrong everywhere passes, and resources without fixtures are not covered. That is why its
+baseline lists four entries where a proto-based audit finds nine.
+
+Trading authority for a check that actually runs is usually right. What matters is that the
+compromise is recorded in the test rather than left for the next reader to rediscover.
+
 ## Two caveats
 
-**This changes shared tooling.** `dev/tools/controllerbuilder` is used by brownfield and
+This changes shared tooling. `dev/tools/controllerbuilder` is used by brownfield and
 TF-migration work too. Everything the sandbox has done so far was additive or scoped by the bulk
 manifest; the generator affects every resource anyone generates. Experiment here, but this belongs
 upstream on a real discussion rather than as a permanent sandbox divergence. The phase-3 flag exists
 partly for that reason: the new behaviour stays off by default and opt-in per service.
 
-**"Merge the mechanical pass without worrying about correctness" has a scope.** It is safe in the
+"Merge the mechanical pass without worrying about correctness" has a scope. It is safe in the
 sandbox, where there are no users and CRD shapes are free to change. It is *not* safe at port-back:
 a field shipped as a plain string that should have been a reference is a breaking CRD change once it
 reaches a published beta, and the field and JSON names are baked into the schema. The judgement pass
