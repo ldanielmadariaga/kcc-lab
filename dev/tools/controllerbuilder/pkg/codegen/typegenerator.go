@@ -70,6 +70,10 @@ type OutputMessageDetails struct {
 type WriteOptions struct {
 	// EmitRequired writes "// +required" for fields the proto marks REQUIRED.
 	EmitRequired bool
+	// EmitPluralAcronyms cases a plural acronym as KRM conventions want, so
+	// related_uris becomes RelatedURIs rather than RelatedUris. See AcronymCasing
+	// for why this is opt-in.
+	EmitPluralAcronyms bool
 }
 
 func NewTypeGenerator(goPackage string, outputBaseDir string, api *protoapi.Proto) *TypeGenerator {
@@ -157,6 +161,30 @@ func (g *TypeGenerator) visitMessage(message protoreflect.MessageDescriptor) err
 	}
 
 	return nil
+}
+
+// ObservedStateMessages is the set of proto messages that got an ObservedState
+// struct of their own. A field whose message is in here must be referenced as
+// <Proto>ObservedState rather than the plain type.
+func (g *TypeGenerator) ObservedStateMessages() sets.String {
+	return g.observedStateMessages
+}
+
+// OutputFieldsFor returns the output-only fields of one message, as computed by
+// identifyOutputs during the visit. The scaffolder uses this to fill the
+// resource-level ObservedState struct rather than re-walking the proto: the rule
+// is transitive, since a field is output-only if it is reached through an
+// OUTPUT_ONLY parent, and a second implementation would drift from this one.
+//
+// Reports false when the message has no output-only content, which is the signal
+// to leave the scaffolded struct empty.
+func (g *TypeGenerator) OutputFieldsFor(fqn string) (*OutputMessageDetails, bool) {
+	for _, details := range g.outputMessages {
+		if string(details.Message.FullName()) == fqn {
+			return details, true
+		}
+	}
+	return nil, false
 }
 
 // needsObservedState determines if a message requires a separate ObservedState struct.
@@ -438,7 +466,26 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 	fmt.Fprintf(out, "\n")
 	fmt.Fprintf(out, "// %s=%s\n", KCCProtoMessageAnnotationObservedState, msg.FullName())
 	fmt.Fprintf(out, "type %s struct {\n", goType)
-	for i, field := range msgDetails.OutputFields {
+	WriteObservedStateFields(out, msgDetails, observedStateMessages, nil)
+	fmt.Fprintf(out, "}\n")
+}
+
+// WriteObservedStateFields writes the body of an observed-state struct: one field
+// per output-only field, with no enclosing type declaration.
+//
+// The scaffolder calls this too, to fill the resource-level <Kind>ObservedState in
+// the hand-written types file. Both callers go through here so the plain-versus-
+// ObservedState choice below has exactly one implementation; a second copy in the
+// scaffolder would drift from this one the first time either changed.
+//
+// skip names proto fields to leave out, or nil to write all of them.
+func WriteObservedStateFields(out io.Writer, msgDetails *OutputMessageDetails, observedStateMessages sets.String, skip map[string]bool) {
+	msg := msgDetails.Message
+	emitted := 0
+	for _, field := range msgDetails.OutputFields {
+		if skip[string(field.Name())] {
+			continue
+		}
 		isMessage := field.Kind() == protoreflect.MessageKind && !field.IsMap()
 		useObservedState := false
 		if isMessage {
@@ -449,9 +496,9 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 		// Never emit +required from here. An observed-state struct describes what GCP
 		// returned, and the API server validates status, so requiring a field GCP is
 		// free to omit would make it reject a status KCC itself wrote.
-		WriteField(out, field, msg, i, useObservedState, WriteOptions{})
+		WriteField(out, field, msg, emitted, useObservedState, WriteOptions{})
+		emitted++
 	}
-	fmt.Fprintf(out, "}\n")
 }
 
 func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool) (string, error) {
@@ -503,8 +550,8 @@ func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool)
 func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protoreflect.MessageDescriptor, fieldIndex int, isTransitiveOutput bool, opts WriteOptions) {
 	sourceLocations := msg.ParentFile().SourceLocations().ByDescriptor(field)
 
-	jsonName := GetJSONForKRM(field)
-	GoFieldName := goFieldName(field)
+	jsonName := getJSONForKRM(field, opts)
+	GoFieldName := goFieldNameOpts(field, opts)
 
 	goType, err := GoTypeForField(field, isTransitiveOutput)
 	if err != nil {
@@ -677,14 +724,18 @@ func goTypeForProtoKind(kind protoreflect.Kind) string {
 // GetJSONForKRM returns the KRM JSON name for the field,
 // honoring KRM conventions
 func GetJSONForKRM(protoField protoreflect.FieldDescriptor) string {
+	return getJSONForKRM(protoField, WriteOptions{})
+}
+
+func getJSONForKRM(protoField protoreflect.FieldDescriptor, opts WriteOptions) string {
 	tokens := strings.Split(string(protoField.Name()), "_")
 	for i, token := range tokens {
 		if i == 0 {
 			// Do not capitalize first token
 			continue
 		}
-		if IsAcronym(token) {
-			token = strings.ToUpper(token)
+		if cased, ok := AcronymCasing(token, opts.EmitPluralAcronyms); ok {
+			token = cased
 		} else {
 			token = strings.Title(token)
 		}
@@ -696,10 +747,14 @@ func GetJSONForKRM(protoField protoreflect.FieldDescriptor) string {
 // goFieldName returns the KRM go name for the field,
 // honoring KRM conventions
 func goFieldName(protoField protoreflect.FieldDescriptor) string {
+	return goFieldNameOpts(protoField, WriteOptions{})
+}
+
+func goFieldNameOpts(protoField protoreflect.FieldDescriptor, opts WriteOptions) string {
 	tokens := strings.Split(string(protoField.Name()), "_")
 	for i, token := range tokens {
-		if IsAcronym(token) {
-			token = strings.ToUpper(token)
+		if cased, ok := AcronymCasing(token, opts.EmitPluralAcronyms); ok {
+			token = cased
 		} else {
 			token = strings.Title(token)
 		}

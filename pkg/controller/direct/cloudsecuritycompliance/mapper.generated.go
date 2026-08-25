@@ -235,7 +235,7 @@ func CloudSecurityFrameworkObservedState_FromProto(mapCtx *direct.MapContext, in
 	// MISSING: Name
 	out.MajorRevisionID = direct.LazyPtr(in.GetMajorRevisionId())
 	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
-	// MISSING: CloudControlGroupDetails
+	out.CloudControlGroupDetails = direct.Slice_FromProto(mapCtx, in.CloudControlGroupDetails, Framework_CloudControlGroupDetailsObservedState_FromProto)
 	out.SupportedCloudProviders = direct.EnumSlice_FromProto(mapCtx, in.SupportedCloudProviders)
 	out.SupportedTargetResourceTypes = direct.EnumSlice_FromProto(mapCtx, in.SupportedTargetResourceTypes)
 	return out
@@ -248,7 +248,7 @@ func CloudSecurityFrameworkObservedState_ToProto(mapCtx *direct.MapContext, in *
 	// MISSING: Name
 	out.MajorRevisionId = direct.ValueOf(in.MajorRevisionID)
 	out.Type = direct.Enum_ToProto[pb.Framework_FrameworkType](mapCtx, in.Type)
-	// MISSING: CloudControlGroupDetails
+	out.CloudControlGroupDetails = direct.Slice_ToProto(mapCtx, in.CloudControlGroupDetails, Framework_CloudControlGroupDetailsObservedState_ToProto)
 	out.SupportedCloudProviders = direct.EnumSlice_ToProto[pb.CloudProvider](mapCtx, in.SupportedCloudProviders)
 	out.SupportedTargetResourceTypes = direct.EnumSlice_ToProto[pb.TargetResourceType](mapCtx, in.SupportedTargetResourceTypes)
 	return out
@@ -261,7 +261,7 @@ func CloudSecurityFrameworkSpec_FromProto(mapCtx *direct.MapContext, in *pb.Fram
 	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.Description = direct.LazyPtr(in.GetDescription())
-	// MISSING: CloudControlGroupDetails
+	out.CloudControlGroupDetails = direct.Slice_FromProto(mapCtx, in.CloudControlGroupDetails, Framework_CloudControlGroupDetails_FromProto)
 	out.CloudControlDetails = direct.Slice_FromProto(mapCtx, in.CloudControlDetails, CloudControlDetails_FromProto)
 	out.Category = direct.EnumSlice_FromProto(mapCtx, in.Category)
 	return out
@@ -274,7 +274,7 @@ func CloudSecurityFrameworkSpec_ToProto(mapCtx *direct.MapContext, in *krm.Cloud
 	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
 	out.Description = direct.ValueOf(in.Description)
-	// MISSING: CloudControlGroupDetails
+	out.CloudControlGroupDetails = direct.Slice_ToProto(mapCtx, in.CloudControlGroupDetails, Framework_CloudControlGroupDetails_ToProto)
 	out.CloudControlDetails = direct.Slice_ToProto(mapCtx, in.CloudControlDetails, CloudControlDetails_ToProto)
 	out.Category = direct.EnumSlice_ToProto[pb.FrameworkCategory](mapCtx, in.Category)
 	return out

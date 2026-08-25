@@ -37,6 +37,10 @@ ${CONTROLLERBUILDER} generate-types \
   --proto-source-path "${REPO_ROOT}/.build/googleapis-mapmanagement.pb" \
   --service google.maps.mapmanagement.v2beta \
   --api-version mapmanagement.cnrm.cloud.google.com/v1alpha1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
   --include-skipped-output \
   --resource MapManagementMapConfig:MapConfig
 

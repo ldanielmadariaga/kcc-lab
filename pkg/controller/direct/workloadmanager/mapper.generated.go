@@ -29,6 +29,22 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
+func GCEInstanceFilter_FromProto(mapCtx *direct.MapContext, in *pb.GceInstanceFilter) *krm.GCEInstanceFilter {
+	if in == nil {
+		return nil
+	}
+	out := &krm.GCEInstanceFilter{}
+	out.ServiceAccounts = in.ServiceAccounts
+	return out
+}
+func GCEInstanceFilter_ToProto(mapCtx *direct.MapContext, in *krm.GCEInstanceFilter) *pb.GceInstanceFilter {
+	if in == nil {
+		return nil
+	}
+	out := &pb.GceInstanceFilter{}
+	out.ServiceAccounts = in.ServiceAccounts
+	return out
+}
 func WorkloadManagerEvaluationObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Evaluation) *krm.WorkloadManagerEvaluationObservedState {
 	if in == nil {
 		return nil
@@ -38,7 +54,6 @@ func WorkloadManagerEvaluationObservedState_FromProto(mapCtx *direct.MapContext,
 	out.ResourceStatus = ResourceStatus_FromProto(mapCtx, in.GetResourceStatus())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: KMSKey
 	return out
 }
 func WorkloadManagerEvaluationObservedState_ToProto(mapCtx *direct.MapContext, in *krm.WorkloadManagerEvaluationObservedState) *pb.Evaluation {
@@ -50,7 +65,6 @@ func WorkloadManagerEvaluationObservedState_ToProto(mapCtx *direct.MapContext, i
 	out.ResourceStatus = ResourceStatus_ToProto(mapCtx, in.ResourceStatus)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: KMSKey
 	return out
 }
 func WorkloadManagerEvaluationSpec_FromProto(mapCtx *direct.MapContext, in *pb.Evaluation) *krm.WorkloadManagerEvaluationSpec {
@@ -67,7 +81,7 @@ func WorkloadManagerEvaluationSpec_FromProto(mapCtx *direct.MapContext, in *pb.E
 	out.CustomRulesBucket = direct.LazyPtr(in.GetCustomRulesBucket())
 	out.EvaluationType = direct.Enum_FromProto(mapCtx, in.GetEvaluationType())
 	out.BigQueryDestination = BigQueryDestination_FromProto(mapCtx, in.GetBigQueryDestination())
-	// MISSING: KMSKey
+	out.KMSKey = direct.LazyPtr(in.GetKmsKey())
 	return out
 }
 func WorkloadManagerEvaluationSpec_ToProto(mapCtx *direct.MapContext, in *krm.WorkloadManagerEvaluationSpec) *pb.Evaluation {
@@ -84,6 +98,6 @@ func WorkloadManagerEvaluationSpec_ToProto(mapCtx *direct.MapContext, in *krm.Wo
 	out.CustomRulesBucket = direct.ValueOf(in.CustomRulesBucket)
 	out.EvaluationType = direct.Enum_ToProto[pb.Evaluation_EvaluationType](mapCtx, in.EvaluationType)
 	out.BigQueryDestination = BigQueryDestination_ToProto(mapCtx, in.BigQueryDestination)
-	// MISSING: KMSKey
+	out.KmsKey = direct.ValueOf(in.KMSKey)
 	return out
 }

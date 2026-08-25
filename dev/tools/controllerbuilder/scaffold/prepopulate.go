@@ -24,6 +24,7 @@ import (
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"k8s.io/apimachinery/pkg/util/sets"
 )
 
 // identityFields are proto fields that the KRM object expresses through its own
@@ -49,6 +50,13 @@ type PrepopulateResult struct {
 	// SpecFields is Go source for the body of the Spec struct: one field per
 	// proto field, already indented, ready to paste between the braces.
 	SpecFields string
+	// ObservedStateFields is the same thing for the resource-level
+	// <Kind>ObservedState struct. Empty when the proto marks nothing OUTPUT_ONLY,
+	// which leaves the scaffolded struct empty as before.
+	ObservedStateFields string
+	// ExtraImports are import paths the rendered fields need beyond the three the
+	// template always writes.
+	ExtraImports []string
 	// Judgement lists fields the generator emitted mechanically but cannot
 	// vouch for.
 	Judgement []JudgementItem
@@ -62,9 +70,8 @@ type PrepopulateResult struct {
 // every other check: a field absent from the CRD cannot be reported as missing
 // from it.
 //
-// ObservedState is not pre-populated. Output fields reached through nested
-// messages need the generated <Proto>ObservedState variants rather than the
-// plain structs, and picking the right one per field is its own problem.
+// ObservedState is filled separately, by PrepopulateObservedState, because it
+// needs data only the type generator has.
 func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptions) (*PrepopulateResult, error) {
 	if msg == nil {
 		return nil, fmt.Errorf("no message descriptor")
@@ -112,6 +119,37 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 	}}, out.Judgement...)
 
 	return out, nil
+}
+
+// PrepopulateObservedState renders the body of the resource-level
+// <Kind>ObservedState struct, and reports any import the rendered fields need.
+//
+// This is mechanical, not a judgement call. Measured on the pilot: for
+// NetworkSecurityURLList and TranscoderJob the proto alone gives the complete and
+// correct answer, and producing it by hand consisted of copying what the generator
+// had already worked out.
+//
+// details comes from the type generator's identifyOutputs, so the transitive rule
+// -- a field is output-only if reached through an OUTPUT_ONLY parent -- is applied
+// once, in one place.
+func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedStateMessages sets.String) (fields string, extraImports []string) {
+	if details == nil {
+		return "", nil
+	}
+
+	var buf bytes.Buffer
+	// identityFields is skipped here for the same reason as in the Spec: "name" is
+	// the resource's own resource name, which KCC carries in status.externalRef
+	// rather than as an observed field, even where the proto marks it OUTPUT_ONLY.
+	codegen.WriteObservedStateFields(&buf, details, observedStateMessages, identityFields)
+	fields = buf.String()
+
+	// google.rpc.Status maps to apis/common, which the types template does not
+	// import. Without this the scaffolded file does not compile.
+	if strings.Contains(fields, "*common.Status") || strings.Contains(fields, "[]common.Status") {
+		extraImports = append(extraImports, "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common")
+	}
+	return fields, extraImports
 }
 
 // judgementFor reports whether a field needs a human decision that the generator
@@ -167,6 +205,62 @@ func FormatJudgementEntries(kind, group string, items []JudgementItem) string {
 			sb.WriteString(" (" + it.Detail + ")")
 		}
 		sb.WriteString("\n")
+	}
+	return sb.String()
+}
+
+// OutputOnlyCandidate is a field the proto documents as output-only in prose
+// while carrying no google.api.field_behavior annotation to say so.
+type OutputOnlyCandidate struct {
+	// FieldPath is the KRM path the field was emitted at, e.g. ".spec.createTime".
+	FieldPath string
+	// Comment is the proto's leading comment, so a reviewer can decide without
+	// opening the proto.
+	Comment string
+}
+
+// DetectOutputOnlyInComments finds spec fields whose proto comment opens with
+// "Output only." but whose field_behavior does not say OUTPUT_ONLY.
+//
+// It reports rather than acts. Applying the inference directly would move 90
+// fields across 13 services, 29 of them in v1beta1, where relocating a field
+// from spec to status breaks a schema people already depend on. The reported
+// fields are moved by hand, in <kind>_types.go, once someone has agreed.
+//
+// The signal itself is trustworthy: across 3780 fields in hand-written Spec
+// structs, not one carries "Output only." in its comment, so there are no
+// measured false positives. What is missing is the review, not the accuracy.
+func DetectOutputOnlyInComments(msg protoreflect.MessageDescriptor) []OutputOnlyCandidate {
+	if msg == nil {
+		return nil
+	}
+	var out []OutputOnlyCandidate
+	for i := 0; i < msg.Fields().Len(); i++ {
+		field := msg.Fields().Get(i)
+		if codegen.IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
+			continue
+		}
+		if identityFields[string(field.Name())] {
+			continue
+		}
+		comment := strings.TrimSpace(msg.ParentFile().SourceLocations().ByDescriptor(field).LeadingComments)
+		if !strings.HasPrefix(comment, "Output only.") {
+			continue
+		}
+		out = append(out, OutputOnlyCandidate{
+			FieldPath: ".spec." + codegen.GetJSONForKRM(field),
+			Comment:   strings.Join(strings.Fields(comment), " "),
+		})
+	}
+	return out
+}
+
+// FormatOutputOnlyCandidates renders detector output for the report file.
+func FormatOutputOnlyCandidates(kind, group string, items []OutputOnlyCandidate) string {
+	var sb strings.Builder
+	for _, it := range items {
+		sb.WriteString(fmt.Sprintf("kind=%s group=%s: field %q comment=%q\n",
+			kind, group, it.FieldPath, it.Comment))
 	}
 	return sb.String()
 }

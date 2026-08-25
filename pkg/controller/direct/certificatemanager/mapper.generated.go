@@ -440,8 +440,6 @@ func CertificateManagerTrustConfigObservedState_v1alpha1_FromProto(mapCtx *direc
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Labels
-	// MISSING: Etag
 	return out
 }
 func CertificateManagerTrustConfigObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcertificatemanagerv1alpha1.CertificateManagerTrustConfigObservedState) *pb.TrustConfig {
@@ -452,8 +450,6 @@ func CertificateManagerTrustConfigObservedState_v1alpha1_ToProto(mapCtx *direct.
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Labels
-	// MISSING: Etag
 	return out
 }
 func CertificateManagerTrustConfigSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.TrustConfig) *krmcertificatemanagerv1alpha1.CertificateManagerTrustConfigSpec {
@@ -462,9 +458,9 @@ func CertificateManagerTrustConfigSpec_v1alpha1_FromProto(mapCtx *direct.MapCont
 	}
 	out := &krmcertificatemanagerv1alpha1.CertificateManagerTrustConfigSpec{}
 	// MISSING: Name
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.Description = direct.LazyPtr(in.GetDescription())
-	// MISSING: Etag
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.TrustStores = direct.Slice_FromProto(mapCtx, in.TrustStores, TrustConfig_TrustStore_v1alpha1_FromProto)
 	return out
 }
@@ -474,9 +470,9 @@ func CertificateManagerTrustConfigSpec_v1alpha1_ToProto(mapCtx *direct.MapContex
 	}
 	out := &pb.TrustConfig{}
 	// MISSING: Name
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.Description = direct.ValueOf(in.Description)
-	// MISSING: Etag
+	out.Etag = direct.ValueOf(in.Etag)
 	out.TrustStores = direct.Slice_ToProto(mapCtx, in.TrustStores, TrustConfig_TrustStore_v1alpha1_ToProto)
 	return out
 }
@@ -718,8 +714,7 @@ func TrustConfig_TrustStore_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb
 	}
 	out := &krmcertificatemanagerv1alpha1.TrustConfig_TrustStore{}
 	out.TrustAnchors = direct.Slice_FromProto(mapCtx, in.TrustAnchors, TrustConfig_TrustAnchor_v1alpha1_FromProto)
-	// MISSING: IntermediateCas
-	// (near miss): "IntermediateCas" vs "IntermediateCAs"
+	out.IntermediateCAs = direct.Slice_FromProto(mapCtx, in.IntermediateCas, TrustConfig_IntermediateCA_v1alpha1_FromProto)
 	return out
 }
 */
@@ -731,8 +726,7 @@ func TrustConfig_TrustStore_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmc
 	}
 	out := &pb.TrustConfig_TrustStore{}
 	out.TrustAnchors = direct.Slice_ToProto(mapCtx, in.TrustAnchors, TrustConfig_TrustAnchor_v1alpha1_ToProto)
-	// MISSING: IntermediateCas
-	// (near miss): "IntermediateCas" vs "IntermediateCAs"
+	out.IntermediateCas = direct.Slice_ToProto(mapCtx, in.IntermediateCAs, TrustConfig_IntermediateCA_v1alpha1_ToProto)
 	return out
 }
 */

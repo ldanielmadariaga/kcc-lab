@@ -759,3 +759,43 @@ type PSCConfig struct {
 		t.Error("everything is generator-owned when the package does not exist yet")
 	}
 }
+
+func TestAcronymCasing(t *testing.T) {
+	tests := []struct {
+		token   string
+		plurals bool
+		want    string
+		wantOK  bool
+	}{
+		// Singular has always worked, with or without the option.
+		{token: "url", plurals: false, want: "URL", wantOK: true},
+		{token: "url", plurals: true, want: "URL", wantOK: true},
+		{token: "uri", plurals: false, want: "URI", wantOK: true},
+		{token: "id", plurals: true, want: "ID", wantOK: true},
+
+		// Plurals are the gap: EqualFold("uris", "URI") is false, so these fell
+		// through to strings.Title and became Uris and Ids.
+		{token: "uris", plurals: false, wantOK: false},
+		{token: "uris", plurals: true, want: "URIs", wantOK: true},
+		{token: "ids", plurals: false, wantOK: false},
+		{token: "ids", plurals: true, want: "IDs", wantOK: true},
+		{token: "fqdns", plurals: true, want: "FQDNs", wantOK: true},
+		{token: "cpus", plurals: true, want: "CPUs", wantOK: true},
+
+		// Not acronyms either way. "s" must not be stripped down to nothing, and
+		// a word that merely ends in s stays a word.
+		{token: "s", plurals: true, wantOK: false},
+		{token: "values", plurals: true, wantOK: false},
+		{token: "description", plurals: true, wantOK: false},
+	}
+	for _, tt := range tests {
+		got, ok := AcronymCasing(tt.token, tt.plurals)
+		if ok != tt.wantOK {
+			t.Errorf("AcronymCasing(%q, %v) ok = %v, want %v", tt.token, tt.plurals, ok, tt.wantOK)
+			continue
+		}
+		if ok && got != tt.want {
+			t.Errorf("AcronymCasing(%q, %v) = %q, want %q", tt.token, tt.plurals, got, tt.want)
+		}
+	}
+}

@@ -232,8 +232,6 @@ func EventarcGoogleAPISourceObservedState_FromProto(mapCtx *direct.MapContext, i
 	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Destination
-	// MISSING: CryptoKeyName
 	return out
 }
 func EventarcGoogleAPISourceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.EventarcGoogleAPISourceObservedState) *pb.GoogleApiSource {
@@ -246,8 +244,6 @@ func EventarcGoogleAPISourceObservedState_ToProto(mapCtx *direct.MapContext, in 
 	out.Etag = direct.ValueOf(in.Etag)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Destination
-	// MISSING: CryptoKeyName
 	return out
 }
 
@@ -261,8 +257,8 @@ func EventarcGoogleAPISourceSpec_FromProto(mapCtx *direct.MapContext, in *pb.Goo
 	out.Labels = in.Labels
 	out.Annotations = in.Annotations
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: Destination
-	// MISSING: CryptoKeyName
+	out.Destination = direct.LazyPtr(in.GetDestination())
+	out.CryptoKeyName = direct.LazyPtr(in.GetCryptoKeyName())
 	out.LoggingConfig = LoggingConfig_FromProto(mapCtx, in.GetLoggingConfig())
 	return out
 }
@@ -280,8 +276,8 @@ found existing non-generated mapping function "EventarcGoogleAPISourceSpec_ToPro
 		out.Labels = in.Labels
 		out.Annotations = in.Annotations
 		out.DisplayName = direct.ValueOf(in.DisplayName)
-		// MISSING: Destination
-		// MISSING: CryptoKeyName
+		out.Destination = direct.ValueOf(in.Destination)
+		out.CryptoKeyName = direct.ValueOf(in.CryptoKeyName)
 		out.LoggingConfig = LoggingConfig_ToProto(mapCtx, in.LoggingConfig)
 		return out
 	}

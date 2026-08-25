@@ -1497,11 +1497,6 @@ func (in *NetworkManagementVPCFlowLogsConfigSpec) DeepCopyInto(out *NetworkManag
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
-	if in.Location != nil {
-		in, out := &in.Location, &out.Location
-		*out = new(string)
-		**out = **in
-	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
@@ -1542,14 +1537,14 @@ func (in *NetworkManagementVPCFlowLogsConfigSpec) DeepCopyInto(out *NetworkManag
 		*out = new(string)
 		**out = **in
 	}
-	if in.InterconnectAttachmentRef != nil {
-		in, out := &in.InterconnectAttachmentRef, &out.InterconnectAttachmentRef
-		*out = new(computev1beta1.ComputeInterconnectAttachmentRef)
+	if in.InterconnectAttachment != nil {
+		in, out := &in.InterconnectAttachment, &out.InterconnectAttachment
+		*out = new(string)
 		**out = **in
 	}
-	if in.VPNTunnelRef != nil {
-		in, out := &in.VPNTunnelRef, &out.VPNTunnelRef
-		*out = new(computev1beta1.ComputeVPNTunnelRef)
+	if in.VPNTunnel != nil {
+		in, out := &in.VPNTunnel, &out.VPNTunnel
+		*out = new(string)
 		**out = **in
 	}
 	if in.Labels != nil {

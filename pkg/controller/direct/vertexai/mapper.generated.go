@@ -25,8 +25,6 @@ package vertexai
 
 import (
 	pb "cloud.google.com/go/aiplatform/apiv1beta1/aiplatformpb"
-	krmaiplatformv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/aiplatform/v1alpha1"
-	krmcomputerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	krmvertexaiv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/vertexai/v1alpha1"
 	krmvertexaiv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/vertexai/v1beta1"
@@ -137,34 +135,18 @@ func CustomJobSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.CustomJo
 	out.PersistentResourceID = direct.LazyPtr(in.GetPersistentResourceId())
 	out.WorkerPoolSpecs = direct.Slice_FromProto(mapCtx, in.WorkerPoolSpecs, WorkerPoolSpec_v1alpha1_FromProto)
 	out.Scheduling = Scheduling_v1alpha1_FromProto(mapCtx, in.GetScheduling())
-	if in.GetServiceAccount() != "" {
-		out.ServiceAccountRef = &refsv1beta1.IAMServiceAccountRef{External: in.GetServiceAccount()}
-	}
-	if in.GetNetwork() != "" {
-		out.NetworkRef = &krmcomputerefs.ComputeNetworkRef{External: in.GetNetwork()}
-	}
+	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
+	out.Network = direct.LazyPtr(in.GetNetwork())
 	out.ReservedIPRanges = in.ReservedIpRanges
 	out.PSCInterfaceConfig = PSCInterfaceConfig_v1alpha1_FromProto(mapCtx, in.GetPscInterfaceConfig())
 	out.BaseOutputDirectory = GCSDestination_v1alpha1_FromProto(mapCtx, in.GetBaseOutputDirectory())
 	out.ProtectedArtifactLocationID = direct.LazyPtr(in.GetProtectedArtifactLocationId())
-	if in.GetTensorboard() != "" {
-		out.TensorboardRef = &krmvertexaiv1alpha1.VertexAITensorboardRef{External: in.GetTensorboard()}
-	}
+	out.Tensorboard = direct.LazyPtr(in.GetTensorboard())
 	out.EnableWebAccess = direct.LazyPtr(in.GetEnableWebAccess())
 	out.EnableDashboardAccess = direct.LazyPtr(in.GetEnableDashboardAccess())
-	if in.GetExperiment() != "" {
-		out.ExperimentRef = &krmvertexaiv1alpha1.VertexAIExperimentRef{External: in.GetExperiment()}
-	}
-	if in.GetExperimentRun() != "" {
-		out.ExperimentRunRef = &krmvertexaiv1alpha1.VertexAIExperimentRunRef{External: in.GetExperimentRun()}
-	}
-
-	if v := in.GetModels(); len(v) != 0 {
-		for i := range v {
-			out.ModelRefs = append(out.ModelRefs, krmaiplatformv1alpha1.AIPlatformModelRef{External: v[i]})
-		}
-	}
-
+	out.Experiment = direct.LazyPtr(in.GetExperiment())
+	out.ExperimentRun = direct.LazyPtr(in.GetExperimentRun())
+	out.Models = in.Models
 	return out
 }
 func CustomJobSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmvertexaiv1alpha1.CustomJobSpec) *pb.CustomJobSpec {
@@ -175,34 +157,18 @@ func CustomJobSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmvertexaiv1
 	out.PersistentResourceId = direct.ValueOf(in.PersistentResourceID)
 	out.WorkerPoolSpecs = direct.Slice_ToProto(mapCtx, in.WorkerPoolSpecs, WorkerPoolSpec_v1alpha1_ToProto)
 	out.Scheduling = Scheduling_v1alpha1_ToProto(mapCtx, in.Scheduling)
-	if in.ServiceAccountRef != nil {
-		out.ServiceAccount = in.ServiceAccountRef.External
-	}
-	if in.NetworkRef != nil {
-		out.Network = in.NetworkRef.External
-	}
+	out.ServiceAccount = direct.ValueOf(in.ServiceAccount)
+	out.Network = direct.ValueOf(in.Network)
 	out.ReservedIpRanges = in.ReservedIPRanges
 	out.PscInterfaceConfig = PSCInterfaceConfig_v1alpha1_ToProto(mapCtx, in.PSCInterfaceConfig)
 	out.BaseOutputDirectory = GCSDestination_v1alpha1_ToProto(mapCtx, in.BaseOutputDirectory)
 	out.ProtectedArtifactLocationId = direct.ValueOf(in.ProtectedArtifactLocationID)
-	if in.TensorboardRef != nil {
-		out.Tensorboard = in.TensorboardRef.External
-	}
+	out.Tensorboard = direct.ValueOf(in.Tensorboard)
 	out.EnableWebAccess = direct.ValueOf(in.EnableWebAccess)
 	out.EnableDashboardAccess = direct.ValueOf(in.EnableDashboardAccess)
-	if in.ExperimentRef != nil {
-		out.Experiment = in.ExperimentRef.External
-	}
-	if in.ExperimentRunRef != nil {
-		out.ExperimentRun = in.ExperimentRunRef.External
-	}
-
-	if v := in.ModelRefs; len(v) != 0 {
-		for i := range v {
-			out.Models = append(out.Models, v[i].External)
-		}
-	}
-
+	out.Experiment = direct.ValueOf(in.Experiment)
+	out.ExperimentRun = direct.ValueOf(in.ExperimentRun)
+	out.Models = in.Models
 	return out
 }
 func DNSPeeringConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.DnsPeeringConfig) *krmvertexaiv1alpha1.DNSPeeringConfig {
@@ -597,11 +563,10 @@ func PythonPackageSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Pyth
 	}
 	out := &krmvertexaiv1alpha1.PythonPackageSpec{}
 	out.ExecutorImageURI = direct.LazyPtr(in.GetExecutorImageUri())
-	// MISSING: PackageUris
-	// (near miss): "PackageUris" vs "PackageURIs"
+	out.PackageURIs = in.PackageUris
 	out.PythonModule = direct.LazyPtr(in.GetPythonModule())
 	out.Args = in.Args
-	// MISSING: Env
+	out.Env = direct.Slice_FromProto(mapCtx, in.Env, EnvVar_v1alpha1_FromProto)
 	return out
 }
 func PythonPackageSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmvertexaiv1alpha1.PythonPackageSpec) *pb.PythonPackageSpec {
@@ -610,11 +575,10 @@ func PythonPackageSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmvertex
 	}
 	out := &pb.PythonPackageSpec{}
 	out.ExecutorImageUri = direct.ValueOf(in.ExecutorImageURI)
-	// MISSING: PackageUris
-	// (near miss): "PackageUris" vs "PackageURIs"
+	out.PackageUris = in.PackageURIs
 	out.PythonModule = direct.ValueOf(in.PythonModule)
 	out.Args = in.Args
-	// MISSING: Env
+	out.Env = direct.Slice_ToProto(mapCtx, in.Env, EnvVar_v1alpha1_ToProto)
 	return out
 }
 func ReservationAffinity_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ReservationAffinity) *krmvertexaiv1alpha1.ReservationAffinity {
@@ -718,15 +682,14 @@ func VertexAICustomJobObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext
 		return nil
 	}
 	out := &krmvertexaiv1alpha1.VertexAICustomJobObservedState{}
-	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: Name
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.StartTime = direct.StringTimestamp_FromProto(mapCtx, in.GetStartTime())
 	out.EndTime = direct.StringTimestamp_FromProto(mapCtx, in.GetEndTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.Error = direct.Status_FromProto(mapCtx, in.GetError())
-	// MISSING: WebAccessUris
-	// (near miss): "WebAccessUris" vs "WebAccessURIs"
+	out.WebAccessUris = in.WebAccessUris
 	out.SatisfiesPzs = direct.LazyPtr(in.GetSatisfiesPzs())
 	out.SatisfiesPzi = direct.LazyPtr(in.GetSatisfiesPzi())
 	return out
@@ -736,15 +699,14 @@ func VertexAICustomJobObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, 
 		return nil
 	}
 	out := &pb.CustomJob{}
-	out.Name = direct.ValueOf(in.Name)
+	// MISSING: Name
 	out.State = direct.Enum_ToProto[pb.JobState](mapCtx, in.State)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.StartTime = direct.StringTimestamp_ToProto(mapCtx, in.StartTime)
 	out.EndTime = direct.StringTimestamp_ToProto(mapCtx, in.EndTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.Error = direct.Status_ToProto(mapCtx, in.Error)
-	// MISSING: WebAccessUris
-	// (near miss): "WebAccessUris" vs "WebAccessURIs"
+	out.WebAccessUris = in.WebAccessUris
 	out.SatisfiesPzs = direct.ValueOf(in.SatisfiesPzs)
 	out.SatisfiesPzi = direct.ValueOf(in.SatisfiesPzi)
 	return out
@@ -754,11 +716,11 @@ func VertexAICustomJobSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.
 		return nil
 	}
 	out := &krmvertexaiv1alpha1.VertexAICustomJobSpec{}
+	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.JobSpec = CustomJobSpec_v1alpha1_FromProto(mapCtx, in.GetJobSpec())
 	out.Labels = in.Labels
 	out.EncryptionSpec = EncryptionSpec_v1alpha1_FromProto(mapCtx, in.GetEncryptionSpec())
-	// MISSING: WebAccessUris
 	return out
 }
 func VertexAICustomJobSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmvertexaiv1alpha1.VertexAICustomJobSpec) *pb.CustomJob {
@@ -766,11 +728,11 @@ func VertexAICustomJobSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmve
 		return nil
 	}
 	out := &pb.CustomJob{}
+	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
 	out.JobSpec = CustomJobSpec_v1alpha1_ToProto(mapCtx, in.JobSpec)
 	out.Labels = in.Labels
 	out.EncryptionSpec = EncryptionSpec_v1alpha1_ToProto(mapCtx, in.EncryptionSpec)
-	// MISSING: WebAccessUris
 	return out
 }
 func VertexAIDataLabelingJobObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.DataLabelingJob) *krmvertexaiv1alpha1.VertexAIDataLabelingJobObservedState {
@@ -1033,7 +995,6 @@ func VertexAIFeatureGroupObservedState_v1alpha1_FromProto(mapCtx *direct.MapCont
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Etag
 	out.ServiceAccountEmail = direct.LazyPtr(in.GetServiceAccountEmail())
 	return out
 }
@@ -1045,7 +1006,6 @@ func VertexAIFeatureGroupObservedState_v1alpha1_ToProto(mapCtx *direct.MapContex
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Etag
 	out.ServiceAccountEmail = direct.ValueOf(in.ServiceAccountEmail)
 	return out
 }
@@ -1056,7 +1016,7 @@ func VertexAIFeatureGroupSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *
 	out := &krmvertexaiv1alpha1.VertexAIFeatureGroupSpec{}
 	out.BigQuery = FeatureGroup_BigQuery_v1alpha1_FromProto(mapCtx, in.GetBigQuery())
 	// MISSING: Name
-	// MISSING: Etag
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.Labels = in.Labels
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.ServiceAgentType = direct.Enum_FromProto(mapCtx, in.GetServiceAgentType())
@@ -1071,7 +1031,7 @@ func VertexAIFeatureGroupSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *kr
 		out.Source = &pb.FeatureGroup_BigQuery_{BigQuery: oneof}
 	}
 	// MISSING: Name
-	// MISSING: Etag
+	out.Etag = direct.ValueOf(in.Etag)
 	out.Labels = in.Labels
 	out.Description = direct.ValueOf(in.Description)
 	out.ServiceAgentType = direct.Enum_ToProto[pb.FeatureGroup_ServiceAgentType](mapCtx, in.ServiceAgentType)
@@ -1224,10 +1184,9 @@ func VertexAITensorboardExperimentObservedState_v1alpha1_FromProto(mapCtx *direc
 		return nil
 	}
 	out := &krmvertexaiv1alpha1.VertexAITensorboardExperimentObservedState{}
-	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Etag
 	return out
 }
 func VertexAITensorboardExperimentObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmvertexaiv1alpha1.VertexAITensorboardExperimentObservedState) *pb.TensorboardExperiment {
@@ -1235,10 +1194,9 @@ func VertexAITensorboardExperimentObservedState_v1alpha1_ToProto(mapCtx *direct.
 		return nil
 	}
 	out := &pb.TensorboardExperiment{}
-	out.Name = direct.ValueOf(in.Name)
+	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Etag
 	return out
 }
 func VertexAITensorboardExperimentSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.TensorboardExperiment) *krmvertexaiv1alpha1.VertexAITensorboardExperimentSpec {
@@ -1246,10 +1204,11 @@ func VertexAITensorboardExperimentSpec_v1alpha1_FromProto(mapCtx *direct.MapCont
 		return nil
 	}
 	out := &krmvertexaiv1alpha1.VertexAITensorboardExperimentSpec{}
+	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.Labels = in.Labels
-	// MISSING: Etag
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.Source = direct.LazyPtr(in.GetSource())
 	return out
 }
@@ -1258,10 +1217,11 @@ func VertexAITensorboardExperimentSpec_v1alpha1_ToProto(mapCtx *direct.MapContex
 		return nil
 	}
 	out := &pb.TensorboardExperiment{}
+	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
 	out.Description = direct.ValueOf(in.Description)
 	out.Labels = in.Labels
-	// MISSING: Etag
+	out.Etag = direct.ValueOf(in.Etag)
 	out.Source = direct.ValueOf(in.Source)
 	return out
 }

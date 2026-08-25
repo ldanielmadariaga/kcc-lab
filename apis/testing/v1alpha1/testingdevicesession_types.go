@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,31 +26,29 @@ var TestingDeviceSessionGVK = GroupVersion.WithKind("TestingDeviceSession")
 // +kcc:spec:proto=google.devtools.testing.v1.DeviceSession
 type TestingDeviceSessionSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The TestingDeviceSession name. If not given, the metadata.name will be used.
-	// +kubebuilder:validation:Optional
-	ResourceID *string `json:"resourceID,omitempty"`
+	// The location of this resource.
+	Location string `json:"location"`
 
+	// The TestingDeviceSession name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. The amount of time that a device will be initially allocated
 	//  for. This can eventually be extended with the UpdateDeviceSession RPC.
 	//  Default: 15 minutes.
-	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.ttl
 	TTL *string `json:"ttl,omitempty"`
 
 	// Optional. If the device is still in use at this time, any connections
 	//  will be ended and the SessionState will transition from ACTIVE to
 	//  FINISHED.
-	// +kubebuilder:validation:Optional
 	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.expire_time
 	ExpireTime *string `json:"expireTime,omitempty"`
 
 	// Required. The requested device
-	// +kubebuilder:validation:Required
 	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.android_device
-	AndroidDevice *AndroidDevice `json:"androidDevice"`
+	// +required
+	AndroidDevice *AndroidDevice `json:"androidDevice,omitempty"`
 }
 
 // TestingDeviceSessionStatus defines the config connector machine state of TestingDeviceSession
@@ -105,7 +103,6 @@ type TestingDeviceSessionObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -128,49 +125,6 @@ type TestingDeviceSessionList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []TestingDeviceSession `json:"items"`
-}
-
-// +kcc:proto=google.devtools.testing.v1.AndroidDevice
-type AndroidDevice struct {
-	// Required. The id of the Android device to be used.
-	//  Use the TestEnvironmentDiscoveryService to get supported options.
-	// +kubebuilder:validation:Required
-	// +kcc:proto:field=google.devtools.testing.v1.AndroidDevice.android_model_id
-	AndroidModelID *string `json:"androidModelID"`
-
-	// Required. The id of the Android OS version to be used.
-	//  Use the TestEnvironmentDiscoveryService to get supported options.
-	// +kubebuilder:validation:Required
-	// +kcc:proto:field=google.devtools.testing.v1.AndroidDevice.android_version_id
-	AndroidVersionID *string `json:"androidVersionID"`
-
-	// Required. The locale the test device used for testing.
-	//  Use the TestEnvironmentDiscoveryService to get supported options.
-	// +kubebuilder:validation:Required
-	// +kcc:proto:field=google.devtools.testing.v1.AndroidDevice.locale
-	Locale *string `json:"locale"`
-
-	// Required. How the device is oriented during the test.
-	//  Use the TestEnvironmentDiscoveryService to get supported options.
-	// +kubebuilder:validation:Required
-	// +kcc:proto:field=google.devtools.testing.v1.AndroidDevice.orientation
-	Orientation *string `json:"orientation"`
-}
-
-// +kcc:observedstate:proto=google.devtools.testing.v1.DeviceSession.SessionStateEvent
-type DeviceSession_SessionStateEventObservedState struct {
-	// Output only. The session_state tracked by this event
-	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.SessionStateEvent.session_state
-	SessionState *string `json:"sessionState,omitempty"`
-
-	// Output only. The time that the session_state first encountered that
-	//  state.
-	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.SessionStateEvent.event_time
-	EventTime *string `json:"eventTime,omitempty"`
-
-	// Output only. A human-readable message to explain the state.
-	// +kcc:proto:field=google.devtools.testing.v1.DeviceSession.SessionStateEvent.state_message
-	StateMessage *string `json:"stateMessage,omitempty"`
 }
 
 func init() {

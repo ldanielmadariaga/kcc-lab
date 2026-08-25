@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 package v1alpha1
 
 import (
-	computev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -30,68 +29,61 @@ type NetworkManagementVPCFlowLogsConfigSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	Location *string `json:"location"`
+	Location string `json:"location"`
 
 	// The NetworkManagementVPCFlowLogsConfig name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. The user-supplied description of the VPC Flow Logs configuration.
-	// Maximum of 512 characters.
+	//  Maximum of 512 characters.
 	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.description
-	// +kubebuilder:validation:Optional
 	Description *string `json:"description,omitempty"`
 
-	// Optional. The state of the VPC Flow Log configuration. Default value is ENABLED.
+	// Optional. The state of the VPC Flow Log configuration. Default value is
+	//  ENABLED. When creating a new configuration, it must be enabled.
 	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.state
-	// +kubebuilder:validation:Optional
-	// +kubebuilder:validation:Enum=STATE_UNSPECIFIED;ENABLED;DISABLED
 	State *string `json:"state,omitempty"`
 
-	// Optional. The aggregation interval for the logs. Default value is INTERVAL_5_SEC.
+	// Optional. The aggregation interval for the logs. Default value is
+	//  INTERVAL_5_SEC.
 	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.aggregation_interval
-	// +kubebuilder:validation:Optional
-	// +kubebuilder:validation:Enum=AGGREGATION_INTERVAL_UNSPECIFIED;INTERVAL_5_SEC;INTERVAL_30_SEC;INTERVAL_1_MIN;INTERVAL_5_MIN;INTERVAL_10_MIN;INTERVAL_15_MIN
 	AggregationInterval *string `json:"aggregationInterval,omitempty"`
 
 	// Optional. The value of the field must be in (0, 1]. The sampling rate of
-	// VPC Flow Logs where 1.0 means all collected logs are reported. Setting the
-	// sampling rate to 0.0 is not allowed. If you want to disable VPC Flow Logs,
-	// use the state field instead. Default value is 1.0.
+	//  VPC Flow Logs where 1.0 means all collected logs are reported. Setting the
+	//  sampling rate to 0.0 is not allowed. If you want to disable VPC Flow Logs,
+	//  use the state field instead. Default value is 1.0.
 	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.flow_sampling
-	// +kubebuilder:validation:Optional
 	FlowSampling *float32 `json:"flowSampling,omitempty"`
 
 	// Optional. Configures whether all, none or a subset of metadata fields
-	// should be added to the reported VPC flow logs. Default value is INCLUDE_ALL_METADATA.
+	//  should be added to the reported VPC flow logs. Default value is
+	//  INCLUDE_ALL_METADATA.
 	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.metadata
-	// +kubebuilder:validation:Optional
-	// +kubebuilder:validation:Enum=METADATA_UNSPECIFIED;INCLUDE_ALL_METADATA;EXCLUDE_ALL_METADATA;CUSTOM_METADATA
 	Metadata *string `json:"metadata,omitempty"`
 
 	// Optional. Custom metadata fields to include in the reported VPC flow logs.
-	// Can only be specified if "metadata" was set to CUSTOM_METADATA.
+	//  Can only be specified if "metadata" was set to CUSTOM_METADATA.
 	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.metadata_fields
-	// +kubebuilder:validation:Optional
 	MetadataFields []string `json:"metadataFields,omitempty"`
 
-	// Optional. Export filter used to define which VPC Flow Logs should be logged.
+	// Optional. Export filter used to define which VPC Flow Logs should be
+	//  logged.
 	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.filter_expr
-	// +kubebuilder:validation:Optional
 	FilterExpr *string `json:"filterExpr,omitempty"`
 
 	// Traffic will be logged from the Interconnect Attachment.
+	//  Format:
+	//  projects/{project_id}/regions/{region}/interconnectAttachments/{name}
 	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.interconnect_attachment
-	// +kubebuilder:validation:Optional
-	InterconnectAttachmentRef *computev1beta1.ComputeInterconnectAttachmentRef `json:"interconnectAttachmentRef,omitempty"`
+	InterconnectAttachment *string `json:"interconnectAttachment,omitempty"`
 
 	// Traffic will be logged from the VPN Tunnel.
+	//  Format: projects/{project_id}/regions/{region}/vpnTunnels/{name}
 	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.vpn_tunnel
-	// +kubebuilder:validation:Optional
-	VPNTunnelRef *computev1beta1.ComputeVPNTunnelRef `json:"vpnTunnelRef,omitempty"`
+	VPNTunnel *string `json:"vpnTunnel,omitempty"`
 
 	// Optional. Resource labels to represent user-provided metadata.
 	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.labels
-	// +kubebuilder:validation:Optional
 	Labels map[string]string `json:"labels,omitempty"`
 }
 
@@ -115,7 +107,7 @@ type NetworkManagementVPCFlowLogsConfigStatus struct {
 // +kcc:observedstate:proto=google.cloud.networkmanagement.v1.VpcFlowLogsConfig
 type NetworkManagementVPCFlowLogsConfigObservedState struct {
 	// Output only. A diagnostic bit - describes the state of the configured
-	// target resource for diagnostic purposes.
+	//  target resource for diagnostic purposes.
 	// +kcc:proto:field=google.cloud.networkmanagement.v1.VpcFlowLogsConfig.target_resource_state
 	TargetResourceState *string `json:"targetResourceState,omitempty"`
 
@@ -134,7 +126,6 @@ type NetworkManagementVPCFlowLogsConfigObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

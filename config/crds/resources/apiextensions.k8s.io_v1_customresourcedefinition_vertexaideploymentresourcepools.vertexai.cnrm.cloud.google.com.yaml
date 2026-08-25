@@ -120,6 +120,8 @@ spec:
                             60%) if not provided.
                           format: int32
                           type: integer
+                      required:
+                      - metricName
                       type: object
                     type: array
                   flexStart:
@@ -204,6 +206,8 @@ spec:
                             items:
                               type: string
                             type: array
+                        required:
+                        - reservationAffinityType
                         type: object
                       tpuTopology:
                         description: 'Immutable. The topology of the TPUs. Corresponds
@@ -250,6 +254,9 @@ spec:
                     description: Optional. If true, schedule the deployment workload
                       on [spot VMs](https://cloud.google.com/kubernetes-engine/docs/concepts/spot-vms).
                     type: boolean
+                required:
+                - machineSpec
+                - minReplicaCount
                 type: object
               disableContainerLogging:
                 description: If the DeploymentResourcePool is deployed with custom-trained

@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,20 +26,13 @@ var VertexAITensorboardExperimentGVK = GroupVersion.WithKind("VertexAITensorboar
 // +kcc:spec:proto=google.cloud.aiplatform.v1beta1.TensorboardExperiment
 type VertexAITensorboardExperimentSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +required
-	Location *string `json:"location"`
-
-	/* The VertexAITensorboard that this resource belongs to. */
-	// +required
-	TensorboardRef *VertexAITensorboardRef `json:"tensorboardRef"`
+	Location string `json:"location"`
 
 	// The VertexAITensorboardExperiment name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// User provided name of this TensorboardExperiment.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.TensorboardExperiment.display_name
 	DisplayName *string `json:"displayName,omitempty"`
@@ -48,11 +41,33 @@ type VertexAITensorboardExperimentSpec struct {
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.TensorboardExperiment.description
 	Description *string `json:"description,omitempty"`
 
-	// The labels with user-defined metadata to organize your TensorboardExperiment.
+	// The labels with user-defined metadata to organize your
+	//  TensorboardExperiment.
+	//
+	//  Label keys and values cannot be longer than 64 characters
+	//  (Unicode codepoints), can only contain lowercase letters, numeric
+	//  characters, underscores and dashes. International characters are allowed.
+	//  No more than 64 user labels can be associated with one Dataset (System
+	//  labels are excluded).
+	//
+	//  See https://goo.gl/xmQnxf for more information and examples of labels.
+	//  System reserved label keys are prefixed with `aiplatform.googleapis.com/`
+	//  and are immutable. The following system labels exist for each Dataset:
+	//
+	//  * `aiplatform.googleapis.com/dataset_metadata_schema`: output only. Its
+	//     value is the
+	//     [metadata_schema's][google.cloud.aiplatform.v1beta1.Dataset.metadata_schema_uri]
+	//     title.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.TensorboardExperiment.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
-	// Immutable. Source of the TensorboardExperiment. Example: a custom training job.
+	// Used to perform consistent read-modify-write updates. If not set, a blind
+	//  "overwrite" update happens.
+	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.TensorboardExperiment.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Immutable. Source of the TensorboardExperiment. Example: a custom training
+	//  job.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.TensorboardExperiment.source
 	Source *string `json:"source,omitempty"`
 }
@@ -76,12 +91,6 @@ type VertexAITensorboardExperimentStatus struct {
 // VertexAITensorboardExperimentObservedState is the state of the VertexAITensorboardExperiment resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.aiplatform.v1beta1.TensorboardExperiment
 type VertexAITensorboardExperimentObservedState struct {
-	// Output only. Name of the TensorboardExperiment.
-	//  Format:
-	//  `projects/{project}/locations/{location}/tensorboards/{tensorboard}/experiments/{experiment}`
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.TensorboardExperiment.name
-	Name *string `json:"name,omitempty"`
-
 	// Output only. Timestamp when this TensorboardExperiment was created.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.TensorboardExperiment.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -97,7 +106,6 @@ type VertexAITensorboardExperimentObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

@@ -26,7 +26,6 @@ package gkemulticloud
 import (
 	pb "cloud.google.com/go/gkemulticloud/apiv1/gkemulticloudpb"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/gkemulticloud/v1alpha1"
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -167,9 +166,7 @@ func Fleet_FromProto(mapCtx *direct.MapContext, in *pb.Fleet) *krm.Fleet {
 		return nil
 	}
 	out := &krm.Fleet{}
-	if in.GetProject() != "" {
-		out.ProjectRef = &refsv1beta1.ProjectRef{External: in.GetProject()}
-	}
+	out.Project = direct.LazyPtr(in.GetProject())
 	// MISSING: Membership
 	return out
 }
@@ -178,9 +175,7 @@ func Fleet_ToProto(mapCtx *direct.MapContext, in *krm.Fleet) *pb.Fleet {
 		return nil
 	}
 	out := &pb.Fleet{}
-	if in.ProjectRef != nil {
-		out.Project = in.ProjectRef.External
-	}
+	out.Project = direct.ValueOf(in.Project)
 	// MISSING: Membership
 	return out
 }
@@ -215,7 +210,6 @@ func GKEMulticloudAttachedClusterObservedState_FromProto(mapCtx *direct.MapConte
 	out.Reconciling = direct.LazyPtr(in.GetReconciling())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Etag
 	out.KubernetesVersion = direct.LazyPtr(in.GetKubernetesVersion())
 	out.WorkloadIdentityConfig = WorkloadIdentityConfig_FromProto(mapCtx, in.GetWorkloadIdentityConfig())
 	out.Errors = direct.Slice_FromProto(mapCtx, in.Errors, AttachedClusterError_FromProto)
@@ -234,7 +228,6 @@ func GKEMulticloudAttachedClusterObservedState_ToProto(mapCtx *direct.MapContext
 	out.Reconciling = direct.ValueOf(in.Reconciling)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Etag
 	out.KubernetesVersion = direct.ValueOf(in.KubernetesVersion)
 	out.WorkloadIdentityConfig = WorkloadIdentityConfig_ToProto(mapCtx, in.WorkloadIdentityConfig)
 	out.Errors = direct.Slice_ToProto(mapCtx, in.Errors, AttachedClusterError_ToProto)
@@ -251,7 +244,7 @@ func GKEMulticloudAttachedClusterSpec_FromProto(mapCtx *direct.MapContext, in *p
 	out.PlatformVersion = direct.LazyPtr(in.GetPlatformVersion())
 	out.Distribution = direct.LazyPtr(in.GetDistribution())
 	out.Fleet = Fleet_FromProto(mapCtx, in.GetFleet())
-	// MISSING: Etag
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.Annotations = in.Annotations
 	out.LoggingConfig = LoggingConfig_FromProto(mapCtx, in.GetLoggingConfig())
 	out.Authorization = AttachedClustersAuthorization_FromProto(mapCtx, in.GetAuthorization())
@@ -273,7 +266,7 @@ func GKEMulticloudAttachedClusterSpec_ToProto(mapCtx *direct.MapContext, in *krm
 	out.PlatformVersion = direct.ValueOf(in.PlatformVersion)
 	out.Distribution = direct.ValueOf(in.Distribution)
 	out.Fleet = Fleet_ToProto(mapCtx, in.Fleet)
-	// MISSING: Etag
+	out.Etag = direct.ValueOf(in.Etag)
 	out.Annotations = in.Annotations
 	out.LoggingConfig = LoggingConfig_ToProto(mapCtx, in.LoggingConfig)
 	out.Authorization = AttachedClustersAuthorization_ToProto(mapCtx, in.Authorization)

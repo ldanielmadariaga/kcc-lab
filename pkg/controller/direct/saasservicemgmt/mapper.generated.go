@@ -92,10 +92,8 @@ func SaasServiceMgmtReleaseObservedState_FromProto(mapCtx *direct.MapContext, in
 	out := &krm.SaasServiceMgmtReleaseObservedState{}
 	// MISSING: Name
 	out.Blueprint = BlueprintObservedState_FromProto(mapCtx, in.GetBlueprint())
-	out.InputVariables = direct.Slice_FromProto(mapCtx, in.InputVariables, UnitVariable_FromProto)
-	out.OutputVariables = direct.Slice_FromProto(mapCtx, in.OutputVariables, UnitVariable_FromProto)
-	// MISSING: Labels
-	// MISSING: Annotations
+	out.InputVariables = direct.Slice_FromProto(mapCtx, in.InputVariables, UnitVariableObservedState_FromProto)
+	out.OutputVariables = direct.Slice_FromProto(mapCtx, in.OutputVariables, UnitVariableObservedState_FromProto)
 	out.Uid = direct.LazyPtr(in.GetUid())
 	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
@@ -109,10 +107,8 @@ func SaasServiceMgmtReleaseObservedState_ToProto(mapCtx *direct.MapContext, in *
 	out := &pb.Release{}
 	// MISSING: Name
 	out.Blueprint = BlueprintObservedState_ToProto(mapCtx, in.Blueprint)
-	out.InputVariables = direct.Slice_ToProto(mapCtx, in.InputVariables, UnitVariable_ToProto)
-	out.OutputVariables = direct.Slice_ToProto(mapCtx, in.OutputVariables, UnitVariable_ToProto)
-	// MISSING: Labels
-	// MISSING: Annotations
+	out.InputVariables = direct.Slice_ToProto(mapCtx, in.InputVariables, UnitVariableObservedState_ToProto)
+	out.OutputVariables = direct.Slice_ToProto(mapCtx, in.OutputVariables, UnitVariableObservedState_ToProto)
 	out.Uid = direct.ValueOf(in.Uid)
 	out.Etag = direct.ValueOf(in.Etag)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
@@ -129,8 +125,8 @@ func SaasServiceMgmtReleaseSpec_FromProto(mapCtx *direct.MapContext, in *pb.Rele
 	out.Blueprint = Blueprint_FromProto(mapCtx, in.GetBlueprint())
 	out.ReleaseRequirements = Release_ReleaseRequirements_FromProto(mapCtx, in.GetReleaseRequirements())
 	out.InputVariableDefaults = direct.Slice_FromProto(mapCtx, in.InputVariableDefaults, UnitVariable_FromProto)
-	// MISSING: Labels
-	// MISSING: Annotations
+	out.Labels = in.Labels
+	out.Annotations = in.Annotations
 	return out
 }
 func SaasServiceMgmtReleaseSpec_ToProto(mapCtx *direct.MapContext, in *krm.SaasServiceMgmtReleaseSpec) *pb.Release {
@@ -143,8 +139,8 @@ func SaasServiceMgmtReleaseSpec_ToProto(mapCtx *direct.MapContext, in *krm.SaasS
 	out.Blueprint = Blueprint_ToProto(mapCtx, in.Blueprint)
 	out.ReleaseRequirements = Release_ReleaseRequirements_ToProto(mapCtx, in.ReleaseRequirements)
 	out.InputVariableDefaults = direct.Slice_ToProto(mapCtx, in.InputVariableDefaults, UnitVariable_ToProto)
-	// MISSING: Labels
-	// MISSING: Annotations
+	out.Labels = in.Labels
+	out.Annotations = in.Annotations
 	return out
 }
 func UnitVariable_FromProto(mapCtx *direct.MapContext, in *pb.UnitVariable) *krm.UnitVariable {
@@ -158,6 +154,26 @@ func UnitVariable_FromProto(mapCtx *direct.MapContext, in *pb.UnitVariable) *krm
 	return out
 }
 func UnitVariable_ToProto(mapCtx *direct.MapContext, in *krm.UnitVariable) *pb.UnitVariable {
+	if in == nil {
+		return nil
+	}
+	out := &pb.UnitVariable{}
+	out.Variable = direct.ValueOf(in.Variable)
+	out.Type = direct.Enum_ToProto[pb.UnitVariable_Type](mapCtx, in.Type)
+	out.Value = direct.ValueOf(in.Value)
+	return out
+}
+func UnitVariableObservedState_FromProto(mapCtx *direct.MapContext, in *pb.UnitVariable) *krm.UnitVariableObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.UnitVariableObservedState{}
+	out.Variable = direct.LazyPtr(in.GetVariable())
+	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
+	out.Value = direct.LazyPtr(in.GetValue())
+	return out
+}
+func UnitVariableObservedState_ToProto(mapCtx *direct.MapContext, in *krm.UnitVariableObservedState) *pb.UnitVariable {
 	if in == nil {
 		return nil
 	}

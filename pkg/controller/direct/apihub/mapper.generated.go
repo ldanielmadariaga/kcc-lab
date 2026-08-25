@@ -76,6 +76,60 @@ func APIHubExternalAPIObservedState_ToProto(mapCtx *direct.MapContext, in *krm.A
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	return out
 }
+func APIHubInstance_FromProto(mapCtx *direct.MapContext, in *pb.ApiHubInstance) *krm.APIHubInstance {
+	if in == nil {
+		return nil
+	}
+	out := &krm.APIHubInstance{}
+	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: State
+	// MISSING: StateMessage
+	out.Config = APIHubInstance_Config_FromProto(mapCtx, in.GetConfig())
+	out.Labels = in.Labels
+	out.Description = direct.LazyPtr(in.GetDescription())
+	return out
+}
+func APIHubInstance_ToProto(mapCtx *direct.MapContext, in *krm.APIHubInstance) *pb.ApiHubInstance {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ApiHubInstance{}
+	out.Name = direct.ValueOf(in.Name)
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: State
+	// MISSING: StateMessage
+	out.Config = APIHubInstance_Config_ToProto(mapCtx, in.Config)
+	out.Labels = in.Labels
+	out.Description = direct.ValueOf(in.Description)
+	return out
+}
+func APIHubInstanceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ApiHubInstance) *krm.APIHubInstanceObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.APIHubInstanceObservedState{}
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.StateMessage = direct.LazyPtr(in.GetStateMessage())
+	return out
+}
+func APIHubInstanceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIHubInstanceObservedState) *pb.ApiHubInstance {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ApiHubInstance{}
+	// MISSING: Name
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.State = direct.Enum_ToProto[pb.ApiHubInstance_State](mapCtx, in.State)
+	out.StateMessage = direct.ValueOf(in.StateMessage)
+	return out
+}
 func APIHubInstanceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ApiHubInstance) *krm.APIHubInstanceObservedState {
 	if in == nil {
 		return nil
@@ -300,6 +354,70 @@ func Documentation_ToProto(mapCtx *direct.MapContext, in *krm.Documentation) *pb
 	}
 	out := &pb.Documentation{}
 	out.ExternalUri = direct.ValueOf(in.ExternalURI)
+	return out
+}
+func ExternalAPI_FromProto(mapCtx *direct.MapContext, in *pb.ExternalApi) *krm.ExternalAPI {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ExternalAPI{}
+	out.Name = direct.LazyPtr(in.GetName())
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.Endpoints = in.Endpoints
+	out.Paths = in.Paths
+	out.Documentation = Documentation_FromProto(mapCtx, in.GetDocumentation())
+	// MISSING: Attributes
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	return out
+}
+func ExternalAPI_ToProto(mapCtx *direct.MapContext, in *krm.ExternalAPI) *pb.ExternalApi {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ExternalApi{}
+	out.Name = direct.ValueOf(in.Name)
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Description = direct.ValueOf(in.Description)
+	out.Endpoints = in.Endpoints
+	out.Paths = in.Paths
+	out.Documentation = Documentation_ToProto(mapCtx, in.Documentation)
+	// MISSING: Attributes
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	return out
+}
+func ExternalAPIObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ExternalApi) *krm.ExternalAPIObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ExternalAPIObservedState{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	// MISSING: Description
+	// MISSING: Endpoints
+	// MISSING: Paths
+	// MISSING: Documentation
+	// MISSING: Attributes
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	return out
+}
+func ExternalAPIObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ExternalAPIObservedState) *pb.ExternalApi {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ExternalApi{}
+	// MISSING: Name
+	// MISSING: DisplayName
+	// MISSING: Description
+	// MISSING: Endpoints
+	// MISSING: Paths
+	// MISSING: Documentation
+	// MISSING: Attributes
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	return out
 }
 func Owner_FromProto(mapCtx *direct.MapContext, in *pb.Owner) *krm.Owner {

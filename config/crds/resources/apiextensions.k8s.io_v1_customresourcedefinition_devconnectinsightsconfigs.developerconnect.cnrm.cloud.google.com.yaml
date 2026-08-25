@@ -105,6 +105,8 @@ spec:
                           description: Required. The project id of the project where
                             the provenance is stored.
                           type: string
+                      required:
+                      - projectID
                       type: object
                     googleArtifactRegistry:
                       description: Optional. Set if the artifact is stored in Artifact
@@ -117,6 +119,9 @@ spec:
                         projectID:
                           description: Required. The host project of Artifact Registry.
                           type: string
+                      required:
+                      - artifactRegistryPackage
+                      - projectID
                       type: object
                     uri:
                       description: Required. Immutable. The URI of the artifact that
@@ -124,6 +129,8 @@ spec:
                         The URI does not include the tag / digest because it captures
                         a lineage of artifacts.
                       type: string
+                  required:
+                  - uri
                   type: object
                 type: array
               location:

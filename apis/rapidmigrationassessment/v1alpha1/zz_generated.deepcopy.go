@@ -176,15 +176,17 @@ func (in *RapidMigrationAssessmentCollectorSpec) DeepCopyInto(out *RapidMigratio
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
-	if in.Location != nil {
-		in, out := &in.Location, &out.Location
-		*out = new(string)
-		**out = **in
-	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
 		**out = **in
+	}
+	if in.Labels != nil {
+		in, out := &in.Labels, &out.Labels
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
 	}
 	if in.DisplayName != nil {
 		in, out := &in.DisplayName, &out.DisplayName
@@ -196,9 +198,9 @@ func (in *RapidMigrationAssessmentCollectorSpec) DeepCopyInto(out *RapidMigratio
 		*out = new(string)
 		**out = **in
 	}
-	if in.ServiceAccountRef != nil {
-		in, out := &in.ServiceAccountRef, &out.ServiceAccountRef
-		*out = new(v1beta1.IAMServiceAccountRef)
+	if in.ServiceAccount != nil {
+		in, out := &in.ServiceAccount, &out.ServiceAccount
+		*out = new(string)
 		**out = **in
 	}
 	if in.ExpectedAssetCount != nil {
@@ -215,13 +217,6 @@ func (in *RapidMigrationAssessmentCollectorSpec) DeepCopyInto(out *RapidMigratio
 		in, out := &in.EulaURI, &out.EulaURI
 		*out = new(string)
 		**out = **in
-	}
-	if in.Labels != nil {
-		in, out := &in.Labels, &out.Labels
-		*out = make(map[string]string, len(*in))
-		for key, val := range *in {
-			(*out)[key] = val
-		}
 	}
 }
 

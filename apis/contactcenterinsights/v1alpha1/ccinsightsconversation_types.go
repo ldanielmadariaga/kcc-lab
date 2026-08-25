@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,78 +29,63 @@ type CCInsightsConversationSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +kubebuilder:validation:Required
-	Location *string `json:"location"`
+	Location string `json:"location"`
 
 	// The CCInsightsConversation name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Call-specific metadata.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.call_metadata
-	// +kubebuilder:validation:Optional
 	CallMetadata *Conversation_CallMetadata `json:"callMetadata,omitempty"`
 
 	// The time at which this conversation should expire. After this time, the
 	//  conversation data and any associated analyses will be deleted.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.expire_time
-	// +kubebuilder:validation:Optional
 	ExpireTime *string `json:"expireTime,omitempty"`
 
 	// Input only. The TTL for this resource. If specified, then this TTL will
 	//  be used to calculate the expire time.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.ttl
-	// +kubebuilder:validation:Optional
 	TTL *string `json:"ttl,omitempty"`
 
 	// The source of the audio and transcription for the conversation.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.data_source
-	// +kubebuilder:validation:Optional
 	DataSource *ConversationDataSource `json:"dataSource,omitempty"`
 
 	// The time at which the conversation started.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.start_time
-	// +kubebuilder:validation:Optional
 	StartTime *string `json:"startTime,omitempty"`
 
 	// A user-specified language code for the conversation.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.language_code
-	// +kubebuilder:validation:Optional
 	LanguageCode *string `json:"languageCode,omitempty"`
 
 	// An opaque, user-specified string representing the human agent who handled
 	//  the conversation.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.agent_id
-	// +kubebuilder:validation:Optional
 	AgentID *string `json:"agentID,omitempty"`
 
 	// A map for the user to specify any custom fields. A maximum of 100 labels
 	//  per conversation is allowed, with a maximum of 256 characters per entry.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.labels
-	// +kubebuilder:validation:Optional
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Conversation metadata related to quality management.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.quality_metadata
-	// +kubebuilder:validation:Optional
 	QualityMetadata *Conversation_QualityMetadata `json:"qualityMetadata,omitempty"`
 
 	// Input only. JSON metadata encoded as a string.
-	//  This field is primarily used by Insights integrations with various telephony
+	//  This field is primarily used by Insights integrations with various telphony
 	//  systems and must be in one of Insight's supported formats.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.metadata_json
-	// +kubebuilder:validation:Optional
 	MetadataJson *string `json:"metadataJson,omitempty"`
 
 	// Immutable. The conversation medium, if unspecified will default to
 	//  PHONE_CALL.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.medium
-	// +kubebuilder:validation:Enum=MEDIUM_UNSPECIFIED;PHONE_CALL;CHAT
-	// +kubebuilder:validation:Optional
 	Medium *string `json:"medium,omitempty"`
 
 	// Obfuscated user ID which the customer sent to us.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.obfuscated_user_id
-	// +kubebuilder:validation:Optional
 	ObfuscatedUserID *string `json:"obfuscatedUserID,omitempty"`
 }
 
@@ -123,42 +108,45 @@ type CCInsightsConversationStatus struct {
 // CCInsightsConversationObservedState is the state of the CCInsightsConversation resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.contactcenterinsights.v1.Conversation
 type CCInsightsConversationObservedState struct {
+	// The source of the audio and transcription for the conversation.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.data_source
+	DataSource *ConversationDataSourceObservedState `json:"dataSource,omitempty"`
+
 	// Output only. The time at which the conversation was created.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. The most recent time at which the conversation was updated.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. The conversation transcript.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.transcript
-	// +kubebuilder:validation:Optional
 	Transcript *Conversation_Transcript `json:"transcript,omitempty"`
 
 	// Output only. The duration of the conversation.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.duration
 	Duration *string `json:"duration,omitempty"`
 
 	// Output only. The number of turns in the conversation.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.turn_count
 	TurnCount *int32 `json:"turnCount,omitempty"`
 
 	// Output only. The conversation's latest analysis, if one exists.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.latest_analysis
-	// +kubebuilder:validation:Optional
-	LatestAnalysis *Analysis `json:"latestAnalysis,omitempty"`
+	LatestAnalysis *AnalysisObservedState `json:"latestAnalysis,omitempty"`
 
 	// Output only. Latest summary of the conversation.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.latest_summary
-	// +kubebuilder:validation:Optional
 	LatestSummary *ConversationSummarizationSuggestionData `json:"latestSummary,omitempty"`
 
 	// Output only. The annotations that were generated during the customer and
 	//  agent interaction.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.runtime_annotations
-	// +kubebuilder:validation:Optional
 	RuntimeAnnotations []RuntimeAnnotation `json:"runtimeAnnotations,omitempty"`
+
+	// TODO: unsupported map type with key string and value message
+
 }
 
 // +genclient
@@ -167,7 +155,6 @@ type CCInsightsConversationObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

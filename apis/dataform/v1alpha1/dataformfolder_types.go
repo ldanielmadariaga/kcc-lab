@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,10 +29,22 @@ type DataformFolderSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	Location *string `json:"location"`
+	Location string `json:"location"`
 
 	// The DataformFolder name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Required. The Folder's user-friendly name.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Folder.display_name
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. The containing Folder resource name. This should take
+	//  the format: projects/{project}/locations/{location}/folders/{folder},
+	//  projects/{project}/locations/{location}/teamFolders/{teamFolder}, or just
+	//  projects/{project}/locations/{location} if this is a root Folder. This
+	//  field can only be updated through MoveFolder.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Folder.containing_folder
+	ContainingFolder *string `json:"containingFolder,omitempty"`
 }
 
 // DataformFolderStatus defines the config connector machine state of DataformFolder
@@ -54,6 +66,31 @@ type DataformFolderStatus struct {
 // DataformFolderObservedState is the state of the DataformFolder resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.dataform.v1beta1.Folder
 type DataformFolderObservedState struct {
+	// Output only. The resource name of the TeamFolder that this Folder is
+	//  associated with. This should take the format:
+	//  projects/{project}/locations/{location}/teamFolders/{teamFolder}. If this
+	//  is not set, the Folder is not associated with a TeamFolder and is a
+	//  UserFolder.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Folder.team_folder_name
+	TeamFolderName *string `json:"teamFolderName,omitempty"`
+
+	// Output only. The timestamp of when the Folder was created.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Folder.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The timestamp of when the Folder was last updated.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Folder.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. All the metadata information that is used internally to serve
+	//  the resource. For example: timestamps, flags, status fields, etc. The
+	//  format of this field is a JSON string.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Folder.internal_metadata
+	InternalMetadata *string `json:"internalMetadata,omitempty"`
+
+	// Output only. The IAM principal identifier of the creator of the Folder.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Folder.creator_iam_principal
+	CreatorIAMPrincipal *string `json:"creatorIAMPrincipal,omitempty"`
 }
 
 // +genclient
@@ -62,7 +99,6 @@ type DataformFolderObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

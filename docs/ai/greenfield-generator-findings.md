@@ -326,6 +326,88 @@ Checked directly against `AlloyDBBackup`: queueing it without the carry-forward 
 existing entries as fixed; with the carry-forward they stay. Queueing therefore only ever stops
 findings being *added*.
 
+## Phase 5: how derivable ObservedState is
+
+Measured across the tree by matching each `<Kind>ObservedState` struct in `apis/*/v1*/*_types.go`
+against a `<Kind>Spec` in the same file, which isolates the resource-level struct from the nested
+ones. 359 structs, 1,449 fields. `Output only.` in the doc comment stands in for the proto
+annotation, since that is what the generator copies through.
+
+| | fields | share |
+|---|---|---|
+| Carrying `Output only.` | 1,222 | 84.3% |
+| Annotated, but not output-only | 121 | 8.4% |
+| No `+kcc:proto:field=` annotation at all | 106 | 7.3% |
+
+The 227-field residue is 153 distinct names, so most of it is a tail. The head is not: `Etag` 13,
+`CreateTime` 11, `State` 9, `UpdateTime` 8, `Name` 7, `ID` 6, `CreationTimestamp` 4, with
+`DeleteTime`, `Uid`, `Kind`, `SelfLink` and `Status` at 3 each. These are server-computed fields
+whose proto omitted the annotation, not fields anyone considered and placed deliberately.
+
+### Which names are safe to assume
+
+The risk in an allowlist is claiming a field that is legitimately user input. Counted by how often
+each name appears in a resource-level **Spec** struct anywhere in the tree:
+
+| Name | Spec appearances | Verdict |
+|---|---|---|
+| `CreateTime`, `UpdateTime`, `DeleteTime`, `CreationTimestamp` | 0 | safe |
+| `Uid`, `SelfLink`, `SelfLinkWithID`, `ID` | 0 | safe |
+| `Kind` | 1 | allow, queue it |
+| `Status` | 2 | allow, queue it |
+| `Etag`, `Name` | 3 | allow, queue it |
+| `State` | 7 | allow, queue it |
+| `Type` | **36** | exclude |
+
+The zero counts are weak evidence taken alone, since a name that is output-only in every annotated
+proto would show zero by construction. They are strong enough combined with the guard that the
+allowlist only fires where the proto states no `field_behavior` at all.
+
+The timestamp group is 26 of the 40 fields the zero-risk names recover, which is what makes it worth
+separating: emitting those silently removes two thirds of the queue entries the allowlist would
+otherwise generate, and loses nothing, because no one has ever had to think about where
+`create_time` belongs.
+
+### Competing identifiers are the real judgement call
+
+Twenty of the 359 resource-level structs carry more than one identifier-shaped field, three of them
+carry three:
+
+```
+compute/ComputeFutureReservation:        ID, SelfLink, SelfLinkWithID
+compute/ComputeNetworkAttachment:        ID, SelfLink, SelfLinkWithID
+compute/ComputeNetworkEdgeSecurityService: ID, SelfLink, SelfLinkWithID
+workstations/WorkstationCluster:         Uid, Etag
+eventarc/EventarcEnrollment:             Uid, Etag
+dataplex/DataplexEntryType:              Uid, Etag
+```
+
+Two shapes: compute, where the discovery document gives three names for the same resource, and
+everything else, where it is `Uid` and `Etag`. Which one becomes the identity is not derivable and
+is the same question Step 2 answers when it writes `_identity.go`, which argues for one queue entry
+per resource rather than one per field.
+
+### The plain-type mismatch, counted
+
+`WriteObservedStateMessage` picks `*FooObservedState` over `*Foo` by looking the field's message up
+in `observedStateMessages` (`pkg/codegen/typegenerator.go:445`). Hand-written structs have to make
+the same call unaided. Of 2,045 message-typed fields across all hand-written ObservedState structs,
+9 get it wrong:
+
+```
+apis/aiplatform/v1alpha1/aiplatformmodel_types.go        SupportedExportFormats, OriginalModelInfo
+apis/alloydb/v1beta1/alloydbcluster_types.go             PrimaryConfig, MaintenanceSchedule
+apis/bigtable/v1beta1/bigtabletable_types.go             RestoreInfo
+apis/container/v1beta1/containercluster_types.go         PodRangeInfo
+apis/contactcenterinsights/v1alpha1/ccinsightsconversation_types.go  LatestAnalysis
+apis/datacatalog/v1alpha1/datacatalogentrygroup_types.go DataCatalogTimestamps
+apis/discoveryengine/v1alpha1/discoveryengineidentitymappingstore_types.go  CmekConfig
+```
+
+`CmekConfig` is the case written up under
+[what the fix does not close](#what-the-fix-does-not-close). An error rate of 9 in 2,045 is low, but
+the failure is silent and the three `v1beta1` entries mean fixing them changes served CRD schemas.
+
 ## Limit of what was checked
 
 The scaffolder has no access to field data and the type generator does. Whether anyone has

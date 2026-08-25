@@ -33,6 +33,7 @@ type Channel struct {
 	//  location on the project and must be in
 	//  `projects/{project}/locations/{location}/channels/{channel_id}` format.
 	// +kcc:proto:field=google.cloud.eventarc.v1.Channel.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// The name of the event provider (e.g. Eventarc SaaS partner) associated
@@ -58,6 +59,7 @@ type Channel struct {
 type ChannelConnection struct {
 	// Required. The name of the connection.
 	// +kcc:proto:field=google.cloud.eventarc.v1.ChannelConnection.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Required. The name of the connected subscriber Channel.
@@ -65,6 +67,7 @@ type ChannelConnection struct {
 	//  references. This must be in
 	//  `projects/{project}/location/{location}/channels/{channel_id}` format.
 	// +kcc:proto:field=google.cloud.eventarc.v1.ChannelConnection.channel
+	// +required
 	Channel *string `json:"channel,omitempty"`
 
 	// Input only. Activation token for the channel. The token will be used
@@ -99,24 +102,26 @@ type Enrollment struct {
 	// Required. A CEL expression identifying which messages this enrollment
 	//  applies to.
 	// +kcc:proto:field=google.cloud.eventarc.v1.Enrollment.cel_match
+	// +required
 	CelMatch *string `json:"celMatch,omitempty"`
 
 	// Required. Resource name of the message bus identifying the source of the
 	//  messages. It matches the form
 	//  projects/{project}/locations/{location}/messageBuses/{messageBus}.
 	// +kcc:proto:field=google.cloud.eventarc.v1.Enrollment.message_bus
+	// +required
 	MessageBus *string `json:"messageBus,omitempty"`
 
 	// Required. Destination is the Pipeline that the Enrollment is delivering to.
 	//  It must point to the full resource name of a Pipeline. Format:
 	//  "projects/{PROJECT_ID}/locations/{region}/pipelines/{PIPELINE_ID)"
 	// +kcc:proto:field=google.cloud.eventarc.v1.Enrollment.destination
+	// +required
 	Destination *string `json:"destination,omitempty"`
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.eventarc.v1.GoogleApiSource", skipping
-
+/* unreachable type GoogleAPISource
 // +kcc:proto=google.cloud.eventarc.v1.GoogleApiSource
 type GoogleAPISource struct {
 	// Identifier. Resource name of the form
@@ -141,13 +146,14 @@ type GoogleAPISource struct {
 	//  Format:
 	//  "projects/{PROJECT_ID}/locations/{region}/messagesBuses/{MESSAGE_BUS_ID)
 	// +kcc:proto:field=google.cloud.eventarc.v1.GoogleApiSource.destination
+	// +required
 	Destination *string `json:"destination,omitempty"`
 
 	// Optional. Resource name of a KMS crypto key (managed by the user) used to
 	//  encrypt/decrypt their event data.
 	//
 	//  It must match the pattern
-	//  `projects/* /locations/* /keyRings/* /cryptoKeys/*`.
+	//  `projects/-*-/locations/-*-/keyRings/-*-/cryptoKeys/-*`.
 	// +kcc:proto:field=google.cloud.eventarc.v1.GoogleApiSource.crypto_key_name
 	CryptoKeyName *string `json:"cryptoKeyName,omitempty"`
 
@@ -164,6 +170,7 @@ type GoogleChannelConfig struct {
 	// Required. The resource name of the config. Must be in the format of,
 	//  `projects/{project}/locations/{location}/googleChannelConfig`.
 	// +kcc:proto:field=google.cloud.eventarc.v1.GoogleChannelConfig.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. Resource name of a KMS crypto key (managed by the user) used to
@@ -176,8 +183,6 @@ type GoogleChannelConfig struct {
 }
 */
 
-/* found existing non-generated go type "LoggingConfig", skipping
-
 // +kcc:proto=google.cloud.eventarc.v1.LoggingConfig
 type LoggingConfig struct {
 	// Optional. The minimum severity of logs that will be sent to
@@ -186,7 +191,6 @@ type LoggingConfig struct {
 	// +kcc:proto:field=google.cloud.eventarc.v1.LoggingConfig.log_severity
 	LogSeverity *string `json:"logSeverity,omitempty"`
 }
-*/
 
 /* found existing non-generated go type with proto tag "google.cloud.eventarc.v1.Channel", skipping
 
@@ -273,8 +277,7 @@ type EnrollmentObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.eventarc.v1.GoogleApiSource", skipping
-
+/* unreachable type GoogleAPISourceObservedState
 // +kcc:observedstate:proto=google.cloud.eventarc.v1.GoogleApiSource
 type GoogleAPISourceObservedState struct {
 	// Output only. Server assigned unique identifier for the channel. The value
