@@ -96,16 +96,15 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 
 	out.SpecFields = buf.String()
 
-	// Always mark the resource untriaged, whatever we did or did not detect.
+	// Every resource gets this entry, whatever judgementFor turned up.
 	//
-	// The resource-level entry is what actually drives suppression, so it must not
-	// depend on the detector finding anything. Measured on the pilot resource:
-	// LbTrafficExtension carries no google.api.resource_reference on any field,
-	// including forwarding_rules, which is precisely the field that has to become
-	// a ref. A queue built only from annotations would have been empty, so no file
-	// would have been written, nothing would have been suppressed, and the resource
-	// would have gone straight into the missingrefs ratchet and failed. Preventing
-	// exactly that is why the queue exists.
+	// Suppression hangs off the resource-level entry, so it cannot be conditional
+	// on finding an annotation. The pilot shows why: LbTrafficExtension carries no
+	// google.api.resource_reference on any field, including forwarding_rules, which
+	// is precisely the field that has to become a ref. Build the queue from
+	// annotations alone and it comes out empty, so no file is written, nothing is
+	// suppressed, and the resource goes straight into the missingrefs ratchet and
+	// fails. Preventing exactly that is why the queue exists.
 	out.Judgement = append([]JudgementItem{{
 		Reason: "untriaged-bulk-generation",
 		Detail: "spec was generated mechanically; confirm refs, omissions and KRM names",
