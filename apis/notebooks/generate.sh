@@ -35,11 +35,16 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.notebooks.v1,google.cloud.notebooks.v2 \
   --api-version notebooks.cnrm.cloud.google.com/v1alpha1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --include-skipped-output \
   --resource NotebooksEnvironment:Environment \
   --resource NotebooksExecution:Execution \
   --resource NotebooksSchedule:Schedule \
-  --resource NotebookInstanceV2:Instance
+  --resource NotebookInstanceV2:google.cloud.notebooks.v2.Instance
 
 ${CONTROLLERBUILDER} generate-mapper \
   --service google.cloud.notebooks.v2 \
