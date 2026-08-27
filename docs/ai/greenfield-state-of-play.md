@@ -143,6 +143,8 @@ comparison is the method that transfers.
 
 ## Related
 
+* [greenfield-branch-inventory.md](greenfield-branch-inventory.md) — what every branch and PR
+  is, what is superseded, and the one branch waiting on a decision
 * [greenfield-experiment-report.md](greenfield-experiment-report.md) — the write-up for leads: what
   the experiment proves, what it does not, and the decisions we want made
 * [greenfield-coverage-strategy.md](greenfield-coverage-strategy.md) — the acceptance bar and sequencing
