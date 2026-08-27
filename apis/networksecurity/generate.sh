@@ -43,6 +43,11 @@ PROTO_OUT="${REPO_ROOT}/.build/googleapis-${PROTO_SHA}.pb"
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.networksecurity.v1 \
   --api-version networksecurity.cnrm.cloud.google.com/v1alpha1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource NetworkSecurityBackendAuthenticationConfig:BackendAuthenticationConfig \
   --resource NetworkSecurityInterceptDeployment:InterceptDeployment \
   --resource NetworkSecurityAddressGroup:AddressGroup \
@@ -65,6 +70,11 @@ ${CONTROLLERBUILDER} generate-types \
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.networksecurity.v1alpha1 \
   --api-version networksecurity.cnrm.cloud.google.com/v1alpha1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource NetworkSecurityPartnerSSERealm:PartnerSSERealm \
   --resource NetworkSecurityPartnerSSEGateway:PartnerSSEGateway \
   --resource NetworkSecurityTLSInspectionPolicy:TlsInspectionPolicy \

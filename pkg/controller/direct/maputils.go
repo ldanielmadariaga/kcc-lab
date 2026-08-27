@@ -615,6 +615,74 @@ func Struct_ToProto(mapCtx *MapContext, in *apiextensionsv1.JSON) *structpb.Stru
 	return s
 }
 
+// Value and ListValue join Struct on apiextensionsv1.JSON. All three are
+// schemaless JSON in KRM: a CRD cannot express google.protobuf.Value any other
+// way, because Value.list_value is a ListValue whose values are Values, and
+// controller-gen cannot build a terminating schema for that recursion.
+//
+// AsInterface and NewValue round-trip through the same JSON-compatible Go types
+// json.Marshal produces, so the pair composes the way Struct's does. A
+// google.protobuf.Value carrying NaN or +Inf has no JSON form and NewValue
+// rejects it; that surfaces as a mapCtx error rather than silent data loss.
+
+func Value_FromProto(mapCtx *MapContext, in *structpb.Value) *apiextensionsv1.JSON {
+	if in == nil {
+		return nil
+	}
+	b, err := json.Marshal(in.AsInterface())
+	if err != nil {
+		mapCtx.Errorf("marshalling structpb.Value to json: %v", err)
+		return nil
+	}
+	return &apiextensionsv1.JSON{Raw: b}
+}
+
+func Value_ToProto(mapCtx *MapContext, in *apiextensionsv1.JSON) *structpb.Value {
+	if in == nil {
+		return nil
+	}
+	var v interface{}
+	if err := json.Unmarshal(in.Raw, &v); err != nil {
+		mapCtx.Errorf("unmarshalling json to value: %v", err)
+		return nil
+	}
+	out, err := structpb.NewValue(v)
+	if err != nil {
+		mapCtx.Errorf("error converting value to structpb.Value: %v", err)
+		return nil
+	}
+	return out
+}
+
+func ListValue_FromProto(mapCtx *MapContext, in *structpb.ListValue) *apiextensionsv1.JSON {
+	if in == nil {
+		return nil
+	}
+	b, err := json.Marshal(in.AsSlice())
+	if err != nil {
+		mapCtx.Errorf("marshalling structpb.ListValue to json: %v", err)
+		return nil
+	}
+	return &apiextensionsv1.JSON{Raw: b}
+}
+
+func ListValue_ToProto(mapCtx *MapContext, in *apiextensionsv1.JSON) *structpb.ListValue {
+	if in == nil {
+		return nil
+	}
+	var l []interface{}
+	if err := json.Unmarshal(in.Raw, &l); err != nil {
+		mapCtx.Errorf("unmarshalling json to list: %v", err)
+		return nil
+	}
+	out, err := structpb.NewList(l)
+	if err != nil {
+		mapCtx.Errorf("error converting list to structpb.ListValue: %v", err)
+		return nil
+	}
+	return out
+}
+
 func MapStringString_ToProto(mapCtx *MapContext, in map[string]string) map[string]string {
 	if in == nil {
 		return nil
