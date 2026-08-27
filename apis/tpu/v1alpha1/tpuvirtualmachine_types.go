@@ -15,8 +15,7 @@
 package v1alpha1
 
 import (
-	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -26,17 +25,15 @@ var TPUVirtualMachineGVK = GroupVersion.WithKind("TPUVirtualMachine")
 // TPUVirtualMachineSpec defines the desired state of TPUVirtualMachine
 // +kcc:spec:proto=google.cloud.tpu.v2.Node
 type TPUVirtualMachineSpec struct {
-	// Immutable. The location where the TPU virtual machine should reside.
-	// +required
-	Location string `json:"location,omitempty"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The project that the TPU virtual machine belongs to.
-	// +required
-	ProjectRef *refs.ProjectRef `json:"projectRef,omitempty"`
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/nodes/{node}
+	Location *string `json:"location"`
 
 	// The TPUVirtualMachine name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// The user-supplied description of the TPU. Maximum of 512 characters.
 	// +kcc:proto:field=google.cloud.tpu.v2.Node.description
 	Description *string `json:"description,omitempty"`
@@ -47,6 +44,7 @@ type TPUVirtualMachineSpec struct {
 
 	// Required. The runtime version running in the Node.
 	// +kcc:proto:field=google.cloud.tpu.v2.Node.runtime_version
+	// +required
 	RuntimeVersion *string `json:"runtimeVersion,omitempty"`
 
 	// Network configurations for the TPU node. network_config and network_configs
@@ -82,11 +80,13 @@ type TPUVirtualMachineSpec struct {
 	// +kcc:proto:field=google.cloud.tpu.v2.Node.scheduling_config
 	SchedulingConfig *SchedulingConfig `json:"schedulingConfig,omitempty"`
 
-	/* NOTYET-LABELS
+	// The health status of the TPU node.
+	// +kcc:proto:field=google.cloud.tpu.v2.Node.health
+	Health *string `json:"health,omitempty"`
+
 	// Resource labels to represent user-provided metadata.
 	// +kcc:proto:field=google.cloud.tpu.v2.Node.labels
 	Labels map[string]string `json:"labels,omitempty"`
-	*/
 
 	// Custom metadata to apply to the TPU Node.
 	//  Can set startup-script and shutdown-script
@@ -130,13 +130,6 @@ type TPUVirtualMachineStatus struct {
 // TPUVirtualMachineObservedState is the state of the TPUVirtualMachine resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.tpu.v2.Node
 type TPUVirtualMachineObservedState struct {
-
-	/* NOTYET - EXTERNALREF
-	// Output only. Immutable. The name of the TPU.
-	// +kcc:proto:field=google.cloud.tpu.v2.Node.name
-	Name *string `json:"name,omitempty"`
-	*/
-
 	// Output only. The current state for the TPU Node.
 	// +kcc:proto:field=google.cloud.tpu.v2.Node.state
 	State *string `json:"state,omitempty"`
@@ -146,11 +139,9 @@ type TPUVirtualMachineObservedState struct {
 	// +kcc:proto:field=google.cloud.tpu.v2.Node.health_description
 	HealthDescription *string `json:"healthDescription,omitempty"`
 
-	/* NOTYET - VOLATILE
 	// Output only. The time when the node was created.
 	// +kcc:proto:field=google.cloud.tpu.v2.Node.create_time
 	CreateTime *string `json:"createTime,omitempty"`
-	*/
 
 	// Output only. The network endpoints where TPU workers can be accessed and
 	//  sent work. It is recommended that runtime clients of the node reach out
@@ -158,17 +149,13 @@ type TPUVirtualMachineObservedState struct {
 	// +kcc:proto:field=google.cloud.tpu.v2.Node.network_endpoints
 	NetworkEndpoints []NetworkEndpointObservedState `json:"networkEndpoints,omitempty"`
 
-	/* NOTYET - EXTERNALREF
 	// Output only. The unique identifier for the TPU Node.
 	// +kcc:proto:field=google.cloud.tpu.v2.Node.id
 	ID *int64 `json:"id,omitempty"`
-	*/
 
-	/* NOTYET - CONFUSING
 	// Output only. The API version that created this Node.
 	// +kcc:proto:field=google.cloud.tpu.v2.Node.api_version
 	APIVersion *string `json:"apiVersion,omitempty"`
-	*/
 
 	// Output only. The Symptoms that have occurred to the TPU Node.
 	// +kcc:proto:field=google.cloud.tpu.v2.Node.symptoms
@@ -182,10 +169,6 @@ type TPUVirtualMachineObservedState struct {
 	// Output only. Whether the Node belongs to a Multislice group.
 	// +kcc:proto:field=google.cloud.tpu.v2.Node.multislice_node
 	MultisliceNode *bool `json:"multisliceNode,omitempty"`
-
-	// The health status of the TPU node.
-	// +kcc:proto:field=google.cloud.tpu.v2.Node.health
-	Health *string `json:"health,omitempty"`
 }
 
 // +genclient
@@ -220,18 +203,4 @@ type TPUVirtualMachineList struct {
 
 func init() {
 	SchemeBuilder.Register(&TPUVirtualMachine{}, &TPUVirtualMachineList{})
-}
-
-type TPUV2NodeSpec struct {
-	AcceleratorConfig *AcceleratorConfig `json:"acceleratorConfig,omitempty"`
-
-	ResourceID *string `json:"resourceID,omitempty"`
-
-	UseServiceNetworking *bool `json:"useServiceNetworking,omitempty"`
-
-	NetworkRef *computerefs.ComputeNetworkRef `json:"networkRef,omitempty"`
-
-	TensorflowVersion *string `json:"tensorflowVersion,omitempty"`
-
-	Description *string `json:"description,omitempty"`
 }

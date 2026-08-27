@@ -197,15 +197,6 @@ var legacyGVKs = map[schema.GroupVersionKind]legacyGVKData{
 		SupportsIAM: false,
 	},
 	{
-		Group:   "apikeys.cnrm.cloud.google.com",
-		Version: "v1alpha1",
-		Kind:    "APIKeysKey",
-	}: {
-		Terraform:   true,
-		DCL:         false,
-		SupportsIAM: false,
-	},
-	{
 		Group:   "appengine.cnrm.cloud.google.com",
 		Version: "v1alpha1",
 		Kind:    "AppEngineDomainMapping",
@@ -576,15 +567,6 @@ var legacyGVKs = map[schema.GroupVersionKind]legacyGVKData{
 	},
 	{
 		Group:   "compute.cnrm.cloud.google.com",
-		Version: "v1alpha1",
-		Kind:    "ComputeAutoscaler",
-	}: {
-		Terraform:   true,
-		DCL:         false,
-		SupportsIAM: false,
-	},
-	{
-		Group:   "compute.cnrm.cloud.google.com",
 		Version: "v1beta1",
 		Kind:    "ComputeBackendBucket",
 	}: {
@@ -609,15 +591,6 @@ var legacyGVKs = map[schema.GroupVersionKind]legacyGVKData{
 		Terraform:   true,
 		DCL:         false,
 		SupportsIAM: true,
-	},
-	{
-		Group:   "compute.cnrm.cloud.google.com",
-		Version: "v1alpha1",
-		Kind:    "ComputeBackendServiceSignedURLKey",
-	}: {
-		Terraform:   true,
-		DCL:         false,
-		SupportsIAM: false,
 	},
 	{
 		Group:   "compute.cnrm.cloud.google.com",
@@ -792,15 +765,6 @@ var legacyGVKs = map[schema.GroupVersionKind]legacyGVKData{
 	},
 	{
 		Group:   "compute.cnrm.cloud.google.com",
-		Version: "v1alpha1",
-		Kind:    "ComputeMachineImage",
-	}: {
-		Terraform:   true,
-		DCL:         false,
-		SupportsIAM: true,
-	},
-	{
-		Group:   "compute.cnrm.cloud.google.com",
 		Version: "v1beta1",
 		Kind:    "ComputeManagedSSLCertificate",
 	}: {
@@ -821,15 +785,6 @@ var legacyGVKs = map[schema.GroupVersionKind]legacyGVKData{
 		Group:   "compute.cnrm.cloud.google.com",
 		Version: "v1beta1",
 		Kind:    "ComputeNetworkEndpointGroup",
-	}: {
-		Terraform:   true,
-		DCL:         false,
-		SupportsIAM: false,
-	},
-	{
-		Group:   "compute.cnrm.cloud.google.com",
-		Version: "v1alpha1",
-		Kind:    "ComputeNetworkEndpoint",
 	}: {
 		Terraform:   true,
 		DCL:         false,
@@ -910,15 +865,6 @@ var legacyGVKs = map[schema.GroupVersionKind]legacyGVKData{
 	{
 		Group:   "compute.cnrm.cloud.google.com",
 		Version: "v1alpha1",
-		Kind:    "ComputeOrganizationSecurityPolicy",
-	}: {
-		Terraform:   true,
-		DCL:         false,
-		SupportsIAM: false,
-	},
-	{
-		Group:   "compute.cnrm.cloud.google.com",
-		Version: "v1alpha1",
 		Kind:    "ComputeOrganizationSecurityPolicyAssociation",
 	}: {
 		Terraform:   true,
@@ -983,24 +929,6 @@ var legacyGVKs = map[schema.GroupVersionKind]legacyGVKData{
 		Group:   "compute.cnrm.cloud.google.com",
 		Version: "v1beta1",
 		Kind:    "ComputeRegionNetworkEndpointGroup",
-	}: {
-		Terraform:   true,
-		DCL:         false,
-		SupportsIAM: false,
-	},
-	{
-		Group:   "compute.cnrm.cloud.google.com",
-		Version: "v1alpha1",
-		Kind:    "ComputeRegionPerInstanceConfig",
-	}: {
-		Terraform:   true,
-		DCL:         false,
-		SupportsIAM: false,
-	},
-	{
-		Group:   "compute.cnrm.cloud.google.com",
-		Version: "v1alpha1",
-		Kind:    "ComputeRegionSSLPolicy",
 	}: {
 		Terraform:   true,
 		DCL:         false,

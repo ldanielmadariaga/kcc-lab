@@ -25,10 +25,8 @@ package networkservices
 
 import (
 	pb "cloud.google.com/go/networkservices/apiv1/networkservicespb"
-	krmcomputev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
 	krmnetworkservicesv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/networkservices/v1alpha1"
 	krmnetworkservicesv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/networkservices/v1beta1"
-	krmservicedirectoryv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/servicedirectory/v1alpha1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -59,12 +57,14 @@ func ExtensionChain_Extension_v1alpha1_FromProto(mapCtx *direct.MapContext, in *
 	out := &krmnetworkservicesv1alpha1.ExtensionChain_Extension{}
 	out.Name = direct.LazyPtr(in.GetName())
 	out.Authority = direct.LazyPtr(in.GetAuthority())
-	// MISSING: Service
+	out.Service = direct.LazyPtr(in.GetService())
 	out.SupportedEvents = direct.EnumSlice_FromProto(mapCtx, in.SupportedEvents)
 	out.Timeout = direct.StringDuration_FromProto(mapCtx, in.GetTimeout())
 	out.FailOpen = direct.LazyPtr(in.GetFailOpen())
 	out.ForwardHeaders = in.ForwardHeaders
-	out.Metadata = direct.Struct_FromProto(mapCtx, in.GetMetadata())
+	if v := direct.Struct_FromProto(mapCtx, in.GetMetadata()); v != nil {
+		out.Metadata = *v
+	}
 	return out
 }
 func ExtensionChain_Extension_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnetworkservicesv1alpha1.ExtensionChain_Extension) *pb.ExtensionChain_Extension {
@@ -74,12 +74,12 @@ func ExtensionChain_Extension_v1alpha1_ToProto(mapCtx *direct.MapContext, in *kr
 	out := &pb.ExtensionChain_Extension{}
 	out.Name = direct.ValueOf(in.Name)
 	out.Authority = direct.ValueOf(in.Authority)
-	// MISSING: Service
+	out.Service = direct.ValueOf(in.Service)
 	out.SupportedEvents = direct.EnumSlice_ToProto[pb.EventType](mapCtx, in.SupportedEvents)
 	out.Timeout = direct.StringDuration_ToProto(mapCtx, in.Timeout)
 	out.FailOpen = direct.ValueOf(in.FailOpen)
 	out.ForwardHeaders = in.ForwardHeaders
-	out.Metadata = direct.Struct_ToProto(mapCtx, in.Metadata)
+	out.Metadata = direct.Struct_ToProto(mapCtx, &in.Metadata)
 	return out
 }
 func ExtensionChain_MatchCondition_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ExtensionChain_MatchCondition) *krmnetworkservicesv1alpha1.ExtensionChain_MatchCondition {
@@ -652,7 +652,6 @@ func NetworkServicesAuthzExtensionObservedState_v1alpha1_FromProto(mapCtx *direc
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Service
 	return out
 }
 func NetworkServicesAuthzExtensionObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnetworkservicesv1alpha1.NetworkServicesAuthzExtensionObservedState) *pb.AuthzExtension {
@@ -663,7 +662,6 @@ func NetworkServicesAuthzExtensionObservedState_v1alpha1_ToProto(mapCtx *direct.
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Service
 	return out
 }
 func NetworkServicesAuthzExtensionSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AuthzExtension) *krmnetworkservicesv1alpha1.NetworkServicesAuthzExtensionSpec {
@@ -676,10 +674,12 @@ func NetworkServicesAuthzExtensionSpec_v1alpha1_FromProto(mapCtx *direct.MapCont
 	out.Labels = in.Labels
 	out.LoadBalancingScheme = direct.Enum_FromProto(mapCtx, in.GetLoadBalancingScheme())
 	out.Authority = direct.LazyPtr(in.GetAuthority())
-	// MISSING: Service
+	out.Service = direct.LazyPtr(in.GetService())
 	out.Timeout = direct.StringDuration_FromProto(mapCtx, in.GetTimeout())
 	out.FailOpen = direct.LazyPtr(in.GetFailOpen())
-	out.Metadata = direct.Struct_FromProto(mapCtx, in.GetMetadata())
+	if v := direct.Struct_FromProto(mapCtx, in.GetMetadata()); v != nil {
+		out.Metadata = *v
+	}
 	out.ForwardHeaders = in.ForwardHeaders
 	out.WireFormat = direct.Enum_FromProto(mapCtx, in.GetWireFormat())
 	return out
@@ -694,10 +694,10 @@ func NetworkServicesAuthzExtensionSpec_v1alpha1_ToProto(mapCtx *direct.MapContex
 	out.Labels = in.Labels
 	out.LoadBalancingScheme = direct.Enum_ToProto[pb.LoadBalancingScheme](mapCtx, in.LoadBalancingScheme)
 	out.Authority = direct.ValueOf(in.Authority)
-	// MISSING: Service
+	out.Service = direct.ValueOf(in.Service)
 	out.Timeout = direct.StringDuration_ToProto(mapCtx, in.Timeout)
 	out.FailOpen = direct.ValueOf(in.FailOpen)
-	out.Metadata = direct.Struct_ToProto(mapCtx, in.Metadata)
+	out.Metadata = direct.Struct_ToProto(mapCtx, &in.Metadata)
 	out.ForwardHeaders = in.ForwardHeaders
 	out.WireFormat = direct.Enum_ToProto[pb.WireFormat](mapCtx, in.WireFormat)
 	return out
@@ -808,8 +808,6 @@ func NetworkServicesLBRouteExtensionObservedState_v1alpha1_FromProto(mapCtx *dir
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Labels
-	// MISSING: ForwardingRules
 	return out
 }
 func NetworkServicesLBRouteExtensionObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnetworkservicesv1alpha1.NetworkServicesLBRouteExtensionObservedState) *pb.LbRouteExtension {
@@ -820,8 +818,6 @@ func NetworkServicesLBRouteExtensionObservedState_v1alpha1_ToProto(mapCtx *direc
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Labels
-	// MISSING: ForwardingRules
 	return out
 }
 func NetworkServicesLBRouteExtensionSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.LbRouteExtension) *krmnetworkservicesv1alpha1.NetworkServicesLBRouteExtensionSpec {
@@ -831,17 +827,13 @@ func NetworkServicesLBRouteExtensionSpec_v1alpha1_FromProto(mapCtx *direct.MapCo
 	out := &krmnetworkservicesv1alpha1.NetworkServicesLBRouteExtensionSpec{}
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
-	// MISSING: Labels
-
-	if v := in.GetForwardingRules(); len(v) != 0 {
-		for i := range v {
-			out.ForwardingRuleRefs = append(out.ForwardingRuleRefs, &krmcomputev1beta1.ForwardingRuleRef{External: v[i]})
-		}
-	}
-
+	out.Labels = in.Labels
+	out.ForwardingRules = in.ForwardingRules
 	out.ExtensionChains = direct.Slice_FromProto(mapCtx, in.ExtensionChains, ExtensionChain_v1alpha1_FromProto)
 	out.LoadBalancingScheme = direct.Enum_FromProto(mapCtx, in.GetLoadBalancingScheme())
-	out.Metadata = direct.Struct_FromProto(mapCtx, in.GetMetadata())
+	if v := direct.Struct_FromProto(mapCtx, in.GetMetadata()); v != nil {
+		out.Metadata = *v
+	}
 	return out
 }
 func NetworkServicesLBRouteExtensionSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnetworkservicesv1alpha1.NetworkServicesLBRouteExtensionSpec) *pb.LbRouteExtension {
@@ -851,17 +843,11 @@ func NetworkServicesLBRouteExtensionSpec_v1alpha1_ToProto(mapCtx *direct.MapCont
 	out := &pb.LbRouteExtension{}
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
-	// MISSING: Labels
-
-	if v := in.ForwardingRuleRefs; len(v) != 0 {
-		for i := range v {
-			out.ForwardingRules = append(out.ForwardingRules, v[i].External)
-		}
-	}
-
+	out.Labels = in.Labels
+	out.ForwardingRules = in.ForwardingRules
 	out.ExtensionChains = direct.Slice_ToProto(mapCtx, in.ExtensionChains, ExtensionChain_v1alpha1_ToProto)
 	out.LoadBalancingScheme = direct.Enum_ToProto[pb.LoadBalancingScheme](mapCtx, in.LoadBalancingScheme)
-	out.Metadata = direct.Struct_ToProto(mapCtx, in.Metadata)
+	out.Metadata = direct.Struct_ToProto(mapCtx, &in.Metadata)
 	return out
 }
 func NetworkServicesLBTrafficExtensionObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.LbTrafficExtension) *krmnetworkservicesv1alpha1.NetworkServicesLBTrafficExtensionObservedState {
@@ -872,8 +858,6 @@ func NetworkServicesLBTrafficExtensionObservedState_v1alpha1_FromProto(mapCtx *d
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Labels
-	// MISSING: ForwardingRules
 	return out
 }
 func NetworkServicesLBTrafficExtensionObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnetworkservicesv1alpha1.NetworkServicesLBTrafficExtensionObservedState) *pb.LbTrafficExtension {
@@ -884,8 +868,6 @@ func NetworkServicesLBTrafficExtensionObservedState_v1alpha1_ToProto(mapCtx *dir
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Labels
-	// MISSING: ForwardingRules
 	return out
 }
 func NetworkServicesLBTrafficExtensionSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.LbTrafficExtension) *krmnetworkservicesv1alpha1.NetworkServicesLBTrafficExtensionSpec {
@@ -895,17 +877,13 @@ func NetworkServicesLBTrafficExtensionSpec_v1alpha1_FromProto(mapCtx *direct.Map
 	out := &krmnetworkservicesv1alpha1.NetworkServicesLBTrafficExtensionSpec{}
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
-	// MISSING: Labels
-
-	if v := in.GetForwardingRules(); len(v) != 0 {
-		for i := range v {
-			out.ForwardingRuleRefs = append(out.ForwardingRuleRefs, &krmcomputev1beta1.ForwardingRuleRef{External: v[i]})
-		}
-	}
-
+	out.Labels = in.Labels
+	out.ForwardingRules = in.ForwardingRules
 	out.ExtensionChains = direct.Slice_FromProto(mapCtx, in.ExtensionChains, ExtensionChain_v1alpha1_FromProto)
 	out.LoadBalancingScheme = direct.Enum_FromProto(mapCtx, in.GetLoadBalancingScheme())
-	out.Metadata = direct.Struct_FromProto(mapCtx, in.GetMetadata())
+	if v := direct.Struct_FromProto(mapCtx, in.GetMetadata()); v != nil {
+		out.Metadata = *v
+	}
 	return out
 }
 func NetworkServicesLBTrafficExtensionSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnetworkservicesv1alpha1.NetworkServicesLBTrafficExtensionSpec) *pb.LbTrafficExtension {
@@ -915,17 +893,11 @@ func NetworkServicesLBTrafficExtensionSpec_v1alpha1_ToProto(mapCtx *direct.MapCo
 	out := &pb.LbTrafficExtension{}
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
-	// MISSING: Labels
-
-	if v := in.ForwardingRuleRefs; len(v) != 0 {
-		for i := range v {
-			out.ForwardingRules = append(out.ForwardingRules, v[i].External)
-		}
-	}
-
+	out.Labels = in.Labels
+	out.ForwardingRules = in.ForwardingRules
 	out.ExtensionChains = direct.Slice_ToProto(mapCtx, in.ExtensionChains, ExtensionChain_v1alpha1_ToProto)
 	out.LoadBalancingScheme = direct.Enum_ToProto[pb.LoadBalancingScheme](mapCtx, in.LoadBalancingScheme)
-	out.Metadata = direct.Struct_ToProto(mapCtx, in.Metadata)
+	out.Metadata = direct.Struct_ToProto(mapCtx, &in.Metadata)
 	return out
 }
 func NetworkServicesServiceBindingObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ServiceBinding) *krmnetworkservicesv1alpha1.NetworkServicesServiceBindingObservedState {
@@ -936,7 +908,7 @@ func NetworkServicesServiceBindingObservedState_v1alpha1_FromProto(mapCtx *direc
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: ServiceID
+	out.ServiceID = direct.LazyPtr(in.GetServiceId())
 	return out
 }
 func NetworkServicesServiceBindingObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmnetworkservicesv1alpha1.NetworkServicesServiceBindingObservedState) *pb.ServiceBinding {
@@ -947,7 +919,7 @@ func NetworkServicesServiceBindingObservedState_v1alpha1_ToProto(mapCtx *direct.
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: ServiceID
+	out.ServiceId = direct.ValueOf(in.ServiceID)
 	return out
 }
 func NetworkServicesServiceBindingSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ServiceBinding) *krmnetworkservicesv1alpha1.NetworkServicesServiceBindingSpec {
@@ -957,10 +929,7 @@ func NetworkServicesServiceBindingSpec_v1alpha1_FromProto(mapCtx *direct.MapCont
 	out := &krmnetworkservicesv1alpha1.NetworkServicesServiceBindingSpec{}
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
-	if in.GetService() != "" {
-		out.ServiceRef = &krmservicedirectoryv1alpha1.ServiceDirectoryServiceRef{External: in.GetService()}
-	}
-	// MISSING: ServiceID
+	out.Service = direct.LazyPtr(in.GetService())
 	out.Labels = in.Labels
 	return out
 }
@@ -971,10 +940,7 @@ func NetworkServicesServiceBindingSpec_v1alpha1_ToProto(mapCtx *direct.MapContex
 	out := &pb.ServiceBinding{}
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
-	if in.ServiceRef != nil {
-		out.Service = in.ServiceRef.External
-	}
-	// MISSING: ServiceID
+	out.Service = direct.ValueOf(in.Service)
 	out.Labels = in.Labels
 	return out
 }
@@ -988,7 +954,6 @@ func NetworkServicesWasmPluginObservedState_v1alpha1_FromProto(mapCtx *direct.Ma
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Labels
 	out.UsedBy = direct.Slice_FromProto(mapCtx, in.UsedBy, WasmPlugin_UsedByObservedState_v1alpha1_FromProto)
 	return out
 }
@@ -1003,7 +968,6 @@ func NetworkServicesWasmPluginObservedState_v1alpha1_ToProto(mapCtx *direct.MapC
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Labels
 	out.UsedBy = direct.Slice_ToProto(mapCtx, in.UsedBy, WasmPlugin_UsedByObservedState_v1alpha1_ToProto)
 	return out
 }
@@ -1017,10 +981,17 @@ func NetworkServicesWasmPluginSpec_v1alpha1_FromProto(mapCtx *direct.MapContext,
 	out := &krmnetworkservicesv1alpha1.NetworkServicesWasmPluginSpec{}
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.MainVersionID = direct.LazyPtr(in.GetMainVersionId())
 	out.LogConfig = WasmPlugin_LogConfig_v1alpha1_FromProto(mapCtx, in.GetLogConfig())
-	out.Versions = Versions_FromProto(mapCtx, in.Versions)
+	if in.Versions != nil {
+		out.Versions = make(map[string]krmnetworkservicesv1alpha1.WasmPlugin_VersionDetails, len(in.Versions))
+		for k, v := range in.Versions {
+			if c := WasmPlugin_VersionDetails_v1alpha1_FromProto(mapCtx, v); c != nil {
+				out.Versions[k] = *c
+			}
+		}
+	}
 	return out
 }
 */
@@ -1035,10 +1006,15 @@ found existing non-generated mapping function "NetworkServicesWasmPluginSpec_v1a
 		out := &pb.WasmPlugin{}
 		// MISSING: Name
 		out.Description = direct.ValueOf(in.Description)
-		// MISSING: Labels
+		out.Labels = in.Labels
 		out.MainVersionId = direct.ValueOf(in.MainVersionID)
 		out.LogConfig = WasmPlugin_LogConfig_v1alpha1_ToProto(mapCtx, in.LogConfig)
-		out.Versions = Versions_ToProto(mapCtx, in.Versions)
+		if in.Versions != nil {
+			out.Versions = make(map[string]*pb.WasmPlugin_VersionDetails, len(in.Versions))
+			for k, v := range in.Versions {
+				out.Versions[k] = WasmPlugin_VersionDetails_v1alpha1_ToProto(mapCtx, &v)
+			}
+		}
 		return out
 	}
 */
@@ -1085,7 +1061,7 @@ func WasmPlugin_VersionDetails_v1alpha1_FromProto(mapCtx *direct.MapContext, in 
 		return nil
 	}
 	out := &krmnetworkservicesv1alpha1.WasmPlugin_VersionDetails{}
-	out.PluginConfigData = direct.LazyPtr(in.GetPluginConfigData())
+	out.PluginConfigData = in.GetPluginConfigData()
 	out.PluginConfigURI = direct.LazyPtr(in.GetPluginConfigUri())
 	// MISSING: CreateTime
 	// MISSING: UpdateTime
@@ -1122,7 +1098,7 @@ func WasmPlugin_VersionDetails_v1alpha1_ToProto(mapCtx *direct.MapContext, in *k
 */
 
 /* found existing non-generated mapping function "WasmPlugin_VersionDetails_PluginConfigData_ToProto", skipping
-func WasmPlugin_VersionDetails_PluginConfigData_ToProto(mapCtx *direct.MapContext, in *string) *pb.WasmPlugin_VersionDetails_PluginConfigData {
+func WasmPlugin_VersionDetails_PluginConfigData_ToProto(mapCtx *direct.MapContext, in []byte) *pb.WasmPlugin_VersionDetails_PluginConfigData {
 	if in == nil {
 		return nil
 	}

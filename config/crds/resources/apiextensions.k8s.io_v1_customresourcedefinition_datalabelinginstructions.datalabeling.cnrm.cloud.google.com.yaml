@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: datalabelinginstructions.datalabeling.cnrm.cloud.google.com
 spec:
@@ -64,6 +63,12 @@ spec:
             description: DataLabelingInstructionSpec defines the desired state of
               DataLabelingInstruction
             properties:
+              blockingResources:
+                description: Output only. The names of any related resources that
+                  are blocking changes to the instruction.
+                items:
+                  type: string
+                type: array
               csvInstruction:
                 description: |-
                   Deprecated: this instruction format is not supported any more.
@@ -76,17 +81,9 @@ spec:
                   gcsFileURI:
                     description: CSV file for the instruction. Only gcs path is allowed.
                     type: string
-                required:
-                - gcsFileURI
                 type: object
               dataType:
                 description: Required. The data type of this instruction.
-                enum:
-                - DATA_TYPE_UNSPECIFIED
-                - IMAGE
-                - VIDEO
-                - TEXT
-                - GENERAL_DATA
                 type: string
               description:
                 description: Optional. User-provided description of the instruction.
@@ -103,8 +100,6 @@ spec:
                   gcsFileURI:
                     description: PDF file for the instruction. Only gcs path is allowed.
                     type: string
-                required:
-                - gcsFileURI
                 type: object
               projectRef:
                 description: The project that this resource belongs to.
@@ -143,8 +138,6 @@ spec:
                   will be used.
                 type: string
             required:
-            - dataType
-            - displayName
             - projectRef
             type: object
           status:
@@ -193,12 +186,6 @@ spec:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
                 properties:
-                  blockingResources:
-                    description: Output only. The names of any related resources that
-                      are blocking changes to the instruction.
-                    items:
-                      type: string
-                    type: array
                   createTime:
                     description: Output only. Creation time of instruction.
                     type: string

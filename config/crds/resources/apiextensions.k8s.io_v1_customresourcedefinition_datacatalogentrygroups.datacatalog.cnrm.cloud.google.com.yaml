@@ -60,6 +60,7 @@ spec:
           metadata:
             type: object
           spec:
+            description: DataCatalogEntryGroupSpec defines the desired state of DataCatalogEntryGroup
             properties:
               description:
                 description: Entry group description. Can consist of several sentences
@@ -71,9 +72,10 @@ spec:
                   "analytics data - jan 2011". Default value is an empty string.
                 type: string
               location:
+                description: The location of this resource.
                 type: string
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -118,7 +120,6 @@ spec:
             required:
             - location
             - projectRef
-            - resourceID
             type: object
           status:
             description: DataCatalogEntryGroupStatus defines the config connector
@@ -173,6 +174,12 @@ spec:
                       createTime:
                         description: Creation timestamp of the resource within the
                           given system.
+                        type: string
+                      expireTime:
+                        description: |-
+                          Output only. Expiration timestamp of the resource within the given system.
+
+                           Currently only applicable to BigQuery resources.
                         type: string
                       updateTime:
                         description: |-

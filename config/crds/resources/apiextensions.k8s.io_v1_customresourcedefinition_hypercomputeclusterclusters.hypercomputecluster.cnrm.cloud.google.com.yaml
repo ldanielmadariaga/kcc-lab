@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: hypercomputeclusterclusters.hypercomputecluster.cnrm.cloud.google.com
 spec:
@@ -92,6 +91,10 @@ spec:
                                 match the zone of any other resources specified in
                                 the cluster.
                               type: string
+                          required:
+                          - machineType
+                          - maxDuration
+                          - zone
                           type: object
                         newOnDemandInstances:
                           description: Optional. Immutable. If set, indicates that
@@ -109,6 +112,9 @@ spec:
                                 match the zone of any other resources specified in
                                 the cluster.
                               type: string
+                          required:
+                          - machineType
+                          - zone
                           type: object
                         newReservedInstances:
                           description: Optional. Immutable. If set, indicates that
@@ -141,10 +147,18 @@ spec:
                                 match the zone of any other resources specified in
                                 the cluster.
                               type: string
+                          required:
+                          - machineType
+                          - zone
                           type: object
                       type: object
+                  required:
+                  - config
                   type: object
                 description: Optional. Compute resources available to the cluster.
+                  Keys specify the ID of the compute resource by which it can be referenced
+                  elsewhere, and must conform to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034)
+                  (lower-case, alphanumeric, and at most 63 characters).
                 type: object
               description:
                 description: Optional. User-provided description of the cluster.
@@ -152,7 +166,9 @@ spec:
               labels:
                 additionalProperties:
                   type: string
-                description: Optional. Labels applied to the cluster.
+                description: Optional. [Labels](https://cloud.google.com/compute/docs/labeling-resources)
+                  applied to the cluster. Labels can be used to organize clusters
+                  and to filter them in queries.
                 type: object
               location:
                 description: The location of this resource.
@@ -172,39 +188,17 @@ spec:
                           description: Optional. Immutable. If set, indicates that
                             an existing network should be imported.
                           properties:
-                            networkRef:
-                              description: Required. Immutable. Reference to the network
-                                to import.
-                              properties:
-                                external:
-                                  description: A reference to an externally managed
-                                    ComputeNetwork resource. Should be in the format
-                                    "projects/{{projectID}}/global/networks/{{networkID}}".
-                                  type: string
-                                name:
-                                  description: The name of a ComputeNetwork resource.
-                                  type: string
-                                namespace:
-                                  description: The namespace of a ComputeNetwork resource.
-                                  type: string
-                              type: object
-                            subnetworkRef:
+                            network:
+                              description: Required. Immutable. Name of the network
+                                to import, in the format `projects/{project}/global/networks/{network}`.
+                              type: string
+                            subnetwork:
                               description: Required. Immutable. Particular subnetwork
-                                to use.
-                              properties:
-                                external:
-                                  description: A reference to an externally managed
-                                    ComputeSubnetwork resource. Should be in the format
-                                    "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
-                                  type: string
-                                name:
-                                  description: The name of a ComputeSubnetwork resource.
-                                  type: string
-                                namespace:
-                                  description: The namespace of a ComputeSubnetwork
-                                    resource.
-                                  type: string
-                              type: object
+                                to use, in the format `projects/{project}/regions/{region}/subnetworks/{subnetwork}`.
+                              type: string
+                          required:
+                          - network
+                          - subnetwork
                           type: object
                         newNetwork:
                           description: Optional. Immutable. If set, indicates that
@@ -214,36 +208,23 @@ spec:
                               description: Optional. Immutable. Description of the
                                 network. Maximum of 2048 characters.
                               type: string
-                            networkRef:
-                              description: Required. Immutable. Reference to the network
-                                to create.
-                              properties:
-                                external:
-                                  description: A reference to an externally managed
-                                    ComputeNetwork resource. Should be in the format
-                                    "projects/{{projectID}}/global/networks/{{networkID}}".
-                                  type: string
-                                name:
-                                  description: The name of a ComputeNetwork resource.
-                                  type: string
-                                namespace:
-                                  description: The namespace of a ComputeNetwork resource.
-                                  type: string
-                              type: object
+                            network:
+                              description: Required. Immutable. Name of the network
+                                to create, in the format `projects/{project}/global/networks/{network}`.
+                              type: string
+                          required:
+                          - network
                           type: object
                       type: object
                     network:
                       description: Reference to a network in Google Compute Engine.
-                      properties:
-                        network:
-                          description: Reference to a Compute Network.
-                          type: string
-                        subnetwork:
-                          description: Reference to a Compute Subnetwork.
-                          type: string
                       type: object
                   type: object
                 description: Optional. Network resources available to the cluster.
+                  Must contain at most one value. Keys specify the ID of the network
+                  resource by which it can be referenced elsewhere, and must conform
+                  to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034) (lower-case,
+                  alphanumeric, and at most 63 characters).
                 type: object
               orchestrator:
                 description: Optional. Orchestrator that is responsible for scheduling
@@ -283,6 +264,9 @@ spec:
                                   type](https://cloud.google.com/compute/docs/disks#disk-types),
                                   in the format `projects/{project}/zones/{zone}/diskTypes/{disk_type}`.
                                 type: string
+                            required:
+                            - sizeGB
+                            - type
                             type: object
                           count:
                             description: Required. Number of login node instances
@@ -290,33 +274,35 @@ spec:
                             format: int64
                             type: integer
                           enableOSLogin:
-                            description: Optional. Whether OS Login should be enabled
-                              on login node instances.
+                            description: Optional. Whether [OS Login](https://cloud.google.com/compute/docs/oslogin)
+                              should be enabled on login node instances.
                             type: boolean
                           enablePublicIPs:
                             description: Optional. Whether login node instances should
-                              be assigned external IP addresses.
+                              be assigned [external IP addresses](https://cloud.google.com/compute/docs/ip-addresses#externaladdresses).
                             type: boolean
                           labels:
                             additionalProperties:
                               type: string
-                            description: Optional. Labels that should be applied to
-                              each login node instance.
+                            description: Optional. [Labels](https://cloud.google.com/compute/docs/labeling-resources)
+                              that should be applied to each login node instance.
                             type: object
                           machineType:
-                            description: Required. Name of the Compute Engine machine
-                              type to use for login nodes, e.g. `n2-standard-2`.
+                            description: Required. Name of the Compute Engine [machine
+                              type](https://cloud.google.com/compute/docs/machine-resource)
+                              to use for login nodes, e.g. `n2-standard-2`.
                             type: string
                           startupScript:
-                            description: Optional. Startup script to be run on each
-                              login node instance. Max 256KB. The script must complete
-                              within the system-defined default timeout of 5 minutes.
-                              For tasks that require more time, consider running them
-                              in the background using methods such as `&` or `nohup`.
+                            description: Optional. [Startup script](https://cloud.google.com/compute/docs/instances/startup-scripts/linux)
+                              to be run on each login node instance. Max 256KB. The
+                              script must complete within the system-defined default
+                              timeout of 5 minutes. For tasks that require more time,
+                              consider running them in the background using methods
+                              such as `&` or `nohup`.
                             type: string
                           storageConfigs:
-                            description: Optional. How storage resources should be
-                              mounted on each login node.
+                            description: Optional. How [storage resources][google.cloud.hypercomputecluster.v1.StorageResource]
+                              should be mounted on each login node.
                             items:
                               properties:
                                 id:
@@ -329,6 +315,9 @@ spec:
                                     instance's file system where the storage resource
                                     should be mounted (e.g., `/mnt/share`).
                                   type: string
+                              required:
+                              - id
+                              - localMount
                               type: object
                             type: array
                           zone:
@@ -337,6 +326,10 @@ spec:
                               the same region as the cluster, and must match the zone
                               of any other resources specified in the cluster.
                             type: string
+                        required:
+                        - count
+                        - machineType
+                        - zone
                         type: object
                       nodeSets:
                         description: Optional. Compute resource configuration for
@@ -367,6 +360,9 @@ spec:
                                         disk type](https://cloud.google.com/compute/docs/disks#disk-types),
                                         in the format `projects/{project}/zones/{zone}/diskTypes/{disk_type}`.
                                       type: string
+                                  required:
+                                  - sizeGB
+                                  - type
                                   type: object
                                 labels:
                                   additionalProperties:
@@ -419,8 +415,13 @@ spec:
                                       VM instance's file system where the storage
                                       resource should be mounted (e.g., `/mnt/share`).
                                     type: string
+                                required:
+                                - id
+                                - localMount
                                 type: object
                               type: array
+                          required:
+                          - id
                           type: object
                         type: array
                       partitions:
@@ -433,15 +434,18 @@ spec:
                           properties:
                             id:
                               description: Required. ID of the partition, which is
-                                how users will identify it. Must conform to RFC-1034
+                                how users will identify it. Must conform to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034)
                                 (lower-case, alphanumeric, and at most 63 characters).
                               type: string
-                            nodeSetIds:
+                            nodeSetIDs:
                               description: Required. IDs of the nodesets that make
-                                up this partition. Values must match SlurmNodeSet.id.
+                                up this partition. Values must match [SlurmNodeSet.id][google.cloud.hypercomputecluster.v1.SlurmNodeSet.id].
                               items:
                                 type: string
                               type: array
+                          required:
+                          - id
+                          - nodeSetIDs
                           type: object
                         type: array
                       prologBashScripts:
@@ -451,6 +455,8 @@ spec:
                         items:
                           type: string
                         type: array
+                    required:
+                    - loginNodes
                     type: object
                 type: object
               projectRef:
@@ -496,10 +502,6 @@ spec:
                       description: Reference to a Google Cloud Storage bucket. Populated
                         if and only if the storage resource was configured to use
                         Google Cloud Storage.
-                      properties:
-                        bucket:
-                          description: Reference to a Google Cloud Storage bucket.
-                          type: string
                       type: object
                     config:
                       description: Required. Immutable. Configuration for this storage
@@ -513,44 +515,23 @@ spec:
                           description: Optional. Immutable. If set, indicates that
                             an existing Cloud Storage bucket should be imported.
                           properties:
-                            bucketRef:
-                              description: Required. Immutable. Reference to the Cloud
+                            bucket:
+                              description: Required. Immutable. Name of the Cloud
                                 Storage bucket to import.
-                              properties:
-                                external:
-                                  description: A reference to an externally managed
-                                    StorageBucket resource. Should be in the format
-                                    "projects/{{projectID}}/buckets/{{bucketID}}".
-                                  type: string
-                                name:
-                                  description: The name of a StorageBucket resource.
-                                  type: string
-                                namespace:
-                                  description: The namespace of a StorageBucket resource.
-                                  type: string
-                              type: object
+                              type: string
+                          required:
+                          - bucket
                           type: object
                         existingFilestore:
                           description: Optional. Immutable. If set, indicates that
                             an existing Filestore instance should be imported.
                           properties:
-                            filestoreRef:
-                              description: Required. Immutable. Reference to the Filestore
-                                instance to import.
-                              properties:
-                                external:
-                                  description: A reference to an externally managed
-                                    FilestoreInstance resource. Should be in the format
-                                    "projects/{{projectID}}/locations/{{location}}/instances/{{instanceID}}".
-                                  type: string
-                                name:
-                                  description: The name of a FilestoreInstance resource.
-                                  type: string
-                                namespace:
-                                  description: The namespace of a FilestoreInstance
-                                    resource.
-                                  type: string
-                              type: object
+                            filestore:
+                              description: Required. Immutable. Name of the Filestore
+                                instance to import, in the format `projects/{project}/locations/{location}/instances/{instance}`
+                              type: string
+                          required:
+                          - filestore
                           type: object
                         existingLustre:
                           description: Optional. Immutable. If set, indicates that
@@ -560,6 +541,8 @@ spec:
                               description: Required. Immutable. Name of the Managed
                                 Lustre instance to import, in the format `projects/{project}/locations/{location}/instances/{instance}`
                               type: string
+                          required:
+                          - lustre
                           type: object
                         newBucket:
                           description: Optional. Immutable. If set, indicates that
@@ -567,7 +550,7 @@ spec:
                           properties:
                             autoclass:
                               description: Optional. Immutable. If set, indicates
-                                that the bucket should use Autoclass.
+                                that the bucket should use [Autoclass](https://cloud.google.com/storage/docs/autoclass).
                               properties:
                                 enabled:
                                   description: Required. Enables Auto-class feature.
@@ -576,36 +559,30 @@ spec:
                                   description: Optional. Terminal storage class of
                                     the autoclass bucket
                                   type: string
+                              required:
+                              - enabled
                               type: object
-                            bucketRef:
-                              description: Required. Immutable. Reference to the Cloud
+                            bucket:
+                              description: Required. Immutable. Name of the Cloud
                                 Storage bucket to create.
-                              properties:
-                                external:
-                                  description: A reference to an externally managed
-                                    StorageBucket resource. Should be in the format
-                                    "projects/{{projectID}}/buckets/{{bucketID}}".
-                                  type: string
-                                name:
-                                  description: The name of a StorageBucket resource.
-                                  type: string
-                                namespace:
-                                  description: The namespace of a StorageBucket resource.
-                                  type: string
-                              type: object
+                              type: string
                             hierarchicalNamespace:
                               description: Optional. Immutable. If set, indicates
-                                that the bucket should use hierarchical namespaces.
+                                that the bucket should use [hierarchical namespaces](https://cloud.google.com/storage/docs/hns-overview).
                               properties:
                                 enabled:
                                   description: Required. Enables hierarchical namespace
                                     setup for the bucket.
                                   type: boolean
+                              required:
+                              - enabled
                               type: object
                             storageClass:
                               description: Optional. Immutable. If set, uses the provided
                                 storage class as the bucket's default storage class.
                               type: string
+                          required:
+                          - bucket
                           type: object
                         newFilestore:
                           description: Optional. Immutable. If set, indicates that
@@ -629,25 +606,15 @@ spec:
                                   fileShare:
                                     description: Required. Filestore share location
                                     type: string
+                                required:
+                                - capacityGB
+                                - fileShare
                                 type: object
                               type: array
-                            filestoreRef:
-                              description: Required. Immutable. Reference to the Filestore
-                                instance to create.
-                              properties:
-                                external:
-                                  description: A reference to an externally managed
-                                    FilestoreInstance resource. Should be in the format
-                                    "projects/{{projectID}}/locations/{{location}}/instances/{{instanceID}}".
-                                  type: string
-                                name:
-                                  description: The name of a FilestoreInstance resource.
-                                  type: string
-                                namespace:
-                                  description: The namespace of a FilestoreInstance
-                                    resource.
-                                  type: string
-                              type: object
+                            filestore:
+                              description: Required. Immutable. Name of the Filestore
+                                instance to create, in the format `projects/{project}/locations/{location}/instances/{instance}`
+                              type: string
                             protocol:
                               description: Optional. Immutable. Access protocol to
                                 use for all file shares in the instance. Defaults
@@ -657,6 +624,10 @@ spec:
                               description: Required. Immutable. Service tier to use
                                 for the instance.
                               type: string
+                          required:
+                          - fileShares
+                          - filestore
+                          - tier
                           type: object
                         newLustre:
                           description: Optional. Immutable. If set, indicates that
@@ -682,27 +653,28 @@ spec:
                               description: Required. Immutable. Name of the Managed
                                 Lustre instance to create, in the format `projects/{project}/locations/{location}/instances/{instance}`
                               type: string
+                          required:
+                          - capacityGB
+                          - filesystem
+                          - lustre
                           type: object
                       type: object
                     filestore:
                       description: Reference to a Filestore instance. Populated if
                         and only if the storage resource was configured to use Filestore.
-                      properties:
-                        filestore:
-                          description: Reference to a Filestore instance.
-                          type: string
                       type: object
                     lustre:
                       description: Reference to a Managed Lustre instance. Populated
                         if and only if the storage resource was configured to use
                         Managed Lustre.
-                      properties:
-                        lustre:
-                          description: Reference to a Lustre instance.
-                          type: string
                       type: object
+                  required:
+                  - config
                   type: object
                 description: Optional. Storage resources available to the cluster.
+                  Keys specify the ID of the storage resource by which it can be referenced
+                  elsewhere, and must conform to [RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034)
+                  (lower-case, alphanumeric, and at most 63 characters).
                 type: object
             required:
             - location
@@ -777,7 +749,7 @@ spec:
                                   properties:
                                     instance:
                                       description: Output only. Name of the VM instance,
-                                        in the format projects/{project}/zones/{zone}/instances/{instance}.
+                                        in the format `projects/{project}/zones/{zone}/instances/{instance}`.
                                       type: string
                                   type: object
                                 type: array

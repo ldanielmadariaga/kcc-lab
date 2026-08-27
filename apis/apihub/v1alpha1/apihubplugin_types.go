@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,21 +29,32 @@ type APIHubPluginSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/plugins/{plugin}
 	Location *string `json:"location"`
 
 	// The APIHubPlugin name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Required. The display name of the plugin. Max length is 50 characters (Unicode code points).
-	// +kubebuilder:validation:Required
+	// Required. The display name of the plugin. Max length is 50 characters
+	//  (Unicode code points).
+	// +kcc:proto:field=google.cloud.apihub.v1.Plugin.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Required. The type of the API.
-	// +kubebuilder:validation:Required
+	//  This maps to the following system defined attribute:
+	//  `projects/{project}/locations/{location}/attributes/system-plugin-type`
+	//  attribute.
+	//  The number of allowed values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Plugin.type
+	// +required
 	Type *AttributeValues `json:"type,omitempty"`
 
-	// Optional. The plugin description. Max length is 2000 characters (Unicode code points).
-	// +kubebuilder:validation:Optional
+	// Optional. The plugin description. Max length is 2000 characters (Unicode
+	//  code points).
+	// +kcc:proto:field=google.cloud.apihub.v1.Plugin.description
 	Description *string `json:"description,omitempty"`
 }
 
@@ -66,15 +77,20 @@ type APIHubPluginStatus struct {
 // APIHubPluginObservedState is the state of the APIHubPlugin resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.apihub.v1.Plugin
 type APIHubPluginObservedState struct {
+	// Required. The type of the API.
+	//  This maps to the following system defined attribute:
+	//  `projects/{project}/locations/{location}/attributes/system-plugin-type`
+	//  attribute.
+	//  The number of allowed values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Plugin.type
+	Type *AttributeValuesObservedState `json:"type,omitempty"`
+
 	// Output only. Represents the state of the plugin.
 	// +kcc:proto:field=google.cloud.apihub.v1.Plugin.state
-	// +kubebuilder:validation:Optional
 	State *string `json:"state,omitempty"`
-
-	// Required. The type of the API.
-	// +kcc:proto:field=google.cloud.apihub.v1.Plugin.type
-	// +kubebuilder:validation:Optional
-	Type *AttributeValuesObservedState `json:"type,omitempty"`
 }
 
 // +genclient
@@ -83,7 +99,6 @@ type APIHubPluginObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

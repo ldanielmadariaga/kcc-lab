@@ -92,44 +92,6 @@ spec:
                     description: The namespace of a BackupDRBackupPlan resource.
                     type: string
                 type: object
-              location:
-                description: Immutable.
-                type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
-              projectRef:
-                description: The Project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: The `projectID` field of a project, when not managed
-                      by Config Connector.
-                    type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
-                  name:
-                    description: The `name` field of a `Project` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `Project` resource.
-                    type: string
-                type: object
               resource:
                 description: Required. Immutable. Resource name of workload on which
                   backupplan is applied
@@ -173,8 +135,6 @@ spec:
                 type: string
             required:
             - backupPlanRef
-            - location
-            - projectRef
             - resource
             - resourceType
             type: object
@@ -364,44 +324,6 @@ spec:
                     description: The namespace of a BackupDRBackupPlan resource.
                     type: string
                 type: object
-              location:
-                description: Immutable.
-                type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
-              projectRef:
-                description: The Project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: The `projectID` field of a project, when not managed
-                      by Config Connector.
-                    type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
-                  name:
-                    description: The `name` field of a `Project` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `Project` resource.
-                    type: string
-                type: object
               resource:
                 description: Required. Immutable. Resource name of workload on which
                   backupplan is applied
@@ -445,8 +367,6 @@ spec:
                 type: string
             required:
             - backupPlanRef
-            - location
-            - projectRef
             - resource
             - resourceType
             type: object

@@ -15,8 +15,7 @@
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common/parent"
-	dataprocv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/dataproc/v1alpha1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -26,18 +25,22 @@ var DataplexLakeGVK = GroupVersion.WithKind("DataplexLake")
 // DataplexLakeSpec defines the desired state of DataplexLake
 // +kcc:spec:proto=google.cloud.dataplex.v1.Lake
 type DataplexLakeSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/lakes/{lake}
+	Location *string `json:"location"`
+
 	// The DataplexLake name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	ParentRef *parent.ProjectAndLocationRef `json:",inline"`
-
 	// Optional. User friendly display name.
 	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Optional. User-defined labels for the lake.
 	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.labels
-	// Labels map[string]string `json:"labels,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// Optional. Description of the lake.
 	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.description
@@ -47,16 +50,6 @@ type DataplexLakeSpec struct {
 	//  association.
 	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.metastore
 	Metastore *Lake_Metastore `json:"metastore,omitempty"`
-}
-
-// +kcc:proto=google.cloud.dataplex.v1.Lake.Metastore
-type Lake_Metastore struct {
-	// Optional. A relative reference to the Dataproc Metastore
-	//  (https://cloud.google.com/dataproc-metastore/docs) service associated
-	//  with the lake:
-	//  `projects/{project_id}/locations/{location_id}/services/{service_id}`
-	// +kcc:proto:field=google.cloud.dataplex.v1.Lake.Metastore.service
-	ServiceRef *dataprocv1alpha1.ServiceRef `json:"serviceRef,omitempty"`
 }
 
 // DataplexLakeStatus defines the config connector machine state of DataplexLake

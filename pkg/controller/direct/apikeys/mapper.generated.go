@@ -36,12 +36,11 @@ func APIKeysKeyObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Key) *k
 	out := &krm.APIKeysKeyObservedState{}
 	// MISSING: Name
 	out.Uid = direct.LazyPtr(in.GetUid())
-	// MISSING: KeyString
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: DeleteTime
-	// MISSING: Annotations
-	// MISSING: Etag
+	out.KeyString = direct.LazyPtr(in.GetKeyString())
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	return out
 }
 func APIKeysKeyObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIKeysKeyObservedState) *pb.Key {
@@ -51,12 +50,11 @@ func APIKeysKeyObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIKeysK
 	out := &pb.Key{}
 	// MISSING: Name
 	out.Uid = direct.ValueOf(in.Uid)
-	// MISSING: KeyString
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: DeleteTime
-	// MISSING: Annotations
-	// MISSING: Etag
+	out.KeyString = direct.ValueOf(in.KeyString)
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
+	out.Etag = direct.ValueOf(in.Etag)
 	return out
 }
 func APIKeysKeySpec_FromProto(mapCtx *direct.MapContext, in *pb.Key) *krm.APIKeysKeySpec {
@@ -66,13 +64,8 @@ func APIKeysKeySpec_FromProto(mapCtx *direct.MapContext, in *pb.Key) *krm.APIKey
 	out := &krm.APIKeysKeySpec{}
 	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: KeyString
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: DeleteTime
-	// MISSING: Annotations
+	out.Annotations = in.Annotations
 	out.Restrictions = Restrictions_FromProto(mapCtx, in.GetRestrictions())
-	// MISSING: Etag
 	return out
 }
 func APIKeysKeySpec_ToProto(mapCtx *direct.MapContext, in *krm.APIKeysKeySpec) *pb.Key {
@@ -82,13 +75,8 @@ func APIKeysKeySpec_ToProto(mapCtx *direct.MapContext, in *krm.APIKeysKeySpec) *
 	out := &pb.Key{}
 	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	// MISSING: KeyString
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: DeleteTime
-	// MISSING: Annotations
+	out.Annotations = in.Annotations
 	out.Restrictions = Restrictions_ToProto(mapCtx, in.Restrictions)
-	// MISSING: Etag
 	return out
 }
 func APITarget_FromProto(mapCtx *direct.MapContext, in *pb.ApiTarget) *krm.APITarget {
@@ -164,7 +152,7 @@ func IosKeyRestrictions_FromProto(mapCtx *direct.MapContext, in *pb.IosKeyRestri
 		return nil
 	}
 	out := &krm.IosKeyRestrictions{}
-	out.AllowedBundleIds = in.AllowedBundleIds
+	out.AllowedBundleIDs = in.AllowedBundleIds
 	return out
 }
 func IosKeyRestrictions_ToProto(mapCtx *direct.MapContext, in *krm.IosKeyRestrictions) *pb.IosKeyRestrictions {
@@ -172,7 +160,7 @@ func IosKeyRestrictions_ToProto(mapCtx *direct.MapContext, in *krm.IosKeyRestric
 		return nil
 	}
 	out := &pb.IosKeyRestrictions{}
-	out.AllowedBundleIds = in.AllowedBundleIds
+	out.AllowedBundleIds = in.AllowedBundleIDs
 	return out
 }
 func Restrictions_FromProto(mapCtx *direct.MapContext, in *pb.Restrictions) *krm.Restrictions {
@@ -212,7 +200,7 @@ func ServerKeyRestrictions_FromProto(mapCtx *direct.MapContext, in *pb.ServerKey
 		return nil
 	}
 	out := &krm.ServerKeyRestrictions{}
-	out.AllowedIps = in.AllowedIps
+	out.AllowedIPs = in.AllowedIps
 	return out
 }
 func ServerKeyRestrictions_ToProto(mapCtx *direct.MapContext, in *krm.ServerKeyRestrictions) *pb.ServerKeyRestrictions {
@@ -220,6 +208,6 @@ func ServerKeyRestrictions_ToProto(mapCtx *direct.MapContext, in *krm.ServerKeyR
 		return nil
 	}
 	out := &pb.ServerKeyRestrictions{}
-	out.AllowedIps = in.AllowedIps
+	out.AllowedIps = in.AllowedIPs
 	return out
 }

@@ -1,0 +1,22 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=CESApp group=ces.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.rootAgent" reason=possible-reference (target=ces.googleapis.com/Agent)
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.guardrails" reason=possible-reference (target=ces.googleapis.com/Guardrail)
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/apps/{app}; confirm the resource is regional and that this is the name for it)
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.clientCertificateSettings.passphrase" reason=possible-reference-by-description
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.clientCertificateSettings.privateKey" reason=possible-reference-by-description
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.evaluationPersonas[].name" reason=possible-reference-by-description
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.guardrails" reason=possible-reference-by-description
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.audioRecordingConfig.gcsBucket" reason=possible-reference-by-description
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.bigqueryExportSettings.project" reason=possible-reference-by-name (ProjectRef)
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.evaluationAudioRecordingConfig.gcsBucket" reason=possible-reference-by-description
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.redactionConfig.deidentifyTemplate" reason=possible-reference-by-description
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.redactionConfig.inspectTemplate" reason=possible-reference-by-description
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.loggingSettings.unredactedAudioRecordingConfig.gcsBucket" reason=possible-reference-by-description
+kind=CESApp group=ces.cnrm.cloud.google.com: field ".spec.rootAgent" reason=possible-reference-by-description

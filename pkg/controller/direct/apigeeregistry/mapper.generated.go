@@ -26,7 +26,6 @@ package apigeeregistry
 import (
 	pb "cloud.google.com/go/apigeeregistry/apiv1/apigeeregistrypb"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/apigeeregistry/v1alpha1"
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -174,9 +173,7 @@ func Instance_Config_FromProto(mapCtx *direct.MapContext, in *pb.Instance_Config
 	}
 	out := &krm.Instance_Config{}
 	// MISSING: Location
-	if in.GetCmekKeyName() != "" {
-		out.CmekKeyNameRef = &refsv1beta1.KMSCryptoKeyRef{External: in.GetCmekKeyName()}
-	}
+	out.CmekKeyName = direct.LazyPtr(in.GetCmekKeyName())
 	return out
 }
 func Instance_Config_ToProto(mapCtx *direct.MapContext, in *krm.Instance_Config) *pb.Instance_Config {
@@ -185,9 +182,7 @@ func Instance_Config_ToProto(mapCtx *direct.MapContext, in *krm.Instance_Config)
 	}
 	out := &pb.Instance_Config{}
 	// MISSING: Location
-	if in.CmekKeyNameRef != nil {
-		out.CmekKeyName = in.CmekKeyNameRef.External
-	}
+	out.CmekKeyName = direct.ValueOf(in.CmekKeyName)
 	return out
 }
 func Instance_ConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Instance_Config) *krm.Instance_ConfigObservedState {

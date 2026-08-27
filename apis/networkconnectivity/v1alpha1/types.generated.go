@@ -63,8 +63,6 @@ type Any struct {
 }
 */
 
-/* found existing non-generated go type "AllocationOptions", skipping
-
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.AllocationOptions
 type AllocationOptions struct {
 	// Optional. Allocation strategy Not setting this field when the allocation is requested means an implementation defined strategy is used.
@@ -75,9 +73,7 @@ type AllocationOptions struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.AllocationOptions.first_available_ranges_lookup_size
 	FirstAvailableRangesLookupSize *int32 `json:"firstAvailableRangesLookupSize,omitempty"`
 }
-*/
 
-/* unreachable type AutoCreatedSubnetworkInfo
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.AutoCreatedSubnetworkInfo
 type AutoCreatedSubnetworkInfo struct {
 	// Output only. Indicates whether the subnetwork is delinked from the Service Connection Policy. Only set if the subnetwork mode is AUTO_CREATED during creation.
@@ -85,6 +81,7 @@ type AutoCreatedSubnetworkInfo struct {
 	Delinked *bool `json:"delinked,omitempty"`
 
 	// Output only. URI of the automatically created Internal Range. Only set if the subnetwork mode is AUTO_CREATED during creation.
+	// +kcc:guess=possible-reference target=NetworkConnectivityInternalRange
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.AutoCreatedSubnetworkInfo.internal_range
 	InternalRange *string `json:"internalRange,omitempty"`
 
@@ -100,7 +97,6 @@ type AutoCreatedSubnetworkInfo struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.AutoCreatedSubnetworkInfo.subnetwork_ref
 	SubnetworkRef *string `json:"subnetworkRef,omitempty"`
 }
-*/
 
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.GoogleRpcErrorInfo
 type GoogleRpcErrorInfo struct {
@@ -135,8 +131,7 @@ type GoogleRpcStatus struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "mockgcp.cloud.networkconnectivity.v1.InternalRange", skipping
-
+/* unreachable type InternalRange
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.InternalRange
 type InternalRange struct {
 	// Optional. Range auto-allocation options, may be set only when auto-allocation is selected by not setting ip_cidr_range (and setting prefix_length).
@@ -220,8 +215,7 @@ type Migration struct {
 	Target *string `json:"target,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig", skipping
-
+/* unreachable type MulticloudDataTransferConfig
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig
 type MulticloudDataTransferConfig struct {
 	// Output only. Time when the `MulticloudDataTransferConfig` resource was created.
@@ -252,8 +246,9 @@ type MulticloudDataTransferConfig struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.name
 	Name *string `json:"name,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Optional. Maps services to their current or planned states. Service names are keys, and the associated values describe the state of the service. If a state change is expected, the value is either `ADDING` or `DELETING`, depending on the actions taken. Sample output: "services": { "big-query": { "states": [ { "effectiveTime": "2024-12-12T08:00:00Z" "state": "ADDING", }, ] }, "cloud-storage": { "states": [ { "state": "ACTIVE", } ] } }
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.services
+	Services map[string]StateTimeline `json:"services,omitempty"`
 
 	// Output only. The Google-generated unique ID for the `MulticloudDataTransferConfig` resource. This value is unique across all `MulticloudDataTransferConfig` resources. If a resource is deleted and another with the same name is created, the new resource is assigned a different and unique ID.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.uid
@@ -264,8 +259,6 @@ type MulticloudDataTransferConfig struct {
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
 */
-
-/* found existing non-generated go type "PSCConfig", skipping
 
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.PscConfig
 type PSCConfig struct {
@@ -285,9 +278,6 @@ type PSCConfig struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConfig.subnetworks
 	Subnetworks []string `json:"subnetworks,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "PSCConnection", skipping
 
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.PscConnection
 type PSCConnection struct {
@@ -347,10 +337,8 @@ type PSCConnection struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.PscConnection.state
 	State *string `json:"state,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint", skipping
-
+/* unreachable type RegionalEndpoint
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint
 type RegionalEndpoint struct {
 	// Required. The access type of this regional endpoint. This field is reflected in the PSC Forwarding Rule configuration to enable global access.
@@ -403,8 +391,7 @@ type RegionalEndpoint struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy", skipping
-
+/* unreachable type ServiceConnectionPolicy
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy
 type ServiceConnectionPolicy struct {
 	// Output only. Information for the automatically created subnetwork and its associated IR.
@@ -457,8 +444,6 @@ type ServiceConnectionPolicy struct {
 }
 */
 
-/* found existing non-generated go type "StateMetadata", skipping
-
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.StateMetadata
 type StateMetadata struct {
 	// Output only. Accompanies only the transient states, which include `ADDING`, `DELETING`, and `SUSPENDING`, to denote the time until which the transient state of the resource will be effective. For instance, if the state is `ADDING`, this field shows the time when the resource state transitions to `ACTIVE`.
@@ -469,14 +454,74 @@ type StateMetadata struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.StateMetadata.state
 	State *string `json:"state,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "StateTimeline", skipping
 
 // +kcc:proto=mockgcp.cloud.networkconnectivity.v1.StateTimeline
 type StateTimeline struct {
 	// Output only. The state and activation time details of the resource state.
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.StateTimeline.states
 	States []StateMetadata `json:"states,omitempty"`
+}
+
+/* unreachable type InternalRangeObservedState
+// +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.InternalRange
+type InternalRangeObservedState struct {
+	// Output only. Time when the internal range was created.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Time when the internal range was updated.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.InternalRange.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/
+
+/* unreachable type MulticloudDataTransferConfigObservedState
+// +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig
+type MulticloudDataTransferConfigObservedState struct {
+	// Output only. Time when the `MulticloudDataTransferConfig` resource was created.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// The etag is computed by the server, and might be sent with update and delete requests so that the client has an up-to-date value before proceeding.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Output only. The Google-generated unique ID for the `MulticloudDataTransferConfig` resource. This value is unique across all `MulticloudDataTransferConfig` resources. If a resource is deleted and another with the same name is created, the new resource is assigned a different and unique ID.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. Time when the `MulticloudDataTransferConfig` resource was updated.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/
+
+/* unreachable type RegionalEndpointObservedState
+// +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint
+type RegionalEndpointObservedState struct {
+	// Output only. Time when the RegionalEndpoint was created.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Time when the RegionalEndpoint was updated.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.RegionalEndpoint.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/
+
+/* unreachable type ServiceConnectionPolicyObservedState
+// +kcc:observedstate:proto=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy
+type ServiceConnectionPolicyObservedState struct {
+	// Output only. Time when the ServiceConnectionPolicy was created.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Optional. The etag is computed by the server, and may be sent on update and delete requests to ensure the client has an up-to-date value before proceeding.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Output only. Time when the ServiceConnectionPolicy was updated.
+	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.ServiceConnectionPolicy.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 */

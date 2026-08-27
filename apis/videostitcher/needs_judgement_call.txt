@@ -1,0 +1,10 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=VideoStitcherCDNKey group=videostitcher.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VideoStitcherCDNKey group=videostitcher.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/cdnKeys/{cdn_key}; confirm the resource is regional and that this is the name for it)
+kind=VideoStitcherCDNKey group=videostitcher.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)

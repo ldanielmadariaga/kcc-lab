@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -9,15 +9,13 @@
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the() exact code and formatting.
-// See the LICENSE file for details.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
-	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
-	computev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
+	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -32,9 +30,11 @@ type DatabaseMigrationMigrationJobSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +required
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/migrationJobs/{migration_job}
 	Location *string `json:"location"`
 
+	// The DatabaseMigrationMigrationJob name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// The resource labels for migration job to use to annotate any related
 	//  underlying resources such as Compute Engine VMs. An object containing a
 	//  list of "key": "value" pairs.
@@ -47,8 +47,13 @@ type DatabaseMigrationMigrationJobSpec struct {
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
+	// The current migration job state.
+	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.state
+	State *string `json:"state,omitempty"`
+
 	// Required. The migration job type.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.type
+	// +required
 	Type *string `json:"type,omitempty"`
 
 	// The path to the dump file in Google Cloud Storage,
@@ -62,13 +67,15 @@ type DatabaseMigrationMigrationJobSpec struct {
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.dump_flags
 	DumpFlags *MigrationJob_DumpFlags `json:"dumpFlags,omitempty"`
 
-	// Required. The Connection Profile resource of the source connection profile.
+	// Required. The resource name (URI) of the source connection profile.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.source
-	SourceRef *DatabaseMigrationConnectionProfileRef `json:"sourceRef,omitempty"`
+	// +required
+	Source *string `json:"source,omitempty"`
 
-	// Required. The Connection Profile of the destination connection profile.
+	// Required. The resource name (URI) of the destination connection profile.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.destination
-	DestinationRef *DatabaseMigrationConnectionProfileRef `json:"destinationRef,omitempty"`
+	// +required
+	Destination *string `json:"destination,omitempty"`
 
 	// The details needed to communicate to the source over Reverse SSH
 	//  tunnel connectivity.
@@ -115,15 +122,12 @@ type DatabaseMigrationMigrationJobSpec struct {
 	//  Each Cloud CMEK key has the following format:
 	//  projects/[PROJECT]/locations/[REGION]/keyRings/[RING]/cryptoKeys/[KEY_NAME]
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.cmek_key_name
-	CmekKeyNameRef *refsv1beta1.KMSCryptoKeyRef `json:"cmekKeyNameRef,omitempty"`
+	CmekKeyName *string `json:"cmekKeyName,omitempty"`
 
 	// Optional. Data dump parallelism settings used by the migration.
 	//  Currently applicable only for MySQL to Cloud SQL for MySQL migrations only.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.performance_config
 	PerformanceConfig *MigrationJob_PerformanceConfig `json:"performanceConfig,omitempty"`
-
-	// The DatabaseMigrationMigrationJob name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
 }
 
 // DatabaseMigrationMigrationJobStatus defines the config connector machine state of DatabaseMigrationMigrationJob
@@ -175,10 +179,6 @@ type DatabaseMigrationMigrationJobObservedState struct {
 	//  completed.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.end_time
 	EndTime *string `json:"endTime,omitempty"`
-
-	// Output only. The current migration job state.
-	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.state
-	State *string `json:"state,omitempty"`
 }
 
 // +genclient
@@ -187,7 +187,6 @@ type DatabaseMigrationMigrationJobObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -214,39 +213,4 @@ type DatabaseMigrationMigrationJobList struct {
 
 func init() {
 	SchemeBuilder.Register(&DatabaseMigrationMigrationJob{}, &DatabaseMigrationMigrationJobList{})
-}
-
-// +kcc:proto=google.cloud.clouddms.v1.VpcPeeringConnectivity
-type VPCPeeringConnectivity struct {
-	// The name of the VPC network to peer with the Cloud SQL private network.
-	// +kcc:proto:field=google.cloud.clouddms.v1.VpcPeeringConnectivity.vpc
-	VPCRef *computerefs.ComputeNetworkRef `json:"vpcRef,omitempty"`
-}
-
-// +kcc:proto=google.cloud.clouddms.v1.ReverseSshConnectivity
-type ReverseSSHConnectivity struct {
-	// Required. The IP of the virtual machine (Compute Engine) used as the
-	//  bastion server for the SSH tunnel.
-	// +kcc:proto:field=google.cloud.clouddms.v1.ReverseSshConnectivity.vm_ip
-	VMIP *string `json:"vmIP,omitempty"`
-
-	// Required. The forwarding port of the virtual machine (Compute Engine) used
-	//  as the bastion server for the SSH tunnel.
-	// +kcc:proto:field=google.cloud.clouddms.v1.ReverseSshConnectivity.vm_port
-	VMPort *int32 `json:"vmPort,omitempty"`
-
-	// The name of the virtual machine (Compute Engine) used as the bastion server
-	//  for the SSH tunnel.
-	// +kcc:proto:field=google.cloud.clouddms.v1.ReverseSshConnectivity.vm
-	VMRef *computev1beta1.InstanceRef `json:"vmRef,omitempty"`
-
-	// The name of the VPC to peer with the Cloud SQL private network.
-	// +kcc:proto:field=google.cloud.clouddms.v1.ReverseSshConnectivity.vpc
-	VPCRef *computerefs.ComputeNetworkRef `json:"vpcRef,omitempty"`
-}
-
-// +kubebuilder:pruning:PreserveUnknownFields
-// +kubebuilder:validation:Schemaless
-// +kcc:proto=google.cloud.clouddms.v1.StaticIpConnectivity
-type StaticIPConnectivity struct {
 }

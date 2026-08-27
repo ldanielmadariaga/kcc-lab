@@ -64,7 +64,7 @@ func NewConsumerGroupIdentity(ctx context.Context, reader client.Reader, obj *Ma
 	if projectID == "" {
 		return nil, fmt.Errorf("cannot resolve project")
 	}
-	location := obj.Spec.Location
+	location := common.ValueOf(obj.Spec.Location)
 	clusterName := obj.Spec.ClusterRef.Name
 
 	// Get desired ID

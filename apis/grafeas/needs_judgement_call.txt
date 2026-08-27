@@ -1,0 +1,15 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=GrafeasNote group=grafeas.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=GrafeasNote group=grafeas.cnrm.cloud.google.com: field ".status.observedState.kind" reason=server-set-field-placed (GCP computes this, but the proto carries no field_behavior anywhere on the message, so it was placed by name. Confirm it is not something a user sets)
+kind=GrafeasNote group=grafeas.cnrm.cloud.google.com: field ".status.observedState.createTime" reason=server-set-field-placed (GCP computes this, but the proto carries no field_behavior anywhere on the message, so it was placed by name. Confirm it is not something a user sets)
+kind=GrafeasNote group=grafeas.cnrm.cloud.google.com: field ".status.observedState.updateTime" reason=server-set-field-placed (GCP computes this, but the proto carries no field_behavior anywhere on the message, so it was placed by name. Confirm it is not something a user sets)
+kind=GrafeasNote group=grafeas.cnrm.cloud.google.com: field ".status.observedState.kind" reason=output-only-in-comment-only (proto comment says output only but no field_behavior annotation, so it was generated into the Spec instead. Move it if the comment is right: Output only. The type of analysis. This field can be used as a filter in list requests.)
+kind=GrafeasNote group=grafeas.cnrm.cloud.google.com: field ".status.observedState.createTime" reason=output-only-in-comment-only (proto comment says output only but no field_behavior annotation, so it was generated into the Spec instead. Move it if the comment is right: Output only. The time this note was created. This field can be used as a filter in list requests.)
+kind=GrafeasNote group=grafeas.cnrm.cloud.google.com: field ".status.observedState.updateTime" reason=output-only-in-comment-only (proto comment says output only but no field_behavior annotation, so it was generated into the Spec instead. Move it if the comment is right: Output only. The time this note was last updated. This field can be used as a filter in list requests.)
+kind=GrafeasNote group=grafeas.cnrm.cloud.google.com: field ".spec.secret" reason=possible-reference-by-name (SecretManagerSecretVersionRef)

@@ -15,11 +15,8 @@
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common/parent"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
-
-	// GCP Resource Reference type.
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -28,11 +25,15 @@ var DataplexEntryGroupGVK = GroupVersion.WithKind("DataplexEntryGroup")
 // DataplexEntryGroupSpec defines the desired state of DataplexEntryGroup
 // +kcc:spec:proto=google.cloud.dataplex.v1.EntryGroup
 type DataplexEntryGroupSpec struct {
-	ParentRef *parent.ProjectAndLocationRef `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/entryGroups/{entry_group}
+	Location *string `json:"location"`
 
 	// The DataplexEntryGroup name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. Description of the EntryGroup.
 	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.description
 	Description *string `json:"description,omitempty"`
@@ -43,14 +44,13 @@ type DataplexEntryGroupSpec struct {
 
 	// Optional. User-defined labels for the EntryGroup.
 	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.labels
-	// Labels map[string]string `json:"labels,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 
-	// NOTYET: not supported in Config Connector reconciliation
-	// This checksum is computed by the server based on the value of other
-	//  fields, and may be sent on update and delete requests to ensure the
-	//  client has an up-to-date value before proceeding.
+	// This checksum is computed by the service, and might be sent on update and
+	//  delete requests to ensure the client has an up-to-date value before
+	//  proceeding.
 	// +kcc:proto:field=google.cloud.dataplex.v1.EntryGroup.etag
-	// Etag *string `json:"etag,omitempty"`
+	Etag *string `json:"etag,omitempty"`
 }
 
 // DataplexEntryGroupStatus defines the config connector machine state of DataplexEntryGroup
@@ -70,7 +70,7 @@ type DataplexEntryGroupStatus struct {
 }
 
 // DataplexEntryGroupObservedState is the state of the DataplexEntryGroup resource as most recently observed in GCP.
-// +kcc:proto=google.cloud.dataplex.v1.EntryGroup
+// +kcc:observedstate:proto=google.cloud.dataplex.v1.EntryGroup
 type DataplexEntryGroupObservedState struct {
 	// Output only. System generated globally unique ID for the EntryGroup. If you
 	//  delete and recreate the EntryGroup with the same name, this ID will be
@@ -94,7 +94,6 @@ type DataplexEntryGroupObservedState struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// TODO(user): make sure the pluralizaiton below is correct
 // +kubebuilder:resource:categories=gcp,shortName=gcpdataplexentrygroup;gcpdataplexentrygroups
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"

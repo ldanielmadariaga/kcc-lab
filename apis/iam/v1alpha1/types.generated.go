@@ -109,6 +109,60 @@ type DenyRule struct {
 	DenialCondition *Expr `json:"denialCondition,omitempty"`
 }
 
+/* unreachable type Policy
+// +kcc:proto=google.iam.v2.Policy
+type Policy struct {
+	// Immutable. The resource name of the `Policy`, which must be unique. Format:
+	//  `policies/{attachment_point}/denypolicies/{policy_id}`
+	//
+	//
+	//  The attachment point is identified by its URL-encoded full resource name,
+	//  which means that the forward-slash character, `/`, must be written as
+	//  `%2F`. For example,
+	//  `policies/cloudresourcemanager.googleapis.com%2Fprojects%2Fmy-project/denypolicies/my-deny-policy`.
+	//
+	//  For organizations and folders, use the numeric ID in the full resource
+	//  name. For projects, requests can use the alphanumeric or the numeric ID.
+	//  Responses always contain the numeric ID.
+	// +kcc:proto:field=google.iam.v2.Policy.name
+	Name *string `json:"name,omitempty"`
+
+	// Immutable. The globally unique ID of the `Policy`. Assigned automatically when the
+	//  `Policy` is created.
+	// +kcc:proto:field=google.iam.v2.Policy.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// A user-specified description of the `Policy`. This value can be up to 63
+	//  characters.
+	// +kcc:proto:field=google.iam.v2.Policy.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// A key-value map to store arbitrary metadata for the `Policy`. Keys
+	//  can be up to 63 characters. Values can be up to 255 characters.
+	// +kcc:proto:field=google.iam.v2.Policy.annotations
+	Annotations map[string]string `json:"annotations,omitempty"`
+
+	// An opaque tag that identifies the current version of the `Policy`. IAM uses
+	//  this value to help manage concurrent updates, so they do not cause one
+	//  update to be overwritten by another.
+	//
+	//  If this field is present in a [CreatePolicy][] request, the value is
+	//  ignored.
+	// +kcc:proto:field=google.iam.v2.Policy.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// A list of rules that specify the behavior of the `Policy`. All of the rules
+	//  should be of the `kind` specified in the `Policy`.
+	// +kcc:proto:field=google.iam.v2.Policy.rules
+	Rules []PolicyRule `json:"rules,omitempty"`
+
+	// Immutable. Specifies that this policy is managed by an authority and can only be
+	//  modified by that authority. Usage is restricted.
+	// +kcc:proto:field=google.iam.v2.Policy.managing_authority
+	ManagingAuthority *string `json:"managingAuthority,omitempty"`
+}
+*/
+
 // +kcc:proto=google.iam.v2.PolicyRule
 type PolicyRule struct {
 	// A rule for a deny policy.
@@ -144,3 +198,24 @@ type Expr struct {
 	// +kcc:proto:field=google.type.Expr.location
 	Location *string `json:"location,omitempty"`
 }
+
+/* unreachable type PolicyObservedState
+// +kcc:observedstate:proto=google.iam.v2.Policy
+type PolicyObservedState struct {
+	// Output only. The kind of the `Policy`. Always contains the value `DenyPolicy`.
+	// +kcc:proto:field=google.iam.v2.Policy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// Output only. The time when the `Policy` was created.
+	// +kcc:proto:field=google.iam.v2.Policy.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time when the `Policy` was last updated.
+	// +kcc:proto:field=google.iam.v2.Policy.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The time when the `Policy` was deleted. Empty if the policy is not deleted.
+	// +kcc:proto:field=google.iam.v2.Policy.delete_time
+	DeleteTime *string `json:"deleteTime,omitempty"`
+}
+*/

@@ -37,15 +37,13 @@ func DocumentAIProcessorObservedState_v1alpha1_FromProto(mapCtx *direct.MapConte
 		return nil
 	}
 	out := &krmdocumentaiv1alpha1.DocumentAIProcessorObservedState{}
-	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: Name
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.DefaultProcessorVersion = direct.LazyPtr(in.GetDefaultProcessorVersion())
 	out.ProcessorVersionAliases = direct.Slice_FromProto(mapCtx, in.ProcessorVersionAliases, ProcessorVersionAlias_v1alpha1_FromProto)
 	out.ProcessEndpoint = direct.LazyPtr(in.GetProcessEndpoint())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	// MISSING: KMSKeyName
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
+	out.SatisfiesPzs = direct.LazyPtr(in.GetSatisfiesPzs())
+	out.SatisfiesPzi = direct.LazyPtr(in.GetSatisfiesPzi())
 	return out
 }
 func DocumentAIProcessorObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1alpha1.DocumentAIProcessorObservedState) *pb.Processor {
@@ -53,15 +51,13 @@ func DocumentAIProcessorObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext
 		return nil
 	}
 	out := &pb.Processor{}
-	out.Name = direct.ValueOf(in.Name)
+	// MISSING: Name
 	out.State = direct.Enum_ToProto[pb.Processor_State](mapCtx, in.State)
-	out.DefaultProcessorVersion = direct.ValueOf(in.DefaultProcessorVersion)
 	out.ProcessorVersionAliases = direct.Slice_ToProto(mapCtx, in.ProcessorVersionAliases, ProcessorVersionAlias_v1alpha1_ToProto)
 	out.ProcessEndpoint = direct.ValueOf(in.ProcessEndpoint)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	// MISSING: KMSKeyName
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
+	out.SatisfiesPzs = direct.ValueOf(in.SatisfiesPzs)
+	out.SatisfiesPzi = direct.ValueOf(in.SatisfiesPzi)
 	return out
 }
 func DocumentAIProcessorSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Processor) *krmdocumentaiv1alpha1.DocumentAIProcessorSpec {
@@ -69,11 +65,11 @@ func DocumentAIProcessorSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *p
 		return nil
 	}
 	out := &krmdocumentaiv1alpha1.DocumentAIProcessorSpec{}
+	// MISSING: Name
 	out.Type = direct.LazyPtr(in.GetType())
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: KMSKeyName
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
+	out.DefaultProcessorVersion = direct.LazyPtr(in.GetDefaultProcessorVersion())
+	out.KMSKeyName = direct.LazyPtr(in.GetKmsKeyName())
 	return out
 }
 func DocumentAIProcessorSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1alpha1.DocumentAIProcessorSpec) *pb.Processor {
@@ -81,11 +77,11 @@ func DocumentAIProcessorSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krm
 		return nil
 	}
 	out := &pb.Processor{}
+	// MISSING: Name
 	out.Type = direct.ValueOf(in.Type)
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	// MISSING: KMSKeyName
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
+	out.DefaultProcessorVersion = direct.ValueOf(in.DefaultProcessorVersion)
+	out.KmsKeyName = direct.ValueOf(in.KMSKeyName)
 	return out
 }
 func DocumentAIProcessorVersionObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.ProcessorVersion) *krmdocumentaiv1beta1.DocumentAIProcessorVersionObservedState {

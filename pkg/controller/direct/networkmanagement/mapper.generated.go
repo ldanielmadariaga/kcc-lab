@@ -29,18 +29,18 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
-func AbortInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.AbortInfo) *krm.AbortInfoObservedState {
+func AbortInfo_FromProto(mapCtx *direct.MapContext, in *pb.AbortInfo) *krm.AbortInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.AbortInfoObservedState{}
+	out := &krm.AbortInfo{}
 	out.Cause = direct.Enum_FromProto(mapCtx, in.GetCause())
 	out.ResourceURI = direct.LazyPtr(in.GetResourceUri())
 	out.IPAddress = direct.LazyPtr(in.GetIpAddress())
 	out.ProjectsMissingPermission = in.ProjectsMissingPermission
 	return out
 }
-func AbortInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.AbortInfoObservedState) *pb.AbortInfo {
+func AbortInfo_ToProto(mapCtx *direct.MapContext, in *krm.AbortInfo) *pb.AbortInfo {
 	if in == nil {
 		return nil
 	}
@@ -51,18 +51,18 @@ func AbortInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.AbortInfo
 	out.ProjectsMissingPermission = in.ProjectsMissingPermission
 	return out
 }
-func AppEngineVersionInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.AppEngineVersionInfo) *krm.AppEngineVersionInfoObservedState {
+func AppEngineVersionInfo_FromProto(mapCtx *direct.MapContext, in *pb.AppEngineVersionInfo) *krm.AppEngineVersionInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.AppEngineVersionInfoObservedState{}
+	out := &krm.AppEngineVersionInfo{}
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.URI = direct.LazyPtr(in.GetUri())
 	out.Runtime = direct.LazyPtr(in.GetRuntime())
 	out.Environment = direct.LazyPtr(in.GetEnvironment())
 	return out
 }
-func AppEngineVersionInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.AppEngineVersionInfoObservedState) *pb.AppEngineVersionInfo {
+func AppEngineVersionInfo_ToProto(mapCtx *direct.MapContext, in *krm.AppEngineVersionInfo) *pb.AppEngineVersionInfo {
 	if in == nil {
 		return nil
 	}
@@ -73,18 +73,18 @@ func AppEngineVersionInfoObservedState_ToProto(mapCtx *direct.MapContext, in *kr
 	out.Environment = direct.ValueOf(in.Environment)
 	return out
 }
-func CloudFunctionInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.CloudFunctionInfo) *krm.CloudFunctionInfoObservedState {
+func CloudFunctionInfo_FromProto(mapCtx *direct.MapContext, in *pb.CloudFunctionInfo) *krm.CloudFunctionInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.CloudFunctionInfoObservedState{}
+	out := &krm.CloudFunctionInfo{}
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.URI = direct.LazyPtr(in.GetUri())
 	out.Location = direct.LazyPtr(in.GetLocation())
 	out.VersionID = direct.LazyPtr(in.GetVersionId())
 	return out
 }
-func CloudFunctionInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.CloudFunctionInfoObservedState) *pb.CloudFunctionInfo {
+func CloudFunctionInfo_ToProto(mapCtx *direct.MapContext, in *krm.CloudFunctionInfo) *pb.CloudFunctionInfo {
 	if in == nil {
 		return nil
 	}
@@ -95,18 +95,18 @@ func CloudFunctionInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.C
 	out.VersionId = direct.ValueOf(in.VersionID)
 	return out
 }
-func CloudRunRevisionInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.CloudRunRevisionInfo) *krm.CloudRunRevisionInfoObservedState {
+func CloudRunRevisionInfo_FromProto(mapCtx *direct.MapContext, in *pb.CloudRunRevisionInfo) *krm.CloudRunRevisionInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.CloudRunRevisionInfoObservedState{}
+	out := &krm.CloudRunRevisionInfo{}
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.URI = direct.LazyPtr(in.GetUri())
 	out.Location = direct.LazyPtr(in.GetLocation())
 	out.ServiceURI = direct.LazyPtr(in.GetServiceUri())
 	return out
 }
-func CloudRunRevisionInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.CloudRunRevisionInfoObservedState) *pb.CloudRunRevisionInfo {
+func CloudRunRevisionInfo_ToProto(mapCtx *direct.MapContext, in *krm.CloudRunRevisionInfo) *pb.CloudRunRevisionInfo {
 	if in == nil {
 		return nil
 	}
@@ -117,11 +117,11 @@ func CloudRunRevisionInfoObservedState_ToProto(mapCtx *direct.MapContext, in *kr
 	out.ServiceUri = direct.ValueOf(in.ServiceURI)
 	return out
 }
-func CloudSQLInstanceInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.CloudSQLInstanceInfo) *krm.CloudSQLInstanceInfoObservedState {
+func CloudSQLInstanceInfo_FromProto(mapCtx *direct.MapContext, in *pb.CloudSQLInstanceInfo) *krm.CloudSQLInstanceInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.CloudSQLInstanceInfoObservedState{}
+	out := &krm.CloudSQLInstanceInfo{}
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.URI = direct.LazyPtr(in.GetUri())
 	out.NetworkURI = direct.LazyPtr(in.GetNetworkUri())
@@ -130,7 +130,7 @@ func CloudSQLInstanceInfoObservedState_FromProto(mapCtx *direct.MapContext, in *
 	out.Region = direct.LazyPtr(in.GetRegion())
 	return out
 }
-func CloudSQLInstanceInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.CloudSQLInstanceInfoObservedState) *pb.CloudSQLInstanceInfo {
+func CloudSQLInstanceInfo_ToProto(mapCtx *direct.MapContext, in *krm.CloudSQLInstanceInfo) *pb.CloudSQLInstanceInfo {
 	if in == nil {
 		return nil
 	}
@@ -143,11 +143,11 @@ func CloudSQLInstanceInfoObservedState_ToProto(mapCtx *direct.MapContext, in *kr
 	out.Region = direct.ValueOf(in.Region)
 	return out
 }
-func DeliverInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.DeliverInfo) *krm.DeliverInfoObservedState {
+func DeliverInfo_FromProto(mapCtx *direct.MapContext, in *pb.DeliverInfo) *krm.DeliverInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.DeliverInfoObservedState{}
+	out := &krm.DeliverInfo{}
 	out.Target = direct.Enum_FromProto(mapCtx, in.GetTarget())
 	out.ResourceURI = direct.LazyPtr(in.GetResourceUri())
 	out.IPAddress = direct.LazyPtr(in.GetIpAddress())
@@ -155,7 +155,7 @@ func DeliverInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Delive
 	out.PSCGoogleAPITarget = direct.LazyPtr(in.GetPscGoogleApiTarget())
 	return out
 }
-func DeliverInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DeliverInfoObservedState) *pb.DeliverInfo {
+func DeliverInfo_ToProto(mapCtx *direct.MapContext, in *krm.DeliverInfo) *pb.DeliverInfo {
 	if in == nil {
 		return nil
 	}
@@ -167,11 +167,35 @@ func DeliverInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Deliver
 	out.PscGoogleApiTarget = direct.ValueOf(in.PSCGoogleAPITarget)
 	return out
 }
-func DropInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.DropInfo) *krm.DropInfoObservedState {
+func DirectVPCEgressConnectionInfo_FromProto(mapCtx *direct.MapContext, in *pb.DirectVpcEgressConnectionInfo) *krm.DirectVPCEgressConnectionInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.DropInfoObservedState{}
+	out := &krm.DirectVPCEgressConnectionInfo{}
+	out.NetworkURI = direct.LazyPtr(in.GetNetworkUri())
+	out.SubnetworkURI = direct.LazyPtr(in.GetSubnetworkUri())
+	out.SelectedIPRange = direct.LazyPtr(in.GetSelectedIpRange())
+	out.SelectedIPAddress = direct.LazyPtr(in.GetSelectedIpAddress())
+	out.Region = direct.LazyPtr(in.GetRegion())
+	return out
+}
+func DirectVPCEgressConnectionInfo_ToProto(mapCtx *direct.MapContext, in *krm.DirectVPCEgressConnectionInfo) *pb.DirectVpcEgressConnectionInfo {
+	if in == nil {
+		return nil
+	}
+	out := &pb.DirectVpcEgressConnectionInfo{}
+	out.NetworkUri = direct.ValueOf(in.NetworkURI)
+	out.SubnetworkUri = direct.ValueOf(in.SubnetworkURI)
+	out.SelectedIpRange = direct.ValueOf(in.SelectedIPRange)
+	out.SelectedIpAddress = direct.ValueOf(in.SelectedIPAddress)
+	out.Region = direct.ValueOf(in.Region)
+	return out
+}
+func DropInfo_FromProto(mapCtx *direct.MapContext, in *pb.DropInfo) *krm.DropInfo {
+	if in == nil {
+		return nil
+	}
+	out := &krm.DropInfo{}
 	out.Cause = direct.Enum_FromProto(mapCtx, in.GetCause())
 	out.ResourceURI = direct.LazyPtr(in.GetResourceUri())
 	out.SourceIP = direct.LazyPtr(in.GetSourceIp())
@@ -179,7 +203,7 @@ func DropInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.DropInfo)
 	out.Region = direct.LazyPtr(in.GetRegion())
 	return out
 }
-func DropInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DropInfoObservedState) *pb.DropInfo {
+func DropInfo_ToProto(mapCtx *direct.MapContext, in *krm.DropInfo) *pb.DropInfo {
 	if in == nil {
 		return nil
 	}
@@ -191,11 +215,11 @@ func DropInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DropInfoOb
 	out.Region = direct.ValueOf(in.Region)
 	return out
 }
-func EndpointInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.EndpointInfo) *krm.EndpointInfoObservedState {
+func EndpointInfo_FromProto(mapCtx *direct.MapContext, in *pb.EndpointInfo) *krm.EndpointInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.EndpointInfoObservedState{}
+	out := &krm.EndpointInfo{}
 	out.SourceIP = direct.LazyPtr(in.GetSourceIp())
 	out.DestinationIP = direct.LazyPtr(in.GetDestinationIp())
 	out.Protocol = direct.LazyPtr(in.GetProtocol())
@@ -206,7 +230,7 @@ func EndpointInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Endpo
 	out.SourceAgentURI = direct.LazyPtr(in.GetSourceAgentUri())
 	return out
 }
-func EndpointInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.EndpointInfoObservedState) *pb.EndpointInfo {
+func EndpointInfo_ToProto(mapCtx *direct.MapContext, in *krm.EndpointInfo) *pb.EndpointInfo {
 	if in == nil {
 		return nil
 	}
@@ -253,11 +277,29 @@ func Endpoint_CloudFunctionEndpoint_ToProto(mapCtx *direct.MapContext, in *krm.E
 	out.Uri = direct.ValueOf(in.URI)
 	return out
 }
-func FirewallInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.FirewallInfo) *krm.FirewallInfoObservedState {
+func Endpoint_CloudRunRevisionEndpointObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Endpoint_CloudRunRevisionEndpoint) *krm.Endpoint_CloudRunRevisionEndpointObservedState {
 	if in == nil {
 		return nil
 	}
-	out := &krm.FirewallInfoObservedState{}
+	out := &krm.Endpoint_CloudRunRevisionEndpointObservedState{}
+	// MISSING: URI
+	out.ServiceURI = direct.LazyPtr(in.GetServiceUri())
+	return out
+}
+func Endpoint_CloudRunRevisionEndpointObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Endpoint_CloudRunRevisionEndpointObservedState) *pb.Endpoint_CloudRunRevisionEndpoint {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Endpoint_CloudRunRevisionEndpoint{}
+	// MISSING: URI
+	out.ServiceUri = direct.ValueOf(in.ServiceURI)
+	return out
+}
+func FirewallInfo_FromProto(mapCtx *direct.MapContext, in *pb.FirewallInfo) *krm.FirewallInfo {
+	if in == nil {
+		return nil
+	}
+	out := &krm.FirewallInfo{}
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.URI = direct.LazyPtr(in.GetUri())
 	out.Direction = direct.LazyPtr(in.GetDirection())
@@ -271,7 +313,7 @@ func FirewallInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Firew
 	out.FirewallRuleType = direct.Enum_FromProto(mapCtx, in.GetFirewallRuleType())
 	return out
 }
-func FirewallInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.FirewallInfoObservedState) *pb.FirewallInfo {
+func FirewallInfo_ToProto(mapCtx *direct.MapContext, in *krm.FirewallInfo) *pb.FirewallInfo {
 	if in == nil {
 		return nil
 	}
@@ -289,17 +331,17 @@ func FirewallInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Firewa
 	out.FirewallRuleType = direct.Enum_ToProto[pb.FirewallInfo_FirewallRuleType](mapCtx, in.FirewallRuleType)
 	return out
 }
-func ForwardInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ForwardInfo) *krm.ForwardInfoObservedState {
+func ForwardInfo_FromProto(mapCtx *direct.MapContext, in *pb.ForwardInfo) *krm.ForwardInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.ForwardInfoObservedState{}
+	out := &krm.ForwardInfo{}
 	out.Target = direct.Enum_FromProto(mapCtx, in.GetTarget())
 	out.ResourceURI = direct.LazyPtr(in.GetResourceUri())
 	out.IPAddress = direct.LazyPtr(in.GetIpAddress())
 	return out
 }
-func ForwardInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ForwardInfoObservedState) *pb.ForwardInfo {
+func ForwardInfo_ToProto(mapCtx *direct.MapContext, in *krm.ForwardInfo) *pb.ForwardInfo {
 	if in == nil {
 		return nil
 	}
@@ -309,11 +351,11 @@ func ForwardInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Forward
 	out.IpAddress = direct.ValueOf(in.IPAddress)
 	return out
 }
-func ForwardingRuleInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ForwardingRuleInfo) *krm.ForwardingRuleInfoObservedState {
+func ForwardingRuleInfo_FromProto(mapCtx *direct.MapContext, in *pb.ForwardingRuleInfo) *krm.ForwardingRuleInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.ForwardingRuleInfoObservedState{}
+	out := &krm.ForwardingRuleInfo{}
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.URI = direct.LazyPtr(in.GetUri())
 	out.MatchedProtocol = direct.LazyPtr(in.GetMatchedProtocol())
@@ -327,7 +369,7 @@ func ForwardingRuleInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb
 	out.PSCGoogleAPITarget = direct.LazyPtr(in.GetPscGoogleApiTarget())
 	return out
 }
-func ForwardingRuleInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ForwardingRuleInfoObservedState) *pb.ForwardingRuleInfo {
+func ForwardingRuleInfo_ToProto(mapCtx *direct.MapContext, in *krm.ForwardingRuleInfo) *pb.ForwardingRuleInfo {
 	if in == nil {
 		return nil
 	}
@@ -345,11 +387,11 @@ func ForwardingRuleInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.
 	out.PscGoogleApiTarget = direct.ValueOf(in.PSCGoogleAPITarget)
 	return out
 }
-func GKEMasterInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.GKEMasterInfo) *krm.GKEMasterInfoObservedState {
+func GKEMasterInfo_FromProto(mapCtx *direct.MapContext, in *pb.GKEMasterInfo) *krm.GKEMasterInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.GKEMasterInfoObservedState{}
+	out := &krm.GKEMasterInfo{}
 	out.ClusterURI = direct.LazyPtr(in.GetClusterUri())
 	out.ClusterNetworkURI = direct.LazyPtr(in.GetClusterNetworkUri())
 	out.InternalIP = direct.LazyPtr(in.GetInternalIp())
@@ -357,7 +399,7 @@ func GKEMasterInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.GKEM
 	out.DNSEndpoint = direct.LazyPtr(in.GetDnsEndpoint())
 	return out
 }
-func GKEMasterInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.GKEMasterInfoObservedState) *pb.GKEMasterInfo {
+func GKEMasterInfo_ToProto(mapCtx *direct.MapContext, in *krm.GKEMasterInfo) *pb.GKEMasterInfo {
 	if in == nil {
 		return nil
 	}
@@ -369,16 +411,16 @@ func GKEMasterInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.GKEMa
 	out.DnsEndpoint = direct.ValueOf(in.DNSEndpoint)
 	return out
 }
-func GoogleServiceInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.GoogleServiceInfo) *krm.GoogleServiceInfoObservedState {
+func GoogleServiceInfo_FromProto(mapCtx *direct.MapContext, in *pb.GoogleServiceInfo) *krm.GoogleServiceInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.GoogleServiceInfoObservedState{}
+	out := &krm.GoogleServiceInfo{}
 	out.SourceIP = direct.LazyPtr(in.GetSourceIp())
 	out.GoogleServiceType = direct.Enum_FromProto(mapCtx, in.GetGoogleServiceType())
 	return out
 }
-func GoogleServiceInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.GoogleServiceInfoObservedState) *pb.GoogleServiceInfo {
+func GoogleServiceInfo_ToProto(mapCtx *direct.MapContext, in *krm.GoogleServiceInfo) *pb.GoogleServiceInfo {
 	if in == nil {
 		return nil
 	}
@@ -387,11 +429,11 @@ func GoogleServiceInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.G
 	out.GoogleServiceType = direct.Enum_ToProto[pb.GoogleServiceInfo_GoogleServiceType](mapCtx, in.GoogleServiceType)
 	return out
 }
-func InstanceInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.InstanceInfo) *krm.InstanceInfoObservedState {
+func InstanceInfo_FromProto(mapCtx *direct.MapContext, in *pb.InstanceInfo) *krm.InstanceInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.InstanceInfoObservedState{}
+	out := &krm.InstanceInfo{}
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.URI = direct.LazyPtr(in.GetUri())
 	out.Interface = direct.LazyPtr(in.GetInterface())
@@ -403,7 +445,7 @@ func InstanceInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Insta
 	out.PSCNetworkAttachmentURI = direct.LazyPtr(in.GetPscNetworkAttachmentUri())
 	return out
 }
-func InstanceInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.InstanceInfoObservedState) *pb.InstanceInfo {
+func InstanceInfo_ToProto(mapCtx *direct.MapContext, in *krm.InstanceInfo) *pb.InstanceInfo {
 	if in == nil {
 		return nil
 	}
@@ -419,38 +461,62 @@ func InstanceInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Instan
 	out.PscNetworkAttachmentUri = direct.ValueOf(in.PSCNetworkAttachmentURI)
 	return out
 }
-func LatencyDistributionObservedState_FromProto(mapCtx *direct.MapContext, in *pb.LatencyDistribution) *krm.LatencyDistributionObservedState {
+func LatencyDistribution_FromProto(mapCtx *direct.MapContext, in *pb.LatencyDistribution) *krm.LatencyDistribution {
 	if in == nil {
 		return nil
 	}
-	out := &krm.LatencyDistributionObservedState{}
-	out.LatencyPercentiles = direct.Slice_FromProto(mapCtx, in.LatencyPercentiles, LatencyPercentileObservedState_FromProto)
+	out := &krm.LatencyDistribution{}
+	out.LatencyPercentiles = direct.Slice_FromProto(mapCtx, in.LatencyPercentiles, LatencyPercentile_FromProto)
 	return out
 }
-func LatencyDistributionObservedState_ToProto(mapCtx *direct.MapContext, in *krm.LatencyDistributionObservedState) *pb.LatencyDistribution {
+func LatencyDistribution_ToProto(mapCtx *direct.MapContext, in *krm.LatencyDistribution) *pb.LatencyDistribution {
 	if in == nil {
 		return nil
 	}
 	out := &pb.LatencyDistribution{}
-	out.LatencyPercentiles = direct.Slice_ToProto(mapCtx, in.LatencyPercentiles, LatencyPercentileObservedState_ToProto)
+	out.LatencyPercentiles = direct.Slice_ToProto(mapCtx, in.LatencyPercentiles, LatencyPercentile_ToProto)
 	return out
 }
-func LatencyPercentileObservedState_FromProto(mapCtx *direct.MapContext, in *pb.LatencyPercentile) *krm.LatencyPercentileObservedState {
+func LatencyPercentile_FromProto(mapCtx *direct.MapContext, in *pb.LatencyPercentile) *krm.LatencyPercentile {
 	if in == nil {
 		return nil
 	}
-	out := &krm.LatencyPercentileObservedState{}
+	out := &krm.LatencyPercentile{}
 	out.Percent = direct.LazyPtr(in.GetPercent())
 	out.LatencyMicros = direct.LazyPtr(in.GetLatencyMicros())
 	return out
 }
-func LatencyPercentileObservedState_ToProto(mapCtx *direct.MapContext, in *krm.LatencyPercentileObservedState) *pb.LatencyPercentile {
+func LatencyPercentile_ToProto(mapCtx *direct.MapContext, in *krm.LatencyPercentile) *pb.LatencyPercentile {
 	if in == nil {
 		return nil
 	}
 	out := &pb.LatencyPercentile{}
 	out.Percent = direct.ValueOf(in.Percent)
 	out.LatencyMicros = direct.ValueOf(in.LatencyMicros)
+	return out
+}
+func LoadBalancerBackend_FromProto(mapCtx *direct.MapContext, in *pb.LoadBalancerBackend) *krm.LoadBalancerBackend {
+	if in == nil {
+		return nil
+	}
+	out := &krm.LoadBalancerBackend{}
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.URI = direct.LazyPtr(in.GetUri())
+	out.HealthCheckFirewallState = direct.Enum_FromProto(mapCtx, in.GetHealthCheckFirewallState())
+	out.HealthCheckAllowingFirewallRules = in.HealthCheckAllowingFirewallRules
+	out.HealthCheckBlockingFirewallRules = in.HealthCheckBlockingFirewallRules
+	return out
+}
+func LoadBalancerBackend_ToProto(mapCtx *direct.MapContext, in *krm.LoadBalancerBackend) *pb.LoadBalancerBackend {
+	if in == nil {
+		return nil
+	}
+	out := &pb.LoadBalancerBackend{}
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Uri = direct.ValueOf(in.URI)
+	out.HealthCheckFirewallState = direct.Enum_ToProto[pb.LoadBalancerBackend_HealthCheckFirewallState](mapCtx, in.HealthCheckFirewallState)
+	out.HealthCheckAllowingFirewallRules = in.HealthCheckAllowingFirewallRules
+	out.HealthCheckBlockingFirewallRules = in.HealthCheckBlockingFirewallRules
 	return out
 }
 func LoadBalancerBackendInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.LoadBalancerBackendInfo) *krm.LoadBalancerBackendInfoObservedState {
@@ -487,59 +553,35 @@ func LoadBalancerBackendInfoObservedState_ToProto(mapCtx *direct.MapContext, in 
 	out.HealthCheckFirewallsConfigState = direct.Enum_ToProto[pb.LoadBalancerBackendInfo_HealthCheckFirewallsConfigState](mapCtx, in.HealthCheckFirewallsConfigState)
 	return out
 }
-func LoadBalancerBackendObservedState_FromProto(mapCtx *direct.MapContext, in *pb.LoadBalancerBackend) *krm.LoadBalancerBackendObservedState {
+func LoadBalancerInfo_FromProto(mapCtx *direct.MapContext, in *pb.LoadBalancerInfo) *krm.LoadBalancerInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.LoadBalancerBackendObservedState{}
-	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	out.URI = direct.LazyPtr(in.GetUri())
-	out.HealthCheckFirewallState = direct.Enum_FromProto(mapCtx, in.GetHealthCheckFirewallState())
-	out.HealthCheckAllowingFirewallRules = in.HealthCheckAllowingFirewallRules
-	out.HealthCheckBlockingFirewallRules = in.HealthCheckBlockingFirewallRules
-	return out
-}
-func LoadBalancerBackendObservedState_ToProto(mapCtx *direct.MapContext, in *krm.LoadBalancerBackendObservedState) *pb.LoadBalancerBackend {
-	if in == nil {
-		return nil
-	}
-	out := &pb.LoadBalancerBackend{}
-	out.DisplayName = direct.ValueOf(in.DisplayName)
-	out.Uri = direct.ValueOf(in.URI)
-	out.HealthCheckFirewallState = direct.Enum_ToProto[pb.LoadBalancerBackend_HealthCheckFirewallState](mapCtx, in.HealthCheckFirewallState)
-	out.HealthCheckAllowingFirewallRules = in.HealthCheckAllowingFirewallRules
-	out.HealthCheckBlockingFirewallRules = in.HealthCheckBlockingFirewallRules
-	return out
-}
-func LoadBalancerInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.LoadBalancerInfo) *krm.LoadBalancerInfoObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.LoadBalancerInfoObservedState{}
+	out := &krm.LoadBalancerInfo{}
 	out.LoadBalancerType = direct.Enum_FromProto(mapCtx, in.GetLoadBalancerType())
 	out.HealthCheckURI = direct.LazyPtr(in.GetHealthCheckUri())
-	out.Backends = direct.Slice_FromProto(mapCtx, in.Backends, LoadBalancerBackendObservedState_FromProto)
+	out.Backends = direct.Slice_FromProto(mapCtx, in.Backends, LoadBalancerBackend_FromProto)
 	out.BackendType = direct.Enum_FromProto(mapCtx, in.GetBackendType())
 	out.BackendURI = direct.LazyPtr(in.GetBackendUri())
 	return out
 }
-func LoadBalancerInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.LoadBalancerInfoObservedState) *pb.LoadBalancerInfo {
+func LoadBalancerInfo_ToProto(mapCtx *direct.MapContext, in *krm.LoadBalancerInfo) *pb.LoadBalancerInfo {
 	if in == nil {
 		return nil
 	}
 	out := &pb.LoadBalancerInfo{}
 	out.LoadBalancerType = direct.Enum_ToProto[pb.LoadBalancerInfo_LoadBalancerType](mapCtx, in.LoadBalancerType)
 	out.HealthCheckUri = direct.ValueOf(in.HealthCheckURI)
-	out.Backends = direct.Slice_ToProto(mapCtx, in.Backends, LoadBalancerBackendObservedState_ToProto)
+	out.Backends = direct.Slice_ToProto(mapCtx, in.Backends, LoadBalancerBackend_ToProto)
 	out.BackendType = direct.Enum_ToProto[pb.LoadBalancerInfo_BackendType](mapCtx, in.BackendType)
 	out.BackendUri = direct.ValueOf(in.BackendURI)
 	return out
 }
-func NATInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.NatInfo) *krm.NATInfoObservedState {
+func NATInfo_FromProto(mapCtx *direct.MapContext, in *pb.NatInfo) *krm.NATInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.NATInfoObservedState{}
+	out := &krm.NATInfo{}
 	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
 	out.Protocol = direct.LazyPtr(in.GetProtocol())
 	out.NetworkURI = direct.LazyPtr(in.GetNetworkUri())
@@ -555,7 +597,7 @@ func NATInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.NatInfo) *
 	out.NATGatewayName = direct.LazyPtr(in.GetNatGatewayName())
 	return out
 }
-func NATInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.NATInfoObservedState) *pb.NatInfo {
+func NATInfo_ToProto(mapCtx *direct.MapContext, in *krm.NATInfo) *pb.NatInfo {
 	if in == nil {
 		return nil
 	}
@@ -575,11 +617,11 @@ func NATInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.NATInfoObse
 	out.NatGatewayName = direct.ValueOf(in.NATGatewayName)
 	return out
 }
-func NetworkInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.NetworkInfo) *krm.NetworkInfoObservedState {
+func NetworkInfo_FromProto(mapCtx *direct.MapContext, in *pb.NetworkInfo) *krm.NetworkInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.NetworkInfoObservedState{}
+	out := &krm.NetworkInfo{}
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.URI = direct.LazyPtr(in.GetUri())
 	out.MatchedSubnetURI = direct.LazyPtr(in.GetMatchedSubnetUri())
@@ -587,7 +629,7 @@ func NetworkInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Networ
 	out.Region = direct.LazyPtr(in.GetRegion())
 	return out
 }
-func NetworkInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.NetworkInfoObservedState) *pb.NetworkInfo {
+func NetworkInfo_ToProto(mapCtx *direct.MapContext, in *krm.NetworkInfo) *pb.NetworkInfo {
 	if in == nil {
 		return nil
 	}
@@ -611,7 +653,7 @@ func NetworkManagementConnectivityTestObservedState_FromProto(mapCtx *direct.Map
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.ReachabilityDetails = ReachabilityDetailsObservedState_FromProto(mapCtx, in.GetReachabilityDetails())
-	out.ProbingDetails = ProbingDetailsObservedState_FromProto(mapCtx, in.GetProbingDetails())
+	out.ProbingDetails = ProbingDetails_FromProto(mapCtx, in.GetProbingDetails())
 	out.ReturnReachabilityDetails = ReachabilityDetailsObservedState_FromProto(mapCtx, in.GetReturnReachabilityDetails())
 	return out
 }
@@ -627,7 +669,7 @@ func NetworkManagementConnectivityTestObservedState_ToProto(mapCtx *direct.MapCo
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.ReachabilityDetails = ReachabilityDetailsObservedState_ToProto(mapCtx, in.ReachabilityDetails)
-	out.ProbingDetails = ProbingDetailsObservedState_ToProto(mapCtx, in.ProbingDetails)
+	out.ProbingDetails = ProbingDetails_ToProto(mapCtx, in.ProbingDetails)
 	out.ReturnReachabilityDetails = ReachabilityDetailsObservedState_ToProto(mapCtx, in.ReturnReachabilityDetails)
 	return out
 }
@@ -641,7 +683,7 @@ func NetworkManagementConnectivityTestSpec_FromProto(mapCtx *direct.MapContext, 
 	out.Source = Endpoint_FromProto(mapCtx, in.GetSource())
 	out.Destination = Endpoint_FromProto(mapCtx, in.GetDestination())
 	out.Protocol = direct.LazyPtr(in.GetProtocol())
-	out.RelatedProjects = NetworkManagementConnectivityTestSpec_RelatedProjects_FromProto(mapCtx, in.RelatedProjects)
+	out.RelatedProjects = in.RelatedProjects
 	out.Labels = in.Labels
 	out.RoundTrip = direct.LazyPtr(in.GetRoundTrip())
 	out.BypassFirewallChecks = direct.LazyPtr(in.GetBypassFirewallChecks())
@@ -657,29 +699,41 @@ func NetworkManagementConnectivityTestSpec_ToProto(mapCtx *direct.MapContext, in
 	out.Source = Endpoint_ToProto(mapCtx, in.Source)
 	out.Destination = Endpoint_ToProto(mapCtx, in.Destination)
 	out.Protocol = direct.ValueOf(in.Protocol)
-	out.RelatedProjects = NetworkManagementConnectivityTestSpec_RelatedProjects_ToProto(mapCtx, in.RelatedProjects)
+	out.RelatedProjects = in.RelatedProjects
 	out.Labels = in.Labels
 	out.RoundTrip = direct.ValueOf(in.RoundTrip)
 	out.BypassFirewallChecks = direct.ValueOf(in.BypassFirewallChecks)
 	return out
 }
-func ProbingDetailsObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ProbingDetails) *krm.ProbingDetailsObservedState {
+func NetworkManagementVPCFlowLogsConfigSpec_InterconnectAttachment_ToProto(mapCtx *direct.MapContext, in *string) *pb.VpcFlowLogsConfig_InterconnectAttachment {
 	if in == nil {
 		return nil
 	}
-	out := &krm.ProbingDetailsObservedState{}
+	return &pb.VpcFlowLogsConfig_InterconnectAttachment{InterconnectAttachment: *in}
+}
+func NetworkManagementVPCFlowLogsConfigSpec_VpnTunnel_ToProto(mapCtx *direct.MapContext, in *string) *pb.VpcFlowLogsConfig_VpnTunnel {
+	if in == nil {
+		return nil
+	}
+	return &pb.VpcFlowLogsConfig_VpnTunnel{VpnTunnel: *in}
+}
+func ProbingDetails_FromProto(mapCtx *direct.MapContext, in *pb.ProbingDetails) *krm.ProbingDetails {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ProbingDetails{}
 	out.Result = direct.Enum_FromProto(mapCtx, in.GetResult())
 	out.VerifyTime = direct.StringTimestamp_FromProto(mapCtx, in.GetVerifyTime())
 	out.Error = direct.Status_FromProto(mapCtx, in.GetError())
 	out.AbortCause = direct.Enum_FromProto(mapCtx, in.GetAbortCause())
 	out.SentProbeCount = direct.LazyPtr(in.GetSentProbeCount())
 	out.SuccessfulProbeCount = direct.LazyPtr(in.GetSuccessfulProbeCount())
-	out.EndpointInfo = EndpointInfoObservedState_FromProto(mapCtx, in.GetEndpointInfo())
-	out.ProbingLatency = LatencyDistributionObservedState_FromProto(mapCtx, in.GetProbingLatency())
-	out.DestinationEgressLocation = ProbingDetails_EdgeLocationObservedState_FromProto(mapCtx, in.GetDestinationEgressLocation())
+	out.EndpointInfo = EndpointInfo_FromProto(mapCtx, in.GetEndpointInfo())
+	out.ProbingLatency = LatencyDistribution_FromProto(mapCtx, in.GetProbingLatency())
+	out.DestinationEgressLocation = ProbingDetails_EdgeLocation_FromProto(mapCtx, in.GetDestinationEgressLocation())
 	return out
 }
-func ProbingDetailsObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ProbingDetailsObservedState) *pb.ProbingDetails {
+func ProbingDetails_ToProto(mapCtx *direct.MapContext, in *krm.ProbingDetails) *pb.ProbingDetails {
 	if in == nil {
 		return nil
 	}
@@ -690,20 +744,20 @@ func ProbingDetailsObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Prob
 	out.AbortCause = direct.Enum_ToProto[pb.ProbingDetails_ProbingAbortCause](mapCtx, in.AbortCause)
 	out.SentProbeCount = direct.ValueOf(in.SentProbeCount)
 	out.SuccessfulProbeCount = direct.ValueOf(in.SuccessfulProbeCount)
-	out.EndpointInfo = EndpointInfoObservedState_ToProto(mapCtx, in.EndpointInfo)
-	out.ProbingLatency = LatencyDistributionObservedState_ToProto(mapCtx, in.ProbingLatency)
-	out.DestinationEgressLocation = ProbingDetails_EdgeLocationObservedState_ToProto(mapCtx, in.DestinationEgressLocation)
+	out.EndpointInfo = EndpointInfo_ToProto(mapCtx, in.EndpointInfo)
+	out.ProbingLatency = LatencyDistribution_ToProto(mapCtx, in.ProbingLatency)
+	out.DestinationEgressLocation = ProbingDetails_EdgeLocation_ToProto(mapCtx, in.DestinationEgressLocation)
 	return out
 }
-func ProbingDetails_EdgeLocationObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ProbingDetails_EdgeLocation) *krm.ProbingDetails_EdgeLocationObservedState {
+func ProbingDetails_EdgeLocation_FromProto(mapCtx *direct.MapContext, in *pb.ProbingDetails_EdgeLocation) *krm.ProbingDetails_EdgeLocation {
 	if in == nil {
 		return nil
 	}
-	out := &krm.ProbingDetails_EdgeLocationObservedState{}
+	out := &krm.ProbingDetails_EdgeLocation{}
 	out.MetropolitanArea = direct.LazyPtr(in.GetMetropolitanArea())
 	return out
 }
-func ProbingDetails_EdgeLocationObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ProbingDetails_EdgeLocationObservedState) *pb.ProbingDetails_EdgeLocation {
+func ProbingDetails_EdgeLocation_ToProto(mapCtx *direct.MapContext, in *krm.ProbingDetails_EdgeLocation) *pb.ProbingDetails_EdgeLocation {
 	if in == nil {
 		return nil
 	}
@@ -711,11 +765,11 @@ func ProbingDetails_EdgeLocationObservedState_ToProto(mapCtx *direct.MapContext,
 	out.MetropolitanArea = direct.ValueOf(in.MetropolitanArea)
 	return out
 }
-func ProxyConnectionInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ProxyConnectionInfo) *krm.ProxyConnectionInfoObservedState {
+func ProxyConnectionInfo_FromProto(mapCtx *direct.MapContext, in *pb.ProxyConnectionInfo) *krm.ProxyConnectionInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.ProxyConnectionInfoObservedState{}
+	out := &krm.ProxyConnectionInfo{}
 	out.Protocol = direct.LazyPtr(in.GetProtocol())
 	out.OldSourceIP = direct.LazyPtr(in.GetOldSourceIp())
 	out.NewSourceIP = direct.LazyPtr(in.GetNewSourceIp())
@@ -729,7 +783,7 @@ func ProxyConnectionInfoObservedState_FromProto(mapCtx *direct.MapContext, in *p
 	out.NetworkURI = direct.LazyPtr(in.GetNetworkUri())
 	return out
 }
-func ProxyConnectionInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ProxyConnectionInfoObservedState) *pb.ProxyConnectionInfo {
+func ProxyConnectionInfo_ToProto(mapCtx *direct.MapContext, in *krm.ProxyConnectionInfo) *pb.ProxyConnectionInfo {
 	if in == nil {
 		return nil
 	}
@@ -769,11 +823,11 @@ func ReachabilityDetailsObservedState_ToProto(mapCtx *direct.MapContext, in *krm
 	out.Traces = direct.Slice_ToProto(mapCtx, in.Traces, TraceObservedState_ToProto)
 	return out
 }
-func RedisClusterInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.RedisClusterInfo) *krm.RedisClusterInfoObservedState {
+func RedisClusterInfo_FromProto(mapCtx *direct.MapContext, in *pb.RedisClusterInfo) *krm.RedisClusterInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.RedisClusterInfoObservedState{}
+	out := &krm.RedisClusterInfo{}
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.URI = direct.LazyPtr(in.GetUri())
 	out.NetworkURI = direct.LazyPtr(in.GetNetworkUri())
@@ -782,7 +836,7 @@ func RedisClusterInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.R
 	out.Location = direct.LazyPtr(in.GetLocation())
 	return out
 }
-func RedisClusterInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.RedisClusterInfoObservedState) *pb.RedisClusterInfo {
+func RedisClusterInfo_ToProto(mapCtx *direct.MapContext, in *krm.RedisClusterInfo) *pb.RedisClusterInfo {
 	if in == nil {
 		return nil
 	}
@@ -795,11 +849,11 @@ func RedisClusterInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Re
 	out.Location = direct.ValueOf(in.Location)
 	return out
 }
-func RedisInstanceInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.RedisInstanceInfo) *krm.RedisInstanceInfoObservedState {
+func RedisInstanceInfo_FromProto(mapCtx *direct.MapContext, in *pb.RedisInstanceInfo) *krm.RedisInstanceInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.RedisInstanceInfoObservedState{}
+	out := &krm.RedisInstanceInfo{}
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.URI = direct.LazyPtr(in.GetUri())
 	out.NetworkURI = direct.LazyPtr(in.GetNetworkUri())
@@ -808,7 +862,7 @@ func RedisInstanceInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.
 	out.Region = direct.LazyPtr(in.GetRegion())
 	return out
 }
-func RedisInstanceInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.RedisInstanceInfoObservedState) *pb.RedisInstanceInfo {
+func RedisInstanceInfo_ToProto(mapCtx *direct.MapContext, in *krm.RedisInstanceInfo) *pb.RedisInstanceInfo {
 	if in == nil {
 		return nil
 	}
@@ -821,11 +875,11 @@ func RedisInstanceInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.R
 	out.Region = direct.ValueOf(in.Region)
 	return out
 }
-func RouteInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.RouteInfo) *krm.RouteInfoObservedState {
+func RouteInfo_FromProto(mapCtx *direct.MapContext, in *pb.RouteInfo) *krm.RouteInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.RouteInfoObservedState{}
+	out := &krm.RouteInfo{}
 	out.RouteType = direct.Enum_FromProto(mapCtx, in.GetRouteType())
 	out.NextHopType = direct.Enum_FromProto(mapCtx, in.GetNextHopType())
 	out.RouteScope = direct.Enum_FromProto(mapCtx, in.GetRouteScope())
@@ -845,14 +899,14 @@ func RouteInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.RouteInf
 	out.NccSpokeURI = in.NccSpokeUri
 	out.AdvertisedRouteSourceRouterURI = in.AdvertisedRouteSourceRouterUri
 	out.AdvertisedRouteNextHopURI = in.AdvertisedRouteNextHopUri
-	// MISSING: NextHopURI
-	// MISSING: NextHopNetworkURI
-	// MISSING: OriginatingRouteURI
-	// MISSING: OriginatingRouteDisplayName
-	// MISSING: NccHubRouteURI
+	out.NextHopURI = direct.LazyPtr(in.GetNextHopUri())
+	out.NextHopNetworkURI = direct.LazyPtr(in.GetNextHopNetworkUri())
+	out.OriginatingRouteURI = direct.LazyPtr(in.GetOriginatingRouteUri())
+	out.OriginatingRouteDisplayName = direct.LazyPtr(in.GetOriginatingRouteDisplayName())
+	out.NccHubRouteURI = direct.LazyPtr(in.GetNccHubRouteUri())
 	return out
 }
-func RouteInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.RouteInfoObservedState) *pb.RouteInfo {
+func RouteInfo_ToProto(mapCtx *direct.MapContext, in *krm.RouteInfo) *pb.RouteInfo {
 	if in == nil {
 		return nil
 	}
@@ -876,22 +930,38 @@ func RouteInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.RouteInfo
 	out.NccSpokeUri = in.NccSpokeURI
 	out.AdvertisedRouteSourceRouterUri = in.AdvertisedRouteSourceRouterURI
 	out.AdvertisedRouteNextHopUri = in.AdvertisedRouteNextHopURI
-	// MISSING: NextHopURI
-	// MISSING: NextHopNetworkURI
-	// MISSING: OriginatingRouteURI
-	// MISSING: OriginatingRouteDisplayName
-	// MISSING: NccHubRouteURI
+	out.NextHopUri = direct.ValueOf(in.NextHopURI)
+	out.NextHopNetworkUri = direct.ValueOf(in.NextHopNetworkURI)
+	out.OriginatingRouteUri = direct.ValueOf(in.OriginatingRouteURI)
+	out.OriginatingRouteDisplayName = direct.ValueOf(in.OriginatingRouteDisplayName)
+	out.NccHubRouteUri = direct.ValueOf(in.NccHubRouteURI)
 	return out
 }
-func ServerlessNegInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ServerlessNegInfo) *krm.ServerlessNegInfoObservedState {
+func ServerlessExternalConnectionInfo_FromProto(mapCtx *direct.MapContext, in *pb.ServerlessExternalConnectionInfo) *krm.ServerlessExternalConnectionInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.ServerlessNegInfoObservedState{}
+	out := &krm.ServerlessExternalConnectionInfo{}
+	out.SelectedIPAddress = direct.LazyPtr(in.GetSelectedIpAddress())
+	return out
+}
+func ServerlessExternalConnectionInfo_ToProto(mapCtx *direct.MapContext, in *krm.ServerlessExternalConnectionInfo) *pb.ServerlessExternalConnectionInfo {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ServerlessExternalConnectionInfo{}
+	out.SelectedIpAddress = direct.ValueOf(in.SelectedIPAddress)
+	return out
+}
+func ServerlessNegInfo_FromProto(mapCtx *direct.MapContext, in *pb.ServerlessNegInfo) *krm.ServerlessNegInfo {
+	if in == nil {
+		return nil
+	}
+	out := &krm.ServerlessNegInfo{}
 	out.NegURI = direct.LazyPtr(in.GetNegUri())
 	return out
 }
-func ServerlessNegInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ServerlessNegInfoObservedState) *pb.ServerlessNegInfo {
+func ServerlessNegInfo_ToProto(mapCtx *direct.MapContext, in *krm.ServerlessNegInfo) *pb.ServerlessNegInfo {
 	if in == nil {
 		return nil
 	}
@@ -908,35 +978,35 @@ func StepObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Step) *krm.St
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.CausesDrop = direct.LazyPtr(in.GetCausesDrop())
 	out.ProjectID = direct.LazyPtr(in.GetProjectId())
-	out.Instance = InstanceInfoObservedState_FromProto(mapCtx, in.GetInstance())
-	out.Firewall = FirewallInfoObservedState_FromProto(mapCtx, in.GetFirewall())
-	out.Route = RouteInfoObservedState_FromProto(mapCtx, in.GetRoute())
-	out.Endpoint = EndpointInfoObservedState_FromProto(mapCtx, in.GetEndpoint())
-	out.GoogleService = GoogleServiceInfoObservedState_FromProto(mapCtx, in.GetGoogleService())
-	out.ForwardingRule = ForwardingRuleInfoObservedState_FromProto(mapCtx, in.GetForwardingRule())
-	out.VPNGateway = VPNGatewayInfoObservedState_FromProto(mapCtx, in.GetVpnGateway())
-	out.VPNTunnel = VPNTunnelInfoObservedState_FromProto(mapCtx, in.GetVpnTunnel())
-	out.VPCConnector = VPCConnectorInfoObservedState_FromProto(mapCtx, in.GetVpcConnector())
-	// MISSING: DirectVPCEgressConnection
-	// MISSING: ServerlessExternalConnection
-	out.Deliver = DeliverInfoObservedState_FromProto(mapCtx, in.GetDeliver())
-	out.Forward = ForwardInfoObservedState_FromProto(mapCtx, in.GetForward())
-	out.Abort = AbortInfoObservedState_FromProto(mapCtx, in.GetAbort())
-	out.Drop = DropInfoObservedState_FromProto(mapCtx, in.GetDrop())
-	out.LoadBalancer = LoadBalancerInfoObservedState_FromProto(mapCtx, in.GetLoadBalancer())
-	out.Network = NetworkInfoObservedState_FromProto(mapCtx, in.GetNetwork())
-	out.GKEMaster = GKEMasterInfoObservedState_FromProto(mapCtx, in.GetGkeMaster())
-	out.CloudSQLInstance = CloudSQLInstanceInfoObservedState_FromProto(mapCtx, in.GetCloudSqlInstance())
-	out.RedisInstance = RedisInstanceInfoObservedState_FromProto(mapCtx, in.GetRedisInstance())
-	out.RedisCluster = RedisClusterInfoObservedState_FromProto(mapCtx, in.GetRedisCluster())
-	out.CloudFunction = CloudFunctionInfoObservedState_FromProto(mapCtx, in.GetCloudFunction())
-	out.AppEngineVersion = AppEngineVersionInfoObservedState_FromProto(mapCtx, in.GetAppEngineVersion())
-	out.CloudRunRevision = CloudRunRevisionInfoObservedState_FromProto(mapCtx, in.GetCloudRunRevision())
-	out.NAT = NATInfoObservedState_FromProto(mapCtx, in.GetNat())
-	out.ProxyConnection = ProxyConnectionInfoObservedState_FromProto(mapCtx, in.GetProxyConnection())
+	out.Instance = InstanceInfo_FromProto(mapCtx, in.GetInstance())
+	out.Firewall = FirewallInfo_FromProto(mapCtx, in.GetFirewall())
+	out.Route = RouteInfo_FromProto(mapCtx, in.GetRoute())
+	out.Endpoint = EndpointInfo_FromProto(mapCtx, in.GetEndpoint())
+	out.GoogleService = GoogleServiceInfo_FromProto(mapCtx, in.GetGoogleService())
+	out.ForwardingRule = ForwardingRuleInfo_FromProto(mapCtx, in.GetForwardingRule())
+	out.VPNGateway = VPNGatewayInfo_FromProto(mapCtx, in.GetVpnGateway())
+	out.VPNTunnel = VPNTunnelInfo_FromProto(mapCtx, in.GetVpnTunnel())
+	out.VPCConnector = VPCConnectorInfo_FromProto(mapCtx, in.GetVpcConnector())
+	out.DirectVPCEgressConnection = DirectVPCEgressConnectionInfo_FromProto(mapCtx, in.GetDirectVpcEgressConnection())
+	out.ServerlessExternalConnection = ServerlessExternalConnectionInfo_FromProto(mapCtx, in.GetServerlessExternalConnection())
+	out.Deliver = DeliverInfo_FromProto(mapCtx, in.GetDeliver())
+	out.Forward = ForwardInfo_FromProto(mapCtx, in.GetForward())
+	out.Abort = AbortInfo_FromProto(mapCtx, in.GetAbort())
+	out.Drop = DropInfo_FromProto(mapCtx, in.GetDrop())
+	out.LoadBalancer = LoadBalancerInfo_FromProto(mapCtx, in.GetLoadBalancer())
+	out.Network = NetworkInfo_FromProto(mapCtx, in.GetNetwork())
+	out.GKEMaster = GKEMasterInfo_FromProto(mapCtx, in.GetGkeMaster())
+	out.CloudSQLInstance = CloudSQLInstanceInfo_FromProto(mapCtx, in.GetCloudSqlInstance())
+	out.RedisInstance = RedisInstanceInfo_FromProto(mapCtx, in.GetRedisInstance())
+	out.RedisCluster = RedisClusterInfo_FromProto(mapCtx, in.GetRedisCluster())
+	out.CloudFunction = CloudFunctionInfo_FromProto(mapCtx, in.GetCloudFunction())
+	out.AppEngineVersion = AppEngineVersionInfo_FromProto(mapCtx, in.GetAppEngineVersion())
+	out.CloudRunRevision = CloudRunRevisionInfo_FromProto(mapCtx, in.GetCloudRunRevision())
+	out.NAT = NATInfo_FromProto(mapCtx, in.GetNat())
+	out.ProxyConnection = ProxyConnectionInfo_FromProto(mapCtx, in.GetProxyConnection())
 	out.LoadBalancerBackendInfo = LoadBalancerBackendInfoObservedState_FromProto(mapCtx, in.GetLoadBalancerBackendInfo())
-	out.StorageBucket = StorageBucketInfoObservedState_FromProto(mapCtx, in.GetStorageBucket())
-	out.ServerlessNeg = ServerlessNegInfoObservedState_FromProto(mapCtx, in.GetServerlessNeg())
+	out.StorageBucket = StorageBucketInfo_FromProto(mapCtx, in.GetStorageBucket())
+	out.ServerlessNeg = ServerlessNegInfo_FromProto(mapCtx, in.GetServerlessNeg())
 	return out
 }
 func StepObservedState_ToProto(mapCtx *direct.MapContext, in *krm.StepObservedState) *pb.Step {
@@ -948,100 +1018,104 @@ func StepObservedState_ToProto(mapCtx *direct.MapContext, in *krm.StepObservedSt
 	out.State = direct.Enum_ToProto[pb.Step_State](mapCtx, in.State)
 	out.CausesDrop = direct.ValueOf(in.CausesDrop)
 	out.ProjectId = direct.ValueOf(in.ProjectID)
-	if oneof := InstanceInfoObservedState_ToProto(mapCtx, in.Instance); oneof != nil {
+	if oneof := InstanceInfo_ToProto(mapCtx, in.Instance); oneof != nil {
 		out.StepInfo = &pb.Step_Instance{Instance: oneof}
 	}
-	if oneof := FirewallInfoObservedState_ToProto(mapCtx, in.Firewall); oneof != nil {
+	if oneof := FirewallInfo_ToProto(mapCtx, in.Firewall); oneof != nil {
 		out.StepInfo = &pb.Step_Firewall{Firewall: oneof}
 	}
-	if oneof := RouteInfoObservedState_ToProto(mapCtx, in.Route); oneof != nil {
+	if oneof := RouteInfo_ToProto(mapCtx, in.Route); oneof != nil {
 		out.StepInfo = &pb.Step_Route{Route: oneof}
 	}
-	if oneof := EndpointInfoObservedState_ToProto(mapCtx, in.Endpoint); oneof != nil {
+	if oneof := EndpointInfo_ToProto(mapCtx, in.Endpoint); oneof != nil {
 		out.StepInfo = &pb.Step_Endpoint{Endpoint: oneof}
 	}
-	if oneof := GoogleServiceInfoObservedState_ToProto(mapCtx, in.GoogleService); oneof != nil {
+	if oneof := GoogleServiceInfo_ToProto(mapCtx, in.GoogleService); oneof != nil {
 		out.StepInfo = &pb.Step_GoogleService{GoogleService: oneof}
 	}
-	if oneof := ForwardingRuleInfoObservedState_ToProto(mapCtx, in.ForwardingRule); oneof != nil {
+	if oneof := ForwardingRuleInfo_ToProto(mapCtx, in.ForwardingRule); oneof != nil {
 		out.StepInfo = &pb.Step_ForwardingRule{ForwardingRule: oneof}
 	}
-	if oneof := VPNGatewayInfoObservedState_ToProto(mapCtx, in.VPNGateway); oneof != nil {
+	if oneof := VPNGatewayInfo_ToProto(mapCtx, in.VPNGateway); oneof != nil {
 		out.StepInfo = &pb.Step_VpnGateway{VpnGateway: oneof}
 	}
-	if oneof := VPNTunnelInfoObservedState_ToProto(mapCtx, in.VPNTunnel); oneof != nil {
+	if oneof := VPNTunnelInfo_ToProto(mapCtx, in.VPNTunnel); oneof != nil {
 		out.StepInfo = &pb.Step_VpnTunnel{VpnTunnel: oneof}
 	}
-	if oneof := VPCConnectorInfoObservedState_ToProto(mapCtx, in.VPCConnector); oneof != nil {
+	if oneof := VPCConnectorInfo_ToProto(mapCtx, in.VPCConnector); oneof != nil {
 		out.StepInfo = &pb.Step_VpcConnector{VpcConnector: oneof}
 	}
-	// MISSING: DirectVPCEgressConnection
-	// MISSING: ServerlessExternalConnection
-	if oneof := DeliverInfoObservedState_ToProto(mapCtx, in.Deliver); oneof != nil {
+	if oneof := DirectVPCEgressConnectionInfo_ToProto(mapCtx, in.DirectVPCEgressConnection); oneof != nil {
+		out.StepInfo = &pb.Step_DirectVpcEgressConnection{DirectVpcEgressConnection: oneof}
+	}
+	if oneof := ServerlessExternalConnectionInfo_ToProto(mapCtx, in.ServerlessExternalConnection); oneof != nil {
+		out.StepInfo = &pb.Step_ServerlessExternalConnection{ServerlessExternalConnection: oneof}
+	}
+	if oneof := DeliverInfo_ToProto(mapCtx, in.Deliver); oneof != nil {
 		out.StepInfo = &pb.Step_Deliver{Deliver: oneof}
 	}
-	if oneof := ForwardInfoObservedState_ToProto(mapCtx, in.Forward); oneof != nil {
+	if oneof := ForwardInfo_ToProto(mapCtx, in.Forward); oneof != nil {
 		out.StepInfo = &pb.Step_Forward{Forward: oneof}
 	}
-	if oneof := AbortInfoObservedState_ToProto(mapCtx, in.Abort); oneof != nil {
+	if oneof := AbortInfo_ToProto(mapCtx, in.Abort); oneof != nil {
 		out.StepInfo = &pb.Step_Abort{Abort: oneof}
 	}
-	if oneof := DropInfoObservedState_ToProto(mapCtx, in.Drop); oneof != nil {
+	if oneof := DropInfo_ToProto(mapCtx, in.Drop); oneof != nil {
 		out.StepInfo = &pb.Step_Drop{Drop: oneof}
 	}
-	if oneof := LoadBalancerInfoObservedState_ToProto(mapCtx, in.LoadBalancer); oneof != nil {
+	if oneof := LoadBalancerInfo_ToProto(mapCtx, in.LoadBalancer); oneof != nil {
 		out.StepInfo = &pb.Step_LoadBalancer{LoadBalancer: oneof}
 	}
-	if oneof := NetworkInfoObservedState_ToProto(mapCtx, in.Network); oneof != nil {
+	if oneof := NetworkInfo_ToProto(mapCtx, in.Network); oneof != nil {
 		out.StepInfo = &pb.Step_Network{Network: oneof}
 	}
-	if oneof := GKEMasterInfoObservedState_ToProto(mapCtx, in.GKEMaster); oneof != nil {
+	if oneof := GKEMasterInfo_ToProto(mapCtx, in.GKEMaster); oneof != nil {
 		out.StepInfo = &pb.Step_GkeMaster{GkeMaster: oneof}
 	}
-	if oneof := CloudSQLInstanceInfoObservedState_ToProto(mapCtx, in.CloudSQLInstance); oneof != nil {
+	if oneof := CloudSQLInstanceInfo_ToProto(mapCtx, in.CloudSQLInstance); oneof != nil {
 		out.StepInfo = &pb.Step_CloudSqlInstance{CloudSqlInstance: oneof}
 	}
-	if oneof := RedisInstanceInfoObservedState_ToProto(mapCtx, in.RedisInstance); oneof != nil {
+	if oneof := RedisInstanceInfo_ToProto(mapCtx, in.RedisInstance); oneof != nil {
 		out.StepInfo = &pb.Step_RedisInstance{RedisInstance: oneof}
 	}
-	if oneof := RedisClusterInfoObservedState_ToProto(mapCtx, in.RedisCluster); oneof != nil {
+	if oneof := RedisClusterInfo_ToProto(mapCtx, in.RedisCluster); oneof != nil {
 		out.StepInfo = &pb.Step_RedisCluster{RedisCluster: oneof}
 	}
-	if oneof := CloudFunctionInfoObservedState_ToProto(mapCtx, in.CloudFunction); oneof != nil {
+	if oneof := CloudFunctionInfo_ToProto(mapCtx, in.CloudFunction); oneof != nil {
 		out.StepInfo = &pb.Step_CloudFunction{CloudFunction: oneof}
 	}
-	if oneof := AppEngineVersionInfoObservedState_ToProto(mapCtx, in.AppEngineVersion); oneof != nil {
+	if oneof := AppEngineVersionInfo_ToProto(mapCtx, in.AppEngineVersion); oneof != nil {
 		out.StepInfo = &pb.Step_AppEngineVersion{AppEngineVersion: oneof}
 	}
-	if oneof := CloudRunRevisionInfoObservedState_ToProto(mapCtx, in.CloudRunRevision); oneof != nil {
+	if oneof := CloudRunRevisionInfo_ToProto(mapCtx, in.CloudRunRevision); oneof != nil {
 		out.StepInfo = &pb.Step_CloudRunRevision{CloudRunRevision: oneof}
 	}
-	if oneof := NATInfoObservedState_ToProto(mapCtx, in.NAT); oneof != nil {
+	if oneof := NATInfo_ToProto(mapCtx, in.NAT); oneof != nil {
 		out.StepInfo = &pb.Step_Nat{Nat: oneof}
 	}
-	if oneof := ProxyConnectionInfoObservedState_ToProto(mapCtx, in.ProxyConnection); oneof != nil {
+	if oneof := ProxyConnectionInfo_ToProto(mapCtx, in.ProxyConnection); oneof != nil {
 		out.StepInfo = &pb.Step_ProxyConnection{ProxyConnection: oneof}
 	}
 	if oneof := LoadBalancerBackendInfoObservedState_ToProto(mapCtx, in.LoadBalancerBackendInfo); oneof != nil {
 		out.StepInfo = &pb.Step_LoadBalancerBackendInfo{LoadBalancerBackendInfo: oneof}
 	}
-	if oneof := StorageBucketInfoObservedState_ToProto(mapCtx, in.StorageBucket); oneof != nil {
+	if oneof := StorageBucketInfo_ToProto(mapCtx, in.StorageBucket); oneof != nil {
 		out.StepInfo = &pb.Step_StorageBucket{StorageBucket: oneof}
 	}
-	if oneof := ServerlessNegInfoObservedState_ToProto(mapCtx, in.ServerlessNeg); oneof != nil {
+	if oneof := ServerlessNegInfo_ToProto(mapCtx, in.ServerlessNeg); oneof != nil {
 		out.StepInfo = &pb.Step_ServerlessNeg{ServerlessNeg: oneof}
 	}
 	return out
 }
-func StorageBucketInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.StorageBucketInfo) *krm.StorageBucketInfoObservedState {
+func StorageBucketInfo_FromProto(mapCtx *direct.MapContext, in *pb.StorageBucketInfo) *krm.StorageBucketInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.StorageBucketInfoObservedState{}
+	out := &krm.StorageBucketInfo{}
 	out.Bucket = direct.LazyPtr(in.GetBucket())
 	return out
 }
-func StorageBucketInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.StorageBucketInfoObservedState) *pb.StorageBucketInfo {
+func StorageBucketInfo_ToProto(mapCtx *direct.MapContext, in *krm.StorageBucketInfo) *pb.StorageBucketInfo {
 	if in == nil {
 		return nil
 	}
@@ -1054,7 +1128,7 @@ func TraceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Trace) *krm.
 		return nil
 	}
 	out := &krm.TraceObservedState{}
-	out.EndpointInfo = EndpointInfoObservedState_FromProto(mapCtx, in.GetEndpointInfo())
+	out.EndpointInfo = EndpointInfo_FromProto(mapCtx, in.GetEndpointInfo())
 	out.Steps = direct.Slice_FromProto(mapCtx, in.Steps, StepObservedState_FromProto)
 	out.ForwardTraceID = direct.LazyPtr(in.GetForwardTraceId())
 	return out
@@ -1064,22 +1138,22 @@ func TraceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.TraceObserved
 		return nil
 	}
 	out := &pb.Trace{}
-	out.EndpointInfo = EndpointInfoObservedState_ToProto(mapCtx, in.EndpointInfo)
+	out.EndpointInfo = EndpointInfo_ToProto(mapCtx, in.EndpointInfo)
 	out.Steps = direct.Slice_ToProto(mapCtx, in.Steps, StepObservedState_ToProto)
 	out.ForwardTraceId = direct.ValueOf(in.ForwardTraceID)
 	return out
 }
-func VPCConnectorInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.VpcConnectorInfo) *krm.VPCConnectorInfoObservedState {
+func VPCConnectorInfo_FromProto(mapCtx *direct.MapContext, in *pb.VpcConnectorInfo) *krm.VPCConnectorInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.VPCConnectorInfoObservedState{}
+	out := &krm.VPCConnectorInfo{}
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.URI = direct.LazyPtr(in.GetUri())
 	out.Location = direct.LazyPtr(in.GetLocation())
 	return out
 }
-func VPCConnectorInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.VPCConnectorInfoObservedState) *pb.VpcConnectorInfo {
+func VPCConnectorInfo_ToProto(mapCtx *direct.MapContext, in *krm.VPCConnectorInfo) *pb.VpcConnectorInfo {
 	if in == nil {
 		return nil
 	}
@@ -1089,21 +1163,20 @@ func VPCConnectorInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.VP
 	out.Location = direct.ValueOf(in.Location)
 	return out
 }
-func VPNGatewayInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.VpnGatewayInfo) *krm.VPNGatewayInfoObservedState {
+func VPNGatewayInfo_FromProto(mapCtx *direct.MapContext, in *pb.VpnGatewayInfo) *krm.VPNGatewayInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.VPNGatewayInfoObservedState{}
+	out := &krm.VPNGatewayInfo{}
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.URI = direct.LazyPtr(in.GetUri())
 	out.NetworkURI = direct.LazyPtr(in.GetNetworkUri())
 	out.IPAddress = direct.LazyPtr(in.GetIpAddress())
-	// MISSING: VPNTunnelURI
-	// (near miss): "VPNTunnelURI" vs "VpnTunnelURI"
+	out.VPNTunnelURI = direct.LazyPtr(in.GetVpnTunnelUri())
 	out.Region = direct.LazyPtr(in.GetRegion())
 	return out
 }
-func VPNGatewayInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.VPNGatewayInfoObservedState) *pb.VpnGatewayInfo {
+func VPNGatewayInfo_ToProto(mapCtx *direct.MapContext, in *krm.VPNGatewayInfo) *pb.VpnGatewayInfo {
 	if in == nil {
 		return nil
 	}
@@ -1112,16 +1185,15 @@ func VPNGatewayInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.VPNG
 	out.Uri = direct.ValueOf(in.URI)
 	out.NetworkUri = direct.ValueOf(in.NetworkURI)
 	out.IpAddress = direct.ValueOf(in.IPAddress)
-	// MISSING: VPNTunnelURI
-	// (near miss): "VPNTunnelURI" vs "VpnTunnelURI"
+	out.VpnTunnelUri = direct.ValueOf(in.VPNTunnelURI)
 	out.Region = direct.ValueOf(in.Region)
 	return out
 }
-func VPNTunnelInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.VpnTunnelInfo) *krm.VPNTunnelInfoObservedState {
+func VPNTunnelInfo_FromProto(mapCtx *direct.MapContext, in *pb.VpnTunnelInfo) *krm.VPNTunnelInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.VPNTunnelInfoObservedState{}
+	out := &krm.VPNTunnelInfo{}
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.URI = direct.LazyPtr(in.GetUri())
 	out.SourceGateway = direct.LazyPtr(in.GetSourceGateway())
@@ -1133,7 +1205,7 @@ func VPNTunnelInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.VpnT
 	out.RoutingType = direct.Enum_FromProto(mapCtx, in.GetRoutingType())
 	return out
 }
-func VPNTunnelInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.VPNTunnelInfoObservedState) *pb.VpnTunnelInfo {
+func VPNTunnelInfo_ToProto(mapCtx *direct.MapContext, in *krm.VPNTunnelInfo) *pb.VpnTunnelInfo {
 	if in == nil {
 		return nil
 	}

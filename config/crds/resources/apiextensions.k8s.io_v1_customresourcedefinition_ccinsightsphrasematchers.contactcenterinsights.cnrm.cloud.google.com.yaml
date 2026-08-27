@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: ccinsightsphrasematchers.contactcenterinsights.cnrm.cloud.google.com
 spec:
@@ -71,11 +70,8 @@ spec:
                 description: The human-readable name of the phrase matcher.
                 type: string
               location:
-                description: Immutable.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
               phraseMatchRuleGroups:
                 description: A list of phase match rule groups that are included in
                   this matcher.
@@ -114,10 +110,6 @@ spec:
                       type: array
                     type:
                       description: Required. The type of this phrase match rule group.
-                      enum:
-                      - PHRASE_MATCH_RULE_GROUP_TYPE_UNSPECIFIED
-                      - ALL_OF
-                      - ANY_OF
                       type: string
                   required:
                   - type
@@ -163,19 +155,9 @@ spec:
                 description: The role whose utterances the phrase matcher should be
                   matched against. If the role is ROLE_UNSPECIFIED it will be matched
                   against any utterances in the transcript.
-                enum:
-                - ROLE_UNSPECIFIED
-                - HUMAN_AGENT
-                - AUTOMATED_AGENT
-                - END_USER
-                - ANY_AGENT
                 type: string
               type:
                 description: Required. The type of this phrase matcher.
-                enum:
-                - PHRASE_MATCHER_TYPE_UNSPECIFIED
-                - ALL_OF
-                - ANY_OF
                 type: string
               versionTag:
                 description: The customized version tag to use for the phrase matcher.

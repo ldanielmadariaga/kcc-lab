@@ -276,6 +276,22 @@ func ColumnSchema_LookerColumnSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, i
 	out.Type = direct.Enum_ToProto[pb.ColumnSchema_LookerColumnSpec_LookerColumnType](mapCtx, in.Type)
 	return out
 }
+func CommonUsageStats_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.CommonUsageStats) *krmdatacatalogv1alpha1.CommonUsageStats {
+	if in == nil {
+		return nil
+	}
+	out := &krmdatacatalogv1alpha1.CommonUsageStats{}
+	out.ViewCount = in.ViewCount
+	return out
+}
+func CommonUsageStats_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatacatalogv1alpha1.CommonUsageStats) *pb.CommonUsageStats {
+	if in == nil {
+		return nil
+	}
+	out := &pb.CommonUsageStats{}
+	out.ViewCount = in.ViewCount
+	return out
+}
 func Contacts_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Contacts) *krmdatacatalogv1alpha1.Contacts {
 	if in == nil {
 		return nil
@@ -316,7 +332,7 @@ func DataCatalogEntryGroupObservedState_v1alpha1_FromProto(mapCtx *direct.MapCon
 	}
 	out := &krmdatacatalogv1alpha1.DataCatalogEntryGroupObservedState{}
 	// MISSING: Name
-	out.DataCatalogTimestamps = SystemTimestamps_v1alpha1_FromProto(mapCtx, in.GetDataCatalogTimestamps())
+	out.DataCatalogTimestamps = SystemTimestampsObservedState_v1alpha1_FromProto(mapCtx, in.GetDataCatalogTimestamps())
 	return out
 }
 func DataCatalogEntryGroupObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatacatalogv1alpha1.DataCatalogEntryGroupObservedState) *pb.EntryGroup {
@@ -325,7 +341,7 @@ func DataCatalogEntryGroupObservedState_v1alpha1_ToProto(mapCtx *direct.MapConte
 	}
 	out := &pb.EntryGroup{}
 	// MISSING: Name
-	out.DataCatalogTimestamps = SystemTimestamps_v1alpha1_ToProto(mapCtx, in.DataCatalogTimestamps)
+	out.DataCatalogTimestamps = SystemTimestampsObservedState_v1alpha1_ToProto(mapCtx, in.DataCatalogTimestamps)
 	return out
 }
 func DataCatalogEntryGroupSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.EntryGroup) *krmdatacatalogv1alpha1.DataCatalogEntryGroupSpec {
@@ -356,14 +372,13 @@ func DataCatalogEntryObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext,
 	}
 	out := &krmdatacatalogv1alpha1.DataCatalogEntryObservedState{}
 	// MISSING: Name
-	out.LinkedResource = direct.LazyPtr(in.GetLinkedResource())
-	// MISSING: FullyQualifiedName
 	out.IntegratedSystem = direct.Enum_FromProto(mapCtx, in.GetIntegratedSystem())
 	out.GCSFilesetSpec = GCSFilesetSpecObservedState_v1alpha1_FromProto(mapCtx, in.GetGcsFilesetSpec())
 	out.BigqueryTableSpec = BigQueryTableSpecObservedState_v1alpha1_FromProto(mapCtx, in.GetBigqueryTableSpec())
 	out.BigqueryDateShardedSpec = BigQueryDateShardedSpecObservedState_v1alpha1_FromProto(mapCtx, in.GetBigqueryDateShardedSpec())
 	out.DatabaseTableSpec = DatabaseTableSpecObservedState_v1alpha1_FromProto(mapCtx, in.GetDatabaseTableSpec())
 	out.FeatureOnlineStoreSpec = FeatureOnlineStoreSpecObservedState_v1alpha1_FromProto(mapCtx, in.GetFeatureOnlineStoreSpec())
+	out.SourceSystemTimestamps = SystemTimestampsObservedState_v1alpha1_FromProto(mapCtx, in.GetSourceSystemTimestamps())
 	out.UsageSignal = UsageSignalObservedState_v1alpha1_FromProto(mapCtx, in.GetUsageSignal())
 	out.DataSource = DataSourceObservedState_v1alpha1_FromProto(mapCtx, in.GetDataSource())
 	out.PersonalDetails = PersonalDetails_v1alpha1_FromProto(mapCtx, in.GetPersonalDetails())
@@ -375,8 +390,6 @@ func DataCatalogEntryObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, i
 	}
 	out := &pb.Entry{}
 	// MISSING: Name
-	out.LinkedResource = direct.ValueOf(in.LinkedResource)
-	// MISSING: FullyQualifiedName
 	if oneof := DataCatalogEntryObservedState_IntegratedSystem_ToProto(mapCtx, in.IntegratedSystem); oneof != nil {
 		out.System = oneof
 	}
@@ -395,6 +408,7 @@ func DataCatalogEntryObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, i
 	if oneof := FeatureOnlineStoreSpecObservedState_v1alpha1_ToProto(mapCtx, in.FeatureOnlineStoreSpec); oneof != nil {
 		out.Spec = &pb.Entry_FeatureOnlineStoreSpec{FeatureOnlineStoreSpec: oneof}
 	}
+	out.SourceSystemTimestamps = SystemTimestampsObservedState_v1alpha1_ToProto(mapCtx, in.SourceSystemTimestamps)
 	out.UsageSignal = UsageSignalObservedState_v1alpha1_ToProto(mapCtx, in.UsageSignal)
 	out.DataSource = DataSourceObservedState_v1alpha1_ToProto(mapCtx, in.DataSource)
 	out.PersonalDetails = PersonalDetails_v1alpha1_ToProto(mapCtx, in.PersonalDetails)
@@ -412,7 +426,8 @@ func DataCatalogEntrySpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.E
 	}
 	out := &krmdatacatalogv1alpha1.DataCatalogEntrySpec{}
 	// MISSING: Name
-	// MISSING: FullyQualifiedName
+	out.LinkedResource = direct.LazyPtr(in.GetLinkedResource())
+	out.FullyQualifiedName = direct.LazyPtr(in.GetFullyQualifiedName())
 	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
 	out.UserSpecifiedType = direct.LazyPtr(in.GetUserSpecifiedType())
 	out.UserSpecifiedSystem = direct.LazyPtr(in.GetUserSpecifiedSystem())
@@ -443,7 +458,8 @@ func DataCatalogEntrySpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdat
 	}
 	out := &pb.Entry{}
 	// MISSING: Name
-	// MISSING: FullyQualifiedName
+	out.LinkedResource = direct.ValueOf(in.LinkedResource)
+	out.FullyQualifiedName = direct.ValueOf(in.FullyQualifiedName)
 	if oneof := DataCatalogEntrySpec_Type_ToProto(mapCtx, in.Type); oneof != nil {
 		out.EntryType = oneof
 	}
@@ -590,11 +606,16 @@ func DataCatalogTagSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Tag
 	}
 	out := &krmdatacatalogv1alpha1.DataCatalogTagSpec{}
 	// MISSING: Name
-	if in.GetTemplate() != "" {
-		out.TemplateRef = &krmdatacatalogv1alpha1.TagTemplateRef{External: in.GetTemplate()}
-	}
+	out.Template = direct.LazyPtr(in.GetTemplate())
 	out.Column = direct.LazyPtr(in.GetColumn())
-	out.Fields = Fields_FromProto(mapCtx, in.Fields)
+	if in.Fields != nil {
+		out.Fields = make(map[string]krmdatacatalogv1alpha1.TagField, len(in.Fields))
+		for k, v := range in.Fields {
+			if c := TagField_v1alpha1_FromProto(mapCtx, v); c != nil {
+				out.Fields[k] = *c
+			}
+		}
+	}
 	return out
 }
 */
@@ -608,13 +629,16 @@ found existing non-generated mapping function "DataCatalogTagSpec_v1alpha1_ToPro
 		}
 		out := &pb.Tag{}
 		// MISSING: Name
-		if in.TemplateRef != nil {
-			out.Template = in.TemplateRef.External
-		}
+		out.Template = direct.ValueOf(in.Template)
 		if oneof := DataCatalogTagSpec_Column_ToProto(mapCtx, in.Column); oneof != nil {
 			out.Scope = oneof
 		}
-		out.Fields = Fields_ToProto(mapCtx, in.Fields)
+		if in.Fields != nil {
+			out.Fields = make(map[string]*pb.TagField, len(in.Fields))
+			for k, v := range in.Fields {
+				out.Fields[k] = TagField_v1alpha1_ToProto(mapCtx, &v)
+			}
+		}
 		return out
 	}
 */
@@ -623,6 +647,22 @@ func DataCatalogTagSpec_Column_ToProto(mapCtx *direct.MapContext, in *string) *p
 		return nil
 	}
 	return &pb.Tag_Column{Column: *in}
+}
+func DataCatalogTagTemplateObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.TagTemplate) *krmdatacatalogv1alpha1.DataCatalogTagTemplateObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmdatacatalogv1alpha1.DataCatalogTagTemplateObservedState{}
+	// MISSING: Name
+	return out
+}
+func DataCatalogTagTemplateObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatacatalogv1alpha1.DataCatalogTagTemplateObservedState) *pb.TagTemplate {
+	if in == nil {
+		return nil
+	}
+	out := &pb.TagTemplate{}
+	// MISSING: Name
+	return out
 }
 
 /* found existing non-generated mapping function "DataCatalogTagTemplateSpec_v1alpha1_FromProto", skipping
@@ -634,8 +674,15 @@ func DataCatalogTagTemplateSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in
 	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.IsPubliclyReadable = direct.LazyPtr(in.GetIsPubliclyReadable())
-	out.Fields = Fields_FromProto(mapCtx, in.Fields)
-	// MISSING: DataplexTransferStatus
+	if in.Fields != nil {
+		out.Fields = make(map[string]krmdatacatalogv1alpha1.TagTemplateField, len(in.Fields))
+		for k, v := range in.Fields {
+			if c := TagTemplateField_v1alpha1_FromProto(mapCtx, v); c != nil {
+				out.Fields[k] = *c
+			}
+		}
+	}
+	out.DataplexTransferStatus = direct.Enum_FromProto(mapCtx, in.GetDataplexTransferStatus())
 	return out
 }
 */
@@ -651,8 +698,13 @@ found existing non-generated mapping function "DataCatalogTagTemplateSpec_v1alph
 		// MISSING: Name
 		out.DisplayName = direct.ValueOf(in.DisplayName)
 		out.IsPubliclyReadable = direct.ValueOf(in.IsPubliclyReadable)
-		out.Fields = Fields_ToProto(mapCtx, in.Fields)
-		// MISSING: DataplexTransferStatus
+		if in.Fields != nil {
+			out.Fields = make(map[string]*pb.TagTemplateField, len(in.Fields))
+			for k, v := range in.Fields {
+				out.Fields[k] = TagTemplateField_v1alpha1_ToProto(mapCtx, &v)
+			}
+		}
+		out.DataplexTransferStatus = direct.Enum_ToProto[pb.TagTemplate_DataplexTransferStatus](mapCtx, in.DataplexTransferStatus)
 		return out
 	}
 */
@@ -1602,7 +1654,14 @@ func UsageSignal_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.UsageSigna
 	out := &krmdatacatalogv1alpha1.UsageSignal{}
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	// MISSING: UsageWithinTimeRange
-	// MISSING: CommonUsageWithinTimeRange
+	if in.CommonUsageWithinTimeRange != nil {
+		out.CommonUsageWithinTimeRange = make(map[string]krmdatacatalogv1alpha1.CommonUsageStats, len(in.CommonUsageWithinTimeRange))
+		for k, v := range in.CommonUsageWithinTimeRange {
+			if c := CommonUsageStats_v1alpha1_FromProto(mapCtx, v); c != nil {
+				out.CommonUsageWithinTimeRange[k] = *c
+			}
+		}
+	}
 	out.FavoriteCount = in.FavoriteCount
 	return out
 }
@@ -1613,7 +1672,12 @@ func UsageSignal_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatacatalogv
 	out := &pb.UsageSignal{}
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	// MISSING: UsageWithinTimeRange
-	// MISSING: CommonUsageWithinTimeRange
+	if in.CommonUsageWithinTimeRange != nil {
+		out.CommonUsageWithinTimeRange = make(map[string]*pb.CommonUsageStats, len(in.CommonUsageWithinTimeRange))
+		for k, v := range in.CommonUsageWithinTimeRange {
+			out.CommonUsageWithinTimeRange[k] = CommonUsageStats_v1alpha1_ToProto(mapCtx, &v)
+		}
+	}
 	out.FavoriteCount = in.FavoriteCount
 	return out
 }
@@ -1623,7 +1687,14 @@ func UsageSignalObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *
 	}
 	out := &krmdatacatalogv1alpha1.UsageSignalObservedState{}
 	// MISSING: UpdateTime
-	// MISSING: UsageWithinTimeRange
+	if in.UsageWithinTimeRange != nil {
+		out.UsageWithinTimeRange = make(map[string]krmdatacatalogv1alpha1.UsageStats, len(in.UsageWithinTimeRange))
+		for k, v := range in.UsageWithinTimeRange {
+			if c := UsageStats_v1alpha1_FromProto(mapCtx, v); c != nil {
+				out.UsageWithinTimeRange[k] = *c
+			}
+		}
+	}
 	// MISSING: CommonUsageWithinTimeRange
 	// MISSING: FavoriteCount
 	return out
@@ -1634,9 +1705,36 @@ func UsageSignalObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *kr
 	}
 	out := &pb.UsageSignal{}
 	// MISSING: UpdateTime
-	// MISSING: UsageWithinTimeRange
+	if in.UsageWithinTimeRange != nil {
+		out.UsageWithinTimeRange = make(map[string]*pb.UsageStats, len(in.UsageWithinTimeRange))
+		for k, v := range in.UsageWithinTimeRange {
+			out.UsageWithinTimeRange[k] = UsageStats_v1alpha1_ToProto(mapCtx, &v)
+		}
+	}
 	// MISSING: CommonUsageWithinTimeRange
 	// MISSING: FavoriteCount
+	return out
+}
+func UsageStats_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.UsageStats) *krmdatacatalogv1alpha1.UsageStats {
+	if in == nil {
+		return nil
+	}
+	out := &krmdatacatalogv1alpha1.UsageStats{}
+	out.TotalCompletions = direct.LazyPtr(in.GetTotalCompletions())
+	out.TotalFailures = direct.LazyPtr(in.GetTotalFailures())
+	out.TotalCancellations = direct.LazyPtr(in.GetTotalCancellations())
+	out.TotalExecutionTimeForCompletionsMillis = direct.LazyPtr(in.GetTotalExecutionTimeForCompletionsMillis())
+	return out
+}
+func UsageStats_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatacatalogv1alpha1.UsageStats) *pb.UsageStats {
+	if in == nil {
+		return nil
+	}
+	out := &pb.UsageStats{}
+	out.TotalCompletions = direct.ValueOf(in.TotalCompletions)
+	out.TotalFailures = direct.ValueOf(in.TotalFailures)
+	out.TotalCancellations = direct.ValueOf(in.TotalCancellations)
+	out.TotalExecutionTimeForCompletionsMillis = direct.ValueOf(in.TotalExecutionTimeForCompletionsMillis)
 	return out
 }
 func VertexDatasetSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.VertexDatasetSpec) *krmdatacatalogv1alpha1.VertexDatasetSpec {

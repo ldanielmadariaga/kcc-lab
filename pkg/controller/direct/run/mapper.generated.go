@@ -43,7 +43,7 @@ func BinaryAuthorization_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Bi
 	}
 	out := &krmrunv1alpha1.BinaryAuthorization{}
 	out.UseDefault = direct.LazyPtr(in.GetUseDefault())
-	// MISSING: Policy
+	out.Policy = direct.LazyPtr(in.GetPolicy())
 	out.BreakglassJustification = direct.LazyPtr(in.GetBreakglassJustification())
 	return out
 }
@@ -55,9 +55,17 @@ func BinaryAuthorization_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmrunv
 	if oneof := BinaryAuthorization_UseDefault_ToProto(mapCtx, in.UseDefault); oneof != nil {
 		out.BinauthzMethod = oneof
 	}
-	// MISSING: Policy
+	if oneof := BinaryAuthorization_Policy_ToProto(mapCtx, in.Policy); oneof != nil {
+		out.BinauthzMethod = oneof
+	}
 	out.BreakglassJustification = direct.ValueOf(in.BreakglassJustification)
 	return out
+}
+func BinaryAuthorization_Policy_ToProto(mapCtx *direct.MapContext, in *string) *pb.BinaryAuthorization_Policy {
+	if in == nil {
+		return nil
+	}
+	return &pb.BinaryAuthorization_Policy{Policy: *in}
 }
 func BinaryAuthorization_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.BinaryAuthorization) *krmrunv1beta1.BinaryAuthorization {
 	if in == nil {
@@ -104,13 +112,7 @@ func CloudSQLInstance_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Cloud
 		return nil
 	}
 	out := &krmrunv1alpha1.CloudSQLInstance{}
-
-	if v := in.GetInstances(); len(v) != 0 {
-		for i := range v {
-			out.InstanceRefs = append(out.InstanceRefs, &refsv1beta1.SQLInstanceRef{External: v[i]})
-		}
-	}
-
+	out.Instances = in.Instances
 	return out
 }
 func CloudSQLInstance_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmrunv1alpha1.CloudSQLInstance) *pb.CloudSqlInstance {
@@ -118,13 +120,7 @@ func CloudSQLInstance_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmrunv1al
 		return nil
 	}
 	out := &pb.CloudSqlInstance{}
-
-	if v := in.InstanceRefs; len(v) != 0 {
-		for i := range v {
-			out.Instances = append(out.Instances, v[i].External)
-		}
-	}
-
+	out.Instances = in.Instances
 	return out
 }
 func CloudSQLInstance_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.CloudSqlInstance) *krmrunv1beta1.CloudSQLInstance {
@@ -204,6 +200,60 @@ func Condition_RevisionReason_ToProto(mapCtx *direct.MapContext, in *string) *pb
 	return &pb.Condition_RevisionReason_{RevisionReason: direct.Enum_ToProto[pb.Condition_RevisionReason](mapCtx, in)}
 }
 func Condition_ExecutionReason_ToProto(mapCtx *direct.MapContext, in *string) *pb.Condition_ExecutionReason_ {
+	if in == nil {
+		return nil
+	}
+	return &pb.Condition_ExecutionReason_{ExecutionReason: direct.Enum_ToProto[pb.Condition_ExecutionReason](mapCtx, in)}
+}
+func ConditionObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Condition) *krmrunv1alpha1.ConditionObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmrunv1alpha1.ConditionObservedState{}
+	out.Type = direct.LazyPtr(in.GetType())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.Message = direct.LazyPtr(in.GetMessage())
+	out.LastTransitionTime = direct.StringTimestamp_FromProto(mapCtx, in.GetLastTransitionTime())
+	out.Severity = direct.Enum_FromProto(mapCtx, in.GetSeverity())
+	out.Reason = direct.Enum_FromProto(mapCtx, in.GetReason())
+	out.RevisionReason = direct.Enum_FromProto(mapCtx, in.GetRevisionReason())
+	out.ExecutionReason = direct.Enum_FromProto(mapCtx, in.GetExecutionReason())
+	return out
+}
+func ConditionObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmrunv1alpha1.ConditionObservedState) *pb.Condition {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Condition{}
+	out.Type = direct.ValueOf(in.Type)
+	out.State = direct.Enum_ToProto[pb.Condition_State](mapCtx, in.State)
+	out.Message = direct.ValueOf(in.Message)
+	out.LastTransitionTime = direct.StringTimestamp_ToProto(mapCtx, in.LastTransitionTime)
+	out.Severity = direct.Enum_ToProto[pb.Condition_Severity](mapCtx, in.Severity)
+	if oneof := ConditionObservedState_Reason_ToProto(mapCtx, in.Reason); oneof != nil {
+		out.Reasons = oneof
+	}
+	if oneof := ConditionObservedState_RevisionReason_ToProto(mapCtx, in.RevisionReason); oneof != nil {
+		out.Reasons = oneof
+	}
+	if oneof := ConditionObservedState_ExecutionReason_ToProto(mapCtx, in.ExecutionReason); oneof != nil {
+		out.Reasons = oneof
+	}
+	return out
+}
+func ConditionObservedState_Reason_ToProto(mapCtx *direct.MapContext, in *string) *pb.Condition_Reason {
+	if in == nil {
+		return nil
+	}
+	return &pb.Condition_Reason{Reason: direct.Enum_ToProto[pb.Condition_CommonReason](mapCtx, in)}
+}
+func ConditionObservedState_RevisionReason_ToProto(mapCtx *direct.MapContext, in *string) *pb.Condition_RevisionReason_ {
+	if in == nil {
+		return nil
+	}
+	return &pb.Condition_RevisionReason_{RevisionReason: direct.Enum_ToProto[pb.Condition_RevisionReason](mapCtx, in)}
+}
+func ConditionObservedState_ExecutionReason_ToProto(mapCtx *direct.MapContext, in *string) *pb.Condition_ExecutionReason_ {
 	if in == nil {
 		return nil
 	}
@@ -540,9 +590,7 @@ func GCSVolumeSource_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.GCSVol
 		return nil
 	}
 	out := &krmrunv1alpha1.GCSVolumeSource{}
-	if in.GetBucket() != "" {
-		out.BucketRef = &krmstoragev1beta1.StorageBucketRef{External: in.GetBucket()}
-	}
+	out.Bucket = direct.LazyPtr(in.GetBucket())
 	out.ReadOnly = direct.LazyPtr(in.GetReadOnly())
 	out.MountOptions = in.MountOptions
 	return out
@@ -552,9 +600,7 @@ func GCSVolumeSource_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmrunv1alp
 		return nil
 	}
 	out := &pb.GCSVolumeSource{}
-	if in.BucketRef != nil {
-		out.Bucket = in.BucketRef.External
-	}
+	out.Bucket = direct.ValueOf(in.Bucket)
 	out.ReadOnly = direct.ValueOf(in.ReadOnly)
 	out.MountOptions = in.MountOptions
 	return out
@@ -881,24 +927,6 @@ func ResourceRequirements_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmrunv
 	// MISSING: StartupCPUBoost
 	return out
 }
-func RunCondition_Reason_ToProto(mapCtx *direct.MapContext, in *string) *pb.Condition_Reason {
-	if in == nil {
-		return nil
-	}
-	return &pb.Condition_Reason{Reason: direct.Enum_ToProto[pb.Condition_CommonReason](mapCtx, in)}
-}
-func RunCondition_RevisionReason_ToProto(mapCtx *direct.MapContext, in *string) *pb.Condition_RevisionReason_ {
-	if in == nil {
-		return nil
-	}
-	return &pb.Condition_RevisionReason_{RevisionReason: direct.Enum_ToProto[pb.Condition_RevisionReason](mapCtx, in)}
-}
-func RunCondition_ExecutionReason_ToProto(mapCtx *direct.MapContext, in *string) *pb.Condition_ExecutionReason_ {
-	if in == nil {
-		return nil
-	}
-	return &pb.Condition_ExecutionReason_{ExecutionReason: direct.Enum_ToProto[pb.Condition_ExecutionReason](mapCtx, in)}
-}
 func RunJobObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Job) *krmrunv1beta1.RunJobObservedState {
 	if in == nil {
 		return nil
@@ -1011,7 +1039,6 @@ func RunWorkerPoolObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *
 	// MISSING: Name
 	out.Uid = direct.ValueOf(in.Uid)
 	out.Generation = direct.ValueOf(in.Generation)
-	// MISSING: Labels
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
@@ -1020,12 +1047,11 @@ func RunWorkerPoolObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *
 	out.LastModifier = direct.ValueOf(in.LastModifier)
 	out.Template = WorkerPoolRevisionTemplateObservedState_v1alpha1_ToProto(mapCtx, in.Template)
 	out.ObservedGeneration = direct.ValueOf(in.ObservedGeneration)
-	out.TerminalCondition = RunCondition_v1alpha1_ToProto(mapCtx, in.TerminalCondition)
-	// MISSING: Conditions
+	out.TerminalCondition = ConditionObservedState_v1alpha1_ToProto(mapCtx, in.TerminalCondition)
+	out.Conditions = direct.Slice_ToProto(mapCtx, in.Conditions, ConditionObservedState_v1alpha1_ToProto)
 	out.LatestReadyRevision = direct.ValueOf(in.LatestReadyRevision)
 	out.LatestCreatedRevision = direct.ValueOf(in.LatestCreatedRevision)
 	out.InstanceSplitStatuses = direct.Slice_ToProto(mapCtx, in.InstanceSplitStatuses, InstanceSplitStatus_v1alpha1_ToProto)
-	out.CustomAudiences = in.CustomAudiences
 	out.SatisfiesPzs = direct.ValueOf(in.SatisfiesPzs)
 	out.Reconciling = direct.ValueOf(in.Reconciling)
 	out.Etag = direct.ValueOf(in.Etag)
@@ -1038,7 +1064,7 @@ func RunWorkerPoolSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Work
 	out := &krmrunv1alpha1.RunWorkerPoolSpec{}
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.Annotations = in.Annotations
 	out.Client = direct.LazyPtr(in.GetClient())
 	out.ClientVersion = direct.LazyPtr(in.GetClientVersion())
@@ -1047,7 +1073,6 @@ func RunWorkerPoolSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Work
 	out.Template = WorkerPoolRevisionTemplate_v1alpha1_FromProto(mapCtx, in.GetTemplate())
 	out.InstanceSplits = direct.Slice_FromProto(mapCtx, in.InstanceSplits, InstanceSplit_v1alpha1_FromProto)
 	out.Scaling = WorkerPoolScaling_v1alpha1_FromProto(mapCtx, in.GetScaling())
-	// MISSING: Conditions
 	out.CustomAudiences = in.CustomAudiences
 	return out
 }
@@ -1056,12 +1081,8 @@ func SecretKeySelector_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Secr
 		return nil
 	}
 	out := &krmrunv1alpha1.SecretKeySelector{}
-	if in.GetSecret() != "" {
-		out.SecretRef = &krmsecretmanagerv1beta1.SecretRef{External: in.GetSecret()}
-	}
-	if in.GetVersion() != "" {
-		out.VersionRef = &krmsecretmanagerv1beta1.SecretVersionRef{External: in.GetVersion()}
-	}
+	out.Secret = direct.LazyPtr(in.GetSecret())
+	out.Version = direct.LazyPtr(in.GetVersion())
 	return out
 }
 func SecretKeySelector_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmrunv1alpha1.SecretKeySelector) *pb.SecretKeySelector {
@@ -1069,12 +1090,8 @@ func SecretKeySelector_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmrunv1a
 		return nil
 	}
 	out := &pb.SecretKeySelector{}
-	if in.SecretRef != nil {
-		out.Secret = in.SecretRef.External
-	}
-	if in.VersionRef != nil {
-		out.Version = in.VersionRef.External
-	}
+	out.Secret = direct.ValueOf(in.Secret)
+	out.Version = direct.ValueOf(in.Version)
 	return out
 }
 func SecretKeySelector_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.SecretKeySelector) *krmrunv1beta1.SecretKeySelector {
@@ -1108,9 +1125,7 @@ func SecretVolumeSource_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Sec
 		return nil
 	}
 	out := &krmrunv1alpha1.SecretVolumeSource{}
-	if in.GetSecret() != "" {
-		out.SecretRef = &krmsecretmanagerv1beta1.SecretRef{External: in.GetSecret()}
-	}
+	out.Secret = direct.LazyPtr(in.GetSecret())
 	out.Items = direct.Slice_FromProto(mapCtx, in.Items, VersionToPath_v1alpha1_FromProto)
 	out.DefaultMode = direct.LazyPtr(in.GetDefaultMode())
 	return out
@@ -1120,9 +1135,7 @@ func SecretVolumeSource_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmrunv1
 		return nil
 	}
 	out := &pb.SecretVolumeSource{}
-	if in.SecretRef != nil {
-		out.Secret = in.SecretRef.External
-	}
+	out.Secret = direct.ValueOf(in.Secret)
 	out.Items = direct.Slice_ToProto(mapCtx, in.Items, VersionToPath_v1alpha1_ToProto)
 	out.DefaultMode = direct.ValueOf(in.DefaultMode)
 	return out
@@ -1238,9 +1251,7 @@ func VPCAccess_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.VpcAccess) *
 		return nil
 	}
 	out := &krmrunv1alpha1.VPCAccess{}
-	if in.GetConnector() != "" {
-		out.ConnectorRef = &krmvpcaccessv1beta1.VPCAccessConnectorRef{External: in.GetConnector()}
-	}
+	out.Connector = direct.LazyPtr(in.GetConnector())
 	out.Egress = direct.Enum_FromProto(mapCtx, in.GetEgress())
 	out.NetworkInterfaces = direct.Slice_FromProto(mapCtx, in.NetworkInterfaces, VPCAccess_NetworkInterface_v1alpha1_FromProto)
 	return out
@@ -1250,9 +1261,7 @@ func VPCAccess_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmrunv1alpha1.VP
 		return nil
 	}
 	out := &pb.VpcAccess{}
-	if in.ConnectorRef != nil {
-		out.Connector = in.ConnectorRef.External
-	}
+	out.Connector = direct.ValueOf(in.Connector)
 	out.Egress = direct.Enum_ToProto[pb.VpcAccess_VpcEgress](mapCtx, in.Egress)
 	out.NetworkInterfaces = direct.Slice_ToProto(mapCtx, in.NetworkInterfaces, VPCAccess_NetworkInterface_v1alpha1_ToProto)
 	return out
@@ -1286,12 +1295,8 @@ func VPCAccess_NetworkInterface_v1alpha1_FromProto(mapCtx *direct.MapContext, in
 		return nil
 	}
 	out := &krmrunv1alpha1.VPCAccess_NetworkInterface{}
-	if in.GetNetwork() != "" {
-		out.NetworkRef = &krmcomputerefs.ComputeNetworkRef{External: in.GetNetwork()}
-	}
-	if in.GetSubnetwork() != "" {
-		out.SubnetworkRef = &krmcomputev1beta1.ComputeSubnetworkRef{External: in.GetSubnetwork()}
-	}
+	out.Network = direct.LazyPtr(in.GetNetwork())
+	out.Subnetwork = direct.LazyPtr(in.GetSubnetwork())
 	out.Tags = in.Tags
 	return out
 }
@@ -1300,12 +1305,8 @@ func VPCAccess_NetworkInterface_v1alpha1_ToProto(mapCtx *direct.MapContext, in *
 		return nil
 	}
 	out := &pb.VpcAccess_NetworkInterface{}
-	if in.NetworkRef != nil {
-		out.Network = in.NetworkRef.External
-	}
-	if in.SubnetworkRef != nil {
-		out.Subnetwork = in.SubnetworkRef.External
-	}
+	out.Network = direct.ValueOf(in.Network)
+	out.Subnetwork = direct.ValueOf(in.Subnetwork)
 	out.Tags = in.Tags
 	return out
 }
@@ -1343,9 +1344,7 @@ func VersionToPath_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.VersionT
 	}
 	out := &krmrunv1alpha1.VersionToPath{}
 	out.Path = direct.LazyPtr(in.GetPath())
-	if in.GetVersion() != "" {
-		out.VersionRef = &krmsecretmanagerv1beta1.SecretVersionRef{External: in.GetVersion()}
-	}
+	out.Version = direct.LazyPtr(in.GetVersion())
 	out.Mode = direct.LazyPtr(in.GetMode())
 	return out
 }
@@ -1355,9 +1354,7 @@ func VersionToPath_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmrunv1alpha
 	}
 	out := &pb.VersionToPath{}
 	out.Path = direct.ValueOf(in.Path)
-	if in.VersionRef != nil {
-		out.Version = in.VersionRef.External
-	}
+	out.Version = direct.ValueOf(in.Version)
 	out.Mode = direct.ValueOf(in.Mode)
 	return out
 }
@@ -1499,17 +1496,13 @@ func WorkerPoolRevisionTemplate_v1alpha1_FromProto(mapCtx *direct.MapContext, in
 	}
 	out := &krmrunv1alpha1.WorkerPoolRevisionTemplate{}
 	out.Revision = direct.LazyPtr(in.GetRevision())
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.Annotations = in.Annotations
 	out.VPCAccess = VPCAccess_v1alpha1_FromProto(mapCtx, in.GetVpcAccess())
-	if in.GetServiceAccount() != "" {
-		out.ServiceAccountRef = &refsv1beta1.IAMServiceAccountRef{External: in.GetServiceAccount()}
-	}
+	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
 	out.Containers = direct.Slice_FromProto(mapCtx, in.Containers, Container_v1alpha1_FromProto)
 	out.Volumes = direct.Slice_FromProto(mapCtx, in.Volumes, Volume_v1alpha1_FromProto)
-	if in.GetEncryptionKey() != "" {
-		out.EncryptionKeyRef = &refsv1beta1.KMSCryptoKeyRef{External: in.GetEncryptionKey()}
-	}
+	out.EncryptionKey = direct.LazyPtr(in.GetEncryptionKey())
 	out.ServiceMesh = ServiceMesh_v1alpha1_FromProto(mapCtx, in.GetServiceMesh())
 	out.EncryptionKeyRevocationAction = direct.Enum_FromProto(mapCtx, in.GetEncryptionKeyRevocationAction())
 	out.EncryptionKeyShutdownDuration = direct.StringDuration_FromProto(mapCtx, in.GetEncryptionKeyShutdownDuration())
@@ -1522,17 +1515,13 @@ func WorkerPoolRevisionTemplate_v1alpha1_ToProto(mapCtx *direct.MapContext, in *
 	}
 	out := &pb.WorkerPoolRevisionTemplate{}
 	out.Revision = direct.ValueOf(in.Revision)
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.Annotations = in.Annotations
 	out.VpcAccess = VPCAccess_v1alpha1_ToProto(mapCtx, in.VPCAccess)
-	if in.ServiceAccountRef != nil {
-		out.ServiceAccount = in.ServiceAccountRef.External
-	}
+	out.ServiceAccount = direct.ValueOf(in.ServiceAccount)
 	out.Containers = direct.Slice_ToProto(mapCtx, in.Containers, Container_v1alpha1_ToProto)
 	out.Volumes = direct.Slice_ToProto(mapCtx, in.Volumes, Volume_v1alpha1_ToProto)
-	if in.EncryptionKeyRef != nil {
-		out.EncryptionKey = in.EncryptionKeyRef.External
-	}
+	out.EncryptionKey = direct.ValueOf(in.EncryptionKey)
 	out.ServiceMesh = ServiceMesh_v1alpha1_ToProto(mapCtx, in.ServiceMesh)
 	out.EncryptionKeyRevocationAction = direct.Enum_ToProto[pb.EncryptionKeyRevocationAction](mapCtx, in.EncryptionKeyRevocationAction)
 	out.EncryptionKeyShutdownDuration = direct.StringDuration_ToProto(mapCtx, in.EncryptionKeyShutdownDuration)
@@ -1544,7 +1533,7 @@ func WorkerPoolRevisionTemplateObservedState_v1alpha1_FromProto(mapCtx *direct.M
 		return nil
 	}
 	out := &krmrunv1alpha1.WorkerPoolRevisionTemplateObservedState{}
-	out.Revision = direct.LazyPtr(in.GetRevision())
+	// MISSING: Revision
 	// MISSING: Labels
 	// MISSING: Annotations
 	// MISSING: VPCAccess
@@ -1563,7 +1552,7 @@ func WorkerPoolRevisionTemplateObservedState_v1alpha1_ToProto(mapCtx *direct.Map
 		return nil
 	}
 	out := &pb.WorkerPoolRevisionTemplate{}
-	out.Revision = direct.ValueOf(in.Revision)
+	// MISSING: Revision
 	// MISSING: Labels
 	// MISSING: Annotations
 	// MISSING: VPCAccess

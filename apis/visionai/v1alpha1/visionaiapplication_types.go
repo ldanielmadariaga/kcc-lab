@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,11 +17,8 @@ package v1alpha1
 import (
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
-	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
-
-var _ = apiextensionsv1.JSON{}
 
 var VisionAIApplicationGVK = GroupVersion.WithKind("VisionAIApplication")
 
@@ -32,41 +29,31 @@ type VisionAIApplicationSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/applications/{application}
 	Location *string `json:"location"`
 
 	// The VisionAIApplication name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Labels as key value pairs
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.labels
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// Required. A user friendly display name for the solution.
-	// +kubebuilder:validation:Required
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// A description for this application.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.description
 	Description *string `json:"description,omitempty"`
 
 	// Application graph configuration.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.application_configs
 	ApplicationConfigs *ApplicationConfigs `json:"applicationConfigs,omitempty"`
 
 	// Billing mode of the application.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.billing_mode
 	BillingMode *string `json:"billingMode,omitempty"`
-}
-
-// +kubebuilder:validation:XPreserveUnknownFields
-// +kcc:proto=google.cloud.visionai.v1.AIEnabledDevicesInputConfig
-type AiEnabledDevicesInputConfig struct {
-}
-
-// +kubebuilder:validation:XPreserveUnknownFields
-// +kcc:proto=google.cloud.visionai.v1.GeneralObjectDetectionConfig
-type GeneralObjectDetectionConfig struct {
-}
-
-// +kubebuilder:validation:XPreserveUnknownFields
-// +kcc:proto=google.cloud.visionai.v1.UniversalInputConfig
-type UniversalInputConfig struct {
 }
 
 // VisionAIApplicationStatus defines the config connector machine state of VisionAIApplication
@@ -88,16 +75,21 @@ type VisionAIApplicationStatus struct {
 // VisionAIApplicationObservedState is the state of the VisionAIApplication resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.visionai.v1.Application
 type VisionAIApplicationObservedState struct {
-	// Output only. Create timestamp
+	// Output only. [Output only] Create timestamp
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
-	// Output only. Update timestamp
+	// Output only. [Output only] Update timestamp
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
-	// Output only. Application graph runtime info. Only exists when application state equals to DEPLOYED.
+	// Output only. Application graph runtime info. Only exists when application
+	//  state equals to DEPLOYED.
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.runtime_info
 	RuntimeInfo *Application_ApplicationRuntimeInfo `json:"runtimeInfo,omitempty"`
 
 	// Output only. State of the application.
+	// +kcc:proto:field=google.cloud.visionai.v1.Application.state
 	State *string `json:"state,omitempty"`
 }
 
@@ -107,7 +99,6 @@ type VisionAIApplicationObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -130,35 +121,6 @@ type VisionAIApplicationList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []VisionAIApplication `json:"items"`
-}
-
-type VisionAICorpusRef struct {
-	// A reference to an externally managed VisionAI Corpus resource.
-	// Should be in the format "projects/{{projectID}}/locations/{{location}}/corpora/{{corpusID}}".
-	External string `json:"external,omitempty"`
-
-	// The name of a VisionAICorpus resource.
-	Name string `json:"name,omitempty"`
-
-	// The namespace of a VisionAICorpus resource.
-	Namespace string `json:"namespace,omitempty"`
-}
-
-// +kubebuilder:validation:XPreserveUnknownFields
-// +kcc:proto=google.cloud.visionai.v1.MediaWarehouseConfig
-type MediaWarehouseConfig struct {
-	// Resource name of the Media Warehouse corpus.
-	// +kcc:proto:field=google.cloud.visionai.v1.MediaWarehouseConfig.corpus
-	CorpusRef *VisionAICorpusRef `json:"corpusRef,omitempty"`
-
-	// Deprecated.
-	// +kcc:proto:field=google.cloud.visionai.v1.MediaWarehouseConfig.region
-	Region *string `json:"region,omitempty"`
-
-	// The duration for which all media assets, associated metadata, and search
-	//  documents can exist.
-	// +kcc:proto:field=google.cloud.visionai.v1.MediaWarehouseConfig.ttl
-	TTL *string `json:"ttl,omitempty"`
 }
 
 func init() {

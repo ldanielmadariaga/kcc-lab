@@ -12,5 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// +kcc:proto=google.bigquerydatapolicy.v1
+// +kcc:proto=google.cloud.bigquery.datapolicies.v1beta1
 package v1alpha1

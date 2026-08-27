@@ -40,8 +40,6 @@ type AnnotationSpec struct {
 	Description *string `json:"description,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.datalabeling.v1beta1.AnnotationSpecSet", skipping
-
 // +kcc:proto=google.cloud.datalabeling.v1beta1.AnnotationSpecSet
 type AnnotationSpecSet struct {
 	// Output only. The AnnotationSpecSet resource name in the following format:
@@ -70,7 +68,6 @@ type AnnotationSpecSet struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.AnnotationSpecSet.blocking_resources
 	BlockingResources []string `json:"blockingResources,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.datalabeling.v1beta1.Attempt
 type Attempt struct {
@@ -117,7 +114,9 @@ type BoundingBoxEvaluationOptions struct {
 // +kcc:proto=google.cloud.datalabeling.v1beta1.BoundingPolyConfig
 type BoundingPolyConfig struct {
 	// Required. Annotation spec set resource name.
+	// +kcc:guess=possible-reference target=DataLabelingAnnotationSpecSet
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.BoundingPolyConfig.annotation_spec_set
+	// +required
 	AnnotationSpecSet *string `json:"annotationSpecSet,omitempty"`
 
 	// Optional. Instruction message showed on contributors UI.
@@ -138,8 +137,6 @@ type CsvInstruction struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.CsvInstruction.gcs_file_uri
 	GCSFileURI *string `json:"gcsFileURI,omitempty"`
 }
-
-/* found existing non-generated go type with proto tag "google.cloud.datalabeling.v1beta1.Dataset", skipping
 
 // +kcc:proto=google.cloud.datalabeling.v1beta1.Dataset
 type Dataset struct {
@@ -176,7 +173,6 @@ type Dataset struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Dataset.data_item_count
 	DataItemCount *int64 `json:"dataItemCount,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.datalabeling.v1beta1.EvaluationConfig
 type EvaluationConfig struct {
@@ -186,8 +182,6 @@ type EvaluationConfig struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationConfig.bounding_box_evaluation_options
 	BoundingBoxEvaluationOptions *BoundingBoxEvaluationOptions `json:"boundingBoxEvaluationOptions,omitempty"`
 }
-
-/* found existing non-generated go type with proto tag "google.cloud.datalabeling.v1beta1.EvaluationJob", skipping
 
 // +kcc:proto=google.cloud.datalabeling.v1beta1.EvaluationJob
 type EvaluationJob struct {
@@ -242,6 +236,7 @@ type EvaluationJob struct {
 	//  following format:
 	//
 	//  "projects/<var>{project_id}</var>/annotationSpecSets/<var>{annotation_spec_set_id}</var>"
+	// +kcc:guess=possible-reference target=DataLabelingAnnotationSpecSet
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.annotation_spec_set
 	AnnotationSpecSet *string `json:"annotationSpecSet,omitempty"`
 
@@ -262,7 +257,6 @@ type EvaluationJob struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.datalabeling.v1beta1.EvaluationJobAlertConfig
 type EvaluationJobAlertConfig struct {
@@ -398,13 +392,16 @@ type GCSSource struct {
 // +kcc:proto=google.cloud.datalabeling.v1beta1.HumanAnnotationConfig
 type HumanAnnotationConfig struct {
 	// Required. Instruction resource name.
+	// +kcc:guess=possible-reference target=DataLabelingInstruction
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.HumanAnnotationConfig.instruction
+	// +required
 	Instruction *string `json:"instruction,omitempty"`
 
 	// Required. A human-readable name for AnnotatedDataset defined by
 	//  users. Maximum of 64 characters
 	//  .
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.HumanAnnotationConfig.annotated_dataset_display_name
+	// +required
 	AnnotatedDatasetDisplayName *string `json:"annotatedDatasetDisplayName,omitempty"`
 
 	// Optional. A human-readable description for AnnotatedDataset.
@@ -454,7 +451,9 @@ type HumanAnnotationConfig struct {
 // +kcc:proto=google.cloud.datalabeling.v1beta1.ImageClassificationConfig
 type ImageClassificationConfig struct {
 	// Required. Annotation spec set resource name.
+	// +kcc:guess=possible-reference target=DataLabelingAnnotationSpecSet
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.ImageClassificationConfig.annotation_spec_set
+	// +required
 	AnnotationSpecSet *string `json:"annotationSpecSet,omitempty"`
 
 	// Optional. If allow_multi_label is true, contributors are able to choose
@@ -498,8 +497,6 @@ type InputConfig struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.InputConfig.classification_metadata
 	ClassificationMetadata *ClassificationMetadata `json:"classificationMetadata,omitempty"`
 }
-
-/* found existing non-generated go type with proto tag "google.cloud.datalabeling.v1beta1.Instruction", skipping
 
 // +kcc:proto=google.cloud.datalabeling.v1beta1.Instruction
 type Instruction struct {
@@ -548,7 +545,6 @@ type Instruction struct {
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Instruction.blocking_resources
 	BlockingResources []string `json:"blockingResources,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.datalabeling.v1beta1.PdfInstruction
 type PdfInstruction struct {
@@ -574,7 +570,9 @@ type TextClassificationConfig struct {
 	AllowMultiLabel *bool `json:"allowMultiLabel,omitempty"`
 
 	// Required. Annotation spec set resource name.
+	// +kcc:guess=possible-reference target=DataLabelingAnnotationSpecSet
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.TextClassificationConfig.annotation_spec_set
+	// +required
 	AnnotationSpecSet *string `json:"annotationSpecSet,omitempty"`
 
 	// Optional. Configs for sentiment selection.
@@ -589,4 +587,29 @@ type TextMetadata struct {
 	//  Default value is en-US.
 	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.TextMetadata.language_code
 	LanguageCode *string `json:"languageCode,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.datalabeling.v1beta1.Dataset
+type DatasetObservedState struct {
+	// Output only. Time the dataset is created.
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Dataset.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.datalabeling.v1beta1.EvaluationJob
+type EvaluationJobObservedState struct {
+	// Output only. Timestamp of when this evaluation job was created.
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.EvaluationJob.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.datalabeling.v1beta1.Instruction
+type InstructionObservedState struct {
+	// Output only. Creation time of instruction.
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Instruction.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Last update time of instruction.
+	// +kcc:proto:field=google.cloud.datalabeling.v1beta1.Instruction.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }

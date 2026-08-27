@@ -15,152 +15,37 @@
 package v1alpha1
 
 import (
-	container "github.com/GoogleCloudPlatform/k8s-config-connector/apis/container/v1beta1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var GKEBackupBackupPlanGVK = GroupVersion.WithKind("GKEBackupBackupPlan")
 
-// +kcc:proto=google.cloud.gkebackup.v1.EncryptionKey
-type EncryptionKey struct {
-	// Optional. Google Cloud KMS encryption key.
-	// +kcc:proto:field=google.cloud.gkebackup.v1.EncryptionKey.gcp_kms_encryption_key
-	KMSKeyRef *refsv1beta1.KMSCryptoKeyRef `json:"kmsKeyRef,omitempty"`
-}
-
-// +kcc:observedstate:proto=google.cloud.gkebackup.v1.BackupPlan.Schedule
-type BackupPlan_ScheduleObservedState struct {
-	// Output only. Start time of next scheduled backup under this BackupPlan by
-	//  either cron_schedule or rpo config.
-	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.Schedule.next_scheduled_backup_time
-	NextScheduledBackupTime *string `json:"nextScheduledBackupTime,omitempty"`
-}
-
-// +kcc:proto=google.cloud.gkebackup.v1.RpoConfig
-type RPOConfig struct {
-	// Required. Defines the target RPO for the BackupPlan in minutes, which means
-	//  the target maximum data loss in time that is acceptable for this
-	//  BackupPlan. This must be at least 60, i.e., 1 hour, and at most 86400,
-	//  i.e., 60 days.
-	// +kcc:proto:field=google.cloud.gkebackup.v1.RpoConfig.target_rpo_minutes
-	TargetRPOMinutes *int32 `json:"targetRPOMinutes,omitempty"`
-
-	// Optional. User specified time windows during which backup can NOT happen
-	//  for this BackupPlan - backups should start and finish outside of any given
-	//  exclusion window. Note: backup jobs will be scheduled to start and
-	//  finish outside the duration of the window as much as possible, but
-	//  running jobs will not get canceled when it runs into the window.
-	//  All the time and date values in exclusion_windows entry in the API are in
-	//  UTC.
-	//  We only allow <=1 recurrence (daily or weekly) exclusion window for a
-	//  BackupPlan while no restriction on number of single occurrence
-	//  windows.
-	// +kcc:proto:field=google.cloud.gkebackup.v1.RpoConfig.exclusion_windows
-	ExclusionWindows []ExclusionWindow `json:"exclusionWindows,omitempty"`
-}
-
-// +kcc:proto=google.cloud.gkebackup.v1.ExclusionWindow
-type ExclusionWindow struct {
-	// Required. Specifies the start time of the window using time of the day in
-	//  UTC.
-	// +kcc:proto:field=google.cloud.gkebackup.v1.ExclusionWindow.start_time
-	// +required
-	StartTime *TimeOfDay `json:"startTime,omitempty"`
-
-	// Required. Specifies duration of the window.
-	//  Duration must be >= 5 minutes and < (target RPO - 20 minutes).
-	//  Additional restrictions based on the recurrence type to allow some time for
-	//  backup to happen:
-	//  - single_occurrence_date:  no restriction, but UI may warn about this when
-	//  duration >= target RPO
-	//  - daily window: duration < 24 hours
-	//  - weekly window:
-	//    - days of week includes all seven days of a week: duration < 24 hours
-	//    - all other weekly window: duration < 168 hours (i.e., 24 * 7 hours)
-	// +kcc:proto:field=google.cloud.gkebackup.v1.ExclusionWindow.duration
-	// +required
-	Duration *string `json:"duration,omitempty"`
-
-	// No recurrence. The exclusion window occurs only once and on this
-	//  date in UTC.
-	// +kcc:proto:field=google.cloud.gkebackup.v1.ExclusionWindow.single_occurrence_date
-	SingleOccurrenceDate *Date `json:"singleOccurrenceDate,omitempty"`
-
-	// The exclusion window occurs every day if set to "True".
-	//  Specifying this field to "False" is an error.
-	// +kcc:proto:field=google.cloud.gkebackup.v1.ExclusionWindow.daily
-	Daily *bool `json:"daily,omitempty"`
-
-	// The exclusion window occurs on these days of each week in UTC.
-	// +kcc:proto:field=google.cloud.gkebackup.v1.ExclusionWindow.days_of_week
-	DaysOfWeek *ExclusionWindow_DayOfWeekList `json:"daysOfWeek,omitempty"`
-}
-
-// +kcc:proto=google.cloud.gkebackup.v1.BackupPlan.Schedule
-type BackupPlan_Schedule struct {
-	// Optional. A standard [cron](https://wikipedia.com/wiki/cron) string that
-	//  defines a repeating schedule for creating Backups via this BackupPlan.
-	//  This is mutually exclusive with the
-	//  [rpo_config][google.cloud.gkebackup.v1.BackupPlan.Schedule.rpo_config]
-	//  field since at most one schedule can be defined for a BackupPlan. If this
-	//  is defined, then
-	//  [backup_retain_days][google.cloud.gkebackup.v1.BackupPlan.RetentionPolicy.backup_retain_days]
-	//  must also be defined.
-	//
-	//  Default (empty): no automatic backup creation will occur.
-	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.Schedule.cron_schedule
-	CronSchedule *string `json:"cronSchedule,omitempty"`
-
-	// Optional. This flag denotes whether automatic Backup creation is paused
-	//  for this BackupPlan.
-	//
-	//  Default: False
-	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.Schedule.paused
-	Paused *bool `json:"paused,omitempty"`
-
-	// Optional. Defines the RPO schedule configuration for this BackupPlan.
-	//  This is mutually exclusive with the
-	//  [cron_schedule][google.cloud.gkebackup.v1.BackupPlan.Schedule.cron_schedule]
-	//  field since at most one schedule can be defined for a BackupPLan. If this
-	//  is defined, then
-	//  [backup_retain_days][google.cloud.gkebackup.v1.BackupPlan.RetentionPolicy.backup_retain_days]
-	//  must also be defined.
-	//
-	//  Default (empty): no automatic backup creation will occur.
-	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.Schedule.rpo_config
-	RPOConfig *RPOConfig `json:"rpoConfig,omitempty"`
-}
-
-type Parent struct {
-	// +required
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
-	// Immutable.
-	// +required
-	Location string `json:"location"`
-}
-
 // GKEBackupBackupPlanSpec defines the desired state of GKEBackupBackupPlan
 // +kcc:spec:proto=google.cloud.gkebackup.v1.BackupPlan
 type GKEBackupBackupPlanSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/backupPlans/{backup_plan}
+	Location *string `json:"location"`
+
 	// The GKEBackupBackupPlan name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	Parent `json:",inline"`
-
 	// Optional. User specified descriptive string for this BackupPlan.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.description
 	Description *string `json:"description,omitempty"`
 
 	// Required. Immutable. The source cluster from which Backups will be created
-	//  via this BackupPlan.
+	//  via this BackupPlan. Valid formats:
+	//
+	//  - `projects/*/locations/*/clusters/*`
+	//  - `projects/*/zones/*/clusters/*`
 	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.cluster
 	// +required
-	ClusterRef *container.ContainerClusterRef `json:"clusterRef,omitempty"`
+	Cluster *string `json:"cluster,omitempty"`
 
 	// Optional. RetentionPolicy governs lifecycle of Backups created under this
 	//  plan.
@@ -210,16 +95,10 @@ type GKEBackupBackupPlanStatus struct {
 // GKEBackupBackupPlanObservedState is the state of the GKEBackupBackupPlan resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.gkebackup.v1.BackupPlan
 type GKEBackupBackupPlanObservedState struct {
-	// Output only. The full name of the BackupPlan resource.
-	//  Format: `projects/*/locations/*/backupPlans/*`
-	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. Server generated global unique identifier of
 	//  [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) format.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.uid
-	UID *string `json:"uid,omitempty"`
+	Uid *string `json:"uid,omitempty"`
 
 	// Output only. The timestamp when this BackupPlan resource was created.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.create_time
@@ -259,7 +138,8 @@ type GKEBackupBackupPlanObservedState struct {
 	State *string `json:"state,omitempty"`
 
 	// Output only. Human-readable description of why BackupPlan is in the current
-	//  `state`
+	//  `state`. This field is only meant for human readability and should not be
+	//  used programmatically as this field is not guaranteed to be consistent.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.state_reason
 	StateReason *string `json:"stateReason,omitempty"`
 
@@ -267,12 +147,26 @@ type GKEBackupBackupPlanObservedState struct {
 	//  BackupPlan from RPO perspective with 1 being no risk and 5 being highest
 	//  risk.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.rpo_risk_level
-	RPORiskLevel *int32 `json:"rpoRiskLevel,omitempty"`
+	RpoRiskLevel *int32 `json:"rpoRiskLevel,omitempty"`
 
 	// Output only. Human-readable description of why the BackupPlan is in the
 	//  current rpo_risk_level and action items if any.
 	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.rpo_risk_reason
-	RPORiskReason *string `json:"rpoRiskReason,omitempty"`
+	RpoRiskReason *string `json:"rpoRiskReason,omitempty"`
+
+	// Output only. The fully qualified name of the BackupChannel to be used to
+	//  create a backup. This field is set only if the cluster being backed up is
+	//  in a different project.
+	//  `projects/*/locations/*/backupChannels/*`
+	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.backup_channel
+	BackupChannel *string `json:"backupChannel,omitempty"`
+
+	// Output only. Completion time of the last successful Backup. This is sourced
+	//  from a successful Backup's complete_time field. This field is added to
+	//  maintain consistency with BackupPlanBinding to display last successful
+	//  backup time.
+	// +kcc:proto:field=google.cloud.gkebackup.v1.BackupPlan.last_successful_backup_time
+	LastSuccessfulBackupTime *string `json:"lastSuccessfulBackupTime,omitempty"`
 }
 
 // +genclient

@@ -84,6 +84,8 @@ spec:
                           the user token that authorizes the Developer Connect connection.
                           Format: `projects/*/secrets/*/versions/*`.'
                         type: string
+                    required:
+                    - userTokenSecretVersion
                     type: object
                   readAuthorizerCredential:
                     description: Required. An access token with the minimum `repository`
@@ -96,6 +98,8 @@ spec:
                           the user token that authorizes the Developer Connect connection.
                           Format: `projects/*/secrets/*/versions/*`.'
                         type: string
+                    required:
+                    - userTokenSecretVersion
                     type: object
                   webhookSecretSecretVersion:
                     description: Required. Immutable. SecretManager resource containing
@@ -107,6 +111,11 @@ spec:
                     description: Required. The Bitbucket Cloud Workspace ID to be
                       connected to Google Cloud Platform.
                     type: string
+                required:
+                - authorizerCredential
+                - readAuthorizerCredential
+                - webhookSecretSecretVersion
+                - workspace
                 type: object
               bitbucketDataCenterConfig:
                 description: Configuration for connections to an instance of Bitbucket
@@ -122,6 +131,8 @@ spec:
                           the user token that authorizes the Developer Connect connection.
                           Format: `projects/*/secrets/*/versions/*`.'
                         type: string
+                    required:
+                    - userTokenSecretVersion
                     type: object
                   hostURI:
                     description: Required. The URI of the Bitbucket Data Center host
@@ -137,6 +148,8 @@ spec:
                           the user token that authorizes the Developer Connect connection.
                           Format: `projects/*/secrets/*/versions/*`.'
                         type: string
+                    required:
+                    - userTokenSecretVersion
                     type: object
                   serviceDirectoryConfig:
                     description: Optional. Configuration for using Service Directory
@@ -146,34 +159,12 @@ spec:
                       empty, calls to the Bitbucket Data Center will be made over
                       the public internet.
                     properties:
-                      serviceRef:
-                        description: The Service Directory service.
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: A reference to an externally managed DataprocJob
-                              resource. Should be in the format "/projects/*/locations/*/namespaces/*/services/*".
-                            type: string
-                          name:
-                            description: The name of a DataprocJob resource.
-                            type: string
-                          namespace:
-                            description: The namespace of a DataprocJob resource.
-                            type: string
-                        type: object
+                      service:
+                        description: 'Required. The Service Directory service name.
+                          Format: projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}.'
+                        type: string
+                    required:
+                    - service
                     type: object
                   sslCACertificate:
                     description: Optional. SSL certificate authority to trust when
@@ -185,6 +176,11 @@ spec:
                       as `projects/*/secrets/*/versions/*`. This is used to validate
                       webhooks.
                     type: string
+                required:
+                - authorizerCredential
+                - hostURI
+                - readAuthorizerCredential
+                - webhookSecretSecretVersion
                 type: object
               cryptoKeyConfig:
                 description: Optional. The crypto key configuration. This field is
@@ -195,12 +191,19 @@ spec:
                       customer data. For key in Cloud KMS, the key should be in the
                       format of `projects/*/locations/*/keyRings/*/cryptoKeys/*`.
                     type: string
+                required:
+                - keyReference
                 type: object
               disabled:
                 description: Optional. If disabled is set to true, functionality is
                   disabled for this connection. Repository based API methods and webhooks
                   processing for repositories in this connection will be disabled.
                 type: boolean
+              etag:
+                description: Optional. This checksum is computed by the server based
+                  on the value of other fields, and may be sent on update and delete
+                  requests to ensure the client has an up-to-date value before proceeding.
+                type: string
               gitProxyConfig:
                 description: Optional. Configuration for the git proxy feature. Enabling
                   the git proxy allows clients to perform git operations on the repositories
@@ -230,11 +233,15 @@ spec:
                           the OAuth token that authorizes the connection. Format:
                           `projects/*/secrets/*/versions/*`.'
                         type: string
+                    required:
+                    - oauthTokenSecretVersion
                     type: object
                   githubApp:
                     description: Required. Immutable. The GitHub Application that
                       was installed to the GitHub user or organization.
                     type: string
+                required:
+                - githubApp
                 type: object
               githubEnterpriseConfig:
                 description: Configuration for connections to an instance of GitHub
@@ -264,34 +271,12 @@ spec:
                       empty, calls to the GitHub Enterprise server will be made over
                       the public internet.
                     properties:
-                      serviceRef:
-                        description: The Service Directory service.
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: A reference to an externally managed DataprocJob
-                              resource. Should be in the format "/projects/*/locations/*/namespaces/*/services/*".
-                            type: string
-                          name:
-                            description: The name of a DataprocJob resource.
-                            type: string
-                          namespace:
-                            description: The namespace of a DataprocJob resource.
-                            type: string
-                        type: object
+                      service:
+                        description: 'Required. The Service Directory service name.
+                          Format: projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}.'
+                        type: string
+                    required:
+                    - service
                     type: object
                   sslCACertificate:
                     description: Optional. SSL certificate to use for requests to
@@ -301,6 +286,8 @@ spec:
                     description: Optional. SecretManager resource containing the webhook
                       secret of the GitHub App, formatted as `projects/*/secrets/*/versions/*`.
                     type: string
+                required:
+                - hostURI
                 type: object
               gitlabConfig:
                 description: Configuration for connections to gitlab.com.
@@ -316,6 +303,8 @@ spec:
                           the user token that authorizes the Developer Connect connection.
                           Format: `projects/*/secrets/*/versions/*`.'
                         type: string
+                    required:
+                    - userTokenSecretVersion
                     type: object
                   readAuthorizerCredential:
                     description: Required. A GitLab personal access token with the
@@ -328,12 +317,18 @@ spec:
                           the user token that authorizes the Developer Connect connection.
                           Format: `projects/*/secrets/*/versions/*`.'
                         type: string
+                    required:
+                    - userTokenSecretVersion
                     type: object
                   webhookSecretSecretVersion:
                     description: Required. Immutable. SecretManager resource containing
                       the webhook secret of a GitLab project, formatted as `projects/*/secrets/*/versions/*`.
                       This is used to validate webhooks.
                     type: string
+                required:
+                - authorizerCredential
+                - readAuthorizerCredential
+                - webhookSecretSecretVersion
                 type: object
               gitlabEnterpriseConfig:
                 description: Configuration for connections to an instance of GitLab
@@ -350,6 +345,8 @@ spec:
                           the user token that authorizes the Developer Connect connection.
                           Format: `projects/*/secrets/*/versions/*`.'
                         type: string
+                    required:
+                    - userTokenSecretVersion
                     type: object
                   hostURI:
                     description: Required. The URI of the GitLab Enterprise host this
@@ -366,6 +363,8 @@ spec:
                           the user token that authorizes the Developer Connect connection.
                           Format: `projects/*/secrets/*/versions/*`.'
                         type: string
+                    required:
+                    - userTokenSecretVersion
                     type: object
                   serviceDirectoryConfig:
                     description: Optional. Configuration for using Service Directory
@@ -375,34 +374,12 @@ spec:
                       empty, calls to the GitLab Enterprise server will be made over
                       the public internet.
                     properties:
-                      serviceRef:
-                        description: The Service Directory service.
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: A reference to an externally managed DataprocJob
-                              resource. Should be in the format "/projects/*/locations/*/namespaces/*/services/*".
-                            type: string
-                          name:
-                            description: The name of a DataprocJob resource.
-                            type: string
-                          namespace:
-                            description: The namespace of a DataprocJob resource.
-                            type: string
-                        type: object
+                      service:
+                        description: 'Required. The Service Directory service name.
+                          Format: projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}.'
+                        type: string
+                    required:
+                    - service
                     type: object
                   sslCACertificate:
                     description: Optional. SSL Certificate Authority certificate to
@@ -413,6 +390,16 @@ spec:
                       the webhook secret of a GitLab project, formatted as `projects/*/secrets/*/versions/*`.
                       This is used to validate webhooks.
                     type: string
+                required:
+                - authorizerCredential
+                - hostURI
+                - readAuthorizerCredential
+                - webhookSecretSecretVersion
+                type: object
+              labels:
+                additionalProperties:
+                  type: string
+                description: Optional. Labels as key value pairs
                 type: object
               location:
                 description: The location of this resource.
@@ -503,12 +490,167 @@ spec:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
                 properties:
+                  bitbucketCloudConfig:
+                    description: Configuration for connections to an instance of Bitbucket
+                      Clouds.
+                    properties:
+                      authorizerCredential:
+                        description: Required. An access token with the minimum `repository`,
+                          `pullrequest` and `webhook` scope access. It can either
+                          be a workspace, project or repository access token. This
+                          is needed to create webhooks. It's recommended to use a
+                          system account to generate these credentials.
+                        properties:
+                          username:
+                            description: Output only. The username associated with
+                              this token.
+                            type: string
+                        type: object
+                      readAuthorizerCredential:
+                        description: Required. An access token with the minimum `repository`
+                          access. It can either be a workspace, project or repository
+                          access token. It's recommended to use a system account to
+                          generate the credentials.
+                        properties:
+                          username:
+                            description: Output only. The username associated with
+                              this token.
+                            type: string
+                        type: object
+                    type: object
+                  bitbucketDataCenterConfig:
+                    description: Configuration for connections to an instance of Bitbucket
+                      Data Center.
+                    properties:
+                      authorizerCredential:
+                        description: Required. An http access token with the minimum
+                          `Repository admin` scope access. This is needed to create
+                          webhooks. It's recommended to use a system account to generate
+                          these credentials.
+                        properties:
+                          username:
+                            description: Output only. The username associated with
+                              this token.
+                            type: string
+                        type: object
+                      readAuthorizerCredential:
+                        description: Required. An http access token with the minimum
+                          `Repository read` access. It's recommended to use a system
+                          account to generate the credentials.
+                        properties:
+                          username:
+                            description: Output only. The username associated with
+                              this token.
+                            type: string
+                        type: object
+                      serverVersion:
+                        description: Output only. Version of the Bitbucket Data Center
+                          server running on the `host_uri`.
+                        type: string
+                    type: object
                   createTime:
                     description: Output only. [Output only] Create timestamp
                     type: string
                   deleteTime:
                     description: Output only. [Output only] Delete timestamp
                     type: string
+                  githubConfig:
+                    description: Configuration for connections to github.com.
+                    properties:
+                      authorizerCredential:
+                        description: Optional. OAuth credential of the account that
+                          authorized the GitHub App. It is recommended to use a robot
+                          account instead of a human user account. The OAuth token
+                          must be tied to the GitHub App of this config.
+                        properties:
+                          username:
+                            description: Output only. The username associated with
+                              this token.
+                            type: string
+                        type: object
+                      installationURI:
+                        description: Output only. The URI to navigate to in order
+                          to manage the installation associated with this GitHubConfig.
+                        type: string
+                    type: object
+                  githubEnterpriseConfig:
+                    description: Configuration for connections to an instance of GitHub
+                      Enterprise.
+                    properties:
+                      appSlug:
+                        description: Output only. The URL-friendly name of the GitHub
+                          App.
+                        type: string
+                      installationURI:
+                        description: Output only. The URI to navigate to in order
+                          to manage the installation associated with this GitHubEnterpriseConfig.
+                        type: string
+                      serverVersion:
+                        description: Output only. GitHub Enterprise version installed
+                          at the host_uri.
+                        type: string
+                    type: object
+                  gitlabConfig:
+                    description: Configuration for connections to gitlab.com.
+                    properties:
+                      authorizerCredential:
+                        description: Required. A GitLab personal access token with
+                          the minimum `api` scope access and a minimum role of `maintainer`.
+                          The GitLab Projects visible to this Personal Access Token
+                          will control which Projects Developer Connect has access
+                          to.
+                        properties:
+                          username:
+                            description: Output only. The username associated with
+                              this token.
+                            type: string
+                        type: object
+                      readAuthorizerCredential:
+                        description: Required. A GitLab personal access token with
+                          the minimum `read_api` scope access and a minimum role of
+                          `reporter`. The GitLab Projects visible to this Personal
+                          Access Token will control which Projects Developer Connect
+                          has access to.
+                        properties:
+                          username:
+                            description: Output only. The username associated with
+                              this token.
+                            type: string
+                        type: object
+                    type: object
+                  gitlabEnterpriseConfig:
+                    description: Configuration for connections to an instance of GitLab
+                      Enterprise.
+                    properties:
+                      authorizerCredential:
+                        description: Required. A GitLab personal access token with
+                          the minimum `api` scope access and a minimum role of `maintainer`.
+                          The GitLab Projects visible to this Personal Access Token
+                          will control which Projects Developer Connect has access
+                          to.
+                        properties:
+                          username:
+                            description: Output only. The username associated with
+                              this token.
+                            type: string
+                        type: object
+                      readAuthorizerCredential:
+                        description: Required. A GitLab personal access token with
+                          the minimum `read_api` scope access and a minimum role of
+                          `reporter`. The GitLab Projects visible to this Personal
+                          Access Token will control which Projects Developer Connect
+                          has access to.
+                        properties:
+                          username:
+                            description: Output only. The username associated with
+                              this token.
+                            type: string
+                        type: object
+                      serverVersion:
+                        description: Output only. Version of the GitLab Enterprise
+                          server running on the `host_uri`.
+                        type: string
+                    type: object
                   installationState:
                     description: Output only. Installation state of the Connection.
                     properties:

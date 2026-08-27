@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -24,25 +25,33 @@ var DiscoveryEngineDataStoreTargetSiteGVK = GroupVersion.WithKind("DiscoveryEngi
 // DiscoveryEngineDataStoreTargetSiteSpec defines the desired state of DiscoveryEngineDataStoreTargetSite
 // +kcc:spec:proto=google.cloud.discoveryengine.v1.TargetSite
 type DiscoveryEngineDataStoreTargetSiteSpec struct {
-	// The DataStore this target site should be part of.
-	DataStoreRef *DiscoveryEngineDataStoreRef `json:"dataStoreRef,omitempty"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The resource ID is server-generated, so no ResourceID field
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/dataStores/{data_store}/siteSearchEngine/targetSites/{target_site}
+	Location *string `json:"location,omitempty"`
 
+	// The DiscoveryEngineDataStoreTargetSite name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. Input only. The user provided URI pattern from which the
-	// `generated_uri_pattern` is generated.
+	//  `generated_uri_pattern` is generated.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.provided_uri_pattern
+	// +required
 	ProvidedURIPattern *string `json:"providedURIPattern,omitempty"`
 
 	// The type of the target site, e.g., whether the site is to be included or
-	// excluded.
+	//  excluded.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.type
 	Type *string `json:"type,omitempty"`
 
-	// Input only. If set to false, a uri_pattern is generated to include all
-	// pages whose address contains the provided_uri_pattern. If set to true, an
-	// uri_pattern is generated to try to be an exact match of the
-	// provided_uri_pattern or just the specific page if the provided_uri_pattern
-	// is a specific one. provided_uri_pattern is always normalized to
-	// generate the URI pattern to be used by the search engine.
+	// Immutable. If set to false, a uri_pattern is generated to include all pages
+	//  whose address contains the provided_uri_pattern. If set to true, an
+	//  uri_pattern is generated to try to be an exact match of the
+	//  provided_uri_pattern or just the specific page if the provided_uri_pattern
+	//  is a specific one. provided_uri_pattern is always normalized to
+	//  generate the URI pattern to be used by the search engine.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.exact_match
 	ExactMatch *bool `json:"exactMatch,omitempty"`
 }
 
@@ -65,22 +74,28 @@ type DiscoveryEngineDataStoreTargetSiteStatus struct {
 // DiscoveryEngineDataStoreTargetSiteObservedState is the state of the DiscoveryEngineDataStoreTargetSite resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1.TargetSite
 type DiscoveryEngineDataStoreTargetSiteObservedState struct {
-	// Output only. This is system-generated based on the provided_uri.
+	// Output only. This is system-generated based on the provided_uri_pattern.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.generated_uri_pattern
 	GeneratedURIPattern *string `json:"generatedURIPattern,omitempty"`
 
-	// Output only. Root domain of the provided_uri.
+	// Output only. Root domain of the provided_uri_pattern.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.root_domain_uri
 	RootDomainURI *string `json:"rootDomainURI,omitempty"`
 
 	// Output only. Site ownership and validity verification status.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.site_verification_info
 	SiteVerificationInfo *SiteVerificationInfo `json:"siteVerificationInfo,omitempty"`
 
 	// Output only. Indexing status.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.indexing_status
 	IndexingStatus *string `json:"indexingStatus,omitempty"`
 
 	// Output only. The target site's last updated time.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. Failure reason.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.TargetSite.failure_reason
 	FailureReason *TargetSite_FailureReason `json:"failureReason,omitempty"`
 }
 

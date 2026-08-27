@@ -20,3 +20,58 @@
 // resource: WorkloadManagerEvaluation:Evaluation
 
 package v1alpha1
+
+// +kcc:proto=google.cloud.workloadmanager.v1.BigQueryDestination
+type BigQueryDestination struct {
+	// Optional. Destination dataset to save evaluation results.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.BigQueryDestination.destination_dataset
+	DestinationDataset *string `json:"destinationDataset,omitempty"`
+
+	// Optional. Determines if a new results table will be created when an
+	//  Execution is created.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.BigQueryDestination.create_new_results_table
+	CreateNewResultsTable *bool `json:"createNewResultsTable,omitempty"`
+}
+
+// +kcc:proto=google.cloud.workloadmanager.v1.GceInstanceFilter
+type GCEInstanceFilter struct {
+	// If non-empty, only Compute Engine instances associated with at least one of
+	//  the provided service accounts will be included in the evaluation.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.GceInstanceFilter.service_accounts
+	ServiceAccounts []string `json:"serviceAccounts,omitempty"`
+}
+
+// +kcc:proto=google.cloud.workloadmanager.v1.ResourceFilter
+type ResourceFilter struct {
+	// The scopes of evaluation resource.
+	//  Format:
+	//  * `projects/{project_id}`
+	//  * `folders/{folder_id}`
+	//  * `organizations/{organization_id}`
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.ResourceFilter.scopes
+	Scopes []string `json:"scopes,omitempty"`
+
+	// The pattern to filter resources by their id
+	//  For example, a pattern of ".*prod-cluster.*" will match all resources that
+	//  contain "prod-cluster" in their ID.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.ResourceFilter.resource_id_patterns
+	ResourceIDPatterns []string `json:"resourceIDPatterns,omitempty"`
+
+	// Labels to filter resources by. Each key-value pair in the map must exist
+	//  on the resource for it to be included (e.g. VM instance labels).
+	//  For example, specifying `{ "env": "prod", "database": "nosql" }` will only
+	//  include resources that have labels `env=prod` and `database=nosql`.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.ResourceFilter.inclusion_labels
+	InclusionLabels map[string]string `json:"inclusionLabels,omitempty"`
+
+	// Filter compute engine resources.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.ResourceFilter.gce_instance_filter
+	GCEInstanceFilter *GCEInstanceFilter `json:"gceInstanceFilter,omitempty"`
+}
+
+// +kcc:proto=google.cloud.workloadmanager.v1.ResourceStatus
+type ResourceStatus struct {
+	// State of the Evaluation resource.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.ResourceStatus.state
+	State *string `json:"state,omitempty"`
+}

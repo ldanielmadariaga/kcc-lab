@@ -71,7 +71,7 @@ func getIdentityFromVideoStitcherCDNKeySpec(ctx context.Context, reader client.R
 		return nil, fmt.Errorf("cannot resolve resource ID: %w", err)
 	}
 
-	location := obj.Spec.Location
+	location := common.ValueOf(obj.Spec.Location)
 	if location == "" {
 		return nil, fmt.Errorf("spec.location must be specified")
 	}

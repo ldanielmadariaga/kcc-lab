@@ -15,8 +15,7 @@
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/privateca/privatecarefs"
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -26,18 +25,18 @@ var CertificateManagerCertificateIssuanceConfigGVK = GroupVersion.WithKind("Cert
 // CertificateManagerCertificateIssuanceConfigSpec defines the desired state of CertificateManagerCertificateIssuanceConfig
 // +kcc:spec:proto=google.cloud.certificatemanager.v1.CertificateIssuanceConfig
 type CertificateManagerCertificateIssuanceConfigSpec struct {
-	// The Project that this resource belongs to.
-	// +required
-	ProjectRef *refs.ProjectRef `json:"projectRef"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The location that this resource belongs to.
-	// +required
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location is immutable."
-	Location string `json:"location"`
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/certificateIssuanceConfigs/{certificate_issuance_config}
+	Location *string `json:"location"`
 
+	// The CertificateManagerCertificateIssuanceConfig name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Set of labels associated with a CertificateIssuanceConfig.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.labels
-	// Labels map[string]string `json:"labels,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// One or more paragraphs of text description of a CertificateIssuanceConfig.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.description
@@ -46,24 +45,25 @@ type CertificateManagerCertificateIssuanceConfigSpec struct {
 	// Required. The CA that issues the workload certificate. It includes the CA
 	//  address, type, authentication to CA service, etc.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.certificate_authority_config
+	// +required
 	CertificateAuthorityConfig *CertificateIssuanceConfig_CertificateAuthorityConfig `json:"certificateAuthorityConfig,omitempty"`
 
 	// Required. Workload certificate lifetime requested.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.lifetime
+	// +required
 	Lifetime *string `json:"lifetime,omitempty"`
 
 	// Required. Specifies the percentage of elapsed time of the certificate
 	//  lifetime to wait before renewing the certificate. Must be a number between
 	//  1-99, inclusive.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.rotation_window_percentage
+	// +required
 	RotationWindowPercentage *int32 `json:"rotationWindowPercentage,omitempty"`
 
 	// Required. The key algorithm to use when generating the private key.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.key_algorithm
+	// +required
 	KeyAlgorithm *string `json:"keyAlgorithm,omitempty"`
-
-	// The CertificateManagerCertificateIssuanceConfig name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
 }
 
 // CertificateManagerCertificateIssuanceConfigStatus defines the config connector machine state of CertificateManagerCertificateIssuanceConfig
@@ -126,13 +126,4 @@ type CertificateManagerCertificateIssuanceConfigList struct {
 
 func init() {
 	SchemeBuilder.Register(&CertificateManagerCertificateIssuanceConfig{}, &CertificateManagerCertificateIssuanceConfigList{})
-}
-
-// +kcc:proto=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.CertificateAuthorityConfig.CertificateAuthorityServiceConfig
-type CertificateIssuanceConfig_CertificateAuthorityConfig_CertificateAuthorityServiceConfig struct {
-	// Required. A CA pool resource used to issue a certificate.
-	//  The CA pool string has a relative resource path following the form
-	//  "projects/{project}/locations/{location}/caPools/{ca_pool}".
-	// +kcc:proto:field=google.cloud.certificatemanager.v1.CertificateIssuanceConfig.CertificateAuthorityConfig.CertificateAuthorityServiceConfig.ca_pool
-	CAPoolRef *privatecarefs.PrivateCACAPoolRef `json:"caPoolRef,omitempty"`
 }

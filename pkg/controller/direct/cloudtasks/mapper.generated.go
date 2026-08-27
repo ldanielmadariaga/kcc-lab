@@ -117,8 +117,6 @@ func TasksQueueObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Queue) 
 	}
 	out := &krm.TasksQueueObservedState{}
 	// MISSING: Name
-	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.PurgeTime = direct.StringTimestamp_FromProto(mapCtx, in.GetPurgeTime())
 	return out
 }
 func TasksQueueObservedState_ToProto(mapCtx *direct.MapContext, in *krm.TasksQueueObservedState) *pb.Queue {
@@ -127,8 +125,6 @@ func TasksQueueObservedState_ToProto(mapCtx *direct.MapContext, in *krm.TasksQue
 	}
 	out := &pb.Queue{}
 	// MISSING: Name
-	out.State = direct.Enum_ToProto[pb.Queue_State](mapCtx, in.State)
-	out.PurgeTime = direct.StringTimestamp_ToProto(mapCtx, in.PurgeTime)
 	return out
 }
 func TasksQueueSpec_FromProto(mapCtx *direct.MapContext, in *pb.Queue) *krm.TasksQueueSpec {
@@ -140,6 +136,8 @@ func TasksQueueSpec_FromProto(mapCtx *direct.MapContext, in *pb.Queue) *krm.Task
 	out.AppEngineRoutingOverride = AppEngineRouting_FromProto(mapCtx, in.GetAppEngineRoutingOverride())
 	out.RateLimits = RateLimits_FromProto(mapCtx, in.GetRateLimits())
 	out.RetryConfig = RetryConfig_FromProto(mapCtx, in.GetRetryConfig())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.PurgeTime = direct.StringTimestamp_FromProto(mapCtx, in.GetPurgeTime())
 	out.StackdriverLoggingConfig = StackdriverLoggingConfig_FromProto(mapCtx, in.GetStackdriverLoggingConfig())
 	return out
 }
@@ -152,6 +150,8 @@ func TasksQueueSpec_ToProto(mapCtx *direct.MapContext, in *krm.TasksQueueSpec) *
 	out.AppEngineRoutingOverride = AppEngineRouting_ToProto(mapCtx, in.AppEngineRoutingOverride)
 	out.RateLimits = RateLimits_ToProto(mapCtx, in.RateLimits)
 	out.RetryConfig = RetryConfig_ToProto(mapCtx, in.RetryConfig)
+	out.State = direct.Enum_ToProto[pb.Queue_State](mapCtx, in.State)
+	out.PurgeTime = direct.StringTimestamp_ToProto(mapCtx, in.PurgeTime)
 	out.StackdriverLoggingConfig = StackdriverLoggingConfig_ToProto(mapCtx, in.StackdriverLoggingConfig)
 	return out
 }

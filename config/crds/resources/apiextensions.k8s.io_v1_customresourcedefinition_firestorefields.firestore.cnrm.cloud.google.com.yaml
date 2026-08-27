@@ -61,44 +61,24 @@ spec:
           spec:
             description: FirestoreFieldSpec defines the desired state of FirestoreField
             properties:
-              collectionGroup:
-                description: The collectionGroup of which this field is a part.
+              collection:
+                description: The Collection that this resource belongs to.
                 type: string
-              databaseRef:
-                description: The FirestoreDatabase containing the collection group
-                  for this field.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed Firestore database
-                      resource. Should be in the format "projects/{{projectID}}/databases/{{databaseID}}".
-                    type: string
-                  name:
-                    description: The name of a FirestoreDatabase resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a FirestoreDatabase resource.
-                    type: string
-                type: object
+              database:
+                description: The Database that this resource belongs to.
+                type: string
               indexConfig:
                 description: The index configuration for this field. If unset, field
                   indexing will revert to the configuration defined by the `ancestor_field`.
                   To explicitly remove all indexes for this field, specify an index
                   config with an empty list of indexes.
                 properties:
+                  ancestorField:
+                    description: Output only. Specifies the resource name of the `Field`
+                      from which this field's index configuration is set (when `uses_ancestor_config`
+                      is true), or from which it *would* be set if this field had
+                      no index configuration (when `uses_ancestor_config` is false).
+                    type: string
                   indexes:
                     description: The indexes supported for this field.
                     items:
@@ -155,6 +135,8 @@ spec:
                                     description: Indicates the vector index is a flat
                                       index.
                                     type: object
+                                required:
+                                - dimension
                                 type: object
                             type: object
                           type: array
@@ -169,6 +151,12 @@ spec:
 
                              Note this field only applies to index with MONGODB_COMPATIBLE_API ApiScope.
                           type: boolean
+                        name:
+                          description: 'Output only. A server defined name for this
+                            index. The form of this name for composite indexes will
+                            be: `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}/indexes/{composite_index_id}`
+                            For single field indexes, this field will be empty.'
+                          type: string
                         queryScope:
                           description: |-
                             Indexes with a collection query scope specified allow queries
@@ -183,24 +171,67 @@ spec:
                           description: Optional. The number of shards for the index.
                           format: int32
                           type: integer
+                        state:
+                          description: Output only. The serving state of the index.
+                          type: string
                       type: object
                     type: array
+                  reverting:
+                    description: Output only When true, the `Field`'s index configuration
+                      is in the process of being reverted. Once complete, the index
+                      config will transition to the same state as the field specified
+                      by `ancestor_field`, at which point `uses_ancestor_config` will
+                      be `true` and `reverting` will be `false`.
+                    type: boolean
+                  usesAncestorConfig:
+                    description: Output only. When true, the `Field`'s index configuration
+                      is set from the configuration specified by the `ancestor_field`.
+                      When false, the `Field`'s index configuration is defined explicitly.
+                    type: boolean
+                type: object
+              projectRef:
+                description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
+                    type: string
+                  name:
+                    description: The `name` field of a `Project` resource.
+                    type: string
+                  namespace:
+                    description: The `namespace` field of a `Project` resource.
+                    type: string
                 type: object
               resourceID:
                 description: The FirestoreField name. If not given, the metadata.name
                   will be used.
                 type: string
               ttlConfig:
-                description: The TTL configuration for this `Field`.
-                properties:
-                  enabled:
-                    description: Whether to enable TTL for documents based on this
-                      field.
-                    type: boolean
+                description: The TTL configuration for this `Field`. Setting or unsetting
+                  this will enable or disable the TTL for documents that have this
+                  `Field`.
                 type: object
             required:
-            - collectionGroup
-            - databaseRef
+            - projectRef
             type: object
           status:
             description: FirestoreFieldStatus defines the config connector machine
@@ -248,47 +279,10 @@ spec:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
                 properties:
-                  indexConfig:
-                    description: The index state for this field.
-                    properties:
-                      ancestorField:
-                        description: Output only. Specifies the resource name of the
-                          `Field` from which this field's index configuration is set
-                          (when `uses_ancestor_config` is true), or from which it
-                          *would* be set if this field had no index configuration
-                          (when `uses_ancestor_config` is false).
-                        type: string
-                      indexes:
-                        description: The indexes supported for this field.
-                        items:
-                          properties:
-                            name:
-                              description: 'Output only. A server defined name for
-                                this index. The form of this name for composite indexes
-                                will be: `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}/indexes/{composite_index_id}`
-                                For single field indexes, this field will be empty.'
-                              type: string
-                            state:
-                              description: Output only. The serving state of the index.
-                              type: string
-                          type: object
-                        type: array
-                      reverting:
-                        description: Output only When true, the `Field`'s index configuration
-                          is in the process of being reverted. Once complete, the
-                          index config will transition to the same state as the field
-                          specified by `ancestor_field`, at which point `uses_ancestor_config`
-                          will be `true` and `reverting` will be `false`.
-                        type: boolean
-                      usesAncestorConfig:
-                        description: Output only. When true, the `Field`'s index configuration
-                          is set from the configuration specified by the `ancestor_field`.
-                          When false, the `Field`'s index configuration is defined
-                          explicitly.
-                        type: boolean
-                    type: object
                   ttlConfig:
-                    description: The TTL state for this `Field`.
+                    description: The TTL configuration for this `Field`. Setting or
+                      unsetting this will enable or disable the TTL for documents
+                      that have this `Field`.
                     properties:
                       state:
                         description: Output only. The state of the TTL configuration.

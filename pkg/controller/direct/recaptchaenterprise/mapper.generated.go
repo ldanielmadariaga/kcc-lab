@@ -278,6 +278,22 @@ found existing non-generated mapping function "KeyWebSettings_v1beta1_ToProto", 
 		return out
 	}
 */
+func ReCAPTCHAEnterpriseFirewallPolicyObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.FirewallPolicy) *krmrecaptchaenterprisev1alpha1.ReCAPTCHAEnterpriseFirewallPolicyObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmrecaptchaenterprisev1alpha1.ReCAPTCHAEnterpriseFirewallPolicyObservedState{}
+	// MISSING: Name
+	return out
+}
+func ReCAPTCHAEnterpriseFirewallPolicyObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmrecaptchaenterprisev1alpha1.ReCAPTCHAEnterpriseFirewallPolicyObservedState) *pb.FirewallPolicy {
+	if in == nil {
+		return nil
+	}
+	out := &pb.FirewallPolicy{}
+	// MISSING: Name
+	return out
+}
 func ReCAPTCHAEnterpriseFirewallPolicySpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.FirewallPolicy) *krmrecaptchaenterprisev1alpha1.ReCAPTCHAEnterpriseFirewallPolicySpec {
 	if in == nil {
 		return nil

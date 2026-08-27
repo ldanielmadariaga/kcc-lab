@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: vertexaiexamplestores.vertexai.cnrm.cloud.google.com
 spec:
@@ -77,6 +76,8 @@ spec:
                       embedding. Immutable. Supported models: * "textembedding-gecko@003"
                       * "text-embedding-004" * "text-embedding-005" * "text-multilingual-embedding-002"'
                     type: string
+                required:
+                - vertexEmbeddingModel
                 type: object
               location:
                 description: The location of this resource.
@@ -175,7 +176,7 @@ spec:
                     type: string
                   updateTime:
                     description: Output only. Timestamp when this ExampleStore was
-                      last updated.
+                      most recently updated.
                     type: string
                 type: object
             type: object

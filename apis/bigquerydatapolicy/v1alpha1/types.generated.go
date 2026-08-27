@@ -21,18 +21,14 @@
 
 package v1alpha1
 
-/* found existing non-generated go type "DataMaskingPolicy", skipping
-
 // +kcc:proto=google.cloud.bigquery.datapolicies.v1beta1.DataMaskingPolicy
 type DataMaskingPolicy struct {
 	// A predefined masking expression.
 	// +kcc:proto:field=google.cloud.bigquery.datapolicies.v1beta1.DataMaskingPolicy.predefined_expression
 	PredefinedExpression *string `json:"predefinedExpression,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.datapolicies.v1beta1.DataPolicy", skipping
-
+/* unreachable type DataPolicy
 // +kcc:proto=google.cloud.bigquery.datapolicies.v1beta1.DataPolicy
 type DataPolicy struct {
 	// Policy tag resource name, in the format of
@@ -56,8 +52,7 @@ type DataPolicy struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.datapolicies.v1beta1.DataPolicy", skipping
-
+/* unreachable type DataPolicyObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.datapolicies.v1beta1.DataPolicy
 type DataPolicyObservedState struct {
 	// Output only. Resource name of this data policy, in the format of

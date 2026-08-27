@@ -67,45 +67,16 @@ spec:
                 description: Optional. User-provided description of the deployment.
                   Used as additional context for the deployment.
                 type: string
-              forwardingRuleRef:
+              forwardingRule:
                 description: 'Required. Immutable. The regional forwarding rule that
-                  fronts the interceptors, for example: `projects/123456789/regions/us-central1/forwardingRules/my-rule`.'
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed ComputeForwardingRule
-                      resource. Should be in the format "projects/{{projectID}}/global/forwardingRules/{{forwardingRuleID}}"
-                      or "projects/{{projectID}}/regions/{{region}}/forwardingRules/{{forwardingRuleID}}".
-                    type: string
-                  name:
-                    description: The name of a ComputeForwardingRule resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a ComputeForwardingRule resource.
-                    type: string
-                type: object
-              interceptDeploymentGroupRef:
+                  fronts the interceptors, for example: `projects/123456789/regions/us-central1/forwardingRules/my-rule`.
+                  See https://google.aip.dev/124.'
+                type: string
+              interceptDeploymentGroup:
                 description: 'Required. Immutable. The deployment group that this
-                  deployment is a part of, for example: `projects/123456789/locations/global/interceptDeploymentGroups/my-dg`.'
-                properties:
-                  external:
-                    description: A reference to an externally managed NetworkSecurityInterceptDeploymentGroup
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/interceptDeploymentGroups/{{interceptDeploymentGroupID}}".
-                    type: string
-                type: object
+                  deployment is a part of, for example: `projects/123456789/locations/global/interceptDeploymentGroups/my-dg`.
+                  See https://google.aip.dev/124.'
+                type: string
               labels:
                 additionalProperties:
                   type: string
@@ -152,8 +123,8 @@ spec:
                   the metadata.name will be used.
                 type: string
             required:
-            - forwardingRuleRef
-            - interceptDeploymentGroupRef
+            - forwardingRule
+            - interceptDeploymentGroup
             - location
             - projectRef
             type: object
@@ -210,7 +181,8 @@ spec:
                   reconciling:
                     description: Output only. The current state of the resource does
                       not match the user's intended state, and the system is working
-                      to reconcile them.
+                      to reconcile them. This part of the normal operation (e.g. linking
+                      a new association to the parent group). See https://google.aip.dev/128.
                     type: boolean
                   state:
                     description: Output only. The current state of the deployment.

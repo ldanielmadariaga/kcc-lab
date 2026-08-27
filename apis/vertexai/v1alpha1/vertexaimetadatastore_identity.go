@@ -63,7 +63,7 @@ func NewMetadataStoreIdentity(ctx context.Context, reader client.Reader, obj *Ve
 	if projectID == "" {
 		return nil, fmt.Errorf("cannot resolve project")
 	}
-	location := obj.Spec.Region
+	location := common.ValueOf(obj.Spec.Region)
 
 	// Get desired ID
 	resourceID := common.ValueOf(obj.Spec.ResourceID)

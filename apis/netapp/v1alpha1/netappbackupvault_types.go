@@ -15,38 +15,50 @@
 package v1alpha1
 
 import (
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var NetAppBackupVaultGVK = GroupVersion.WithKind("NetAppBackupVault")
 
-// BackupVaultSpec defines the desired state of NetAppBackupVault
+// NetAppBackupVaultSpec defines the desired state of NetAppBackupVault
 // +kcc:spec:proto=google.cloud.netapp.v1.BackupVault
-type BackupVaultSpec struct {
+type NetAppBackupVaultSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/backupVaults/{backup_vault}
+	Location *string `json:"location"`
+
 	// The NetAppBackupVault name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// The project that this resource belongs to.
-	// +required
-	ProjectRef *refs.ProjectRef `json:"projectRef,omitempty"`
-
-	// +required
-	Location string `json:"location"`
-
 	// Description of the backup vault.
 	// +kcc:proto:field=google.cloud.netapp.v1.BackupVault.description
 	Description *string `json:"description,omitempty"`
 
-	// NOT YET
-	// // Resource labels to represent user provided metadata.
-	// // +kcc:proto:field=google.cloud.netapp.v1.BackupVault.labels
-	// Labels map[string]string `json:"labels,omitempty"`
+	// Resource labels to represent user provided metadata.
+	// +kcc:proto:field=google.cloud.netapp.v1.BackupVault.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. Type of backup vault to be created.
+	//  Default is IN_REGION.
+	// +kcc:proto:field=google.cloud.netapp.v1.BackupVault.backup_vault_type
+	BackupVaultType *string `json:"backupVaultType,omitempty"`
+
+	// Optional. Region where the backups are stored.
+	//  Format: `projects/{project_id}/locations/{location}`
+	// +kcc:proto:field=google.cloud.netapp.v1.BackupVault.backup_region
+	BackupRegion *string `json:"backupRegion,omitempty"`
+
+	// Optional. Backup retention policy defining the retenton of backups.
+	// +kcc:proto:field=google.cloud.netapp.v1.BackupVault.backup_retention_policy
+	BackupRetentionPolicy *BackupVault_BackupRetentionPolicy `json:"backupRetentionPolicy,omitempty"`
 }
 
-// BackupVaultStatus defines the config connector machine state of NetAppBackupVault
-type BackupVaultStatus struct {
+// NetAppBackupVaultStatus defines the config connector machine state of NetAppBackupVault
+type NetAppBackupVaultStatus struct {
 	/* Conditions represent the latest available observations of the
 	   object's current state. */
 	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
@@ -58,12 +70,12 @@ type BackupVaultStatus struct {
 	ExternalRef *string `json:"externalRef,omitempty"`
 
 	// ObservedState is the state of the resource as most recently observed in GCP.
-	ObservedState *BackupVaultObservedState `json:"observedState,omitempty"`
+	ObservedState *NetAppBackupVaultObservedState `json:"observedState,omitempty"`
 }
 
 // NetAppBackupVaultObservedState is the state of the NetAppBackupVault resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.netapp.v1.BackupVault
-type BackupVaultObservedState struct {
+type NetAppBackupVaultObservedState struct {
 	// Output only. The backup vault state.
 	// +kcc:proto:field=google.cloud.netapp.v1.BackupVault.state
 	State *string `json:"state,omitempty"`
@@ -71,6 +83,23 @@ type BackupVaultObservedState struct {
 	// Output only. Create time of the backup vault.
 	// +kcc:proto:field=google.cloud.netapp.v1.BackupVault.create_time
 	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Region in which the backup vault is created.
+	//  Format: `projects/{project_id}/locations/{location}`
+	// +kcc:proto:field=google.cloud.netapp.v1.BackupVault.source_region
+	SourceRegion *string `json:"sourceRegion,omitempty"`
+
+	// Output only. Name of the Backup vault created in source region.
+	//  Format:
+	//  `projects/{project_id}/locations/{location}/backupVaults/{backup_vault_id}`
+	// +kcc:proto:field=google.cloud.netapp.v1.BackupVault.source_backup_vault
+	SourceBackupVault *string `json:"sourceBackupVault,omitempty"`
+
+	// Output only. Name of the Backup vault created in backup region.
+	//  Format:
+	//  `projects/{project_id}/locations/{location}/backupVaults/{backup_vault_id}`
+	// +kcc:proto:field=google.cloud.netapp.v1.BackupVault.destination_backup_vault
+	DestinationBackupVault *string `json:"destinationBackupVault,omitempty"`
 }
 
 // +genclient
@@ -91,8 +120,8 @@ type NetAppBackupVault struct {
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	// +required
-	Spec   BackupVaultSpec   `json:"spec,omitempty"`
-	Status BackupVaultStatus `json:"status,omitempty"`
+	Spec   NetAppBackupVaultSpec   `json:"spec,omitempty"`
+	Status NetAppBackupVaultStatus `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

@@ -26,9 +26,6 @@ package clouddms
 import (
 	pb "cloud.google.com/go/clouddms/apiv1/clouddmspb"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/clouddms/v1alpha1"
-	krmcomputerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
-	krmcomputev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -88,14 +85,12 @@ func CloudDMSMigrationJobObservedState_FromProto(mapCtx *direct.MapContext, in *
 	}
 	out := &krm.CloudDMSMigrationJobObservedState{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Labels
-	// MISSING: State
-	// MISSING: Phase
-	// MISSING: Duration
-	// MISSING: Error
-	// MISSING: EndTime
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.Phase = direct.Enum_FromProto(mapCtx, in.GetPhase())
+	out.Duration = direct.StringDuration_FromProto(mapCtx, in.GetDuration())
+	out.Error = direct.Status_FromProto(mapCtx, in.GetError())
+	out.EndTime = direct.StringTimestamp_FromProto(mapCtx, in.GetEndTime())
 	return out
 }
 func CloudDMSMigrationJobObservedState_ToProto(mapCtx *direct.MapContext, in *krm.CloudDMSMigrationJobObservedState) *pb.MigrationJob {
@@ -104,14 +99,12 @@ func CloudDMSMigrationJobObservedState_ToProto(mapCtx *direct.MapContext, in *kr
 	}
 	out := &pb.MigrationJob{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Labels
-	// MISSING: State
-	// MISSING: Phase
-	// MISSING: Duration
-	// MISSING: Error
-	// MISSING: EndTime
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.Phase = direct.Enum_ToProto[pb.MigrationJob_Phase](mapCtx, in.Phase)
+	out.Duration = direct.StringDuration_ToProto(mapCtx, in.Duration)
+	out.Error = direct.Status_ToProto(mapCtx, in.Error)
+	out.EndTime = direct.StringTimestamp_ToProto(mapCtx, in.EndTime)
 	return out
 }
 func CloudDMSMigrationJobSpec_FromProto(mapCtx *direct.MapContext, in *pb.MigrationJob) *krm.CloudDMSMigrationJobSpec {
@@ -120,34 +113,22 @@ func CloudDMSMigrationJobSpec_FromProto(mapCtx *direct.MapContext, in *pb.Migrat
 	}
 	out := &krm.CloudDMSMigrationJobSpec{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: State
-	// MISSING: Phase
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
 	out.DumpPath = direct.LazyPtr(in.GetDumpPath())
 	out.DumpFlags = MigrationJob_DumpFlags_FromProto(mapCtx, in.GetDumpFlags())
-	if in.GetSource() != "" {
-		out.SourceRef = &krm.CloudDMSConnectionProfileRef{External: in.GetSource()}
-	}
-	if in.GetDestination() != "" {
-		out.DestinationRef = &krm.CloudDMSConnectionProfileRef{External: in.GetDestination()}
-	}
+	out.Source = direct.LazyPtr(in.GetSource())
+	out.Destination = direct.LazyPtr(in.GetDestination())
 	out.ReverseSSHConnectivity = ReverseSSHConnectivity_FromProto(mapCtx, in.GetReverseSshConnectivity())
 	out.VPCPeeringConnectivity = VPCPeeringConnectivity_FromProto(mapCtx, in.GetVpcPeeringConnectivity())
 	out.StaticIPConnectivity = StaticIPConnectivity_FromProto(mapCtx, in.GetStaticIpConnectivity())
-	// MISSING: Duration
-	// MISSING: Error
 	out.SourceDatabase = DatabaseType_FromProto(mapCtx, in.GetSourceDatabase())
 	out.DestinationDatabase = DatabaseType_FromProto(mapCtx, in.GetDestinationDatabase())
-	// MISSING: EndTime
 	out.ConversionWorkspace = ConversionWorkspaceInfo_FromProto(mapCtx, in.GetConversionWorkspace())
 	out.Filter = direct.LazyPtr(in.GetFilter())
-	if in.GetCmekKeyName() != "" {
-		out.CmekKeyNameRef = &refsv1beta1.KMSCryptoKeyRef{External: in.GetCmekKeyName()}
-	}
+	out.CmekKeyName = direct.LazyPtr(in.GetCmekKeyName())
 	out.PerformanceConfig = MigrationJob_PerformanceConfig_FromProto(mapCtx, in.GetPerformanceConfig())
 	return out
 }
@@ -157,21 +138,14 @@ func CloudDMSMigrationJobSpec_ToProto(mapCtx *direct.MapContext, in *krm.CloudDM
 	}
 	out := &pb.MigrationJob{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	// MISSING: State
-	// MISSING: Phase
+	out.State = direct.Enum_ToProto[pb.MigrationJob_State](mapCtx, in.State)
 	out.Type = direct.Enum_ToProto[pb.MigrationJob_Type](mapCtx, in.Type)
 	out.DumpPath = direct.ValueOf(in.DumpPath)
 	out.DumpFlags = MigrationJob_DumpFlags_ToProto(mapCtx, in.DumpFlags)
-	if in.SourceRef != nil {
-		out.Source = in.SourceRef.External
-	}
-	if in.DestinationRef != nil {
-		out.Destination = in.DestinationRef.External
-	}
+	out.Source = direct.ValueOf(in.Source)
+	out.Destination = direct.ValueOf(in.Destination)
 	if oneof := ReverseSSHConnectivity_ToProto(mapCtx, in.ReverseSSHConnectivity); oneof != nil {
 		out.Connectivity = &pb.MigrationJob_ReverseSshConnectivity{ReverseSshConnectivity: oneof}
 	}
@@ -181,16 +155,11 @@ func CloudDMSMigrationJobSpec_ToProto(mapCtx *direct.MapContext, in *krm.CloudDM
 	if oneof := StaticIPConnectivity_ToProto(mapCtx, in.StaticIPConnectivity); oneof != nil {
 		out.Connectivity = &pb.MigrationJob_StaticIpConnectivity{StaticIpConnectivity: oneof}
 	}
-	// MISSING: Duration
-	// MISSING: Error
 	out.SourceDatabase = DatabaseType_ToProto(mapCtx, in.SourceDatabase)
 	out.DestinationDatabase = DatabaseType_ToProto(mapCtx, in.DestinationDatabase)
-	// MISSING: EndTime
 	out.ConversionWorkspace = ConversionWorkspaceInfo_ToProto(mapCtx, in.ConversionWorkspace)
 	out.Filter = direct.ValueOf(in.Filter)
-	if in.CmekKeyNameRef != nil {
-		out.CmekKeyName = in.CmekKeyNameRef.External
-	}
+	out.CmekKeyName = direct.ValueOf(in.CmekKeyName)
 	out.PerformanceConfig = MigrationJob_PerformanceConfig_ToProto(mapCtx, in.PerformanceConfig)
 	return out
 }
@@ -305,12 +274,8 @@ func ReverseSSHConnectivity_FromProto(mapCtx *direct.MapContext, in *pb.ReverseS
 	out := &krm.ReverseSSHConnectivity{}
 	out.VMIP = direct.LazyPtr(in.GetVmIp())
 	out.VMPort = direct.LazyPtr(in.GetVmPort())
-	if in.GetVm() != "" {
-		out.VMRef = &krmcomputev1beta1.InstanceRef{External: in.GetVm()}
-	}
-	if in.GetVpc() != "" {
-		out.VPCRef = &krmcomputerefs.ComputeNetworkRef{External: in.GetVpc()}
-	}
+	out.VM = direct.LazyPtr(in.GetVm())
+	out.VPC = direct.LazyPtr(in.GetVpc())
 	return out
 }
 func ReverseSSHConnectivity_ToProto(mapCtx *direct.MapContext, in *krm.ReverseSSHConnectivity) *pb.ReverseSshConnectivity {
@@ -320,12 +285,8 @@ func ReverseSSHConnectivity_ToProto(mapCtx *direct.MapContext, in *krm.ReverseSS
 	out := &pb.ReverseSshConnectivity{}
 	out.VmIp = direct.ValueOf(in.VMIP)
 	out.VmPort = direct.ValueOf(in.VMPort)
-	if in.VMRef != nil {
-		out.Vm = in.VMRef.External
-	}
-	if in.VPCRef != nil {
-		out.Vpc = in.VPCRef.External
-	}
+	out.Vm = direct.ValueOf(in.VM)
+	out.Vpc = direct.ValueOf(in.VPC)
 	return out
 }
 func StaticIPConnectivity_FromProto(mapCtx *direct.MapContext, in *pb.StaticIpConnectivity) *krm.StaticIPConnectivity {
@@ -342,14 +303,30 @@ func StaticIPConnectivity_ToProto(mapCtx *direct.MapContext, in *krm.StaticIPCon
 	out := &pb.StaticIpConnectivity{}
 	return out
 }
+func VPCPeeringConfig_FromProto(mapCtx *direct.MapContext, in *pb.VpcPeeringConfig) *krm.VPCPeeringConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.VPCPeeringConfig{}
+	out.VPCName = direct.LazyPtr(in.GetVpcName())
+	out.Subnet = direct.LazyPtr(in.GetSubnet())
+	return out
+}
+func VPCPeeringConfig_ToProto(mapCtx *direct.MapContext, in *krm.VPCPeeringConfig) *pb.VpcPeeringConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.VpcPeeringConfig{}
+	out.VpcName = direct.ValueOf(in.VPCName)
+	out.Subnet = direct.ValueOf(in.Subnet)
+	return out
+}
 func VPCPeeringConnectivity_FromProto(mapCtx *direct.MapContext, in *pb.VpcPeeringConnectivity) *krm.VPCPeeringConnectivity {
 	if in == nil {
 		return nil
 	}
 	out := &krm.VPCPeeringConnectivity{}
-	if in.GetVpc() != "" {
-		out.VPCRef = &krmcomputerefs.ComputeNetworkRef{External: in.GetVpc()}
-	}
+	out.VPC = direct.LazyPtr(in.GetVpc())
 	return out
 }
 func VPCPeeringConnectivity_ToProto(mapCtx *direct.MapContext, in *krm.VPCPeeringConnectivity) *pb.VpcPeeringConnectivity {
@@ -357,8 +334,6 @@ func VPCPeeringConnectivity_ToProto(mapCtx *direct.MapContext, in *krm.VPCPeerin
 		return nil
 	}
 	out := &pb.VpcPeeringConnectivity{}
-	if in.VPCRef != nil {
-		out.Vpc = in.VPCRef.External
-	}
+	out.Vpc = direct.ValueOf(in.VPC)
 	return out
 }

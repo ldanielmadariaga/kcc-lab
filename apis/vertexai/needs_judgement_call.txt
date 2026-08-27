@@ -1,0 +1,51 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=VertexAIFeaturestore group=vertexai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAIFeaturestore group=vertexai.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VertexAIFeaturestore group=vertexai.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/featurestores/{featurestore}; confirm the resource is regional and that this is the name for it)
+kind=VertexAIMetadataStore group=vertexai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAIMetadataStore group=vertexai.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VertexAIMetadataStore group=vertexai.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/metadataStores/{metadata_store}; confirm the resource is regional and that this is the name for it)
+kind=VertexAIDeploymentResourcePool group=vertexai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAIDeploymentResourcePool group=vertexai.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/deploymentResourcePools/{deployment_resource_pool}; confirm the resource is regional and that this is the name for it)
+kind=VertexAIExampleStore group=vertexai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAIExampleStore group=vertexai.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/exampleStores/{example_store}; confirm the resource is regional and that this is the name for it)
+kind=VertexAIFeatureGroup group=vertexai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAIFeatureGroup group=vertexai.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/featureGroups/{feature_group}; confirm the resource is regional and that this is the name for it)
+kind=VertexAIDataLabelingJob group=vertexai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAIDataLabelingJob group=vertexai.cnrm.cloud.google.com: field ".spec.datasets" reason=possible-reference (target=aiplatform.googleapis.com/Dataset)
+kind=VertexAIDataLabelingJob group=vertexai.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VertexAIDataLabelingJob group=vertexai.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/dataLabelingJobs/{data_labeling_job}; confirm the resource is regional and that this is the name for it)
+kind=VertexAICustomJob group=vertexai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAICustomJob group=vertexai.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VertexAICustomJob group=vertexai.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/customJobs/{custom_job}; confirm the resource is regional and that this is the name for it)
+kind=VertexAITensorboardExperiment group=vertexai.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAITensorboardExperiment group=vertexai.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VertexAITensorboardExperiment group=vertexai.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/tensorboards/{tensorboard}/experiments/{experiment}; confirm the resource is regional and that this is the name for it)
+kind=VertexAITensorboardExperiment group=vertexai.cnrm.cloud.google.com: field ".spec.tensorboard" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/locations/{location}/tensorboards/{tensorboard}/experiments/{experiment}; upstream may model this as a reference instead)
+kind=VertexAICustomJob group=vertexai.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAICustomJob group=vertexai.cnrm.cloud.google.com: field ".spec.jobSpec.experiment" reason=possible-reference-by-description
+kind=VertexAICustomJob group=vertexai.cnrm.cloud.google.com: field ".spec.jobSpec.experimentRun" reason=possible-reference-by-description
+kind=VertexAICustomJob group=vertexai.cnrm.cloud.google.com: field ".spec.jobSpec.models" reason=possible-reference-by-description
+kind=VertexAICustomJob group=vertexai.cnrm.cloud.google.com: field ".spec.jobSpec.network" reason=possible-reference-by-description
+kind=VertexAICustomJob group=vertexai.cnrm.cloud.google.com: field ".spec.jobSpec.serviceAccount" reason=possible-reference-by-description
+kind=VertexAICustomJob group=vertexai.cnrm.cloud.google.com: field ".spec.jobSpec.tensorboard" reason=possible-reference-by-description
+kind=VertexAICustomJob group=vertexai.cnrm.cloud.google.com: field ".spec.jobSpec.workerPoolSpecs[].machineSpec.reservationAffinity.values" reason=possible-reference-by-description-loose
+kind=VertexAIDataLabelingJob group=vertexai.cnrm.cloud.google.com: field ".spec.datasets" reason=possible-reference-by-description
+kind=VertexAIDataLabelingJob group=vertexai.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAIDeploymentResourcePool group=vertexai.cnrm.cloud.google.com: field ".spec.dedicatedResources.machineSpec.reservationAffinity.values" reason=possible-reference-by-description-loose
+kind=VertexAIDeploymentResourcePool group=vertexai.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAIDeploymentResourcePool group=vertexai.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description
+kind=VertexAIFeaturestore group=vertexai.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAIMetadataStore group=vertexai.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAITensorboardExperiment group=vertexai.cnrm.cloud.google.com: field ".spec.tensorboard" reason=parent-segment-matches-sibling (emitted as a plain string from the pattern projects/{project}/locations/{location}/tensorboards/{tensorboard}/experiments/{experiment}, but the name matches VertexAITensorboard, a resource this service declares; confirm whether it should be a reference to it)
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.cloud.aiplatform.v1beta1.CustomJobSpec.tensorboard target=VertexAITensorboard

@@ -1,0 +1,35 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=CloudDeployCustomTargetType group=clouddeploy.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudDeployCustomTargetType group=clouddeploy.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/customTargetTypes/{custom_target_type}; confirm the resource is regional and that this is the name for it)
+kind=CloudDeployDeployPolicy group=clouddeploy.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudDeployDeployPolicy group=clouddeploy.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=CloudDeployDeployPolicy group=clouddeploy.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/deployPolicies/{deploy_policy}; confirm the resource is regional and that this is the name for it)
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/targets/{target}; confirm the resource is regional and that this is the name for it)
+kind=CloudDeployAutomation group=clouddeploy.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudDeployAutomation group=clouddeploy.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=CloudDeployAutomation group=clouddeploy.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}/automations/{automation}; confirm the resource is regional and that this is the name for it)
+kind=CloudDeployAutomation group=clouddeploy.cnrm.cloud.google.com: field ".spec.deliveryPipeline" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}/automations/{automation}; upstream may model this as a reference instead)
+kind=CloudDeployAutomation group=clouddeploy.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description
+kind=CloudDeployCustomTargetType group=clouddeploy.cnrm.cloud.google.com: field ".spec.customActions.includeSkaffoldModules[].googleCloudBuildRepo.repository" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.anthosCluster.membership" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.associatedEntities.KEY.anthosClusters[].membership" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.associatedEntities.KEY.gkeClusters[].cluster" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.customTarget.customTargetType" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].defaultPool.serviceAccount" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].privatePool.serviceAccount" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].privatePool.workerPool" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].serviceAccount" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.executionConfigs[].workerPool" reason=possible-reference-by-description
+kind=CloudDeployTarget group=clouddeploy.cnrm.cloud.google.com: field ".spec.gke.cluster" reason=possible-reference-by-description
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.cloud.deploy.v1.CustomTarget.customTargetType target=CloudDeployCustomTargetType

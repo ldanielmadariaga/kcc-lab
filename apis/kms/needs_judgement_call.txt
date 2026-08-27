@@ -1,0 +1,11 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=KMSCryptoKeyVersion group=kms.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=KMSCryptoKeyVersion group=kms.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}/cryptoKeyVersions/{crypto_key_version}; location is implied by the parent, add it only if the API needs it stated)
+kind=KMSKeyRingImportJob group=kms.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=KMSKeyRingImportJob group=kms.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-nested-parent (parent is projects/{project}/locations/{location}/keyRings/{key_ring}/importJobs/{import_job}; location is implied by the parent, add it only if the API needs it stated)

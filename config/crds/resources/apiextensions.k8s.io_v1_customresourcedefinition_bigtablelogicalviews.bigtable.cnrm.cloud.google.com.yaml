@@ -60,14 +60,23 @@ spec:
           metadata:
             type: object
           spec:
-            description: BigtableLogicalViewSpec defines a state of BigtableLogicalView
+            description: BigtableLogicalViewSpec defines the desired state of BigtableLogicalView
             properties:
               deletionProtection:
                 description: Optional. Set to true to make the LogicalView protected
                   against deletion.
                 type: boolean
-              instanceRef:
-                description: InstanceRef is a reference to a BigtableInstance.
+              etag:
+                description: Optional. The etag for this logical view. This may be
+                  sent on update requests to ensure that the client has an up-to-date
+                  value before proceeding. The server returns an ABORTED error on
+                  a mismatched etag.
+                type: string
+              instance:
+                description: The Instance that this resource belongs to.
+                type: string
+              projectRef:
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -84,25 +93,30 @@ spec:
                   - external
                 properties:
                   external:
-                    description: A reference to an externally managed BigtableInstance
-                      resource.
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
                     type: string
                   name:
-                    description: The name of a BigtableInstance resource.
+                    description: The `name` field of a `Project` resource.
                     type: string
                   namespace:
-                    description: The namespace of a BigtableInstance resource.
+                    description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
               query:
-                description: The BigtableLogicalView's select query.
+                description: Required. The logical view's select query.
                 type: string
               resourceID:
-                description: The BigtableLogicalView ID. If not given, the metadata.name
+                description: The BigtableLogicalView name. If not given, the metadata.name
                   will be used.
                 type: string
             required:
-            - instanceRef
+            - projectRef
+            - query
             type: object
           status:
             description: BigtableLogicalViewStatus defines the config connector machine
@@ -137,10 +151,6 @@ spec:
               externalRef:
                 description: A unique specifier for the BigtableLogicalView resource
                   in GCP.
-                type: string
-              name:
-                description: The unique name of the BigtableLogicalView. Values are
-                  of the form `projects/{project}/instances/{instance}/logicalViews/{logicalViewID}`.
                 type: string
               observedGeneration:
                 description: ObservedGeneration is the generation of the resource

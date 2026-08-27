@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: networksecurityfirewallendpoints.networksecurity.cnrm.cloud.google.com
 spec:
@@ -65,7 +64,9 @@ spec:
               of NetworkSecurityFirewallEndpoint
             properties:
               billingProjectID:
-                description: Optional. Billing project ID.
+                description: Optional. Project to charge for the deployed firewall
+                  endpoint. This field must be specified when creating the endpoint
+                  in the organization scope, and should be omitted otherwise.
                 type: string
               description:
                 description: Optional. Description of the firewall endpoint. Max length
@@ -73,59 +74,30 @@ spec:
                 type: string
               endpointSettings:
                 description: Optional. Settings for the endpoint.
-                properties:
-                  jumboFramesEnabled:
-                    description: Optional. Immutable. Indicates whether Jumbo Frames
-                      are enabled.
-                    type: boolean
-                type: object
               labels:
                 additionalProperties:
                   type: string
-                description: Optional. Labels as key value pairs.
+                description: Optional. Labels as key value pairs
                 type: object
               location:
                 description: The location of this resource.
                 type: string
-              projectRef:
-                description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
+              organizationRef:
+                description: The organization that this resource belongs to.
                 properties:
                   external:
-                    description: The `projectID` field of a project, when not managed
+                    description: The 'name' field of an organization, when not managed
                       by Config Connector.
                     type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
-                  name:
-                    description: The `name` field of a `Project` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `Project` resource.
-                    type: string
+                required:
+                - external
                 type: object
               resourceID:
                 description: The NetworkSecurityFirewallEndpoint name. If not given,
                   the metadata.name will be used.
                 type: string
             required:
-            - location
-            - projectRef
+            - organizationRef
             type: object
           status:
             description: NetworkSecurityFirewallEndpointStatus defines the config
@@ -175,22 +147,18 @@ spec:
                 properties:
                   associatedNetworks:
                     description: 'Output only. Deprecated: List of networks that are
-                      associated with this endpoint in the local zone.'
+                      associated with this endpoint in the local zone. This is a projection
+                      of the FirewallEndpointAssociations pointing at this endpoint.
+                      A network will only appear in this list after traffic routing
+                      is fully configured. Format: projects/{project}/global/networks/{name}.'
                     items:
                       type: string
                     type: array
                   associations:
                     description: Output only. List of FirewallEndpointAssociations
-                      that are associated to this endpoint.
-                    items:
-                      properties:
-                        name:
-                          description: Output only. The resource name of the FirewallEndpointAssociation.
-                          type: string
-                        network:
-                          description: Output only. The VPC network associated.
-                          type: string
-                      type: object
+                      that are associated to this endpoint. An association will only
+                      appear in this list after traffic routing is fully configured.
+                    items: {}
                     type: array
                   createTime:
                     description: Output only. Create time stamp.
@@ -199,11 +167,17 @@ spec:
                     description: Output only. Whether reconciling is in progress,
                       recommended per https://google.aip.dev/128.
                     type: boolean
+                  satisfiesPzi:
+                    description: Output only. [Output Only] Reserved for future use.
+                    type: boolean
+                  satisfiesPzs:
+                    description: Output only. [Output Only] Reserved for future use.
+                    type: boolean
                   state:
                     description: Output only. Current state of the endpoint.
                     type: string
                   updateTime:
-                    description: Output only. Update time stamp.
+                    description: Output only. Update time stamp
                     type: string
                 type: object
             type: object

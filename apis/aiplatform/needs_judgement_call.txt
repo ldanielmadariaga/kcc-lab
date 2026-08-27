@@ -1,0 +1,68 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=VertexAISpecialistPool group=aiplatform.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAISpecialistPool group=aiplatform.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/specialistPools/{specialist_pool}; confirm the resource is regional and that this is the name for it)
+kind=AIPlatformModel group=aiplatform.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=AIPlatformModel group=aiplatform.cnrm.cloud.google.com: field ".spec.pipelineJob" reason=possible-reference (target=aiplatform.googleapis.com/PipelineJob)
+kind=AIPlatformModel group=aiplatform.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/models/{model}; confirm the resource is regional and that this is the name for it)
+kind=VertexAIFeatureOnlineStore group=aiplatform.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAIFeatureOnlineStore group=aiplatform.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store}; confirm the resource is regional and that this is the name for it)
+kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: field ".spec.network" reason=possible-reference (target=compute.googleapis.com/Network)
+kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/pipelineJobs/{pipeline_job}; confirm the resource is regional and that this is the name for it)
+kind=VertexAITuningJob group=aiplatform.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAITuningJob group=aiplatform.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VertexAITuningJob group=aiplatform.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/tuningJobs/{tuning_job}; confirm the resource is regional and that this is the name for it)
+kind=VertexAIStudy group=aiplatform.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAIStudy group=aiplatform.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VertexAIStudy group=aiplatform.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/studies/{study}; confirm the resource is regional and that this is the name for it)
+kind=VertexAITrainingPipeline group=aiplatform.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAITrainingPipeline group=aiplatform.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VertexAITrainingPipeline group=aiplatform.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/trainingPipelines/{training_pipeline}; confirm the resource is regional and that this is the name for it)
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/schedules/{schedule}; confirm the resource is regional and that this is the name for it)
+kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/extensions/{extension}; confirm the resource is regional and that this is the name for it)
+kind=AIPlatformModel group=aiplatform.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=AIPlatformModel group=aiplatform.cnrm.cloud.google.com: field ".spec.versionAliases" reason=possible-reference-by-description
+kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.manifest.authConfig.apiKeyConfig.apiKeySecret" reason=possible-reference-by-description
+kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.manifest.authConfig.googleServiceAccountConfig.serviceAccount" reason=possible-reference-by-description
+kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.manifest.authConfig.httpBasicAuthConfig.credentialSecret" reason=possible-reference-by-description
+kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.manifest.authConfig.oauthConfig.serviceAccount" reason=possible-reference-by-description
+kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.manifest.authConfig.oidcConfig.serviceAccount" reason=possible-reference-by-description
+kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.privateServiceConnectConfig.serviceDirectory" reason=possible-reference-by-description
+kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.runtimeConfig.codeInterpreterRuntimeConfig.fileInputGCSBucket" reason=possible-reference-by-description
+kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.runtimeConfig.codeInterpreterRuntimeConfig.fileOutputGCSBucket" reason=possible-reference-by-description
+kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.runtimeConfig.vertexAiSearchRuntimeConfig.servingConfigName" reason=possible-reference-by-description
+kind=VertexAIExtension group=aiplatform.cnrm.cloud.google.com: field ".spec.toolUseExamples[].extensionOperation.extension" reason=possible-reference-by-description-loose
+kind=VertexAIFeatureOnlineStore group=aiplatform.cnrm.cloud.google.com: field ".spec.dedicatedServingEndpoint.privateServiceConnectConfig.pscAutomationConfigs[].network" reason=possible-reference-by-description
+kind=VertexAIFeatureOnlineStore group=aiplatform.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: field ".spec.network" reason=possible-reference-by-description
+kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: field ".spec.runtimeConfig.inputArtifacts.KEY.artifactID" reason=possible-reference-by-description
+kind=VertexAIPipelineJob group=aiplatform.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createNotebookExecutionJobRequest.notebookExecutionJob.customEnvironmentSpec.machineSpec.reservationAffinity.values" reason=possible-reference-by-description-loose
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createNotebookExecutionJobRequest.notebookExecutionJob.customEnvironmentSpec.networkSpec.network" reason=possible-reference-by-name (ComputeNetworkRef)
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createNotebookExecutionJobRequest.notebookExecutionJob.customEnvironmentSpec.networkSpec.subnetwork" reason=possible-reference-by-description
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createNotebookExecutionJobRequest.notebookExecutionJob.dataformRepositorySource.dataformRepositoryResourceName" reason=possible-reference-by-description
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createNotebookExecutionJobRequest.notebookExecutionJob.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createNotebookExecutionJobRequest.notebookExecutionJob.scheduleResourceName" reason=possible-reference-by-description
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createNotebookExecutionJobRequest.notebookExecutionJob.serviceAccount" reason=possible-reference-by-description
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createNotebookExecutionJobRequest.parent" reason=possible-reference-by-description
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createPipelineJobRequest" reason=possible-reference-by-description
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createPipelineJobRequest.parent" reason=possible-reference-by-description
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createPipelineJobRequest.pipelineJob.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createPipelineJobRequest.pipelineJob.network" reason=possible-reference-by-description
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createPipelineJobRequest.pipelineJob.runtimeConfig.inputArtifacts.KEY.artifactID" reason=possible-reference-by-description
+kind=VertexAISchedule group=aiplatform.cnrm.cloud.google.com: field ".spec.createPipelineJobRequest.pipelineJob.serviceAccount" reason=possible-reference-by-description
+kind=VertexAITrainingPipeline group=aiplatform.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAITrainingPipeline group=aiplatform.cnrm.cloud.google.com: field ".spec.modelToUpload.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAITrainingPipeline group=aiplatform.cnrm.cloud.google.com: field ".spec.modelToUpload.versionAliases" reason=possible-reference-by-description
+kind=VertexAITuningJob group=aiplatform.cnrm.cloud.google.com: field ".spec.encryptionSpec.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=VertexAITuningJob group=aiplatform.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description

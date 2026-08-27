@@ -1,0 +1,28 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=BatchJob group=batch.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/jobs/{job}; confirm the resource is regional and that this is the name for it)
+kind=BatchTask group=batch.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=BatchTask group=batch.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/jobs/{job}/taskGroups/{task_group}/tasks/{task}; confirm the resource is regional and that this is the name for it)
+kind=BatchTask group=batch.cnrm.cloud.google.com: field ".spec.job" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/locations/{location}/jobs/{job}/taskGroups/{task_group}/tasks/{task}; upstream may model this as a reference instead)
+kind=BatchTask group=batch.cnrm.cloud.google.com: field ".spec.taskGroup" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/locations/{location}/jobs/{job}/taskGroups/{task_group}/tasks/{task}; upstream may model this as a reference instead)
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.instances[].policy.bootDisk.image" reason=possible-reference-by-description
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.instances[].policy.disks[].newDisk.image" reason=possible-reference-by-description
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.network" reason=possible-reference-by-name (ComputeNetworkRef)
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.network.networkInterfaces[].network" reason=possible-reference-by-description
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.network.networkInterfaces[].subnetwork" reason=possible-reference-by-description
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.allocationPolicy.serviceAccount" reason=possible-reference-by-description
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.notifications[].pubsubTopic" reason=possible-reference-by-description
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.taskGroups[].taskEnvironments[].secretVariables" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.taskGroups[].taskSpec.environment.secretVariables" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=BatchJob group=batch.cnrm.cloud.google.com: field ".spec.taskGroups[].taskSpec.runnables[].environment.secretVariables" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBatchResourceAllowance group=batch.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudBatchResourceAllowance group=batch.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/resourceAllowances/{resource_allowance}; confirm the resource is regional and that this is the name for it)
+kind=CloudBatchResourceAllowance group=batch.cnrm.cloud.google.com: field ".spec.notifications[].pubsubTopic" reason=possible-reference-by-description
+kind=BatchTask group=batch.cnrm.cloud.google.com: field ".spec.job" reason=parent-segment-matches-sibling (emitted as a plain string from the pattern projects/{project}/locations/{location}/jobs/{job}/taskGroups/{task_group}/tasks/{task}, but the name matches BatchJob, a resource this service declares; confirm whether it should be a reference to it)

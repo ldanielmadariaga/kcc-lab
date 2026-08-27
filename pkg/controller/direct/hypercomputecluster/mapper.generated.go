@@ -25,11 +25,7 @@ package hypercomputecluster
 
 import (
 	pb "cloud.google.com/go/hypercomputecluster/apiv1/hypercomputeclusterpb"
-	krmcomputerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
-	krmcomputev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
-	krmfilestorev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/filestore/v1beta1"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/hypercomputecluster/v1alpha1"
-	krmstoragev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/storage/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -56,7 +52,7 @@ func BucketReference_FromProto(mapCtx *direct.MapContext, in *pb.BucketReference
 		return nil
 	}
 	out := &krm.BucketReference{}
-	out.Bucket = direct.LazyPtr(in.GetBucket())
+	// MISSING: Bucket
 	return out
 }
 func BucketReference_ToProto(mapCtx *direct.MapContext, in *krm.BucketReference) *pb.BucketReference {
@@ -64,7 +60,7 @@ func BucketReference_ToProto(mapCtx *direct.MapContext, in *krm.BucketReference)
 		return nil
 	}
 	out := &pb.BucketReference{}
-	out.Bucket = direct.ValueOf(in.Bucket)
+	// MISSING: Bucket
 	return out
 }
 func ComputeInstanceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ComputeInstance) *krm.ComputeInstanceObservedState {
@@ -154,9 +150,7 @@ func ExistingBucketConfig_FromProto(mapCtx *direct.MapContext, in *pb.ExistingBu
 		return nil
 	}
 	out := &krm.ExistingBucketConfig{}
-	if in.GetBucket() != "" {
-		out.BucketRef = &krmstoragev1beta1.StorageBucketRef{External: in.GetBucket()}
-	}
+	out.Bucket = direct.LazyPtr(in.GetBucket())
 	return out
 }
 func ExistingBucketConfig_ToProto(mapCtx *direct.MapContext, in *krm.ExistingBucketConfig) *pb.ExistingBucketConfig {
@@ -164,9 +158,7 @@ func ExistingBucketConfig_ToProto(mapCtx *direct.MapContext, in *krm.ExistingBuc
 		return nil
 	}
 	out := &pb.ExistingBucketConfig{}
-	if in.BucketRef != nil {
-		out.Bucket = in.BucketRef.External
-	}
+	out.Bucket = direct.ValueOf(in.Bucket)
 	return out
 }
 func ExistingFilestoreConfig_FromProto(mapCtx *direct.MapContext, in *pb.ExistingFilestoreConfig) *krm.ExistingFilestoreConfig {
@@ -174,9 +166,7 @@ func ExistingFilestoreConfig_FromProto(mapCtx *direct.MapContext, in *pb.Existin
 		return nil
 	}
 	out := &krm.ExistingFilestoreConfig{}
-	if in.GetFilestore() != "" {
-		out.FilestoreRef = &krmfilestorev1beta1.FilestoreInstanceRef{External: in.GetFilestore()}
-	}
+	out.Filestore = direct.LazyPtr(in.GetFilestore())
 	return out
 }
 func ExistingFilestoreConfig_ToProto(mapCtx *direct.MapContext, in *krm.ExistingFilestoreConfig) *pb.ExistingFilestoreConfig {
@@ -184,9 +174,7 @@ func ExistingFilestoreConfig_ToProto(mapCtx *direct.MapContext, in *krm.Existing
 		return nil
 	}
 	out := &pb.ExistingFilestoreConfig{}
-	if in.FilestoreRef != nil {
-		out.Filestore = in.FilestoreRef.External
-	}
+	out.Filestore = direct.ValueOf(in.Filestore)
 	return out
 }
 func ExistingLustreConfig_FromProto(mapCtx *direct.MapContext, in *pb.ExistingLustreConfig) *krm.ExistingLustreConfig {
@@ -210,12 +198,8 @@ func ExistingNetworkConfig_FromProto(mapCtx *direct.MapContext, in *pb.ExistingN
 		return nil
 	}
 	out := &krm.ExistingNetworkConfig{}
-	if in.GetNetwork() != "" {
-		out.NetworkRef = &krmcomputerefs.ComputeNetworkRef{External: in.GetNetwork()}
-	}
-	if in.GetSubnetwork() != "" {
-		out.SubnetworkRef = &krmcomputev1beta1.ComputeSubnetworkRef{External: in.GetSubnetwork()}
-	}
+	out.Network = direct.LazyPtr(in.GetNetwork())
+	out.Subnetwork = direct.LazyPtr(in.GetSubnetwork())
 	return out
 }
 func ExistingNetworkConfig_ToProto(mapCtx *direct.MapContext, in *krm.ExistingNetworkConfig) *pb.ExistingNetworkConfig {
@@ -223,12 +207,8 @@ func ExistingNetworkConfig_ToProto(mapCtx *direct.MapContext, in *krm.ExistingNe
 		return nil
 	}
 	out := &pb.ExistingNetworkConfig{}
-	if in.NetworkRef != nil {
-		out.Network = in.NetworkRef.External
-	}
-	if in.SubnetworkRef != nil {
-		out.Subnetwork = in.SubnetworkRef.External
-	}
+	out.Network = direct.ValueOf(in.Network)
+	out.Subnetwork = direct.ValueOf(in.Subnetwork)
 	return out
 }
 func FileShareConfig_FromProto(mapCtx *direct.MapContext, in *pb.FileShareConfig) *krm.FileShareConfig {
@@ -254,7 +234,7 @@ func FilestoreReference_FromProto(mapCtx *direct.MapContext, in *pb.FilestoreRef
 		return nil
 	}
 	out := &krm.FilestoreReference{}
-	out.Filestore = direct.LazyPtr(in.GetFilestore())
+	// MISSING: Filestore
 	return out
 }
 func FilestoreReference_ToProto(mapCtx *direct.MapContext, in *krm.FilestoreReference) *pb.FilestoreReference {
@@ -262,7 +242,7 @@ func FilestoreReference_ToProto(mapCtx *direct.MapContext, in *krm.FilestoreRefe
 		return nil
 	}
 	out := &pb.FilestoreReference{}
-	out.Filestore = direct.ValueOf(in.Filestore)
+	// MISSING: Filestore
 	return out
 }
 func GCSAutoclassConfig_FromProto(mapCtx *direct.MapContext, in *pb.GcsAutoclassConfig) *krm.GCSAutoclassConfig {
@@ -331,9 +311,30 @@ func HypercomputeClusterClusterSpec_FromProto(mapCtx *direct.MapContext, in *pb.
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.Labels = in.Labels
-	out.NetworkResources = NetworkResources_FromProto(mapCtx, in.NetworkResources)
-	out.StorageResources = StorageResources_FromProto(mapCtx, in.StorageResources)
-	out.ComputeResources = ComputeResources_FromProto(mapCtx, in.ComputeResources)
+	if in.NetworkResources != nil {
+		out.NetworkResources = make(map[string]krm.NetworkResource, len(in.NetworkResources))
+		for k, v := range in.NetworkResources {
+			if c := NetworkResource_FromProto(mapCtx, v); c != nil {
+				out.NetworkResources[k] = *c
+			}
+		}
+	}
+	if in.StorageResources != nil {
+		out.StorageResources = make(map[string]krm.StorageResource, len(in.StorageResources))
+		for k, v := range in.StorageResources {
+			if c := StorageResource_FromProto(mapCtx, v); c != nil {
+				out.StorageResources[k] = *c
+			}
+		}
+	}
+	if in.ComputeResources != nil {
+		out.ComputeResources = make(map[string]krm.ComputeResource, len(in.ComputeResources))
+		for k, v := range in.ComputeResources {
+			if c := ComputeResource_FromProto(mapCtx, v); c != nil {
+				out.ComputeResources[k] = *c
+			}
+		}
+	}
 	out.Orchestrator = Orchestrator_FromProto(mapCtx, in.GetOrchestrator())
 	return out
 }
@@ -345,9 +346,24 @@ func HypercomputeClusterClusterSpec_ToProto(mapCtx *direct.MapContext, in *krm.H
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
 	out.Labels = in.Labels
-	out.NetworkResources = NetworkResources_ToProto(mapCtx, in.NetworkResources)
-	out.StorageResources = StorageResources_ToProto(mapCtx, in.StorageResources)
-	out.ComputeResources = ComputeResources_ToProto(mapCtx, in.ComputeResources)
+	if in.NetworkResources != nil {
+		out.NetworkResources = make(map[string]*pb.NetworkResource, len(in.NetworkResources))
+		for k, v := range in.NetworkResources {
+			out.NetworkResources[k] = NetworkResource_ToProto(mapCtx, &v)
+		}
+	}
+	if in.StorageResources != nil {
+		out.StorageResources = make(map[string]*pb.StorageResource, len(in.StorageResources))
+		for k, v := range in.StorageResources {
+			out.StorageResources[k] = StorageResource_ToProto(mapCtx, &v)
+		}
+	}
+	if in.ComputeResources != nil {
+		out.ComputeResources = make(map[string]*pb.ComputeResource, len(in.ComputeResources))
+		for k, v := range in.ComputeResources {
+			out.ComputeResources[k] = ComputeResource_ToProto(mapCtx, &v)
+		}
+	}
 	out.Orchestrator = Orchestrator_ToProto(mapCtx, in.Orchestrator)
 	return out
 }
@@ -356,7 +372,7 @@ func LustreReference_FromProto(mapCtx *direct.MapContext, in *pb.LustreReference
 		return nil
 	}
 	out := &krm.LustreReference{}
-	out.Lustre = direct.LazyPtr(in.GetLustre())
+	// MISSING: Lustre
 	return out
 }
 func LustreReference_ToProto(mapCtx *direct.MapContext, in *krm.LustreReference) *pb.LustreReference {
@@ -364,7 +380,7 @@ func LustreReference_ToProto(mapCtx *direct.MapContext, in *krm.LustreReference)
 		return nil
 	}
 	out := &pb.LustreReference{}
-	out.Lustre = direct.ValueOf(in.Lustre)
+	// MISSING: Lustre
 	return out
 }
 func NetworkReference_FromProto(mapCtx *direct.MapContext, in *pb.NetworkReference) *krm.NetworkReference {
@@ -372,8 +388,8 @@ func NetworkReference_FromProto(mapCtx *direct.MapContext, in *pb.NetworkReferen
 		return nil
 	}
 	out := &krm.NetworkReference{}
-	out.Network = direct.LazyPtr(in.GetNetwork())
-	out.Subnetwork = direct.LazyPtr(in.GetSubnetwork())
+	// MISSING: Network
+	// MISSING: Subnetwork
 	return out
 }
 func NetworkReference_ToProto(mapCtx *direct.MapContext, in *krm.NetworkReference) *pb.NetworkReference {
@@ -381,8 +397,8 @@ func NetworkReference_ToProto(mapCtx *direct.MapContext, in *krm.NetworkReferenc
 		return nil
 	}
 	out := &pb.NetworkReference{}
-	out.Network = direct.ValueOf(in.Network)
-	out.Subnetwork = direct.ValueOf(in.Subnetwork)
+	// MISSING: Network
+	// MISSING: Subnetwork
 	return out
 }
 func NetworkResource_FromProto(mapCtx *direct.MapContext, in *pb.NetworkResource) *krm.NetworkResource {
@@ -434,9 +450,7 @@ func NewBucketConfig_FromProto(mapCtx *direct.MapContext, in *pb.NewBucketConfig
 	out := &krm.NewBucketConfig{}
 	out.Autoclass = GCSAutoclassConfig_FromProto(mapCtx, in.GetAutoclass())
 	out.StorageClass = direct.Enum_FromProto(mapCtx, in.GetStorageClass())
-	if in.GetBucket() != "" {
-		out.BucketRef = &krmstoragev1beta1.StorageBucketRef{External: in.GetBucket()}
-	}
+	out.Bucket = direct.LazyPtr(in.GetBucket())
 	out.HierarchicalNamespace = GCSHierarchicalNamespaceConfig_FromProto(mapCtx, in.GetHierarchicalNamespace())
 	return out
 }
@@ -451,9 +465,7 @@ func NewBucketConfig_ToProto(mapCtx *direct.MapContext, in *krm.NewBucketConfig)
 	if oneof := NewBucketConfig_StorageClass_ToProto(mapCtx, in.StorageClass); oneof != nil {
 		out.Option = oneof
 	}
-	if in.BucketRef != nil {
-		out.Bucket = in.BucketRef.External
-	}
+	out.Bucket = direct.ValueOf(in.Bucket)
 	out.HierarchicalNamespace = GCSHierarchicalNamespaceConfig_ToProto(mapCtx, in.HierarchicalNamespace)
 	return out
 }
@@ -468,9 +480,7 @@ func NewFilestoreConfig_FromProto(mapCtx *direct.MapContext, in *pb.NewFilestore
 		return nil
 	}
 	out := &krm.NewFilestoreConfig{}
-	if in.GetFilestore() != "" {
-		out.FilestoreRef = &krmfilestorev1beta1.FilestoreInstanceRef{External: in.GetFilestore()}
-	}
+	out.Filestore = direct.LazyPtr(in.GetFilestore())
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.FileShares = direct.Slice_FromProto(mapCtx, in.FileShares, FileShareConfig_FromProto)
 	out.Tier = direct.Enum_FromProto(mapCtx, in.GetTier())
@@ -482,9 +492,7 @@ func NewFilestoreConfig_ToProto(mapCtx *direct.MapContext, in *krm.NewFilestoreC
 		return nil
 	}
 	out := &pb.NewFilestoreConfig{}
-	if in.FilestoreRef != nil {
-		out.Filestore = in.FilestoreRef.External
-	}
+	out.Filestore = direct.ValueOf(in.Filestore)
 	out.Description = direct.ValueOf(in.Description)
 	out.FileShares = direct.Slice_ToProto(mapCtx, in.FileShares, FileShareConfig_ToProto)
 	out.Tier = direct.Enum_ToProto[pb.NewFilestoreConfig_Tier](mapCtx, in.Tier)
@@ -538,9 +546,7 @@ func NewNetworkConfig_FromProto(mapCtx *direct.MapContext, in *pb.NewNetworkConf
 		return nil
 	}
 	out := &krm.NewNetworkConfig{}
-	if in.GetNetwork() != "" {
-		out.NetworkRef = &krmcomputerefs.ComputeNetworkRef{External: in.GetNetwork()}
-	}
+	out.Network = direct.LazyPtr(in.GetNetwork())
 	out.Description = direct.LazyPtr(in.GetDescription())
 	return out
 }
@@ -549,9 +555,7 @@ func NewNetworkConfig_ToProto(mapCtx *direct.MapContext, in *krm.NewNetworkConfi
 		return nil
 	}
 	out := &pb.NewNetworkConfig{}
-	if in.NetworkRef != nil {
-		out.Network = in.NetworkRef.External
-	}
+	out.Network = direct.ValueOf(in.Network)
 	out.Description = direct.ValueOf(in.Description)
 	return out
 }
@@ -665,8 +669,7 @@ func SlurmLoginNodes_FromProto(mapCtx *direct.MapContext, in *pb.SlurmLoginNodes
 	out.MachineType = direct.LazyPtr(in.GetMachineType())
 	out.StartupScript = direct.LazyPtr(in.GetStartupScript())
 	out.EnableOSLogin = direct.LazyPtr(in.GetEnableOsLogin())
-	// MISSING: EnablePublicIps
-	// (near miss): "EnablePublicIps" vs "EnablePublicIPs"
+	out.EnablePublicIPs = direct.LazyPtr(in.GetEnablePublicIps())
 	out.Labels = in.Labels
 	out.StorageConfigs = direct.Slice_FromProto(mapCtx, in.StorageConfigs, StorageConfig_FromProto)
 	// MISSING: Instances
@@ -688,8 +691,7 @@ found existing non-generated mapping function "SlurmLoginNodes_ToProto", skippin
 		out.MachineType = direct.ValueOf(in.MachineType)
 		out.StartupScript = direct.ValueOf(in.StartupScript)
 		out.EnableOsLogin = direct.ValueOf(in.EnableOSLogin)
-		// MISSING: EnablePublicIps
-		// (near miss): "EnablePublicIps" vs "EnablePublicIPs"
+		out.EnablePublicIps = direct.ValueOf(in.EnablePublicIPs)
 		out.Labels = in.Labels
 		out.StorageConfigs = direct.Slice_ToProto(mapCtx, in.StorageConfigs, StorageConfig_ToProto)
 		// MISSING: Instances
@@ -817,7 +819,7 @@ func SlurmPartition_FromProto(mapCtx *direct.MapContext, in *pb.SlurmPartition) 
 	}
 	out := &krm.SlurmPartition{}
 	out.ID = direct.LazyPtr(in.GetId())
-	out.NodeSetIds = in.NodeSetIds
+	out.NodeSetIDs = in.NodeSetIds
 	return out
 }
 func SlurmPartition_ToProto(mapCtx *direct.MapContext, in *krm.SlurmPartition) *pb.SlurmPartition {
@@ -826,7 +828,7 @@ func SlurmPartition_ToProto(mapCtx *direct.MapContext, in *krm.SlurmPartition) *
 	}
 	out := &pb.SlurmPartition{}
 	out.Id = direct.ValueOf(in.ID)
-	out.NodeSetIds = in.NodeSetIds
+	out.NodeSetIds = in.NodeSetIDs
 	return out
 }
 func StorageConfig_FromProto(mapCtx *direct.MapContext, in *pb.StorageConfig) *krm.StorageConfig {

@@ -1,0 +1,13 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=AutoMLDataset group=automl.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=AutoMLDataset group=automl.cnrm.cloud.google.com: field ".status.observedState.createTime" reason=server-set-field-placed (GCP computes this, but the proto carries no field_behavior anywhere on the message, so it was placed by name. Confirm it is not something a user sets)
+kind=AutoMLDataset group=automl.cnrm.cloud.google.com: field ".status.observedState.etag" reason=server-set-field-placed (GCP computes this, but the proto carries no field_behavior anywhere on the message, so it was placed by name. Confirm it is not something a user sets)
+kind=AutoMLDataset group=automl.cnrm.cloud.google.com: field ".status.observedState.exampleCount" reason=output-only-in-comment-only (proto comment says output only but no field_behavior annotation, so it was generated into the Spec instead. Move it if the comment is right: Output only. The number of examples in the dataset.)
+kind=AutoMLDataset group=automl.cnrm.cloud.google.com: field ".status.observedState.createTime" reason=output-only-in-comment-only (proto comment says output only but no field_behavior annotation, so it was generated into the Spec instead. Move it if the comment is right: Output only. Timestamp when this dataset was created.)
+kind=AutoMLDataset group=automl.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/datasets/{dataset}; confirm the resource is regional and that this is the name for it)

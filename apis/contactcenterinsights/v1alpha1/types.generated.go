@@ -56,7 +56,9 @@ type AnalysisResult_CallAnalysisMetadata struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.annotations
 	Annotations []CallAnnotation `json:"annotations,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// All the entities in the call.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.entities
+	Entities map[string]Entity `json:"entities,omitempty"`
 
 	// Overall conversation-level sentiment for each channel of the call.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.sentiments
@@ -66,9 +68,13 @@ type AnalysisResult_CallAnalysisMetadata struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.silence
 	Silence *ConversationLevelSilence `json:"silence,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// All the matched intents in the call.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.intents
+	Intents map[string]Intent `json:"intents,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// All the matched phrase matchers in the call.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.phrase_matchers
+	PhraseMatchers map[string]PhraseMatchData `json:"phraseMatchers,omitempty"`
 
 	// Overall conversation-level issue modeling result.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.issue_model_result
@@ -281,8 +287,6 @@ type CallAnnotation struct {
 	AnnotationEndBoundary *AnnotationBoundary `json:"annotationEndBoundary,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.contactcenterinsights.v1.Conversation", skipping
-
 // +kcc:proto=google.cloud.contactcenterinsights.v1.Conversation
 type Conversation struct {
 	// Call-specific metadata.
@@ -346,7 +350,6 @@ type Conversation struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.obfuscated_user_id
 	ObfuscatedUserID *string `json:"obfuscatedUserID,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.contactcenterinsights.v1.Conversation.CallMetadata
 type Conversation_CallMetadata struct {
@@ -654,15 +657,12 @@ type EntityMentionData struct {
 	Sentiment *SentimentData `json:"sentiment,omitempty"`
 }
 
-/* found existing non-generated go type "ExactMatchConfig", skipping
-
 // +kcc:proto=google.cloud.contactcenterinsights.v1.ExactMatchConfig
 type ExactMatchConfig struct {
 	// Whether to consider case sensitivity when performing an exact match.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.ExactMatchConfig.case_sensitive
 	CaseSensitive *bool `json:"caseSensitive,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.contactcenterinsights.v1.FaqAnswerData
 type FaqAnswerData struct {
@@ -762,8 +762,6 @@ type IssueMatchData struct {
 	IssueAssignment *IssueAssignment `json:"issueAssignment,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.contactcenterinsights.v1.IssueModel", skipping
-
 // +kcc:proto=google.cloud.contactcenterinsights.v1.IssueModel
 type IssueModel struct {
 	// Immutable. The resource name of the issue model.
@@ -788,7 +786,6 @@ type IssueModel struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModel.language_code
 	LanguageCode *string `json:"languageCode,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.contactcenterinsights.v1.IssueModel.InputDataConfig
 type IssueModel_InputDataConfig struct {
@@ -815,8 +812,9 @@ type IssueModelLabelStats struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModelLabelStats.unclassified_conversations_count
 	UnclassifiedConversationsCount *int64 `json:"unclassifiedConversationsCount,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Statistics on each issue. Key is the issue's resource name.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModelLabelStats.issue_stats
+	IssueStats map[string]IssueModelLabelStats_IssueStats `json:"issueStats,omitempty"`
 }
 
 // +kcc:proto=google.cloud.contactcenterinsights.v1.IssueModelLabelStats.IssueStats
@@ -859,12 +857,11 @@ type PhraseMatchData struct {
 	DisplayName *string `json:"displayName,omitempty"`
 }
 
-/* found existing non-generated go type "PhraseMatchRule", skipping
-
 // +kcc:proto=google.cloud.contactcenterinsights.v1.PhraseMatchRule
 type PhraseMatchRule struct {
 	// Required. The phrase to be matched.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.PhraseMatchRule.query
+	// +required
 	Query *string `json:"query,omitempty"`
 
 	// Specifies whether the phrase must be missing from the transcript segment or
@@ -877,9 +874,6 @@ type PhraseMatchRule struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.PhraseMatchRule.config
 	Config *PhraseMatchRuleConfig `json:"config,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "PhraseMatchRuleConfig", skipping
 
 // +kcc:proto=google.cloud.contactcenterinsights.v1.PhraseMatchRuleConfig
 type PhraseMatchRuleConfig struct {
@@ -887,23 +881,18 @@ type PhraseMatchRuleConfig struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.PhraseMatchRuleConfig.exact_match_config
 	ExactMatchConfig *ExactMatchConfig `json:"exactMatchConfig,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "PhraseMatchRuleGroup", skipping
 
 // +kcc:proto=google.cloud.contactcenterinsights.v1.PhraseMatchRuleGroup
 type PhraseMatchRuleGroup struct {
 	// Required. The type of this phrase match rule group.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.PhraseMatchRuleGroup.type
+	// +required
 	Type *string `json:"type,omitempty"`
 
 	// A list of phrase match rules that are included in this group.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.PhraseMatchRuleGroup.phrase_match_rules
 	PhraseMatchRules []PhraseMatchRule `json:"phraseMatchRules,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.contactcenterinsights.v1.PhraseMatcher", skipping
 
 // +kcc:proto=google.cloud.contactcenterinsights.v1.PhraseMatcher
 type PhraseMatcher struct {
@@ -924,6 +913,7 @@ type PhraseMatcher struct {
 
 	// Required. The type of this phrase matcher.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.PhraseMatcher.type
+	// +required
 	Type *string `json:"type,omitempty"`
 
 	// Applies the phrase matcher only when it is active.
@@ -940,7 +930,6 @@ type PhraseMatcher struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.PhraseMatcher.role_match
 	RoleMatch *string `json:"roleMatch,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.contactcenterinsights.v1.QaAnswer
 type QaAnswer struct {
@@ -1006,8 +995,6 @@ type QaAnswer_AnswerValue struct {
 	Key *string `json:"key,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.contactcenterinsights.v1.QaScorecard", skipping
-
 // +kcc:proto=google.cloud.contactcenterinsights.v1.QaScorecard
 type QaScorecard struct {
 	// Identifier. The scorecard name.
@@ -1024,7 +1011,6 @@ type QaScorecard struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.QaScorecard.description
 	Description *string `json:"description,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.contactcenterinsights.v1.QaScorecardResult
 type QaScorecardResult struct {
@@ -1251,8 +1237,6 @@ type SmartReplyData struct {
 	QueryRecord *string `json:"queryRecord,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.contactcenterinsights.v1.View", skipping
-
 // +kcc:proto=google.cloud.contactcenterinsights.v1.View
 type View struct {
 	// Immutable. The resource name of the view.
@@ -1269,7 +1253,6 @@ type View struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.View.value
 	Value *string `json:"value,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.contactcenterinsights.v1.Analysis
 type AnalysisObservedState struct {
@@ -1316,7 +1299,9 @@ type AnalysisResult_CallAnalysisMetadataObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.annotations
 	Annotations []CallAnnotation `json:"annotations,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// All the entities in the call.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.entities
+	Entities map[string]Entity `json:"entities,omitempty"`
 
 	// Overall conversation-level sentiment for each channel of the call.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.sentiments
@@ -1326,9 +1311,13 @@ type AnalysisResult_CallAnalysisMetadataObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.silence
 	Silence *ConversationLevelSilence `json:"silence,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// All the matched intents in the call.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.intents
+	Intents map[string]Intent `json:"intents,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// All the matched phrase matchers in the call.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.phrase_matchers
+	PhraseMatchers map[string]PhraseMatchData `json:"phraseMatchers,omitempty"`
 
 	// Overall conversation-level issue modeling result.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.issue_model_result
@@ -1338,8 +1327,6 @@ type AnalysisResult_CallAnalysisMetadataObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.qa_scorecard_results
 	QaScorecardResults []QaScorecardResultObservedState `json:"qaScorecardResults,omitempty"`
 }
-
-/* found existing non-generated go type with proto tag "google.cloud.contactcenterinsights.v1.Conversation", skipping
 
 // +kcc:observedstate:proto=google.cloud.contactcenterinsights.v1.Conversation
 type ConversationObservedState struct {
@@ -1380,10 +1367,12 @@ type ConversationObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.runtime_annotations
 	RuntimeAnnotations []RuntimeAnnotation `json:"runtimeAnnotations,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Output only. All the matched Dialogflow intents in the call. The key
+	//  corresponds to a Dialogflow intent, format:
+	//  projects/{project}/agent/{agent}/intents/{intent}
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.dialogflow_intents
+	DialogflowIntents map[string]DialogflowIntent `json:"dialogflowIntents,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.contactcenterinsights.v1.ConversationDataSource
 type ConversationDataSourceObservedState struct {
@@ -1400,8 +1389,6 @@ type DialogflowSourceObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.DialogflowSource.dialogflow_conversation
 	DialogflowConversation *string `json:"dialogflowConversation,omitempty"`
 }
-
-/* found existing non-generated go type with proto tag "google.cloud.contactcenterinsights.v1.IssueModel", skipping
 
 // +kcc:observedstate:proto=google.cloud.contactcenterinsights.v1.IssueModel
 type IssueModelObservedState struct {
@@ -1430,7 +1417,6 @@ type IssueModelObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModel.training_stats
 	TrainingStats *IssueModelLabelStats `json:"trainingStats,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.contactcenterinsights.v1.IssueModel.InputDataConfig
 type IssueModel_InputDataConfigObservedState struct {
@@ -1438,8 +1424,6 @@ type IssueModel_InputDataConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModel.InputDataConfig.training_conversations_count
 	TrainingConversationsCount *int64 `json:"trainingConversationsCount,omitempty"`
 }
-
-/* found existing non-generated go type with proto tag "google.cloud.contactcenterinsights.v1.PhraseMatcher", skipping
 
 // +kcc:observedstate:proto=google.cloud.contactcenterinsights.v1.PhraseMatcher
 type PhraseMatcherObservedState struct {
@@ -1464,7 +1448,6 @@ type PhraseMatcherObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.PhraseMatcher.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.contactcenterinsights.v1.QaAnswer
 type QaAnswerObservedState struct {
@@ -1543,8 +1526,6 @@ type QaAnswer_AnswerValueObservedState struct {
 	NormalizedScore *float64 `json:"normalizedScore,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.contactcenterinsights.v1.QaScorecard", skipping
-
 // +kcc:observedstate:proto=google.cloud.contactcenterinsights.v1.QaScorecard
 type QaScorecardObservedState struct {
 	// Output only. The time at which this scorecard was created.
@@ -1555,7 +1536,6 @@ type QaScorecardObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.QaScorecard.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.contactcenterinsights.v1.QaScorecardResult
 type QaScorecardResultObservedState struct {
@@ -1609,8 +1589,6 @@ type QaScorecardResultObservedState struct {
 	ScoreSources []QaScorecardResult_ScoreSource `json:"scoreSources,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.contactcenterinsights.v1.View", skipping
-
 // +kcc:observedstate:proto=google.cloud.contactcenterinsights.v1.View
 type ViewObservedState struct {
 	// Output only. The time at which this view was created.
@@ -1621,4 +1599,3 @@ type ViewObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.View.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
-*/

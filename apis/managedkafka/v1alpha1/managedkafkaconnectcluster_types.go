@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 package v1alpha1
 
 import (
-	computev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -29,88 +28,39 @@ type ManagedKafkaConnectClusterSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// Required. The location of this resource.
-	// +required
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/connectClusters/{connect_cluster}
 	Location *string `json:"location"`
 
-	// Required. Reference to the Kafka cluster this Kafka Connect cluster is attached to.
-	// +required
-	ClusterRef *ClusterRef `json:"clusterRef"`
-
+	// The ManagedKafkaConnectCluster name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. Configuration properties for a Kafka Connect cluster deployed
 	//  to Google Cloud Platform.
+	// +kcc:proto:field=google.cloud.managedkafka.v1.ConnectCluster.gcp_config
 	// +required
-	GCPConfig *ConnectGCPConfig `json:"gcpConfig"`
+	GcpConfig *ConnectGcpConfig `json:"gcpConfig,omitempty"`
+
+	// Required. Immutable. The name of the Kafka cluster this Kafka Connect
+	//  cluster is attached to. Structured like:
+	//  projects/{project}/locations/{location}/clusters/{cluster}
+	// +kcc:proto:field=google.cloud.managedkafka.v1.ConnectCluster.kafka_cluster
+	// +required
+	KafkaCluster *string `json:"kafkaCluster,omitempty"`
 
 	// Optional. Labels as key value pairs.
-	// +optional
+	// +kcc:proto:field=google.cloud.managedkafka.v1.ConnectCluster.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Required. Capacity configuration for the Kafka Connect cluster.
+	// +kcc:proto:field=google.cloud.managedkafka.v1.ConnectCluster.capacity_config
 	// +required
-	CapacityConfig *CapacityConfig `json:"capacityConfig"`
+	CapacityConfig *CapacityConfig `json:"capacityConfig,omitempty"`
 
 	// Optional. Configurations for the worker that are overridden from the
 	//  defaults. The key of the map is a Kafka Connect worker property name, for
 	//  example: `exactly.once.source.support`.
-	// +optional
+	// +kcc:proto:field=google.cloud.managedkafka.v1.ConnectCluster.config
 	Config map[string]string `json:"config,omitempty"`
-
-	// The ManagedKafkaConnectCluster name. If not given, the metadata.name will be used.
-	// +optional
-	ResourceID *string `json:"resourceID,omitempty"`
-}
-
-// +kcc:proto=google.cloud.managedkafka.v1.ConnectGcpConfig
-type ConnectGCPConfig struct {
-	// Required. Access configuration for the Kafka Connect cluster.
-	// +required
-	AccessConfig *ConnectAccessConfig `json:"accessConfig"`
-
-	// Optional. Secrets to load into workers. Exact SecretVersions from Secret
-	//  Manager must be provided -- aliases are not supported. Up to 32 secrets may
-	//  be loaded into one cluster.
-	// +optional
-	SecretPaths []refsv1beta1.SecretManagerSecretVersionRef `json:"secretPaths,omitempty"`
-}
-
-// +kcc:proto=google.cloud.managedkafka.v1.ConnectAccessConfig
-type ConnectAccessConfig struct {
-	// Required.
-	//  Virtual Private Cloud (VPC) networks that must be granted direct access to
-	//  the Kafka Connect cluster. Minimum of 1 network is required. Maximum 10
-	//  networks can be specified.
-	// +required
-	NetworkConfigs []ConnectNetworkConfig `json:"networkConfigs"`
-}
-
-// +kcc:proto=google.cloud.managedkafka.v1.ConnectNetworkConfig
-type ConnectNetworkConfig struct {
-	// Required. VPC subnet to make available to the Kafka Connect cluster.
-	//  It is used to create a Private Service Connect (PSC) interface for the
-	//  Kafka Connect workers. It must be located in the same region as the
-	//  Kafka Connect cluster.
-	//
-	//  The CIDR range of the subnet must be within the IPv4 address ranges for
-	//  private networks, as specified in RFC 1918. The primary subnet CIDR range
-	//  must have a minimum size of /22 (1024 addresses).
-	// +required
-	PrimarySubnetRef *computev1beta1.ComputeSubnetworkRef `json:"primarySubnetRef"`
-
-	// Optional. Additional subnets may be specified. They may be in another
-	//  region, but must be in the same VPC network. The Connect workers can
-	//  communicate with network endpoints in either the primary or additional
-	//  subnets.
-	// +optional
-	AdditionalSubnetRefs []*computev1beta1.ComputeSubnetworkRef `json:"additionalSubnetRefs,omitempty"`
-
-	// Optional. Additional DNS domain names from the subnet's network to be made
-	//  visible to the Connect Cluster. When using MirrorMaker2, it's necessary to
-	//  add the bootstrap address's dns domain name of the target cluster to make
-	//  it visible to the connector. For example:
-	//  my-kafka-cluster.us-central1.managedkafka.my-project.cloud.goog
-	// +optional
-	DNSDomainNames []string `json:"dnsDomainNames,omitempty"`
 }
 
 // ManagedKafkaConnectClusterStatus defines the config connector machine state of ManagedKafkaConnectCluster
@@ -151,7 +101,6 @@ type ManagedKafkaConnectClusterObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

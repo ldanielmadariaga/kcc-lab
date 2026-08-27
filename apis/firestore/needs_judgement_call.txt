@@ -1,0 +1,22 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=FirestoreDocument group=firestore.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=FirestoreDocument group=firestore.cnrm.cloud.google.com: field ".status.observedState.createTime" reason=server-set-field-placed (GCP computes this, but the proto carries no field_behavior anywhere on the message, so it was placed by name. Confirm it is not something a user sets)
+kind=FirestoreDocument group=firestore.cnrm.cloud.google.com: field ".status.observedState.updateTime" reason=server-set-field-placed (GCP computes this, but the proto carries no field_behavior anywhere on the message, so it was placed by name. Confirm it is not something a user sets)
+kind=FirestoreDocument group=firestore.cnrm.cloud.google.com: field ".status.observedState.createTime" reason=output-only-in-comment-only (proto comment says output only but no field_behavior annotation, so it was generated into the Spec instead. Move it if the comment is right: Output only. The time at which the document was created. This value increases monotonically when a document is deleted then recreated. It can also be compared to values from other documents and the `read_time` of a query.)
+kind=FirestoreDocument group=firestore.cnrm.cloud.google.com: field ".status.observedState.updateTime" reason=output-only-in-comment-only (proto comment says output only but no field_behavior annotation, so it was generated into the Spec instead. Move it if the comment is right: Output only. The time at which the document was last changed. This value is initially set to the `create_time` then increases monotonically with each change to the document. It can also be compared to values from other documents and the `read_time` of a query.)
+kind=FirestoreDocument group=firestore.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-unknown-parent (the proto declares no google.api.resource, so the parent shape is unknown; add location if the resource is regional)
+kind=FirestoreField group=firestore.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=FirestoreField group=firestore.cnrm.cloud.google.com: field ".spec.database" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/databases/{database}/collectionGroups/{collection}/fields/{field}; upstream may model this as a reference instead)
+kind=FirestoreField group=firestore.cnrm.cloud.google.com: field ".spec.collection" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/databases/{database}/collectionGroups/{collection}/fields/{field}; upstream may model this as a reference instead)
+kind=FirestoreBackupSchedule group=firestore.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=FirestoreBackupSchedule group=firestore.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=FirestoreBackupSchedule group=firestore.cnrm.cloud.google.com: field ".spec.database" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/databases/{database}/backupSchedules/{backup_schedule}; upstream may model this as a reference instead)
+kind=FirestoreDocument group=firestore.cnrm.cloud.google.com: field ".spec.fields.KEY.referenceValue" reason=possible-reference-by-description
+kind=FirestoreField group=firestore.cnrm.cloud.google.com: field ".spec.indexConfig.ancestorField" reason=possible-reference-by-description-loose
+kind=FirestoreField group=firestore.cnrm.cloud.google.com: field ".spec.indexConfig.indexes[].name" reason=possible-reference-by-description

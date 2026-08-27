@@ -25,16 +25,13 @@
 
 package v1alpha1
 
-/* unreachable type AnswerGenerationSpec
 // +kcc:proto=google.cloud.discoveryengine.v1beta.AnswerGenerationSpec
 type AnswerGenerationSpec struct {
 	// Optional. The specification for user specified classifier spec.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.AnswerGenerationSpec.user_defined_classifier_spec
 	UserDefinedClassifierSpec *AnswerGenerationSpec_UserDefinedClassifierSpec `json:"userDefinedClassifierSpec,omitempty"`
 }
-*/
 
-/* unreachable type AnswerGenerationSpec_UserDefinedClassifierSpec
 // +kcc:proto=google.cloud.discoveryengine.v1beta.AnswerGenerationSpec.UserDefinedClassifierSpec
 type AnswerGenerationSpec_UserDefinedClassifierSpec struct {
 	// Optional. Whether or not to enable and include user defined classifier.
@@ -70,7 +67,6 @@ type AnswerGenerationSpec_UserDefinedClassifierSpec struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.AnswerGenerationSpec.UserDefinedClassifierSpec.seed
 	Seed *int32 `json:"seed,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.discoveryengine.v1beta.EmbeddingConfig
 type EmbeddingConfig struct {
@@ -79,10 +75,72 @@ type EmbeddingConfig struct {
 	FieldPath *string `json:"fieldPath,omitempty"`
 }
 
+/* unreachable type LicenseConfig
+// +kcc:proto=google.cloud.discoveryengine.v1beta.LicenseConfig
+type LicenseConfig struct {
+	// Immutable. Identifier. The fully qualified resource name of the license
+	//  config. Format:
+	//  `projects/{project}/locations/{location}/licenseConfigs/{license_config}`
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.LicenseConfig.name
+	Name *string `json:"name,omitempty"`
+
+	// Required. Number of licenses purchased.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.LicenseConfig.license_count
+	// +required
+	LicenseCount *int64 `json:"licenseCount,omitempty"`
+
+	// Required. Subscription tier information for the license config.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.LicenseConfig.subscription_tier
+	// +required
+	SubscriptionTier *string `json:"subscriptionTier,omitempty"`
+
+	// Optional. Whether the license config should be auto renewed when it reaches
+	//  the end date.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.LicenseConfig.auto_renew
+	AutoRenew *bool `json:"autoRenew,omitempty"`
+
+	// Required. The start date.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.LicenseConfig.start_date
+	// +required
+	StartDate *Date `json:"startDate,omitempty"`
+
+	// Optional. The planed end date.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.LicenseConfig.end_date
+	EndDate *Date `json:"endDate,omitempty"`
+
+	// Required. Subscription term.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.LicenseConfig.subscription_term
+	// +required
+	SubscriptionTerm *string `json:"subscriptionTerm,omitempty"`
+
+	// Optional. Whether the license config is for free trial.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.LicenseConfig.free_trial
+	FreeTrial *bool `json:"freeTrial,omitempty"`
+}
+*/
+
+/* unreachable type SampleQuery
+// +kcc:proto=google.cloud.discoveryengine.v1beta.SampleQuery
+type SampleQuery struct {
+	// The query entry.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.SampleQuery.query_entry
+	QueryEntry *SampleQuery_QueryEntry `json:"queryEntry,omitempty"`
+
+	// Identifier. The full resource name of the sample query, in the format of
+	//  `projects/{project}/locations/{location}/sampleQuerySets/{sample_query_set}/sampleQueries/{sample_query}`.
+	//
+	//  This field must be a UTF-8 encoded string with a length limit of 1024
+	//  characters.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.SampleQuery.name
+	Name *string `json:"name,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.discoveryengine.v1beta.SampleQuery.QueryEntry
 type SampleQuery_QueryEntry struct {
 	// Required. The query.
 	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.SampleQuery.QueryEntry.query
+	// +required
 	Query *string `json:"query,omitempty"`
 
 	// List of targets for the query.
@@ -112,6 +170,34 @@ type SampleQuery_QueryEntry_Target struct {
 	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.SampleQuery.QueryEntry.Target.score
 	Score *float64 `json:"score,omitempty"`
 }
+
+/* unreachable type SampleQuerySet
+// +kcc:proto=google.cloud.discoveryengine.v1beta.SampleQuerySet
+type SampleQuerySet struct {
+	// Identifier. The full resource name of the
+	//  [SampleQuerySet][google.cloud.discoveryengine.v1beta.SampleQuerySet], in
+	//  the format of
+	//  `projects/{project}/locations/{location}/sampleQuerySets/{sample_query_set}`.
+	//
+	//  This field must be a UTF-8 encoded string with a length limit of 1024
+	//  characters.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.SampleQuerySet.name
+	Name *string `json:"name,omitempty"`
+
+	// Required. The sample query set display name.
+	//
+	//  This field must be a UTF-8 encoded string with a length limit of 128
+	//  characters.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.SampleQuerySet.display_name
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// The description of the
+	//  [SampleQuerySet][google.cloud.discoveryengine.v1beta.SampleQuerySet].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.SampleQuerySet.description
+	Description *string `json:"description,omitempty"`
+}
+*/
 
 // +kcc:proto=google.cloud.discoveryengine.v1beta.SearchRequest.ContentSearchSpec
 type SearchRequest_ContentSearchSpec struct {
@@ -393,6 +479,208 @@ type SearchRequest_PersonalizationSpec struct {
 	Mode *string `json:"mode,omitempty"`
 }
 
+/* unreachable type ServingConfig
+// +kcc:proto=google.cloud.discoveryengine.v1beta.ServingConfig
+type ServingConfig struct {
+	// The MediaConfig of the serving configuration.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.media_config
+	MediaConfig *ServingConfig_MediaConfig `json:"mediaConfig,omitempty"`
+
+	// The GenericConfig of the serving configuration.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.generic_config
+	GenericConfig *ServingConfig_GenericConfig `json:"genericConfig,omitempty"`
+
+	// Immutable. Fully qualified name
+	//  `projects/{project}/locations/{location}/collections/{collection_id}/engines/{engine_id}/servingConfigs/{serving_config_id}`
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.name
+	Name *string `json:"name,omitempty"`
+
+	// Required. The human readable serving config display name. Used in Discovery
+	//  UI.
+	//
+	//  This field must be a UTF-8 encoded string with a length limit of 128
+	//  characters. Otherwise, an INVALID_ARGUMENT error is returned.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.display_name
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Required. Immutable. Specifies the solution type that a serving config can
+	//  be associated with.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.solution_type
+	// +required
+	SolutionType *string `json:"solutionType,omitempty"`
+
+	// The id of the model to use at serving time.
+	//  Currently only RecommendationModels are supported.
+	//  Can be changed but only to a compatible model (e.g.
+	//  others-you-may-like CTR to others-you-may-like CVR).
+	//
+	//  Required when
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_RECOMMENDATION][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_RECOMMENDATION].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.model_id
+	ModelID *string `json:"modelID,omitempty"`
+
+	// How much diversity to use in recommendation model results e.g.
+	//  `medium-diversity` or `high-diversity`. Currently supported values:
+	//
+	//  * `no-diversity`
+	//  * `low-diversity`
+	//  * `medium-diversity`
+	//  * `high-diversity`
+	//  * `auto-diversity`
+	//
+	//  If not specified, we choose default based on recommendation model
+	//  type. Default value: `no-diversity`.
+	//
+	//  Can only be set if
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_RECOMMENDATION][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_RECOMMENDATION].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.diversity_level
+	DiversityLevel *string `json:"diversityLevel,omitempty"`
+
+	// Bring your own embedding config. The config is used for search semantic
+	//  retrieval. The retrieval is based on the dot product of
+	//  [SearchRequest.EmbeddingSpec.EmbeddingVector.vector][google.cloud.discoveryengine.v1beta.SearchRequest.EmbeddingSpec.EmbeddingVector.vector]
+	//  and the document embeddings that are provided by this EmbeddingConfig. If
+	//  [SearchRequest.EmbeddingSpec.EmbeddingVector.vector][google.cloud.discoveryengine.v1beta.SearchRequest.EmbeddingSpec.EmbeddingVector.vector]
+	//  is provided, it overrides this
+	//  [ServingConfig.embedding_config][google.cloud.discoveryengine.v1beta.ServingConfig.embedding_config].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.embedding_config
+	EmbeddingConfig *EmbeddingConfig `json:"embeddingConfig,omitempty"`
+
+	// The ranking expression controls the customized ranking on retrieval
+	//  documents. To leverage this, document embedding is required. The ranking
+	//  expression setting in ServingConfig applies to all search requests served
+	//  by the serving config. However, if `SearchRequest.ranking_expression` is
+	//  specified, it overrides the ServingConfig ranking expression.
+	//
+	//  The ranking expression is a single function or multiple functions that are
+	//  joined by "+".
+	//
+	//    * ranking_expression = function, { " + ", function };
+	//
+	//  Supported functions:
+	//
+	//    * double * relevance_score
+	//    * double * dotProduct(embedding_field_path)
+	//
+	//  Function variables:
+	//
+	//    * `relevance_score`: pre-defined keywords, used for measure relevance
+	//    between query and document.
+	//    * `embedding_field_path`: the document embedding field
+	//    used with query embedding vector.
+	//    * `dotProduct`: embedding function between embedding_field_path and query
+	//    embedding vector.
+	//
+	//   Example ranking expression:
+	//
+	//     If document has an embedding field doc_embedding, the ranking expression
+	//     could be `0.5 * relevance_score + 0.3 * dotProduct(doc_embedding)`.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.ranking_expression
+	RankingExpression *string `json:"rankingExpression,omitempty"`
+
+	// Filter controls to use in serving path.
+	//  All triggered filter controls will be applied.
+	//  Filter controls must be in the same data store as the serving config.
+	//  Maximum of 20 filter controls.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.filter_control_ids
+	FilterControlIDs []string `json:"filterControlIDs,omitempty"`
+
+	// Boost controls to use in serving path.
+	//  All triggered boost controls will be applied.
+	//  Boost controls must be in the same data store as the serving config.
+	//  Maximum of 20 boost controls.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.boost_control_ids
+	BoostControlIDs []string `json:"boostControlIDs,omitempty"`
+
+	// IDs of the redirect controls. Only the first triggered redirect
+	//  action is applied, even if multiple apply. Maximum number of
+	//  specifications is 100.
+	//
+	//  Can only be set if
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_SEARCH].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.redirect_control_ids
+	RedirectControlIDs []string `json:"redirectControlIDs,omitempty"`
+
+	// Condition synonyms specifications. If multiple synonyms conditions
+	//  match, all matching synonyms controls in the list will execute.
+	//  Maximum number of specifications is 100.
+	//
+	//  Can only be set if
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_SEARCH].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.synonyms_control_ids
+	SynonymsControlIDs []string `json:"synonymsControlIDs,omitempty"`
+
+	// Condition oneway synonyms specifications. If multiple oneway synonyms
+	//  conditions match, all matching oneway synonyms controls in the list
+	//  will execute. Maximum number of specifications is 100.
+	//
+	//  Can only be set if
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_SEARCH].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.oneway_synonyms_control_ids
+	OnewaySynonymsControlIDs []string `json:"onewaySynonymsControlIDs,omitempty"`
+
+	// Condition do not associate specifications. If multiple do not
+	//  associate conditions match, all matching do not associate controls in
+	//  the list will execute.
+	//  Order does not matter.
+	//  Maximum number of specifications is 100.
+	//
+	//  Can only be set if
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_SEARCH].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.dissociate_control_ids
+	DissociateControlIDs []string `json:"dissociateControlIDs,omitempty"`
+
+	// Condition replacement specifications.
+	//  Applied according to the order in the list.
+	//  A previously replaced term can not be re-replaced.
+	//  Maximum number of specifications is 100.
+	//
+	//  Can only be set if
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_SEARCH].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.replacement_control_ids
+	ReplacementControlIDs []string `json:"replacementControlIDs,omitempty"`
+
+	// Condition ignore specifications. If multiple ignore
+	//  conditions match, all matching ignore controls in the list will
+	//  execute.
+	//  Order does not matter.
+	//  Maximum number of specifications is 100.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.ignore_control_ids
+	IgnoreControlIDs []string `json:"ignoreControlIDs,omitempty"`
+
+	// Condition promote specifications.
+	//
+	//  Maximum number of specifications is 100.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.promote_control_ids
+	PromoteControlIDs []string `json:"promoteControlIDs,omitempty"`
+
+	// The specification for personalization spec.
+	//
+	//  Notice that if both
+	//  [ServingConfig.personalization_spec][google.cloud.discoveryengine.v1beta.ServingConfig.personalization_spec]
+	//  and
+	//  [SearchRequest.personalization_spec][google.cloud.discoveryengine.v1beta.SearchRequest.personalization_spec]
+	//  are set,
+	//  [SearchRequest.personalization_spec][google.cloud.discoveryengine.v1beta.SearchRequest.personalization_spec]
+	//  overrides
+	//  [ServingConfig.personalization_spec][google.cloud.discoveryengine.v1beta.ServingConfig.personalization_spec].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.personalization_spec
+	PersonalizationSpec *SearchRequest_PersonalizationSpec `json:"personalizationSpec,omitempty"`
+
+	// Optional. The specification for answer generation.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.answer_generation_spec
+	AnswerGenerationSpec *AnswerGenerationSpec `json:"answerGenerationSpec,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.discoveryengine.v1beta.ServingConfig.GenericConfig
 type ServingConfig_GenericConfig struct {
 	// Specifies the expected behavior of content search.
@@ -437,6 +725,51 @@ type ServingConfig_MediaConfig struct {
 	ContentFreshnessCutoffDays *int32 `json:"contentFreshnessCutoffDays,omitempty"`
 }
 
+/* unreachable type UserStore
+// +kcc:proto=google.cloud.discoveryengine.v1beta.UserStore
+type UserStore struct {
+	// Immutable. The full resource name of the User Store, in the format of
+	//  `projects/{project}/locations/{location}/userStores/{user_store}`.
+	//
+	//  This field must be a UTF-8 encoded string with a length limit of 1024
+	//  characters.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.UserStore.name
+	Name *string `json:"name,omitempty"`
+
+	// The display name of the User Store.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.UserStore.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. The default subscription
+	//  [LicenseConfig][google.cloud.discoveryengine.v1beta.LicenseConfig] for the
+	//  UserStore, if
+	//  [UserStore.enable_license_auto_register][google.cloud.discoveryengine.v1beta.UserStore.enable_license_auto_register]
+	//  is true, new users will automatically register under the default
+	//  subscription.
+	//
+	//  If default
+	//  [LicenseConfig][google.cloud.discoveryengine.v1beta.LicenseConfig] doesn't
+	//  have remaining license seats left, new users will not be assigned with
+	//  license and will be blocked for Vertex AI Search features. This is used if
+	//  `license_assignment_tier_rules` is not configured.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.UserStore.default_license_config
+	DefaultLicenseConfig *string `json:"defaultLicenseConfig,omitempty"`
+
+	// Optional. Whether to enable license auto register for users in this User
+	//  Store. If true, new users will automatically register under the default
+	//  license config as long as the default license config has seats left.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.UserStore.enable_license_auto_register
+	EnableLicenseAutoRegister *bool `json:"enableLicenseAutoRegister,omitempty"`
+
+	// Optional. Whether to enable license auto update for users in this User
+	//  Store. If true, users with expired licenses will automatically be updated
+	//  to use the default license config as long as the default license config has
+	//  seats left.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.UserStore.enable_expired_license_auto_update
+	EnableExpiredLicenseAutoUpdate *bool `json:"enableExpiredLicenseAutoUpdate,omitempty"`
+}
+*/
+
 // +kcc:proto=google.type.Date
 type Date struct {
 	// Year of the date. Must be from 1 to 9999, or 0 to specify a date without
@@ -455,3 +788,62 @@ type Date struct {
 	// +kcc:proto:field=google.type.Date.day
 	Day *int32 `json:"day,omitempty"`
 }
+
+/* unreachable type LicenseConfigObservedState
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1beta.LicenseConfig
+type LicenseConfigObservedState struct {
+	// Output only. The state of the license config.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.LicenseConfig.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. Whether the license config is for Gemini bundle.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.LicenseConfig.gemini_bundle
+	GeminiBundle *bool `json:"geminiBundle,omitempty"`
+
+	// Output only. Indication of whether the subscription is terminated earlier
+	//  than the expiration date. This is usually terminated by pipeline once the
+	//  subscription gets terminated from subsv3.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.LicenseConfig.early_terminated
+	EarlyTerminated *bool `json:"earlyTerminated,omitempty"`
+
+	// Output only. The date when the subscription is terminated earlier than the
+	//  expiration date.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.LicenseConfig.early_termination_date
+	EarlyTerminationDate *Date `json:"earlyTerminationDate,omitempty"`
+}
+*/
+
+/* unreachable type SampleQueryObservedState
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1beta.SampleQuery
+type SampleQueryObservedState struct {
+	// Output only. Timestamp the
+	//  [SampleQuery][google.cloud.discoveryengine.v1beta.SampleQuery] was created
+	//  at.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.SampleQuery.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+}
+*/
+
+/* unreachable type SampleQuerySetObservedState
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1beta.SampleQuerySet
+type SampleQuerySetObservedState struct {
+	// Output only. Timestamp the
+	//  [SampleQuerySet][google.cloud.discoveryengine.v1beta.SampleQuerySet] was
+	//  created at.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.SampleQuerySet.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+}
+*/
+
+/* unreachable type ServingConfigObservedState
+// +kcc:observedstate:proto=google.cloud.discoveryengine.v1beta.ServingConfig
+type ServingConfigObservedState struct {
+	// Output only. ServingConfig created timestamp.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. ServingConfig updated timestamp.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/

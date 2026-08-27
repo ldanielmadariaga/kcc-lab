@@ -57,9 +57,7 @@ func EventarcChannelConnectionSpec_FromProto(mapCtx *direct.MapContext, in *pb.C
 	}
 	out := &krm.EventarcChannelConnectionSpec{}
 	// MISSING: Name
-	if in.GetChannel() != "" {
-		out.ChannelRef = &krm.ChannelRef{External: in.GetChannel()}
-	}
+	out.Channel = direct.LazyPtr(in.GetChannel())
 	out.ActivationToken = direct.LazyPtr(in.GetActivationToken())
 	return out
 }
@@ -69,9 +67,7 @@ func EventarcChannelConnectionSpec_ToProto(mapCtx *direct.MapContext, in *krm.Ev
 	}
 	out := &pb.ChannelConnection{}
 	// MISSING: Name
-	if in.ChannelRef != nil {
-		out.Channel = in.ChannelRef.External
-	}
+	out.Channel = direct.ValueOf(in.Channel)
 	out.ActivationToken = direct.ValueOf(in.ActivationToken)
 	return out
 }
@@ -87,7 +83,6 @@ func EventarcChannelObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Ch
 	out.PubsubTopic = direct.LazyPtr(in.GetPubsubTopic())
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.ActivationToken = direct.LazyPtr(in.GetActivationToken())
-	// MISSING: CryptoKeyName
 	out.SatisfiesPzs = direct.LazyPtr(in.GetSatisfiesPzs())
 	return out
 }
@@ -105,7 +100,6 @@ func EventarcChannelObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Eve
 	}
 	out.State = direct.Enum_ToProto[pb.Channel_State](mapCtx, in.State)
 	out.ActivationToken = direct.ValueOf(in.ActivationToken)
-	// MISSING: CryptoKeyName
 	out.SatisfiesPzs = direct.ValueOf(in.SatisfiesPzs)
 	return out
 }
@@ -126,10 +120,8 @@ func EventarcChannelSpec_FromProto(mapCtx *direct.MapContext, in *pb.Channel) *k
 	}
 	out := &krm.EventarcChannelSpec{}
 	// MISSING: Name
-	if in.GetProvider() != "" {
-		out.ProviderRef = &krmconnectorv1.ProviderRef{External: in.GetProvider()}
-	}
-	// MISSING: CryptoKeyName
+	out.Provider = direct.LazyPtr(in.GetProvider())
+	out.CryptoKeyName = direct.LazyPtr(in.GetCryptoKeyName())
 	return out
 }
 */
@@ -143,10 +135,8 @@ found existing non-generated mapping function "EventarcChannelSpec_ToProto", ski
 		}
 		out := &pb.Channel{}
 		// MISSING: Name
-		if in.ProviderRef != nil {
-			out.Provider = in.ProviderRef.External
-		}
-		// MISSING: CryptoKeyName
+		out.Provider = direct.ValueOf(in.Provider)
+		out.CryptoKeyName = direct.ValueOf(in.CryptoKeyName)
 		return out
 	}
 */
@@ -160,7 +150,6 @@ func EventarcEnrollmentObservedState_FromProto(mapCtx *direct.MapContext, in *pb
 	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: CelMatch
 	return out
 }
 func EventarcEnrollmentObservedState_ToProto(mapCtx *direct.MapContext, in *krm.EventarcEnrollmentObservedState) *pb.Enrollment {
@@ -173,7 +162,6 @@ func EventarcEnrollmentObservedState_ToProto(mapCtx *direct.MapContext, in *krm.
 	out.Etag = direct.ValueOf(in.Etag)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: CelMatch
 	return out
 }
 
@@ -187,14 +175,9 @@ func EventarcEnrollmentSpec_FromProto(mapCtx *direct.MapContext, in *pb.Enrollme
 	out.Labels = in.Labels
 	out.Annotations = in.Annotations
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: CelMatch
-	// (near miss): "CelMatch" vs "CELMatch"
-	if in.GetMessageBus() != "" {
-		out.MessageBusRef = &krm.EventarcMessageBusRef{External: in.GetMessageBus()}
-	}
-	if in.GetDestination() != "" {
-		out.DestinationRef = &krm.EventarcPipelineRef{External: in.GetDestination()}
-	}
+	out.CelMatch = direct.LazyPtr(in.GetCelMatch())
+	out.MessageBus = direct.LazyPtr(in.GetMessageBus())
+	out.Destination = direct.LazyPtr(in.GetDestination())
 	return out
 }
 */
@@ -211,14 +194,9 @@ found existing non-generated mapping function "EventarcEnrollmentSpec_ToProto", 
 		out.Labels = in.Labels
 		out.Annotations = in.Annotations
 		out.DisplayName = direct.ValueOf(in.DisplayName)
-		// MISSING: CelMatch
-		// (near miss): "CelMatch" vs "CELMatch"
-		if in.MessageBusRef != nil {
-			out.MessageBus = in.MessageBusRef.External
-		}
-		if in.DestinationRef != nil {
-			out.Destination = in.DestinationRef.External
-		}
+		out.CelMatch = direct.ValueOf(in.CelMatch)
+		out.MessageBus = direct.ValueOf(in.MessageBus)
+		out.Destination = direct.ValueOf(in.Destination)
 		return out
 	}
 */
@@ -232,8 +210,6 @@ func EventarcGoogleAPISourceObservedState_FromProto(mapCtx *direct.MapContext, i
 	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Destination
-	// MISSING: CryptoKeyName
 	return out
 }
 func EventarcGoogleAPISourceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.EventarcGoogleAPISourceObservedState) *pb.GoogleApiSource {
@@ -246,8 +222,6 @@ func EventarcGoogleAPISourceObservedState_ToProto(mapCtx *direct.MapContext, in 
 	out.Etag = direct.ValueOf(in.Etag)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Destination
-	// MISSING: CryptoKeyName
 	return out
 }
 
@@ -261,8 +235,8 @@ func EventarcGoogleAPISourceSpec_FromProto(mapCtx *direct.MapContext, in *pb.Goo
 	out.Labels = in.Labels
 	out.Annotations = in.Annotations
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: Destination
-	// MISSING: CryptoKeyName
+	out.Destination = direct.LazyPtr(in.GetDestination())
+	out.CryptoKeyName = direct.LazyPtr(in.GetCryptoKeyName())
 	out.LoggingConfig = LoggingConfig_FromProto(mapCtx, in.GetLoggingConfig())
 	return out
 }
@@ -280,8 +254,8 @@ found existing non-generated mapping function "EventarcGoogleAPISourceSpec_ToPro
 		out.Labels = in.Labels
 		out.Annotations = in.Annotations
 		out.DisplayName = direct.ValueOf(in.DisplayName)
-		// MISSING: Destination
-		// MISSING: CryptoKeyName
+		out.Destination = direct.ValueOf(in.Destination)
+		out.CryptoKeyName = direct.ValueOf(in.CryptoKeyName)
 		out.LoggingConfig = LoggingConfig_ToProto(mapCtx, in.LoggingConfig)
 		return out
 	}
@@ -293,7 +267,6 @@ func EventarcGoogleChannelConfigObservedState_FromProto(mapCtx *direct.MapContex
 	out := &krm.EventarcGoogleChannelConfigObservedState{}
 	// MISSING: Name
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: CryptoKeyName
 	return out
 }
 func EventarcGoogleChannelConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.EventarcGoogleChannelConfigObservedState) *pb.GoogleChannelConfig {
@@ -303,7 +276,6 @@ func EventarcGoogleChannelConfigObservedState_ToProto(mapCtx *direct.MapContext,
 	out := &pb.GoogleChannelConfig{}
 	// MISSING: Name
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: CryptoKeyName
 	return out
 }
 
@@ -314,7 +286,7 @@ func EventarcGoogleChannelConfigSpec_FromProto(mapCtx *direct.MapContext, in *pb
 	}
 	out := &krm.EventarcGoogleChannelConfigSpec{}
 	// MISSING: Name
-	// MISSING: CryptoKeyName
+	out.CryptoKeyName = direct.LazyPtr(in.GetCryptoKeyName())
 	return out
 }
 */
@@ -326,7 +298,7 @@ func EventarcGoogleChannelConfigSpec_ToProto(mapCtx *direct.MapContext, in *krm.
 	}
 	out := &pb.GoogleChannelConfig{}
 	// MISSING: Name
-	// MISSING: CryptoKeyName
+	out.CryptoKeyName = direct.ValueOf(in.CryptoKeyName)
 	return out
 }
 */

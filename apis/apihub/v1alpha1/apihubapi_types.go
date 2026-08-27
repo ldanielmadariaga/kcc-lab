@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,90 +29,96 @@ type APIHubAPISpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/apis/{api}
 	Location *string `json:"location"`
 
 	// The APIHubAPI name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. The display name of the API resource.
-	// +kubebuilder:validation:Required
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Optional. The description of the API resource.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.description
 	Description *string `json:"description,omitempty"`
 
 	// Optional. The documentation for the API resource.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.documentation
 	Documentation *Documentation `json:"documentation,omitempty"`
 
 	// Optional. Owner details for the API resource.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.owner
 	Owner *Owner `json:"owner,omitempty"`
 
 	// Optional. The target users for the API.
 	//  This maps to the following system defined attribute:
 	//  `projects/{project}/locations/{location}/attributes/system-target-user`
-	// +kubebuilder:validation:Optional
-	TargetUserRef *APIHubAttributeValueRef `json:"targetUserRef,omitempty"`
+	//  attribute.
+	//  The number of values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.target_user
+	TargetUser *AttributeValues `json:"targetUser,omitempty"`
 
 	// Optional. The team owning the API.
 	//  This maps to the following system defined attribute:
 	//  `projects/{project}/locations/{location}/attributes/system-team`
-	// +kubebuilder:validation:Optional
-	TeamRef *APIHubAttributeValueRef `json:"teamRef,omitempty"`
+	//  attribute.
+	//  The number of values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.team
+	Team *AttributeValues `json:"team,omitempty"`
 
 	// Optional. The business unit owning the API.
 	//  This maps to the following system defined attribute:
 	//  `projects/{project}/locations/{location}/attributes/system-business-unit`
-	// +kubebuilder:validation:Optional
-	BusinessUnitRef *APIHubAttributeValueRef `json:"businessUnitRef,omitempty"`
+	//  attribute.
+	//  The number of values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.business_unit
+	BusinessUnit *AttributeValues `json:"businessUnit,omitempty"`
 
 	// Optional. The maturity level of the API.
 	//  This maps to the following system defined attribute:
 	//  `projects/{project}/locations/{location}/attributes/system-maturity-level`
-	// +kubebuilder:validation:Optional
-	MaturityLevelRef *APIHubAttributeValueRef `json:"maturityLevelRef,omitempty"`
+	//  attribute.
+	//  The number of values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.maturity_level
+	MaturityLevel *AttributeValues `json:"maturityLevel,omitempty"`
+
+	// Optional. The list of user defined attributes associated with the API
+	//  resource. The key is the attribute name. It will be of the format:
+	//  `projects/{project}/locations/{location}/attributes/{attribute}`.
+	//  The value is the attribute values associated with the resource.
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.attributes
+	Attributes map[string]AttributeValues `json:"attributes,omitempty"`
 
 	// Optional. The style of the API.
 	//  This maps to the following system defined attribute:
 	//  `projects/{project}/locations/{location}/attributes/system-api-style`
-	// +kubebuilder:validation:Optional
-	APIStyleRef *APIHubAttributeValueRef `json:"apiStyleRef,omitempty"`
+	//  attribute.
+	//  The number of values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.api_style
+	APIStyle *AttributeValues `json:"apiStyle,omitempty"`
 
 	// Optional. The selected version for an API resource.
 	//  This can be used when special handling is needed on client side for
 	//  particular version of the API. Format is
 	//  `projects/{project}/locations/{location}/apis/{api}/versions/{version}`
-	// +kubebuilder:validation:Optional
-	SelectedVersionRef *APIHubVersionRef `json:"selectedVersionRef,omitempty"`
-
-	// Optional. The list of user defined attributes associated with the API
-	//  resource. The key is the attribute name. It will be of the format:
-	//  `projects/{project}/locations/{location}/attributes/{attribute}`.
-	// +kcc:proto:field=google.cloud.apihub.v1.Api.attributes
-	// +kubebuilder:validation:Optional
-	AttributeRefs []APIHubAPIAttribute `json:"attributeRefs,omitempty"`
-
-	// Optional. The API requirements of the API.
-	// +kcc:proto:field=google.cloud.apihub.v1.Api.api_requirements
-	// +kubebuilder:validation:Optional
-	APIRequirements *AttributeValues `json:"apiRequirements,omitempty"`
-
-	// Optional. The API functional requirements of the API.
-	// +kcc:proto:field=google.cloud.apihub.v1.Api.api_functional_requirements
-	// +kubebuilder:validation:Optional
-	APIFunctionalRequirements *AttributeValues `json:"apiFunctionalRequirements,omitempty"`
-
-	// Optional. The API technical requirements of the API.
-	// +kcc:proto:field=google.cloud.apihub.v1.Api.api_technical_requirements
-	// +kubebuilder:validation:Optional
-	APITechnicalRequirements *AttributeValues `json:"apiTechnicalRequirements,omitempty"`
-
-	// Optional. The base64-encoded fingerprint of the API resource.
-	// +kcc:proto:field=google.cloud.apihub.v1.Api.fingerprint
-	// +kubebuilder:validation:Optional
-	Fingerprint *string `json:"fingerprint,omitempty"`
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.selected_version
+	SelectedVersion *string `json:"selectedVersion,omitempty"`
 }
 
 // APIHubAPIStatus defines the config connector machine state of APIHubAPI
@@ -138,39 +144,71 @@ type APIHubAPIObservedState struct {
 	//  Note: An API resource can be associated with more than 1 version.
 	//  Format is
 	//  `projects/{project}/locations/{location}/apis/{api}/versions/{version}`
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.versions
 	Versions []string `json:"versions,omitempty"`
 
 	// Output only. The time at which the API resource was created.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. The time at which the API resource was last updated.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
-	// Output only. The metadata describing the source of the API resource.
-	// +kcc:proto:field=google.cloud.apihub.v1.Api.source_metadata
-	// +kubebuilder:validation:Optional
-	SourceMetadata []SourceMetadataObservedState `json:"sourceMetadata,omitempty"`
-}
+	// Optional. The target users for the API.
+	//  This maps to the following system defined attribute:
+	//  `projects/{project}/locations/{location}/attributes/system-target-user`
+	//  attribute.
+	//  The number of values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.target_user
+	TargetUser *AttributeValuesObservedState `json:"targetUser,omitempty"`
 
-type SourceMetadataObservedState struct {
-	// Output only. The type of the source.
-	// +kubebuilder:validation:Optional
-	SourceType *string `json:"sourceType,omitempty"`
+	// Optional. The team owning the API.
+	//  This maps to the following system defined attribute:
+	//  `projects/{project}/locations/{location}/attributes/system-team`
+	//  attribute.
+	//  The number of values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.team
+	Team *AttributeValuesObservedState `json:"team,omitempty"`
 
-	// Output only. The unique identifier of the resource at the source.
-	// +kubebuilder:validation:Optional
-	OriginalResourceID *string `json:"originalResourceID,omitempty"`
+	// Optional. The business unit owning the API.
+	//  This maps to the following system defined attribute:
+	//  `projects/{project}/locations/{location}/attributes/system-business-unit`
+	//  attribute.
+	//  The number of values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.business_unit
+	BusinessUnit *AttributeValuesObservedState `json:"businessUnit,omitempty"`
 
-	// Output only. The time at which the resource was created at the source.
-	// +kubebuilder:validation:Optional
-	OriginalResourceCreateTime *string `json:"originalResourceCreateTime,omitempty"`
+	// Optional. The maturity level of the API.
+	//  This maps to the following system defined attribute:
+	//  `projects/{project}/locations/{location}/attributes/system-maturity-level`
+	//  attribute.
+	//  The number of values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.maturity_level
+	MaturityLevel *AttributeValuesObservedState `json:"maturityLevel,omitempty"`
 
-	// Output only. The time at which the resource was last updated at the source.
-	// +kubebuilder:validation:Optional
-	OriginalResourceUpdateTime *string `json:"originalResourceUpdateTime,omitempty"`
+	// Optional. The style of the API.
+	//  This maps to the following system defined attribute:
+	//  `projects/{project}/locations/{location}/attributes/system-api-style`
+	//  attribute.
+	//  The number of values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Api.api_style
+	APIStyle *AttributeValuesObservedState `json:"apiStyle,omitempty"`
 }
 
 // +genclient
@@ -179,7 +217,6 @@ type SourceMetadataObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -202,33 +239,6 @@ type APIHubAPIList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []APIHubAPI `json:"items"`
-}
-
-type APIHubVersionRef struct {
-	/* The `id` of a `APIHubVersion` resource, when not managed by Config Connector. */
-	External string `json:"external,omitempty"`
-	/* The `name` field of a `APIHubVersion` resource. */
-	Name string `json:"name,omitempty"`
-	/* The `namespace` field of a `APIHubVersion` resource. */
-	Namespace string `json:"namespace,omitempty"`
-}
-
-type APIHubAttributeRef struct {
-	/* The `id` of a `APIHubAttribute` resource, when not managed by Config Connector. */
-	External string `json:"external,omitempty"`
-	/* The `name` field of a `APIHubAttribute` resource. */
-	Name string `json:"name,omitempty"`
-	/* The `namespace` field of a `APIHubAttribute` resource. */
-	Namespace string `json:"namespace,omitempty"`
-}
-
-type APIHubAPIAttribute struct {
-	// Reference to the attribute.
-	// +kubebuilder:validation:Required
-	AttributeRef *APIHubAttributeRef `json:"attributeRef"`
-	// The value of the attribute.
-	// +kubebuilder:validation:Required
-	Values *AttributeValues `json:"values"`
 }
 
 func init() {

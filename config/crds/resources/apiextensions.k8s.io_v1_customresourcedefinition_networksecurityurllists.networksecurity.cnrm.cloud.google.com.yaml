@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: networksecurityurllists.networksecurity.cnrm.cloud.google.com
 spec:
@@ -106,8 +105,7 @@ spec:
                   will be used.
                 type: string
               values:
-                description: Required. The list of values that make up this resource.
-                  Each value can be a host, a host pattern, a URL, or a URL pattern.
+                description: Required. FQDNs and URLs.
                 items:
                   type: string
                 type: array
@@ -163,12 +161,10 @@ spec:
                   observed in GCP.
                 properties:
                   createTime:
-                    description: Output only. The timestamp when the resource was
-                      created.
+                    description: Output only. Time when the security policy was created.
                     type: string
                   updateTime:
-                    description: Output only. The timestamp when the resource was
-                      last updated.
+                    description: Output only. Time when the security policy was updated.
                     type: string
                 type: object
             type: object

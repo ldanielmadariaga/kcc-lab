@@ -15,27 +15,41 @@
 package v1alpha1
 
 import (
-	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var ComputeInterconnectGVK = GroupVersion.WithKind("ComputeInterconnect")
 
-type Parent struct {
-	// +required
-	ProjectRef *refv1beta1.ProjectRef `json:"projectRef"`
-}
-
 // ComputeInterconnectSpec defines the desired state of ComputeInterconnect
 // +kcc:spec:proto=google.cloud.compute.v1.Interconnect
 type ComputeInterconnectSpec struct {
-	Parent Parent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 	// The ComputeInterconnect name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Enable or disable the application awareness feature on this Cloud Interconnect.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.aai_enabled
+	AaiEnabled *bool `json:"aaiEnabled,omitempty"`
+
 	// Administrative status of the interconnect. When this is set to true, the Interconnect is functional and can carry traffic. When set to false, no packets can be carried over the interconnect and no BGP routes are exchanged over it. By default, the status is set to true.
 	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.admin_enabled
 	AdminEnabled *bool `json:"adminEnabled,omitempty"`
+
+	// Configuration information for application awareness on this Cloud Interconnect.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.application_aware_interconnect
+	ApplicationAwareInterconnect *InterconnectApplicationAwareInterconnect `json:"applicationAwareInterconnect,omitempty"`
+
+	// [Output only] List of features available for this Interconnect connection, which can take one of the following values: - IF_MACSEC If present then the Interconnect connection is provisioned on MACsec capable hardware ports. If not present then the Interconnect connection is provisioned on non-MACsec capable ports and MACsec isn't supported and enabling MACsec fails.
+	//  Check the AvailableFeatures enum for the list of possible values.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.available_features
+	AvailableFeatures []string `json:"availableFeatures,omitempty"`
+
+	// [Output Only] A list of CircuitInfo objects, that describe the individual circuits in this LAG.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.circuit_infos
+	CircuitInfos []InterconnectCircuitInfo `json:"circuitInfos,omitempty"`
 
 	// Customer name, to put in the Letter of Authorization as the party authorized to request a crossconnect.
 	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.customer_name
@@ -44,6 +58,26 @@ type ComputeInterconnectSpec struct {
 	// An optional description of this resource. Provide this property when you create the resource.
 	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.description
 	Description *string `json:"description,omitempty"`
+
+	// [Output Only] A list of outages expected for this Interconnect.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.expected_outages
+	ExpectedOutages []InterconnectOutageNotification `json:"expectedOutages,omitempty"`
+
+	// [Output Only] IP address configured on the Google side of the Interconnect link. This can be used only for ping tests.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.google_ip_address
+	GoogleIPAddress *string `json:"googleIPAddress,omitempty"`
+
+	// [Output Only] Google reference ID to be used when raising support tickets with Google or otherwise to debug backend connectivity issues.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.google_reference_id
+	GoogleReferenceID *string `json:"googleReferenceID,omitempty"`
+
+	// [Output Only] A list of the URLs of all InterconnectAttachments configured to use this Interconnect.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.interconnect_attachments
+	InterconnectAttachments []string `json:"interconnectAttachments,omitempty"`
+
+	// [Output Only] URLs of InterconnectGroups that include this Interconnect. Order is arbitrary and items are unique.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.interconnect_groups
+	InterconnectGroups []string `json:"interconnectGroups,omitempty"`
 
 	// Type of interconnect, which can take one of the following values: - PARTNER: A partner-managed interconnection shared between customers though a partner. - DEDICATED: A dedicated physical interconnection with the customer. Note that a value IT_PRIVATE has been deprecated in favor of DEDICATED.
 	//  Check the InterconnectType enum for the list of possible values.
@@ -58,7 +92,7 @@ type ComputeInterconnectSpec struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
-	// Type of link requested, which can take one of the following values: - LINK_TYPE_ETHERNET_10G_LR: A 10G Ethernet with LR optics - LINK_TYPE_ETHERNET_100G_LR: A 100G Ethernet with LR optics. Note that this field indicates the speed of each of the links in the bundle, not the speed of the entire bundle.
+	// Type of link requested, which can take one of the following values: - LINK_TYPE_ETHERNET_10G_LR: A 10G Ethernet with LR optics - LINK_TYPE_ETHERNET_100G_LR: A 100G Ethernet with LR optics. - LINK_TYPE_ETHERNET_400G_LR4: A 400G Ethernet with LR4 optics. Note that this field indicates the speed of each of the links in the bundle, not the speed of the entire bundle.
 	//  Check the LinkType enum for the list of possible values.
 	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.link_type
 	LinkType *string `json:"linkType,omitempty"`
@@ -79,6 +113,19 @@ type ComputeInterconnectSpec struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.noc_contact_email
 	NocContactEmail *string `json:"nocContactEmail,omitempty"`
 
+	// [Output Only] The current status of this Interconnect's functionality, which can take one of the following values: - OS_ACTIVE: A valid Interconnect, which is turned up and is ready to use. Attachments may be provisioned on this Interconnect. - OS_UNPROVISIONED: An Interconnect that has not completed turnup. No attachments may be provisioned on this Interconnect. - OS_UNDER_MAINTENANCE: An Interconnect that is undergoing internal maintenance. No attachments may be provisioned or updated on this Interconnect.
+	//  Check the OperationalStatus enum for the list of possible values.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.operational_status
+	OperationalStatus *string `json:"operationalStatus,omitempty"`
+
+	// [Output Only] IP address configured on the customer side of the Interconnect link. The customer should configure this IP address during turnup when prompted by Google NOC. This can be used only for ping tests.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.peer_ip_address
+	PeerIPAddress *string `json:"peerIPAddress,omitempty"`
+
+	// [Output Only] Number of links actually provisioned in this interconnect.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.provisioned_link_count
+	ProvisionedLinkCount *int32 `json:"provisionedLinkCount,omitempty"`
+
 	// Indicates that this is a Cross-Cloud Interconnect. This field specifies the location outside of Google's network that the interconnect is connected to.
 	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.remote_location
 	RemoteLocation *string `json:"remoteLocation,omitempty"`
@@ -91,6 +138,15 @@ type ComputeInterconnectSpec struct {
 	// Target number of physical links in the link bundle, as requested by the customer.
 	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.requested_link_count
 	RequestedLinkCount *int32 `json:"requestedLinkCount,omitempty"`
+
+	// [Output Only] Reserved for future use.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.satisfies_pzs
+	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+
+	// [Output Only] The current state of Interconnect functionality, which can take one of the following values: - ACTIVE: The Interconnect is valid, turned up and ready to use. Attachments may be provisioned on this Interconnect. - UNPROVISIONED: The Interconnect has not completed turnup. No attachments may be provisioned on this Interconnect. - UNDER_MAINTENANCE: The Interconnect is undergoing internal maintenance. No attachments may be provisioned or updated on this Interconnect.
+	//  Check the State enum for the list of possible values.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.state
+	State *string `json:"state,omitempty"`
 }
 
 // ComputeInterconnectStatus defines the config connector machine state of ComputeInterconnect
@@ -112,68 +168,25 @@ type ComputeInterconnectStatus struct {
 // ComputeInterconnectObservedState is the state of the ComputeInterconnect resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.compute.v1.Interconnect
 type ComputeInterconnectObservedState struct {
-	// [Output only] List of features available for this Interconnect connection, which can take one of the following values: - IF_MACSEC If present then the Interconnect connection is provisioned on MACsec capable hardware ports. If not present then the Interconnect connection is provisioned on non-MACsec capable ports and MACsec isn't supported and enabling MACsec fails.
-	//  Check the AvailableFeatures enum for the list of possible values.
-	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.available_features
-	AvailableFeatures []string `json:"availableFeatures,omitempty"`
-
-	// [Output Only] A list of CircuitInfo objects, that describe the individual circuits in this LAG.
-	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.circuit_infos
-	CircuitInfos []InterconnectCircuitInfo `json:"circuitInfos,omitempty"`
-
 	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
 	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.creation_timestamp
 	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
 
-	// [Output Only] A list of outages expected for this Interconnect.
-	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.expected_outages
-	ExpectedOutages []InterconnectOutageNotification `json:"expectedOutages,omitempty"`
-
-	// [Output Only] IP address configured on the Google side of the Interconnect link. This can be used only for ping tests.
-	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.google_ip_address
-	GoogleIPAddress *string `json:"googleIPAddress,omitempty"`
-
-	// [Output Only] Google reference ID to be used when raising support tickets with Google or otherwise to debug backend connectivity issues.
-	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.google_reference_id
-	GoogleReferenceID *string `json:"googleReferenceID,omitempty"`
-
 	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
 	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.id
 	ID *uint64 `json:"id,omitempty"`
 
-	// [Output Only] A list of the URLs of all InterconnectAttachments configured to use this Interconnect.
-	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.interconnect_attachments
-	InterconnectAttachments []string `json:"interconnectAttachments,omitempty"`
-
 	// [Output Only] Type of the resource. Always compute#interconnect for interconnects.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
 	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.kind
 	Kind *string `json:"kind,omitempty"`
 
-	// [Output Only] The current status of this Interconnect's functionality, which can take one of the following values: - OS_ACTIVE: A valid Interconnect, which is turned up and is ready to use. Attachments may be provisioned on this Interconnect. - OS_UNPROVISIONED: An Interconnect that has not completed turnup. No attachments may be provisioned on this Interconnect. - OS_UNDER_MAINTENANCE: An Interconnect that is undergoing internal maintenance. No attachments may be provisioned or updated on this Interconnect.
-	//  Check the OperationalStatus enum for the list of possible values.
-	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.operational_status
-	OperationalStatus *string `json:"operationalStatus,omitempty"`
-
-	// [Output Only] IP address configured on the customer side of the Interconnect link. The customer should configure this IP address during turnup when prompted by Google NOC. This can be used only for ping tests.
-	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.peer_ip_address
-	PeerIPAddress *string `json:"peerIPAddress,omitempty"`
-
-	// [Output Only] Number of links actually provisioned in this interconnect.
-	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.provisioned_link_count
-	ProvisionedLinkCount *int32 `json:"provisionedLinkCount,omitempty"`
-
-	// [Output Only] Reserved for future use.
-	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.satisfies_pzs
-	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
-
 	// [Output Only] Server-defined URL for the resource.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
 	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.self_link
 	SelfLink *string `json:"selfLink,omitempty"`
-
-	// [Output Only] The current state of Interconnect functionality, which can take one of the following values: - ACTIVE: The Interconnect is valid, turned up and ready to use. Attachments may be provisioned on this Interconnect. - UNPROVISIONED: The Interconnect has not completed turnup. No attachments may be provisioned on this Interconnect. - UNDER_MAINTENANCE: The Interconnect is undergoing internal maintenance. No attachments may be provisioned or updated on this Interconnect.
-	//  Check the State enum for the list of possible values.
-	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.state
-	State *string `json:"state,omitempty"`
 }
 
 // +genclient

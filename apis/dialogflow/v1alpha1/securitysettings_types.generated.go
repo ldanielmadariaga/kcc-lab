@@ -21,8 +21,7 @@
 
 package v1alpha1
 
-/* found existing non-generated go type with proto tag "google.cloud.dialogflow.cx.v3.SecuritySettings", skipping
-
+/* unreachable type SecuritySettings
 // +kcc:proto=google.cloud.dialogflow.cx.v3.SecuritySettings
 type SecuritySettings struct {
 	// Resource name of the settings.
@@ -38,6 +37,7 @@ type SecuritySettings struct {
 	// Required. The human-readable name of the security settings, unique within
 	//  the location.
 	// +kcc:proto:field=google.cloud.dialogflow.cx.v3.SecuritySettings.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Strategy that defines how we do redaction.

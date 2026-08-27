@@ -135,6 +135,7 @@ type AccessConfig struct {
 	PublicPtrDomainName *string `json:"publicPtrDomainName,omitempty"`
 
 	// The resource URL for the security policy associated with this access config.
+	// +kcc:guess=possible-reference target=ComputeSecurityPolicy
 	// +kcc:proto:field=google.cloud.compute.v1.AccessConfig.security_policy
 	SecurityPolicy *string `json:"securityPolicy,omitempty"`
 
@@ -520,6 +521,7 @@ type AttachedDiskInitializeParams struct {
 	ResourceManagerTags map[string]string `json:"resourceManagerTags,omitempty"`
 
 	// Resource policies applied to this disk for automatic snapshot creations. Specified using the full or partial URL. For instance template, specify only the resource policy name.
+	// +kcc:guess=possible-reference target=ComputeResourcePolicy
 	// +kcc:proto:field=google.cloud.compute.v1.AttachedDiskInitializeParams.resource_policies
 	ResourcePolicies []string `json:"resourcePolicies,omitempty"`
 
@@ -1176,6 +1178,7 @@ type BackendServiceHaPolicyLeader struct {
 // +kcc:proto=google.cloud.compute.v1.BackendServiceHAPolicyLeaderNetworkEndpoint
 type BackendServiceHaPolicyLeaderNetworkEndpoint struct {
 	// The name of the VM instance of the leader network endpoint. The instance must already be attached to the NEG specified in the haPolicy.leader.backendGroup. The name must be 1-63 characters long, and comply with RFC1035. Authorization requires the following IAM permission on the specified resource instance: compute.instances.use
+	// +kcc:guess=possible-reference target=ComputeInstance
 	// +kcc:proto:field=google.cloud.compute.v1.BackendServiceHAPolicyLeaderNetworkEndpoint.instance
 	Instance *string `json:"instance,omitempty"`
 }
@@ -3519,6 +3522,7 @@ type InstanceGroupManagerAllInstancesConfig struct {
 // +kcc:proto=google.cloud.compute.v1.InstanceGroupManagerAutoHealingPolicy
 type InstanceGroupManagerAutoHealingPolicy struct {
 	// The URL for the health check that signals autohealing.
+	// +kcc:guess=possible-reference target=ComputeHealthCheck
 	// +kcc:proto:field=google.cloud.compute.v1.InstanceGroupManagerAutoHealingPolicy.health_check
 	HealthCheck *string `json:"healthCheck,omitempty"`
 
@@ -3531,9 +3535,9 @@ type InstanceGroupManagerAutoHealingPolicy struct {
 /* unreachable type InstanceGroupManagerInstanceFlexibilityPolicy
 // +kcc:proto=google.cloud.compute.v1.InstanceGroupManagerInstanceFlexibilityPolicy
 type InstanceGroupManagerInstanceFlexibilityPolicy struct {
-
-	// TODO: unsupported map type with key string and value message
-
+	// Named instance selections configuring properties that the group will use when creating new VMs.
+	// +kcc:proto:field=google.cloud.compute.v1.InstanceGroupManagerInstanceFlexibilityPolicy.instance_selections
+	InstanceSelections map[string]InstanceGroupManagerInstanceFlexibilityPolicyInstanceSelection `json:"instanceSelections,omitempty"`
 }
 */
 
@@ -4348,6 +4352,7 @@ type NetworkInterface struct {
 	Name *string `json:"name,omitempty"`
 
 	// URL of the VPC network resource for this instance. When creating an instance, if neither the network nor the subnetwork is specified, the default network global/networks/default is used. If the selected project doesn't have the default network, you must specify a network or subnet. If the network is not specified but the subnetwork is specified, the network is inferred. If you specify this property, you can specify the network as a full or partial URL. For example, the following are all valid URLs: - https://www.googleapis.com/compute/v1/projects/project/global/networks/ network - projects/project/global/networks/network - global/networks/default
+	// +kcc:guess=possible-reference target=ComputeNetwork
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkInterface.network
 	Network *string `json:"network,omitempty"`
 
@@ -4374,6 +4379,7 @@ type NetworkInterface struct {
 	StackType *string `json:"stackType,omitempty"`
 
 	// The URL of the Subnetwork resource for this instance. If the network resource is in legacy mode, do not specify this field. If the network is in auto subnet mode, specifying the subnetwork is optional. If the network is in custom subnet mode, specifying the subnetwork is required. If you specify this field, you can specify the subnetwork as a full or partial URL. For example, the following are all valid URLs: - https://www.googleapis.com/compute/v1/projects/project/regions/region /subnetworks/subnetwork - regions/region/subnetworks/subnetwork
+	// +kcc:guess=possible-reference target=ComputeSubnetwork
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkInterface.subnetwork
 	Subnetwork *string `json:"subnetwork,omitempty"`
 }
@@ -6992,9 +6998,9 @@ type ServiceAttachmentConsumerProjectLimit struct {
 
 // +kcc:proto=google.cloud.compute.v1.ShareSettings
 type ShareSettings struct {
-
-	// TODO: unsupported map type with key string and value message
-
+	// A map of project id and project config. This is only valid when share_type's value is SPECIFIC_PROJECTS.
+	// +kcc:proto:field=google.cloud.compute.v1.ShareSettings.project_map
+	ProjectMap map[string]ShareSettingsProjectConfig `json:"projectMap,omitempty"`
 
 	// Type of sharing for this shared-reservation
 	//  Check the ShareType enum for the list of possible values.
@@ -7362,13 +7368,17 @@ type StatefulPolicy struct {
 /* unreachable type StatefulPolicyPreservedState
 // +kcc:proto=google.cloud.compute.v1.StatefulPolicyPreservedState
 type StatefulPolicyPreservedState struct {
+	// Disks created on the instances that will be preserved on instance delete, update, etc. This map is keyed with the device names of the disks.
+	// +kcc:proto:field=google.cloud.compute.v1.StatefulPolicyPreservedState.disks
+	Disks map[string]StatefulPolicyPreservedStateDiskDevice `json:"disks,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// External network IPs assigned to the instances that will be preserved on instance delete, update, etc. This map is keyed with the network interface name.
+	// +kcc:proto:field=google.cloud.compute.v1.StatefulPolicyPreservedState.external_i_ps
+	ExternalIPs map[string]StatefulPolicyPreservedStateNetworkIP `json:"externalIPs,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
-	// TODO: unsupported map type with key string and value message
-
+	// Internal network IPs assigned to the instances that will be preserved on instance delete, update, etc. This map is keyed with the network interface name.
+	// +kcc:proto:field=google.cloud.compute.v1.StatefulPolicyPreservedState.internal_i_ps
+	InternalIPs map[string]StatefulPolicyPreservedStateNetworkIP `json:"internalIPs,omitempty"`
 }
 */
 

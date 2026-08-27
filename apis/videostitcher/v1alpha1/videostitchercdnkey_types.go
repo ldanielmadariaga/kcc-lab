@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,19 +25,15 @@ var VideoStitcherCDNKeyGVK = GroupVersion.WithKind("VideoStitcherCDNKey")
 // VideoStitcherCDNKeySpec defines the desired state of VideoStitcherCDNKey
 // +kcc:spec:proto=google.cloud.video.stitcher.v1.CdnKey
 type VideoStitcherCDNKeySpec struct {
-	/* Immutable. The project that this resource belongs to. */
+	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	/* Immutable. The location of this resource. */
-	Location string `json:"location"`
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/cdnKeys/{cdn_key}
+	Location *string `json:"location"`
 
-	/* Immutable. Optional. The VideoStitcherCDNKey name. If not given, the metadata.name will be used. */
+	// The VideoStitcherCDNKey name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// The hostname this key applies to.
-	// +kcc:proto:field=google.cloud.video.stitcher.v1.CdnKey.hostname
-	Hostname *string `json:"hostname,omitempty"`
-
 	// The configuration for a Google Cloud CDN key.
 	// +kcc:proto:field=google.cloud.video.stitcher.v1.CdnKey.google_cdn_key
 	GoogleCDNKey *GoogleCDNKey `json:"googleCDNKey,omitempty"`
@@ -49,6 +45,10 @@ type VideoStitcherCDNKeySpec struct {
 	// The configuration for a Media CDN key.
 	// +kcc:proto:field=google.cloud.video.stitcher.v1.CdnKey.media_cdn_key
 	MediaCDNKey *MediaCDNKey `json:"mediaCDNKey,omitempty"`
+
+	// The hostname this key applies to.
+	// +kcc:proto:field=google.cloud.video.stitcher.v1.CdnKey.hostname
+	Hostname *string `json:"hostname,omitempty"`
 }
 
 // VideoStitcherCDNKeyStatus defines the config connector machine state of VideoStitcherCDNKey
@@ -78,7 +78,6 @@ type VideoStitcherCDNKeyObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

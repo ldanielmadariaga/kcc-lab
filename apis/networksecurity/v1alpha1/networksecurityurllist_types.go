@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,20 +29,19 @@ type NetworkSecurityURLListSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/urlLists/{url_list}
 	Location *string `json:"location"`
 
 	// The NetworkSecurityURLList name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. Free-text description of the resource.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.UrlList.description
 	Description *string `json:"description,omitempty"`
 
-	// Required. The list of values that make up this resource.
-	// Each value can be a host, a host pattern, a URL, or a URL pattern.
-	// +kubebuilder:validation:Required
+	// Required. FQDNs and URLs.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.UrlList.values
-	Values []string `json:"values"`
+	// +required
+	Values []string `json:"values,omitempty"`
 }
 
 // NetworkSecurityURLListStatus defines the config connector machine state of NetworkSecurityURLList
@@ -64,11 +63,11 @@ type NetworkSecurityURLListStatus struct {
 // NetworkSecurityURLListObservedState is the state of the NetworkSecurityURLList resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.networksecurity.v1.UrlList
 type NetworkSecurityURLListObservedState struct {
-	// Output only. The timestamp when the resource was created.
+	// Output only. Time when the security policy was created.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.UrlList.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
-	// Output only. The timestamp when the resource was last updated.
+	// Output only. Time when the security policy was updated.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.UrlList.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
@@ -79,7 +78,6 @@ type NetworkSecurityURLListObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

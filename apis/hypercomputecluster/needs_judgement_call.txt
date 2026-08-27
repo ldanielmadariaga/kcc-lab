@@ -1,0 +1,25 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/clusters/{cluster}; confirm the resource is regional and that this is the name for it)
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.computeResources.KEY.config.newReservedInstances.reservation" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.networkResources.KEY.config.existingNetwork.network" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.networkResources.KEY.config.existingNetwork.subnetwork" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.networkResources.KEY.config.newNetwork.network" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.networkResources.KEY.network" reason=possible-reference-by-name (ComputeNetworkRef)
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.orchestrator.slurm.loginNodes.bootDisk.type" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.orchestrator.slurm.nodeSets[].computeInstance.bootDisk.type" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.storageResources.KEY.bucket" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.storageResources.KEY.config.existingBucket" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.storageResources.KEY.config.existingBucket.bucket" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.storageResources.KEY.config.existingFilestore.filestore" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.storageResources.KEY.config.existingLustre.lustre" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.storageResources.KEY.config.newBucket" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.storageResources.KEY.config.newBucket.bucket" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.storageResources.KEY.config.newFilestore.filestore" reason=possible-reference-by-description
+kind=HypercomputeClusterCluster group=hypercomputecluster.cnrm.cloud.google.com: field ".spec.storageResources.KEY.config.newLustre.lustre" reason=possible-reference-by-description

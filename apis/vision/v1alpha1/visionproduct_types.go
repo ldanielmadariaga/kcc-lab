@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,42 +22,26 @@ import (
 
 var VisionProductGVK = GroupVersion.WithKind("VisionProduct")
 
-// +kcc:proto=google.cloud.vision.v1.Product.KeyValue
-type ProductKeyValue struct {
-	// The key of the label attached to the product. Cannot be empty and cannot
-	//  exceed 128 bytes.
-	// +kubebuilder:validation:Required
-	Key *string `json:"key"`
-
-	// The value of the label attached to the product. Cannot be empty and
-	//  cannot exceed 128 bytes.
-	// +kubebuilder:validation:Required
-	Value *string `json:"value"`
-}
-
 // VisionProductSpec defines the desired state of VisionProduct
 // +kcc:spec:proto=google.cloud.vision.v1.Product
 type VisionProductSpec struct {
 	// The project that this resource belongs to.
-	// +kubebuilder:validation:Required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +kubebuilder:validation:Required
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/products/{product}
 	Location *string `json:"location"`
 
 	// The VisionProduct name. If not given, the metadata.name will be used.
-	// +kubebuilder:validation:Optional
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// The user-provided name for this Product. Must not be empty. Must be at most
 	//  4096 characters long.
-	// +kubebuilder:validation:Required
-	DisplayName *string `json:"displayName"`
+	// +kcc:proto:field=google.cloud.vision.v1.Product.display_name
+	DisplayName *string `json:"displayName,omitempty"`
 
 	// User-provided metadata to be stored with this product. Must be at most 4096
 	//  characters long.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.vision.v1.Product.description
 	Description *string `json:"description,omitempty"`
 
 	// Immutable. The category for the product identified by the reference image.
@@ -65,10 +49,8 @@ type VisionProductSpec struct {
 	//  "packagedgoods-v1" or "general-v1". The legacy categories "homegoods",
 	//  "apparel", and "toys" are still supported, but these should not be used for
 	//  new products.
-	// +kubebuilder:validation:Required
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="ProductCategory field is immutable"
-	// +kubebuilder:validation:Enum=homegoods-v2;apparel-v2;toys-v2;packagedgoods-v1;general-v1;homegoods;apparel;toys
-	ProductCategory *string `json:"productCategory"`
+	// +kcc:proto:field=google.cloud.vision.v1.Product.product_category
+	ProductCategory *string `json:"productCategory,omitempty"`
 
 	// Key-value pairs that can be attached to a product. At query time,
 	//  constraints can be specified based on the product_labels.
@@ -83,8 +65,8 @@ type VisionProductSpec struct {
 	//  Notice that the total number of distinct product_labels over all products
 	//  in one ProductSet cannot exceed 1M, otherwise the product search pipeline
 	//  will refuse to work for that ProductSet.
-	// +kubebuilder:validation:Optional
-	ProductLabels []ProductKeyValue `json:"productLabels,omitempty"`
+	// +kcc:proto:field=google.cloud.vision.v1.Product.product_labels
+	ProductLabels []Product_KeyValue `json:"productLabels,omitempty"`
 }
 
 // VisionProductStatus defines the config connector machine state of VisionProduct
@@ -105,7 +87,6 @@ type VisionProductStatus struct {
 
 // VisionProductObservedState is the state of the VisionProduct resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.vision.v1.Product
-// +kubebuilder:validation:XPreserveUnknownFields
 type VisionProductObservedState struct {
 }
 
@@ -115,7 +96,6 @@ type VisionProductObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

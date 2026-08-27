@@ -48,6 +48,22 @@ func AcceleratorConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdatapr
 	out.AcceleratorCount = direct.ValueOf(in.AcceleratorCount)
 	return out
 }
+func AuthenticationConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AuthenticationConfig) *krmdataprocv1alpha1.AuthenticationConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krmdataprocv1alpha1.AuthenticationConfig{}
+	out.UserWorkloadAuthenticationType = direct.Enum_FromProto(mapCtx, in.GetUserWorkloadAuthenticationType())
+	return out
+}
+func AuthenticationConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1alpha1.AuthenticationConfig) *pb.AuthenticationConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AuthenticationConfig{}
+	out.UserWorkloadAuthenticationType = direct.Enum_ToProto[pb.AuthenticationConfig_AuthenticationType](mapCtx, in.UserWorkloadAuthenticationType)
+	return out
+}
 
 /* found existing non-generated mapping function "AutotuningConfig_v1alpha1_FromProto", skipping
 func AutotuningConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.AutotuningConfig) *krmdataprocv1alpha1.AutotuningConfig {
@@ -116,32 +132,6 @@ func BasicYarnAutoscalingConfig_v1beta1_ToProto(mapCtx *direct.MapContext, in *k
 	out.ScaleDownMinWorkerFraction = direct.ValueOf(in.ScaleDownMinWorkerFraction)
 	return out
 }
-
-/* found existing non-generated mapping function "Batch_StateHistory_v1alpha1_FromProto", skipping
-func Batch_StateHistory_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Batch_StateHistory) *krmdataprocv1alpha1.Batch_StateHistory {
-	if in == nil {
-		return nil
-	}
-	out := &krmdataprocv1alpha1.Batch_StateHistory{}
-	// MISSING: State
-	// MISSING: StateMessage
-	// MISSING: StateStartTime
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "Batch_StateHistory_v1alpha1_ToProto", skipping
-func Batch_StateHistory_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1alpha1.Batch_StateHistory) *pb.Batch_StateHistory {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Batch_StateHistory{}
-	// MISSING: State
-	// MISSING: StateMessage
-	// MISSING: StateStartTime
-	return out
-}
-*/
 
 /* found existing non-generated mapping function "Batch_StateHistoryObservedState_v1alpha1_FromProto", skipping
 func Batch_StateHistoryObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Batch_StateHistory) *krmdataprocv1alpha1.Batch_StateHistoryObservedState {
@@ -1684,11 +1674,10 @@ func DataprocJobObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *
 	out.Placement = JobPlacementObservedState_v1alpha1_FromProto(mapCtx, in.GetPlacement())
 	out.Status = JobStatusObservedState_v1alpha1_FromProto(mapCtx, in.GetStatus())
 	out.StatusHistory = direct.Slice_FromProto(mapCtx, in.StatusHistory, JobStatusObservedState_v1alpha1_FromProto)
-	out.YarnApplications = direct.Slice_FromProto(mapCtx, in.YarnApplications, YarnApplication_v1alpha1_FromProto)
+	out.YarnApplications = direct.Slice_FromProto(mapCtx, in.YarnApplications, YarnApplicationObservedState_v1alpha1_FromProto)
 	out.DriverOutputResourceURI = direct.LazyPtr(in.GetDriverOutputResourceUri())
 	out.DriverControlFilesURI = direct.LazyPtr(in.GetDriverControlFilesUri())
-	// MISSING: JobUuid
-	// (near miss): "JobUuid" vs "JobUUid"
+	out.JobUuid = direct.LazyPtr(in.GetJobUuid())
 	out.Done = direct.LazyPtr(in.GetDone())
 	return out
 }
@@ -1703,11 +1692,10 @@ func DataprocJobObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *kr
 	out.Placement = JobPlacementObservedState_v1alpha1_ToProto(mapCtx, in.Placement)
 	out.Status = JobStatusObservedState_v1alpha1_ToProto(mapCtx, in.Status)
 	out.StatusHistory = direct.Slice_ToProto(mapCtx, in.StatusHistory, JobStatusObservedState_v1alpha1_ToProto)
-	out.YarnApplications = direct.Slice_ToProto(mapCtx, in.YarnApplications, YarnApplication_v1alpha1_ToProto)
+	out.YarnApplications = direct.Slice_ToProto(mapCtx, in.YarnApplications, YarnApplicationObservedState_v1alpha1_ToProto)
 	out.DriverOutputResourceUri = direct.ValueOf(in.DriverOutputResourceURI)
 	out.DriverControlFilesUri = direct.ValueOf(in.DriverControlFilesURI)
-	// MISSING: JobUuid
-	// (near miss): "JobUuid" vs "JobUUid"
+	out.JobUuid = direct.ValueOf(in.JobUuid)
 	out.Done = direct.ValueOf(in.Done)
 	return out
 }
@@ -1733,7 +1721,6 @@ func DataprocJobSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Job) *
 	out.FlinkJob = FlinkJob_v1alpha1_FromProto(mapCtx, in.GetFlinkJob())
 	out.Labels = in.Labels
 	out.Scheduling = JobScheduling_v1alpha1_FromProto(mapCtx, in.GetScheduling())
-	// MISSING: JobUuid
 	out.DriverSchedulingConfig = DriverSchedulingConfig_v1alpha1_FromProto(mapCtx, in.GetDriverSchedulingConfig())
 	return out
 }
@@ -1781,7 +1768,6 @@ found existing non-generated mapping function "DataprocJobSpec_v1alpha1_ToProto"
 		}
 		out.Labels = in.Labels
 		out.Scheduling = JobScheduling_v1alpha1_ToProto(mapCtx, in.Scheduling)
-		// MISSING: JobUuid
 		out.DriverSchedulingConfig = DriverSchedulingConfig_v1alpha1_ToProto(mapCtx, in.DriverSchedulingConfig)
 		return out
 	}
@@ -1834,7 +1820,6 @@ func DataprocSessionObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, 
 	// MISSING: Name
 	out.Uuid = direct.LazyPtr(in.GetUuid())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	// MISSING: SparkConnectSession
 	out.RuntimeInfo = RuntimeInfoObservedState_v1alpha1_FromProto(mapCtx, in.GetRuntimeInfo())
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.StateMessage = direct.LazyPtr(in.GetStateMessage())
@@ -1851,7 +1836,6 @@ func DataprocSessionObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in
 	// MISSING: Name
 	out.Uuid = direct.ValueOf(in.Uuid)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	// MISSING: SparkConnectSession
 	out.RuntimeInfo = RuntimeInfoObservedState_v1alpha1_ToProto(mapCtx, in.RuntimeInfo)
 	out.State = direct.Enum_ToProto[pb.Session_State](mapCtx, in.State)
 	out.StateMessage = direct.ValueOf(in.StateMessage)
@@ -1867,7 +1851,7 @@ func DataprocSessionSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Se
 	out := &krmdataprocv1alpha1.DataprocSessionSpec{}
 	// MISSING: Name
 	out.JupyterSession = JupyterConfig_v1alpha1_FromProto(mapCtx, in.GetJupyterSession())
-	// MISSING: SparkConnectSession
+	out.SparkConnectSession = SparkConnectConfig_v1alpha1_FromProto(mapCtx, in.GetSparkConnectSession())
 	out.Labels = in.Labels
 	out.RuntimeConfig = RuntimeConfig_v1alpha1_FromProto(mapCtx, in.GetRuntimeConfig())
 	out.EnvironmentConfig = EnvironmentConfig_v1alpha1_FromProto(mapCtx, in.GetEnvironmentConfig())
@@ -1884,7 +1868,9 @@ func DataprocSessionSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdata
 	if oneof := JupyterConfig_v1alpha1_ToProto(mapCtx, in.JupyterSession); oneof != nil {
 		out.SessionConfig = &pb.Session_JupyterSession{JupyterSession: oneof}
 	}
-	// MISSING: SparkConnectSession
+	if oneof := SparkConnectConfig_v1alpha1_ToProto(mapCtx, in.SparkConnectSession); oneof != nil {
+		out.SessionConfig = &pb.Session_SparkConnectSession{SparkConnectSession: oneof}
+	}
 	out.Labels = in.Labels
 	out.RuntimeConfig = RuntimeConfig_v1alpha1_ToProto(mapCtx, in.RuntimeConfig)
 	out.EnvironmentConfig = EnvironmentConfig_v1alpha1_ToProto(mapCtx, in.EnvironmentConfig)
@@ -1957,12 +1943,9 @@ func DiskConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.DiskConfig)
 	out := &krmdataprocv1alpha1.DiskConfig{}
 	out.BootDiskType = direct.LazyPtr(in.GetBootDiskType())
 	out.BootDiskSizeGB = direct.LazyPtr(in.GetBootDiskSizeGb())
-	// MISSING: NumLocalSsds
-	// (near miss): "NumLocalSsds" vs "NumLocalSSDs"
-	// MISSING: LocalSsdInterface
-	// (near miss): "LocalSsdInterface" vs "LocalSSDInterface"
-	// MISSING: BootDiskProvisionedIops
-	// (near miss): "BootDiskProvisionedIops" vs "BootDiskProvisionedIOPs"
+	out.NumLocalSsds = direct.LazyPtr(in.GetNumLocalSsds())
+	out.LocalSsdInterface = direct.LazyPtr(in.GetLocalSsdInterface())
+	out.BootDiskProvisionedIops = in.BootDiskProvisionedIops
 	out.BootDiskProvisionedThroughput = in.BootDiskProvisionedThroughput
 	return out
 }
@@ -1976,12 +1959,9 @@ func DiskConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1alp
 	out := &pb.DiskConfig{}
 	out.BootDiskType = direct.ValueOf(in.BootDiskType)
 	out.BootDiskSizeGb = direct.ValueOf(in.BootDiskSizeGB)
-	// MISSING: NumLocalSsds
-	// (near miss): "NumLocalSsds" vs "NumLocalSSDs"
-	// MISSING: LocalSsdInterface
-	// (near miss): "LocalSsdInterface" vs "LocalSSDInterface"
-	// MISSING: BootDiskProvisionedIops
-	// (near miss): "BootDiskProvisionedIops" vs "BootDiskProvisionedIOPs"
+	out.NumLocalSsds = direct.ValueOf(in.NumLocalSsds)
+	out.LocalSsdInterface = direct.ValueOf(in.LocalSsdInterface)
+	out.BootDiskProvisionedIops = in.BootDiskProvisionedIops
 	out.BootDiskProvisionedThroughput = in.BootDiskProvisionedThroughput
 	return out
 }
@@ -2041,21 +2021,15 @@ func ExecutionConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Execut
 		return nil
 	}
 	out := &krmdataprocv1alpha1.ExecutionConfig{}
-	if in.GetServiceAccount() != "" {
-		out.ServiceAccountRef = &refsv1beta1.IAMServiceAccountRef{External: in.GetServiceAccount()}
-	}
+	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
 	out.NetworkURI = direct.LazyPtr(in.GetNetworkUri())
 	out.SubnetworkURI = direct.LazyPtr(in.GetSubnetworkUri())
 	out.NetworkTags = in.NetworkTags
-	if in.GetKmsKey() != "" {
-		out.KMSKeyRef = &refsv1beta1.KMSCryptoKeyRef{External: in.GetKmsKey()}
-	}
+	out.KMSKey = direct.LazyPtr(in.GetKmsKey())
 	out.IdleTTL = direct.StringDuration_FromProto(mapCtx, in.GetIdleTtl())
 	out.TTL = direct.StringDuration_FromProto(mapCtx, in.GetTtl())
-	if in.GetStagingBucket() != "" {
-		out.StagingBucketRef = &krmstoragev1beta1.StorageBucketRef{External: in.GetStagingBucket()}
-	}
-	// MISSING: AuthenticationConfig
+	out.StagingBucket = direct.LazyPtr(in.GetStagingBucket())
+	out.AuthenticationConfig = AuthenticationConfig_v1alpha1_FromProto(mapCtx, in.GetAuthenticationConfig())
 	return out
 }
 */
@@ -2068,9 +2042,7 @@ found existing non-generated mapping function "ExecutionConfig_v1alpha1_ToProto"
 			return nil
 		}
 		out := &pb.ExecutionConfig{}
-		if in.ServiceAccountRef != nil {
-			out.ServiceAccount = in.ServiceAccountRef.External
-		}
+		out.ServiceAccount = direct.ValueOf(in.ServiceAccount)
 		if oneof := ExecutionConfig_NetworkUri_ToProto(mapCtx, in.NetworkURI); oneof != nil {
 			out.Network = oneof
 		}
@@ -2078,15 +2050,11 @@ found existing non-generated mapping function "ExecutionConfig_v1alpha1_ToProto"
 			out.Network = oneof
 		}
 		out.NetworkTags = in.NetworkTags
-		if in.KMSKeyRef != nil {
-			out.KmsKey = in.KMSKeyRef.External
-		}
+		out.KmsKey = direct.ValueOf(in.KMSKey)
 		out.IdleTtl = direct.StringDuration_ToProto(mapCtx, in.IdleTTL)
 		out.Ttl = direct.StringDuration_ToProto(mapCtx, in.TTL)
-		if in.StagingBucketRef != nil {
-			out.StagingBucket = in.StagingBucketRef.External
-		}
-		// MISSING: AuthenticationConfig
+		out.StagingBucket = direct.ValueOf(in.StagingBucket)
+		out.AuthenticationConfig = AuthenticationConfig_v1alpha1_ToProto(mapCtx, in.AuthenticationConfig)
 		return out
 	}
 */
@@ -2112,8 +2080,7 @@ func FlinkJob_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.FlinkJob) *kr
 	out.MainJarFileURI = direct.LazyPtr(in.GetMainJarFileUri())
 	out.MainClass = direct.LazyPtr(in.GetMainClass())
 	out.Args = in.Args
-	// MISSING: JarFileUris
-	// (near miss): "JarFileUris" vs "JarFileURIs"
+	out.JarFileURIs = in.JarFileUris
 	out.SavepointURI = direct.LazyPtr(in.GetSavepointUri())
 	out.Properties = in.Properties
 	out.LoggingConfig = LoggingConfig_v1alpha1_FromProto(mapCtx, in.GetLoggingConfig())
@@ -2136,8 +2103,7 @@ found existing non-generated mapping function "FlinkJob_v1alpha1_ToProto", skipp
 			out.Driver = oneof
 		}
 		out.Args = in.Args
-		// MISSING: JarFileUris
-		// (near miss): "JarFileUris" vs "JarFileURIs"
+		out.JarFileUris = in.JarFileURIs
 		out.SavepointUri = direct.ValueOf(in.SavepointURI)
 		out.Properties = in.Properties
 		out.LoggingConfig = LoggingConfig_v1alpha1_ToProto(mapCtx, in.LoggingConfig)
@@ -2166,12 +2132,9 @@ func HadoopJob_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.HadoopJob) *
 	out.MainJarFileURI = direct.LazyPtr(in.GetMainJarFileUri())
 	out.MainClass = direct.LazyPtr(in.GetMainClass())
 	out.Args = in.Args
-	// MISSING: JarFileUris
-	// (near miss): "JarFileUris" vs "JarFileURIs"
-	// MISSING: FileUris
-	// (near miss): "FileUris" vs "FileURIs"
-	// MISSING: ArchiveUris
-	// (near miss): "ArchiveUris" vs "ArchiveURIs"
+	out.JarFileURIs = in.JarFileUris
+	out.FileURIs = in.FileUris
+	out.ArchiveURIs = in.ArchiveUris
 	out.Properties = in.Properties
 	out.LoggingConfig = LoggingConfig_v1alpha1_FromProto(mapCtx, in.GetLoggingConfig())
 	return out
@@ -2193,12 +2156,9 @@ found existing non-generated mapping function "HadoopJob_v1alpha1_ToProto", skip
 			out.Driver = oneof
 		}
 		out.Args = in.Args
-		// MISSING: JarFileUris
-		// (near miss): "JarFileUris" vs "JarFileURIs"
-		// MISSING: FileUris
-		// (near miss): "FileUris" vs "FileURIs"
-		// MISSING: ArchiveUris
-		// (near miss): "ArchiveUris" vs "ArchiveURIs"
+		out.JarFileUris = in.JarFileURIs
+		out.FileUris = in.FileURIs
+		out.ArchiveUris = in.ArchiveURIs
 		out.Properties = in.Properties
 		out.LoggingConfig = LoggingConfig_v1alpha1_ToProto(mapCtx, in.LoggingConfig)
 		return out
@@ -2228,8 +2188,7 @@ func HiveJob_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.HiveJob) *krmd
 	out.ContinueOnFailure = direct.LazyPtr(in.GetContinueOnFailure())
 	out.ScriptVariables = in.ScriptVariables
 	out.Properties = in.Properties
-	// MISSING: JarFileUris
-	// (near miss): "JarFileUris" vs "JarFileURIs"
+	out.JarFileURIs = in.JarFileUris
 	return out
 }
 */
@@ -2251,8 +2210,7 @@ found existing non-generated mapping function "HiveJob_v1alpha1_ToProto", skippi
 		out.ContinueOnFailure = direct.ValueOf(in.ContinueOnFailure)
 		out.ScriptVariables = in.ScriptVariables
 		out.Properties = in.Properties
-		// MISSING: JarFileUris
-		// (near miss): "JarFileUris" vs "JarFileURIs"
+		out.JarFileUris = in.JarFileURIs
 		return out
 	}
 */
@@ -2591,34 +2549,6 @@ func JobScheduling_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1
 }
 */
 
-/* found existing non-generated mapping function "JobStatus_v1alpha1_FromProto", skipping
-func JobStatus_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.JobStatus) *krmdataprocv1alpha1.JobStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krmdataprocv1alpha1.JobStatus{}
-	// MISSING: State
-	// MISSING: Details
-	// MISSING: StateStartTime
-	// MISSING: Substate
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "JobStatus_v1alpha1_ToProto", skipping
-func JobStatus_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1alpha1.JobStatus) *pb.JobStatus {
-	if in == nil {
-		return nil
-	}
-	out := &pb.JobStatus{}
-	// MISSING: State
-	// MISSING: Details
-	// MISSING: StateStartTime
-	// MISSING: Substate
-	return out
-}
-*/
-
 /* found existing non-generated mapping function "JobStatusObservedState_v1alpha1_FromProto", skipping
 func JobStatusObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.JobStatus) *krmdataprocv1alpha1.JobStatusObservedState {
 	if in == nil {
@@ -2746,8 +2676,7 @@ func PigJob_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.PigJob) *krmdat
 	out.ContinueOnFailure = direct.LazyPtr(in.GetContinueOnFailure())
 	out.ScriptVariables = in.ScriptVariables
 	out.Properties = in.Properties
-	// MISSING: JarFileUris
-	// (near miss): "JarFileUris" vs "JarFileURIs"
+	out.JarFileURIs = in.JarFileUris
 	out.LoggingConfig = LoggingConfig_v1alpha1_FromProto(mapCtx, in.GetLoggingConfig())
 	return out
 }
@@ -2770,8 +2699,7 @@ found existing non-generated mapping function "PigJob_v1alpha1_ToProto", skippin
 		out.ContinueOnFailure = direct.ValueOf(in.ContinueOnFailure)
 		out.ScriptVariables = in.ScriptVariables
 		out.Properties = in.Properties
-		// MISSING: JarFileUris
-		// (near miss): "JarFileUris" vs "JarFileURIs"
+		out.JarFileUris = in.JarFileURIs
 		out.LoggingConfig = LoggingConfig_v1alpha1_ToProto(mapCtx, in.LoggingConfig)
 		return out
 	}
@@ -2859,14 +2787,10 @@ func PySparkBatch_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.PySparkBa
 	out := &krmdataprocv1alpha1.PySparkBatch{}
 	out.MainPythonFileURI = direct.LazyPtr(in.GetMainPythonFileUri())
 	out.Args = in.Args
-	// MISSING: PythonFileUris
-	// (near miss): "PythonFileUris" vs "PythonFileURIs"
-	// MISSING: JarFileUris
-	// (near miss): "JarFileUris" vs "JarFileURIs"
-	// MISSING: FileUris
-	// (near miss): "FileUris" vs "FileURIs"
-	// MISSING: ArchiveUris
-	// (near miss): "ArchiveUris" vs "ArchiveURIs"
+	out.PythonFileURIs = in.PythonFileUris
+	out.JarFileURIs = in.JarFileUris
+	out.FileURIs = in.FileUris
+	out.ArchiveURIs = in.ArchiveUris
 	return out
 }
 */
@@ -2879,14 +2803,10 @@ func PySparkBatch_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1a
 	out := &pb.PySparkBatch{}
 	out.MainPythonFileUri = direct.ValueOf(in.MainPythonFileURI)
 	out.Args = in.Args
-	// MISSING: PythonFileUris
-	// (near miss): "PythonFileUris" vs "PythonFileURIs"
-	// MISSING: JarFileUris
-	// (near miss): "JarFileUris" vs "JarFileURIs"
-	// MISSING: FileUris
-	// (near miss): "FileUris" vs "FileURIs"
-	// MISSING: ArchiveUris
-	// (near miss): "ArchiveUris" vs "ArchiveURIs"
+	out.PythonFileUris = in.PythonFileURIs
+	out.JarFileUris = in.JarFileURIs
+	out.FileUris = in.FileURIs
+	out.ArchiveUris = in.ArchiveURIs
 	return out
 }
 */
@@ -2899,14 +2819,10 @@ func PySparkJob_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.PySparkJob)
 	out := &krmdataprocv1alpha1.PySparkJob{}
 	out.MainPythonFileURI = direct.LazyPtr(in.GetMainPythonFileUri())
 	out.Args = in.Args
-	// MISSING: PythonFileUris
-	// (near miss): "PythonFileUris" vs "PythonFileURIs"
-	// MISSING: JarFileUris
-	// (near miss): "JarFileUris" vs "JarFileURIs"
-	// MISSING: FileUris
-	// (near miss): "FileUris" vs "FileURIs"
-	// MISSING: ArchiveUris
-	// (near miss): "ArchiveUris" vs "ArchiveURIs"
+	out.PythonFileURIs = in.PythonFileUris
+	out.JarFileURIs = in.JarFileUris
+	out.FileURIs = in.FileUris
+	out.ArchiveURIs = in.ArchiveUris
 	out.Properties = in.Properties
 	out.LoggingConfig = LoggingConfig_v1alpha1_FromProto(mapCtx, in.GetLoggingConfig())
 	return out
@@ -2921,14 +2837,10 @@ func PySparkJob_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1alp
 	out := &pb.PySparkJob{}
 	out.MainPythonFileUri = direct.ValueOf(in.MainPythonFileURI)
 	out.Args = in.Args
-	// MISSING: PythonFileUris
-	// (near miss): "PythonFileUris" vs "PythonFileURIs"
-	// MISSING: JarFileUris
-	// (near miss): "JarFileUris" vs "JarFileURIs"
-	// MISSING: FileUris
-	// (near miss): "FileUris" vs "FileURIs"
-	// MISSING: ArchiveUris
-	// (near miss): "ArchiveUris" vs "ArchiveURIs"
+	out.PythonFileUris = in.PythonFileURIs
+	out.JarFileUris = in.JarFileURIs
+	out.FileUris = in.FileURIs
+	out.ArchiveUris = in.ArchiveURIs
 	out.Properties = in.Properties
 	out.LoggingConfig = LoggingConfig_v1alpha1_ToProto(mapCtx, in.LoggingConfig)
 	return out
@@ -3007,36 +2919,6 @@ func RuntimeConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1
 	out.RepositoryConfig = RepositoryConfig_v1alpha1_ToProto(mapCtx, in.RepositoryConfig)
 	out.AutotuningConfig = AutotuningConfig_v1alpha1_ToProto(mapCtx, in.AutotuningConfig)
 	out.Cohort = direct.ValueOf(in.Cohort)
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "RuntimeInfo_v1alpha1_FromProto", skipping
-func RuntimeInfo_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.RuntimeInfo) *krmdataprocv1alpha1.RuntimeInfo {
-	if in == nil {
-		return nil
-	}
-	out := &krmdataprocv1alpha1.RuntimeInfo{}
-	// MISSING: Endpoints
-	// MISSING: OutputURI
-	// MISSING: DiagnosticOutputURI
-	// MISSING: ApproximateUsage
-	// MISSING: CurrentUsage
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "RuntimeInfo_v1alpha1_ToProto", skipping
-func RuntimeInfo_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1alpha1.RuntimeInfo) *pb.RuntimeInfo {
-	if in == nil {
-		return nil
-	}
-	out := &pb.RuntimeInfo{}
-	// MISSING: Endpoints
-	// MISSING: OutputURI
-	// MISSING: DiagnosticOutputURI
-	// MISSING: ApproximateUsage
-	// MISSING: CurrentUsage
 	return out
 }
 */
@@ -3128,12 +3010,9 @@ func SparkBatch_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.SparkBatch)
 	out.MainJarFileURI = direct.LazyPtr(in.GetMainJarFileUri())
 	out.MainClass = direct.LazyPtr(in.GetMainClass())
 	out.Args = in.Args
-	// MISSING: JarFileUris
-	// (near miss): "JarFileUris" vs "JarFileURIs"
-	// MISSING: FileUris
-	// (near miss): "FileUris" vs "FileURIs"
-	// MISSING: ArchiveUris
-	// (near miss): "ArchiveUris" vs "ArchiveURIs"
+	out.JarFileURIs = in.JarFileUris
+	out.FileURIs = in.FileUris
+	out.ArchiveURIs = in.ArchiveUris
 	return out
 }
 */
@@ -3153,12 +3032,9 @@ found existing non-generated mapping function "SparkBatch_v1alpha1_ToProto", ski
 			out.Driver = oneof
 		}
 		out.Args = in.Args
-		// MISSING: JarFileUris
-		// (near miss): "JarFileUris" vs "JarFileURIs"
-		// MISSING: FileUris
-		// (near miss): "FileUris" vs "FileURIs"
-		// MISSING: ArchiveUris
-		// (near miss): "ArchiveUris" vs "ArchiveURIs"
+		out.JarFileUris = in.JarFileURIs
+		out.FileUris = in.FileURIs
+		out.ArchiveUris = in.ArchiveURIs
 		return out
 	}
 */
@@ -3195,9 +3071,7 @@ func SparkHistoryServerConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *
 		return nil
 	}
 	out := &krmdataprocv1alpha1.SparkHistoryServerConfig{}
-	if in.GetDataprocCluster() != "" {
-		out.DataprocClusterRef = &krmdataprocv1beta1.DataprocClusterRef{External: in.GetDataprocCluster()}
-	}
+	out.DataprocCluster = direct.LazyPtr(in.GetDataprocCluster())
 	return out
 }
 */
@@ -3208,9 +3082,7 @@ func SparkHistoryServerConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *kr
 		return nil
 	}
 	out := &pb.SparkHistoryServerConfig{}
-	if in.DataprocClusterRef != nil {
-		out.DataprocCluster = in.DataprocClusterRef.External
-	}
+	out.DataprocCluster = direct.ValueOf(in.DataprocCluster)
 	return out
 }
 */
@@ -3224,12 +3096,9 @@ func SparkJob_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.SparkJob) *kr
 	out.MainJarFileURI = direct.LazyPtr(in.GetMainJarFileUri())
 	out.MainClass = direct.LazyPtr(in.GetMainClass())
 	out.Args = in.Args
-	// MISSING: JarFileUris
-	// (near miss): "JarFileUris" vs "JarFileURIs"
-	// MISSING: FileUris
-	// (near miss): "FileUris" vs "FileURIs"
-	// MISSING: ArchiveUris
-	// (near miss): "ArchiveUris" vs "ArchiveURIs"
+	out.JarFileURIs = in.JarFileUris
+	out.FileURIs = in.FileUris
+	out.ArchiveURIs = in.ArchiveUris
 	out.Properties = in.Properties
 	out.LoggingConfig = LoggingConfig_v1alpha1_FromProto(mapCtx, in.GetLoggingConfig())
 	return out
@@ -3251,12 +3120,9 @@ found existing non-generated mapping function "SparkJob_v1alpha1_ToProto", skipp
 			out.Driver = oneof
 		}
 		out.Args = in.Args
-		// MISSING: JarFileUris
-		// (near miss): "JarFileUris" vs "JarFileURIs"
-		// MISSING: FileUris
-		// (near miss): "FileUris" vs "FileURIs"
-		// MISSING: ArchiveUris
-		// (near miss): "ArchiveUris" vs "ArchiveURIs"
+		out.JarFileUris = in.JarFileURIs
+		out.FileUris = in.FileURIs
+		out.ArchiveUris = in.ArchiveURIs
 		out.Properties = in.Properties
 		out.LoggingConfig = LoggingConfig_v1alpha1_ToProto(mapCtx, in.LoggingConfig)
 		return out
@@ -3283,10 +3149,8 @@ func SparkRBatch_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.SparkRBatc
 	out := &krmdataprocv1alpha1.SparkRBatch{}
 	out.MainRFileURI = direct.LazyPtr(in.GetMainRFileUri())
 	out.Args = in.Args
-	// MISSING: FileUris
-	// (near miss): "FileUris" vs "FileURIs"
-	// MISSING: ArchiveUris
-	// (near miss): "ArchiveUris" vs "ArchiveURIs"
+	out.FileURIs = in.FileUris
+	out.ArchiveURIs = in.ArchiveUris
 	return out
 }
 */
@@ -3299,10 +3163,8 @@ func SparkRBatch_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1al
 	out := &pb.SparkRBatch{}
 	out.MainRFileUri = direct.ValueOf(in.MainRFileURI)
 	out.Args = in.Args
-	// MISSING: FileUris
-	// (near miss): "FileUris" vs "FileURIs"
-	// MISSING: ArchiveUris
-	// (near miss): "ArchiveUris" vs "ArchiveURIs"
+	out.FileUris = in.FileURIs
+	out.ArchiveUris = in.ArchiveURIs
 	return out
 }
 */
@@ -3315,10 +3177,8 @@ func SparkRJob_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.SparkRJob) *
 	out := &krmdataprocv1alpha1.SparkRJob{}
 	out.MainRFileURI = direct.LazyPtr(in.GetMainRFileUri())
 	out.Args = in.Args
-	// MISSING: FileUris
-	// (near miss): "FileUris" vs "FileURIs"
-	// MISSING: ArchiveUris
-	// (near miss): "ArchiveUris" vs "ArchiveURIs"
+	out.FileURIs = in.FileUris
+	out.ArchiveURIs = in.ArchiveUris
 	out.Properties = in.Properties
 	out.LoggingConfig = LoggingConfig_v1alpha1_FromProto(mapCtx, in.GetLoggingConfig())
 	return out
@@ -3333,10 +3193,8 @@ func SparkRJob_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1alph
 	out := &pb.SparkRJob{}
 	out.MainRFileUri = direct.ValueOf(in.MainRFileURI)
 	out.Args = in.Args
-	// MISSING: FileUris
-	// (near miss): "FileUris" vs "FileURIs"
-	// MISSING: ArchiveUris
-	// (near miss): "ArchiveUris" vs "ArchiveURIs"
+	out.FileUris = in.FileURIs
+	out.ArchiveUris = in.ArchiveURIs
 	out.Properties = in.Properties
 	out.LoggingConfig = LoggingConfig_v1alpha1_ToProto(mapCtx, in.LoggingConfig)
 	return out
@@ -3351,8 +3209,7 @@ func SparkSQLBatch_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.SparkSql
 	out := &krmdataprocv1alpha1.SparkSQLBatch{}
 	out.QueryFileURI = direct.LazyPtr(in.GetQueryFileUri())
 	out.QueryVariables = in.QueryVariables
-	// MISSING: JarFileUris
-	// (near miss): "JarFileUris" vs "JarFileURIs"
+	out.JarFileURIs = in.JarFileUris
 	return out
 }
 */
@@ -3365,8 +3222,7 @@ func SparkSQLBatch_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1
 	out := &pb.SparkSqlBatch{}
 	out.QueryFileUri = direct.ValueOf(in.QueryFileURI)
 	out.QueryVariables = in.QueryVariables
-	// MISSING: JarFileUris
-	// (near miss): "JarFileUris" vs "JarFileURIs"
+	out.JarFileUris = in.JarFileURIs
 	return out
 }
 */
@@ -3381,8 +3237,7 @@ func SparkSQLJob_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.SparkSqlJo
 	out.QueryList = QueryList_v1alpha1_FromProto(mapCtx, in.GetQueryList())
 	out.ScriptVariables = in.ScriptVariables
 	out.Properties = in.Properties
-	// MISSING: JarFileUris
-	// (near miss): "JarFileUris" vs "JarFileURIs"
+	out.JarFileURIs = in.JarFileUris
 	out.LoggingConfig = LoggingConfig_v1alpha1_FromProto(mapCtx, in.GetLoggingConfig())
 	return out
 }
@@ -3404,8 +3259,7 @@ found existing non-generated mapping function "SparkSQLJob_v1alpha1_ToProto", sk
 		}
 		out.ScriptVariables = in.ScriptVariables
 		out.Properties = in.Properties
-		// MISSING: JarFileUris
-		// (near miss): "JarFileUris" vs "JarFileURIs"
+		out.JarFileUris = in.JarFileURIs
 		out.LoggingConfig = LoggingConfig_v1alpha1_ToProto(mapCtx, in.LoggingConfig)
 		return out
 	}
@@ -3524,39 +3378,36 @@ func UsageSnapshot_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.UsageSna
 }
 */
 
-/* found existing non-generated mapping function "UsageSnapshot_v1alpha1_ToProto", skipping
-func UsageSnapshot_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1alpha1.UsageSnapshot) *pb.UsageSnapshot {
-	if in == nil {
-		return nil
-	}
-	out := &pb.UsageSnapshot{}
-	out.MilliDcu = direct.ValueOf(in.MilliDcu)
-	out.ShuffleStorageGb = direct.ValueOf(in.ShuffleStorageGB)
-	out.MilliDcuPremium = direct.ValueOf(in.MilliDcuPremium)
-	out.ShuffleStorageGbPremium = direct.ValueOf(in.ShuffleStorageGBPremium)
-	out.MilliAccelerator = direct.ValueOf(in.MilliAccelerator)
-	out.AcceleratorType = direct.ValueOf(in.AcceleratorType)
-	out.SnapshotTime = direct.StringTimestamp_ToProto(mapCtx, in.SnapshotTime)
-	return out
-}
-*/
+/*
+found existing non-generated mapping function "UsageSnapshot_v1alpha1_ToProto", skipping
 
-/* found existing non-generated mapping function "YarnApplication_v1alpha1_FromProto", skipping
-func YarnApplication_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.YarnApplication) *krmdataprocv1alpha1.YarnApplication {
+	func UsageSnapshot_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1alpha1.UsageSnapshot) *pb.UsageSnapshot {
+		if in == nil {
+			return nil
+		}
+		out := &pb.UsageSnapshot{}
+		out.MilliDcu = direct.ValueOf(in.MilliDcu)
+		out.ShuffleStorageGb = direct.ValueOf(in.ShuffleStorageGB)
+		out.MilliDcuPremium = direct.ValueOf(in.MilliDcuPremium)
+		out.ShuffleStorageGbPremium = direct.ValueOf(in.ShuffleStorageGBPremium)
+		out.MilliAccelerator = direct.ValueOf(in.MilliAccelerator)
+		out.AcceleratorType = direct.ValueOf(in.AcceleratorType)
+		out.SnapshotTime = direct.StringTimestamp_ToProto(mapCtx, in.SnapshotTime)
+		return out
+	}
+*/
+func YarnApplicationObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.YarnApplication) *krmdataprocv1alpha1.YarnApplicationObservedState {
 	if in == nil {
 		return nil
 	}
-	out := &krmdataprocv1alpha1.YarnApplication{}
+	out := &krmdataprocv1alpha1.YarnApplicationObservedState{}
 	out.Name = direct.LazyPtr(in.GetName())
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.Progress = direct.LazyPtr(in.GetProgress())
 	out.TrackingURL = direct.LazyPtr(in.GetTrackingUrl())
 	return out
 }
-*/
-
-/* found existing non-generated mapping function "YarnApplication_v1alpha1_ToProto", skipping
-func YarnApplication_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1alpha1.YarnApplication) *pb.YarnApplication {
+func YarnApplicationObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataprocv1alpha1.YarnApplicationObservedState) *pb.YarnApplication {
 	if in == nil {
 		return nil
 	}
@@ -3567,4 +3418,3 @@ func YarnApplication_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdataproc
 	out.TrackingUrl = direct.ValueOf(in.TrackingURL)
 	return out
 }
-*/

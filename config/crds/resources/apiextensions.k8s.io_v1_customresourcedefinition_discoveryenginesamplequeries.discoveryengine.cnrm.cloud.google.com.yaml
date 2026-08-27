@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: discoveryenginesamplequeries.discoveryengine.cnrm.cloud.google.com
 spec:
@@ -21,7 +20,7 @@ spec:
     plural: discoveryenginesamplequeries
     shortNames:
     - gcpdiscoveryenginesamplequery
-    - gcpdiscoveryenginesamplequeries
+    - gcpdiscoveryenginesamplequerys
     singular: discoveryenginesamplequery
   preserveUnknownFields: false
   scope: Namespaced
@@ -65,10 +64,10 @@ spec:
               of DiscoveryEngineSampleQuery
             properties:
               location:
-                description: Immutable. The location of this resource.
+                description: The location of this resource.
                 type: string
               projectRef:
-                description: Immutable. The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -100,7 +99,7 @@ spec:
                     type: string
                 type: object
               queryEntry:
-                description: Required. The content of the sample query.
+                description: The query entry.
                 properties:
                   query:
                     description: Required. The query.
@@ -133,46 +132,18 @@ spec:
                           type: string
                       type: object
                     type: array
+                required:
+                - query
                 type: object
               resourceID:
                 description: The DiscoveryEngineSampleQuery name. If not given, the
                   metadata.name will be used.
                 type: string
-              sampleQuerySetRef:
-                description: Immutable. The DiscoveryEngineSampleQuerySet that this
-                  resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed DiscoveryEngineSampleQuerySet
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/sampleQuerySets/{{sampleQuerySetID}}".
-                    type: string
-                  name:
-                    description: The name of a DiscoveryEngineSampleQuerySet resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a DiscoveryEngineSampleQuerySet
-                      resource.
-                    type: string
-                type: object
+              sampleQuerySet:
+                description: The SampleQuerySet that this resource belongs to.
+                type: string
             required:
-            - location
             - projectRef
-            - queryEntry
-            - sampleQuerySetRef
             type: object
           status:
             description: DiscoveryEngineSampleQueryStatus defines the config connector
@@ -221,8 +192,8 @@ spec:
                   observed in GCP.
                 properties:
                   createTime:
-                    description: Output only. Timestamp the SampleQuery was created
-                      at.
+                    description: Output only. Timestamp the [SampleQuery][google.cloud.discoveryengine.v1beta.SampleQuery]
+                      was created at.
                     type: string
                 type: object
             type: object

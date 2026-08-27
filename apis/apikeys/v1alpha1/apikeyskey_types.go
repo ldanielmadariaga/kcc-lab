@@ -25,17 +25,24 @@ var APIKeysKeyGVK = GroupVersion.WithKind("APIKeysKey")
 // APIKeysKeySpec defines the desired state of APIKeysKey
 // +kcc:spec:proto=google.api.apikeys.v2.Key
 type APIKeysKeySpec struct {
-	/* Immutable. The Project that this resource belongs to. */
-	ProjectRef refsv1beta1.ProjectRef `json:"projectRef"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	/* Immutable. Optional. The name of the resource. Used for creation and acquisition. When unset, the value of `metadata.name` is used as the default. */
-	// +optional
+	// The location of this resource.
+	Location *string `json:"location"`
+
+	// The APIKeysKey name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Human-readable display name of this key that you can modify.
 	//  The maximum length is 63 characters.
 	// +kcc:proto:field=google.api.apikeys.v2.Key.display_name
 	DisplayName *string `json:"displayName,omitempty"`
+
+	// Annotations is an unstructured key-value map stored with a policy that
+	//  may be set by external tools to store and retrieve arbitrary metadata.
+	//  They are not queryable and should be preserved when modifying objects.
+	// +kcc:proto:field=google.api.apikeys.v2.Key.annotations
+	Annotations map[string]string `json:"annotations,omitempty"`
 
 	// Key restrictions.
 	// +kcc:proto:field=google.api.apikeys.v2.Key.restrictions
@@ -49,15 +56,12 @@ type APIKeysKeyStatus struct {
 	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
 
 	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
-	// +optional
 	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
 
 	// A unique specifier for the APIKeysKey resource in GCP.
-	// +optional
 	ExternalRef *string `json:"externalRef,omitempty"`
 
 	// ObservedState is the state of the resource as most recently observed in GCP.
-	// +optional
 	ObservedState *APIKeysKeyObservedState `json:"observedState,omitempty"`
 }
 
@@ -67,15 +71,40 @@ type APIKeysKeyObservedState struct {
 	// Output only. Unique id in UUID4 format.
 	// +kcc:proto:field=google.api.apikeys.v2.Key.uid
 	Uid *string `json:"uid,omitempty"`
+
+	// Output only. An encrypted and signed value held by this key.
+	//  This field can be accessed only through the `GetKeyString` method.
+	// +kcc:proto:field=google.api.apikeys.v2.Key.key_string
+	KeyString *string `json:"keyString,omitempty"`
+
+	// Output only. A timestamp identifying the time this key was originally
+	//  created.
+	// +kcc:proto:field=google.api.apikeys.v2.Key.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. A timestamp identifying the time this key was last
+	//  updated.
+	// +kcc:proto:field=google.api.apikeys.v2.Key.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. A timestamp when this key was deleted. If the resource is not
+	//  deleted, this must be empty.
+	// +kcc:proto:field=google.api.apikeys.v2.Key.delete_time
+	DeleteTime *string `json:"deleteTime,omitempty"`
+
+	// Output only. A checksum computed by the server based on the current value
+	//  of the Key resource. This may be sent on update and delete requests to
+	//  ensure the client has an up-to-date value before proceeding. See
+	//  https://google.aip.dev/154.
+	// +kcc:proto:field=google.api.apikeys.v2.Key.etag
+	Etag *string `json:"etag,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:resource:categories=gcp,shortName=gcpapikeyskey;gcpapikeyskeys
 // +kubebuilder:subresource:status
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/tf2crd=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"

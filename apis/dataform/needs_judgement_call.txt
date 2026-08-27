@@ -1,0 +1,12 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=DataformTeamFolder group=dataform.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataformTeamFolder group=dataform.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/teamFolders/{team_folder}; confirm the resource is regional and that this is the name for it)
+kind=DataformFolder group=dataform.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataformFolder group=dataform.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/folders/{folder}; confirm the resource is regional and that this is the name for it)
+kind=DataformFolder group=dataform.cnrm.cloud.google.com: field ".spec.containingFolder" reason=possible-reference-by-description

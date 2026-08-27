@@ -1,0 +1,14 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=ConnectorsConnection group=connectors.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=ConnectorsConnection group=connectors.cnrm.cloud.google.com: field ".spec.connectorVersion" reason=possible-reference (target=connectors.googleapis.com/ConnectorVersion)
+kind=ConnectorsConnection group=connectors.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=ConnectorsConnection group=connectors.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/connections/{connection}; confirm the resource is regional and that this is the name for it)
+kind=ConnectorsConnection group=connectors.cnrm.cloud.google.com: field ".spec.connectorVersion" reason=possible-reference-by-description
+kind=ConnectorsConnection group=connectors.cnrm.cloud.google.com: field ".spec.destinationConfigs[].destinations[].serviceAttachment" reason=possible-reference-by-description
+kind=ConnectorsConnection group=connectors.cnrm.cloud.google.com: field ".spec.serviceAccount" reason=possible-reference-by-description

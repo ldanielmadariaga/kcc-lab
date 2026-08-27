@@ -26,7 +26,7 @@ package bigquerybiglake
 import (
 	pb "cloud.google.com/go/bigquery/biglake/apiv1/biglakepb"
 	krmbigquerybiglakev1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/bigquerybiglake/v1alpha1"
-	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/bigquerybiglake/v1beta1"
+	krmbigquerybiglakev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/bigquerybiglake/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -38,8 +38,8 @@ func BigLakeCatalogObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, i
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: DeleteTime
-	// MISSING: ExpireTime
+	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
+	out.ExpireTime = direct.StringTimestamp_FromProto(mapCtx, in.GetExpireTime())
 	return out
 }
 func BigLakeCatalogObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigquerybiglakev1alpha1.BigLakeCatalogObservedState) *pb.Catalog {
@@ -50,8 +50,8 @@ func BigLakeCatalogObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in 
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: DeleteTime
-	// MISSING: ExpireTime
+	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
+	out.ExpireTime = direct.StringTimestamp_ToProto(mapCtx, in.ExpireTime)
 	return out
 }
 func BigLakeCatalogSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Catalog) *krmbigquerybiglakev1alpha1.BigLakeCatalogSpec {
@@ -60,8 +60,6 @@ func BigLakeCatalogSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Cat
 	}
 	out := &krmbigquerybiglakev1alpha1.BigLakeCatalogSpec{}
 	// MISSING: Name
-	// MISSING: DeleteTime
-	// MISSING: ExpireTime
 	return out
 }
 func BigLakeCatalogSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigquerybiglakev1alpha1.BigLakeCatalogSpec) *pb.Catalog {
@@ -70,8 +68,6 @@ func BigLakeCatalogSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigqu
 	}
 	out := &pb.Catalog{}
 	// MISSING: Name
-	// MISSING: DeleteTime
-	// MISSING: ExpireTime
 	return out
 }
 func BigLakeDatabaseObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Database) *krmbigquerybiglakev1alpha1.BigLakeDatabaseObservedState {
@@ -120,11 +116,11 @@ func BigLakeDatabaseSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigq
 	out.Type = direct.Enum_ToProto[pb.Database_Type](mapCtx, in.Type)
 	return out
 }
-func BigLakeTableObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Table) *krm.BigLakeTableObservedState {
+func BigLakeTableObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Table) *krmbigquerybiglakev1beta1.BigLakeTableObservedState {
 	if in == nil {
 		return nil
 	}
-	out := &krm.BigLakeTableObservedState{}
+	out := &krmbigquerybiglakev1beta1.BigLakeTableObservedState{}
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
@@ -133,7 +129,7 @@ func BigLakeTableObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *
 	// MISSING: Etag
 	return out
 }
-func BigLakeTableObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krm.BigLakeTableObservedState) *pb.Table {
+func BigLakeTableObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigquerybiglakev1beta1.BigLakeTableObservedState) *pb.Table {
 	if in == nil {
 		return nil
 	}
@@ -146,18 +142,18 @@ func BigLakeTableObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *kr
 	// MISSING: Etag
 	return out
 }
-func BigLakeTableSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Table) *krm.BigLakeTableSpec {
+func BigLakeTableSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Table) *krmbigquerybiglakev1beta1.BigLakeTableSpec {
 	if in == nil {
 		return nil
 	}
-	out := &krm.BigLakeTableSpec{}
+	out := &krmbigquerybiglakev1beta1.BigLakeTableSpec{}
 	out.HiveOptions = HiveTableOptions_v1beta1_FromProto(mapCtx, in.GetHiveOptions())
 	// MISSING: Name
 	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
 	// MISSING: Etag
 	return out
 }
-func BigLakeTableSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krm.BigLakeTableSpec) *pb.Table {
+func BigLakeTableSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigquerybiglakev1beta1.BigLakeTableSpec) *pb.Table {
 	if in == nil {
 		return nil
 	}
@@ -188,17 +184,17 @@ func HiveDatabaseOptions_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigq
 	out.Parameters = in.Parameters
 	return out
 }
-func HiveTableOptions_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.HiveTableOptions) *krm.HiveTableOptions {
+func HiveTableOptions_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.HiveTableOptions) *krmbigquerybiglakev1beta1.HiveTableOptions {
 	if in == nil {
 		return nil
 	}
-	out := &krm.HiveTableOptions{}
+	out := &krmbigquerybiglakev1beta1.HiveTableOptions{}
 	out.Parameters = in.Parameters
 	out.TableType = direct.LazyPtr(in.GetTableType())
 	out.StorageDescriptor = HiveTableOptions_StorageDescriptor_v1beta1_FromProto(mapCtx, in.GetStorageDescriptor())
 	return out
 }
-func HiveTableOptions_v1beta1_ToProto(mapCtx *direct.MapContext, in *krm.HiveTableOptions) *pb.HiveTableOptions {
+func HiveTableOptions_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigquerybiglakev1beta1.HiveTableOptions) *pb.HiveTableOptions {
 	if in == nil {
 		return nil
 	}
@@ -208,15 +204,15 @@ func HiveTableOptions_v1beta1_ToProto(mapCtx *direct.MapContext, in *krm.HiveTab
 	out.StorageDescriptor = HiveTableOptions_StorageDescriptor_v1beta1_ToProto(mapCtx, in.StorageDescriptor)
 	return out
 }
-func HiveTableOptions_SerDeInfo_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.HiveTableOptions_SerDeInfo) *krm.HiveTableOptions_SerDeInfo {
+func HiveTableOptions_SerDeInfo_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.HiveTableOptions_SerDeInfo) *krmbigquerybiglakev1beta1.HiveTableOptions_SerDeInfo {
 	if in == nil {
 		return nil
 	}
-	out := &krm.HiveTableOptions_SerDeInfo{}
+	out := &krmbigquerybiglakev1beta1.HiveTableOptions_SerDeInfo{}
 	out.SerializationLib = direct.LazyPtr(in.GetSerializationLib())
 	return out
 }
-func HiveTableOptions_SerDeInfo_v1beta1_ToProto(mapCtx *direct.MapContext, in *krm.HiveTableOptions_SerDeInfo) *pb.HiveTableOptions_SerDeInfo {
+func HiveTableOptions_SerDeInfo_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigquerybiglakev1beta1.HiveTableOptions_SerDeInfo) *pb.HiveTableOptions_SerDeInfo {
 	if in == nil {
 		return nil
 	}
@@ -224,18 +220,18 @@ func HiveTableOptions_SerDeInfo_v1beta1_ToProto(mapCtx *direct.MapContext, in *k
 	out.SerializationLib = direct.ValueOf(in.SerializationLib)
 	return out
 }
-func HiveTableOptions_StorageDescriptor_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.HiveTableOptions_StorageDescriptor) *krm.HiveTableOptions_StorageDescriptor {
+func HiveTableOptions_StorageDescriptor_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.HiveTableOptions_StorageDescriptor) *krmbigquerybiglakev1beta1.HiveTableOptions_StorageDescriptor {
 	if in == nil {
 		return nil
 	}
-	out := &krm.HiveTableOptions_StorageDescriptor{}
+	out := &krmbigquerybiglakev1beta1.HiveTableOptions_StorageDescriptor{}
 	out.LocationURI = direct.LazyPtr(in.GetLocationUri())
 	out.InputFormat = direct.LazyPtr(in.GetInputFormat())
 	out.OutputFormat = direct.LazyPtr(in.GetOutputFormat())
 	out.SerdeInfo = HiveTableOptions_SerDeInfo_v1beta1_FromProto(mapCtx, in.GetSerdeInfo())
 	return out
 }
-func HiveTableOptions_StorageDescriptor_v1beta1_ToProto(mapCtx *direct.MapContext, in *krm.HiveTableOptions_StorageDescriptor) *pb.HiveTableOptions_StorageDescriptor {
+func HiveTableOptions_StorageDescriptor_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigquerybiglakev1beta1.HiveTableOptions_StorageDescriptor) *pb.HiveTableOptions_StorageDescriptor {
 	if in == nil {
 		return nil
 	}

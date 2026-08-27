@@ -109,9 +109,6 @@ spec:
                 type: string
               securityService:
                 description: Immutable. SSE service provider associated with the realm.
-                enum:
-                - SECURITY_SERVICE_UNSPECIFIED
-                - PALO_ALTO_PRISMA_ACCESS
                 type: string
             required:
             - location
@@ -169,15 +166,6 @@ spec:
                   pairingKey:
                     description: Output only. Key to be shared with SSE service provider
                       during pairing.
-                    properties:
-                      expireTime:
-                        description: Output only. Timestamp in UTC of when this resource
-                          is considered expired. It expires 7 days after creation.
-                        type: string
-                      key:
-                        description: Output only. Key value.
-                        type: string
-                    type: object
                   state:
                     description: Output only. State of the realm.
                     type: string

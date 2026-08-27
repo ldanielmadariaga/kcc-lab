@@ -1,0 +1,10 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=SQLAdminBackup group=sqladmin.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=SQLAdminBackup group=sqladmin.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-unknown-parent (the proto declares no google.api.resource, so the parent shape is unknown; add location if the resource is regional)
+kind=SQLAdminBackup group=sqladmin.cnrm.cloud.google.com: field ".spec.diskEncryptionConfiguration.kmsKeyName" reason=possible-reference-by-description-loose

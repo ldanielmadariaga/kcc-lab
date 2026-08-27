@@ -1,0 +1,41 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=VMwareEngineNetwork group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VMwareEngineNetwork group=vmwareengine.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VMwareEngineNetwork group=vmwareengine.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network}; confirm the resource is regional and that this is the name for it)
+kind=VMwareEngineNetworkPeering group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VMwareEngineNetworkPeering group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference (target=vmwareengine.googleapis.com/VmwareEngineNetwork)
+kind=VMwareEngineNetworkPeering group=vmwareengine.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VMwareEngineNetworkPeering group=vmwareengine.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/networkPeerings/{network_peering}; confirm the resource is regional and that this is the name for it)
+kind=VMwareEngineNetworkPolicy group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VMwareEngineNetworkPolicy group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference (target=vmwareengine.googleapis.com/VmwareEngineNetwork)
+kind=VMwareEngineNetworkPolicy group=vmwareengine.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VMwareEngineNetworkPolicy group=vmwareengine.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/networkPolicies/{network_policy}; confirm the resource is regional and that this is the name for it)
+kind=VMwareEngineExternalAccessRule group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VMwareEngineExternalAccessRule group=vmwareengine.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VMwareEngineExternalAccessRule group=vmwareengine.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/networkPolicies/{network_policy}/externalAccessRules/{external_access_rule}; confirm the resource is regional and that this is the name for it)
+kind=VMwareEngineExternalAccessRule group=vmwareengine.cnrm.cloud.google.com: field ".spec.networkPolicyRef" reason=parent-ref-guessed (emitted as a reference to NetworkPolicyRef, assumed from the collection segment of projects/{project}/locations/{location}/networkPolicies/{network_policy}/externalAccessRules/{external_access_rule}; confirm the target type)
+kind=VMwareEnginePrivateCloud group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VMwareEnginePrivateCloud group=vmwareengine.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VMwareEnginePrivateCloud group=vmwareengine.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/privateClouds/{private_cloud}; confirm the resource is regional and that this is the name for it)
+kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference (target=vmwareengine.googleapis.com/VmwareEngineNetwork)
+kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".spec.serviceNetwork" reason=possible-reference (target=compute.googleapis.com/Network)
+kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/privateConnections/{private_connection}; confirm the resource is regional and that this is the name for it)
+kind=VMwareEngineExternalAccessRule group=vmwareengine.cnrm.cloud.google.com: field ".spec.destinationIPRanges[].externalAddress" reason=possible-reference-by-description
+kind=VMwareEngineExternalAccessRule group=vmwareengine.cnrm.cloud.google.com: field ".spec.sourceIPRanges[].externalAddress" reason=possible-reference-by-description
+kind=VMwareEngineNetworkPeering group=vmwareengine.cnrm.cloud.google.com: field ".spec.peerNetwork" reason=possible-reference-by-description
+kind=VMwareEngineNetworkPeering group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference-by-description
+kind=VMwareEngineNetworkPolicy group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference-by-description
+kind=VMwareEnginePrivateCloud group=vmwareengine.cnrm.cloud.google.com: field ".spec.managementCluster.stretchedClusterConfig.preferredLocation" reason=possible-reference-by-description
+kind=VMwareEnginePrivateCloud group=vmwareengine.cnrm.cloud.google.com: field ".spec.managementCluster.stretchedClusterConfig.secondaryLocation" reason=possible-reference-by-description
+kind=VMwareEnginePrivateCloud group=vmwareengine.cnrm.cloud.google.com: field ".spec.networkConfig.vmwareEngineNetwork" reason=possible-reference-by-description
+kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".spec.serviceNetwork" reason=possible-reference-by-description
+kind=VMwareEnginePrivateConnection group=vmwareengine.cnrm.cloud.google.com: field ".spec.vmwareEngineNetwork" reason=possible-reference-by-description
+kind=VMwareEngineExternalAccessRule group=vmwareengine.cnrm.cloud.google.com: field ".spec.networkPolicyRef" reason=parent-ref-guessed (emitted as a reference to NetworkPolicyRef, assumed from the collection segment of projects/{project}/locations/{location}/networkPolicies/{network_policy}/externalAccessRules/{external_access_rule}; confirm the target type (VMwareEngineNetworkPolicy, a resource this service declares, matches the name))

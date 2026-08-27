@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,68 +26,82 @@ var CloudTalentSolutionCompanyGVK = GroupVersion.WithKind("CloudTalentSolutionCo
 // +kcc:spec:proto=google.cloud.talent.v4.Company
 type CloudTalentSolutionCompanySpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// Immutable. The tenant of this resource.
-	// +required
+	// The Tenant that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/tenants/{tenant}/companies/{company}
 	Tenant *string `json:"tenant,omitempty"`
 
 	// The CloudTalentSolutionCompany name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. The display name of the company, for example, "Google LLC".
-	// +required
 	// +kcc:proto:field=google.cloud.talent.v4.Company.display_name
-	DisplayName string `json:"displayName"`
-
-	// Required. Client side company identifier, used to uniquely identify the company.
-	// The maximum number of allowed characters is 255.
 	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Required. Client side company identifier, used to uniquely identify the
+	//  company.
+	//
+	//  The maximum number of allowed characters is 255.
 	// +kcc:proto:field=google.cloud.talent.v4.Company.external_id
-	ExternalID string `json:"externalID"`
+	// +required
+	ExternalID *string `json:"externalID,omitempty"`
 
 	// The employer's company size.
-	// +optional
-	// +kubebuilder:validation:Enum=COMPANY_SIZE_UNSPECIFIED;MINI;SMALL;SMEDIUM;MEDIUM;BIG;BIGGER;GIANT
 	// +kcc:proto:field=google.cloud.talent.v4.Company.size
 	Size *string `json:"size,omitempty"`
 
 	// The street address of the company's main headquarters, which may be
-	// different from the job location.
-	// +optional
+	//  different from the job location. The service attempts
+	//  to geolocate the provided address, and populates a more specific
+	//  location wherever possible in
+	//  [DerivedInfo.headquarters_location][google.cloud.talent.v4.Company.DerivedInfo.headquarters_location].
 	// +kcc:proto:field=google.cloud.talent.v4.Company.headquarters_address
 	HeadquartersAddress *string `json:"headquartersAddress,omitempty"`
 
-	// Set to true if it is the hiring agency that post jobs for other employers.
-	// +optional
+	// Set to true if it is the hiring agency that post jobs for other
+	//  employers.
+	//
+	//  Defaults to false if not provided.
 	// +kcc:proto:field=google.cloud.talent.v4.Company.hiring_agency
 	HiringAgency *bool `json:"hiringAgency,omitempty"`
 
-	// Equal Employment Opportunity legal disclaimer text to be associated with all jobs, and typically to be displayed in all roles.
-	// The maximum number of allowed characters is 500.
-	// +optional
+	// Equal Employment Opportunity legal disclaimer text to be
+	//  associated with all jobs, and typically to be displayed in all
+	//  roles.
+	//
+	//  The maximum number of allowed characters is 500.
 	// +kcc:proto:field=google.cloud.talent.v4.Company.eeo_text
 	EeoText *string `json:"eeoText,omitempty"`
 
-	// The URI representing the company's primary web site or home page, for example, "https://www.google.com".
-	// The maximum number of allowed characters is 255.
-	// +optional
+	// The URI representing the company's primary web site or home page,
+	//  for example, "https://www.google.com".
+	//
+	//  The maximum number of allowed characters is 255.
 	// +kcc:proto:field=google.cloud.talent.v4.Company.website_uri
 	WebsiteURI *string `json:"websiteURI,omitempty"`
 
-	// The URI to employer's career site or careers page on the employer's web site, for example, "https://careers.google.com".
-	// +optional
+	// The URI to employer's career site or careers page on the employer's web
+	//  site, for example, "https://careers.google.com".
 	// +kcc:proto:field=google.cloud.talent.v4.Company.career_site_uri
 	CareerSiteURI *string `json:"careerSiteURI,omitempty"`
 
 	// A URI that hosts the employer's company logo.
-	// +optional
 	// +kcc:proto:field=google.cloud.talent.v4.Company.image_uri
 	ImageURI *string `json:"imageURI,omitempty"`
 
-	// This field is deprecated. Please set the searchability of the custom attribute in the Job.custom_attributes going forward.
-	// +optional
+	// This field is deprecated. Please set the searchability of the custom
+	//  attribute in the
+	//  [Job.custom_attributes][google.cloud.talent.v4.Job.custom_attributes] going
+	//  forward.
+	//
+	//  A list of keys of filterable
+	//  [Job.custom_attributes][google.cloud.talent.v4.Job.custom_attributes],
+	//  whose corresponding `string_values` are used in keyword searches. Jobs with
+	//  `string_values` under these specified field keys are returned if any
+	//  of the values match the search keyword. Custom field values with
+	//  parenthesis, brackets and special symbols are not searchable as-is,
+	//  and those keyword queries must be surrounded by quotes.
 	// +kcc:proto:field=google.cloud.talent.v4.Company.keyword_searchable_job_custom_attributes
 	KeywordSearchableJobCustomAttributes []string `json:"keywordSearchableJobCustomAttributes,omitempty"`
 }
@@ -115,103 +129,19 @@ type CloudTalentSolutionCompanyObservedState struct {
 	// +kcc:proto:field=google.cloud.talent.v4.Company.derived_info
 	DerivedInfo *Company_DerivedInfo `json:"derivedInfo,omitempty"`
 
-	// Output only. Indicates whether a company is flagged to be suspended from public availability by the service when job content appears suspicious, abusive, or spammy.
+	// Output only. Indicates whether a company is flagged to be suspended from
+	//  public availability by the service when job content appears suspicious,
+	//  abusive, or spammy.
 	// +kcc:proto:field=google.cloud.talent.v4.Company.suspended
 	Suspended *bool `json:"suspended,omitempty"`
 }
 
-// +kcc:proto=google.cloud.talent.v4.Company.DerivedInfo
-type Company_DerivedInfo struct {
-	// A structured headquarters location of the company, resolved from Company.headquarters_address if provided.
-	// +kcc:proto:field=google.cloud.talent.v4.Company.DerivedInfo.headquarters_location
-	HeadquartersLocation *Location `json:"headquartersLocation,omitempty"`
-}
-
-// +kcc:proto=google.cloud.talent.v4.Location
-type Location struct {
-	// The type of a location, which corresponds to the address lines field of google.type.PostalAddress.
-	// +kubebuilder:validation:Enum=LOCATION_TYPE_UNSPECIFIED;COUNTRY;ADMINISTRATIVE_AREA;SUB_ADMINISTRATIVE_AREA;LOCALITY;POSTAL_CODE;SUB_LOCALITY;SUB_LOCALITY_1;SUB_LOCALITY_2;NEIGHBORHOOD;STREET_ADDRESS
-	// +kcc:proto:field=google.cloud.talent.v4.Location.location_type
-	LocationType *string `json:"locationType,omitempty"`
-
-	// Postal address of the location that includes human readable information, such as postal delivery and payments addresses.
-	// +kcc:proto:field=google.cloud.talent.v4.Location.postal_address
-	PostalAddress *PostalAddress `json:"postalAddress,omitempty"`
-
-	// An object representing a latitude/longitude pair.
-	// +kcc:proto:field=google.cloud.talent.v4.Location.lat_lng
-	LatLng *LatLng `json:"latLng,omitempty"`
-
-	// Radius in miles of the job location.
-	// +kcc:proto:field=google.cloud.talent.v4.Location.radius_miles
-	RadiusMiles *float64 `json:"radiusMiles,omitempty"`
-}
-
-// +kcc:proto=google.type.LatLng
-type LatLng struct {
-	// The latitude in degrees. It must be in the range [-90.0, +90.0].
-	// +kcc:proto:field=google.type.LatLng.latitude
-	Latitude *float64 `json:"latitude,omitempty"`
-
-	// The longitude in degrees. It must be in the range [-180.0, +180.0].
-	// +kcc:proto:field=google.type.LatLng.longitude
-	Longitude *float64 `json:"longitude,omitempty"`
-}
-
-// +kcc:proto=google.type.PostalAddress
-type PostalAddress struct {
-	// The schema revision of the PostalAddress. This must be set to 0, which is the latest revision.
-	// +kcc:proto:field=google.type.PostalAddress.revision
-	Revision *int32 `json:"revision,omitempty"`
-
-	// Required. CLDR region code of the country/region of the address.
-	// +kcc:proto:field=google.type.PostalAddress.region_code
-	RegionCode *string `json:"regionCode,omitempty"`
-
-	// Optional. BCP-47 language code of the contents of this address (if known).
-	// +kcc:proto:field=google.type.PostalAddress.language_code
-	LanguageCode *string `json:"languageCode,omitempty"`
-
-	// Optional. Postal code of the address.
-	// +kcc:proto:field=google.type.PostalAddress.postal_code
-	PostalCode *string `json:"postalCode,omitempty"`
-
-	// Optional. Additional, country-specific, sorting code.
-	// +kcc:proto:field=google.type.PostalAddress.sorting_code
-	SortingCode *string `json:"sortingCode,omitempty"`
-
-	// Optional. Highest administrative subdivision which is used for postal addresses of a country or region.
-	// +kcc:proto:field=google.type.PostalAddress.administrative_area
-	AdministrativeArea *string `json:"administrativeArea,omitempty"`
-
-	// Optional. Generally refers to the city/town portion of the address.
-	// +kcc:proto:field=google.type.PostalAddress.locality
-	Locality *string `json:"locality,omitempty"`
-
-	// Optional. Sublocality of the address.
-	// +kcc:proto:field=google.type.PostalAddress.sublocality
-	Sublocality *string `json:"sublocality,omitempty"`
-
-	// Unstructured address lines describing the lower levels of an address.
-	// +kcc:proto:field=google.type.PostalAddress.address_lines
-	AddressLines []string `json:"addressLines,omitempty"`
-
-	// Optional. The recipient at the address.
-	// +kcc:proto:field=google.type.PostalAddress.recipients
-	Recipients []string `json:"recipients,omitempty"`
-
-	// Optional. The name of the organization at the address.
-	// +kcc:proto:field=google.type.PostalAddress.organization
-	Organization *string `json:"organization,omitempty"`
-}
-
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpcloudtalentsolutioncompany;gcpcloudtalentsolutioncompanies
+// +kubebuilder:resource:categories=gcp,shortName=gcpcloudtalentsolutioncompany;gcpcloudtalentsolutioncompanys
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

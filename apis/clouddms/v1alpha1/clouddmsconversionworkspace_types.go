@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,23 +25,23 @@ var CloudDMSConversionWorkspaceGVK = GroupVersion.WithKind("CloudDMSConversionWo
 // CloudDMSConversionWorkspaceSpec defines the desired state of CloudDMSConversionWorkspace
 // +kcc:spec:proto=google.cloud.clouddms.v1.ConversionWorkspace
 type CloudDMSConversionWorkspaceSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}
+	Location *string `json:"location"`
+
 	// The CloudDMSConversionWorkspace name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// The project that this resource belongs to.
-	// +required
-	ProjectRef *refs.ProjectRef `json:"projectRef,omitempty"`
-
-	// Immutable. The location where the alloydb cluster should reside.
-	// +required
-	Location string `json:"location,omitempty"`
-
 	// Required. The source engine details.
 	// +kcc:proto:field=google.cloud.clouddms.v1.ConversionWorkspace.source
+	// +required
 	Source *DatabaseEngineInfo `json:"source,omitempty"`
 
 	// Required. The destination engine details.
 	// +kcc:proto:field=google.cloud.clouddms.v1.ConversionWorkspace.destination
+	// +required
 	Destination *DatabaseEngineInfo `json:"destination,omitempty"`
 
 	// Optional. A generic list of settings for the workspace.

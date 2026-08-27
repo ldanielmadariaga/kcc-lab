@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,28 +26,23 @@ var NetworkSecurityGatewaySecurityPolicyGVK = GroupVersion.WithKind("NetworkSecu
 // +kcc:spec:proto=google.cloud.networksecurity.v1.GatewaySecurityPolicy
 type NetworkSecurityGatewaySecurityPolicySpec struct {
 	// The project that this resource belongs to.
-	// +required
-	// +kubebuilder:validation:Required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +required
-	// +kubebuilder:validation:Required
-	Location string `json:"location"`
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/gatewaySecurityPolicies/{gateway_security_policy}
+	Location *string `json:"location"`
 
 	// The NetworkSecurityGatewaySecurityPolicy name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. Free-text description of the resource.
-	// +optional
 	// +kcc:proto:field=google.cloud.networksecurity.v1.GatewaySecurityPolicy.description
 	Description *string `json:"description,omitempty"`
 
 	// Optional. Name of a TLS Inspection Policy resource that defines how TLS
 	//  inspection will be performed for any rule(s) which enables it.
-	// +optional
+	// +kcc:guess=possible-reference target=NetworkSecurityTLSInspectionPolicy
 	// +kcc:proto:field=google.cloud.networksecurity.v1.GatewaySecurityPolicy.tls_inspection_policy
-	TLSInspectionPolicyRef *TLSInspectionPolicyRef `json:"tlsInspectionPolicyRef,omitempty"`
+	TLSInspectionPolicy *string `json:"tlsInspectionPolicy,omitempty"`
 }
 
 // NetworkSecurityGatewaySecurityPolicyStatus defines the config connector machine state of NetworkSecurityGatewaySecurityPolicy
@@ -80,11 +75,10 @@ type NetworkSecurityGatewaySecurityPolicyObservedState struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpnetworksecuritygatewaysecuritypolicy;gcpnetworksecuritygatewaysecuritypolicies
+// +kubebuilder:resource:categories=gcp,shortName=gcpnetworksecuritygatewaysecuritypolicy;gcpnetworksecuritygatewaysecuritypolicys
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

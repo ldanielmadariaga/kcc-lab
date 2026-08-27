@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,26 +28,23 @@ type MigrationCenterGroupSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
-	// Immutable. The location of this resource.
-	// +required
-	Location string `json:"location"`
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/groups/{group}
+	Location *string `json:"location"`
 
 	// The MigrationCenterGroup name. If not given, the metadata.name will be used.
-	// +optional
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Labels as key value pairs.
+	// +kcc:proto:field=google.cloud.migrationcenter.v1.Group.labels
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// User-friendly display name.
-	// +optional
+	// +kcc:proto:field=google.cloud.migrationcenter.v1.Group.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// The description of the resource.
-	// +optional
+	// +kcc:proto:field=google.cloud.migrationcenter.v1.Group.description
 	Description *string `json:"description,omitempty"`
-
-	// Labels as key value pairs.
-	// +optional
-	Labels map[string]string `json:"labels,omitempty"`
 }
 
 // MigrationCenterGroupStatus defines the config connector machine state of MigrationCenterGroup
@@ -70,11 +67,11 @@ type MigrationCenterGroupStatus struct {
 // +kcc:observedstate:proto=google.cloud.migrationcenter.v1.Group
 type MigrationCenterGroupObservedState struct {
 	// Output only. The timestamp when the group was created.
-	// +optional
+	// +kcc:proto:field=google.cloud.migrationcenter.v1.Group.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. The timestamp when the group was last updated.
-	// +optional
+	// +kcc:proto:field=google.cloud.migrationcenter.v1.Group.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
@@ -84,7 +81,6 @@ type MigrationCenterGroupObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: networksecurityaddressgroups.networksecurity.cnrm.cloud.google.com
 spec:
@@ -128,10 +127,7 @@ spec:
                 type: string
               type:
                 description: Required. The type of the Address Group. Possible values
-                  are "IPV4" or "IPV6".
-                enum:
-                - IPV4
-                - IPV6
+                  are "IPv4" or "IPV6".
                 type: string
             required:
             - capacity

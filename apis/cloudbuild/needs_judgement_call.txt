@@ -1,0 +1,29 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/connections/{connection}; confirm the resource is regional and that this is the name for it)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketCloudConfig.authorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketCloudConfig.readAuthorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketCloudConfig.webhookSecretSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketDataCenterConfig.authorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketDataCenterConfig.readAuthorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketDataCenterConfig.serviceDirectoryConfig.service" reason=possible-reference-by-description
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.bitbucketDataCenterConfig.webhookSecretSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.githubConfig.authorizerCredential.oauthTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.githubEnterpriseConfig.privateKeySecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.githubEnterpriseConfig.serviceDirectoryConfig.service" reason=possible-reference-by-description
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.githubEnterpriseConfig.webhookSecretSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.gitlabConfig.authorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.gitlabConfig.readAuthorizerCredential.userTokenSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.gitlabConfig.serviceDirectoryConfig.service" reason=possible-reference-by-description
+kind=CloudBuildConnection group=cloudbuild.cnrm.cloud.google.com: field ".spec.gitlabConfig.webhookSecretSecretVersion" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.devtools.cloudbuild.v1.BuildOptions.workerPool target=CloudBuildWorkerPool

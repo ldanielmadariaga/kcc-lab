@@ -35,7 +35,6 @@ func GeminiDataAnalyticsConversationObservedState_FromProto(mapCtx *direct.MapCo
 	}
 	out := &krm.GeminiDataAnalyticsConversationObservedState{}
 	// MISSING: Name
-	// MISSING: Agents
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.LastUsedTime = direct.StringTimestamp_FromProto(mapCtx, in.GetLastUsedTime())
 	return out
@@ -46,7 +45,6 @@ func GeminiDataAnalyticsConversationObservedState_ToProto(mapCtx *direct.MapCont
 	}
 	out := &pb.Conversation{}
 	// MISSING: Name
-	// MISSING: Agents
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.LastUsedTime = direct.StringTimestamp_ToProto(mapCtx, in.LastUsedTime)
 	return out
@@ -57,13 +55,7 @@ func GeminiDataAnalyticsConversationSpec_FromProto(mapCtx *direct.MapContext, in
 	}
 	out := &krm.GeminiDataAnalyticsConversationSpec{}
 	// MISSING: Name
-
-	if v := in.GetAgents(); len(v) != 0 {
-		for i := range v {
-			out.AgentRefs = append(out.AgentRefs, krm.GeminiDataAnalyticsDataAgentRef{External: v[i]})
-		}
-	}
-
+	out.Agents = in.Agents
 	out.Labels = in.Labels
 	return out
 }
@@ -73,13 +65,7 @@ func GeminiDataAnalyticsConversationSpec_ToProto(mapCtx *direct.MapContext, in *
 	}
 	out := &pb.Conversation{}
 	// MISSING: Name
-
-	if v := in.AgentRefs; len(v) != 0 {
-		for i := range v {
-			out.Agents = append(out.Agents, v[i].External)
-		}
-	}
-
+	out.Agents = in.Agents
 	out.Labels = in.Labels
 	return out
 }

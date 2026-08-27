@@ -161,7 +161,7 @@ spec:
                                     This field is ignored for persistent disks as
                                     the interface is chosen automatically. See https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.
                                   type: string
-                                imageRef:
+                                image:
                                   description: |-
                                     URL for a VM image to use as the data source for this disk.
                                      For example, the following are all valid URLs:
@@ -170,35 +170,14 @@ spec:
                                      projects/{project}/global/images/family/{image_family}
                                      * Specify the image version:
                                      projects/{project}/global/images/{image_version}
-                                  oneOf:
-                                  - not:
-                                      required:
-                                      - external
-                                    required:
-                                    - name
-                                  - not:
-                                      anyOf:
-                                      - required:
-                                        - name
-                                      - required:
-                                        - namespace
-                                    required:
-                                    - external
-                                  properties:
-                                    external:
-                                      description: A reference to an externally managed
-                                        ComputeImage resource. Should be in the format
-                                        "projects/{{project}}/global/images/{{name}}"
-                                        or "projects/{{project}}/global/images/family/{{family}}".
-                                      type: string
-                                    name:
-                                      description: The name of a ComputeImage resource.
-                                      type: string
-                                    namespace:
-                                      description: The namespace of a ComputeImage
-                                        resource.
-                                      type: string
-                                  type: object
+
+                                     You can also use Batch customized image in short names.
+                                     The following image values are supported for a boot disk:
+
+                                     * `batch-debian`: use Batch Debian images.
+                                     * `batch-cos`: use Batch Container-Optimized images.
+                                     * `batch-hpc-rocky`: use Batch HPC Rocky Linux images.
+                                  type: string
                                 sizeGB:
                                   description: |-
                                     Disk size in GB.
@@ -267,7 +246,7 @@ spec:
                                           persistent disks as the interface is chosen
                                           automatically. See https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.
                                         type: string
-                                      imageRef:
+                                      image:
                                         description: |-
                                           URL for a VM image to use as the data source for this disk.
                                            For example, the following are all valid URLs:
@@ -276,36 +255,14 @@ spec:
                                            projects/{project}/global/images/family/{image_family}
                                            * Specify the image version:
                                            projects/{project}/global/images/{image_version}
-                                        oneOf:
-                                        - not:
-                                            required:
-                                            - external
-                                          required:
-                                          - name
-                                        - not:
-                                            anyOf:
-                                            - required:
-                                              - name
-                                            - required:
-                                              - namespace
-                                          required:
-                                          - external
-                                        properties:
-                                          external:
-                                            description: A reference to an externally
-                                              managed ComputeImage resource. Should
-                                              be in the format "projects/{{project}}/global/images/{{name}}"
-                                              or "projects/{{project}}/global/images/family/{{family}}".
-                                            type: string
-                                          name:
-                                            description: The name of a ComputeImage
-                                              resource.
-                                            type: string
-                                          namespace:
-                                            description: The namespace of a ComputeImage
-                                              resource.
-                                            type: string
-                                        type: object
+
+                                           You can also use Batch customized image in short names.
+                                           The following image values are supported for a boot disk:
+
+                                           * `batch-debian`: use Batch Debian images.
+                                           * `batch-cos`: use Batch Container-Optimized images.
+                                           * `batch-hpc-rocky`: use Batch HPC Rocky Linux images.
+                                        type: string
                                       sizeGB:
                                         description: |-
                                           Disk size in GB.
@@ -418,7 +375,7 @@ spec:
                         description: Network configurations.
                         items:
                           properties:
-                            networkRef:
+                            network:
                               description: |-
                                 The URL of an existing network resource.
                                  You can specify the network as a full or partial URL.
@@ -428,33 +385,7 @@ spec:
                                  * https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}
                                  * projects/{project}/global/networks/{network}
                                  * global/networks/{network}
-                              oneOf:
-                              - not:
-                                  required:
-                                  - external
-                                required:
-                                - name
-                              - not:
-                                  anyOf:
-                                  - required:
-                                    - name
-                                  - required:
-                                    - namespace
-                                required:
-                                - external
-                              properties:
-                                external:
-                                  description: A reference to an externally managed
-                                    ComputeNetwork resource. Should be in the format
-                                    "projects/{{projectID}}/global/networks/{{networkID}}".
-                                  type: string
-                                name:
-                                  description: The name of a ComputeNetwork resource.
-                                  type: string
-                                namespace:
-                                  description: The namespace of a ComputeNetwork resource.
-                                  type: string
-                              type: object
+                              type: string
                             noExternalIPAddress:
                               description: Default is false (with an external IP address).
                                 Required if no external public IP address is attached
@@ -464,7 +395,7 @@ spec:
                                 and https://cloud.google.com/nat/docs/gce-example#create-nat
                                 for more information.
                               type: boolean
-                            subnetworkRef:
+                            subnetwork:
                               description: |-
                                 The URL of an existing subnetwork resource in the network.
                                  You can specify the subnetwork as a full or partial URL.
@@ -474,34 +405,7 @@ spec:
                                  * https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/subnetworks/{subnetwork}
                                  * projects/{project}/regions/{region}/subnetworks/{subnetwork}
                                  * regions/{region}/subnetworks/{subnetwork}
-                              oneOf:
-                              - not:
-                                  required:
-                                  - external
-                                required:
-                                - name
-                              - not:
-                                  anyOf:
-                                  - required:
-                                    - name
-                                  - required:
-                                    - namespace
-                                required:
-                                - external
-                              properties:
-                                external:
-                                  description: A reference to an externally managed
-                                    ComputeSubnetwork resource. Should be in the format
-                                    "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
-                                  type: string
-                                name:
-                                  description: The name of a ComputeSubnetwork resource.
-                                  type: string
-                                namespace:
-                                  description: The namespace of a ComputeSubnetwork
-                                    resource.
-                                  type: string
-                              type: object
+                              type: string
                           type: object
                         type: array
                     type: object
@@ -524,7 +428,7 @@ spec:
                         format: int64
                         type: integer
                     type: object
-                  serviceAccountRef:
+                  serviceAccount:
                     description: |-
                       Defines the service account for Batch-created VMs. If omitted, the [default
                        Compute Engine service
@@ -537,30 +441,16 @@ spec:
                         Compute Engine service account is used.
                         * scopes: Additional OAuth scopes to grant the service account, beyond the
                         default cloud-platform scope. (list of strings)
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
                     properties:
-                      external:
-                        description: The `email` field of an `IAMServiceAccount` resource.
+                      email:
+                        description: Email address of the service account.
                         type: string
-                      name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                        type: string
-                      namespace:
-                        description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
-                        type: string
+                      scopes:
+                        description: List of scopes to be enabled for this service
+                          account.
+                        items:
+                          type: string
+                        type: array
                     type: object
                   tags:
                     description: |-
@@ -573,12 +463,26 @@ spec:
                       type: string
                     type: array
                 type: object
+              labels:
+                additionalProperties:
+                  type: string
+                description: |-
+                  Custom labels to apply to the job and any Cloud Logging
+                   [LogEntry](https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry)
+                   that it generates.
+
+                   Use labels to group and describe the resources they are applied to. Batch
+                   automatically applies predefined labels and supports multiple `labels`
+                   fields for each job, which each let you apply custom labels to various
+                   resources. Label names that start with "goog-" or "google-" are
+                   reserved for predefined labels. For more information about labels with
+                   Batch, see
+                   [Organize resources using
+                   labels](https://cloud.google.com/batch/docs/organize-resources-using-labels).
+                type: object
               location:
-                description: The location that this resource belongs to.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location is immutable.
-                  rule: self == oldSelf
               logsPolicy:
                 description: Log preservation policy for the Job.
                 properties:
@@ -630,7 +534,7 @@ spec:
                           description: The message type.
                           type: string
                       type: object
-                    pubsubTopicRef:
+                    pubsubTopic:
                       description: |-
                         The Pub/Sub topic where notifications for the job, like state
                          changes, will be published. If undefined, no Pub/Sub notifications
@@ -645,32 +549,7 @@ spec:
                          For more information about configuring Pub/Sub notifications for
                          a job, see
                          https://cloud.google.com/batch/docs/enable-notifications.
-                      oneOf:
-                      - not:
-                          required:
-                          - external
-                        required:
-                        - name
-                      - not:
-                          anyOf:
-                          - required:
-                            - name
-                          - required:
-                            - namespace
-                        required:
-                        - external
-                      properties:
-                        external:
-                          description: A reference to an externally managed PubSubTopic
-                            resource. Should be in the format "projects/{{projectID}}/topics/{{topicID}}".
-                          type: string
-                        name:
-                          description: The name of a PubSubTopic resource.
-                          type: string
-                        namespace:
-                          description: The namespace of a PubSubTopic resource.
-                          type: string
-                      type: object
+                      type: string
                   type: object
                 type: array
               priority:
@@ -681,7 +560,7 @@ spec:
                 format: int64
                 type: integer
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -782,36 +661,10 @@ spec:
                                 description: The value of the cipherText response
                                   from the `encrypt` method.
                                 type: string
-                              kmsKeyRef:
+                              keyName:
                                 description: The name of the KMS key that will be
                                   used to decrypt the cipher text.
-                                oneOf:
-                                - not:
-                                    required:
-                                    - external
-                                  required:
-                                  - name
-                                - not:
-                                    anyOf:
-                                    - required:
-                                      - name
-                                    - required:
-                                      - namespace
-                                  required:
-                                  - external
-                                properties:
-                                  external:
-                                    description: A reference to an externally managed
-                                      KMSCryptoKey. Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
-                                    type: string
-                                  name:
-                                    description: The `name` of a `KMSCryptoKey` resource.
-                                    type: string
-                                  namespace:
-                                    description: The `namespace` of a `KMSCryptoKey`
-                                      resource.
-                                    type: string
-                                type: object
+                                type: string
                             type: object
                           secretVariables:
                             additionalProperties:
@@ -834,7 +687,7 @@ spec:
                         computeResource:
                           description: ComputeResource requirements.
                           properties:
-                            bootDiskMiB:
+                            bootDiskMIB:
                               description: Extra boot disk size in MiB for each task.
                               format: int64
                               type: integer
@@ -860,7 +713,7 @@ spec:
                                  to `1000` or less.
                               format: int64
                               type: integer
-                            memoryMiB:
+                            memoryMIB:
                               description: |-
                                 Memory in MiB.
 
@@ -894,37 +747,10 @@ spec:
                                   description: The value of the cipherText response
                                     from the `encrypt` method.
                                   type: string
-                                kmsKeyRef:
+                                keyName:
                                   description: The name of the KMS key that will be
                                     used to decrypt the cipher text.
-                                  oneOf:
-                                  - not:
-                                      required:
-                                      - external
-                                    required:
-                                    - name
-                                  - not:
-                                      anyOf:
-                                      - required:
-                                        - name
-                                      - required:
-                                        - namespace
-                                    required:
-                                    - external
-                                  properties:
-                                    external:
-                                      description: A reference to an externally managed
-                                        KMSCryptoKey. Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
-                                      type: string
-                                    name:
-                                      description: The `name` of a `KMSCryptoKey`
-                                        resource.
-                                      type: string
-                                    namespace:
-                                      description: The `namespace` of a `KMSCryptoKey`
-                                        resource.
-                                      type: string
-                                  type: object
+                                  type: string
                               type: object
                             secretVariables:
                               additionalProperties:
@@ -1103,6 +929,24 @@ spec:
                                       example, `--network host`. For the `--volume`
                                       option, use the `volumes` field for the container.
                                     type: string
+                                  password:
+                                    description: |-
+                                      Required if the container image is from a private Docker registry. The
+                                       password to login to the Docker registry that contains the image.
+
+                                       For security, it is strongly recommended to specify an
+                                       encrypted password by using a Secret Manager secret:
+                                       `projects/*/secrets/*/versions/*`.
+
+                                       Warning: If you specify the password using plain text, you risk the
+                                       password being exposed to any users who can view the job or its logs.
+                                       To avoid this risk, specify a secret that contains the password instead.
+
+                                       Learn more about [Secret
+                                       Manager](https://cloud.google.com/secret-manager/docs/) and [using
+                                       Secret Manager with
+                                       Batch](https://cloud.google.com/batch/docs/create-run-job-secret-manager).
+                                    type: string
                                   username:
                                     description: |-
                                       Required if the container image is from a private Docker registry. The
@@ -1160,38 +1004,10 @@ spec:
                                         description: The value of the cipherText response
                                           from the `encrypt` method.
                                         type: string
-                                      kmsKeyRef:
+                                      keyName:
                                         description: The name of the KMS key that
                                           will be used to decrypt the cipher text.
-                                        oneOf:
-                                        - not:
-                                            required:
-                                            - external
-                                          required:
-                                          - name
-                                        - not:
-                                            anyOf:
-                                            - required:
-                                              - name
-                                            - required:
-                                              - namespace
-                                          required:
-                                          - external
-                                        properties:
-                                          external:
-                                            description: A reference to an externally
-                                              managed KMSCryptoKey. Should be in the
-                                              format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
-                                            type: string
-                                          name:
-                                            description: The `name` of a `KMSCryptoKey`
-                                              resource.
-                                            type: string
-                                          namespace:
-                                            description: The `namespace` of a `KMSCryptoKey`
-                                              resource.
-                                            type: string
-                                        type: object
+                                        type: string
                                     type: object
                                   secretVariables:
                                     additionalProperties:
@@ -1309,11 +1125,14 @@ spec:
                             type: object
                           type: array
                       type: object
+                  required:
+                  - taskSpec
                   type: object
                 type: array
             required:
             - location
             - projectRef
+            - taskGroups
             type: object
           status:
             description: BatchJobStatus defines the config connector machine state
@@ -1362,9 +1181,6 @@ spec:
                 properties:
                   createTime:
                     description: Output only. When the Job was created.
-                    type: string
-                  name:
-                    description: 'Output only. Job name. For example: "projects/123456/locations/us-central1/jobs/job01".'
                     type: string
                   status:
                     description: Output only. Job status. It is read only for users.
@@ -1415,6 +1231,104 @@ spec:
                               type: string
                           type: object
                         type: array
+                      taskGroups:
+                        additionalProperties:
+                          properties:
+                            counts:
+                              additionalProperties:
+                                format: int64
+                                type: integer
+                              description: Count of task in each state in the TaskGroup.
+                                The map key is task state name.
+                              type: object
+                            instances:
+                              description: Status of instances allocated for the TaskGroup.
+                              items:
+                                properties:
+                                  bootDisk:
+                                    description: The VM boot disk.
+                                    properties:
+                                      diskInterface:
+                                        description: Local SSDs are available through
+                                          both "SCSI" and "NVMe" interfaces. If not
+                                          indicated, "NVMe" will be the default one
+                                          for local ssds. This field is ignored for
+                                          persistent disks as the interface is chosen
+                                          automatically. See https://cloud.google.com/compute/docs/disks/persistent-disks#choose_an_interface.
+                                        type: string
+                                      image:
+                                        description: |-
+                                          URL for a VM image to use as the data source for this disk.
+                                           For example, the following are all valid URLs:
+
+                                           * Specify the image by its family name:
+                                           projects/{project}/global/images/family/{image_family}
+                                           * Specify the image version:
+                                           projects/{project}/global/images/{image_version}
+
+                                           You can also use Batch customized image in short names.
+                                           The following image values are supported for a boot disk:
+
+                                           * `batch-debian`: use Batch Debian images.
+                                           * `batch-cos`: use Batch Container-Optimized images.
+                                           * `batch-hpc-rocky`: use Batch HPC Rocky Linux images.
+                                        type: string
+                                      sizeGB:
+                                        description: |-
+                                          Disk size in GB.
+
+                                           **Non-Boot Disk**:
+                                           If the `type` specifies a persistent disk, this field
+                                           is ignored if `data_source` is set as `image` or `snapshot`.
+                                           If the `type` specifies a local SSD, this field should be a multiple of
+                                           375 GB, otherwise, the final size will be the next greater multiple of
+                                           375 GB.
+
+                                           **Boot Disk**:
+                                           Batch will calculate the boot disk size based on source
+                                           image and task requirements if you do not speicify the size.
+                                           If both this field and the `boot_disk_mib` field in task spec's
+                                           `compute_resource` are defined, Batch will only honor this field.
+                                           Also, this field should be no smaller than the source disk's
+                                           size when the `data_source` is set as `snapshot` or `image`.
+                                           For example, if you set an image as the `data_source` field and the
+                                           image's default disk size 30 GB, you can only use this field to make the
+                                           disk larger or equal to 30 GB.
+                                        format: int64
+                                        type: integer
+                                      snapshot:
+                                        description: Name of a snapshot used as the
+                                          data source. Snapshot is not supported as
+                                          boot disk now.
+                                        type: string
+                                      type:
+                                        description: Disk type as shown in `gcloud
+                                          compute disk-types list`. For example, local
+                                          SSD uses type "local-ssd". Persistent disks
+                                          and boot disks use "pd-balanced", "pd-extreme",
+                                          "pd-ssd" or "pd-standard". If not specified,
+                                          "pd-standard" will be used as the default
+                                          type for non-boot disks, "pd-balanced" will
+                                          be used as the default type for boot disks.
+                                        type: string
+                                    type: object
+                                  machineType:
+                                    description: The Compute Engine machine type.
+                                    type: string
+                                  provisioningModel:
+                                    description: The VM instance provisioning model.
+                                    type: string
+                                  taskPack:
+                                    description: The max number of tasks can be assigned
+                                      to this instance type.
+                                    format: int64
+                                    type: integer
+                                type: object
+                              type: array
+                          type: object
+                        description: Aggregated task status for each TaskGroup in
+                          the Job. The map key is TaskGroup ID.
+                        type: object
                     type: object
                   taskGroups:
                     description: Required. TaskGroups in the Job. Only one TaskGroup

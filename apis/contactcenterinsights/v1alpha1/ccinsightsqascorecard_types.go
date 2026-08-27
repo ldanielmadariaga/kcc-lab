@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,23 +28,18 @@ type CCInsightsQAScorecardSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
-	// Immutable.
-	// +required
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/qaScorecards/{qa_scorecard}
 	Location *string `json:"location"`
 
 	// The CCInsightsQAScorecard name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// The user-specified display name of the scorecard.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.QaScorecard.display_name
-	// +kubebuilder:validation:Optional
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// A text description explaining the intent of the scorecard.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.QaScorecard.description
-	// +kubebuilder:validation:Optional
 	Description *string `json:"description,omitempty"`
 }
 
@@ -82,7 +77,6 @@ type CCInsightsQAScorecardObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

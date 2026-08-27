@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,52 +26,53 @@ var AutoMLDatasetGVK = GroupVersion.WithKind("AutoMLDataset")
 // +kcc:spec:proto=google.cloud.automl.v1.Dataset
 type AutoMLDatasetSpec struct {
 	// The project that this resource belongs to.
-	// +kubebuilder:validation:Required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +kubebuilder:validation:Required
-	Location string `json:"location"`
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/datasets/{dataset}
+	Location *string `json:"location"`
 
 	// The AutoMLDataset name. If not given, the metadata.name will be used.
-	// +kubebuilder:validation:Optional
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Metadata for a dataset used for translation.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.translation_dataset_metadata
 	TranslationDatasetMetadata *TranslationDatasetMetadata `json:"translationDatasetMetadata,omitempty"`
 
 	// Metadata for a dataset used for image classification.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.image_classification_dataset_metadata
 	ImageClassificationDatasetMetadata *ImageClassificationDatasetMetadata `json:"imageClassificationDatasetMetadata,omitempty"`
 
 	// Metadata for a dataset used for text classification.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.text_classification_dataset_metadata
 	TextClassificationDatasetMetadata *TextClassificationDatasetMetadata `json:"textClassificationDatasetMetadata,omitempty"`
 
 	// Metadata for a dataset used for image object detection.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.image_object_detection_dataset_metadata
 	ImageObjectDetectionDatasetMetadata *ImageObjectDetectionDatasetMetadata `json:"imageObjectDetectionDatasetMetadata,omitempty"`
 
 	// Metadata for a dataset used for text extraction.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.text_extraction_dataset_metadata
 	TextExtractionDatasetMetadata *TextExtractionDatasetMetadata `json:"textExtractionDatasetMetadata,omitempty"`
 
 	// Metadata for a dataset used for text sentiment.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.text_sentiment_dataset_metadata
 	TextSentimentDatasetMetadata *TextSentimentDatasetMetadata `json:"textSentimentDatasetMetadata,omitempty"`
 
 	// Required. The name of the dataset to show in the interface. The name can be
 	//  up to 32 characters long and can consist only of ASCII Latin letters A-Z
 	//  and a-z, underscores
 	//  (_), and ASCII digits 0-9.
-	// +kubebuilder:validation:Required
-	DisplayName *string `json:"displayName"`
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.display_name
+	DisplayName *string `json:"displayName,omitempty"`
 
 	// User-provided description of the dataset. The description can be up to
 	//  25000 characters long.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.description
 	Description *string `json:"description,omitempty"`
+
+	// Output only. The number of examples in the dataset.
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.example_count
+	ExampleCount *int32 `json:"exampleCount,omitempty"`
 
 	// Optional. The labels with user-defined metadata to organize your dataset.
 	//
@@ -81,7 +82,7 @@ type AutoMLDatasetSpec struct {
 	//  Label values are optional. Label keys must start with a letter.
 	//
 	//  See https://goo.gl/xmQnxf for more information on and examples of labels.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.labels
 	Labels map[string]string `json:"labels,omitempty"`
 }
 
@@ -104,63 +105,16 @@ type AutoMLDatasetStatus struct {
 // AutoMLDatasetObservedState is the state of the AutoMLDataset resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.automl.v1.Dataset
 type AutoMLDatasetObservedState struct {
-	// Output only. The number of examples in the dataset.
-	ExampleCount *int32 `json:"exampleCount,omitempty"`
-
 	// Output only. Timestamp when this dataset was created.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
-	// Used to perform consistent read-modify-write updates.
+	// Used to perform consistent read-modify-write updates. If not set, a blind
+	//  "overwrite" update happens.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
+	// +kcc:proto:field=google.cloud.automl.v1.Dataset.etag
 	Etag *string `json:"etag,omitempty"`
-}
-
-// Metadata for a dataset used for image classification.
-type ImageClassificationDatasetMetadata struct {
-	// Required. Type of the classification problem.
-	// +kubebuilder:validation:Required
-	ClassificationType *string `json:"classificationType"`
-}
-
-// Metadata for a dataset used for image object detection.
-// +kubebuilder:pruning:PreserveUnknownFields
-// +kubebuilder:validation:Schemaless
-type ImageObjectDetectionDatasetMetadata struct {
-}
-
-// Metadata for a dataset used for text classification.
-type TextClassificationDatasetMetadata struct {
-	// Required. Type of the classification problem.
-	// +kubebuilder:validation:Required
-	ClassificationType *string `json:"classificationType"`
-}
-
-// Metadata for a dataset used for text extraction.
-// +kubebuilder:pruning:PreserveUnknownFields
-// +kubebuilder:validation:Schemaless
-type TextExtractionDatasetMetadata struct {
-}
-
-// Metadata for a dataset used for text sentiment.
-type TextSentimentDatasetMetadata struct {
-	// Required. A sentiment is expressed as an integer ordinal, where higher value
-	//  means a more positive sentiment. The range of sentiments that will be used
-	//  is between 0 and sentiment_max (inclusive on both ends), and all the values
-	//  in the range must be represented in the dataset before a model can be
-	//  created.
-	//  sentiment_max value must be between 1 and 10 (inclusive).
-	// +kubebuilder:validation:Required
-	SentimentMax *int32 `json:"sentimentMax"`
-}
-
-// Metadata for a dataset used for translation.
-type TranslationDatasetMetadata struct {
-	// Required. The BCP-47 language code of the source language.
-	// +kubebuilder:validation:Required
-	SourceLanguageCode *string `json:"sourceLanguageCode"`
-
-	// Required. The BCP-47 language code of the target language.
-	// +kubebuilder:validation:Required
-	TargetLanguageCode *string `json:"targetLanguageCode"`
 }
 
 // +genclient

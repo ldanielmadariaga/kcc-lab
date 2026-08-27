@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,29 +26,50 @@ var VertexAIFeatureGroupGVK = GroupVersion.WithKind("VertexAIFeatureGroup")
 // +kcc:spec:proto=google.cloud.aiplatform.v1beta1.FeatureGroup
 type VertexAIFeatureGroupSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +required
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/featureGroups/{feature_group}
 	Location *string `json:"location"`
 
 	// The VertexAIFeatureGroup name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Indicates that features for this group come from BigQuery Table/View.
+	//  By default treats the source as a sparse time series source. The BigQuery
+	//  source table or view must have at least one entity ID column and a column
+	//  named `feature_timestamp`.
+	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.FeatureGroup.big_query
+	BigQuery *FeatureGroup_BigQuery `json:"bigQuery,omitempty"`
+
+	// Optional. Used to perform consistent read-modify-write updates. If not set,
+	//  a blind "overwrite" update happens.
+	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.FeatureGroup.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Optional. The labels with user-defined metadata to organize your
+	//  FeatureGroup.
+	//
+	//  Label keys and values can be no longer than 64 characters
+	//  (Unicode codepoints), can only contain lowercase letters, numeric
+	//  characters, underscores and dashes. International characters are allowed.
+	//
+	//  See https://goo.gl/xmQnxf for more information on and examples of labels.
+	//  No more than 64 user labels can be associated with one
+	//  FeatureGroup(System labels are excluded)." System reserved label keys
+	//  are prefixed with "aiplatform.googleapis.com/" and are immutable.
+	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.FeatureGroup.labels
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// Optional. Description of the FeatureGroup.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.FeatureGroup.description
 	Description *string `json:"description,omitempty"`
 
-	// Optional. The labels with user-defined metadata to organize your FeatureGroup.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.FeatureGroup.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// Indicates that that the source of this FeatureGroup is BigQuery.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.FeatureGroup.big_query
-	BigQuery *FeatureGroup_BigQuery `json:"bigQuery,omitempty"`
-
-	// Optional. A service account type for BigQuery data reading.
+	// Optional. Service agent type used during jobs under a FeatureGroup. By
+	//  default, the Vertex AI Service Agent is used. When using an IAM Policy to
+	//  isolate this FeatureGroup within a project, a separate service account
+	//  should be provisioned by setting this field to
+	//  `SERVICE_AGENT_TYPE_FEATURE_GROUP`. This will generate a separate service
+	//  account to access the BigQuery source table.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.FeatureGroup.service_agent_type
 	ServiceAgentType *string `json:"serviceAgentType,omitempty"`
 }
@@ -80,7 +101,10 @@ type VertexAIFeatureGroupObservedState struct {
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.FeatureGroup.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
-	// Output only. The email of the service account used to read the BigQuery data.
+	// Output only. A Service Account unique to this FeatureGroup. The role
+	//  bigquery.dataViewer should be granted to this service account to allow
+	//  Vertex AI Feature Store to access source data while running jobs under this
+	//  FeatureGroup.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.FeatureGroup.service_account_email
 	ServiceAccountEmail *string `json:"serviceAccountEmail,omitempty"`
 }

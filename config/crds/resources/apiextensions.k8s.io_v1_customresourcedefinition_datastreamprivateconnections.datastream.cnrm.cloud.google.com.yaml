@@ -72,13 +72,10 @@ spec:
                 description: Labels.
                 type: object
               location:
-                description: Immutable.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -109,6 +106,16 @@ spec:
                     description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
+              pscInterfaceConfig:
+                description: PSC Interface Config.
+                properties:
+                  networkAttachment:
+                    description: 'Required. Fully qualified name of the Network Attachment
+                      that Datastream will connect to. Format: `projects/{project}/regions/{region}/networkAttachments/{name}`'
+                    type: string
+                required:
+                - networkAttachment
+                type: object
               resourceID:
                 description: The DatastreamPrivateConnection name. If not given, the
                   metadata.name will be used.
@@ -116,40 +123,19 @@ spec:
               vpcPeeringConfig:
                 description: VPC Peering Config.
                 properties:
-                  networkRef:
-                    description: 'Required. Fully qualified name of the VPC that Datastream
-                      will peer to. Format: `projects/{project}/global/{networks}/{name}`'
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: A reference to an externally managed ComputeNetwork
-                          resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
-                        type: string
-                      name:
-                        description: The name of a ComputeNetwork resource.
-                        type: string
-                      namespace:
-                        description: The namespace of a ComputeNetwork resource.
-                        type: string
-                    type: object
                   subnet:
                     description: Required. A free subnet for peering. (CIDR of /29)
                     type: string
+                  vpc:
+                    description: 'Required. Fully qualified name of the VPC that Datastream
+                      will peer to. Format: `projects/{project}/global/{networks}/{name}`'
+                    type: string
+                required:
+                - subnet
+                - vpc
                 type: object
             required:
+            - displayName
             - location
             - projectRef
             type: object
@@ -214,7 +200,7 @@ spec:
                       errorTime:
                         description: The time when the error occurred.
                         type: string
-                      errorUUID:
+                      errorUuid:
                         description: A unique identifier for this specific error,
                           allowing it to be traced throughout the system in logs and
                           API responses.
@@ -227,6 +213,12 @@ spec:
                         description: A title that explains the reason for the error.
                         type: string
                     type: object
+                  satisfiesPzi:
+                    description: Output only. Reserved for future use.
+                    type: boolean
+                  satisfiesPzs:
+                    description: Output only. Reserved for future use.
+                    type: boolean
                   state:
                     description: Output only. The state of the Private Connection.
                     type: string

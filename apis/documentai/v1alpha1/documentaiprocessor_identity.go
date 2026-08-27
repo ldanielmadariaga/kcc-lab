@@ -69,7 +69,7 @@ func NewProcessorIdentity(ctx context.Context, reader client.Reader, obj *Docume
 		return nil, fmt.Errorf("cannot resolve project")
 	}
 	projectNumber := parseProjectNumberFromExternalRef(common.ValueOf(obj.Status.ExternalRef))
-	location := obj.Spec.Location
+	location := common.ValueOf(obj.Spec.Location)
 
 	// Get desired ID
 	resourceID := common.ValueOf(obj.Spec.ResourceID)
