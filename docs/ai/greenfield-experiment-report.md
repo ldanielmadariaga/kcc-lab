@@ -1,8 +1,15 @@
 # Bulk-generating greenfield resources: what we tried, and what it measured
 
-*A proposal for the KCC team. Everything here is reproducible from the sandbox repo
+*Everything here is reproducible from the sandbox repo
 [ldanielmadariaga/kcc-lab](https://github.com/ldanielmadariaga/kcc-lab); the commands are named
 throughout.*
+
+> **There is a second, fuller version of this report.**
+> [`greenfield-experiment-report.html`](greenfield-experiment-report.html) is the page published to
+> claude.ai, and it has since moved ahead of this file: it is framed as a report rather than a
+> proposal, and it carries an appendix on the prerequisites that made deterministic generation
+> possible and on how the non-deterministic parts are flagged. Edit the HTML and republish it;
+> treat this file as the plain-text summary.
 
 ## The proposal, up front
 
