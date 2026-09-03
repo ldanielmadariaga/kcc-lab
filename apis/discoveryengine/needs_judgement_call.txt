@@ -67,3 +67,4 @@ kind=DiscoveryEngineServingConfig group=discoveryengine.cnrm.cloud.google.com: f
 # possible-reference-by-sibling: google.cloud.discoveryengine.v1.Control.FilterAction.dataStore target=DiscoveryEngineDataStore
 # possible-reference-by-sibling: google.cloud.discoveryengine.v1.Control.PromoteAction.dataStore target=DiscoveryEngineDataStore
 # possible-reference-by-sibling: google.cloud.discoveryengine.v1.DataStore.identityMappingStore target=DiscoveryEngineIdentityMappingStore
+kind=DiscoveryEngineSearchEngine group=discoveryengine.cnrm.cloud.google.com: field ".spec.dataStore" reason=parent-segment-matches-sibling (emitted as a plain string from the pattern projects/{project}/locations/{location}/dataStores/{data_store}/siteSearchEngine, but the name matches DiscoveryEngineDataStore, a resource this service declares; confirm whether it should be a reference to it)

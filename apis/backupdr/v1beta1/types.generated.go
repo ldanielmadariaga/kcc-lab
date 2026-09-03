@@ -23,12 +23,7 @@
 
 package v1beta1
 
-import (
-	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
-)
-
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.BackupPlan", skipping
-
+/* unreachable type BackupPlan
 // +kcc:proto=google.cloud.backupdr.v1.BackupPlan
 type BackupPlan struct {
 
@@ -67,6 +62,7 @@ type BackupPlan struct {
 	// Required. Resource name of backup vault which will be used as storage
 	//  location for backups. Format:
 	//  projects/{project}/locations/{location}/backupVaults/{backupvault}
+	// +kcc:guess=possible-reference target=BackupDRBackupVault
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.backup_vault
 	BackupVault *string `json:"backupVault,omitempty"`
 
@@ -80,8 +76,7 @@ type BackupPlan struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.BackupPlanAssociation", skipping
-
+/* unreachable type BackupPlanAssociation
 // +kcc:proto=google.cloud.backupdr.v1.BackupPlanAssociation
 type BackupPlanAssociation struct {
 
@@ -103,11 +98,13 @@ type BackupPlanAssociation struct {
 	// Required. Resource name of backup plan which needs to be applied on
 	//  workload. Format:
 	//  projects/{project}/locations/{location}/backupPlans/{backupPlanId}
+	// +kcc:guess=possible-reference target=BackupDRBackupPlan
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlanAssociation.backup_plan
 	BackupPlan *string `json:"backupPlan,omitempty"`
 }
 */
 
+/* unreachable type BackupRule
 // +kcc:proto=google.cloud.backupdr.v1.BackupRule
 type BackupRule struct {
 	// Required. Immutable. The unique id of this `BackupRule`. The `rule_id` is
@@ -132,9 +129,9 @@ type BackupRule struct {
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupRule.standard_schedule
 	StandardSchedule *StandardSchedule `json:"standardSchedule,omitempty"`
 }
+*/
 
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.BackupVault", skipping
-
+/* unreachable type BackupVault
 // +kcc:proto=google.cloud.backupdr.v1.BackupVault
 type BackupVault struct {
 
@@ -177,6 +174,7 @@ type BackupVault struct {
 }
 */
 
+/* unreachable type BackupWindow
 // +kcc:proto=google.cloud.backupdr.v1.BackupWindow
 type BackupWindow struct {
 	// Required. The hour of day (0-23) when the window starts for e.g. if value
@@ -195,6 +193,7 @@ type BackupWindow struct {
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupWindow.end_hour_of_day
 	EndHourOfDay *int32 `json:"endHourOfDay,omitempty"`
 }
+*/
 
 /* unreachable type CloudSQLInstanceBackupPlanAssociationProperties
 // +kcc:proto=google.cloud.backupdr.v1.CloudSqlInstanceBackupPlanAssociationProperties
@@ -208,6 +207,7 @@ type RuleConfigInfo struct {
 }
 */
 
+/* unreachable type StandardSchedule
 // +kcc:proto=google.cloud.backupdr.v1.StandardSchedule
 type StandardSchedule struct {
 	// Required. Specifies the `RecurrenceType` for the schedule.
@@ -280,7 +280,9 @@ type StandardSchedule struct {
 	// +kcc:proto:field=google.cloud.backupdr.v1.StandardSchedule.time_zone
 	TimeZone *string `json:"timeZone,omitempty"`
 }
+*/
 
+/* unreachable type WeekDayOfMonth
 // +kcc:proto=google.cloud.backupdr.v1.WeekDayOfMonth
 type WeekDayOfMonth struct {
 	// Required. Specifies the week of the month.
@@ -291,9 +293,9 @@ type WeekDayOfMonth struct {
 	// +kcc:proto:field=google.cloud.backupdr.v1.WeekDayOfMonth.day_of_week
 	DayOfWeek *string `json:"dayOfWeek,omitempty"`
 }
+*/
 
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.BackupPlan", skipping
-
+/* unreachable type BackupPlanObservedState
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.BackupPlan
 type BackupPlanObservedState struct {
 	// Output only. Identifier. The resource name of the `BackupPlan`.
@@ -339,8 +341,7 @@ type BackupPlanObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.BackupPlanAssociation", skipping
-
+/* unreachable type BackupPlanAssociationObservedState
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.BackupPlanAssociation
 type BackupPlanAssociationObservedState struct {
 	// Output only. Identifier. The resource name of BackupPlanAssociation in
@@ -390,8 +391,7 @@ type BackupPlanAssociationObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.BackupVault", skipping
-
+/* unreachable type BackupVaultObservedState
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.BackupVault
 type BackupVaultObservedState struct {
 	// Output only. Identifier. Name of the backup vault to create. It must have
@@ -448,6 +448,7 @@ type CloudSQLInstanceBackupPlanAssociationPropertiesObservedState struct {
 }
 */
 
+/* unreachable type RuleConfigInfoObservedState
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.RuleConfigInfo
 type RuleConfigInfoObservedState struct {
 	// Output only. Backup Rule id fetched from backup plan.
@@ -467,3 +468,4 @@ type RuleConfigInfoObservedState struct {
 	// +kcc:proto:field=google.cloud.backupdr.v1.RuleConfigInfo.last_successful_backup_consistency_time
 	LastSuccessfulBackupConsistencyTime *string `json:"lastSuccessfulBackupConsistencyTime,omitempty"`
 }
+*/

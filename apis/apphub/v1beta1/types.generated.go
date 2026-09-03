@@ -21,8 +21,7 @@
 
 package v1beta1
 
-/* found existing non-generated go type with proto tag "google.cloud.apphub.v1.Application", skipping
-
+/* unreachable type Application
 // +kcc:proto=google.cloud.apphub.v1.Application
 type Application struct {
 	// Identifier. The resource name of an Application. Format:
@@ -51,6 +50,7 @@ type Application struct {
 }
 */
 
+/* unreachable type Attributes
 // +kcc:proto=google.cloud.apphub.v1.Attributes
 type Attributes struct {
 	// Optional. User-defined criticality information.
@@ -74,7 +74,9 @@ type Attributes struct {
 	// +kcc:proto:field=google.cloud.apphub.v1.Attributes.business_owners
 	BusinessOwners []ContactInfo `json:"businessOwners,omitempty"`
 }
+*/
 
+/* unreachable type ContactInfo
 // +kcc:proto=google.cloud.apphub.v1.ContactInfo
 type ContactInfo struct {
 	// Optional. Contact's name.
@@ -86,9 +88,9 @@ type ContactInfo struct {
 	// +kcc:proto:field=google.cloud.apphub.v1.ContactInfo.email
 	Email *string `json:"email,omitempty"`
 }
+*/
 
-/* found existing non-generated go type "Criticality", skipping
-
+/* unreachable type Criticality
 // +kcc:proto=google.cloud.apphub.v1.Criticality
 type Criticality struct {
 	// Required. Criticality Type.
@@ -97,8 +99,7 @@ type Criticality struct {
 }
 */
 
-/* found existing non-generated go type "Environment", skipping
-
+/* unreachable type Environment
 // +kcc:proto=google.cloud.apphub.v1.Environment
 type Environment struct {
 	// Required. Environment Type.
@@ -107,15 +108,16 @@ type Environment struct {
 }
 */
 
+/* unreachable type Scope
 // +kcc:proto=google.cloud.apphub.v1.Scope
 type Scope struct {
 	// Required. Scope Type.
 	// +kcc:proto:field=google.cloud.apphub.v1.Scope.type
 	Type *string `json:"type,omitempty"`
 }
+*/
 
-/* found existing non-generated go type with proto tag "google.cloud.apphub.v1.Application", skipping
-
+/* unreachable type ApplicationObservedState
 // +kcc:observedstate:proto=google.cloud.apphub.v1.Application
 type ApplicationObservedState struct {
 	// Output only. Create time.

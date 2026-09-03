@@ -35,8 +35,11 @@ func EssentialContactsContactObservedState_FromProto(mapCtx *direct.MapContext, 
 	}
 	out := &krm.EssentialContactsContactObservedState{}
 	// MISSING: Name
-	out.ValidationState = direct.Enum_FromProto(mapCtx, in.GetValidationState())
-	out.ValidateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetValidateTime())
+	// MISSING: Email
+	// MISSING: NotificationCategorySubscriptions
+	// MISSING: LanguageTag
+	// MISSING: ValidationState
+	// MISSING: ValidateTime
 	return out
 }
 func EssentialContactsContactObservedState_ToProto(mapCtx *direct.MapContext, in *krm.EssentialContactsContactObservedState) *pb.Contact {
@@ -45,8 +48,11 @@ func EssentialContactsContactObservedState_ToProto(mapCtx *direct.MapContext, in
 	}
 	out := &pb.Contact{}
 	// MISSING: Name
-	out.ValidationState = direct.Enum_ToProto[pb.ValidationState](mapCtx, in.ValidationState)
-	out.ValidateTime = direct.StringTimestamp_ToProto(mapCtx, in.ValidateTime)
+	// MISSING: Email
+	// MISSING: NotificationCategorySubscriptions
+	// MISSING: LanguageTag
+	// MISSING: ValidationState
+	// MISSING: ValidateTime
 	return out
 }
 func EssentialContactsContactSpec_FromProto(mapCtx *direct.MapContext, in *pb.Contact) *krm.EssentialContactsContactSpec {
@@ -55,9 +61,11 @@ func EssentialContactsContactSpec_FromProto(mapCtx *direct.MapContext, in *pb.Co
 	}
 	out := &krm.EssentialContactsContactSpec{}
 	// MISSING: Name
-	out.Email = direct.LazyPtr(in.GetEmail())
-	out.NotificationCategorySubscriptions = direct.EnumSlice_FromProto(mapCtx, in.NotificationCategorySubscriptions)
-	out.LanguageTag = direct.LazyPtr(in.GetLanguageTag())
+	// MISSING: Email
+	// MISSING: NotificationCategorySubscriptions
+	// MISSING: LanguageTag
+	// MISSING: ValidationState
+	// MISSING: ValidateTime
 	return out
 }
 func EssentialContactsContactSpec_ToProto(mapCtx *direct.MapContext, in *krm.EssentialContactsContactSpec) *pb.Contact {
@@ -66,8 +74,10 @@ func EssentialContactsContactSpec_ToProto(mapCtx *direct.MapContext, in *krm.Ess
 	}
 	out := &pb.Contact{}
 	// MISSING: Name
-	out.Email = direct.ValueOf(in.Email)
-	out.NotificationCategorySubscriptions = direct.EnumSlice_ToProto[pb.NotificationCategory](mapCtx, in.NotificationCategorySubscriptions)
-	out.LanguageTag = direct.ValueOf(in.LanguageTag)
+	// MISSING: Email
+	// MISSING: NotificationCategorySubscriptions
+	// MISSING: LanguageTag
+	// MISSING: ValidationState
+	// MISSING: ValidateTime
 	return out
 }

@@ -26,8 +26,7 @@
 
 package v1beta1
 
-/* found existing non-generated go type with proto tag "google.api.Distribution.BucketOptions", skipping
-
+/* unreachable type Distribution_BucketOptions
 // +kcc:proto=google.api.Distribution.BucketOptions
 type Distribution_BucketOptions struct {
 	// The linear bucket.
@@ -44,8 +43,7 @@ type Distribution_BucketOptions struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.api.Distribution.BucketOptions.Explicit", skipping
-
+/* unreachable type Distribution_BucketOptions_Explicit
 // +kcc:proto=google.api.Distribution.BucketOptions.Explicit
 type Distribution_BucketOptions_Explicit struct {
 	// The values must be monotonically increasing.
@@ -54,8 +52,7 @@ type Distribution_BucketOptions_Explicit struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.api.Distribution.BucketOptions.Exponential", skipping
-
+/* unreachable type Distribution_BucketOptions_Exponential
 // +kcc:proto=google.api.Distribution.BucketOptions.Exponential
 type Distribution_BucketOptions_Exponential struct {
 	// Must be greater than 0.
@@ -72,8 +69,7 @@ type Distribution_BucketOptions_Exponential struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.api.Distribution.BucketOptions.Linear", skipping
-
+/* unreachable type Distribution_BucketOptions_Linear
 // +kcc:proto=google.api.Distribution.BucketOptions.Linear
 type Distribution_BucketOptions_Linear struct {
 	// Must be greater than 0.
@@ -90,8 +86,7 @@ type Distribution_BucketOptions_Linear struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.api.LabelDescriptor", skipping
-
+/* unreachable type LabelDescriptor
 // +kcc:proto=google.api.LabelDescriptor
 type LabelDescriptor struct {
 	// The label key.
@@ -108,8 +103,7 @@ type LabelDescriptor struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.api.MetricDescriptor", skipping
-
+/* unreachable type MetricDescriptor
 // +kcc:proto=google.api.MetricDescriptor
 type MetricDescriptor struct {
 	// The resource name of the metric descriptor.
@@ -281,8 +275,7 @@ type MetricDescriptor struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.api.MetricDescriptor.MetricDescriptorMetadata", skipping
-
+/* unreachable type MetricDescriptor_MetricDescriptorMetadata
 // +kcc:proto=google.api.MetricDescriptor.MetricDescriptorMetadata
 type MetricDescriptor_MetricDescriptorMetadata struct {
 	// Deprecated. Must use the
@@ -409,8 +402,7 @@ type IndexConfig struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.logging.v2.Link", skipping
-
+/* unreachable type Link
 // +kcc:proto=google.logging.v2.Link
 type Link struct {
 	// The resource name of the link. The name can have up to 100 characters.
@@ -533,8 +525,7 @@ type LogExclusion struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.logging.v2.LogMetric", skipping
-
+/* unreachable type LogMetric
 // +kcc:proto=google.logging.v2.LogMetric
 type LogMetric struct {
 	// Required. The client-assigned metric identifier.
@@ -784,6 +775,7 @@ type LogView struct {
 }
 */
 
+/* unreachable type BigQueryDatasetObservedState
 // +kcc:observedstate:proto=google.logging.v2.BigQueryDataset
 type BigQueryDatasetObservedState struct {
 	// Output only. The full resource name of the BigQuery dataset. The DATASET_ID
@@ -796,6 +788,7 @@ type BigQueryDatasetObservedState struct {
 	// +kcc:proto:field=google.logging.v2.BigQueryDataset.dataset_id
 	DatasetID *string `json:"datasetID,omitempty"`
 }
+*/
 
 /* unreachable type BigQueryOptionsObservedState
 // +kcc:observedstate:proto=google.logging.v2.BigQueryOptions
@@ -848,8 +841,7 @@ type IndexConfigObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.logging.v2.Link", skipping
-
+/* unreachable type LinkObservedState
 // +kcc:observedstate:proto=google.logging.v2.Link
 type LinkObservedState struct {
 	// Output only. The creation timestamp of the link.
@@ -934,8 +926,7 @@ type LogExclusionObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.logging.v2.LogMetric", skipping
-
+/* unreachable type LogMetricObservedState
 // +kcc:observedstate:proto=google.logging.v2.LogMetric
 type LogMetricObservedState struct {
 	// Output only. The creation timestamp of the metric.

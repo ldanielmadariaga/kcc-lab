@@ -18,54 +18,67 @@
 // krm.version: v1beta1
 // proto.service: google.cloud.orgpolicy.v2
 // resource: OrgPolicyCustomConstraint:CustomConstraint
-// resource: OrgPolicyPolicy:Policy
 
 package v1beta1
 
-// +kcc:proto=google.cloud.orgpolicy.v2.AlternatePolicySpec
-type AlternatePolicySpec struct {
-	// Reference to the launch that will be used while audit logging and to
-	//  control the launch.
-	//  Should be set only in the alternate policy.
-	// +kcc:proto:field=google.cloud.orgpolicy.v2.AlternatePolicySpec.launch
-	Launch *string `json:"launch,omitempty"`
+/* unreachable type CustomConstraint
+// +kcc:proto=google.cloud.orgpolicy.v2.CustomConstraint
+type CustomConstraint struct {
+	// Immutable. Name of the constraint. This is unique within the organization.
+	//  Format of the name should be
+	//
+	//  * `organizations/{organization_id}/customConstraints/{custom_constraint_id}`
+	//
+	//  Example: `organizations/123/customConstraints/custom.createOnlyE2TypeVms`
+	//
+	//  The max length is 70 characters and the minimum length is 1. Note that the
+	//  prefix `organizations/{organization_id}/customConstraints/` is not counted.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.name
+	Name *string `json:"name,omitempty"`
 
-	// Specify constraint for configurations of Google Cloud resources.
-	// +kcc:proto:field=google.cloud.orgpolicy.v2.AlternatePolicySpec.spec
-	Spec *PolicySpec `json:"spec,omitempty"`
-}
+	// Immutable. The resource instance type on which this policy applies. Format
+	//  will be of the form : `<service name>/<type>` Example:
+	//
+	//   * `compute.googleapis.com/Instance`.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.resource_types
+	ResourceTypes []string `json:"resourceTypes,omitempty"`
 
-// +kcc:proto=google.cloud.orgpolicy.v2.PolicySpec.PolicyRule.StringValues
-type PolicySpec_PolicyRule_StringValues struct {
-	// List of values allowed at this resource.
-	// +kcc:proto:field=google.cloud.orgpolicy.v2.PolicySpec.PolicyRule.StringValues.allowed_values
-	AllowedValues []string `json:"allowedValues,omitempty"`
+	// All the operations being applied for this constraint.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.method_types
+	MethodTypes []string `json:"methodTypes,omitempty"`
 
-	// List of values denied at this resource.
-	// +kcc:proto:field=google.cloud.orgpolicy.v2.PolicySpec.PolicyRule.StringValues.denied_values
-	DeniedValues []string `json:"deniedValues,omitempty"`
-}
+	// A Common Expression Language (CEL) condition which is used in the
+	//  evaluation of the constraint. For example:
+	//  `resource.instanceName.matches("[production|test]_.*_(\d)+")` or,
+	//  `resource.management.auto_upgrade == true`
+	//
+	//  The max length of the condition is 1000 characters.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.condition
+	Condition *string `json:"condition,omitempty"`
 
-// +kcc:proto=google.type.Expr
-type Expr struct {
-	// Textual representation of an expression in Common Expression Language
-	//  syntax.
-	// +kcc:proto:field=google.type.Expr.expression
-	Expression *string `json:"expression,omitempty"`
+	// Allow or deny type.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.action_type
+	ActionType *string `json:"actionType,omitempty"`
 
-	// Optional. Title for the expression, i.e. a short string describing
-	//  its purpose. This can be used e.g. in UIs which allow to enter the
-	//  expression.
-	// +kcc:proto:field=google.type.Expr.title
-	Title *string `json:"title,omitempty"`
+	// One line display name for the UI.
+	//  The max length of the display_name is 200 characters.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.display_name
+	DisplayName *string `json:"displayName,omitempty"`
 
-	// Optional. Description of the expression. This is a longer text which
-	//  describes the expression, e.g. when hovered over it in a UI.
-	// +kcc:proto:field=google.type.Expr.description
+	// Detailed information about this custom policy constraint.
+	//  The max length of the description is 2000 characters.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.description
 	Description *string `json:"description,omitempty"`
-
-	// Optional. String indicating the location of the expression for error
-	//  reporting, e.g. a file name and a position in the file.
-	// +kcc:proto:field=google.type.Expr.location
-	Location *string `json:"location,omitempty"`
 }
+*/
+
+/* unreachable type CustomConstraintObservedState
+// +kcc:observedstate:proto=google.cloud.orgpolicy.v2.CustomConstraint
+type CustomConstraintObservedState struct {
+	// Output only. The last time this custom constraint was updated. This
+	//  represents the last time that the `CreateCustomConstraint` or
+	//  `UpdateCustomConstraint` methods were called.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/

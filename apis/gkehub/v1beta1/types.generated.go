@@ -129,6 +129,51 @@ type HierarchyControllerConfig struct {
 }
 */
 
+/* unreachable type MembershipSpec
+// +kcc:proto=google.cloud.gkehub.configmanagement.v1beta.MembershipSpec
+type MembershipSpec struct {
+	// Optional. Config Sync configuration for the cluster.
+	// +kcc:proto:field=google.cloud.gkehub.configmanagement.v1beta.MembershipSpec.config_sync
+	ConfigSync *ConfigSync `json:"configSync,omitempty"`
+
+	// Optional. Policy Controller configuration for the cluster.
+	//  Deprecated: Configuring Policy Controller through the configmanagement
+	//  feature is no longer recommended. Use the policycontroller feature instead.
+	// +kcc:proto:field=google.cloud.gkehub.configmanagement.v1beta.MembershipSpec.policy_controller
+	PolicyController *PolicyController `json:"policyController,omitempty"`
+
+	// Optional. Binauthz conifguration for the cluster. Deprecated: This field
+	//  will be ignored and should not be set.
+	// +kcc:proto:field=google.cloud.gkehub.configmanagement.v1beta.MembershipSpec.binauthz
+	Binauthz *BinauthzConfig `json:"binauthz,omitempty"`
+
+	// Optional. Hierarchy Controller configuration for the cluster.
+	//  Deprecated: Configuring Hierarchy Controller through the configmanagement
+	//  feature is no longer recommended. Use
+	//  https://github.com/kubernetes-sigs/hierarchical-namespaces instead.
+	// +kcc:proto:field=google.cloud.gkehub.configmanagement.v1beta.MembershipSpec.hierarchy_controller
+	HierarchyController *HierarchyControllerConfig `json:"hierarchyController,omitempty"`
+
+	// Optional. Version of ACM installed.
+	// +kcc:proto:field=google.cloud.gkehub.configmanagement.v1beta.MembershipSpec.version
+	Version *string `json:"version,omitempty"`
+
+	// Optional. The user-specified cluster name used by Config Sync
+	//  cluster-name-selector annotation or ClusterSelector, for applying configs
+	//  to only a subset of clusters. Omit this field if the cluster's fleet
+	//  membership name is used by Config Sync cluster-name-selector annotation or
+	//  ClusterSelector. Set this field if a name different from the cluster's
+	//  fleet membership name is used by Config Sync cluster-name-selector
+	//  annotation or ClusterSelector.
+	// +kcc:proto:field=google.cloud.gkehub.configmanagement.v1beta.MembershipSpec.cluster
+	Cluster *string `json:"cluster,omitempty"`
+
+	// Optional. Enables automatic Feature management.
+	// +kcc:proto:field=google.cloud.gkehub.configmanagement.v1beta.MembershipSpec.management
+	Management *string `json:"management,omitempty"`
+}
+*/
+
 /* unreachable type OciConfig
 // +kcc:proto=google.cloud.gkehub.configmanagement.v1beta.OciConfig
 type OciConfig struct {
@@ -222,6 +267,71 @@ type BundleInstallSpec struct {
 }
 */
 
+/* unreachable type HubConfig
+// +kcc:proto=google.cloud.gkehub.policycontroller.v1beta.HubConfig
+type HubConfig struct {
+	// The install_spec represents the intended state specified by the
+	//  latest request that mutated install_spec in the feature spec,
+	//  not the lifecycle state of the
+	//  feature observed by the Hub feature controller
+	//  that is reported in the feature state.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.HubConfig.install_spec
+	InstallSpec *string `json:"installSpec,omitempty"`
+
+	// Sets the interval for Policy Controller Audit Scans (in seconds).
+	//  When set to 0, this disables audit functionality altogether.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.HubConfig.audit_interval_seconds
+	AuditIntervalSeconds *int64 `json:"auditIntervalSeconds,omitempty"`
+
+	// The set of namespaces that are excluded from Policy Controller checks.
+	//  Namespaces do not need to currently exist on the cluster.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.HubConfig.exemptable_namespaces
+	ExemptableNamespaces []string `json:"exemptableNamespaces,omitempty"`
+
+	// Enables the ability to use Constraint Templates that reference to objects
+	//  other than the object currently being evaluated.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.HubConfig.referential_rules_enabled
+	ReferentialRulesEnabled *bool `json:"referentialRulesEnabled,omitempty"`
+
+	// Logs all denies and dry run failures.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.HubConfig.log_denies_enabled
+	LogDeniesEnabled *bool `json:"logDeniesEnabled,omitempty"`
+
+	// Enables the ability to mutate resources using Policy Controller.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.HubConfig.mutation_enabled
+	MutationEnabled *bool `json:"mutationEnabled,omitempty"`
+
+	// Monitoring specifies the configuration of monitoring.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.HubConfig.monitoring
+	Monitoring *MonitoringConfig `json:"monitoring,omitempty"`
+
+	// Specifies the desired policy content on the cluster
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.HubConfig.policy_content
+	PolicyContent *PolicyContentSpec `json:"policyContent,omitempty"`
+
+	// The maximum number of audit violations to be stored in a constraint.
+	//  If not set, the internal default (currently 20) will be used.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.HubConfig.constraint_violation_limit
+	ConstraintViolationLimit *int64 `json:"constraintViolationLimit,omitempty"`
+
+	// Map of deployment configs to deployments ("admission", "audit",
+	//  "mutation').
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.HubConfig.deployment_configs
+	DeploymentConfigs map[string]PolicyControllerDeploymentConfig `json:"deploymentConfigs,omitempty"`
+}
+*/
+
+// +kcc:proto=google.cloud.gkehub.policycontroller.v1beta.MembershipSpec
+type MembershipSpec struct {
+	// Policy Controller configuration for the cluster.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.MembershipSpec.policy_controller_hub_config
+	PolicyControllerHubConfig *HubConfig `json:"policyControllerHubConfig,omitempty"`
+
+	// Version of Policy Controller installed.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.MembershipSpec.version
+	Version *string `json:"version,omitempty"`
+}
+
 /* unreachable type MonitoringConfig
 // +kcc:proto=google.cloud.gkehub.policycontroller.v1beta.MonitoringConfig
 type MonitoringConfig struct {
@@ -247,6 +357,32 @@ type PolicyContentSpec struct {
 }
 */
 
+/* unreachable type PolicyControllerDeploymentConfig
+// +kcc:proto=google.cloud.gkehub.policycontroller.v1beta.PolicyControllerDeploymentConfig
+type PolicyControllerDeploymentConfig struct {
+	// Pod replica count.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.PolicyControllerDeploymentConfig.replica_count
+	ReplicaCount *int64 `json:"replicaCount,omitempty"`
+
+	// Container resource requirements.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.PolicyControllerDeploymentConfig.container_resources
+	ContainerResources *ResourceRequirements `json:"containerResources,omitempty"`
+
+	// Pod anti-affinity enablement. Deprecated: use `pod_affinity` instead.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.PolicyControllerDeploymentConfig.pod_anti_affinity
+	PodAntiAffinity *bool `json:"podAntiAffinity,omitempty"`
+
+	// Pod tolerations of node taints.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.PolicyControllerDeploymentConfig.pod_tolerations
+	PodTolerations []PolicyControllerDeploymentConfig_Toleration `json:"podTolerations,omitempty"`
+
+	// Pod affinity configuration.
+	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.PolicyControllerDeploymentConfig.pod_affinity
+	PodAffinity *string `json:"podAffinity,omitempty"`
+}
+*/
+
+/* unreachable type PolicyControllerDeploymentConfig_Toleration
 // +kcc:proto=google.cloud.gkehub.policycontroller.v1beta.PolicyControllerDeploymentConfig.Toleration
 type PolicyControllerDeploymentConfig_Toleration struct {
 	// Matches a taint key (not necessarily unique).
@@ -265,7 +401,9 @@ type PolicyControllerDeploymentConfig_Toleration struct {
 	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.PolicyControllerDeploymentConfig.Toleration.effect
 	Effect *string `json:"effect,omitempty"`
 }
+*/
 
+/* unreachable type ResourceList
 // +kcc:proto=google.cloud.gkehub.policycontroller.v1beta.ResourceList
 type ResourceList struct {
 	// Memory requirement expressed in Kubernetes resource units.
@@ -276,7 +414,9 @@ type ResourceList struct {
 	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.ResourceList.cpu
 	CPU *string `json:"cpu,omitempty"`
 }
+*/
 
+/* unreachable type ResourceRequirements
 // +kcc:proto=google.cloud.gkehub.policycontroller.v1beta.ResourceRequirements
 type ResourceRequirements struct {
 	// Limits describes the maximum amount of compute resources allowed for use by
@@ -289,6 +429,7 @@ type ResourceRequirements struct {
 	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.ResourceRequirements.requests
 	Requests *ResourceList `json:"requests,omitempty"`
 }
+*/
 
 /* unreachable type TemplateLibraryConfig
 // +kcc:proto=google.cloud.gkehub.policycontroller.v1beta.TemplateLibraryConfig
@@ -300,7 +441,6 @@ type TemplateLibraryConfig struct {
 }
 */
 
-/* unreachable type MembershipSpec
 // +kcc:proto=google.cloud.gkehub.servicemesh.v1beta.MembershipSpec
 type MembershipSpec struct {
 	// Deprecated: use `management` instead
@@ -312,6 +452,33 @@ type MembershipSpec struct {
 	// +kcc:proto:field=google.cloud.gkehub.servicemesh.v1beta.MembershipSpec.management
 	Management *string `json:"management,omitempty"`
 }
+
+/* unreachable type MembershipFeatureSpec
+// +kcc:proto=google.cloud.gkehub.v1beta.MembershipFeatureSpec
+type MembershipFeatureSpec struct {
+	// Config Management-specific spec.
+	// +kcc:proto:field=google.cloud.gkehub.v1beta.MembershipFeatureSpec.configmanagement
+	Configmanagement *MembershipSpec `json:"configmanagement,omitempty"`
+
+	// Anthos Service Mesh-specific spec
+	// +kcc:proto:field=google.cloud.gkehub.v1beta.MembershipFeatureSpec.mesh
+	Mesh *MembershipSpec `json:"mesh,omitempty"`
+
+	// Policy Controller spec.
+	// +kcc:proto:field=google.cloud.gkehub.v1beta.MembershipFeatureSpec.policycontroller
+	Policycontroller *MembershipSpec `json:"policycontroller,omitempty"`
+}
+*/
+
+/* unreachable type MembershipSpecObservedState
+// +kcc:observedstate:proto=google.cloud.gkehub.configmanagement.v1beta.MembershipSpec
+type MembershipSpecObservedState struct {
+	// Optional. Policy Controller configuration for the cluster.
+	//  Deprecated: Configuring Policy Controller through the configmanagement
+	//  feature is no longer recommended. Use the policycontroller feature instead.
+	// +kcc:proto:field=google.cloud.gkehub.configmanagement.v1beta.MembershipSpec.policy_controller
+	PolicyController *PolicyControllerObservedState `json:"policyController,omitempty"`
+}
 */
 
 /* unreachable type PolicyControllerObservedState
@@ -320,5 +487,14 @@ type PolicyControllerObservedState struct {
 	// Output only. Last time this membership spec was updated.
 	// +kcc:proto:field=google.cloud.gkehub.configmanagement.v1beta.PolicyController.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/
+
+/* unreachable type MembershipFeatureSpecObservedState
+// +kcc:observedstate:proto=google.cloud.gkehub.v1beta.MembershipFeatureSpec
+type MembershipFeatureSpecObservedState struct {
+	// Config Management-specific spec.
+	// +kcc:proto:field=google.cloud.gkehub.v1beta.MembershipFeatureSpec.configmanagement
+	Configmanagement *MembershipSpecObservedState `json:"configmanagement,omitempty"`
 }
 */

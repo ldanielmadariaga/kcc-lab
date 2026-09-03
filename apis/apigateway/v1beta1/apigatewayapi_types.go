@@ -15,8 +15,8 @@
 package v1beta1
 
 import (
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
-	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -25,36 +25,18 @@ var APIGatewayAPIGVK = GroupVersion.WithKind("APIGatewayAPI")
 // APIGatewayAPISpec defines the desired state of APIGatewayAPI
 // +kcc:spec:proto=google.cloud.apigateway.v1.Api
 type APIGatewayAPISpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 	// The APIGatewayAPI name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Optional. Resource labels to represent user-provided metadata.
-	//  For more information, see the {{compute_name_short}} documentation:
-	//  https://cloud.google.com/compute/docs/labeling-resources
-	// +kcc:proto:field=google.cloud.apigateway.v1.Api.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// Optional. Display name.
-	// +kcc:proto:field=google.cloud.apigateway.v1.Api.display_name
-	DisplayName *string `json:"displayName,omitempty"`
-
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="the field is immutable"
-	// Optional. Immutable. The name of a Google Managed Service (
-	//  https://cloud.google.com/service-infrastructure/docs/glossary#managed). If
-	//  not specified, a new Service will automatically be created in the same
-	//  project as this API.
-	// +kcc:proto:field=google.cloud.apigateway.v1.Api.managed_service
-	ManagedService *string `json:"managedService,omitempty"` //  TODO: Before promote to v1beta1. Check if this field should be a ref to  https://cloud.google.com/service-infrastructure/docs/service-management/reference/rest/v1/services#ManagedService.
-
-	//  Optional. The project that this resource belongs to.
-	ProjectRef *refs.ProjectRef `json:"projectRef,omitempty"`
 }
 
 // APIGatewayAPIStatus defines the config connector machine state of APIGatewayAPI
 type APIGatewayAPIStatus struct {
 	/* Conditions represent the latest available observations of the
 	   object's current state. */
-	Conditions []v1beta1.Condition `json:"conditions,omitempty"`
+	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
 
 	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
 	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
@@ -69,23 +51,6 @@ type APIGatewayAPIStatus struct {
 // APIGatewayAPIObservedState is the state of the APIGatewayAPI resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.apigateway.v1.Api
 type APIGatewayAPIObservedState struct {
-
-	// Resource name of the API.
-	//  Format: projects/{project}/locations/global/apis/{api}
-	// +kcc:proto:field=google.cloud.apigateway.v1.Api.name
-	Name *string `json:"name,omitempty"`
-
-	// Created time.
-	// +kcc:proto:field=google.cloud.apigateway.v1.Api.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Updated time.
-	// +kcc:proto:field=google.cloud.apigateway.v1.Api.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	//  State of the API.
-	// +kcc:proto:field=google.cloud.apigateway.v1.Api.state
-	State *string `json:"state,omitempty"`
 }
 
 // +genclient
@@ -98,11 +63,9 @@ type APIGatewayAPIObservedState struct {
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
 // +kubebuilder:printcolumn:name="Status Age",JSONPath=".status.conditions[?(@.type=='Ready')].lastTransitionTime",type="date",description="The last transition time for the value in 'Status'"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 
 // APIGatewayAPI is the Schema for the APIGatewayAPI API
 // +k8s:openapi-gen=true
-// +kubebuilder:storageversion
 type APIGatewayAPI struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

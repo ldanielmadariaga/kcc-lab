@@ -10,3 +10,4 @@ kind=WorkloadManagerEvaluation group=workloadmanager.cnrm.cloud.google.com: fiel
 kind=WorkloadManagerEvaluation group=workloadmanager.cnrm.cloud.google.com: field ".spec.customRulesBucket" reason=possible-reference-by-description
 kind=WorkloadManagerEvaluation group=workloadmanager.cnrm.cloud.google.com: field ".spec.kmsKey" reason=possible-reference-by-description
 kind=WorkloadManagerEvaluation group=workloadmanager.cnrm.cloud.google.com: field ".spec.resourceFilter.scopes" reason=possible-reference-by-description
+kind=WorkloadManagerEvaluation group=workloadmanager.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/evaluations/{evaluation}; confirm the resource is regional and that this is the name for it)

@@ -15,44 +15,21 @@
 package v1beta1
 
 import (
-	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var PubSubSnapshotGVK = GroupVersion.WithKind("PubSubSnapshot")
 
-type Parent struct {
-	// +required
-	ProjectRef *refv1beta1.ProjectRef `json:"projectRef"`
-}
-
 // PubSubSnapshotSpec defines the desired state of PubSubSnapshot
 // +kcc:spec:proto=google.pubsub.v1.Snapshot
 type PubSubSnapshotSpec struct {
-	Parent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The PubSubSnapshot name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Optional. The name of the topic from which this snapshot is retaining
-	//  messages.
-	// +kcc:proto:field=google.pubsub.v1.Snapshot.topic
-	TopicRef *PubSubTopicRef `json:"topicRef,omitempty"`
-
-	// Optional. See [Creating and managing labels]
-	//  (https://cloud.google.com/pubsub/docs/labels).
-	// +kcc:proto:field=google.pubsub.v1.Snapshot.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// The subscription whose backlog the snapshot retains.
-	// Specifically, the created snapshot is guaranteed to retain: (a) The existing backlog on the subscription.
-	// More precisely, this is defined as the messages in the subscription's backlog that are unacknowledged upon
-	// the successful completion of the snapshots.create request; as well as: (b) Any messages published to the
-	// subscription's topic following the successful completion of the snapshots.create request.
-	// Format is projects/{project}/subscriptions/{sub}.
-	// +required
-	PubSubSubscriptionRef *PubSubSubscriptionRef `json:"pubSubSubscriptionRef"`
 }
 
 // PubSubSnapshotStatus defines the config connector machine state of PubSubSnapshot
@@ -74,28 +51,14 @@ type PubSubSnapshotStatus struct {
 // PubSubSnapshotObservedState is the state of the PubSubSnapshot resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.pubsub.v1.Snapshot
 type PubSubSnapshotObservedState struct {
-	// Optional. The snapshot is guaranteed to exist up until this time.
-	//  A newly-created snapshot expires no later than 7 days from the time of its
-	//  creation. Its exact lifetime is determined at creation by the existing
-	//  backlog in the source subscription. Specifically, the lifetime of the
-	//  snapshot is `7 days - (age of oldest unacked message in the subscription)`.
-	//  For example, consider a subscription whose oldest unacked message is 3 days
-	//  old. If a snapshot is created from this subscription, the snapshot -- which
-	//  will always capture this 3-day-old backlog as long as the snapshot
-	//  exists -- will expire in 4 days. The service will refuse to create a
-	//  snapshot that would expire in less than 1 hour after creation.
-	// +kcc:proto:field=google.pubsub.v1.Snapshot.expire_time
-	ExpireTime *string `json:"expireTime,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:resource:categories=gcp,shortName=gcppubsubsnapshot;gcppubsubsnapshots
 // +kubebuilder:subresource:status
-// +kubebuilder:storageversion
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

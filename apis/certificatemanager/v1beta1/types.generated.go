@@ -184,13 +184,12 @@ type CertificateMapEntry struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.certificatemanager.v1.DnsAuthorization", skipping
-
+/* unreachable type DNSAuthorization
 // +kcc:proto=google.cloud.certificatemanager.v1.DnsAuthorization
 type DNSAuthorization struct {
 	// A user-defined name of the dns authorization. DnsAuthorization names must
 	//  be unique globally and match pattern
-	//  `projects/* /locations/* /dnsAuthorizations/*`.
+	//  `projects/-*-/locations/-*-/dnsAuthorizations/-*`.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.DnsAuthorization.name
 	Name *string `json:"name,omitempty"`
 
@@ -392,8 +391,7 @@ type CertificateMapEntryObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.certificatemanager.v1.DnsAuthorization", skipping
-
+/* unreachable type DNSAuthorizationObservedState
 // +kcc:observedstate:proto=google.cloud.certificatemanager.v1.DnsAuthorization
 type DNSAuthorizationObservedState struct {
 	// Output only. The creation timestamp of a DnsAuthorization.
@@ -411,6 +409,7 @@ type DNSAuthorizationObservedState struct {
 }
 */
 
+/* unreachable type DNSAuthorization_DNSResourceRecordObservedState
 // +kcc:observedstate:proto=google.cloud.certificatemanager.v1.DnsAuthorization.DnsResourceRecord
 type DNSAuthorization_DNSResourceRecordObservedState struct {
 	// Output only. Fully qualified name of the DNS Resource Record.
@@ -427,3 +426,4 @@ type DNSAuthorization_DNSResourceRecordObservedState struct {
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.DnsAuthorization.DnsResourceRecord.data
 	Data *string `json:"data,omitempty"`
 }
+*/

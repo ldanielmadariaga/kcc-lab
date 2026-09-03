@@ -15,7 +15,7 @@
 package v1beta1
 
 import (
-	krmv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/bigquerybiglake/v1alpha1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,30 +25,11 @@ var BigLakeTableGVK = GroupVersion.WithKind("BigLakeTable")
 // BigLakeTableSpec defines the desired state of BigLakeTable
 // +kcc:spec:proto=google.cloud.bigquery.biglake.v1.Table
 type BigLakeTableSpec struct {
-	// Required. The parent resource where this table will be created.
-	// Format:
-	// projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id}
-	// +required
-	ParentRef *krmv1alpha1.BigQueryBigLakeDatabaseRef `json:"parentDatabaseRef,omitempty"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The BigLake Table ID. If not given, the metadata.name will be used.
+	// The BigLakeTable name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// The table type.
-	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.type
-	// +optional
-	Type *string `json:"type,omitempty"`
-
-	// Options of a Hive table.
-	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.hive_options
-	// +optional
-	HiveOptions *HiveTableOptions `json:"hiveOptions,omitempty"`
-
-	// NOTYET: not supported in Config Connector reconciliation
-	// Output only. The etag for this table.
-	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.etag
-	// +optional
-	// Etag *string `json:"etag,omitempty"`
 }
 
 // BigLakeTableStatus defines the config connector machine state of BigLakeTable
@@ -70,23 +51,6 @@ type BigLakeTableStatus struct {
 // BigLakeTableObservedState is the state of the BigLakeTable resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.bigquery.biglake.v1.Table
 type BigLakeTableObservedState struct {
-	// Output only. The creation time of the table.
-	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. The last modification time of the table.
-	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.update_time
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. The deletion time of the table. Only set after the table is
-	//  deleted.
-	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.delete_time
-	DeleteTime *string `json:"deleteTime,omitempty"`
-
-	// Output only. The time when this table is considered expired. Only set after
-	//  the table is deleted.
-	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.expire_time
-	ExpireTime *string `json:"expireTime,omitempty"`
 }
 
 // +genclient
@@ -95,8 +59,6 @@ type BigLakeTableObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=beta"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -104,7 +66,6 @@ type BigLakeTableObservedState struct {
 
 // BigLakeTable is the Schema for the BigLakeTable API
 // +k8s:openapi-gen=true
-// +kubebuilder:storageversion
 type BigLakeTable struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

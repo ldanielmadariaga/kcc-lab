@@ -22,8 +22,7 @@
 
 package v1beta1
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.Assignment", skipping
-
+/* unreachable type Assignment
 // +kcc:proto=google.cloud.bigquery.reservation.v1.Assignment
 type Assignment struct {
 
@@ -49,12 +48,11 @@ type Assignment struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.Reservation", skipping
-
+/* unreachable type Reservation
 // +kcc:proto=google.cloud.bigquery.reservation.v1.Reservation
 type Reservation struct {
 	// The resource name of the reservation, e.g.,
-	//  `projects/* /locations/* /reservations/team1-prod`.
+	//  `projects/-*-/locations/-*-/reservations/team1-prod`.
 	//  The reservation_id must only contain lower case alphanumeric characters or
 	//  dashes. It must start with a letter and must not end with a dash. Its
 	//  maximum length is 64 characters.
@@ -174,8 +172,7 @@ type Reservation struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.Reservation.Autoscale", skipping
-
+/* unreachable type Reservation_Autoscale
 // +kcc:proto=google.cloud.bigquery.reservation.v1.Reservation.Autoscale
 type Reservation_Autoscale struct {
 
@@ -191,8 +188,7 @@ type Reservation_ReplicationStatus struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.Assignment", skipping
-
+/* unreachable type AssignmentObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.reservation.v1.Assignment
 type AssignmentObservedState struct {
 	// Output only. Name of the resource. E.g.:
@@ -208,8 +204,7 @@ type AssignmentObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.Reservation", skipping
-
+/* unreachable type ReservationObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.reservation.v1.Reservation
 type ReservationObservedState struct {
 	// The configuration parameters for the auto scaling feature.
@@ -249,8 +244,7 @@ type ReservationObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.Reservation.Autoscale", skipping
-
+/* unreachable type Reservation_AutoscaleObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.reservation.v1.Reservation.Autoscale
 type Reservation_AutoscaleObservedState struct {
 	// Output only. The slot capacity added to this reservation when autoscale

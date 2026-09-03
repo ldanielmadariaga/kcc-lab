@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 package v1beta1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -22,28 +23,11 @@ import (
 // LoggingLinkSpec defines the desired state of LoggingLink
 // +kcc:spec:proto=google.logging.v2.Link
 type LoggingLinkSpec struct {
-	// Required. The LoggingLogBucket that this Link is associated with.
-	LoggingLogBucketRef *LoggingLogBucketRef `json:"loggingLogBucketRef,omitempty"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// Immutable.
 	// The LoggingLink name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Describes this link.
-	//
-	//  The maximum length of the description is 8000 characters.
-	// +kcc:proto:field=google.logging.v2.Link.description
-	Description *string `json:"description,omitempty"`
-
-	// NOTYET:  This field requires further investigation.
-	// KCC should not support creating 2 different KCC/GCP objects from the same controller.
-	//
-	// The information of a BigQuery Dataset. When a link is created, a BigQuery
-	//  dataset is created along with it, in the same project as the LogBucket it's
-	//  linked to. This dataset will also have BigQuery Views corresponding to the
-	//  LogViews in the bucket.
-	// +kcc:proto:field=google.logging.v2.Link.bigquery_dataset
-	// BigqueryDatasetRef *bigqueryv1beta1.DatasetRef `json:"bigqueryDatasetRef,omitempty"`
 }
 
 // LoggingLinkStatus defines the config connector machine state of LoggingLink
@@ -62,22 +46,9 @@ type LoggingLinkStatus struct {
 	ObservedState *LoggingLinkObservedState `json:"observedState,omitempty"`
 }
 
+// LoggingLinkObservedState is the state of the LoggingLink resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.logging.v2.Link
 type LoggingLinkObservedState struct {
-	// Output only. The creation timestamp of the link.
-	// +kcc:proto:field=google.logging.v2.Link.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. The resource lifecycle state.
-	// +kcc:proto:field=google.logging.v2.Link.lifecycle_state
-	LifecycleState *string `json:"lifecycleState,omitempty"`
-
-	// The information of a BigQuery Dataset. When a link is created, a BigQuery
-	//  dataset is created along with it, in the same project as the LogBucket it's
-	//  linked to. This dataset will also have BigQuery Views corresponding to the
-	//  LogViews in the bucket.
-	// +kcc:proto:field=google.logging.v2.Link.bigquery_dataset
-	BigqueryDataset *BigQueryDatasetObservedState `json:"bigQueryDataset,omitempty"`
 }
 
 // +genclient
@@ -86,13 +57,10 @@ type LoggingLinkObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
 // +kubebuilder:printcolumn:name="Status Age",JSONPath=".status.conditions[?(@.type=='Ready')].lastTransitionTime",type="date",description="The last transition time for the value in 'Status'"
-// +kubebuilder:storageversion
 
 // LoggingLink is the Schema for the LoggingLink API
 // +k8s:openapi-gen=true

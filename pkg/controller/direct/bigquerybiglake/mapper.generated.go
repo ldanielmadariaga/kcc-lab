@@ -121,11 +121,13 @@ func BigLakeTableObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *
 		return nil
 	}
 	out := &krmbigquerybiglakev1beta1.BigLakeTableObservedState{}
+	// MISSING: HiveOptions
 	// MISSING: Name
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
-	out.ExpireTime = direct.StringTimestamp_FromProto(mapCtx, in.GetExpireTime())
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Type
 	// MISSING: Etag
 	return out
 }
@@ -134,11 +136,13 @@ func BigLakeTableObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *kr
 		return nil
 	}
 	out := &pb.Table{}
+	// MISSING: HiveOptions
 	// MISSING: Name
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
-	out.ExpireTime = direct.StringTimestamp_ToProto(mapCtx, in.ExpireTime)
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Type
 	// MISSING: Etag
 	return out
 }
@@ -147,9 +151,13 @@ func BigLakeTableSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Table)
 		return nil
 	}
 	out := &krmbigquerybiglakev1beta1.BigLakeTableSpec{}
-	out.HiveOptions = HiveTableOptions_v1beta1_FromProto(mapCtx, in.GetHiveOptions())
+	// MISSING: HiveOptions
 	// MISSING: Name
-	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Type
 	// MISSING: Etag
 	return out
 }
@@ -158,11 +166,13 @@ func BigLakeTableSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigquery
 		return nil
 	}
 	out := &pb.Table{}
-	if oneof := HiveTableOptions_v1beta1_ToProto(mapCtx, in.HiveOptions); oneof != nil {
-		out.Options = &pb.Table_HiveOptions{HiveOptions: oneof}
-	}
+	// MISSING: HiveOptions
 	// MISSING: Name
-	out.Type = direct.Enum_ToProto[pb.Table_Type](mapCtx, in.Type)
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: DeleteTime
+	// MISSING: ExpireTime
+	// MISSING: Type
 	// MISSING: Etag
 	return out
 }
@@ -182,63 +192,5 @@ func HiveDatabaseOptions_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbigq
 	out := &pb.HiveDatabaseOptions{}
 	out.LocationUri = direct.ValueOf(in.LocationURI)
 	out.Parameters = in.Parameters
-	return out
-}
-func HiveTableOptions_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.HiveTableOptions) *krmbigquerybiglakev1beta1.HiveTableOptions {
-	if in == nil {
-		return nil
-	}
-	out := &krmbigquerybiglakev1beta1.HiveTableOptions{}
-	out.Parameters = in.Parameters
-	out.TableType = direct.LazyPtr(in.GetTableType())
-	out.StorageDescriptor = HiveTableOptions_StorageDescriptor_v1beta1_FromProto(mapCtx, in.GetStorageDescriptor())
-	return out
-}
-func HiveTableOptions_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigquerybiglakev1beta1.HiveTableOptions) *pb.HiveTableOptions {
-	if in == nil {
-		return nil
-	}
-	out := &pb.HiveTableOptions{}
-	out.Parameters = in.Parameters
-	out.TableType = direct.ValueOf(in.TableType)
-	out.StorageDescriptor = HiveTableOptions_StorageDescriptor_v1beta1_ToProto(mapCtx, in.StorageDescriptor)
-	return out
-}
-func HiveTableOptions_SerDeInfo_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.HiveTableOptions_SerDeInfo) *krmbigquerybiglakev1beta1.HiveTableOptions_SerDeInfo {
-	if in == nil {
-		return nil
-	}
-	out := &krmbigquerybiglakev1beta1.HiveTableOptions_SerDeInfo{}
-	out.SerializationLib = direct.LazyPtr(in.GetSerializationLib())
-	return out
-}
-func HiveTableOptions_SerDeInfo_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigquerybiglakev1beta1.HiveTableOptions_SerDeInfo) *pb.HiveTableOptions_SerDeInfo {
-	if in == nil {
-		return nil
-	}
-	out := &pb.HiveTableOptions_SerDeInfo{}
-	out.SerializationLib = direct.ValueOf(in.SerializationLib)
-	return out
-}
-func HiveTableOptions_StorageDescriptor_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.HiveTableOptions_StorageDescriptor) *krmbigquerybiglakev1beta1.HiveTableOptions_StorageDescriptor {
-	if in == nil {
-		return nil
-	}
-	out := &krmbigquerybiglakev1beta1.HiveTableOptions_StorageDescriptor{}
-	out.LocationURI = direct.LazyPtr(in.GetLocationUri())
-	out.InputFormat = direct.LazyPtr(in.GetInputFormat())
-	out.OutputFormat = direct.LazyPtr(in.GetOutputFormat())
-	out.SerdeInfo = HiveTableOptions_SerDeInfo_v1beta1_FromProto(mapCtx, in.GetSerdeInfo())
-	return out
-}
-func HiveTableOptions_StorageDescriptor_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigquerybiglakev1beta1.HiveTableOptions_StorageDescriptor) *pb.HiveTableOptions_StorageDescriptor {
-	if in == nil {
-		return nil
-	}
-	out := &pb.HiveTableOptions_StorageDescriptor{}
-	out.LocationUri = direct.ValueOf(in.LocationURI)
-	out.InputFormat = direct.ValueOf(in.InputFormat)
-	out.OutputFormat = direct.ValueOf(in.OutputFormat)
-	out.SerdeInfo = HiveTableOptions_SerDeInfo_v1beta1_ToProto(mapCtx, in.SerdeInfo)
 	return out
 }

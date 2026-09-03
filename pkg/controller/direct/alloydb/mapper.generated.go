@@ -317,28 +317,37 @@ func AlloyDBInstanceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.In
 	}
 	out := &krm.AlloyDBInstanceObservedState{}
 	// MISSING: Name
+	// MISSING: DisplayName
 	// MISSING: Uid
 	// MISSING: CreateTime
 	// MISSING: UpdateTime
 	// MISSING: DeleteTime
 	// MISSING: Labels
 	// MISSING: State
+	// MISSING: InstanceType
+	// MISSING: MachineConfig
+	// MISSING: AvailabilityType
+	// MISSING: GCEZone
+	// MISSING: DatabaseFlags
 	// MISSING: WritableNode
 	// MISSING: Nodes
 	// MISSING: QueryInsightsConfig
 	// MISSING: ObservabilityConfig
+	// MISSING: ReadPoolConfig
 	// MISSING: IPAddress
 	// MISSING: PublicIPAddress
 	// MISSING: Reconciling
 	// MISSING: Etag
+	// MISSING: Annotations
 	// MISSING: UpdatePolicy
 	// MISSING: ClientConnectionConfig
 	// MISSING: SatisfiesPzs
 	// MISSING: PSCInstanceConfig
+	// MISSING: NetworkConfig
 	// MISSING: GeminiConfig
 	// MISSING: OutboundPublicIPAddresses
 	// MISSING: ActivationPolicy
-	out.ConnectionPoolConfig = Instance_ConnectionPoolConfigObservedState_FromProto(mapCtx, in.GetConnectionPoolConfig())
+	// MISSING: ConnectionPoolConfig
 	// MISSING: GcaConfig
 	return out
 }
@@ -348,28 +357,37 @@ func AlloyDBInstanceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.All
 	}
 	out := &pb.Instance{}
 	// MISSING: Name
+	// MISSING: DisplayName
 	// MISSING: Uid
 	// MISSING: CreateTime
 	// MISSING: UpdateTime
 	// MISSING: DeleteTime
 	// MISSING: Labels
 	// MISSING: State
+	// MISSING: InstanceType
+	// MISSING: MachineConfig
+	// MISSING: AvailabilityType
+	// MISSING: GCEZone
+	// MISSING: DatabaseFlags
 	// MISSING: WritableNode
 	// MISSING: Nodes
 	// MISSING: QueryInsightsConfig
 	// MISSING: ObservabilityConfig
+	// MISSING: ReadPoolConfig
 	// MISSING: IPAddress
 	// MISSING: PublicIPAddress
 	// MISSING: Reconciling
 	// MISSING: Etag
+	// MISSING: Annotations
 	// MISSING: UpdatePolicy
 	// MISSING: ClientConnectionConfig
 	// MISSING: SatisfiesPzs
 	// MISSING: PSCInstanceConfig
+	// MISSING: NetworkConfig
 	// MISSING: GeminiConfig
 	// MISSING: OutboundPublicIPAddresses
 	// MISSING: ActivationPolicy
-	out.ConnectionPoolConfig = Instance_ConnectionPoolConfigObservedState_ToProto(mapCtx, in.ConnectionPoolConfig)
+	// MISSING: ConnectionPoolConfig
 	// MISSING: GcaConfig
 	return out
 }
@@ -601,154 +619,6 @@ func EncryptionInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Encr
 	out := &pb.EncryptionInfo{}
 	out.EncryptionType = direct.Enum_ToProto[pb.EncryptionInfo_Type](mapCtx, in.EncryptionType)
 	out.KmsKeyVersions = in.KMSKeyVersions
-	return out
-}
-func Instance_ConnectionPoolConfig_FromProto(mapCtx *direct.MapContext, in *pb.Instance_ConnectionPoolConfig) *krm.Instance_ConnectionPoolConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.Instance_ConnectionPoolConfig{}
-	out.Enabled = direct.LazyPtr(in.GetEnabled())
-	out.Flags = in.Flags
-	return out
-}
-func Instance_ConnectionPoolConfig_ToProto(mapCtx *direct.MapContext, in *krm.Instance_ConnectionPoolConfig) *pb.Instance_ConnectionPoolConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Instance_ConnectionPoolConfig{}
-	out.Enabled = direct.ValueOf(in.Enabled)
-	out.Flags = in.Flags
-	return out
-}
-func Instance_InstanceNetworkConfig_FromProto(mapCtx *direct.MapContext, in *pb.Instance_InstanceNetworkConfig) *krm.Instance_InstanceNetworkConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.Instance_InstanceNetworkConfig{}
-	out.AuthorizedExternalNetworks = direct.Slice_FromProto(mapCtx, in.AuthorizedExternalNetworks, Instance_InstanceNetworkConfig_AuthorizedNetwork_FromProto)
-	out.EnablePublicIP = direct.LazyPtr(in.GetEnablePublicIp())
-	out.EnableOutboundPublicIP = direct.LazyPtr(in.GetEnableOutboundPublicIp())
-	// MISSING: Network
-	// MISSING: AllocatedIPRangeOverride
-	return out
-}
-func Instance_InstanceNetworkConfig_ToProto(mapCtx *direct.MapContext, in *krm.Instance_InstanceNetworkConfig) *pb.Instance_InstanceNetworkConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Instance_InstanceNetworkConfig{}
-	out.AuthorizedExternalNetworks = direct.Slice_ToProto(mapCtx, in.AuthorizedExternalNetworks, Instance_InstanceNetworkConfig_AuthorizedNetwork_ToProto)
-	out.EnablePublicIp = direct.ValueOf(in.EnablePublicIP)
-	out.EnableOutboundPublicIp = direct.ValueOf(in.EnableOutboundPublicIP)
-	// MISSING: Network
-	// MISSING: AllocatedIPRangeOverride
-	return out
-}
-func Instance_InstanceNetworkConfig_AuthorizedNetwork_FromProto(mapCtx *direct.MapContext, in *pb.Instance_InstanceNetworkConfig_AuthorizedNetwork) *krm.Instance_InstanceNetworkConfig_AuthorizedNetwork {
-	if in == nil {
-		return nil
-	}
-	out := &krm.Instance_InstanceNetworkConfig_AuthorizedNetwork{}
-	out.CIDRRange = direct.LazyPtr(in.GetCidrRange())
-	return out
-}
-func Instance_InstanceNetworkConfig_AuthorizedNetwork_ToProto(mapCtx *direct.MapContext, in *krm.Instance_InstanceNetworkConfig_AuthorizedNetwork) *pb.Instance_InstanceNetworkConfig_AuthorizedNetwork {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Instance_InstanceNetworkConfig_AuthorizedNetwork{}
-	out.CidrRange = direct.ValueOf(in.CIDRRange)
-	return out
-}
-func Instance_MachineConfig_FromProto(mapCtx *direct.MapContext, in *pb.Instance_MachineConfig) *krm.Instance_MachineConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.Instance_MachineConfig{}
-	out.CPUCount = direct.LazyPtr(in.GetCpuCount())
-	out.MachineType = direct.LazyPtr(in.GetMachineType())
-	return out
-}
-func Instance_MachineConfig_ToProto(mapCtx *direct.MapContext, in *krm.Instance_MachineConfig) *pb.Instance_MachineConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Instance_MachineConfig{}
-	out.CpuCount = direct.ValueOf(in.CPUCount)
-	out.MachineType = direct.ValueOf(in.MachineType)
-	return out
-}
-func Instance_ObservabilityInstanceConfig_FromProto(mapCtx *direct.MapContext, in *pb.Instance_ObservabilityInstanceConfig) *krm.Instance_ObservabilityInstanceConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.Instance_ObservabilityInstanceConfig{}
-	out.Enabled = in.Enabled
-	out.PreserveComments = in.PreserveComments
-	out.TrackWaitEvents = in.TrackWaitEvents
-	// MISSING: TrackWaitEventTypes
-	out.MaxQueryStringLength = in.MaxQueryStringLength
-	out.RecordApplicationTags = in.RecordApplicationTags
-	out.QueryPlansPerMinute = in.QueryPlansPerMinute
-	out.TrackActiveQueries = in.TrackActiveQueries
-	out.TrackClientAddress = in.TrackClientAddress
-	out.AssistiveExperiencesEnabled = in.AssistiveExperiencesEnabled
-	return out
-}
-func Instance_ObservabilityInstanceConfig_ToProto(mapCtx *direct.MapContext, in *krm.Instance_ObservabilityInstanceConfig) *pb.Instance_ObservabilityInstanceConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Instance_ObservabilityInstanceConfig{}
-	out.Enabled = in.Enabled
-	out.PreserveComments = in.PreserveComments
-	out.TrackWaitEvents = in.TrackWaitEvents
-	// MISSING: TrackWaitEventTypes
-	out.MaxQueryStringLength = in.MaxQueryStringLength
-	out.RecordApplicationTags = in.RecordApplicationTags
-	out.QueryPlansPerMinute = in.QueryPlansPerMinute
-	out.TrackActiveQueries = in.TrackActiveQueries
-	out.TrackClientAddress = in.TrackClientAddress
-	out.AssistiveExperiencesEnabled = in.AssistiveExperiencesEnabled
-	return out
-}
-func Instance_QueryInsightsInstanceConfig_FromProto(mapCtx *direct.MapContext, in *pb.Instance_QueryInsightsInstanceConfig) *krm.Instance_QueryInsightsInstanceConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.Instance_QueryInsightsInstanceConfig{}
-	out.RecordApplicationTags = in.RecordApplicationTags
-	out.RecordClientAddress = in.RecordClientAddress
-	out.QueryStringLength = direct.LazyPtr(in.GetQueryStringLength())
-	out.QueryPlansPerMinute = in.QueryPlansPerMinute
-	return out
-}
-func Instance_QueryInsightsInstanceConfig_ToProto(mapCtx *direct.MapContext, in *krm.Instance_QueryInsightsInstanceConfig) *pb.Instance_QueryInsightsInstanceConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Instance_QueryInsightsInstanceConfig{}
-	out.RecordApplicationTags = in.RecordApplicationTags
-	out.RecordClientAddress = in.RecordClientAddress
-	out.QueryStringLength = direct.ValueOf(in.QueryStringLength)
-	out.QueryPlansPerMinute = in.QueryPlansPerMinute
-	return out
-}
-func Instance_ReadPoolConfig_FromProto(mapCtx *direct.MapContext, in *pb.Instance_ReadPoolConfig) *krm.Instance_ReadPoolConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.Instance_ReadPoolConfig{}
-	out.NodeCount = direct.LazyPtr(in.GetNodeCount())
-	return out
-}
-func Instance_ReadPoolConfig_ToProto(mapCtx *direct.MapContext, in *krm.Instance_ReadPoolConfig) *pb.Instance_ReadPoolConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Instance_ReadPoolConfig{}
-	out.NodeCount = direct.ValueOf(in.NodeCount)
 	return out
 }
 func MaintenanceUpdatePolicy_FromProto(mapCtx *direct.MapContext, in *pb.MaintenanceUpdatePolicy) *krm.MaintenanceUpdatePolicy {

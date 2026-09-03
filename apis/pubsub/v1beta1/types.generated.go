@@ -282,6 +282,7 @@ type IngestionDataSourceSettings_AwsMsk struct {
 
 	// Required. The name of the topic in the Amazon MSK cluster that Pub/Sub
 	//  will import from.
+	// +kcc:guess=possible-reference target=PubSubTopic
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.AwsMsk.topic
 	Topic *string `json:"topic,omitempty"`
 
@@ -409,6 +410,7 @@ type IngestionDataSourceSettings_ConfluentCloud struct {
 
 	// Required. The name of the topic in the Confluent Cloud cluster that
 	//  Pub/Sub will import from.
+	// +kcc:guess=possible-reference target=PubSubTopic
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.ConfluentCloud.topic
 	Topic *string `json:"topic,omitempty"`
 
@@ -680,8 +682,7 @@ type SchemaSettings struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.pubsub.v1.Snapshot", skipping
-
+/* unreachable type Snapshot
 // +kcc:proto=google.pubsub.v1.Snapshot
 type Snapshot struct {
 	// Optional. The name of the snapshot.
@@ -690,6 +691,7 @@ type Snapshot struct {
 
 	// Optional. The name of the topic from which this snapshot is retaining
 	//  messages.
+	// +kcc:guess=possible-reference target=PubSubTopic
 	// +kcc:proto:field=google.pubsub.v1.Snapshot.topic
 	Topic *string `json:"topic,omitempty"`
 
@@ -880,6 +882,7 @@ type Subscription_AnalyticsHubSubscriptionInfo struct {
 	// Optional. The name of the associated Analytics Hub subscription resource.
 	//  Pattern:
 	//  "projects/{project}/locations/{location}/subscriptions/{subscription}"
+	// +kcc:guess=possible-reference target=PubSubSubscription
 	// +kcc:proto:field=google.pubsub.v1.Subscription.AnalyticsHubSubscriptionInfo.subscription
 	Subscription *string `json:"subscription,omitempty"`
 }

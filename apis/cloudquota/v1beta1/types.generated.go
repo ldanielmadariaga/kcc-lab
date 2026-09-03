@@ -22,6 +22,35 @@
 
 package v1beta1
 
+/* unreachable type QuotaAdjusterSettings
+// +kcc:proto=google.api.cloudquotas.v1beta.QuotaAdjusterSettings
+type QuotaAdjusterSettings struct {
+	// Identifier. Name of the config would be of the format:
+	//    projects/PROJECT_NUMBER/locations/global/quotaAdjusterSettings
+	//    folders/FOLDER_NUMBER/locations/global/quotaAdjusterSettings
+	//    organizations/ORGANIZATION_NUMBER/locations/global/quotaAdjusterSettings
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.name
+	Name *string `json:"name,omitempty"`
+
+	// Optional. The configured value of the enablement at the given resource.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.enablement
+	Enablement *string `json:"enablement,omitempty"`
+
+	// Optional. The current ETag of the QuotaAdjusterSettings. If an ETag is
+	//  provided on update and does not match the current server's ETag in the
+	//  QuotaAdjusterSettings, the request is blocked and returns an ABORTED error.
+	//  See https://google.aip.dev/134#etags for more details on ETags.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Optional. Indicates whether the setting is inherited or explicitly
+	//  specified.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.inherited
+	Inherited *bool `json:"inherited,omitempty"`
+}
+*/
+
+/* unreachable type QuotaConfig
 // +kcc:proto=google.api.cloudquotas.v1beta.QuotaConfig
 type QuotaConfig struct {
 	// Required. The preferred value. Must be greater than or equal to -1. If set
@@ -35,7 +64,95 @@ type QuotaConfig struct {
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaConfig.annotations
 	Annotations map[string]string `json:"annotations,omitempty"`
 }
+*/
 
+/* unreachable type QuotaPreference
+// +kcc:proto=google.api.cloudquotas.v1beta.QuotaPreference
+type QuotaPreference struct {
+	// Required except in the CREATE requests.
+	//  The resource name of the quota preference.
+	//  The path that follows `/locations` must be `/global`.
+	//  For example:
+	//  `projects/123/locations/global/quotaPreferences/my-config-for-us-east1`
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.name
+	Name *string `json:"name,omitempty"`
+
+	// Immutable. The dimensions that this quota preference applies to. The key of
+	//  the map entry is the name of a dimension, such as `region`, `zone`,
+	//  `network_id`, and the value of the map entry is the dimension value.
+	//
+	//  If a dimension is missing from the map of dimensions, the quota preference
+	//  applies to all the dimension values except for those that have other quota
+	//  preferences configured for the specific value.
+	//
+	//  Note: QuotaPreferences can only be applied across all values of `user` and
+	//  `resource` dimension. Do not set values for `user` or `resource` in the
+	//  dimension map.
+	//
+	//  For example: `{"provider" : "Example Organization"}` where `provider` is a
+	//  service-specific quota dimension and `Example Organization` is the provider
+	//  name.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.dimensions
+	Dimensions map[string]string `json:"dimensions,omitempty"`
+
+	// Required. Preferred quota configuration.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.quota_config
+	QuotaConfig *QuotaConfig `json:"quotaConfig,omitempty"`
+
+	// Optional. The current etag of the quota preference. If an etag is provided
+	//  on update and does not match the current server's etag of the quota
+	//  preference, the request will be blocked and an ABORTED error will be
+	//  returned. See https://google.aip.dev/134#etags for more details on etags.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Required. The name of the service to which the quota preference is applied.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.service
+	Service *string `json:"service,omitempty"`
+
+	// Required. The id of the quota to which the quota preference is applied. A
+	//  quota name is unique in the service. For example, `CpusPerProjectPerRegion`
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.quota_id
+	QuotaID *string `json:"quotaID,omitempty"`
+
+	// The reason / justification for this quota preference.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.justification
+	Justification *string `json:"justification,omitempty"`
+
+	// Input only. An email address that can be used to contact the user, in case
+	//  Google Cloud needs more information to make a decision before additional
+	//  quota can be granted.
+	//
+	//  When requesting a quota increase, the email address is required.
+	//  When requesting a quota decrease, the email address is optional.
+	//  For example, the email address is optional when the
+	//  `QuotaConfig.preferred_value` is smaller than the
+	//  `QuotaDetails.reset_value`.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.contact_email
+	ContactEmail *string `json:"contactEmail,omitempty"`
+}
+*/
+
+/* unreachable type QuotaAdjusterSettingsObservedState
+// +kcc:observedstate:proto=google.api.cloudquotas.v1beta.QuotaAdjusterSettings
+type QuotaAdjusterSettingsObservedState struct {
+	// Output only. The timestamp when the QuotaAdjusterSettings resource was last
+	//  updated.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The resource container from which the setting is inherited.
+	//  This refers to the  nearest ancestor with enablement set (either ENABLED or
+	//  DISABLED). The value can be an organizations/{organization_id},
+	//  folders/{folder_id}, or can be 'default' if no ancestor exists with
+	//  enablement set. The value will be empty when enablement is directly set on
+	//  this container.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.inherited_from
+	InheritedFrom *string `json:"inheritedFrom,omitempty"`
+}
+*/
+
+/* unreachable type QuotaConfigObservedState
 // +kcc:observedstate:proto=google.api.cloudquotas.v1beta.QuotaConfig
 type QuotaConfigObservedState struct {
 	// Output only. Optional details about the state of this quota preference.
@@ -58,3 +175,26 @@ type QuotaConfigObservedState struct {
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaConfig.request_origin
 	RequestOrigin *string `json:"requestOrigin,omitempty"`
 }
+*/
+
+/* unreachable type QuotaPreferenceObservedState
+// +kcc:observedstate:proto=google.api.cloudquotas.v1beta.QuotaPreference
+type QuotaPreferenceObservedState struct {
+	// Required. Preferred quota configuration.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.quota_config
+	QuotaConfig *QuotaConfigObservedState `json:"quotaConfig,omitempty"`
+
+	// Output only. Create time stamp
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Update time stamp
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Is the quota preference pending Google Cloud approval and
+	//  fulfillment.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.reconciling
+	Reconciling *bool `json:"reconciling,omitempty"`
+}
+*/

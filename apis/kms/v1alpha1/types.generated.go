@@ -22,7 +22,8 @@
 
 package v1alpha1
 
-/* unreachable type CryptoKeyVersion
+/* found existing non-generated go type with proto tag "google.cloud.kms.v1.CryptoKeyVersion", skipping
+
 // +kcc:proto=google.cloud.kms.v1.CryptoKeyVersion
 type CryptoKeyVersion struct {
 
@@ -57,7 +58,8 @@ type ExternalProtectionLevelOptions struct {
 	EkmConnectionKeyPath *string `json:"ekmConnectionKeyPath,omitempty"`
 }
 
-/* unreachable type ImportJob
+/* found existing non-generated go type with proto tag "google.cloud.kms.v1.ImportJob", skipping
+
 // +kcc:proto=google.cloud.kms.v1.ImportJob
 type ImportJob struct {
 
@@ -111,12 +113,13 @@ type KeyOperationAttestation_CertificateChains struct {
 	GooglePartitionCerts []string `json:"googlePartitionCerts,omitempty"`
 }
 
-/* unreachable type CryptoKeyVersionObservedState
+/* found existing non-generated go type with proto tag "google.cloud.kms.v1.CryptoKeyVersion", skipping
+
 // +kcc:observedstate:proto=google.cloud.kms.v1.CryptoKeyVersion
 type CryptoKeyVersionObservedState struct {
 	// Output only. The resource name for this
 	//  [CryptoKeyVersion][google.cloud.kms.v1.CryptoKeyVersion] in the format
-	//  `projects/-*-/locations/-*-/keyRings/-*-/cryptoKeys/-*-/cryptoKeyVersions/-*`.
+	//  `projects/* /locations/* /keyRings/* /cryptoKeys/* /cryptoKeyVersions/*`.
 	// +kcc:proto:field=google.cloud.kms.v1.CryptoKeyVersion.name
 	Name *string `json:"name,omitempty"`
 
@@ -207,12 +210,13 @@ type CryptoKeyVersionObservedState struct {
 }
 */
 
-/* unreachable type ImportJobObservedState
+/* found existing non-generated go type with proto tag "google.cloud.kms.v1.ImportJob", skipping
+
 // +kcc:observedstate:proto=google.cloud.kms.v1.ImportJob
 type ImportJobObservedState struct {
 	// Output only. The resource name for this
 	//  [ImportJob][google.cloud.kms.v1.ImportJob] in the format
-	//  `projects/-*-/locations/-*-/keyRings/-*-/importJobs/-*`.
+	//  `projects/* /locations/* /keyRings/* /importJobs/*`.
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.name
 	Name *string `json:"name,omitempty"`
 

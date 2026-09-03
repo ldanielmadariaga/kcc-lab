@@ -1950,8 +1950,7 @@ type FirewallPolicyAssociation struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.FirewallPolicyRule", skipping
-
+/* unreachable type FirewallPolicyRule
 // +kcc:proto=google.cloud.compute.v1.FirewallPolicyRule
 type FirewallPolicyRule struct {
 	// The Action to perform when the client connection triggers the rule. Valid actions for firewall rules are: "allow", "deny", "apply_security_profile_group" and "goto_next". Valid actions for packet mirroring rules are: "mirror", "do_not_mirror" and "goto_next".
@@ -2017,8 +2016,7 @@ type FirewallPolicyRule struct {
 }
 */
 
-/* found existing non-generated go type "FirewallPolicyRuleMatcher", skipping
-
+/* unreachable type FirewallPolicyRuleMatcher
 // +kcc:proto=google.cloud.compute.v1.FirewallPolicyRuleMatcher
 type FirewallPolicyRuleMatcher struct {
 	// Address groups which should be matched against the traffic destination. Maximum number of destination address groups is 10.
@@ -2085,8 +2083,7 @@ type FirewallPolicyRuleMatcher struct {
 }
 */
 
-/* found existing non-generated go type "FirewallPolicyRuleMatcherLayer4Config", skipping
-
+/* unreachable type FirewallPolicyRuleMatcherLayer4Config
 // +kcc:proto=google.cloud.compute.v1.FirewallPolicyRuleMatcherLayer4Config
 type FirewallPolicyRuleMatcherLayer4Config struct {
 	// The IP protocol to which this rule applies. The protocol type is required when creating a firewall rule. This value can either be one of the following well known protocol strings (tcp, udp, icmp, esp, ah, ipip, sctp), or the IP protocol number.

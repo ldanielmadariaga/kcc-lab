@@ -1862,22 +1862,68 @@ func ComputeFirewallPolicyAssociationSpec_v1beta1_FromProto(mapCtx *direct.MapCo
 }
 */
 
-/* found existing non-generated mapping function "ComputeFirewallPolicyAssociationSpec_v1beta1_ToProto", skipping
-func ComputeFirewallPolicyAssociationSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1beta1.ComputeFirewallPolicyAssociationSpec) *pb.FirewallPolicyAssociation {
+/*
+found existing non-generated mapping function "ComputeFirewallPolicyAssociationSpec_v1beta1_ToProto", skipping
+
+	func ComputeFirewallPolicyAssociationSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1beta1.ComputeFirewallPolicyAssociationSpec) *pb.FirewallPolicyAssociation {
+		if in == nil {
+			return nil
+		}
+		out := &pb.FirewallPolicyAssociation{}
+		if in.AttachmentTargetRef != nil {
+			out.AttachmentTarget = &in.AttachmentTargetRef.External
+		}
+		// MISSING: DisplayName
+		// MISSING: FirewallPolicyID
+		// MISSING: Name
+		// MISSING: ShortName
+		return out
+	}
+*/
+func ComputeFirewallPolicyRuleObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.FirewallPolicyRule) *krmcomputev1beta1.ComputeFirewallPolicyRuleObservedState {
 	if in == nil {
 		return nil
 	}
-	out := &pb.FirewallPolicyAssociation{}
-	if in.AttachmentTargetRef != nil {
-		out.AttachmentTarget = &in.AttachmentTargetRef.External
-	}
-	// MISSING: DisplayName
-	// MISSING: FirewallPolicyID
-	// MISSING: Name
-	// MISSING: ShortName
+	out := &krmcomputev1beta1.ComputeFirewallPolicyRuleObservedState{}
+	// MISSING: Action
+	// MISSING: Description
+	// MISSING: Direction
+	// MISSING: Disabled
+	// MISSING: EnableLogging
+	// MISSING: Kind
+	// MISSING: Match
+	// MISSING: Priority
+	// MISSING: RuleName
+	// MISSING: RuleTupleCount
+	// MISSING: SecurityProfileGroup
+	// MISSING: TargetResources
+	// MISSING: TargetSecureTags
+	// MISSING: TargetServiceAccounts
+	// MISSING: TLSInspect
 	return out
 }
-*/
+func ComputeFirewallPolicyRuleObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1beta1.ComputeFirewallPolicyRuleObservedState) *pb.FirewallPolicyRule {
+	if in == nil {
+		return nil
+	}
+	out := &pb.FirewallPolicyRule{}
+	// MISSING: Action
+	// MISSING: Description
+	// MISSING: Direction
+	// MISSING: Disabled
+	// MISSING: EnableLogging
+	// MISSING: Kind
+	// MISSING: Match
+	// MISSING: Priority
+	// MISSING: RuleName
+	// MISSING: RuleTupleCount
+	// MISSING: SecurityProfileGroup
+	// MISSING: TargetResources
+	// MISSING: TargetSecureTags
+	// MISSING: TargetServiceAccounts
+	// MISSING: TLSInspect
+	return out
+}
 
 /* found existing non-generated mapping function "ComputeFirewallPolicyRuleSpec_v1beta1_FromProto", skipping
 func ComputeFirewallPolicyRuleSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.FirewallPolicyRule) *krmcomputev1beta1.ComputeFirewallPolicyRuleSpec {
@@ -1885,20 +1931,20 @@ func ComputeFirewallPolicyRuleSpec_v1beta1_FromProto(mapCtx *direct.MapContext, 
 		return nil
 	}
 	out := &krmcomputev1beta1.ComputeFirewallPolicyRuleSpec{}
-	out.Action = in.Action
-	out.Description = in.Description
-	out.Direction = in.Direction
-	out.Disabled = in.Disabled
-	out.EnableLogging = in.EnableLogging
+	// MISSING: Action
+	// MISSING: Description
+	// MISSING: Direction
+	// MISSING: Disabled
+	// MISSING: EnableLogging
 	// MISSING: Kind
-	out.Match = FirewallPolicyRuleMatcher_v1beta1_FromProto(mapCtx, in.GetMatch())
-	out.Priority = in.Priority
+	// MISSING: Match
+	// MISSING: Priority
 	// MISSING: RuleName
 	// MISSING: RuleTupleCount
 	// MISSING: SecurityProfileGroup
-	out.TargetResources = ComputeFirewallPolicyRuleSpec_TargetResources_FromProto(mapCtx, in.TargetResources)
+	// MISSING: TargetResources
 	// MISSING: TargetSecureTags
-	out.TargetServiceAccounts = ComputeFirewallPolicyRuleSpec_TargetServiceAccounts_FromProto(mapCtx, in.TargetServiceAccounts)
+	// MISSING: TargetServiceAccounts
 	// MISSING: TLSInspect
 	return out
 }
@@ -1910,66 +1956,16 @@ func ComputeFirewallPolicyRuleSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in
 		return nil
 	}
 	out := &pb.FirewallPolicyRule{}
-	out.Action = in.Action
-	out.Description = in.Description
-	out.Direction = in.Direction
-	out.Disabled = in.Disabled
-	out.EnableLogging = in.EnableLogging
+	// MISSING: Action
+	// MISSING: Description
+	// MISSING: Direction
+	// MISSING: Disabled
+	// MISSING: EnableLogging
 	// MISSING: Kind
-	out.Match = FirewallPolicyRuleMatcher_v1beta1_ToProto(mapCtx, in.Match)
-	out.Priority = in.Priority
+	// MISSING: Match
+	// MISSING: Priority
 	// MISSING: RuleName
 	// MISSING: RuleTupleCount
-	// MISSING: SecurityProfileGroup
-	out.TargetResources = ComputeFirewallPolicyRuleSpec_TargetResources_ToProto(mapCtx, in.TargetResources)
-	// MISSING: TargetSecureTags
-	out.TargetServiceAccounts = ComputeFirewallPolicyRuleSpec_TargetServiceAccounts_ToProto(mapCtx, in.TargetServiceAccounts)
-	// MISSING: TLSInspect
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "ComputeFirewallPolicyRuleStatus_v1beta1_FromProto", skipping
-func ComputeFirewallPolicyRuleStatus_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.FirewallPolicyRule) *krmcomputev1beta1.ComputeFirewallPolicyRuleStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krmcomputev1beta1.ComputeFirewallPolicyRuleStatus{}
-	// MISSING: Action
-	// MISSING: Description
-	// MISSING: Direction
-	// MISSING: Disabled
-	// MISSING: EnableLogging
-	out.Kind = in.Kind
-	// MISSING: Match
-	// MISSING: Priority
-	// MISSING: RuleName
-	out.RuleTupleCount = in.RuleTupleCount
-	// MISSING: SecurityProfileGroup
-	// MISSING: TargetResources
-	// MISSING: TargetSecureTags
-	// MISSING: TargetServiceAccounts
-	// MISSING: TLSInspect
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "ComputeFirewallPolicyRuleStatus_v1beta1_ToProto", skipping
-func ComputeFirewallPolicyRuleStatus_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1beta1.ComputeFirewallPolicyRuleStatus) *pb.FirewallPolicyRule {
-	if in == nil {
-		return nil
-	}
-	out := &pb.FirewallPolicyRule{}
-	// MISSING: Action
-	// MISSING: Description
-	// MISSING: Direction
-	// MISSING: Disabled
-	// MISSING: EnableLogging
-	out.Kind = in.Kind
-	// MISSING: Match
-	// MISSING: Priority
-	// MISSING: RuleName
-	out.RuleTupleCount = in.RuleTupleCount
 	// MISSING: SecurityProfileGroup
 	// MISSING: TargetResources
 	// MISSING: TargetSecureTags
@@ -6731,84 +6727,14 @@ func FirewallLogConfig_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Firew
 }
 */
 
-/*
-found existing non-generated mapping function "FirewallLogConfig_v1beta1_ToProto", skipping
-
-	func FirewallLogConfig_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1beta1.FirewallLogConfig) *pb.FirewallLogConfig {
-		if in == nil {
-			return nil
-		}
-		out := &pb.FirewallLogConfig{}
-		// MISSING: Enable
-		out.Metadata = in.Metadata
-		return out
-	}
-*/
-func FirewallPolicyRuleMatcher_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.FirewallPolicyRuleMatcher) *krmcomputev1beta1.FirewallPolicyRuleMatcher {
+/* found existing non-generated mapping function "FirewallLogConfig_v1beta1_ToProto", skipping
+func FirewallLogConfig_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1beta1.FirewallLogConfig) *pb.FirewallLogConfig {
 	if in == nil {
 		return nil
 	}
-	out := &krmcomputev1beta1.FirewallPolicyRuleMatcher{}
-	out.DestAddressGroups = in.DestAddressGroups
-	out.DestFqdns = in.DestFqdns
-	out.DestIPRanges = in.DestIpRanges
-	// MISSING: DestNetworkType
-	out.DestRegionCodes = in.DestRegionCodes
-	out.DestThreatIntelligences = in.DestThreatIntelligences
-	out.Layer4Configs = direct.Slice_FromProto(mapCtx, in.Layer4Configs, FirewallPolicyRuleMatcherLayer4Config_v1beta1_FromProto)
-	out.SrcAddressGroups = in.SrcAddressGroups
-	out.SrcFqdns = in.SrcFqdns
-	out.SrcIPRanges = in.SrcIpRanges
-	// MISSING: SrcNetworkType
-	// MISSING: SrcNetworks
-	out.SrcRegionCodes = in.SrcRegionCodes
-	// MISSING: SrcSecureTags
-	out.SrcThreatIntelligences = in.SrcThreatIntelligences
-	return out
-}
-func FirewallPolicyRuleMatcher_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1beta1.FirewallPolicyRuleMatcher) *pb.FirewallPolicyRuleMatcher {
-	if in == nil {
-		return nil
-	}
-	out := &pb.FirewallPolicyRuleMatcher{}
-	out.DestAddressGroups = in.DestAddressGroups
-	out.DestFqdns = in.DestFqdns
-	out.DestIpRanges = in.DestIPRanges
-	// MISSING: DestNetworkType
-	out.DestRegionCodes = in.DestRegionCodes
-	out.DestThreatIntelligences = in.DestThreatIntelligences
-	out.Layer4Configs = direct.Slice_ToProto(mapCtx, in.Layer4Configs, FirewallPolicyRuleMatcherLayer4Config_v1beta1_ToProto)
-	out.SrcAddressGroups = in.SrcAddressGroups
-	out.SrcFqdns = in.SrcFqdns
-	out.SrcIpRanges = in.SrcIPRanges
-	// MISSING: SrcNetworkType
-	// MISSING: SrcNetworks
-	out.SrcRegionCodes = in.SrcRegionCodes
-	// MISSING: SrcSecureTags
-	out.SrcThreatIntelligences = in.SrcThreatIntelligences
-	return out
-}
-
-/* found existing non-generated mapping function "FirewallPolicyRuleMatcherLayer4Config_v1beta1_FromProto", skipping
-func FirewallPolicyRuleMatcherLayer4Config_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.FirewallPolicyRuleMatcherLayer4Config) *krmcomputev1beta1.FirewallPolicyRuleMatcherLayer4Config {
-	if in == nil {
-		return nil
-	}
-	out := &krmcomputev1beta1.FirewallPolicyRuleMatcherLayer4Config{}
-	out.IPProtocol = in.IpProtocol
-	out.Ports = in.Ports
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "FirewallPolicyRuleMatcherLayer4Config_v1beta1_ToProto", skipping
-func FirewallPolicyRuleMatcherLayer4Config_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmcomputev1beta1.FirewallPolicyRuleMatcherLayer4Config) *pb.FirewallPolicyRuleMatcherLayer4Config {
-	if in == nil {
-		return nil
-	}
-	out := &pb.FirewallPolicyRuleMatcherLayer4Config{}
-	out.IpProtocol = in.IPProtocol
-	out.Ports = in.Ports
+	out := &pb.FirewallLogConfig{}
+	// MISSING: Enable
+	out.Metadata = in.Metadata
 	return out
 }
 */

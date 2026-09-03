@@ -35,8 +35,9 @@ func APIQuotaAdjusterSettingsObservedState_FromProto(mapCtx *direct.MapContext, 
 	}
 	out := &krm.APIQuotaAdjusterSettingsObservedState{}
 	// MISSING: Name
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.Etag = direct.LazyPtr(in.GetEtag())
+	// MISSING: Enablement
+	// MISSING: UpdateTime
+	// MISSING: Etag
 	// MISSING: Inherited
 	// MISSING: InheritedFrom
 	return out
@@ -47,8 +48,9 @@ func APIQuotaAdjusterSettingsObservedState_ToProto(mapCtx *direct.MapContext, in
 	}
 	out := &pb.QuotaAdjusterSettings{}
 	// MISSING: Name
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	out.Etag = direct.ValueOf(in.Etag)
+	// MISSING: Enablement
+	// MISSING: UpdateTime
+	// MISSING: Etag
 	// MISSING: Inherited
 	// MISSING: InheritedFrom
 	return out
@@ -59,7 +61,9 @@ func APIQuotaAdjusterSettingsSpec_FromProto(mapCtx *direct.MapContext, in *pb.Qu
 	}
 	out := &krm.APIQuotaAdjusterSettingsSpec{}
 	// MISSING: Name
-	out.Enablement = direct.Enum_FromProto(mapCtx, in.GetEnablement())
+	// MISSING: Enablement
+	// MISSING: UpdateTime
+	// MISSING: Etag
 	// MISSING: Inherited
 	// MISSING: InheritedFrom
 	return out
@@ -70,7 +74,9 @@ func APIQuotaAdjusterSettingsSpec_ToProto(mapCtx *direct.MapContext, in *krm.API
 	}
 	out := &pb.QuotaAdjusterSettings{}
 	// MISSING: Name
-	out.Enablement = direct.Enum_ToProto[pb.QuotaAdjusterSettings_Enablement](mapCtx, in.Enablement)
+	// MISSING: Enablement
+	// MISSING: UpdateTime
+	// MISSING: Etag
 	// MISSING: Inherited
 	// MISSING: InheritedFrom
 	return out
@@ -81,11 +87,16 @@ func APIQuotaPreferenceObservedState_FromProto(mapCtx *direct.MapContext, in *pb
 	}
 	out := &krm.APIQuotaPreferenceObservedState{}
 	// MISSING: Name
-	out.QuotaConfig = QuotaConfigObservedState_FromProto(mapCtx, in.GetQuotaConfig())
-	out.Etag = direct.LazyPtr(in.GetEtag())
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.Reconciling = direct.LazyPtr(in.GetReconciling())
+	// MISSING: Dimensions
+	// MISSING: QuotaConfig
+	// MISSING: Etag
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: Service
+	// MISSING: QuotaID
+	// MISSING: Reconciling
+	// MISSING: Justification
+	// MISSING: ContactEmail
 	return out
 }
 func APIQuotaPreferenceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIQuotaPreferenceObservedState) *pb.QuotaPreference {
@@ -94,11 +105,16 @@ func APIQuotaPreferenceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.
 	}
 	out := &pb.QuotaPreference{}
 	// MISSING: Name
-	out.QuotaConfig = QuotaConfigObservedState_ToProto(mapCtx, in.QuotaConfig)
-	out.Etag = direct.ValueOf(in.Etag)
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	out.Reconciling = direct.ValueOf(in.Reconciling)
+	// MISSING: Dimensions
+	// MISSING: QuotaConfig
+	// MISSING: Etag
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: Service
+	// MISSING: QuotaID
+	// MISSING: Reconciling
+	// MISSING: Justification
+	// MISSING: ContactEmail
 	return out
 }
 func APIQuotaPreferenceSpec_FromProto(mapCtx *direct.MapContext, in *pb.QuotaPreference) *krm.APIQuotaPreferenceSpec {
@@ -107,12 +123,16 @@ func APIQuotaPreferenceSpec_FromProto(mapCtx *direct.MapContext, in *pb.QuotaPre
 	}
 	out := &krm.APIQuotaPreferenceSpec{}
 	// MISSING: Name
-	out.Dimensions = in.Dimensions
-	out.QuotaConfig = QuotaConfig_FromProto(mapCtx, in.GetQuotaConfig())
-	out.Service = direct.LazyPtr(in.GetService())
-	out.QuotaID = direct.LazyPtr(in.GetQuotaId())
-	out.Justification = direct.LazyPtr(in.GetJustification())
-	out.ContactEmail = direct.LazyPtr(in.GetContactEmail())
+	// MISSING: Dimensions
+	// MISSING: QuotaConfig
+	// MISSING: Etag
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: Service
+	// MISSING: QuotaID
+	// MISSING: Reconciling
+	// MISSING: Justification
+	// MISSING: ContactEmail
 	return out
 }
 func APIQuotaPreferenceSpec_ToProto(mapCtx *direct.MapContext, in *krm.APIQuotaPreferenceSpec) *pb.QuotaPreference {
@@ -121,63 +141,15 @@ func APIQuotaPreferenceSpec_ToProto(mapCtx *direct.MapContext, in *krm.APIQuotaP
 	}
 	out := &pb.QuotaPreference{}
 	// MISSING: Name
-	out.Dimensions = in.Dimensions
-	out.QuotaConfig = QuotaConfig_ToProto(mapCtx, in.QuotaConfig)
-	out.Service = direct.ValueOf(in.Service)
-	out.QuotaId = direct.ValueOf(in.QuotaID)
-	out.Justification = direct.ValueOf(in.Justification)
-	out.ContactEmail = direct.ValueOf(in.ContactEmail)
-	return out
-}
-func QuotaConfig_FromProto(mapCtx *direct.MapContext, in *pb.QuotaConfig) *krm.QuotaConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.QuotaConfig{}
-	out.PreferredValue = direct.LazyPtr(in.GetPreferredValue())
-	// MISSING: StateDetail
-	// MISSING: GrantedValue
-	// MISSING: TraceID
-	out.Annotations = in.Annotations
-	// MISSING: RequestOrigin
-	return out
-}
-func QuotaConfig_ToProto(mapCtx *direct.MapContext, in *krm.QuotaConfig) *pb.QuotaConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.QuotaConfig{}
-	out.PreferredValue = direct.ValueOf(in.PreferredValue)
-	// MISSING: StateDetail
-	// MISSING: GrantedValue
-	// MISSING: TraceID
-	out.Annotations = in.Annotations
-	// MISSING: RequestOrigin
-	return out
-}
-func QuotaConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.QuotaConfig) *krm.QuotaConfigObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.QuotaConfigObservedState{}
-	// MISSING: PreferredValue
-	out.StateDetail = direct.LazyPtr(in.GetStateDetail())
-	out.GrantedValue = direct.Int64Value_FromProto(mapCtx, in.GetGrantedValue())
-	out.TraceID = direct.LazyPtr(in.GetTraceId())
-	// MISSING: Annotations
-	out.RequestOrigin = direct.Enum_FromProto(mapCtx, in.GetRequestOrigin())
-	return out
-}
-func QuotaConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.QuotaConfigObservedState) *pb.QuotaConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.QuotaConfig{}
-	// MISSING: PreferredValue
-	out.StateDetail = direct.ValueOf(in.StateDetail)
-	out.GrantedValue = direct.Int64Value_ToProto(mapCtx, in.GrantedValue)
-	out.TraceId = direct.ValueOf(in.TraceID)
-	// MISSING: Annotations
-	out.RequestOrigin = direct.Enum_ToProto[pb.QuotaConfig_Origin](mapCtx, in.RequestOrigin)
+	// MISSING: Dimensions
+	// MISSING: QuotaConfig
+	// MISSING: Etag
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: Service
+	// MISSING: QuotaID
+	// MISSING: Reconciling
+	// MISSING: Justification
+	// MISSING: ContactEmail
 	return out
 }

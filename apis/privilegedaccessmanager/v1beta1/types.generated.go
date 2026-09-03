@@ -44,8 +44,7 @@ type ApprovalWorkflow struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.privilegedaccessmanager.v1.Entitlement", skipping
-
+/* unreachable type Entitlement
 // +kcc:proto=google.cloud.privilegedaccessmanager.v1.Entitlement
 type Entitlement struct {
 	// Identifier. Name of the entitlement.
@@ -229,8 +228,7 @@ type PrivilegedAccess_GcpIAMAccess_RoleBinding struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.privilegedaccessmanager.v1.Entitlement", skipping
-
+/* unreachable type EntitlementObservedState
 // +kcc:observedstate:proto=google.cloud.privilegedaccessmanager.v1.Entitlement
 type EntitlementObservedState struct {
 	// Output only. Create time stamp.

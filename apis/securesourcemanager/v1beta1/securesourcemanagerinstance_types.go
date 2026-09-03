@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,8 +15,7 @@
 package v1beta1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/privateca/privatecarefs"
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -26,29 +25,11 @@ var SecureSourceManagerInstanceGVK = GroupVersion.WithKind("SecureSourceManagerI
 // SecureSourceManagerInstanceSpec defines the desired state of SecureSourceManagerInstance
 // +kcc:spec:proto=google.cloud.securesourcemanager.v1.Instance
 type SecureSourceManagerInstanceSpec struct {
-	Parent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	/* Immutable. Optional. The name of the resource. Used for creation and acquisition. When unset, the value of `metadata.name` is used as the default. */
-	// +optional
+	// The SecureSourceManagerInstance name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Optional. Labels as key value pairs.
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// Optional. Immutable. Customer-managed encryption key name.
-	KMSKeyRef *refs.KMSCryptoKeyRef `json:"kmsKeyRef,omitempty"`
-	// Optional. PrivateConfig includes settings for private instance.
-	PrivateConfig *Instance_PrivateConfig `json:"privateConfig,omitempty"`
-}
-
-type Parent struct {
-	/* Immutable. The Project that this resource belongs to. */
-	// +required
-	ProjectRef *refs.ProjectRef `json:"projectRef"`
-
-	/* Immutable. Location of the instance. */
-	// +required
-	Location string `json:"location"`
 }
 
 // SecureSourceManagerInstanceStatus defines the config connector machine state of SecureSourceManagerInstance
@@ -58,51 +39,18 @@ type SecureSourceManagerInstanceStatus struct {
 	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
 
 	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
-	// +optional
 	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
 
 	// A unique specifier for the SecureSourceManagerInstance resource in GCP.
-	// +optional
 	ExternalRef *string `json:"externalRef,omitempty"`
 
 	// ObservedState is the state of the resource as most recently observed in GCP.
-	// +optional
 	ObservedState *SecureSourceManagerInstanceObservedState `json:"observedState,omitempty"`
 }
 
-// SecureSourceManagerInstanceSpec defines the desired state of SecureSourceManagerInstance
+// SecureSourceManagerInstanceObservedState is the state of the SecureSourceManagerInstance resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Instance
 type SecureSourceManagerInstanceObservedState struct {
-	// Output only. Create timestamp.
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. Update timestamp.
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. Current state of the instance.
-	State *string `json:"state,omitempty"`
-
-	// Output only. An optional field providing information about the current
-	//  instance state.
-	StateNote *string `json:"stateNote,omitempty"`
-
-	// Output only. A list of hostnames for this instance.
-	HostConfig *Instance_HostConfigObservedState `json:"hostConfig,omitempty"`
-
-	// Optional. PrivateConfig includes settings for private instance.
-	PrivateConfig *Instance_PrivateConfigObservedState `json:"privateConfig,omitempty"`
-}
-
-// +kcc:proto=google.cloud.securesourcemanager.v1.Instance.PrivateConfig
-type Instance_PrivateConfig struct {
-	// Required. Immutable. Indicate if it's private instance.
-	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.PrivateConfig.is_private
-	IsPrivate *bool `json:"isPrivate,omitempty"`
-
-	// Required. Immutable. CA pool resource, resource must in the format of
-	//  `projects/{project}/locations/{location}/caPools/{ca_pool}`.
-	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.PrivateConfig.ca_pool
-	CAPoolRef *privatecarefs.PrivateCACAPoolRef `json:"caPoolRef,omitempty"`
 }
 
 // +genclient
@@ -118,12 +66,11 @@ type Instance_PrivateConfig struct {
 
 // SecureSourceManagerInstance is the Schema for the SecureSourceManagerInstance API
 // +k8s:openapi-gen=true
-// +kubebuilder:storageversion
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 type SecureSourceManagerInstance struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
+	// +required
 	Spec   SecureSourceManagerInstanceSpec   `json:"spec,omitempty"`
 	Status SecureSourceManagerInstanceStatus `json:"status,omitempty"`
 }
@@ -138,17 +85,4 @@ type SecureSourceManagerInstanceList struct {
 
 func init() {
 	SchemeBuilder.Register(&SecureSourceManagerInstance{}, &SecureSourceManagerInstanceList{})
-}
-
-// +kcc:proto=google.cloud.securesourcemanager.v1.Instance.PrivateConfig
-type Instance_PrivateConfigObservedState struct {
-	// Output only. Service Attachment for HTTP, resource is in the format of
-	//  `projects/{project}/regions/{region}/serviceAttachments/{service_attachment}`.
-	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.PrivateConfig.http_service_attachment
-	HTTPServiceAttachment *string `json:"httpServiceAttachment,omitempty"`
-
-	// Output only. Service Attachment for SSH, resource is in the format of
-	//  `projects/{project}/regions/{region}/serviceAttachments/{service_attachment}`.
-	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.PrivateConfig.ssh_service_attachment
-	SSHServiceAttachment *string `json:"sshServiceAttachment,omitempty"`
 }

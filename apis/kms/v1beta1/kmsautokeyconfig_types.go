@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,38 +15,21 @@
 package v1beta1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
-
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var KMSAutokeyConfigGVK = GroupVersion.WithKind("KMSAutokeyConfig")
 
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // KMSAutokeyConfigSpec defines the desired state of KMSAutokeyConfig
 // +kcc:spec:proto=google.cloud.kms.v1.AutokeyConfig
 type KMSAutokeyConfigSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// NOTE: ResourceID field is not required for AutokeyConfig as its ID has the format folders/<folderID>/autokeyConfig or projects/<projectID>/autokeyConfig i.e., it doesnt have any unique ID of its own and relies on parent ID for uniqueness.
-
-	// Immutable. The folder that this resource belongs to.
-	// +optional
-	FolderRef *refs.FolderRef `json:"folderRef,omitempty"`
-
-	// Immutable. The project that this resource belongs to.
-	// +optional
-	ProjectRef *refs.ProjectRef `json:"projectRef,omitempty"`
-
-	// +optional
-	// +kcc:proto:field=google.cloud.kms.v1.AutokeyConfig.key_project
-	KeyProjectRef *refs.ProjectRef `json:"keyProject,omitempty"`
-
-	// +optional
-	// +kcc:proto:field=google.cloud.kms.v1.AutokeyConfig.key_project_resolution_mode
-	KeyProjectResolutionMode *string `json:"keyProjectResolutionMode,omitempty"`
+	// The KMSAutokeyConfig name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 }
 
 // KMSAutokeyConfigStatus defines the config connector machine state of KMSAutokeyConfig
@@ -65,13 +48,9 @@ type KMSAutokeyConfigStatus struct {
 	ObservedState *KMSAutokeyConfigObservedState `json:"observedState,omitempty"`
 }
 
-// KMSAutokeyConfigSpec defines the desired state of KMSAutokeyConfig
+// KMSAutokeyConfigObservedState is the state of the KMSAutokeyConfig resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.kms.v1.AutokeyConfig
 type KMSAutokeyConfigObservedState struct {
-	// Output only. Current state of this AutokeyConfig.
-	// +optional
-	// +kcc:proto:field=google.cloud.kms.v1.AutokeyConfig.state
-	State *string `json:"state,omitempty"`
 }
 
 // +genclient
@@ -80,8 +59,6 @@ type KMSAutokeyConfigObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=beta"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -89,11 +66,11 @@ type KMSAutokeyConfigObservedState struct {
 
 // KMSAutokeyConfig is the Schema for the KMSAutokeyConfig API
 // +k8s:openapi-gen=true
-// +kubebuilder:storageversion
 type KMSAutokeyConfig struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
+	// +required
 	Spec   KMSAutokeyConfigSpec   `json:"spec,omitempty"`
 	Status KMSAutokeyConfigStatus `json:"status,omitempty"`
 }

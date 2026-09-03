@@ -22,6 +22,7 @@
 
 package v1beta1
 
+/* unreachable type AutomatedBackupConfig
 // +kcc:proto=google.cloud.redis.cluster.v1.AutomatedBackupConfig
 type AutomatedBackupConfig struct {
 	// Optional. Trigger automated backups at a fixed frequency.
@@ -39,7 +40,9 @@ type AutomatedBackupConfig struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.AutomatedBackupConfig.retention
 	Retention *string `json:"retention,omitempty"`
 }
+*/
 
+/* unreachable type AutomatedBackupConfig_FixedFrequencySchedule
 // +kcc:proto=google.cloud.redis.cluster.v1.AutomatedBackupConfig.FixedFrequencySchedule
 type AutomatedBackupConfig_FixedFrequencySchedule struct {
 	// Required. The start time of every automated backup in UTC. It must be set
@@ -47,9 +50,9 @@ type AutomatedBackupConfig_FixedFrequencySchedule struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.AutomatedBackupConfig.FixedFrequencySchedule.start_time
 	StartTime *TimeOfDay `json:"startTime,omitempty"`
 }
+*/
 
-/* found existing non-generated go type with proto tag "google.cloud.redis.cluster.v1.Cluster", skipping
-
+/* unreachable type Cluster
 // +kcc:proto=google.cloud.redis.cluster.v1.Cluster
 type Cluster struct {
 	// Optional. Backups stored in Cloud Storage buckets.
@@ -162,13 +165,16 @@ type Cluster_ManagedBackupSource struct {
 }
 */
 
+/* unreachable type Cluster_StateInfo
 // +kcc:proto=google.cloud.redis.cluster.v1.Cluster.StateInfo
 type Cluster_StateInfo struct {
 	// Describes ongoing update on the cluster when cluster state is UPDATING.
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.Cluster.StateInfo.update_info
 	UpdateInfo *Cluster_StateInfo_UpdateInfo `json:"updateInfo,omitempty"`
 }
+*/
 
+/* unreachable type Cluster_StateInfo_UpdateInfo
 // +kcc:proto=google.cloud.redis.cluster.v1.Cluster.StateInfo.UpdateInfo
 type Cluster_StateInfo_UpdateInfo struct {
 	// Target number of shards for redis cluster
@@ -179,6 +185,7 @@ type Cluster_StateInfo_UpdateInfo struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.Cluster.StateInfo.UpdateInfo.target_replica_count
 	TargetReplicaCount *int32 `json:"targetReplicaCount,omitempty"`
 }
+*/
 
 /* unreachable type ClusterEndpoint
 // +kcc:proto=google.cloud.redis.cluster.v1.ClusterEndpoint
@@ -190,6 +197,7 @@ type ClusterEndpoint struct {
 }
 */
 
+/* unreachable type ClusterMaintenancePolicy
 // +kcc:proto=google.cloud.redis.cluster.v1.ClusterMaintenancePolicy
 type ClusterMaintenancePolicy struct {
 
@@ -199,6 +207,7 @@ type ClusterMaintenancePolicy struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.ClusterMaintenancePolicy.weekly_maintenance_window
 	WeeklyMaintenanceWindow []ClusterWeeklyMaintenanceWindow `json:"weeklyMaintenanceWindow,omitempty"`
 }
+*/
 
 /* unreachable type ClusterMaintenanceSchedule
 // +kcc:proto=google.cloud.redis.cluster.v1.ClusterMaintenanceSchedule
@@ -206,6 +215,7 @@ type ClusterMaintenanceSchedule struct {
 }
 */
 
+/* unreachable type ClusterPersistenceConfig
 // +kcc:proto=google.cloud.redis.cluster.v1.ClusterPersistenceConfig
 type ClusterPersistenceConfig struct {
 	// Optional. The mode of persistence.
@@ -220,14 +230,18 @@ type ClusterPersistenceConfig struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.ClusterPersistenceConfig.aof_config
 	AofConfig *ClusterPersistenceConfig_AofConfig `json:"aofConfig,omitempty"`
 }
+*/
 
+/* unreachable type ClusterPersistenceConfig_AofConfig
 // +kcc:proto=google.cloud.redis.cluster.v1.ClusterPersistenceConfig.AOFConfig
 type ClusterPersistenceConfig_AofConfig struct {
 	// Optional. fsync configuration.
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.ClusterPersistenceConfig.AOFConfig.append_fsync
 	AppendFsync *string `json:"appendFsync,omitempty"`
 }
+*/
 
+/* unreachable type ClusterPersistenceConfig_RdbConfig
 // +kcc:proto=google.cloud.redis.cluster.v1.ClusterPersistenceConfig.RDBConfig
 type ClusterPersistenceConfig_RdbConfig struct {
 	// Optional. Period between RDB snapshots.
@@ -240,7 +254,9 @@ type ClusterPersistenceConfig_RdbConfig struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.ClusterPersistenceConfig.RDBConfig.rdb_snapshot_start_time
 	RdbSnapshotStartTime *string `json:"rdbSnapshotStartTime,omitempty"`
 }
+*/
 
+/* unreachable type ClusterWeeklyMaintenanceWindow
 // +kcc:proto=google.cloud.redis.cluster.v1.ClusterWeeklyMaintenanceWindow
 type ClusterWeeklyMaintenanceWindow struct {
 	// Allows to define schedule that runs specified day of the week.
@@ -251,6 +267,7 @@ type ClusterWeeklyMaintenanceWindow struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.ClusterWeeklyMaintenanceWindow.start_time
 	StartTime *TimeOfDay `json:"startTime,omitempty"`
 }
+*/
 
 /* unreachable type ConnectionDetail
 // +kcc:proto=google.cloud.redis.cluster.v1.ConnectionDetail
@@ -267,6 +284,7 @@ type ConnectionDetail struct {
 }
 */
 
+/* unreachable type CrossClusterReplicationConfig
 // +kcc:proto=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig
 type CrossClusterReplicationConfig struct {
 	// The role of the cluster in cross cluster replication.
@@ -286,6 +304,7 @@ type CrossClusterReplicationConfig struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig.secondary_clusters
 	SecondaryClusters []CrossClusterReplicationConfig_RemoteCluster `json:"secondaryClusters,omitempty"`
 }
+*/
 
 /* unreachable type CrossClusterReplicationConfig_Membership
 // +kcc:proto=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig.Membership
@@ -293,12 +312,12 @@ type CrossClusterReplicationConfig_Membership struct {
 }
 */
 
-/* found existing non-generated go type "CrossClusterReplicationConfig_RemoteCluster", skipping
-
+/* unreachable type CrossClusterReplicationConfig_RemoteCluster
 // +kcc:proto=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig.RemoteCluster
 type CrossClusterReplicationConfig_RemoteCluster struct {
 	// The full resource path of the remote cluster in
 	//  the format: projects/<project>/locations/<region>/clusters/<cluster-id>
+	// +kcc:guess=possible-reference target=RedisCluster
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig.RemoteCluster.cluster
 	Cluster *string `json:"cluster,omitempty"`
 }
@@ -332,6 +351,7 @@ type PSCAutoConnection struct {
 }
 */
 
+/* unreachable type PSCConfig
 // +kcc:proto=google.cloud.redis.cluster.v1.PscConfig
 type PSCConfig struct {
 	// Required. The network where the IP address of the discovery endpoint will
@@ -340,9 +360,9 @@ type PSCConfig struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.PscConfig.network
 	Network *string `json:"network,omitempty"`
 }
+*/
 
-/* found existing non-generated go type with proto tag "google.cloud.redis.cluster.v1.PscConnection", skipping
-
+/* unreachable type PSCConnection
 // +kcc:proto=google.cloud.redis.cluster.v1.PscConnection
 type PSCConnection struct {
 	// Required. The PSC connection id of the forwarding rule connected to the
@@ -385,6 +405,7 @@ type PSCServiceAttachment struct {
 }
 */
 
+/* unreachable type ZoneDistributionConfig
 // +kcc:proto=google.cloud.redis.cluster.v1.ZoneDistributionConfig
 type ZoneDistributionConfig struct {
 	// Optional. The mode of zone distribution. Defaults to MULTI_ZONE, when not
@@ -398,6 +419,7 @@ type ZoneDistributionConfig struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.ZoneDistributionConfig.zone
 	Zone *string `json:"zone,omitempty"`
 }
+*/
 
 /* found existing non-generated go type with proto tag "google.cloud.redis.v1.Instance", skipping
 
@@ -681,8 +703,7 @@ type TimeOfDay struct {
 	Nanos *int32 `json:"nanos,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.redis.cluster.v1.Cluster", skipping
-
+/* unreachable type ClusterObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.Cluster
 type ClusterObservedState struct {
 	// Output only. The timestamp associated with the cluster creation request.
@@ -765,6 +786,7 @@ type ClusterEndpointObservedState struct {
 }
 */
 
+/* unreachable type ClusterMaintenancePolicyObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.ClusterMaintenancePolicy
 type ClusterMaintenancePolicyObservedState struct {
 	// Output only. The time when the policy was created i.e. Maintenance Window
@@ -777,7 +799,9 @@ type ClusterMaintenancePolicyObservedState struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.ClusterMaintenancePolicy.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
+*/
 
+/* unreachable type ClusterMaintenanceScheduleObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.ClusterMaintenanceSchedule
 type ClusterMaintenanceScheduleObservedState struct {
 	// Output only. The start time of any upcoming scheduled maintenance for this
@@ -790,6 +814,7 @@ type ClusterMaintenanceScheduleObservedState struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.ClusterMaintenanceSchedule.end_time
 	EndTime *string `json:"endTime,omitempty"`
 }
+*/
 
 /* unreachable type ConnectionDetailObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.ConnectionDetail
@@ -806,6 +831,7 @@ type ConnectionDetailObservedState struct {
 }
 */
 
+/* unreachable type CrossClusterReplicationConfigObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig
 type CrossClusterReplicationConfigObservedState struct {
 	// Details of the primary cluster that is used as the replication source for
@@ -838,7 +864,9 @@ type CrossClusterReplicationConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig.membership
 	Membership *CrossClusterReplicationConfig_MembershipObservedState `json:"membership,omitempty"`
 }
+*/
 
+/* unreachable type CrossClusterReplicationConfig_MembershipObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig.Membership
 type CrossClusterReplicationConfig_MembershipObservedState struct {
 	// Output only. The primary cluster that acts as the source of replication
@@ -851,9 +879,9 @@ type CrossClusterReplicationConfig_MembershipObservedState struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig.Membership.secondary_clusters
 	SecondaryClusters []CrossClusterReplicationConfig_RemoteClusterObservedState `json:"secondaryClusters,omitempty"`
 }
+*/
 
-/* found existing non-generated go type "CrossClusterReplicationConfig_RemoteClusterObservedState", skipping
-
+/* unreachable type CrossClusterReplicationConfig_RemoteClusterObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig.RemoteCluster
 type CrossClusterReplicationConfig_RemoteClusterObservedState struct {
 	// The full resource path of the remote cluster in
@@ -867,6 +895,7 @@ type CrossClusterReplicationConfig_RemoteClusterObservedState struct {
 }
 */
 
+/* unreachable type DiscoveryEndpointObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.DiscoveryEndpoint
 type DiscoveryEndpointObservedState struct {
 	// Output only. Address of the exposed Redis endpoint used by clients to
@@ -883,7 +912,9 @@ type DiscoveryEndpointObservedState struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.DiscoveryEndpoint.psc_config
 	PSCConfig *PSCConfig `json:"pscConfig,omitempty"`
 }
+*/
 
+/* unreachable type EncryptionInfoObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.EncryptionInfo
 type EncryptionInfoObservedState struct {
 	// Output only. Type of encryption.
@@ -904,6 +935,7 @@ type EncryptionInfoObservedState struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.EncryptionInfo.last_update_time
 	LastUpdateTime *string `json:"lastUpdateTime,omitempty"`
 }
+*/
 
 /* unreachable type PSCAutoConnectionObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.PscAutoConnection
@@ -942,8 +974,7 @@ type PSCAutoConnectionObservedState struct {
 }
 */
 
-/* found existing non-generated go type "PSCConnectionObservedState", skipping
-
+/* unreachable type PSCConnectionObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.PscConnection
 type PSCConnectionObservedState struct {
 	// Output only. The status of the PSC connection.
@@ -959,6 +990,7 @@ type PSCConnectionObservedState struct {
 }
 */
 
+/* unreachable type PSCServiceAttachmentObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.PscServiceAttachment
 type PSCServiceAttachmentObservedState struct {
 	// Output only. Service attachment URI which your self-created PscConnection
@@ -970,6 +1002,7 @@ type PSCServiceAttachmentObservedState struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.PscServiceAttachment.connection_type
 	ConnectionType *string `json:"connectionType,omitempty"`
 }
+*/
 
 /* found existing non-generated go type with proto tag "google.cloud.redis.v1.Instance", skipping
 

@@ -21,8 +21,7 @@
 
 package v1beta1
 
-/* found existing non-generated go type with proto tag "google.cloud.apigateway.v1.Api", skipping
-
+/* unreachable type API
 // +kcc:proto=google.cloud.apigateway.v1.Api
 type API struct {
 
@@ -45,8 +44,7 @@ type API struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.apigateway.v1.Api", skipping
-
+/* unreachable type APIObservedState
 // +kcc:observedstate:proto=google.cloud.apigateway.v1.Api
 type APIObservedState struct {
 	// Output only. Resource name of the API.

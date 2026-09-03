@@ -1850,6 +1850,16 @@ type SingleRegionKey struct {
 }
 */
 
+/* unreachable type SiteSearchEngine
+// +kcc:proto=google.cloud.discoveryengine.v1.SiteSearchEngine
+type SiteSearchEngine struct {
+	// The fully qualified resource name of the site search engine.
+	//  Format: `projects/-*-/locations/-*-/dataStores/-*-/siteSearchEngine`
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.SiteSearchEngine.name
+	Name *string `json:"name,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.discoveryengine.v1.SiteVerificationInfo
 type SiteVerificationInfo struct {
 	// Site verification state indicating the ownership and validity.

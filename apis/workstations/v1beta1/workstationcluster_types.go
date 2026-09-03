@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,68 +15,21 @@
 package v1beta1
 
 import (
-	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
-	computev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var WorkstationClusterGVK = GroupVersion.WithKind("WorkstationCluster")
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // WorkstationClusterSpec defines the desired state of WorkstationCluster
 // +kcc:spec:proto=google.cloud.workstations.v1.WorkstationCluster
 type WorkstationClusterSpec struct {
-	// Immutable. The Project that this resource belongs to.
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="ResourceID field is immutable"
-	ProjectRef refs.ProjectRef `json:"projectRef"`
-
-	// The location of the cluster.
-	Location string `json:"location,omitempty"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The WorkstationCluster name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Optional. Human-readable name for this workstation cluster.
-	DisplayName *string `json:"displayName,omitempty"`
-
-	// Optional. Client-specified annotations.
-	Annotations []WorkstationAnnotation `json:"annotations,omitempty"`
-
-	// Optional.
-	//  [Labels](https://cloud.google.com/workstations/docs/label-resources) that
-	//  are applied to the workstation cluster and that are also propagated to the
-	//  underlying Compute Engine resources.
-	Labels []WorkstationLabel `json:"labels,omitempty"`
-
-	// Immutable. Reference to the Compute Engine network in which instances associated
-	//  with this workstation cluster will be created.
-	// +required
-	NetworkRef computerefs.ComputeNetworkRef `json:"networkRef"`
-
-	// Immutable. Reference to the Compute Engine subnetwork in which instances
-	//  associated with this workstation cluster will be created. Must be part of
-	//  the subnetwork specified for this workstation cluster.
-	// +required
-	SubnetworkRef computev1beta1.ComputeSubnetworkRef `json:"subnetworkRef"`
-
-	// Optional. Configuration for private workstation cluster.
-	PrivateClusterConfig *WorkstationCluster_PrivateClusterConfig `json:"privateClusterConfig,omitempty"`
-}
-
-// +kcc:proto=google.cloud.workstations.v1.WorkstationCluster.PrivateClusterConfig
-type WorkstationCluster_PrivateClusterConfig struct {
-	// Immutable. Whether Workstations endpoint is private.
-	EnablePrivateEndpoint *bool `json:"enablePrivateEndpoint,omitempty"`
-
-	// Optional. Additional projects that are allowed to attach to the
-	//  workstation cluster's service attachment. By default, the workstation
-	//  cluster's project and the VPC host project (if different) are allowed.
-	AllowedProjects []refs.ProjectRef `json:"allowedProjects,omitempty"`
 }
 
 // WorkstationClusterStatus defines the config connector machine state of WorkstationCluster
@@ -95,60 +48,9 @@ type WorkstationClusterStatus struct {
 	ObservedState *WorkstationClusterObservedState `json:"observedState,omitempty"`
 }
 
-// WorkstationClusterSpec defines the desired state of WorkstationCluster
+// WorkstationClusterObservedState is the state of the WorkstationCluster resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.workstations.v1.WorkstationCluster
 type WorkstationClusterObservedState struct {
-	// Output only. A system-assigned unique identifier for this workstation
-	//  cluster.
-	Uid *string `json:"uid,omitempty"`
-
-	// Output only. Indicates whether this workstation cluster is currently being
-	//  updated to match its intended state.
-	Reconciling *bool `json:"reconciling,omitempty"`
-
-	// Output only. Time when this workstation cluster was created.
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. Time when this workstation cluster was most recently updated.
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. Time when this workstation cluster was soft-deleted.
-	DeleteTime *string `json:"deleteTime,omitempty"`
-
-	// Optional. Checksum computed by the server. May be sent on update and delete
-	//  requests to make sure that the client has an up-to-date value before
-	//  proceeding.
-	Etag *string `json:"etag,omitempty"`
-
-	// Output only. The private IP address of the control plane for this
-	//  workstation cluster. Workstation VMs need access to this IP address to work
-	//  with the service, so make sure that your firewall rules allow egress from
-	//  the workstation VMs to this address.
-	ControlPlaneIP *string `json:"controlPlaneIP,omitempty"`
-
-	// Output only. Hostname for the workstation cluster. This field will be
-	//  populated only when private endpoint is enabled. To access workstations
-	//  in the workstation cluster, create a new DNS zone mapping this domain
-	//  name to an internal IP address and a forwarding rule mapping that address
-	//  to the service attachment.
-	ClusterHostname *string `json:"clusterHostname,omitempty"`
-
-	// Output only. Service attachment URI for the workstation cluster. The
-	//  service attachment is created when private endpoint is enabled. To access
-	//  workstations in the workstation cluster, configure access to the managed
-	//  service using [Private Service
-	//  Connect](https://cloud.google.com/vpc/docs/configure-private-service-connect-services).
-	ServiceAttachmentURI *string `json:"serviceAttachmentUri,omitempty"`
-
-	// Output only. Whether this workstation cluster is in degraded mode, in which
-	//  case it may require user action to restore full functionality. Details can
-	//  be found in
-	//  [conditions][google.cloud.workstations.v1.WorkstationCluster.conditions].
-	Degraded *bool `json:"degraded,omitempty"`
-
-	// Output only. Status conditions describing the workstation cluster's current
-	//  state.
-	GCPConditions []WorkstationServiceGCPCondition `json:"gcpConditions,omitempty"`
 }
 
 // +genclient
@@ -164,12 +66,11 @@ type WorkstationClusterObservedState struct {
 
 // WorkstationCluster is the Schema for the WorkstationCluster API
 // +k8s:openapi-gen=true
-// +kubebuilder:storageversion
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 type WorkstationCluster struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
+	// +required
 	Spec   WorkstationClusterSpec   `json:"spec,omitempty"`
 	Status WorkstationClusterStatus `json:"status,omitempty"`
 }

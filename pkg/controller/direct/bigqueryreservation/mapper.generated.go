@@ -30,35 +30,15 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
-/*
-found existing non-generated mapping function "AutoscaleObservedState_v1beta1_FromProto", skipping
-
-	func AutoscaleObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Reservation_Autoscale) *krmbigqueryreservationv1beta1.AutoscaleObservedState {
-		if in == nil {
-			return nil
-		}
-		out := &krmbigqueryreservationv1beta1.AutoscaleObservedState{}
-		out.CurrentSlots = direct.LazyPtr(in.GetCurrentSlots())
-		// MISSING: MaxSlots
-		return out
-	}
-*/
-func AutoscaleObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigqueryreservationv1beta1.AutoscaleObservedState) *pb.Reservation_Autoscale {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Reservation_Autoscale{}
-	out.CurrentSlots = direct.ValueOf(in.CurrentSlots)
-	// MISSING: MaxSlots
-	return out
-}
 func BigQueryReservationAssignmentObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Assignment) *krmbigqueryreservationv1beta1.BigQueryReservationAssignmentObservedState {
 	if in == nil {
 		return nil
 	}
 	out := &krmbigqueryreservationv1beta1.BigQueryReservationAssignmentObservedState{}
 	// MISSING: Name
-	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	// MISSING: Assignee
+	// MISSING: JobType
+	// MISSING: State
 	// MISSING: EnableGeminiInBigquery
 	return out
 }
@@ -68,7 +48,9 @@ func BigQueryReservationAssignmentObservedState_v1beta1_ToProto(mapCtx *direct.M
 	}
 	out := &pb.Assignment{}
 	// MISSING: Name
-	out.State = direct.Enum_ToProto[pb.Assignment_State](mapCtx, in.State)
+	// MISSING: Assignee
+	// MISSING: JobType
+	// MISSING: State
 	// MISSING: EnableGeminiInBigquery
 	return out
 }
@@ -80,8 +62,9 @@ func BigQueryReservationAssignmentSpec_v1beta1_FromProto(mapCtx *direct.MapConte
 	}
 	out := &krmbigqueryreservationv1beta1.BigQueryReservationAssignmentSpec{}
 	// MISSING: Name
-	out.Assignee = direct.LazyPtr(in.GetAssignee())
-	out.JobType = direct.Enum_FromProto(mapCtx, in.GetJobType())
+	// MISSING: Assignee
+	// MISSING: JobType
+	// MISSING: State
 	// MISSING: EnableGeminiInBigquery
 	return out
 }
@@ -96,8 +79,9 @@ found existing non-generated mapping function "BigQueryReservationAssignmentSpec
 		}
 		out := &pb.Assignment{}
 		// MISSING: Name
-		out.Assignee = BigQueryReservationAssignmentSpec_Assignee_ToProto(mapCtx, in.Assignee)
-		out.JobType = direct.Enum_ToProto[pb.Assignment_JobType](mapCtx, in.JobType)
+		// MISSING: Assignee
+		// MISSING: JobType
+		// MISSING: State
 		// MISSING: EnableGeminiInBigquery
 		return out
 	}
@@ -162,10 +146,14 @@ func BigQueryReservationReservationObservedState_v1beta1_FromProto(mapCtx *direc
 	}
 	out := &krmbigqueryreservationv1beta1.BigQueryReservationReservationObservedState{}
 	// MISSING: Name
-	out.Autoscale = AutoscaleObservedState_v1beta1_FromProto(mapCtx, in.GetAutoscale())
+	// MISSING: SlotCapacity
+	// MISSING: IgnoreIdleSlots
+	// MISSING: Autoscale
+	// MISSING: Concurrency
 	// MISSING: CreationTime
 	// MISSING: UpdateTime
 	// MISSING: MultiRegionAuxiliary
+	// MISSING: Edition
 	// MISSING: PrimaryLocation
 	// MISSING: SecondaryLocation
 	// MISSING: OriginalPrimaryLocation
@@ -183,10 +171,14 @@ func BigQueryReservationReservationObservedState_v1beta1_ToProto(mapCtx *direct.
 	}
 	out := &pb.Reservation{}
 	// MISSING: Name
-	out.Autoscale = AutoscaleObservedState_v1beta1_ToProto(mapCtx, in.Autoscale)
+	// MISSING: SlotCapacity
+	// MISSING: IgnoreIdleSlots
+	// MISSING: Autoscale
+	// MISSING: Concurrency
 	// MISSING: CreationTime
 	// MISSING: UpdateTime
 	// MISSING: MultiRegionAuxiliary
+	// MISSING: Edition
 	// MISSING: PrimaryLocation
 	// MISSING: SecondaryLocation
 	// MISSING: OriginalPrimaryLocation
@@ -204,14 +196,14 @@ func BigQueryReservationReservationSpec_v1beta1_FromProto(mapCtx *direct.MapCont
 	}
 	out := &krmbigqueryreservationv1beta1.BigQueryReservationReservationSpec{}
 	// MISSING: Name
-	out.SlotCapacity = direct.LazyPtr(in.GetSlotCapacity())
-	out.IgnoreIdleSlots = direct.LazyPtr(in.GetIgnoreIdleSlots())
-	out.Autoscale = AutoscaleSpec_v1beta1_FromProto(mapCtx, in.GetAutoscale())
-	out.Concurrency = direct.LazyPtr(in.GetConcurrency())
+	// MISSING: SlotCapacity
+	// MISSING: IgnoreIdleSlots
+	// MISSING: Autoscale
+	// MISSING: Concurrency
 	// MISSING: CreationTime
 	// MISSING: UpdateTime
 	// MISSING: MultiRegionAuxiliary
-	out.Edition = direct.Enum_FromProto(mapCtx, in.GetEdition())
+	// MISSING: Edition
 	// MISSING: PrimaryLocation
 	// MISSING: SecondaryLocation
 	// MISSING: OriginalPrimaryLocation
@@ -229,14 +221,14 @@ func BigQueryReservationReservationSpec_v1beta1_ToProto(mapCtx *direct.MapContex
 	}
 	out := &pb.Reservation{}
 	// MISSING: Name
-	out.SlotCapacity = direct.ValueOf(in.SlotCapacity)
-	out.IgnoreIdleSlots = direct.ValueOf(in.IgnoreIdleSlots)
-	out.Autoscale = AutoscaleSpec_v1beta1_ToProto(mapCtx, in.Autoscale)
-	out.Concurrency = direct.ValueOf(in.Concurrency)
+	// MISSING: SlotCapacity
+	// MISSING: IgnoreIdleSlots
+	// MISSING: Autoscale
+	// MISSING: Concurrency
 	// MISSING: CreationTime
 	// MISSING: UpdateTime
 	// MISSING: MultiRegionAuxiliary
-	out.Edition = direct.Enum_ToProto[pb.Edition](mapCtx, in.Edition)
+	// MISSING: Edition
 	// MISSING: PrimaryLocation
 	// MISSING: SecondaryLocation
 	// MISSING: OriginalPrimaryLocation

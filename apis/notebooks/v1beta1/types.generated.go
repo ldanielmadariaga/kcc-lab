@@ -21,6 +21,7 @@
 
 package v1beta1
 
+/* unreachable type ContainerImage
 // +kcc:proto=google.cloud.notebooks.v1.ContainerImage
 type ContainerImage struct {
 	// Required. The path to the container image repository. For example:
@@ -33,9 +34,9 @@ type ContainerImage struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.ContainerImage.tag
 	Tag *string `json:"tag,omitempty"`
 }
+*/
 
-/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Instance", skipping
-
+/* unreachable type Instance
 // +kcc:proto=google.cloud.notebooks.v1.Instance
 type Instance struct {
 
@@ -212,6 +213,7 @@ type Instance struct {
 }
 */
 
+/* unreachable type Instance_AcceleratorConfig
 // +kcc:proto=google.cloud.notebooks.v1.Instance.AcceleratorConfig
 type Instance_AcceleratorConfig struct {
 	// Type of this accelerator.
@@ -222,7 +224,9 @@ type Instance_AcceleratorConfig struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.AcceleratorConfig.core_count
 	CoreCount *int64 `json:"coreCount,omitempty"`
 }
+*/
 
+/* unreachable type Instance_Disk
 // +kcc:proto=google.cloud.notebooks.v1.Instance.Disk
 type Instance_Disk struct {
 	// Indicates whether the disk will be auto-deleted when the instance is
@@ -308,7 +312,9 @@ type Instance_Disk struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.Disk.type
 	Type *string `json:"type,omitempty"`
 }
+*/
 
+/* unreachable type Instance_Disk_GuestOSFeature
 // +kcc:proto=google.cloud.notebooks.v1.Instance.Disk.GuestOsFeature
 type Instance_Disk_GuestOSFeature struct {
 	// The ID of a supported feature. Read  Enabling guest operating system
@@ -324,7 +330,9 @@ type Instance_Disk_GuestOSFeature struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.Disk.GuestOsFeature.type
 	Type *string `json:"type,omitempty"`
 }
+*/
 
+/* unreachable type Instance_ShieldedInstanceConfig
 // +kcc:proto=google.cloud.notebooks.v1.Instance.ShieldedInstanceConfig
 type Instance_ShieldedInstanceConfig struct {
 	// Defines whether the instance has Secure Boot enabled.
@@ -348,7 +356,9 @@ type Instance_ShieldedInstanceConfig struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.ShieldedInstanceConfig.enable_integrity_monitoring
 	EnableIntegrityMonitoring *bool `json:"enableIntegrityMonitoring,omitempty"`
 }
+*/
 
+/* unreachable type Instance_UpgradeHistoryEntry
 // +kcc:proto=google.cloud.notebooks.v1.Instance.UpgradeHistoryEntry
 type Instance_UpgradeHistoryEntry struct {
 	// The snapshot of the boot disk of this notebook instance before upgrade.
@@ -391,7 +401,9 @@ type Instance_UpgradeHistoryEntry struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.UpgradeHistoryEntry.target_version
 	TargetVersion *string `json:"targetVersion,omitempty"`
 }
+*/
 
+/* unreachable type ReservationAffinity
 // +kcc:proto=google.cloud.notebooks.v1.ReservationAffinity
 type ReservationAffinity struct {
 	// Optional. Type of reservation to consume
@@ -406,7 +418,9 @@ type ReservationAffinity struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.ReservationAffinity.values
 	Values []string `json:"values,omitempty"`
 }
+*/
 
+/* unreachable type VMImage
 // +kcc:proto=google.cloud.notebooks.v1.VmImage
 type VMImage struct {
 	// Required. The name of the Google Cloud project that this VM image belongs to.
@@ -423,9 +437,9 @@ type VMImage struct {
 	// +kcc:proto:field=google.cloud.notebooks.v1.VmImage.image_family
 	ImageFamily *string `json:"imageFamily,omitempty"`
 }
+*/
 
-/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Instance", skipping
-
+/* unreachable type InstanceObservedState
 // +kcc:observedstate:proto=google.cloud.notebooks.v1.Instance
 type InstanceObservedState struct {
 	// Output only. The name of this notebook instance. Format:

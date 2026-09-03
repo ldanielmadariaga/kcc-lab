@@ -33,6 +33,65 @@ type BigQueryDestination struct {
 	CreateNewResultsTable *bool `json:"createNewResultsTable,omitempty"`
 }
 
+/* unreachable type Evaluation
+// +kcc:proto=google.cloud.workloadmanager.v1.Evaluation
+type Evaluation struct {
+	// Name of resource that has the form
+	//  `projects/{project_id}/locations/{location_id}/evaluations/{evaluation_id}`.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.name
+	Name *string `json:"name,omitempty"`
+
+	// Description of the Evaluation.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.description
+	Description *string `json:"description,omitempty"`
+
+	// Resource filter for an evaluation defining the scope of resources to be
+	//  evaluated.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.resource_filter
+	ResourceFilter *ResourceFilter `json:"resourceFilter,omitempty"`
+
+	// The names of the rules used for this evaluation.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.rule_names
+	RuleNames []string `json:"ruleNames,omitempty"`
+
+	// Labels as key value pairs.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Crontab format schedule for scheduled evaluation, currently only supports
+	//  the following fixed schedules:
+	//  * `0 *-/1 * * *` # Hourly
+	//  * `0 *-/6 * * *` # Every 6 hours
+	//  * `0 *-/12 * * *` # Every 12 hours
+	//  * `0 0 *-/1 * *` # Daily
+	//  * `0 0 *-/7 * *` # Weekly
+	//  * `0 0 *-/14 * *` # Every 14 days
+	//  * `0 0 1 *-/1 *` # Monthly
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.schedule
+	Schedule *string `json:"schedule,omitempty"`
+
+	// The Cloud Storage bucket name for custom rules.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.custom_rules_bucket
+	CustomRulesBucket *string `json:"customRulesBucket,omitempty"`
+
+	// Evaluation type.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.evaluation_type
+	EvaluationType *string `json:"evaluationType,omitempty"`
+
+	// Optional. The BigQuery destination for detailed evaluation results.
+	//  If this field is specified, the results of each evaluation execution are
+	//  exported to BigQuery.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.big_query_destination
+	BigQueryDestination *BigQueryDestination `json:"bigQueryDestination,omitempty"`
+
+	// Optional. Immutable. Customer-managed encryption key name, in the format
+	//  projects/-*-/locations/-*-/keyRings/-*-/cryptoKeys/-*.
+	//  The key will be used for CMEK encryption of the evaluation resource.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.kms_key
+	KMSKey *string `json:"kmsKey,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.workloadmanager.v1.GceInstanceFilter
 type GCEInstanceFilter struct {
 	// If non-empty, only Compute Engine instances associated with at least one of
@@ -75,3 +134,21 @@ type ResourceStatus struct {
 	// +kcc:proto:field=google.cloud.workloadmanager.v1.ResourceStatus.state
 	State *string `json:"state,omitempty"`
 }
+
+/* unreachable type EvaluationObservedState
+// +kcc:observedstate:proto=google.cloud.workloadmanager.v1.Evaluation
+type EvaluationObservedState struct {
+	// Output only. [Output only] The current lifecycle state of the evaluation
+	//  resource.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.resource_status
+	ResourceStatus *ResourceStatus `json:"resourceStatus,omitempty"`
+
+	// Output only. [Output only] Create time stamp.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. [Output only] Update time stamp.
+	// +kcc:proto:field=google.cloud.workloadmanager.v1.Evaluation.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+}
+*/

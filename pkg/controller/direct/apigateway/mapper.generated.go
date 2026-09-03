@@ -34,10 +34,13 @@ func APIGatewayAPIObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Api)
 		return nil
 	}
 	out := &krm.APIGatewayAPIObservedState{}
-	out.Name = direct.LazyPtr(in.GetName())
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	// MISSING: Name
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: Labels
+	// MISSING: DisplayName
+	// MISSING: ManagedService
+	// MISSING: State
 	return out
 }
 func APIGatewayAPIObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIGatewayAPIObservedState) *pb.Api {
@@ -45,10 +48,13 @@ func APIGatewayAPIObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIGa
 		return nil
 	}
 	out := &pb.Api{}
-	out.Name = direct.ValueOf(in.Name)
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	out.State = direct.Enum_ToProto[pb.Api_State](mapCtx, in.State)
+	// MISSING: Name
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: Labels
+	// MISSING: DisplayName
+	// MISSING: ManagedService
+	// MISSING: State
 	return out
 }
 func APIGatewayAPISpec_FromProto(mapCtx *direct.MapContext, in *pb.Api) *krm.APIGatewayAPISpec {
@@ -56,9 +62,13 @@ func APIGatewayAPISpec_FromProto(mapCtx *direct.MapContext, in *pb.Api) *krm.API
 		return nil
 	}
 	out := &krm.APIGatewayAPISpec{}
-	out.Labels = in.Labels
-	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	out.ManagedService = direct.LazyPtr(in.GetManagedService())
+	// MISSING: Name
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: Labels
+	// MISSING: DisplayName
+	// MISSING: ManagedService
+	// MISSING: State
 	return out
 }
 func APIGatewayAPISpec_ToProto(mapCtx *direct.MapContext, in *krm.APIGatewayAPISpec) *pb.Api {
@@ -66,8 +76,12 @@ func APIGatewayAPISpec_ToProto(mapCtx *direct.MapContext, in *krm.APIGatewayAPIS
 		return nil
 	}
 	out := &pb.Api{}
-	out.Labels = in.Labels
-	out.DisplayName = direct.ValueOf(in.DisplayName)
-	out.ManagedService = direct.ValueOf(in.ManagedService)
+	// MISSING: Name
+	// MISSING: CreateTime
+	// MISSING: UpdateTime
+	// MISSING: Labels
+	// MISSING: DisplayName
+	// MISSING: ManagedService
+	// MISSING: State
 	return out
 }

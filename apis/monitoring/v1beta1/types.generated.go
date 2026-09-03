@@ -248,7 +248,7 @@ type MetricDescriptor_MetricDescriptorMetadata struct {
 }
 */
 
-/* found existing non-generated go type "MonitoredResource", skipping
+/* found existing non-generated go type with proto tag "google.api.MonitoredResource", skipping
 
 // +kcc:proto=google.api.MonitoredResource
 type MonitoredResource struct {
@@ -270,8 +270,7 @@ type MonitoredResource struct {
 }
 */
 
-/* found existing non-generated go type "Aggregation", skipping
-
+/* unreachable type Aggregation
 // +kcc:proto=google.monitoring.dashboard.v1.Aggregation
 type Aggregation struct {
 	// The `alignment_period` specifies a time interval, in seconds, that is used
@@ -344,8 +343,7 @@ type Aggregation struct {
 }
 */
 
-/* found existing non-generated go type "AlertChart", skipping
-
+/* unreachable type AlertChart
 // +kcc:proto=google.monitoring.dashboard.v1.AlertChart
 type AlertChart struct {
 	// Required. The resource name of the alert policy. The format is:
@@ -356,8 +354,7 @@ type AlertChart struct {
 }
 */
 
-/* found existing non-generated go type "ChartOptions", skipping
-
+/* unreachable type ChartOptions
 // +kcc:proto=google.monitoring.dashboard.v1.ChartOptions
 type ChartOptions struct {
 	// The chart mode.
@@ -366,8 +363,7 @@ type ChartOptions struct {
 }
 */
 
-/* found existing non-generated go type "CollapsibleGroup", skipping
-
+/* unreachable type CollapsibleGroup
 // +kcc:proto=google.monitoring.dashboard.v1.CollapsibleGroup
 type CollapsibleGroup struct {
 	// The collapsed state of the widget on first page load.
@@ -376,8 +372,7 @@ type CollapsibleGroup struct {
 }
 */
 
-/* found existing non-generated go type "ColumnLayout", skipping
-
+/* unreachable type ColumnLayout
 // +kcc:proto=google.monitoring.dashboard.v1.ColumnLayout
 type ColumnLayout struct {
 	// The columns of content to display.
@@ -386,8 +381,7 @@ type ColumnLayout struct {
 }
 */
 
-/* found existing non-generated go type "ColumnLayout_Column", skipping
-
+/* unreachable type ColumnLayout_Column
 // +kcc:proto=google.monitoring.dashboard.v1.ColumnLayout.Column
 type ColumnLayout_Column struct {
 	// The relative weight of this column. The column weight is used to adjust
@@ -403,8 +397,7 @@ type ColumnLayout_Column struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.monitoring.dashboard.v1.Dashboard", skipping
-
+/* unreachable type Dashboard
 // +kcc:proto=google.monitoring.dashboard.v1.Dashboard
 type Dashboard struct {
 	// Identifier. The resource name of the dashboard.
@@ -455,8 +448,7 @@ type Dashboard struct {
 }
 */
 
-/* found existing non-generated go type "DashboardFilter", skipping
-
+/* unreachable type DashboardFilter
 // +kcc:proto=google.monitoring.dashboard.v1.DashboardFilter
 type DashboardFilter struct {
 	// Required. The key for the label
@@ -479,8 +471,7 @@ type DashboardFilter struct {
 }
 */
 
-/* found existing non-generated go type "ErrorReportingPanel", skipping
-
+/* unreachable type ErrorReportingPanel
 // +kcc:proto=google.monitoring.dashboard.v1.ErrorReportingPanel
 type ErrorReportingPanel struct {
 	// The resource name of the Google Cloud Platform project. Written
@@ -499,6 +490,7 @@ type ErrorReportingPanel struct {
 	//
 	//  Contains the service name for error reports extracted from Google
 	//  App Engine logs or `default` if the App Engine default service is used.
+	// +kcc:guess=possible-reference target=MonitoringService
 	// +kcc:proto:field=google.monitoring.dashboard.v1.ErrorReportingPanel.services
 	Services []string `json:"services,omitempty"`
 
@@ -511,8 +503,7 @@ type ErrorReportingPanel struct {
 }
 */
 
-/* found existing non-generated go type "GridLayout", skipping
-
+/* unreachable type GridLayout
 // +kcc:proto=google.monitoring.dashboard.v1.GridLayout
 type GridLayout struct {
 	// The number of columns into which the view's width is divided. If omitted
@@ -526,8 +517,7 @@ type GridLayout struct {
 }
 */
 
-/* found existing non-generated go type "IncidentList", skipping
-
+/* unreachable type IncidentList
 // +kcc:proto=google.monitoring.dashboard.v1.IncidentList
 type IncidentList struct {
 	// Optional. The monitored resource for which incidents are listed.
@@ -545,8 +535,7 @@ type IncidentList struct {
 }
 */
 
-/* found existing non-generated go type "LogsPanel", skipping
-
+/* unreachable type LogsPanel
 // +kcc:proto=google.monitoring.dashboard.v1.LogsPanel
 type LogsPanel struct {
 	// A filter that chooses which log entries to return.  See [Advanced Logs
@@ -563,8 +552,7 @@ type LogsPanel struct {
 }
 */
 
-/* found existing non-generated go type "MosaicLayout", skipping
-
+/* unreachable type MosaicLayout
 // +kcc:proto=google.monitoring.dashboard.v1.MosaicLayout
 type MosaicLayout struct {
 	// The number of columns in the mosaic grid. The number of columns must be
@@ -578,8 +566,7 @@ type MosaicLayout struct {
 }
 */
 
-/* found existing non-generated go type "MosaicLayout_Tile", skipping
-
+/* unreachable type MosaicLayout_Tile
 // +kcc:proto=google.monitoring.dashboard.v1.MosaicLayout.Tile
 type MosaicLayout_Tile struct {
 	// The zero-indexed position of the tile in grid blocks relative to the
@@ -609,8 +596,7 @@ type MosaicLayout_Tile struct {
 }
 */
 
-/* found existing non-generated go type "PickTimeSeriesFilter", skipping
-
+/* unreachable type PickTimeSeriesFilter
 // +kcc:proto=google.monitoring.dashboard.v1.PickTimeSeriesFilter
 type PickTimeSeriesFilter struct {
 	// `ranking_method` is applied to each time series independently to produce
@@ -633,8 +619,7 @@ type PickTimeSeriesFilter struct {
 }
 */
 
-/* found existing non-generated go type "PieChart", skipping
-
+/* unreachable type PieChart
 // +kcc:proto=google.monitoring.dashboard.v1.PieChart
 type PieChart struct {
 	// Required. The queries for the chart's data.
@@ -651,8 +636,7 @@ type PieChart struct {
 }
 */
 
-/* found existing non-generated go type "PieChart_PieChartDataSet", skipping
-
+/* unreachable type PieChart_PieChartDataSet
 // +kcc:proto=google.monitoring.dashboard.v1.PieChart.PieChartDataSet
 type PieChart_PieChartDataSet struct {
 	// Required. The query for the PieChart. See,
@@ -679,8 +663,7 @@ type PieChart_PieChartDataSet struct {
 }
 */
 
-/* found existing non-generated go type "RowLayout", skipping
-
+/* unreachable type RowLayout
 // +kcc:proto=google.monitoring.dashboard.v1.RowLayout
 type RowLayout struct {
 	// The rows of content to display.
@@ -689,8 +672,7 @@ type RowLayout struct {
 }
 */
 
-/* found existing non-generated go type "RowLayout_Row", skipping
-
+/* unreachable type RowLayout_Row
 // +kcc:proto=google.monitoring.dashboard.v1.RowLayout.Row
 type RowLayout_Row struct {
 	// The relative weight of this row. The row weight is used to adjust the
@@ -706,8 +688,7 @@ type RowLayout_Row struct {
 }
 */
 
-/* found existing non-generated go type "Scorecard", skipping
-
+/* unreachable type Scorecard
 // +kcc:proto=google.monitoring.dashboard.v1.Scorecard
 type Scorecard struct {
 	// Required. Fields for querying time series data from the
@@ -771,8 +752,7 @@ type Scorecard struct {
 }
 */
 
-/* found existing non-generated go type "Scorecard_GaugeView", skipping
-
+/* unreachable type Scorecard_GaugeView
 // +kcc:proto=google.monitoring.dashboard.v1.Scorecard.GaugeView
 type Scorecard_GaugeView struct {
 	// The lower bound for this gauge chart. The value of the chart should
@@ -787,8 +767,7 @@ type Scorecard_GaugeView struct {
 }
 */
 
-/* found existing non-generated go type "Scorecard_SparkChartView", skipping
-
+/* unreachable type Scorecard_SparkChartView
 // +kcc:proto=google.monitoring.dashboard.v1.Scorecard.SparkChartView
 type Scorecard_SparkChartView struct {
 	// Required. The type of sparkchart to show in this chartView.
@@ -805,8 +784,7 @@ type Scorecard_SparkChartView struct {
 }
 */
 
-/* found existing non-generated go type "SectionHeader", skipping
-
+/* unreachable type SectionHeader
 // +kcc:proto=google.monitoring.dashboard.v1.SectionHeader
 type SectionHeader struct {
 	// The subtitle of the section
@@ -819,15 +797,13 @@ type SectionHeader struct {
 }
 */
 
-/* found existing non-generated go type "SingleViewGroup", skipping
-
+/* unreachable type SingleViewGroup
 // +kcc:proto=google.monitoring.dashboard.v1.SingleViewGroup
 type SingleViewGroup struct {
 }
 */
 
-/* found existing non-generated go type "StatisticalTimeSeriesFilter", skipping
-
+/* unreachable type StatisticalTimeSeriesFilter
 // +kcc:proto=google.monitoring.dashboard.v1.StatisticalTimeSeriesFilter
 type StatisticalTimeSeriesFilter struct {
 	// `rankingMethod` is applied to a set of time series, and then the produced
@@ -844,8 +820,7 @@ type StatisticalTimeSeriesFilter struct {
 }
 */
 
-/* found existing non-generated go type "TableDisplayOptions", skipping
-
+/* unreachable type TableDisplayOptions
 // +kcc:proto=google.monitoring.dashboard.v1.TableDisplayOptions
 type TableDisplayOptions struct {
 	// Optional. This field is unused and has been replaced by
@@ -855,8 +830,7 @@ type TableDisplayOptions struct {
 }
 */
 
-/* found existing non-generated go type "Text", skipping
-
+/* unreachable type Text
 // +kcc:proto=google.monitoring.dashboard.v1.Text
 type Text struct {
 	// The text content to be displayed.
@@ -873,8 +847,7 @@ type Text struct {
 }
 */
 
-/* found existing non-generated go type "Text_TextStyle", skipping
-
+/* unreachable type Text_TextStyle
 // +kcc:proto=google.monitoring.dashboard.v1.Text.TextStyle
 type Text_TextStyle struct {
 	// The background color as a hex string. "#RRGGBB" or "#RGB"
@@ -908,8 +881,7 @@ type Text_TextStyle struct {
 }
 */
 
-/* found existing non-generated go type "Threshold", skipping
-
+/* unreachable type Threshold
 // +kcc:proto=google.monitoring.dashboard.v1.Threshold
 type Threshold struct {
 	// A label for the threshold.
@@ -937,8 +909,7 @@ type Threshold struct {
 }
 */
 
-/* found existing non-generated go type "TimeSeriesFilter", skipping
-
+/* unreachable type TimeSeriesFilter
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesFilter
 type TimeSeriesFilter struct {
 	// Required. The [monitoring
@@ -968,8 +939,7 @@ type TimeSeriesFilter struct {
 }
 */
 
-/* found existing non-generated go type "TimeSeriesFilterRatio", skipping
-
+/* unreachable type TimeSeriesFilterRatio
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesFilterRatio
 type TimeSeriesFilterRatio struct {
 	// The numerator of the ratio.
@@ -995,8 +965,7 @@ type TimeSeriesFilterRatio struct {
 }
 */
 
-/* found existing non-generated go type "TimeSeriesFilterRatio_RatioPart", skipping
-
+/* unreachable type TimeSeriesFilterRatio_RatioPart
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesFilterRatio.RatioPart
 type TimeSeriesFilterRatio_RatioPart struct {
 	// Required. The [monitoring
@@ -1013,8 +982,7 @@ type TimeSeriesFilterRatio_RatioPart struct {
 }
 */
 
-/* found existing non-generated go type "TimeSeriesQuery", skipping
-
+/* unreachable type TimeSeriesQuery
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesQuery
 type TimeSeriesQuery struct {
 	// Filter parameters to fetch time series.
@@ -1053,8 +1021,7 @@ type TimeSeriesQuery struct {
 }
 */
 
-/* found existing non-generated go type "TimeSeriesTable", skipping
-
+/* unreachable type TimeSeriesTable
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesTable
 type TimeSeriesTable struct {
 	// Required. The data displayed in this table.
@@ -1071,8 +1038,7 @@ type TimeSeriesTable struct {
 }
 */
 
-/* found existing non-generated go type "TimeSeriesTable_ColumnSettings", skipping
-
+/* unreachable type TimeSeriesTable_ColumnSettings
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesTable.ColumnSettings
 type TimeSeriesTable_ColumnSettings struct {
 	// Required. The id of the column.
@@ -1085,8 +1051,7 @@ type TimeSeriesTable_ColumnSettings struct {
 }
 */
 
-/* found existing non-generated go type "TimeSeriesTable_TableDataSet", skipping
-
+/* unreachable type TimeSeriesTable_TableDataSet
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesTable.TableDataSet
 type TimeSeriesTable_TableDataSet struct {
 	// Required. Fields for querying time series data from the
@@ -1116,8 +1081,7 @@ type TimeSeriesTable_TableDataSet struct {
 }
 */
 
-/* found existing non-generated go type "Widget", skipping
-
+/* unreachable type Widget
 // +kcc:proto=google.monitoring.dashboard.v1.Widget
 type Widget struct {
 	// Optional. The title of the widget.
@@ -1185,8 +1149,7 @@ type Widget struct {
 }
 */
 
-/* found existing non-generated go type "XyChart", skipping
-
+/* unreachable type XyChart
 // +kcc:proto=google.monitoring.dashboard.v1.XyChart
 type XyChart struct {
 	// Required. The data displayed in this chart.
@@ -1223,8 +1186,7 @@ type XyChart struct {
 }
 */
 
-/* found existing non-generated go type "XyChart_Axis", skipping
-
+/* unreachable type XyChart_Axis
 // +kcc:proto=google.monitoring.dashboard.v1.XyChart.Axis
 type XyChart_Axis struct {
 	// The label of the axis.
@@ -1237,8 +1199,7 @@ type XyChart_Axis struct {
 }
 */
 
-/* found existing non-generated go type "XyChart_DataSet", skipping
-
+/* unreachable type XyChart_DataSet
 // +kcc:proto=google.monitoring.dashboard.v1.XyChart.DataSet
 type XyChart_DataSet struct {
 	// Required. Fields for querying time series data from the
@@ -1284,7 +1245,7 @@ type MonitoredProject struct {
 }
 */
 
-/* found existing non-generated go type "Aggregation", skipping
+/* found existing non-generated go type with proto tag "google.monitoring.v3.Aggregation", skipping
 
 // +kcc:proto=google.monitoring.v3.Aggregation
 type Aggregation struct {
@@ -2418,6 +2379,7 @@ type Service_CloudEndpoints struct {
 	// The name of the Cloud Endpoints service underlying this service.
 	//  Corresponds to the `service` resource label in the [`api` monitored
 	//  resource](https://cloud.google.com/monitoring/api/resources#tag_api).
+	// +kcc:guess=possible-reference target=MonitoringService
 	// +kcc:proto:field=google.monitoring.v3.Service.CloudEndpoints.service
 	Service *string `json:"service,omitempty"`
 }
@@ -2950,8 +2912,7 @@ type UptimeCheckConfig_TCPCheck struct {
 }
 */
 
-/* found existing non-generated go type "Empty", skipping
-
+/* unreachable type Empty
 // +kcc:proto=google.protobuf.Empty
 type Empty struct {
 }

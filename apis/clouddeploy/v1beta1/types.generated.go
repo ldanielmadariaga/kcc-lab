@@ -21,6 +21,7 @@
 
 package v1beta1
 
+/* unreachable type Canary
 // +kcc:proto=google.cloud.deploy.v1.Canary
 type Canary struct {
 	// Optional. Runtime specific configurations for the deployment strategy. The
@@ -39,7 +40,9 @@ type Canary struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.Canary.custom_canary_deployment
 	CustomCanaryDeployment *CustomCanaryDeployment `json:"customCanaryDeployment,omitempty"`
 }
+*/
 
+/* unreachable type CanaryDeployment
 // +kcc:proto=google.cloud.deploy.v1.CanaryDeployment
 type CanaryDeployment struct {
 	// Required. The percentage based deployments that will occur as a part of a
@@ -65,7 +68,9 @@ type CanaryDeployment struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.CanaryDeployment.postdeploy
 	Postdeploy *Postdeploy `json:"postdeploy,omitempty"`
 }
+*/
 
+/* unreachable type CloudRunConfig
 // +kcc:proto=google.cloud.deploy.v1.CloudRunConfig
 type CloudRunConfig struct {
 	// Optional. Whether Cloud Deploy should update the traffic stanza in a Cloud
@@ -90,7 +95,9 @@ type CloudRunConfig struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.CloudRunConfig.stable_revision_tags
 	StableRevisionTags []string `json:"stableRevisionTags,omitempty"`
 }
+*/
 
+/* unreachable type CustomCanaryDeployment
 // +kcc:proto=google.cloud.deploy.v1.CustomCanaryDeployment
 type CustomCanaryDeployment struct {
 	// Required. Configuration for each phase in the canary deployment in the
@@ -98,7 +105,9 @@ type CustomCanaryDeployment struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.CustomCanaryDeployment.phase_configs
 	PhaseConfigs []CustomCanaryDeployment_PhaseConfig `json:"phaseConfigs,omitempty"`
 }
+*/
 
+/* unreachable type CustomCanaryDeployment_PhaseConfig
 // +kcc:proto=google.cloud.deploy.v1.CustomCanaryDeployment.PhaseConfig
 type CustomCanaryDeployment_PhaseConfig struct {
 	// Required. The ID to assign to the `Rollout` phase.
@@ -134,7 +143,61 @@ type CustomCanaryDeployment_PhaseConfig struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.CustomCanaryDeployment.PhaseConfig.postdeploy
 	Postdeploy *Postdeploy `json:"postdeploy,omitempty"`
 }
+*/
 
+/* unreachable type DeliveryPipeline
+// +kcc:proto=google.cloud.deploy.v1.DeliveryPipeline
+type DeliveryPipeline struct {
+	// Identifier. Name of the `DeliveryPipeline`. Format is
+	//  `projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}`.
+	//  The `deliveryPipeline` component must match
+	//  `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.name
+	Name *string `json:"name,omitempty"`
+
+	// Optional. Description of the `DeliveryPipeline`. Max length is 255
+	//  characters.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User annotations. These attributes can only be set and used by
+	//  the user, and not by Cloud Deploy.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.annotations
+	Annotations map[string]string `json:"annotations,omitempty"`
+
+	// Labels are attributes that can be set and used by both the
+	//  user and by Cloud Deploy. Labels must meet the following constraints:
+	//
+	//  * Keys and values can contain only lowercase letters, numeric characters,
+	//  underscores, and dashes.
+	//  * All characters must use UTF-8 encoding, and international characters are
+	//  allowed.
+	//  * Keys must start with a lowercase letter or international character.
+	//  * Each resource is limited to a maximum of 64 labels.
+	//
+	//  Both keys and values are additionally constrained to be <= 128 bytes.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. SerialPipeline defines a sequential set of stages for a
+	//  `DeliveryPipeline`.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.serial_pipeline
+	SerialPipeline *SerialPipeline `json:"serialPipeline,omitempty"`
+
+	// This checksum is computed by the server based on the value of other
+	//  fields, and may be sent on update and delete requests to ensure the
+	//  client has an up-to-date value before proceeding.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Optional. When suspended, no new releases or rollouts can be created,
+	//  but in-progress ones will complete.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.suspended
+	Suspended *bool `json:"suspended,omitempty"`
+}
+*/
+
+/* unreachable type DeployParameters
 // +kcc:proto=google.cloud.deploy.v1.DeployParameters
 type DeployParameters struct {
 	// Required. Values are deploy parameters in key-value pairs.
@@ -147,7 +210,9 @@ type DeployParameters struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.DeployParameters.match_target_labels
 	MatchTargetLabels map[string]string `json:"matchTargetLabels,omitempty"`
 }
+*/
 
+/* unreachable type KubernetesConfig
 // +kcc:proto=google.cloud.deploy.v1.KubernetesConfig
 type KubernetesConfig struct {
 	// Optional. Kubernetes Gateway API service mesh configuration.
@@ -158,7 +223,9 @@ type KubernetesConfig struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.KubernetesConfig.service_networking
 	ServiceNetworking *KubernetesConfig_ServiceNetworking `json:"serviceNetworking,omitempty"`
 }
+*/
 
+/* unreachable type KubernetesConfig_GatewayServiceMesh
 // +kcc:proto=google.cloud.deploy.v1.KubernetesConfig.GatewayServiceMesh
 type KubernetesConfig_GatewayServiceMesh struct {
 	// Required. Name of the Gateway API HTTPRoute.
@@ -200,7 +267,29 @@ type KubernetesConfig_GatewayServiceMesh struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.KubernetesConfig.GatewayServiceMesh.route_destinations
 	RouteDestinations *KubernetesConfig_GatewayServiceMesh_RouteDestinations `json:"routeDestinations,omitempty"`
 }
+*/
 
+/* unreachable type KubernetesConfig_GatewayServiceMesh_RouteDestinations
+// +kcc:proto=google.cloud.deploy.v1.KubernetesConfig.GatewayServiceMesh.RouteDestinations
+type KubernetesConfig_GatewayServiceMesh_RouteDestinations struct {
+	// Required. The clusters where the Gateway API HTTPRoute resource will be
+	//  deployed to. Valid entries include the associated entities IDs
+	//  configured in the Target resource and "@self" to include the Target
+	//  cluster.
+	// +kcc:proto:field=google.cloud.deploy.v1.KubernetesConfig.GatewayServiceMesh.RouteDestinations.destination_ids
+	DestinationIds []string `json:"destinationIds,omitempty"`
+
+	// Optional. Whether to propagate the Kubernetes Service to the route
+	//  destination clusters. The Service will always be deployed to the Target
+	//  cluster even if the HTTPRoute is not. This option may be used to
+	//  facilitate successful DNS lookup in the route destination clusters. Can
+	//  only be set to true if destinations are specified.
+	// +kcc:proto:field=google.cloud.deploy.v1.KubernetesConfig.GatewayServiceMesh.RouteDestinations.propagate_service
+	PropagateService *bool `json:"propagateService,omitempty"`
+}
+*/
+
+/* unreachable type KubernetesConfig_ServiceNetworking
 // +kcc:proto=google.cloud.deploy.v1.KubernetesConfig.ServiceNetworking
 type KubernetesConfig_ServiceNetworking struct {
 	// Required. Name of the Kubernetes Service.
@@ -224,7 +313,9 @@ type KubernetesConfig_ServiceNetworking struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.KubernetesConfig.ServiceNetworking.pod_selector_label
 	PodSelectorLabel *string `json:"podSelectorLabel,omitempty"`
 }
+*/
 
+/* unreachable type PipelineCondition
 // +kcc:proto=google.cloud.deploy.v1.PipelineCondition
 type PipelineCondition struct {
 	// Details around the Pipeline's overall status.
@@ -240,7 +331,9 @@ type PipelineCondition struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.PipelineCondition.targets_type_condition
 	TargetsTypeCondition *TargetsTypeCondition `json:"targetsTypeCondition,omitempty"`
 }
+*/
 
+/* unreachable type PipelineReadyCondition
 // +kcc:proto=google.cloud.deploy.v1.PipelineReadyCondition
 type PipelineReadyCondition struct {
 	// True if the Pipeline is in a valid state. Otherwise at least one condition
@@ -254,7 +347,9 @@ type PipelineReadyCondition struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.PipelineReadyCondition.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
+*/
 
+/* unreachable type Postdeploy
 // +kcc:proto=google.cloud.deploy.v1.Postdeploy
 type Postdeploy struct {
 	// Optional. A sequence of Skaffold custom actions to invoke during execution
@@ -262,7 +357,9 @@ type Postdeploy struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.Postdeploy.actions
 	Actions []string `json:"actions,omitempty"`
 }
+*/
 
+/* unreachable type Predeploy
 // +kcc:proto=google.cloud.deploy.v1.Predeploy
 type Predeploy struct {
 	// Optional. A sequence of Skaffold custom actions to invoke during execution
@@ -270,7 +367,9 @@ type Predeploy struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.Predeploy.actions
 	Actions []string `json:"actions,omitempty"`
 }
+*/
 
+/* unreachable type RuntimeConfig
 // +kcc:proto=google.cloud.deploy.v1.RuntimeConfig
 type RuntimeConfig struct {
 	// Optional. Kubernetes runtime configuration.
@@ -281,7 +380,9 @@ type RuntimeConfig struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.RuntimeConfig.cloud_run
 	CloudRun *CloudRunConfig `json:"cloudRun,omitempty"`
 }
+*/
 
+/* unreachable type SerialPipeline
 // +kcc:proto=google.cloud.deploy.v1.SerialPipeline
 type SerialPipeline struct {
 	// Optional. Each stage specifies configuration for a `Target`. The ordering
@@ -289,7 +390,9 @@ type SerialPipeline struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.SerialPipeline.stages
 	Stages []Stage `json:"stages,omitempty"`
 }
+*/
 
+/* unreachable type Stage
 // +kcc:proto=google.cloud.deploy.v1.Stage
 type Stage struct {
 	// Optional. The target_id to which this stage points. This field refers
@@ -314,7 +417,9 @@ type Stage struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.Stage.deploy_parameters
 	DeployParameters []DeployParameters `json:"deployParameters,omitempty"`
 }
+*/
 
+/* unreachable type Standard
 // +kcc:proto=google.cloud.deploy.v1.Standard
 type Standard struct {
 	// Optional. Whether to verify a deployment via `skaffold verify`.
@@ -331,7 +436,9 @@ type Standard struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.Standard.postdeploy
 	Postdeploy *Postdeploy `json:"postdeploy,omitempty"`
 }
+*/
 
+/* unreachable type Strategy
 // +kcc:proto=google.cloud.deploy.v1.Strategy
 type Strategy struct {
 	// Optional. Standard deployment strategy executes a single deploy and
@@ -344,7 +451,9 @@ type Strategy struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.Strategy.canary
 	Canary *Canary `json:"canary,omitempty"`
 }
+*/
 
+/* unreachable type TargetsPresentCondition
 // +kcc:proto=google.cloud.deploy.v1.TargetsPresentCondition
 type TargetsPresentCondition struct {
 	// True if there aren't any missing Targets.
@@ -360,7 +469,9 @@ type TargetsPresentCondition struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.TargetsPresentCondition.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
+*/
 
+/* unreachable type TargetsTypeCondition
 // +kcc:proto=google.cloud.deploy.v1.TargetsTypeCondition
 type TargetsTypeCondition struct {
 	// True if the targets are all a comparable type. For example this is true if
@@ -373,3 +484,25 @@ type TargetsTypeCondition struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.TargetsTypeCondition.error_details
 	ErrorDetails *string `json:"errorDetails,omitempty"`
 }
+*/
+
+/* unreachable type DeliveryPipelineObservedState
+// +kcc:observedstate:proto=google.cloud.deploy.v1.DeliveryPipeline
+type DeliveryPipelineObservedState struct {
+	// Output only. Unique identifier of the `DeliveryPipeline`.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. Time at which the pipeline was created.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Most recent time at which the pipeline was updated.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Information around the state of the Delivery Pipeline.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.condition
+	Condition *PipelineCondition `json:"condition,omitempty"`
+}
+*/

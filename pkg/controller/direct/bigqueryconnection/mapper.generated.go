@@ -29,100 +29,24 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
-func AwsAccessRoleStatus_FromProto(mapCtx *direct.MapContext, in *pb.AwsAccessRole) *krm.AwsAccessRoleStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krm.AwsAccessRoleStatus{}
-	// MISSING: IAMRoleID
-	out.Identity = direct.LazyPtr(in.GetIdentity())
-	return out
-}
-func AwsAccessRoleStatus_ToProto(mapCtx *direct.MapContext, in *krm.AwsAccessRoleStatus) *pb.AwsAccessRole {
-	if in == nil {
-		return nil
-	}
-	out := &pb.AwsAccessRole{}
-	// MISSING: IAMRoleID
-	out.Identity = direct.ValueOf(in.Identity)
-	return out
-}
-func AwsPropertiesStatus_FromProto(mapCtx *direct.MapContext, in *pb.AwsProperties) *krm.AwsPropertiesStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krm.AwsPropertiesStatus{}
-	// MISSING: CrossAccountRole
-	out.AccessRole = AwsAccessRoleStatus_FromProto(mapCtx, in.GetAccessRole())
-	return out
-}
-func AwsPropertiesStatus_ToProto(mapCtx *direct.MapContext, in *krm.AwsPropertiesStatus) *pb.AwsProperties {
-	if in == nil {
-		return nil
-	}
-	out := &pb.AwsProperties{}
-	// MISSING: CrossAccountRole
-	if oneof := AwsAccessRoleStatus_ToProto(mapCtx, in.AccessRole); oneof != nil {
-		out.AuthenticationMethod = &pb.AwsProperties_AccessRole{AccessRole: oneof}
-	}
-	return out
-}
-
-/* found existing non-generated mapping function "AzurePropertiesStatus_FromProto", skipping
-func AzurePropertiesStatus_FromProto(mapCtx *direct.MapContext, in *pb.AzureProperties) *krm.AzurePropertiesStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krm.AzurePropertiesStatus{}
-	out.Application = direct.LazyPtr(in.GetApplication())
-	out.ClientID = direct.LazyPtr(in.GetClientId())
-	out.ObjectID = direct.LazyPtr(in.GetObjectId())
-	// MISSING: CustomerTenantID
-	// MISSING: RedirectURI
-	// (near miss): "RedirectURI" vs "RedirectUri"
-	// MISSING: FederatedApplicationClientID
-	out.Identity = direct.LazyPtr(in.GetIdentity())
-	return out
-}
-*/
-
-/*
-found existing non-generated mapping function "AzurePropertiesStatus_ToProto", skipping
-
-	func AzurePropertiesStatus_ToProto(mapCtx *direct.MapContext, in *krm.AzurePropertiesStatus) *pb.AzureProperties {
-		if in == nil {
-			return nil
-		}
-		out := &pb.AzureProperties{}
-		out.Application = direct.ValueOf(in.Application)
-		out.ClientId = direct.ValueOf(in.ClientID)
-		out.ObjectId = direct.ValueOf(in.ObjectID)
-		// MISSING: CustomerTenantID
-		// MISSING: RedirectURI
-		// (near miss): "RedirectURI" vs "RedirectUri"
-		// MISSING: FederatedApplicationClientID
-		out.Identity = direct.ValueOf(in.Identity)
-		return out
-	}
-*/
 func BigQueryConnectionConnectionObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Connection) *krm.BigQueryConnectionConnectionObservedState {
 	if in == nil {
 		return nil
 	}
 	out := &krm.BigQueryConnectionConnectionObservedState{}
 	// MISSING: Name
-	out.FriendlyName = direct.LazyPtr(in.GetFriendlyName())
-	out.Description = direct.LazyPtr(in.GetDescription())
-	out.CloudSQL = CloudSqlPropertiesStatus_FromProto(mapCtx, in.GetCloudSql())
-	out.Aws = AwsPropertiesStatus_FromProto(mapCtx, in.GetAws())
-	out.Azure = AzurePropertiesStatus_FromProto(mapCtx, in.GetAzure())
+	// MISSING: FriendlyName
+	// MISSING: Description
+	// MISSING: CloudSQL
+	// MISSING: Aws
+	// MISSING: Azure
 	// MISSING: CloudSpanner
-	out.CloudResource = CloudResourcePropertiesStatus_FromProto(mapCtx, in.GetCloudResource())
-	out.Spark = SparkPropertiesStatus_FromProto(mapCtx, in.GetSpark())
+	// MISSING: CloudResource
+	// MISSING: Spark
 	// MISSING: SalesforceDataCloud
 	// MISSING: CreationTime
 	// MISSING: LastModifiedTime
-	out.HasCredential = direct.LazyPtr(in.GetHasCredential())
+	// MISSING: HasCredential
 	return out
 }
 func BigQueryConnectionConnectionObservedState_ToProto(mapCtx *direct.MapContext, in *krm.BigQueryConnectionConnectionObservedState) *pb.Connection {
@@ -131,28 +55,18 @@ func BigQueryConnectionConnectionObservedState_ToProto(mapCtx *direct.MapContext
 	}
 	out := &pb.Connection{}
 	// MISSING: Name
-	out.FriendlyName = direct.ValueOf(in.FriendlyName)
-	out.Description = direct.ValueOf(in.Description)
-	if oneof := CloudSqlPropertiesStatus_ToProto(mapCtx, in.CloudSQL); oneof != nil {
-		out.Properties = &pb.Connection_CloudSql{CloudSql: oneof}
-	}
-	if oneof := AwsPropertiesStatus_ToProto(mapCtx, in.Aws); oneof != nil {
-		out.Properties = &pb.Connection_Aws{Aws: oneof}
-	}
-	if oneof := AzurePropertiesStatus_ToProto(mapCtx, in.Azure); oneof != nil {
-		out.Properties = &pb.Connection_Azure{Azure: oneof}
-	}
+	// MISSING: FriendlyName
+	// MISSING: Description
+	// MISSING: CloudSQL
+	// MISSING: Aws
+	// MISSING: Azure
 	// MISSING: CloudSpanner
-	if oneof := CloudResourcePropertiesStatus_ToProto(mapCtx, in.CloudResource); oneof != nil {
-		out.Properties = &pb.Connection_CloudResource{CloudResource: oneof}
-	}
-	if oneof := SparkPropertiesStatus_ToProto(mapCtx, in.Spark); oneof != nil {
-		out.Properties = &pb.Connection_Spark{Spark: oneof}
-	}
+	// MISSING: CloudResource
+	// MISSING: Spark
 	// MISSING: SalesforceDataCloud
 	// MISSING: CreationTime
 	// MISSING: LastModifiedTime
-	out.HasCredential = direct.ValueOf(in.HasCredential)
+	// MISSING: HasCredential
 	return out
 }
 
@@ -163,117 +77,41 @@ func BigQueryConnectionConnectionSpec_FromProto(mapCtx *direct.MapContext, in *p
 	}
 	out := &krm.BigQueryConnectionConnectionSpec{}
 	// MISSING: Name
-	out.FriendlyName = direct.LazyPtr(in.GetFriendlyName())
-	out.Description = direct.LazyPtr(in.GetDescription())
+	// MISSING: FriendlyName
+	// MISSING: Description
+	// MISSING: CloudSQL
+	// MISSING: Aws
+	// MISSING: Azure
 	// MISSING: CloudSpanner
+	// MISSING: CloudResource
+	// MISSING: Spark
 	// MISSING: SalesforceDataCloud
 	// MISSING: CreationTime
 	// MISSING: LastModifiedTime
+	// MISSING: HasCredential
 	return out
 }
 */
 
-/*
-found existing non-generated mapping function "BigQueryConnectionConnectionSpec_ToProto", skipping
-
-	func BigQueryConnectionConnectionSpec_ToProto(mapCtx *direct.MapContext, in *krm.BigQueryConnectionConnectionSpec) *pb.Connection {
-		if in == nil {
-			return nil
-		}
-		out := &pb.Connection{}
-		// MISSING: Name
-		out.FriendlyName = direct.ValueOf(in.FriendlyName)
-		out.Description = direct.ValueOf(in.Description)
-		// MISSING: CloudSpanner
-		// MISSING: SalesforceDataCloud
-		// MISSING: CreationTime
-		// MISSING: LastModifiedTime
-		return out
-	}
-*/
-func CloudResourcePropertiesStatus_FromProto(mapCtx *direct.MapContext, in *pb.CloudResourceProperties) *krm.CloudResourcePropertiesStatus {
+/* found existing non-generated mapping function "BigQueryConnectionConnectionSpec_ToProto", skipping
+func BigQueryConnectionConnectionSpec_ToProto(mapCtx *direct.MapContext, in *krm.BigQueryConnectionConnectionSpec) *pb.Connection {
 	if in == nil {
 		return nil
 	}
-	out := &krm.CloudResourcePropertiesStatus{}
-	out.ServiceAccountID = direct.LazyPtr(in.GetServiceAccountId())
-	return out
-}
-func CloudResourcePropertiesStatus_ToProto(mapCtx *direct.MapContext, in *krm.CloudResourcePropertiesStatus) *pb.CloudResourceProperties {
-	if in == nil {
-		return nil
-	}
-	out := &pb.CloudResourceProperties{}
-	out.ServiceAccountId = direct.ValueOf(in.ServiceAccountID)
-	return out
-}
-
-/* found existing non-generated mapping function "CloudSqlCredential_FromProto", skipping
-func CloudSqlCredential_FromProto(mapCtx *direct.MapContext, in *pb.CloudSqlCredential) *krm.CloudSqlCredential {
-	if in == nil {
-		return nil
-	}
-	out := &krm.CloudSqlCredential{}
-	// MISSING: Username
-	// MISSING: Password
+	out := &pb.Connection{}
+	// MISSING: Name
+	// MISSING: FriendlyName
+	// MISSING: Description
+	// MISSING: CloudSQL
+	// MISSING: Aws
+	// MISSING: Azure
+	// MISSING: CloudSpanner
+	// MISSING: CloudResource
+	// MISSING: Spark
+	// MISSING: SalesforceDataCloud
+	// MISSING: CreationTime
+	// MISSING: LastModifiedTime
+	// MISSING: HasCredential
 	return out
 }
 */
-
-/*
-found existing non-generated mapping function "CloudSqlCredential_ToProto", skipping
-
-	func CloudSqlCredential_ToProto(mapCtx *direct.MapContext, in *krm.CloudSqlCredential) *pb.CloudSqlCredential {
-		if in == nil {
-			return nil
-		}
-		out := &pb.CloudSqlCredential{}
-		// MISSING: Username
-		// MISSING: Password
-		return out
-	}
-*/
-func CloudSqlPropertiesStatus_FromProto(mapCtx *direct.MapContext, in *pb.CloudSqlProperties) *krm.CloudSqlPropertiesStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krm.CloudSqlPropertiesStatus{}
-	// MISSING: InstanceID
-	// MISSING: Database
-	// MISSING: Type
-	// MISSING: Credential
-	out.ServiceAccountID = direct.LazyPtr(in.GetServiceAccountId())
-	return out
-}
-func CloudSqlPropertiesStatus_ToProto(mapCtx *direct.MapContext, in *krm.CloudSqlPropertiesStatus) *pb.CloudSqlProperties {
-	if in == nil {
-		return nil
-	}
-	out := &pb.CloudSqlProperties{}
-	// MISSING: InstanceID
-	// MISSING: Database
-	// MISSING: Type
-	// MISSING: Credential
-	out.ServiceAccountId = direct.ValueOf(in.ServiceAccountID)
-	return out
-}
-func SparkPropertiesStatus_FromProto(mapCtx *direct.MapContext, in *pb.SparkProperties) *krm.SparkPropertiesStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krm.SparkPropertiesStatus{}
-	out.ServiceAccountID = direct.LazyPtr(in.GetServiceAccountId())
-	// MISSING: MetastoreServiceConfig
-	// MISSING: SparkHistoryServerConfig
-	return out
-}
-func SparkPropertiesStatus_ToProto(mapCtx *direct.MapContext, in *krm.SparkPropertiesStatus) *pb.SparkProperties {
-	if in == nil {
-		return nil
-	}
-	out := &pb.SparkProperties{}
-	out.ServiceAccountId = direct.ValueOf(in.ServiceAccountID)
-	// MISSING: MetastoreServiceConfig
-	// MISSING: SparkHistoryServerConfig
-	return out
-}

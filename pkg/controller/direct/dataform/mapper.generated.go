@@ -87,7 +87,13 @@ func DataformRepositoryObservedState_v1beta1_FromProto(mapCtx *direct.MapContext
 	// MISSING: ContainingFolder
 	// MISSING: TeamFolderName
 	// MISSING: CreateTime
+	// MISSING: DisplayName
+	// MISSING: GitRemoteSettings
+	// MISSING: NpmrcEnvironmentVariablesSecretVersion
+	// MISSING: WorkspaceCompilationOverrides
 	// MISSING: Labels
+	// MISSING: SetAuthenticatedUserAdmin
+	// MISSING: ServiceAccount
 	// MISSING: KMSKeyName
 	// MISSING: DataEncryptionState
 	// MISSING: InternalMetadata
@@ -102,7 +108,13 @@ func DataformRepositoryObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, 
 	// MISSING: ContainingFolder
 	// MISSING: TeamFolderName
 	// MISSING: CreateTime
+	// MISSING: DisplayName
+	// MISSING: GitRemoteSettings
+	// MISSING: NpmrcEnvironmentVariablesSecretVersion
+	// MISSING: WorkspaceCompilationOverrides
 	// MISSING: Labels
+	// MISSING: SetAuthenticatedUserAdmin
+	// MISSING: ServiceAccount
 	// MISSING: KMSKeyName
 	// MISSING: DataEncryptionState
 	// MISSING: InternalMetadata

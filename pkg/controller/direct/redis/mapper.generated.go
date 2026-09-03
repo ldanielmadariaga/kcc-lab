@@ -29,361 +29,8 @@ import (
 	pb "cloud.google.com/go/redis/cluster/apiv1/clusterpb"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/redis/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
-	dayofweekpb "google.golang.org/genproto/googleapis/type/dayofweek"
 )
 
-func AutomatedBackupConfig_FromProto(mapCtx *direct.MapContext, in *pb.AutomatedBackupConfig) *krm.AutomatedBackupConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.AutomatedBackupConfig{}
-	out.FixedFrequencySchedule = AutomatedBackupConfig_FixedFrequencySchedule_FromProto(mapCtx, in.GetFixedFrequencySchedule())
-	out.AutomatedBackupMode = direct.Enum_FromProto(mapCtx, in.GetAutomatedBackupMode())
-	out.Retention = direct.StringDuration_FromProto(mapCtx, in.GetRetention())
-	return out
-}
-func AutomatedBackupConfig_ToProto(mapCtx *direct.MapContext, in *krm.AutomatedBackupConfig) *pb.AutomatedBackupConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.AutomatedBackupConfig{}
-	if oneof := AutomatedBackupConfig_FixedFrequencySchedule_ToProto(mapCtx, in.FixedFrequencySchedule); oneof != nil {
-		out.Schedule = &pb.AutomatedBackupConfig_FixedFrequencySchedule_{FixedFrequencySchedule: oneof}
-	}
-	out.AutomatedBackupMode = direct.Enum_ToProto[pb.AutomatedBackupConfig_AutomatedBackupMode](mapCtx, in.AutomatedBackupMode)
-	out.Retention = direct.StringDuration_ToProto(mapCtx, in.Retention)
-	return out
-}
-func AutomatedBackupConfig_FixedFrequencySchedule_FromProto(mapCtx *direct.MapContext, in *pb.AutomatedBackupConfig_FixedFrequencySchedule) *krm.AutomatedBackupConfig_FixedFrequencySchedule {
-	if in == nil {
-		return nil
-	}
-	out := &krm.AutomatedBackupConfig_FixedFrequencySchedule{}
-	out.StartTime = TimeOfDay_FromProto(mapCtx, in.GetStartTime())
-	return out
-}
-func AutomatedBackupConfig_FixedFrequencySchedule_ToProto(mapCtx *direct.MapContext, in *krm.AutomatedBackupConfig_FixedFrequencySchedule) *pb.AutomatedBackupConfig_FixedFrequencySchedule {
-	if in == nil {
-		return nil
-	}
-	out := &pb.AutomatedBackupConfig_FixedFrequencySchedule{}
-	out.StartTime = TimeOfDay_ToProto(mapCtx, in.StartTime)
-	return out
-}
-func ClusterMaintenancePolicy_FromProto(mapCtx *direct.MapContext, in *pb.ClusterMaintenancePolicy) *krm.ClusterMaintenancePolicy {
-	if in == nil {
-		return nil
-	}
-	out := &krm.ClusterMaintenancePolicy{}
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	out.WeeklyMaintenanceWindow = direct.Slice_FromProto(mapCtx, in.WeeklyMaintenanceWindow, ClusterWeeklyMaintenanceWindow_FromProto)
-	return out
-}
-func ClusterMaintenancePolicy_ToProto(mapCtx *direct.MapContext, in *krm.ClusterMaintenancePolicy) *pb.ClusterMaintenancePolicy {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ClusterMaintenancePolicy{}
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	out.WeeklyMaintenanceWindow = direct.Slice_ToProto(mapCtx, in.WeeklyMaintenanceWindow, ClusterWeeklyMaintenanceWindow_ToProto)
-	return out
-}
-func ClusterMaintenancePolicyObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ClusterMaintenancePolicy) *krm.ClusterMaintenancePolicyObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.ClusterMaintenancePolicyObservedState{}
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: WeeklyMaintenanceWindow
-	return out
-}
-func ClusterMaintenancePolicyObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ClusterMaintenancePolicyObservedState) *pb.ClusterMaintenancePolicy {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ClusterMaintenancePolicy{}
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: WeeklyMaintenanceWindow
-	return out
-}
-func ClusterMaintenanceScheduleObservedState_FromProto(mapCtx *direct.MapContext, in *pb.ClusterMaintenanceSchedule) *krm.ClusterMaintenanceScheduleObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.ClusterMaintenanceScheduleObservedState{}
-	out.StartTime = direct.StringTimestamp_FromProto(mapCtx, in.GetStartTime())
-	out.EndTime = direct.StringTimestamp_FromProto(mapCtx, in.GetEndTime())
-	return out
-}
-func ClusterMaintenanceScheduleObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ClusterMaintenanceScheduleObservedState) *pb.ClusterMaintenanceSchedule {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ClusterMaintenanceSchedule{}
-	out.StartTime = direct.StringTimestamp_ToProto(mapCtx, in.StartTime)
-	out.EndTime = direct.StringTimestamp_ToProto(mapCtx, in.EndTime)
-	return out
-}
-func ClusterPersistenceConfig_FromProto(mapCtx *direct.MapContext, in *pb.ClusterPersistenceConfig) *krm.ClusterPersistenceConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.ClusterPersistenceConfig{}
-	out.Mode = direct.Enum_FromProto(mapCtx, in.GetMode())
-	out.RdbConfig = ClusterPersistenceConfig_RdbConfig_FromProto(mapCtx, in.GetRdbConfig())
-	out.AofConfig = ClusterPersistenceConfig_AofConfig_FromProto(mapCtx, in.GetAofConfig())
-	return out
-}
-func ClusterPersistenceConfig_ToProto(mapCtx *direct.MapContext, in *krm.ClusterPersistenceConfig) *pb.ClusterPersistenceConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ClusterPersistenceConfig{}
-	out.Mode = direct.Enum_ToProto[pb.ClusterPersistenceConfig_PersistenceMode](mapCtx, in.Mode)
-	out.RdbConfig = ClusterPersistenceConfig_RdbConfig_ToProto(mapCtx, in.RdbConfig)
-	out.AofConfig = ClusterPersistenceConfig_AofConfig_ToProto(mapCtx, in.AofConfig)
-	return out
-}
-func ClusterPersistenceConfig_AofConfig_FromProto(mapCtx *direct.MapContext, in *pb.ClusterPersistenceConfig_AOFConfig) *krm.ClusterPersistenceConfig_AofConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.ClusterPersistenceConfig_AofConfig{}
-	out.AppendFsync = direct.Enum_FromProto(mapCtx, in.GetAppendFsync())
-	return out
-}
-func ClusterPersistenceConfig_AofConfig_ToProto(mapCtx *direct.MapContext, in *krm.ClusterPersistenceConfig_AofConfig) *pb.ClusterPersistenceConfig_AOFConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ClusterPersistenceConfig_AOFConfig{}
-	out.AppendFsync = direct.Enum_ToProto[pb.ClusterPersistenceConfig_AOFConfig_AppendFsync](mapCtx, in.AppendFsync)
-	return out
-}
-func ClusterPersistenceConfig_RdbConfig_FromProto(mapCtx *direct.MapContext, in *pb.ClusterPersistenceConfig_RDBConfig) *krm.ClusterPersistenceConfig_RdbConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.ClusterPersistenceConfig_RdbConfig{}
-	out.RdbSnapshotPeriod = direct.Enum_FromProto(mapCtx, in.GetRdbSnapshotPeriod())
-	out.RdbSnapshotStartTime = direct.StringTimestamp_FromProto(mapCtx, in.GetRdbSnapshotStartTime())
-	return out
-}
-func ClusterPersistenceConfig_RdbConfig_ToProto(mapCtx *direct.MapContext, in *krm.ClusterPersistenceConfig_RdbConfig) *pb.ClusterPersistenceConfig_RDBConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ClusterPersistenceConfig_RDBConfig{}
-	out.RdbSnapshotPeriod = direct.Enum_ToProto[pb.ClusterPersistenceConfig_RDBConfig_SnapshotPeriod](mapCtx, in.RdbSnapshotPeriod)
-	out.RdbSnapshotStartTime = direct.StringTimestamp_ToProto(mapCtx, in.RdbSnapshotStartTime)
-	return out
-}
-func ClusterWeeklyMaintenanceWindow_FromProto(mapCtx *direct.MapContext, in *pb.ClusterWeeklyMaintenanceWindow) *krm.ClusterWeeklyMaintenanceWindow {
-	if in == nil {
-		return nil
-	}
-	out := &krm.ClusterWeeklyMaintenanceWindow{}
-	out.Day = direct.Enum_FromProto(mapCtx, in.GetDay())
-	out.StartTime = TimeOfDay_FromProto(mapCtx, in.GetStartTime())
-	return out
-}
-func ClusterWeeklyMaintenanceWindow_ToProto(mapCtx *direct.MapContext, in *krm.ClusterWeeklyMaintenanceWindow) *pb.ClusterWeeklyMaintenanceWindow {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ClusterWeeklyMaintenanceWindow{}
-	out.Day = direct.Enum_ToProto[dayofweekpb.DayOfWeek](mapCtx, in.Day)
-	out.StartTime = TimeOfDay_ToProto(mapCtx, in.StartTime)
-	return out
-}
-func Cluster_StateInfo_FromProto(mapCtx *direct.MapContext, in *pb.Cluster_StateInfo) *krm.Cluster_StateInfo {
-	if in == nil {
-		return nil
-	}
-	out := &krm.Cluster_StateInfo{}
-	out.UpdateInfo = Cluster_StateInfo_UpdateInfo_FromProto(mapCtx, in.GetUpdateInfo())
-	return out
-}
-func Cluster_StateInfo_ToProto(mapCtx *direct.MapContext, in *krm.Cluster_StateInfo) *pb.Cluster_StateInfo {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Cluster_StateInfo{}
-	if oneof := Cluster_StateInfo_UpdateInfo_ToProto(mapCtx, in.UpdateInfo); oneof != nil {
-		out.Info = &pb.Cluster_StateInfo_UpdateInfo_{UpdateInfo: oneof}
-	}
-	return out
-}
-func Cluster_StateInfo_UpdateInfo_FromProto(mapCtx *direct.MapContext, in *pb.Cluster_StateInfo_UpdateInfo) *krm.Cluster_StateInfo_UpdateInfo {
-	if in == nil {
-		return nil
-	}
-	out := &krm.Cluster_StateInfo_UpdateInfo{}
-	out.TargetShardCount = in.TargetShardCount
-	out.TargetReplicaCount = in.TargetReplicaCount
-	return out
-}
-func Cluster_StateInfo_UpdateInfo_ToProto(mapCtx *direct.MapContext, in *krm.Cluster_StateInfo_UpdateInfo) *pb.Cluster_StateInfo_UpdateInfo {
-	if in == nil {
-		return nil
-	}
-	out := &pb.Cluster_StateInfo_UpdateInfo{}
-	out.TargetShardCount = in.TargetShardCount
-	out.TargetReplicaCount = in.TargetReplicaCount
-	return out
-}
-func CrossClusterReplicationConfig_FromProto(mapCtx *direct.MapContext, in *pb.CrossClusterReplicationConfig) *krm.CrossClusterReplicationConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.CrossClusterReplicationConfig{}
-	out.ClusterRole = direct.Enum_FromProto(mapCtx, in.GetClusterRole())
-	out.PrimaryCluster = CrossClusterReplicationConfig_RemoteCluster_FromProto(mapCtx, in.GetPrimaryCluster())
-	out.SecondaryClusters = direct.Slice_FromProto(mapCtx, in.SecondaryClusters, CrossClusterReplicationConfig_RemoteCluster_FromProto)
-	// MISSING: UpdateTime
-	// MISSING: Membership
-	return out
-}
-func CrossClusterReplicationConfig_ToProto(mapCtx *direct.MapContext, in *krm.CrossClusterReplicationConfig) *pb.CrossClusterReplicationConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.CrossClusterReplicationConfig{}
-	out.ClusterRole = direct.Enum_ToProto[pb.CrossClusterReplicationConfig_ClusterRole](mapCtx, in.ClusterRole)
-	out.PrimaryCluster = CrossClusterReplicationConfig_RemoteCluster_ToProto(mapCtx, in.PrimaryCluster)
-	out.SecondaryClusters = direct.Slice_ToProto(mapCtx, in.SecondaryClusters, CrossClusterReplicationConfig_RemoteCluster_ToProto)
-	// MISSING: UpdateTime
-	// MISSING: Membership
-	return out
-}
-func CrossClusterReplicationConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.CrossClusterReplicationConfig) *krm.CrossClusterReplicationConfigObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.CrossClusterReplicationConfigObservedState{}
-	// MISSING: ClusterRole
-	out.PrimaryCluster = CrossClusterReplicationConfig_RemoteClusterObservedState_FromProto(mapCtx, in.GetPrimaryCluster())
-	out.SecondaryClusters = direct.Slice_FromProto(mapCtx, in.SecondaryClusters, CrossClusterReplicationConfig_RemoteClusterObservedState_FromProto)
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.Membership = CrossClusterReplicationConfig_MembershipObservedState_FromProto(mapCtx, in.GetMembership())
-	return out
-}
-func CrossClusterReplicationConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.CrossClusterReplicationConfigObservedState) *pb.CrossClusterReplicationConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.CrossClusterReplicationConfig{}
-	// MISSING: ClusterRole
-	out.PrimaryCluster = CrossClusterReplicationConfig_RemoteClusterObservedState_ToProto(mapCtx, in.PrimaryCluster)
-	out.SecondaryClusters = direct.Slice_ToProto(mapCtx, in.SecondaryClusters, CrossClusterReplicationConfig_RemoteClusterObservedState_ToProto)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	out.Membership = CrossClusterReplicationConfig_MembershipObservedState_ToProto(mapCtx, in.Membership)
-	return out
-}
-func CrossClusterReplicationConfig_MembershipObservedState_FromProto(mapCtx *direct.MapContext, in *pb.CrossClusterReplicationConfig_Membership) *krm.CrossClusterReplicationConfig_MembershipObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.CrossClusterReplicationConfig_MembershipObservedState{}
-	out.PrimaryCluster = CrossClusterReplicationConfig_RemoteClusterObservedState_FromProto(mapCtx, in.GetPrimaryCluster())
-	out.SecondaryClusters = direct.Slice_FromProto(mapCtx, in.SecondaryClusters, CrossClusterReplicationConfig_RemoteClusterObservedState_FromProto)
-	return out
-}
-func CrossClusterReplicationConfig_MembershipObservedState_ToProto(mapCtx *direct.MapContext, in *krm.CrossClusterReplicationConfig_MembershipObservedState) *pb.CrossClusterReplicationConfig_Membership {
-	if in == nil {
-		return nil
-	}
-	out := &pb.CrossClusterReplicationConfig_Membership{}
-	out.PrimaryCluster = CrossClusterReplicationConfig_RemoteClusterObservedState_ToProto(mapCtx, in.PrimaryCluster)
-	out.SecondaryClusters = direct.Slice_ToProto(mapCtx, in.SecondaryClusters, CrossClusterReplicationConfig_RemoteClusterObservedState_ToProto)
-	return out
-}
-func CrossClusterReplicationConfig_RemoteCluster_FromProto(mapCtx *direct.MapContext, in *pb.CrossClusterReplicationConfig_RemoteCluster) *krm.CrossClusterReplicationConfig_RemoteCluster {
-	if in == nil {
-		return nil
-	}
-	out := &krm.CrossClusterReplicationConfig_RemoteCluster{}
-	if in.GetCluster() != "" {
-		out.ClusterRef = &krm.RedisClusterRef{External: in.GetCluster()}
-	}
-	// MISSING: Uid
-	return out
-}
-func CrossClusterReplicationConfig_RemoteCluster_ToProto(mapCtx *direct.MapContext, in *krm.CrossClusterReplicationConfig_RemoteCluster) *pb.CrossClusterReplicationConfig_RemoteCluster {
-	if in == nil {
-		return nil
-	}
-	out := &pb.CrossClusterReplicationConfig_RemoteCluster{}
-	if in.ClusterRef != nil {
-		out.Cluster = in.ClusterRef.External
-	}
-	// MISSING: Uid
-	return out
-}
-func CrossClusterReplicationConfig_RemoteClusterObservedState_FromProto(mapCtx *direct.MapContext, in *pb.CrossClusterReplicationConfig_RemoteCluster) *krm.CrossClusterReplicationConfig_RemoteClusterObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.CrossClusterReplicationConfig_RemoteClusterObservedState{}
-	out.Cluster = direct.LazyPtr(in.GetCluster())
-	out.Uid = direct.LazyPtr(in.GetUid())
-	return out
-}
-func CrossClusterReplicationConfig_RemoteClusterObservedState_ToProto(mapCtx *direct.MapContext, in *krm.CrossClusterReplicationConfig_RemoteClusterObservedState) *pb.CrossClusterReplicationConfig_RemoteCluster {
-	if in == nil {
-		return nil
-	}
-	out := &pb.CrossClusterReplicationConfig_RemoteCluster{}
-	out.Cluster = direct.ValueOf(in.Cluster)
-	out.Uid = direct.ValueOf(in.Uid)
-	return out
-}
-func DiscoveryEndpointObservedState_FromProto(mapCtx *direct.MapContext, in *pb.DiscoveryEndpoint) *krm.DiscoveryEndpointObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.DiscoveryEndpointObservedState{}
-	out.Address = direct.LazyPtr(in.GetAddress())
-	out.Port = direct.LazyPtr(in.GetPort())
-	out.PSCConfig = PSCConfig_FromProto(mapCtx, in.GetPscConfig())
-	return out
-}
-func DiscoveryEndpointObservedState_ToProto(mapCtx *direct.MapContext, in *krm.DiscoveryEndpointObservedState) *pb.DiscoveryEndpoint {
-	if in == nil {
-		return nil
-	}
-	out := &pb.DiscoveryEndpoint{}
-	out.Address = direct.ValueOf(in.Address)
-	out.Port = direct.ValueOf(in.Port)
-	out.PscConfig = PSCConfig_ToProto(mapCtx, in.PSCConfig)
-	return out
-}
-func EncryptionInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.EncryptionInfo) *krm.EncryptionInfoObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.EncryptionInfoObservedState{}
-	out.EncryptionType = direct.Enum_FromProto(mapCtx, in.GetEncryptionType())
-	out.KMSKeyVersions = in.KmsKeyVersions
-	out.KMSKeyPrimaryState = direct.Enum_FromProto(mapCtx, in.GetKmsKeyPrimaryState())
-	out.LastUpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetLastUpdateTime())
-	return out
-}
-func EncryptionInfoObservedState_ToProto(mapCtx *direct.MapContext, in *krm.EncryptionInfoObservedState) *pb.EncryptionInfo {
-	if in == nil {
-		return nil
-	}
-	out := &pb.EncryptionInfo{}
-	out.EncryptionType = direct.Enum_ToProto[pb.EncryptionInfo_Type](mapCtx, in.EncryptionType)
-	out.KmsKeyVersions = in.KMSKeyVersions
-	out.KmsKeyPrimaryState = direct.Enum_ToProto[pb.EncryptionInfo_KmsKeyState](mapCtx, in.KMSKeyPrimaryState)
-	out.LastUpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.LastUpdateTime)
-	return out
-}
 func InstanceMaintenancePolicy_FromProto(mapCtx *direct.MapContext, in *redispb.MaintenancePolicy) *krm.InstanceMaintenancePolicy {
 	if in == nil {
 		return nil
@@ -570,78 +217,6 @@ found existing non-generated mapping function "InstanceWeeklyMaintenanceWindow_T
 		return out
 	}
 */
-func PSCConfig_FromProto(mapCtx *direct.MapContext, in *pb.PscConfig) *krm.PSCConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.PSCConfig{}
-	out.Network = direct.LazyPtr(in.GetNetwork())
-	return out
-}
-func PSCConfig_ToProto(mapCtx *direct.MapContext, in *krm.PSCConfig) *pb.PscConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.PscConfig{}
-	out.Network = direct.ValueOf(in.Network)
-	return out
-}
-
-/* found existing non-generated mapping function "PSCConnectionObservedState_FromProto", skipping
-func PSCConnectionObservedState_FromProto(mapCtx *direct.MapContext, in *pb.PscConnection) *krm.PSCConnectionObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.PSCConnectionObservedState{}
-	out.PSCConnectionID = direct.LazyPtr(in.GetPscConnectionId())
-	out.Address = direct.LazyPtr(in.GetAddress())
-	out.ForwardingRule = direct.LazyPtr(in.GetForwardingRule())
-	out.ProjectID = direct.LazyPtr(in.GetProjectId())
-	out.Network = direct.LazyPtr(in.GetNetwork())
-	out.ServiceAttachment = direct.LazyPtr(in.GetServiceAttachment())
-	// MISSING: PSCConnectionStatus
-	// MISSING: ConnectionType
-	return out
-}
-*/
-
-/*
-found existing non-generated mapping function "PSCConnectionObservedState_ToProto", skipping
-
-	func PSCConnectionObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PSCConnectionObservedState) *pb.PscConnection {
-		if in == nil {
-			return nil
-		}
-		out := &pb.PscConnection{}
-		out.PscConnectionId = direct.ValueOf(in.PSCConnectionID)
-		out.Address = direct.ValueOf(in.Address)
-		out.ForwardingRule = direct.ValueOf(in.ForwardingRule)
-		out.ProjectId = direct.ValueOf(in.ProjectID)
-		out.Network = direct.ValueOf(in.Network)
-		out.ServiceAttachment = direct.ValueOf(in.ServiceAttachment)
-		// MISSING: PSCConnectionStatus
-		// MISSING: ConnectionType
-		return out
-	}
-*/
-func PSCServiceAttachmentObservedState_FromProto(mapCtx *direct.MapContext, in *pb.PscServiceAttachment) *krm.PSCServiceAttachmentObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.PSCServiceAttachmentObservedState{}
-	out.ServiceAttachment = direct.LazyPtr(in.GetServiceAttachment())
-	out.ConnectionType = direct.Enum_FromProto(mapCtx, in.GetConnectionType())
-	return out
-}
-func PSCServiceAttachmentObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PSCServiceAttachmentObservedState) *pb.PscServiceAttachment {
-	if in == nil {
-		return nil
-	}
-	out := &pb.PscServiceAttachment{}
-	out.ServiceAttachment = direct.ValueOf(in.ServiceAttachment)
-	out.ConnectionType = direct.Enum_ToProto[pb.ConnectionType](mapCtx, in.ConnectionType)
-	return out
-}
 func RedisClusterObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Cluster) *krm.RedisClusterObservedState {
 	if in == nil {
 		return nil
@@ -650,21 +225,33 @@ func RedisClusterObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Clust
 	// MISSING: GCSSource
 	// MISSING: ManagedBackupSource
 	// MISSING: Name
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.Uid = direct.LazyPtr(in.GetUid())
-	out.SizeGB = in.SizeGb
-	out.DiscoveryEndpoints = direct.Slice_FromProto(mapCtx, in.DiscoveryEndpoints, DiscoveryEndpointObservedState_FromProto)
-	out.PSCConnections = direct.Slice_FromProto(mapCtx, in.PscConnections, PSCConnectionObservedState_FromProto)
-	out.StateInfo = Cluster_StateInfo_FromProto(mapCtx, in.GetStateInfo())
-	out.PreciseSizeGB = in.PreciseSizeGb
-	out.CrossClusterReplicationConfig = CrossClusterReplicationConfigObservedState_FromProto(mapCtx, in.GetCrossClusterReplicationConfig())
-	out.MaintenancePolicy = ClusterMaintenancePolicyObservedState_FromProto(mapCtx, in.GetMaintenancePolicy())
-	out.MaintenanceSchedule = ClusterMaintenanceScheduleObservedState_FromProto(mapCtx, in.GetMaintenanceSchedule())
-	out.PSCServiceAttachments = direct.Slice_FromProto(mapCtx, in.PscServiceAttachments, PSCServiceAttachmentObservedState_FromProto)
+	// MISSING: CreateTime
+	// MISSING: State
+	// MISSING: Uid
+	// MISSING: ReplicaCount
+	// MISSING: AuthorizationMode
+	// MISSING: TransitEncryptionMode
+	// MISSING: SizeGB
+	// MISSING: ShardCount
+	// MISSING: PSCConfigs
+	// MISSING: DiscoveryEndpoints
+	// MISSING: PSCConnections
+	// MISSING: StateInfo
+	// MISSING: NodeType
+	// MISSING: PersistenceConfig
+	// MISSING: RedisConfigs
+	// MISSING: PreciseSizeGB
+	// MISSING: ZoneDistributionConfig
+	// MISSING: CrossClusterReplicationConfig
+	// MISSING: DeletionProtectionEnabled
+	// MISSING: MaintenancePolicy
+	// MISSING: MaintenanceSchedule
+	// MISSING: PSCServiceAttachments
 	// MISSING: ClusterEndpoints
 	// MISSING: BackupCollection
-	out.EncryptionInfo = EncryptionInfoObservedState_FromProto(mapCtx, in.GetEncryptionInfo())
+	// MISSING: KMSKey
+	// MISSING: AutomatedBackupConfig
+	// MISSING: EncryptionInfo
 	return out
 }
 func RedisClusterObservedState_ToProto(mapCtx *direct.MapContext, in *krm.RedisClusterObservedState) *pb.Cluster {
@@ -675,21 +262,33 @@ func RedisClusterObservedState_ToProto(mapCtx *direct.MapContext, in *krm.RedisC
 	// MISSING: GCSSource
 	// MISSING: ManagedBackupSource
 	// MISSING: Name
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.State = direct.Enum_ToProto[pb.Cluster_State](mapCtx, in.State)
-	out.Uid = direct.ValueOf(in.Uid)
-	out.SizeGb = in.SizeGB
-	out.DiscoveryEndpoints = direct.Slice_ToProto(mapCtx, in.DiscoveryEndpoints, DiscoveryEndpointObservedState_ToProto)
-	out.PscConnections = direct.Slice_ToProto(mapCtx, in.PSCConnections, PSCConnectionObservedState_ToProto)
-	out.StateInfo = Cluster_StateInfo_ToProto(mapCtx, in.StateInfo)
-	out.PreciseSizeGb = in.PreciseSizeGB
-	out.CrossClusterReplicationConfig = CrossClusterReplicationConfigObservedState_ToProto(mapCtx, in.CrossClusterReplicationConfig)
-	out.MaintenancePolicy = ClusterMaintenancePolicyObservedState_ToProto(mapCtx, in.MaintenancePolicy)
-	out.MaintenanceSchedule = ClusterMaintenanceScheduleObservedState_ToProto(mapCtx, in.MaintenanceSchedule)
-	out.PscServiceAttachments = direct.Slice_ToProto(mapCtx, in.PSCServiceAttachments, PSCServiceAttachmentObservedState_ToProto)
+	// MISSING: CreateTime
+	// MISSING: State
+	// MISSING: Uid
+	// MISSING: ReplicaCount
+	// MISSING: AuthorizationMode
+	// MISSING: TransitEncryptionMode
+	// MISSING: SizeGB
+	// MISSING: ShardCount
+	// MISSING: PSCConfigs
+	// MISSING: DiscoveryEndpoints
+	// MISSING: PSCConnections
+	// MISSING: StateInfo
+	// MISSING: NodeType
+	// MISSING: PersistenceConfig
+	// MISSING: RedisConfigs
+	// MISSING: PreciseSizeGB
+	// MISSING: ZoneDistributionConfig
+	// MISSING: CrossClusterReplicationConfig
+	// MISSING: DeletionProtectionEnabled
+	// MISSING: MaintenancePolicy
+	// MISSING: MaintenanceSchedule
+	// MISSING: PSCServiceAttachments
 	// MISSING: ClusterEndpoints
 	// MISSING: BackupCollection
-	out.EncryptionInfo = EncryptionInfoObservedState_ToProto(mapCtx, in.EncryptionInfo)
+	// MISSING: KMSKey
+	// MISSING: AutomatedBackupConfig
+	// MISSING: EncryptionInfo
 	return out
 }
 
@@ -702,24 +301,33 @@ func RedisClusterSpec_FromProto(mapCtx *direct.MapContext, in *pb.Cluster) *krm.
 	// MISSING: GCSSource
 	// MISSING: ManagedBackupSource
 	// MISSING: Name
-	out.ReplicaCount = in.ReplicaCount
-	out.AuthorizationMode = direct.Enum_FromProto(mapCtx, in.GetAuthorizationMode())
-	out.TransitEncryptionMode = direct.Enum_FromProto(mapCtx, in.GetTransitEncryptionMode())
-	out.ShardCount = in.ShardCount
-	out.PSCConfigs = direct.Slice_FromProto(mapCtx, in.PscConfigs, PscConfigSpec_FromProto)
-	out.NodeType = direct.Enum_FromProto(mapCtx, in.GetNodeType())
-	out.PersistenceConfig = ClusterPersistenceConfig_FromProto(mapCtx, in.GetPersistenceConfig())
-	out.RedisConfigs = in.RedisConfigs
-	out.ZoneDistributionConfig = ZoneDistributionConfig_FromProto(mapCtx, in.GetZoneDistributionConfig())
-	out.CrossClusterReplicationConfig = CrossClusterReplicationConfig_FromProto(mapCtx, in.GetCrossClusterReplicationConfig())
-	out.DeletionProtectionEnabled = in.DeletionProtectionEnabled
-	out.MaintenancePolicy = ClusterMaintenancePolicy_FromProto(mapCtx, in.GetMaintenancePolicy())
+	// MISSING: CreateTime
+	// MISSING: State
+	// MISSING: Uid
+	// MISSING: ReplicaCount
+	// MISSING: AuthorizationMode
+	// MISSING: TransitEncryptionMode
+	// MISSING: SizeGB
+	// MISSING: ShardCount
+	// MISSING: PSCConfigs
+	// MISSING: DiscoveryEndpoints
+	// MISSING: PSCConnections
+	// MISSING: StateInfo
+	// MISSING: NodeType
+	// MISSING: PersistenceConfig
+	// MISSING: RedisConfigs
+	// MISSING: PreciseSizeGB
+	// MISSING: ZoneDistributionConfig
+	// MISSING: CrossClusterReplicationConfig
+	// MISSING: DeletionProtectionEnabled
+	// MISSING: MaintenancePolicy
+	// MISSING: MaintenanceSchedule
+	// MISSING: PSCServiceAttachments
 	// MISSING: ClusterEndpoints
 	// MISSING: BackupCollection
-	if in.GetKmsKey() != "" {
-		out.KMSKeyRef = &refsv1beta1.KMSCryptoKeyRef{External: in.GetKmsKey()}
-	}
-	out.AutomatedBackupConfig = AutomatedBackupConfig_FromProto(mapCtx, in.GetAutomatedBackupConfig())
+	// MISSING: KMSKey
+	// MISSING: AutomatedBackupConfig
+	// MISSING: EncryptionInfo
 	return out
 }
 */
@@ -733,24 +341,33 @@ func RedisClusterSpec_ToProto(mapCtx *direct.MapContext, in *krm.RedisClusterSpe
 	// MISSING: GCSSource
 	// MISSING: ManagedBackupSource
 	// MISSING: Name
-	out.ReplicaCount = in.ReplicaCount
-	out.AuthorizationMode = direct.Enum_ToProto[pb.AuthorizationMode](mapCtx, in.AuthorizationMode)
-	out.TransitEncryptionMode = direct.Enum_ToProto[pb.TransitEncryptionMode](mapCtx, in.TransitEncryptionMode)
-	out.ShardCount = in.ShardCount
-	out.PscConfigs = direct.Slice_ToProto(mapCtx, in.PSCConfigs, PscConfigSpec_ToProto)
-	out.NodeType = direct.Enum_ToProto[pb.NodeType](mapCtx, in.NodeType)
-	out.PersistenceConfig = ClusterPersistenceConfig_ToProto(mapCtx, in.PersistenceConfig)
-	out.RedisConfigs = in.RedisConfigs
-	out.ZoneDistributionConfig = ZoneDistributionConfig_ToProto(mapCtx, in.ZoneDistributionConfig)
-	out.CrossClusterReplicationConfig = CrossClusterReplicationConfig_ToProto(mapCtx, in.CrossClusterReplicationConfig)
-	out.DeletionProtectionEnabled = in.DeletionProtectionEnabled
-	out.MaintenancePolicy = ClusterMaintenancePolicy_ToProto(mapCtx, in.MaintenancePolicy)
+	// MISSING: CreateTime
+	// MISSING: State
+	// MISSING: Uid
+	// MISSING: ReplicaCount
+	// MISSING: AuthorizationMode
+	// MISSING: TransitEncryptionMode
+	// MISSING: SizeGB
+	// MISSING: ShardCount
+	// MISSING: PSCConfigs
+	// MISSING: DiscoveryEndpoints
+	// MISSING: PSCConnections
+	// MISSING: StateInfo
+	// MISSING: NodeType
+	// MISSING: PersistenceConfig
+	// MISSING: RedisConfigs
+	// MISSING: PreciseSizeGB
+	// MISSING: ZoneDistributionConfig
+	// MISSING: CrossClusterReplicationConfig
+	// MISSING: DeletionProtectionEnabled
+	// MISSING: MaintenancePolicy
+	// MISSING: MaintenanceSchedule
+	// MISSING: PSCServiceAttachments
 	// MISSING: ClusterEndpoints
 	// MISSING: BackupCollection
-	if in.KMSKeyRef != nil {
-		out.KmsKey = in.KMSKeyRef.External
-	}
-	out.AutomatedBackupConfig = AutomatedBackupConfig_ToProto(mapCtx, in.AutomatedBackupConfig)
+	// MISSING: KMSKey
+	// MISSING: AutomatedBackupConfig
+	// MISSING: EncryptionInfo
 	return out
 }
 */
@@ -811,78 +428,58 @@ func RedisInstanceSpec_FromProto(mapCtx *direct.MapContext, in *redispb.Instance
 }
 */
 
-/*
-found existing non-generated mapping function "RedisInstanceSpec_ToProto", skipping
-
-	func RedisInstanceSpec_ToProto(mapCtx *direct.MapContext, in *krm.RedisInstanceSpec) *redispb.Instance {
-		if in == nil {
-			return nil
-		}
-		out := &redispb.Instance{}
-		// MISSING: Name
-		out.DisplayName = direct.ValueOf(in.DisplayName)
-		// MISSING: Labels
-		// MISSING: LocationID
-		// (near miss): "LocationID" vs "LocationId"
-		// MISSING: AlternativeLocationID
-		// (near miss): "AlternativeLocationID" vs "AlternativeLocationId"
-		out.RedisVersion = direct.ValueOf(in.RedisVersion)
-		// MISSING: ReservedIPRange
-		// (near miss): "ReservedIPRange" vs "ReservedIpRange"
-		// MISSING: SecondaryIPRange
-		// (near miss): "SecondaryIPRange" vs "SecondaryIpRange"
-		// MISSING: Host
-		// MISSING: Port
-		// MISSING: CurrentLocationID
-		// MISSING: CreateTime
-		// MISSING: State
-		// MISSING: StatusMessage
-		out.RedisConfigs = in.RedisConfigs
-		out.Tier = direct.Enum_ToProto[redispb.Instance_Tier](mapCtx, in.Tier)
-		// MISSING: MemorySizeGB
-		// (near miss): "MemorySizeGB" vs "MemorySizeGb"
-		if in.AuthorizedNetworkRef != nil {
-			out.AuthorizedNetwork = in.AuthorizedNetworkRef.External
-		}
-		// MISSING: PersistenceIAMIdentity
-		out.ConnectMode = direct.Enum_ToProto[redispb.Instance_ConnectMode](mapCtx, in.ConnectMode)
-		out.AuthEnabled = direct.ValueOf(in.AuthEnabled)
-		// MISSING: ServerCACerts
-		out.TransitEncryptionMode = direct.Enum_ToProto[redispb.Instance_TransitEncryptionMode](mapCtx, in.TransitEncryptionMode)
-		out.MaintenancePolicy = InstanceMaintenancePolicy_ToProto(mapCtx, in.MaintenancePolicy)
-		if len(in.MaintenanceSchedule) > 0 && in.MaintenanceSchedule[0] != nil {
-			out.MaintenanceSchedule = InstanceMaintenanceSchedule_ToProto(mapCtx, in.MaintenanceSchedule[0])
-		}
-		out.ReplicaCount = direct.ValueOf(in.ReplicaCount)
-		// MISSING: Nodes
-		// MISSING: ReadEndpoint
-		// MISSING: ReadEndpointPort
-		out.ReadReplicasMode = direct.Enum_ToProto[redispb.Instance_ReadReplicasMode](mapCtx, in.ReadReplicasMode)
-		if in.CustomerManagedKeyRef != nil {
-			out.CustomerManagedKey = in.CustomerManagedKeyRef.External
-		}
-		out.PersistenceConfig = InstancePersistenceConfig_ToProto(mapCtx, in.PersistenceConfig)
-		// MISSING: SuspensionReasons
-		// MISSING: MaintenanceVersion
-		// MISSING: AvailableMaintenanceVersions
-		return out
+/* found existing non-generated mapping function "RedisInstanceSpec_ToProto", skipping
+func RedisInstanceSpec_ToProto(mapCtx *direct.MapContext, in *krm.RedisInstanceSpec) *redispb.Instance {
+	if in == nil {
+		return nil
 	}
+	out := &redispb.Instance{}
+	// MISSING: Name
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	// MISSING: Labels
+	// MISSING: LocationID
+	// (near miss): "LocationID" vs "LocationId"
+	// MISSING: AlternativeLocationID
+	// (near miss): "AlternativeLocationID" vs "AlternativeLocationId"
+	out.RedisVersion = direct.ValueOf(in.RedisVersion)
+	// MISSING: ReservedIPRange
+	// (near miss): "ReservedIPRange" vs "ReservedIpRange"
+	// MISSING: SecondaryIPRange
+	// (near miss): "SecondaryIPRange" vs "SecondaryIpRange"
+	// MISSING: Host
+	// MISSING: Port
+	// MISSING: CurrentLocationID
+	// MISSING: CreateTime
+	// MISSING: State
+	// MISSING: StatusMessage
+	out.RedisConfigs = in.RedisConfigs
+	out.Tier = direct.Enum_ToProto[redispb.Instance_Tier](mapCtx, in.Tier)
+	// MISSING: MemorySizeGB
+	// (near miss): "MemorySizeGB" vs "MemorySizeGb"
+	if in.AuthorizedNetworkRef != nil {
+		out.AuthorizedNetwork = in.AuthorizedNetworkRef.External
+	}
+	// MISSING: PersistenceIAMIdentity
+	out.ConnectMode = direct.Enum_ToProto[redispb.Instance_ConnectMode](mapCtx, in.ConnectMode)
+	out.AuthEnabled = direct.ValueOf(in.AuthEnabled)
+	// MISSING: ServerCACerts
+	out.TransitEncryptionMode = direct.Enum_ToProto[redispb.Instance_TransitEncryptionMode](mapCtx, in.TransitEncryptionMode)
+	out.MaintenancePolicy = InstanceMaintenancePolicy_ToProto(mapCtx, in.MaintenancePolicy)
+	if len(in.MaintenanceSchedule) > 0 && in.MaintenanceSchedule[0] != nil {
+		out.MaintenanceSchedule = InstanceMaintenanceSchedule_ToProto(mapCtx, in.MaintenanceSchedule[0])
+	}
+	out.ReplicaCount = direct.ValueOf(in.ReplicaCount)
+	// MISSING: Nodes
+	// MISSING: ReadEndpoint
+	// MISSING: ReadEndpointPort
+	out.ReadReplicasMode = direct.Enum_ToProto[redispb.Instance_ReadReplicasMode](mapCtx, in.ReadReplicasMode)
+	if in.CustomerManagedKeyRef != nil {
+		out.CustomerManagedKey = in.CustomerManagedKeyRef.External
+	}
+	out.PersistenceConfig = InstancePersistenceConfig_ToProto(mapCtx, in.PersistenceConfig)
+	// MISSING: SuspensionReasons
+	// MISSING: MaintenanceVersion
+	// MISSING: AvailableMaintenanceVersions
+	return out
+}
 */
-func ZoneDistributionConfig_FromProto(mapCtx *direct.MapContext, in *pb.ZoneDistributionConfig) *krm.ZoneDistributionConfig {
-	if in == nil {
-		return nil
-	}
-	out := &krm.ZoneDistributionConfig{}
-	out.Mode = direct.Enum_FromProto(mapCtx, in.GetMode())
-	out.Zone = direct.LazyPtr(in.GetZone())
-	return out
-}
-func ZoneDistributionConfig_ToProto(mapCtx *direct.MapContext, in *krm.ZoneDistributionConfig) *pb.ZoneDistributionConfig {
-	if in == nil {
-		return nil
-	}
-	out := &pb.ZoneDistributionConfig{}
-	out.Mode = direct.Enum_ToProto[pb.ZoneDistributionConfig_ZoneDistributionMode](mapCtx, in.Mode)
-	out.Zone = direct.ValueOf(in.Zone)
-	return out
-}

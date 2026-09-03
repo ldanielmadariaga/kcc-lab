@@ -22,8 +22,7 @@
 
 package v1beta1
 
-/* found existing non-generated go type with proto tag "google.cloud.securesourcemanager.v1.Instance", skipping
-
+/* unreachable type Instance
 // +kcc:proto=google.cloud.securesourcemanager.v1.Instance
 type Instance struct {
 	// Optional. A unique identifier for an instance. The name should be of the
@@ -50,7 +49,7 @@ type Instance struct {
 	PrivateConfig *Instance_PrivateConfig `json:"privateConfig,omitempty"`
 
 	// Optional. Immutable. Customer-managed encryption key name, in the format
-	//  projects/* /locations/* /keyRings/* /cryptoKeys/*.
+	//  projects/-*-/locations/-*-/keyRings/-*-/cryptoKeys/-*.
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.kms_key
 	KMSKey *string `json:"kmsKey,omitempty"`
 
@@ -67,8 +66,7 @@ type Instance_HostConfig struct {
 }
 */
 
-/* found existing non-generated go type "Instance_PrivateConfig", skipping
-
+/* unreachable type Instance_PrivateConfig
 // +kcc:proto=google.cloud.securesourcemanager.v1.Instance.PrivateConfig
 type Instance_PrivateConfig struct {
 	// Required. Immutable. Indicate if it's private instance.
@@ -97,8 +95,7 @@ type Instance_WorkforceIdentityFederationConfig struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.securesourcemanager.v1.Repository", skipping
-
+/* unreachable type Repository
 // +kcc:proto=google.cloud.securesourcemanager.v1.Repository
 type Repository struct {
 	// Optional. A unique identifier for a repository. The name should be of the
@@ -118,6 +115,7 @@ type Repository struct {
 	//  When creating repository via securesourcemanager.googleapis.com, this field
 	//  is used as input. When creating repository via *.sourcemanager.dev, this
 	//  field is output only.
+	// +kcc:guess=possible-reference target=SecureSourceManagerInstance
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.instance
 	Instance *string `json:"instance,omitempty"`
 
@@ -133,6 +131,7 @@ type Repository struct {
 }
 */
 
+/* unreachable type Repository_InitialConfig
 // +kcc:proto=google.cloud.securesourcemanager.v1.Repository.InitialConfig
 type Repository_InitialConfig struct {
 	// Default branch name of the repository.
@@ -275,6 +274,7 @@ type Repository_InitialConfig struct {
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.InitialConfig.readme
 	Readme *string `json:"readme,omitempty"`
 }
+*/
 
 /* unreachable type Repository_UrIs
 // +kcc:proto=google.cloud.securesourcemanager.v1.Repository.URIs
@@ -282,8 +282,7 @@ type Repository_UrIs struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.securesourcemanager.v1.Instance", skipping
-
+/* unreachable type InstanceObservedState
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Instance
 type InstanceObservedState struct {
 	// Output only. Create timestamp.
@@ -313,6 +312,7 @@ type InstanceObservedState struct {
 }
 */
 
+/* unreachable type Instance_HostConfigObservedState
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Instance.HostConfig
 type Instance_HostConfigObservedState struct {
 	// Output only. HTML hostname.
@@ -331,9 +331,9 @@ type Instance_HostConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.HostConfig.git_ssh
 	GitSSH *string `json:"gitSSH,omitempty"`
 }
+*/
 
-/* found existing non-generated go type "Instance_PrivateConfigObservedState", skipping
-
+/* unreachable type Instance_PrivateConfigObservedState
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Instance.PrivateConfig
 type Instance_PrivateConfigObservedState struct {
 	// Output only. Service Attachment for HTTP, resource is in the format of
@@ -348,8 +348,7 @@ type Instance_PrivateConfigObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.securesourcemanager.v1.Repository", skipping
-
+/* unreachable type RepositoryObservedState
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Repository
 type RepositoryObservedState struct {
 	// Output only. Unique identifier of the repository.
@@ -370,6 +369,7 @@ type RepositoryObservedState struct {
 }
 */
 
+/* unreachable type Repository_UrIsObservedState
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Repository.URIs
 type Repository_UrIsObservedState struct {
 	// Output only. HTML is the URI for user to view the repository in a
@@ -385,3 +385,4 @@ type Repository_UrIsObservedState struct {
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.URIs.api
 	API *string `json:"api,omitempty"`
 }
+*/
