@@ -64,16 +64,11 @@ spec:
               data:
                 description: Required. The data source for DataScan.
                 properties:
-                  entityRef:
+                  entity:
                     description: 'Immutable. The Dataplex entity that represents the
                       data source (e.g. BigQuery table) for DataScan, of the form:
                       `projects/{project_number}/locations/{location_id}/lakes/{lake_id}/zones/{zone_id}/entities/{entity_id}`.'
-                    properties:
-                      external:
-                        description: A reference to an externally managed Dataplex
-                          Entity. Should be of the format `projects/{projectID}/locations/{location}/lakes/{lakeID}/zones/{zoneID}/entities/{entityID}`.
-                        type: string
-                    type: object
+                    type: string
                   resource:
                     description: 'Immutable. The service-qualified full resource name
                       of the cloud resource for a DataScan job to scan against. The
@@ -87,37 +82,34 @@ spec:
                   bigqueryPublishingConfig:
                     description: Optional. Configuration for metadata publishing.
                     properties:
-                      connectionRef:
+                      connection:
                         description: Optional. The BigQuery connection used to create
                           BigLake tables. Must be in the form `projects/{project_id}/locations/{location_id}/connections/{connection_id}`
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: A reference to an externally managed BigQuery
-                              Connection. Should be of the format `projects/{projectID}/locations/{location}/connections/{connectionID}`.
-                            type: string
-                          name:
-                            description: The `name` of a `BigQueryConnectionConnection`
-                              resource.
-                            type: string
-                          namespace:
-                            description: The `namespace` of a `BigQueryConnectionConnection`
-                              resource.
-                            type: string
-                        type: object
+                        type: string
+                      location:
+                        description: |-
+                          Optional. The location of the BigQuery dataset to publish BigLake
+                           external or non-BigLake external tables to.
+                           1. If the Cloud Storage bucket is located in a multi-region bucket, then
+                           BigQuery dataset can be in the same multi-region bucket or any single
+                           region that is included in the same multi-region bucket. The datascan can
+                           be created in any single region that is included in the same multi-region
+                           bucket
+                           2. If the Cloud Storage bucket is located in a dual-region bucket, then
+                           BigQuery dataset can be located in regions that are included in the
+                           dual-region bucket, or in a multi-region that includes the dual-region.
+                           The datascan can be created in any single region that is included in the
+                           same dual-region bucket.
+                           3. If the Cloud Storage bucket is located in a single region, then
+                           BigQuery dataset can be in the same single region or any multi-region
+                           bucket that includes the same single region. The datascan will be created
+                           in the same single region as the bucket.
+                           4. If the BigQuery dataset is in single region, it must be in the same
+                           single region as the datascan.
+
+                           For supported values, refer to
+                           https://cloud.google.com/bigquery/docs/locations#supported_locations.
+                        type: string
                       tableType:
                         description: Optional. Determines whether to  publish discovered
                           tables as BigLake external tables or non-BigLake external
@@ -243,38 +235,11 @@ spec:
                         description: Optional. If set, results will be exported to
                           the provided BigQuery table.
                         properties:
-                          resultsTableRef:
+                          resultsTable:
                             description: 'Optional. The BigQuery table to export DataProfileScan
                               results to. Format: //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
                               or projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID'
-                            oneOf:
-                            - not:
-                                required:
-                                - external
-                              required:
-                              - name
-                            - not:
-                                anyOf:
-                                - required:
-                                  - name
-                                - required:
-                                  - namespace
-                              required:
-                              - external
-                            properties:
-                              external:
-                                description: A reference to an externally managed
-                                  BigQuery Table. Should be of the format `//bigquery.googleapis.com/projects/{projectID}/datasets/{datasetID}/tables/{tableID}`
-                                  or `projects/{projectID}/datasets/{datasetID}/tables/{tableID}`.
-                                type: string
-                              name:
-                                description: The `name` of a `BigQueryTable` resource.
-                                type: string
-                              namespace:
-                                description: The `namespace` of a `BigQueryTable`
-                                  resource.
-                                type: string
-                            type: object
+                            type: string
                         type: object
                     type: object
                   rowFilter:
@@ -307,38 +272,11 @@ spec:
                         description: Optional. If set, results will be exported to
                           the provided BigQuery table.
                         properties:
-                          resultsTableRef:
+                          resultsTable:
                             description: 'Optional. The BigQuery table to export DataQualityScan
                               results to. Format: //bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID
                               or projects/PROJECT_ID/datasets/DATASET_ID/tables/TABLE_ID'
-                            oneOf:
-                            - not:
-                                required:
-                                - external
-                              required:
-                              - name
-                            - not:
-                                anyOf:
-                                - required:
-                                  - name
-                                - required:
-                                  - namespace
-                              required:
-                              - external
-                            properties:
-                              external:
-                                description: A reference to an externally managed
-                                  BigQuery Table. Should be of the format `//bigquery.googleapis.com/projects/{projectID}/datasets/{datasetID}/tables/{tableID}`
-                                  or `projects/{projectID}/datasets/{datasetID}/tables/{tableID}`.
-                                type: string
-                              name:
-                                description: The `name` of a `BigQueryTable` resource.
-                                type: string
-                              namespace:
-                                description: The `namespace` of a `BigQueryTable`
-                                  resource.
-                                type: string
-                            type: object
+                            type: string
                         type: object
                       notificationReport:
                         description: Optional. If set, results will be sent to the
@@ -348,12 +286,10 @@ spec:
                             description: Optional. If set, report will be sent when
                               a scan job ends.
                             type: object
-                            x-kubernetes-preserve-unknown-fields: true
                           jobFailureTrigger:
                             description: Optional. If set, report will be sent when
                               a scan job fails.
                             type: object
-                            x-kubernetes-preserve-unknown-fields: true
                           recipients:
                             description: Required. The recipients who will receive
                               the notification report.
@@ -373,6 +309,8 @@ spec:
                                 description: Optional. The score range is in [0,100].
                                 type: number
                             type: object
+                        required:
+                        - recipients
                         type: object
                     type: object
                   rowFilter:
@@ -432,7 +370,6 @@ spec:
                           description: Row-level rule which evaluates whether each
                             column value is null.
                           type: object
-                          x-kubernetes-preserve-unknown-fields: true
                         rangeExpectation:
                           description: Row-level rule which evaluates whether each
                             column value lies between a specified range.
@@ -560,7 +497,8 @@ spec:
                           description: Row-level rule which evaluates whether each
                             column value is unique.
                           type: object
-                          x-kubernetes-preserve-unknown-fields: true
+                      required:
+                      - dimension
                       type: object
                     type: array
                   samplingPercent:
@@ -573,24 +511,26 @@ spec:
                        * Sampling is not applied if `sampling_percent` is not specified, 0 or
                        100.
                     type: number
+                required:
+                - rules
                 type: object
               description:
                 description: |-
                   Optional. Description of the scan.
 
-                  * Must be between 1-1024 characters.
+                   * Must be between 1-1024 characters.
                 type: string
               displayName:
                 description: |-
                   Optional. User friendly display name.
 
-                  * Must be between 1-256 characters.
+                   * Must be between 1-256 characters.
                 type: string
               executionSpec:
                 description: |-
                   Optional. DataScan execution settings.
 
-                  If not specified, the fields in it will use their default values.
+                   If not specified, the fields in it will use their default values.
                 properties:
                   field:
                     description: |-
@@ -609,7 +549,6 @@ spec:
                       onDemand:
                         description: The scan runs once via `RunDataScan` API.
                         type: object
-                        x-kubernetes-preserve-unknown-fields: true
                       schedule:
                         description: The scan is scheduled to run periodically.
                         properties:
@@ -628,6 +567,8 @@ spec:
 
                                This field is required for Schedule scans.
                             type: string
+                        required:
+                        - cron
                         type: object
                     type: object
                 type: object
@@ -734,8 +675,16 @@ spec:
                     properties:
                       bigqueryPublishing:
                         description: Output only. Configuration for metadata publishing.
+                        properties:
+                          dataset:
+                            description: Output only. The BigQuery dataset the discovered
+                              tables are published to.
+                            type: string
+                          location:
+                            description: Output only. The location of the BigQuery
+                              publishing dataset.
+                            type: string
                         type: object
-                        x-kubernetes-preserve-unknown-fields: true
                       scanStatistics:
                         description: Output only. Describes result statistics of a
                           data scan discovery job.
@@ -783,8 +732,21 @@ spec:
                     properties:
                       postScanActionsResult:
                         description: Output only. The result of post scan actions.
+                        properties:
+                          bigqueryExportResult:
+                            description: Output only. The result of BigQuery export
+                              post scan action.
+                            properties:
+                              message:
+                                description: Output only. Additional information about
+                                  the BigQuery exporting.
+                                type: string
+                              state:
+                                description: Output only. Execution state for the
+                                  BigQuery exporting.
+                                type: string
+                            type: object
                         type: object
-                        x-kubernetes-preserve-unknown-fields: true
                       profile:
                         description: The profile information per field.
                         properties:
@@ -1005,8 +967,20 @@ spec:
                            A column will have a corresponding `DataQualityColumnResult` if and only if
                            there is at least one rule with the 'column' field set to it.
                         items:
+                          properties:
+                            column:
+                              description: Output only. The column specified in the
+                                DataQualityRule.
+                              type: string
+                            score:
+                              description: |-
+                                Output only. The column-level data quality score for this data scan job if
+                                 and only if the 'column' field is set.
+
+                                 The score ranges between between [0, 100] (up to two decimal
+                                 points).
+                              type: number
                           type: object
-                          x-kubernetes-preserve-unknown-fields: true
                         type: array
                       dimensions:
                         description: |-
@@ -1015,8 +989,31 @@ spec:
                            A dimension will have a corresponding `DataQualityDimensionResult` if and
                            only if there is at least one rule with the 'dimension' field set to it.
                         items:
+                          properties:
+                            dimension:
+                              description: Output only. The dimension config specified
+                                in the DataQualitySpec, as is.
+                              properties:
+                                name:
+                                  description: Optional. The dimension name a rule
+                                    belongs to. Custom dimension name is supported
+                                    with all uppercase letters and maximum length
+                                    of 30 characters.
+                                  type: string
+                              type: object
+                            passed:
+                              description: Output only. Whether the dimension passed
+                                or failed.
+                              type: boolean
+                            score:
+                              description: |-
+                                Output only. The dimension-level data quality score for this data scan job
+                                 if and only if the 'dimension' field is set.
+
+                                 The score ranges between [0, 100] (up to two decimal
+                                 points).
+                              type: number
                           type: object
-                          x-kubernetes-preserve-unknown-fields: true
                         type: array
                       passed:
                         description: Output only. Overall data quality result -- `true`
@@ -1024,8 +1021,21 @@ spec:
                         type: boolean
                       postScanActionsResult:
                         description: Output only. The result of post scan actions.
+                        properties:
+                          bigqueryExportResult:
+                            description: Output only. The result of BigQuery export
+                              post scan action.
+                            properties:
+                              message:
+                                description: Output only. Additional information about
+                                  the BigQuery exporting.
+                                type: string
+                              state:
+                                description: Output only. Execution state for the
+                                  BigQuery exporting.
+                                type: string
+                            type: object
                         type: object
-                        x-kubernetes-preserve-unknown-fields: true
                       rowCount:
                         description: Output only. The count of rows processed.
                         format: int64
@@ -1034,8 +1044,243 @@ spec:
                         description: Output only. A list of all the rules in a job,
                           and their results.
                         items:
+                          properties:
+                            assertionRowCount:
+                              description: |-
+                                Output only. The number of rows returned by the SQL statement in a SQL
+                                 assertion rule.
+
+                                 This field is only valid for SQL assertion rules.
+                              format: int64
+                              type: integer
+                            evaluatedCount:
+                              description: |-
+                                Output only. The number of rows a rule was evaluated against.
+
+                                 This field is only valid for row-level type rules.
+
+                                 Evaluated count can be configured to either
+
+                                 * include all rows (default) - with `null` rows automatically failing rule
+                                 evaluation, or
+                                 * exclude `null` rows from the `evaluated_count`, by setting
+                                 `ignore_nulls = true`.
+
+                                 This field is not set for rule SqlAssertion.
+                              format: int64
+                              type: integer
+                            failingRowsQuery:
+                              description: |-
+                                Output only. The query to find rows that did not pass this rule.
+
+                                 This field is only valid for row-level type rules.
+                              type: string
+                            nullCount:
+                              description: Output only. The number of rows with null
+                                values in the specified column.
+                              format: int64
+                              type: integer
+                            passRatio:
+                              description: |-
+                                Output only. The ratio of **passed_count / evaluated_count**.
+
+                                 This field is only valid for row-level type rules.
+                              type: number
+                            passed:
+                              description: Output only. Whether the rule passed or
+                                failed.
+                              type: boolean
+                            passedCount:
+                              description: |-
+                                Output only. The number of rows which passed a rule evaluation.
+
+                                 This field is only valid for row-level type rules.
+
+                                 This field is not set for rule SqlAssertion.
+                              format: int64
+                              type: integer
+                            rule:
+                              description: Output only. The rule specified in the
+                                DataQualitySpec, as is.
+                              properties:
+                                column:
+                                  description: Optional. The unnested column which
+                                    this rule is evaluated against.
+                                  type: string
+                                description:
+                                  description: |-
+                                    Optional. Description of the rule.
+
+                                     * The maximum length is 1,024 characters.
+                                  type: string
+                                dimension:
+                                  description: Required. The dimension a rule belongs
+                                    to. Results are also aggregated at the dimension
+                                    level. Supported dimensions are **["COMPLETENESS",
+                                    "ACCURACY", "CONSISTENCY", "VALIDITY", "UNIQUENESS",
+                                    "FRESHNESS", "VOLUME"]**
+                                  type: string
+                                ignoreNull:
+                                  description: |-
+                                    Optional. Rows with `null` values will automatically fail a rule, unless
+                                     `ignore_null` is `true`. In that case, such `null` rows are trivially
+                                     considered passing.
+
+                                     This field is only valid for the following type of rules:
+
+                                     * RangeExpectation
+                                     * RegexExpectation
+                                     * SetExpectation
+                                     * UniquenessExpectation
+                                  type: boolean
+                                name:
+                                  description: |-
+                                    Optional. A mutable name for the rule.
+
+                                     * The name must contain only letters (a-z, A-Z), numbers (0-9), or
+                                     hyphens (-).
+                                     * The maximum length is 63 characters.
+                                     * Must start with a letter.
+                                     * Must end with a number or a letter.
+                                  type: string
+                                nonNullExpectation:
+                                  description: Row-level rule which evaluates whether
+                                    each column value is null.
+                                  type: object
+                                rangeExpectation:
+                                  description: Row-level rule which evaluates whether
+                                    each column value lies between a specified range.
+                                  properties:
+                                    maxValue:
+                                      description: Optional. The maximum column value
+                                        allowed for a row to pass this validation.
+                                        At least one of `min_value` and `max_value`
+                                        need to be provided.
+                                      type: string
+                                    minValue:
+                                      description: Optional. The minimum column value
+                                        allowed for a row to pass this validation.
+                                        At least one of `min_value` and `max_value`
+                                        need to be provided.
+                                      type: string
+                                    strictMaxEnabled:
+                                      description: |-
+                                        Optional. Whether each value needs to be strictly lesser than ('<') the
+                                         maximum, or if equality is allowed.
+
+                                         Only relevant if a `max_value` has been defined. Default = false.
+                                      type: boolean
+                                    strictMinEnabled:
+                                      description: |-
+                                        Optional. Whether each value needs to be strictly greater than ('>') the
+                                         minimum, or if equality is allowed.
+
+                                         Only relevant if a `min_value` has been defined. Default = false.
+                                      type: boolean
+                                  type: object
+                                regexExpectation:
+                                  description: Row-level rule which evaluates whether
+                                    each column value matches a specified regex.
+                                  properties:
+                                    regex:
+                                      description: Optional. A regular expression
+                                        the column value is expected to match.
+                                      type: string
+                                  type: object
+                                rowConditionExpectation:
+                                  description: Row-level rule which evaluates whether
+                                    each row in a table passes the specified condition.
+                                  properties:
+                                    sqlExpression:
+                                      description: Optional. The SQL expression.
+                                      type: string
+                                  type: object
+                                setExpectation:
+                                  description: Row-level rule which evaluates whether
+                                    each column value is contained by a specified
+                                    set.
+                                  properties:
+                                    values:
+                                      description: Optional. Expected values for the
+                                        column value.
+                                      items:
+                                        type: string
+                                      type: array
+                                  type: object
+                                sqlAssertion:
+                                  description: Aggregate rule which evaluates the
+                                    number of rows returned for the provided statement.
+                                    If any rows are returned, this rule fails.
+                                  properties:
+                                    sqlStatement:
+                                      description: Optional. The SQL statement.
+                                      type: string
+                                  type: object
+                                statisticRangeExpectation:
+                                  description: Aggregate rule which evaluates whether
+                                    the column aggregate statistic lies between a
+                                    specified range.
+                                  properties:
+                                    maxValue:
+                                      description: |-
+                                        Optional. The maximum column statistic value allowed for a row to pass
+                                         this validation.
+
+                                         At least one of `min_value` and `max_value` need to be provided.
+                                      type: string
+                                    minValue:
+                                      description: |-
+                                        Optional. The minimum column statistic value allowed for a row to pass
+                                         this validation.
+
+                                         At least one of `min_value` and `max_value` need to be provided.
+                                      type: string
+                                    statistic:
+                                      description: Optional. The aggregate metric
+                                        to evaluate.
+                                      type: string
+                                    strictMaxEnabled:
+                                      description: |-
+                                        Optional. Whether column statistic needs to be strictly lesser than ('<')
+                                         the maximum, or if equality is allowed.
+
+                                         Only relevant if a `max_value` has been defined. Default = false.
+                                      type: boolean
+                                    strictMinEnabled:
+                                      description: |-
+                                        Optional. Whether column statistic needs to be strictly greater than
+                                         ('>') the minimum, or if equality is allowed.
+
+                                         Only relevant if a `min_value` has been defined. Default = false.
+                                      type: boolean
+                                  type: object
+                                suspended:
+                                  description: Optional. Whether the Rule is active
+                                    or suspended. Default is false.
+                                  type: boolean
+                                tableConditionExpectation:
+                                  description: Aggregate rule which evaluates whether
+                                    the provided expression is true for a table.
+                                  properties:
+                                    sqlExpression:
+                                      description: Optional. The SQL expression.
+                                      type: string
+                                  type: object
+                                threshold:
+                                  description: |-
+                                    Optional. The minimum ratio of **passing_rows / total_rows** required to
+                                     pass this rule, with a range of [0.0, 1.0].
+
+                                     0 indicates default value (i.e. 1.0).
+
+                                     This field is only valid for row-level type rules.
+                                  type: number
+                                uniquenessExpectation:
+                                  description: Row-level rule which evaluates whether
+                                    each column value is unique.
+                                  type: object
+                              type: object
                           type: object
-                          x-kubernetes-preserve-unknown-fields: true
                         type: array
                       scannedData:
                         description: Output only. The data scanned for this result.

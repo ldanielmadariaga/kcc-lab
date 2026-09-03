@@ -15,30 +15,39 @@
 package v1alpha1
 
 import (
-	v1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/bigtable/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var BigtableMaterializedViewGVK = GroupVersion.WithKind("BigtableMaterializedView")
 
-type BigtableMaterializedViewParent struct {
-	// +reqired
-	InstanceRef *v1beta1.InstanceRef `json:"instanceRef,omitempty"`
-}
-
 // BigtableMaterializedViewSpec defines the desired state of BigtableMaterializedView
 // +kcc:spec:proto=google.bigtable.admin.v2.MaterializedView
 type BigtableMaterializedViewSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The Instance that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/instances/{instance}/materializedViews/{materialized_view}
+	Instance *string `json:"instance,omitempty"`
+
 	// The BigtableMaterializedView name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	BigtableMaterializedViewParent `json:",inline"`
-
-	// Immutable. MaterializedView's select query.
+	// Required. Immutable. The materialized view's select query.
+	// +kcc:proto:field=google.bigtable.admin.v2.MaterializedView.query
+	// +required
 	Query *string `json:"query,omitempty"`
 
-	// Optional. Set to true to make the MaterializedView protected against deletion.
+	// Optional. The etag for this materialized view.
+	//  This may be sent on update requests to ensure that the client has an
+	//  up-to-date value before proceeding. The server returns an ABORTED error on
+	//  a mismatched etag.
+	// +kcc:proto:field=google.bigtable.admin.v2.MaterializedView.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Set to true to make the MaterializedView protected against deletion.
+	// +kcc:proto:field=google.bigtable.admin.v2.MaterializedView.deletion_protection
 	DeletionProtection *bool `json:"deletionProtection,omitempty"`
 }
 
@@ -53,11 +62,6 @@ type BigtableMaterializedViewStatus struct {
 
 	// A unique specifier for the BigtableMaterializedView resource in GCP.
 	ExternalRef *string `json:"externalRef,omitempty"`
-
-	// The unique name of the BigtableMaterializedView. Values are of the form
-	//  `projects/{project}/instances/{instance}/materializedViews/{materializedViewID}`.
-	// +kcc:proto:field=google.bigtable.admin.v2.MaterializedView.name
-	Name *string `json:"name,omitempty"`
 
 	// ObservedState is the state of the resource as most recently observed in GCP.
 	ObservedState *BigtableMaterializedViewObservedState `json:"observedState,omitempty"`

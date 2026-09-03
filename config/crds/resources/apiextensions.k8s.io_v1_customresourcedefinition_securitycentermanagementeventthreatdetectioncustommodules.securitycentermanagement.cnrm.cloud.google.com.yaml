@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: securitycentermanagementeventthreatdetectioncustommodules.securitycentermanagement.cnrm.cloud.google.com
 spec:
@@ -102,7 +101,6 @@ spec:
                 description: Optional. Type for the module. For example, `CONFIGURABLE_BAD_IP`.
                 type: string
             required:
-            - location
             - organizationRef
             type: object
           status:

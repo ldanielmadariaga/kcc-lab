@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,37 +26,18 @@ var ApigeeRegistryInstanceGVK = GroupVersion.WithKind("ApigeeRegistryInstance")
 // +kcc:spec:proto=google.cloud.apigeeregistry.v1.Instance
 type ApigeeRegistryInstanceSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +required
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/instances/{instance}
 	Location *string `json:"location"`
 
 	// The ApigeeRegistryInstance name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. Config of the Instance.
+	// +kcc:proto:field=google.cloud.apigeeregistry.v1.Instance.config
 	// +required
-	Config *Instance_Config `json:"config"`
-}
-
-// +kcc:proto=google.cloud.apigeeregistry.v1.Instance.Config
-type Instance_Config struct {
-	// Required. The Customer Managed Encryption Key (CMEK) used for data encryption.
-	// The CMEK name should follow the format of
-	// `projects/([^/]+)/locations/([^/]+)/keyRings/([^/]+)/cryptoKeys/([^/]+)`,
-	// where the `location` must match InstanceConfig.location.
-	// +kcc:proto:field=google.cloud.apigeeregistry.v1.Instance.Config.cmek_key_name
-	// +required
-	CmekKeyNameRef *refsv1beta1.KMSCryptoKeyRef `json:"cmekKeyNameRef"`
-}
-
-// +kcc:observedstate:proto=google.cloud.apigeeregistry.v1.Instance.Config
-type Instance_ConfigObservedState struct {
-	// Output only. The GCP location where the Instance resides.
-	// +kcc:proto:field=google.cloud.apigeeregistry.v1.Instance.Config.location
-	Location *string `json:"location,omitempty"`
+	Config *Instance_Config `json:"config,omitempty"`
 }
 
 // ApigeeRegistryInstanceStatus defines the config connector machine state of ApigeeRegistryInstance
@@ -79,18 +60,23 @@ type ApigeeRegistryInstanceStatus struct {
 // +kcc:observedstate:proto=google.cloud.apigeeregistry.v1.Instance
 type ApigeeRegistryInstanceObservedState struct {
 	// Output only. Creation timestamp.
+	// +kcc:proto:field=google.cloud.apigeeregistry.v1.Instance.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. Last update timestamp.
+	// +kcc:proto:field=google.cloud.apigeeregistry.v1.Instance.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. The current state of the Instance.
+	// +kcc:proto:field=google.cloud.apigeeregistry.v1.Instance.state
 	State *string `json:"state,omitempty"`
 
 	// Output only. Extra information of Instance.State if the state is `FAILED`.
+	// +kcc:proto:field=google.cloud.apigeeregistry.v1.Instance.state_message
 	StateMessage *string `json:"stateMessage,omitempty"`
 
 	// Required. Config of the Instance.
+	// +kcc:proto:field=google.cloud.apigeeregistry.v1.Instance.config
 	Config *Instance_ConfigObservedState `json:"config,omitempty"`
 }
 
@@ -99,7 +85,6 @@ type ApigeeRegistryInstanceObservedState struct {
 // +kubebuilder:resource:categories=gcp,shortName=gcpapigeeregistryinstance;gcpapigeeregistryinstances
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"

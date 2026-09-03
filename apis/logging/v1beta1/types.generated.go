@@ -26,8 +26,6 @@
 
 package v1beta1
 
-/* found existing non-generated go type with proto tag "google.api.Distribution.BucketOptions", skipping
-
 // +kcc:proto=google.api.Distribution.BucketOptions
 type Distribution_BucketOptions struct {
 	// The linear bucket.
@@ -42,9 +40,6 @@ type Distribution_BucketOptions struct {
 	// +kcc:proto:field=google.api.Distribution.BucketOptions.explicit_buckets
 	ExplicitBuckets *Distribution_BucketOptions_Explicit `json:"explicitBuckets,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.api.Distribution.BucketOptions.Explicit", skipping
 
 // +kcc:proto=google.api.Distribution.BucketOptions.Explicit
 type Distribution_BucketOptions_Explicit struct {
@@ -52,9 +47,6 @@ type Distribution_BucketOptions_Explicit struct {
 	// +kcc:proto:field=google.api.Distribution.BucketOptions.Explicit.bounds
 	Bounds []float64 `json:"bounds,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.api.Distribution.BucketOptions.Exponential", skipping
 
 // +kcc:proto=google.api.Distribution.BucketOptions.Exponential
 type Distribution_BucketOptions_Exponential struct {
@@ -70,9 +62,6 @@ type Distribution_BucketOptions_Exponential struct {
 	// +kcc:proto:field=google.api.Distribution.BucketOptions.Exponential.scale
 	Scale *float64 `json:"scale,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.api.Distribution.BucketOptions.Linear", skipping
 
 // +kcc:proto=google.api.Distribution.BucketOptions.Linear
 type Distribution_BucketOptions_Linear struct {
@@ -88,9 +77,6 @@ type Distribution_BucketOptions_Linear struct {
 	// +kcc:proto:field=google.api.Distribution.BucketOptions.Linear.offset
 	Offset *float64 `json:"offset,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.api.LabelDescriptor", skipping
 
 // +kcc:proto=google.api.LabelDescriptor
 type LabelDescriptor struct {
@@ -106,9 +92,6 @@ type LabelDescriptor struct {
 	// +kcc:proto:field=google.api.LabelDescriptor.description
 	Description *string `json:"description,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.api.MetricDescriptor", skipping
 
 // +kcc:proto=google.api.MetricDescriptor
 type MetricDescriptor struct {
@@ -279,9 +262,6 @@ type MetricDescriptor struct {
 	// +kcc:proto:field=google.api.MetricDescriptor.monitored_resource_types
 	MonitoredResourceTypes []string `json:"monitoredResourceTypes,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.api.MetricDescriptor.MetricDescriptorMetadata", skipping
 
 // +kcc:proto=google.api.MetricDescriptor.MetricDescriptorMetadata
 type MetricDescriptor_MetricDescriptorMetadata struct {
@@ -308,13 +288,10 @@ type MetricDescriptor_MetricDescriptorMetadata struct {
 	// +kcc:proto:field=google.api.MetricDescriptor.MetricDescriptorMetadata.time_series_resource_hierarchy_level
 	TimeSeriesResourceHierarchyLevel []string `json:"timeSeriesResourceHierarchyLevel,omitempty"`
 }
-*/
 
-/* unreachable type BigQueryDataset
 // +kcc:proto=google.logging.v2.BigQueryDataset
 type BigQueryDataset struct {
 }
-*/
 
 /* unreachable type BigQueryOptions
 // +kcc:proto=google.logging.v2.BigQueryOptions
@@ -401,16 +378,17 @@ type IndexConfig struct {
 	//
 	//  For example: `jsonPayload.request.status`
 	// +kcc:proto:field=google.logging.v2.IndexConfig.field_path
+	// +required
 	FieldPath *string `json:"fieldPath,omitempty"`
 
 	// Required. The type of data in this index.
 	// +kcc:proto:field=google.logging.v2.IndexConfig.type
+	// +required
 	Type *string `json:"type,omitempty"`
 }
 */
 
-/* found existing non-generated go type with proto tag "google.logging.v2.Link", skipping
-
+/* unreachable type Link
 // +kcc:proto=google.logging.v2.Link
 type Link struct {
 	// The resource name of the link. The name can have up to 100 characters.
@@ -505,6 +483,7 @@ type LogExclusion struct {
 	//  can include only letters, digits, underscores, hyphens, and periods. First
 	//  character has to be alphanumeric.
 	// +kcc:proto:field=google.logging.v2.LogExclusion.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. A description of this exclusion.
@@ -522,6 +501,7 @@ type LogExclusion struct {
 	//
 	//    `resource.type=gcs_bucket severity<ERROR sample(insertId, 0.99)`
 	// +kcc:proto:field=google.logging.v2.LogExclusion.filter
+	// +required
 	Filter *string `json:"filter,omitempty"`
 
 	// Optional. If set to True, then this exclusion is disabled and it does not
@@ -533,8 +513,7 @@ type LogExclusion struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.logging.v2.LogMetric", skipping
-
+/* unreachable type LogMetric
 // +kcc:proto=google.logging.v2.LogMetric
 type LogMetric struct {
 	// Required. The client-assigned metric identifier.
@@ -551,6 +530,7 @@ type LogMetric struct {
 	//  `"projects/my-project/metrics/nginx%2Frequests"`, this field's value is
 	//  `"nginx/requests"`.
 	// +kcc:proto:field=google.logging.v2.LogMetric.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. A description of this metric, which is used in documentation.
@@ -566,6 +546,7 @@ type LogMetric struct {
 	//
 	//  The maximum length of the filter is 20000 characters.
 	// +kcc:proto:field=google.logging.v2.LogMetric.filter
+	// +required
 	Filter *string `json:"filter,omitempty"`
 
 	// Optional. The resource name of the Log Bucket that owns the Log Metric.
@@ -673,6 +654,7 @@ type LogSink struct {
 	//  lower-case alphanumeric characters, underscores, hyphens, and periods.
 	//  First character has to be alphanumeric.
 	// +kcc:proto:field=google.logging.v2.LogSink.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Required. The export destination:
@@ -687,6 +669,7 @@ type LogSink struct {
 	//  [Exporting Logs with
 	//  Sinks](https://cloud.google.com/logging/docs/api/tasks/exporting-logs).
 	// +kcc:proto:field=google.logging.v2.LogSink.destination
+	// +required
 	Destination *string `json:"destination,omitempty"`
 
 	// Optional. An [advanced logs
@@ -848,8 +831,7 @@ type IndexConfigObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.logging.v2.Link", skipping
-
+/* unreachable type LinkObservedState
 // +kcc:observedstate:proto=google.logging.v2.Link
 type LinkObservedState struct {
 	// Output only. The creation timestamp of the link.
@@ -934,8 +916,7 @@ type LogExclusionObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.logging.v2.LogMetric", skipping
-
+/* unreachable type LogMetricObservedState
 // +kcc:observedstate:proto=google.logging.v2.LogMetric
 type LogMetricObservedState struct {
 	// Output only. The creation timestamp of the metric.

@@ -166,7 +166,6 @@ func PrivilegedAccessManagerEntitlementObservedState_FromProto(mapCtx *direct.Ma
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.Etag = direct.LazyPtr(in.GetEtag())
 	return out
 }
 func PrivilegedAccessManagerEntitlementObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PrivilegedAccessManagerEntitlementObservedState) *pb.Entitlement {
@@ -178,7 +177,6 @@ func PrivilegedAccessManagerEntitlementObservedState_ToProto(mapCtx *direct.MapC
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.State = direct.Enum_ToProto[pb.Entitlement_State](mapCtx, in.State)
-	out.Etag = direct.ValueOf(in.Etag)
 	return out
 }
 
@@ -193,8 +191,9 @@ func PrivilegedAccessManagerEntitlementSpec_FromProto(mapCtx *direct.MapContext,
 	out.ApprovalWorkflow = ApprovalWorkflow_FromProto(mapCtx, in.GetApprovalWorkflow())
 	out.PrivilegedAccess = PrivilegedAccess_FromProto(mapCtx, in.GetPrivilegedAccess())
 	out.MaxRequestDuration = direct.StringDuration_FromProto(mapCtx, in.GetMaxRequestDuration())
-	out.RequesterJustificationConfig = RequesterJustificationConfig_FromProto(mapCtx, in.GetRequesterJustificationConfig())
-	out.AdditionalNotificationTargets = AdditionalNotificationTargets_FromProto(mapCtx, in.GetAdditionalNotificationTargets())
+	out.RequesterJustificationConfig = Entitlement_RequesterJustificationConfig_FromProto(mapCtx, in.GetRequesterJustificationConfig())
+	out.AdditionalNotificationTargets = Entitlement_AdditionalNotificationTargets_FromProto(mapCtx, in.GetAdditionalNotificationTargets())
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	return out
 }
 */
@@ -210,8 +209,9 @@ func PrivilegedAccessManagerEntitlementSpec_ToProto(mapCtx *direct.MapContext, i
 	out.ApprovalWorkflow = ApprovalWorkflow_ToProto(mapCtx, in.ApprovalWorkflow)
 	out.PrivilegedAccess = PrivilegedAccess_ToProto(mapCtx, in.PrivilegedAccess)
 	out.MaxRequestDuration = direct.StringDuration_ToProto(mapCtx, in.MaxRequestDuration)
-	out.RequesterJustificationConfig = RequesterJustificationConfig_ToProto(mapCtx, in.RequesterJustificationConfig)
-	out.AdditionalNotificationTargets = AdditionalNotificationTargets_ToProto(mapCtx, in.AdditionalNotificationTargets)
+	out.RequesterJustificationConfig = Entitlement_RequesterJustificationConfig_ToProto(mapCtx, in.RequesterJustificationConfig)
+	out.AdditionalNotificationTargets = Entitlement_AdditionalNotificationTargets_ToProto(mapCtx, in.AdditionalNotificationTargets)
+	out.Etag = direct.ValueOf(in.Etag)
 	return out
 }
 */

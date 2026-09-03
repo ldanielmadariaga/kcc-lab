@@ -15,7 +15,7 @@
 package v1beta1
 
 import (
-	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -23,64 +23,65 @@ import (
 var APIQuotaPreferenceGVK = GroupVersion.WithKind("APIQuotaPreference")
 
 // APIQuotaPreferenceSpec defines the desired state of APIQuotaPreference
-
-// Parent holds the parent object reference
-type Parent struct {
-	// +optional
-	ProjectRef *refv1beta1.ProjectRef `json:"projectRef,omitempty"`
-	// +optional
-	OrganizationRef *refv1beta1.OrganizationRef `json:"organizationRef,omitempty"`
-	// +optional
-	FolderRef *refv1beta1.FolderRef `json:"folderRef,omitempty"`
-}
-
 // +kcc:spec:proto=google.api.cloudquotas.v1beta.QuotaPreference
 type APIQuotaPreferenceSpec struct {
-	// Parent reference
-	Parent Parent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/quotaPreferences/{quota_preference}
+	Location *string `json:"location"`
+
 	// The APIQuotaPreference name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Immutable. The dimensions that this quota preference applies to. The key of
-	//  the map entry is the name of a dimension, such as "region", "zone",
-	//  "network_id", and the value of the map entry is the dimension value.
+	//  the map entry is the name of a dimension, such as `region`, `zone`,
+	//  `network_id`, and the value of the map entry is the dimension value.
 	//
 	//  If a dimension is missing from the map of dimensions, the quota preference
 	//  applies to all the dimension values except for those that have other quota
 	//  preferences configured for the specific value.
 	//
-	//  NOTE: QuotaPreferences can only be applied across all values of "user" and
-	//  "resource" dimension. Do not set values for "user" or "resource" in the
+	//  Note: QuotaPreferences can only be applied across all values of `user` and
+	//  `resource` dimension. Do not set values for `user` or `resource` in the
 	//  dimension map.
 	//
-	//  Example: {"provider", "Foo Inc"} where "provider" is a service specific
-	//  dimension.
+	//  For example: `{"provider" : "Example Organization"}` where `provider` is a
+	//  service-specific quota dimension and `Example Organization` is the provider
+	//  name.
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.dimensions
 	Dimensions map[string]string `json:"dimensions,omitempty"`
 
 	// Required. Preferred quota configuration.
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.quota_config
-	//+required
+	// +required
 	QuotaConfig *QuotaConfig `json:"quotaConfig,omitempty"`
+
+	// Optional. The current etag of the quota preference. If an etag is provided
+	//  on update and does not match the current server's etag of the quota
+	//  preference, the request will be blocked and an ABORTED error will be
+	//  returned. See https://google.aip.dev/134#etags for more details on etags.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.etag
+	Etag *string `json:"etag,omitempty"`
 
 	// Required. The name of the service to which the quota preference is applied.
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.service
-	//+required
+	// +required
 	Service *string `json:"service,omitempty"`
 
 	// Required. The id of the quota to which the quota preference is applied. A
-	//  quota name is unique in the service. Example: `CpusPerProjectPerRegion`
+	//  quota name is unique in the service. For example, `CpusPerProjectPerRegion`
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.quota_id
-	//+required
+	// +required
 	QuotaID *string `json:"quotaID,omitempty"`
 
 	// The reason / justification for this quota preference.
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.justification
 	Justification *string `json:"justification,omitempty"`
 
-	// Input only. An email address that can be used to contact the the user, in
-	//  case Google Cloud needs more information to make a decision before
-	//  additional quota can be granted.
+	// Input only. An email address that can be used to contact the user, in case
+	//  Google Cloud needs more information to make a decision before additional
+	//  quota can be granted.
 	//
 	//  When requesting a quota increase, the email address is required.
 	//  When requesting a quota decrease, the email address is optional.
@@ -126,13 +127,6 @@ type APIQuotaPreferenceObservedState struct {
 	//  fulfillment.
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.reconciling
 	Reconciling *bool `json:"reconciling,omitempty"`
-
-	// Optional. The current etag of the quota preference. If an etag is provided
-	//  on update and does not match the current server's etag of the quota
-	//  preference, the request will be blocked and an ABORTED error will be
-	//  returned. See https://google.aip.dev/134#etags for more details on etags.
-	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.etag
-	Etag *string `json:"etag,omitempty"`
 }
 
 // +genclient

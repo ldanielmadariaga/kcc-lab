@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,79 +30,34 @@ type VectorSearchCollectionSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/collections/{collection}
 	Location *string `json:"location"`
 
 	// The VectorSearchCollection name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. User-specified display name of the collection
+	// +kcc:proto:field=google.cloud.vectorsearch.v1.Collection.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Optional. User-specified description of the collection
+	// +kcc:proto:field=google.cloud.vectorsearch.v1.Collection.description
 	Description *string `json:"description,omitempty"`
 
 	// Optional. Labels as key value pairs.
+	// +kcc:proto:field=google.cloud.vectorsearch.v1.Collection.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Optional. Schema for vector fields. Only vector fields in this schema will
 	//  be searchable. Field names must contain only alphanumeric characters,
 	//  underscores, and hyphens.
+	// +kcc:proto:field=google.cloud.vectorsearch.v1.Collection.vector_schema
 	VectorSchema map[string]VectorField `json:"vectorSchema,omitempty"`
 
 	// Optional. JSON Schema for data.
 	//  Field names must contain only alphanumeric characters,
 	//  underscores, and hyphens.
-	DataSchema *apiextensionsv1.JSON `json:"dataSchema,omitempty"`
-}
-
-// +kcc:proto=google.cloud.vectorsearch.v1.VectorField
-type VectorField struct {
-	// Dense vector field.
-	// +kcc:proto:field=google.cloud.vectorsearch.v1.VectorField.dense_vector
-	DenseVector *DenseVectorField `json:"denseVector,omitempty"`
-
-	// Sparse vector field.
-	// +kcc:proto:field=google.cloud.vectorsearch.v1.VectorField.sparse_vector
-	SparseVector *SparseVectorField `json:"sparseVector,omitempty"`
-}
-
-// +kcc:proto=google.cloud.vectorsearch.v1.DenseVectorField
-type DenseVectorField struct {
-	// Dimensionality of the vector field.
-	// +kcc:proto:field=google.cloud.vectorsearch.v1.DenseVectorField.dimensions
-	Dimensions *int32 `json:"dimensions,omitempty"`
-
-	// Optional. Configuration for generating embeddings for the vector field. If
-	//  not specified, the embedding field must be populated in the DataObject.
-	// +kcc:proto:field=google.cloud.vectorsearch.v1.DenseVectorField.vertex_embedding_config
-	VertexEmbeddingConfig *VertexEmbeddingConfig `json:"vertexEmbeddingConfig,omitempty"`
-}
-
-// +kubebuilder:validation:XPreserveUnknownFields
-// +kcc:proto=google.cloud.vectorsearch.v1.SparseVectorField
-type SparseVectorField struct {
-}
-
-// +kcc:proto=google.cloud.vectorsearch.v1.VertexEmbeddingConfig
-type VertexEmbeddingConfig struct {
-	// Required. Required: ID of the embedding model to use. See
-	//  https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models#embeddings-models
-	//  for the list of supported models.
-	// +required
-	// +kcc:proto:field=google.cloud.vectorsearch.v1.VertexEmbeddingConfig.model_id
-	ModelID *string `json:"modelID,omitempty"`
-
-	// Required. Required: Text template for the input to the model. The template
-	//  must contain one or more references to fields in the DataObject, e.g.:
-	//  "Movie Title: {title} ---- Movie Plot: {plot}".
-	// +required
-	// +kcc:proto:field=google.cloud.vectorsearch.v1.VertexEmbeddingConfig.text_template
-	TextTemplate *string `json:"textTemplate,omitempty"`
-
-	// Required. Required: Task type for the embeddings.
-	// +required
-	// +kcc:proto:field=google.cloud.vectorsearch.v1.VertexEmbeddingConfig.task_type
-	TaskType *string `json:"taskType,omitempty"`
+	// +kcc:proto:field=google.cloud.vectorsearch.v1.Collection.data_schema
+	DataSchema apiextensionsv1.JSON `json:"dataSchema,omitempty"`
 }
 
 // VectorSearchCollectionStatus defines the config connector machine state of VectorSearchCollection
@@ -139,7 +94,6 @@ type VectorSearchCollectionObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

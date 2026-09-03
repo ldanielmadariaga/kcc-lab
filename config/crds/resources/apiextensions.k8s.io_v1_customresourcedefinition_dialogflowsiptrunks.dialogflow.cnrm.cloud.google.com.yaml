@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: dialogflowsiptrunks.dialogflow.cnrm.cloud.google.com
 spec:
@@ -72,11 +71,8 @@ spec:
                   type: string
                 type: array
               location:
-                description: Immutable. The location of this resource.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -182,7 +178,7 @@ spec:
                               type: string
                             errorMessage:
                               description: The error message provided from SIP trunking
-                                auth service.
+                                auth service
                               type: string
                           type: object
                         state:

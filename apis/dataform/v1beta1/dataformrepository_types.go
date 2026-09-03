@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,146 +15,138 @@
 package v1beta1
 
 import (
-	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type SSHAuthenticationConfig struct {
-	// The name of the Secret Manager secret version to use as a ssh private key for Git operations. Must be in the format projects/*/secrets/*/versions/* .
-	// +required
-	UserPrivateKeySecretVersionRef *refv1beta1.SecretManagerSecretVersionRef `json:"userPrivateKeySecretVersionRef,omitempty"`
+var DataformRepositoryGVK = GroupVersion.WithKind("DataformRepository")
 
-	// Content of a public SSH key to verify an identity of a remote Git host.
-	// +required
-	HostPublicKey string `json:"hostPublicKey,omitempty"`
-}
-
-// +kcc:proto=google.cloud.dataform.v1beta1.Repository.GitRemoteSettings
-type RepositoryGitRemoteSettings struct {
-	/* The name of the Secret Manager secret version to use as an authentication token for Git operations. Must be in the format projects/* /secrets/* /versions/*. */
-	AuthenticationTokenSecretVersionRef *refv1beta1.SecretManagerSecretVersionRef `json:"authenticationTokenSecretVersionRef,omitempty"`
-
-	/* The Git remote's default branch name. */
-	// +required
-	DefaultBranch string `json:"defaultBranch"`
-
-	// This is a deprecated field so we are not including it anymore.
-	// +optional
-	//TokenStatus *string `json:"tokenStatus,omitempty"`
-
-	// Authentication fields for remote uris using SSH protocol.
-	// +optional
-	SSHAuthenticationConfig *SSHAuthenticationConfig `json:"sshAuthenticationConfig,omitempty"`
-
-	/* The Git remote's URL. */
-	// +required
-	Url string `json:"url"`
-}
-
-// +kcc:proto=google.cloud.dataform.v1beta1.Repository.WorkspaceCompilationOverrides
-type RepositoryWorkspaceCompilationOverrides struct {
-	/* Optional. The default database (Google Cloud project ID). */
-	// +optional
-	DefaultDatabase *string `json:"defaultDatabase,omitempty"`
-
-	/* Optional. The suffix that should be appended to all schema (BigQuery dataset ID) names. */
-	// +optional
-	SchemaSuffix *string `json:"schemaSuffix,omitempty"`
-
-	/* Optional. The prefix that should be prepended to all table names. */
-	// +optional
-	TablePrefix *string `json:"tablePrefix,omitempty"`
-}
-
+// DataformRepositorySpec defines the desired state of DataformRepository
 // +kcc:spec:proto=google.cloud.dataform.v1beta1.Repository
 type DataformRepositorySpec struct {
-	/* Optional. If set, configures this repository to be linked to a Git remote. */
-	// +optional
-	GitRemoteSettings *RepositoryGitRemoteSettings `json:"gitRemoteSettings,omitempty"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/repositories/{repository}
+	Location *string `json:"location"`
+
+	// The DataformRepository name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. The name of the containing folder of the repository.
+	//  The field is immutable and it can be modified via a MoveRepository
+	//  operation.
+	//  Format: `projects/*/locations/*/folders/*`. or
+	//  `projects/*/locations/*/teamFolders/*`.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.containing_folder
+	ContainingFolder *string `json:"containingFolder,omitempty"`
 
 	// Optional. The repository's user-friendly name.
-	// +optional
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
+	// Optional. If set, configures this repository to be linked to a Git remote.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.git_remote_settings
+	GitRemoteSettings *Repository_GitRemoteSettings `json:"gitRemoteSettings,omitempty"`
+
 	// Optional. The name of the Secret Manager secret version to be used to
-	// interpolate variables into the .npmrc file for package installation
-	// operations.
-	// +optional
-	NpmrcEnvironmentVariablesSecretVersionRef *refv1beta1.SecretManagerSecretVersionRef `json:"npmrcEnvironmentVariablesSecretVersionRef,omitempty"`
+	//  interpolate variables into the .npmrc file for package installation
+	//  operations. Must be in the format `projects/*/secrets/*/versions/*`. The
+	//  file itself must be in a JSON format.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.npmrc_environment_variables_secret_version
+	NpmrcEnvironmentVariablesSecretVersion *string `json:"npmrcEnvironmentVariablesSecretVersion,omitempty"`
 
-	/* The project that this resource belongs to. */
-	// +required
-	ProjectRef *refv1beta1.ProjectRef `json:"projectRef"`
+	// Optional. If set, fields of `workspace_compilation_overrides` override the
+	//  default compilation settings that are specified in dataform.json when
+	//  creating workspace-scoped compilation results. See documentation for
+	//  `WorkspaceCompilationOverrides` for more information.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.workspace_compilation_overrides
+	WorkspaceCompilationOverrides *Repository_WorkspaceCompilationOverrides `json:"workspaceCompilationOverrides,omitempty"`
 
-	/* Immutable. A reference to the region. */
-	Region string `json:"region"`
+	// Optional. Repository user labels.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.labels
+	Labels map[string]string `json:"labels,omitempty"`
 
-	/* Immutable. Optional. The name of the resource. Used for creation and acquisition. When unset, the value of `metadata.name` is used as the default. */
-	// +optional
-	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. Input only. If set to true, the authenticated user will be
+	//  granted the roles/dataform.admin role on the created repository. To modify
+	//  access to the created repository later apply setIamPolicy from
+	//  https://cloud.google.com/dataform/reference/rest#rest-resource:-v1beta1.projects.locations.repositories
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.set_authenticated_user_admin
+	SetAuthenticatedUserAdmin *bool `json:"setAuthenticatedUserAdmin,omitempty"`
 
-	// TODO(kcc): For now don't support labels while we decide on how to square resource labels with k8s labels.
-	// // Repository user labels. An object containing a list of "key": value pairs. Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
-	// // +optional
-	// Labels map[string]string `json:"labels,omitempty"`
+	// Optional. The service account to run workflow invocations under.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.service_account
+	ServiceAccount *string `json:"serviceAccount,omitempty"`
 
-	// Optional. Input only. If set to true, the authenticated user will be granted the roles/dataform.admin role on the created repository.
-	// +optional
-	SetAuthenticatedUserAdmin bool `json:"setAuthenticatedUserAdmin,omitempty"`
-
-	/* Optional. If set, fields of workspaceCompilationOverrides override the default compilation settings that are specified in dataform.json when creating workspace-scoped compilation results. */
-	// +optional
-	WorkspaceCompilationOverrides *RepositoryWorkspaceCompilationOverrides `json:"workspaceCompilationOverrides,omitempty"`
-
-	// Not part of the proto yet
-	// // The reference to a KMS encryption key. If provided, it will be used to encrypt user data in the repository and all child resources.
-	// // It is not possible to add or update the encryption key after the repository is created.
-	// // +optional
-	// KmsKeyRef *refv1beta1.KMSCryptoKeyRef `json:"kmsKeyRef,omitempty"`
-
-	// Optional. The service account reference to run workflow invocations under.
-	ServiceAccountRef *refv1beta1.IAMServiceAccountRef `json:"serviceAccountRef,omitempty"`
+	// Optional. The reference to a KMS encryption key. If provided, it will be
+	//  used to encrypt user data in the repository and all child resources. It is
+	//  not possible to add or update the encryption key after the repository is
+	//  created. Example:
+	//  `projects/{kms_project}/locations/{location}/keyRings/{key_location}/cryptoKeys/{key}`
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.kms_key_name
+	KMSKeyName *string `json:"kmsKeyName,omitempty"`
 }
 
+// DataformRepositoryStatus defines the config connector machine state of DataformRepository
 type DataformRepositoryStatus struct {
 	/* Conditions represent the latest available observations of the
-	   DataformRepository's current state. */
+	   object's current state. */
 	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
-	/* ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource. */
-	// +optional
+
+	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
 	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
 
-	// A unique specifier for the DataformReposity resource in GCP.
-	// +optional
+	// A unique specifier for the DataformRepository resource in GCP.
 	ExternalRef *string `json:"externalRef,omitempty"`
 
 	// ObservedState is the state of the resource as most recently observed in GCP.
-	// +optional
 	ObservedState *DataformRepositoryObservedState `json:"observedState,omitempty"`
 }
 
+// DataformRepositoryObservedState is the state of the DataformRepository resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.dataform.v1beta1.Repository
 type DataformRepositoryObservedState struct {
-	// DataEncryptionState is output only! But not part of the proto yet.
+	// Output only. The resource name of the TeamFolder that this Repository is
+	//  associated with. This should take the format:
+	//  projects/{project}/locations/{location}/teamFolders/{teamFolder}. If this
+	//  is not set, the Repository is not associated with a TeamFolder.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.team_folder_name
+	TeamFolderName *string `json:"teamFolderName,omitempty"`
+
+	// Output only. The timestamp of when the repository was created.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Optional. If set, configures this repository to be linked to a Git remote.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.git_remote_settings
+	GitRemoteSettings *Repository_GitRemoteSettingsObservedState `json:"gitRemoteSettings,omitempty"`
+
+	// Output only. A data encryption state of a Git repository if this Repository
+	//  is protected by a KMS key.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.data_encryption_state
+	DataEncryptionState *DataEncryptionStateObservedState `json:"dataEncryptionState,omitempty"`
+
+	// Output only. All the metadata information that is used internally to serve
+	//  the resource. For example: timestamps, flags, status fields, etc. The
+	//  format of this field is a JSON string.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.internal_metadata
+	InternalMetadata *string `json:"internalMetadata,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpdataformrepository;gcpdataformrepositories
+// +kubebuilder:resource:categories=gcp,shortName=gcpdataformrepository;gcpdataformrepositorys
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=stable"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
 // +kubebuilder:printcolumn:name="Status Age",JSONPath=".status.conditions[?(@.type=='Ready')].lastTransitionTime",type="date",description="The last transition time for the value in 'Status'"
 
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
-// DataformRepository is the Schema for the dataform API
+// DataformRepository is the Schema for the DataformRepository API
 // +k8s:openapi-gen=true
-// +kubebuilder:storageversion
 type DataformRepository struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -165,7 +157,6 @@ type DataformRepository struct {
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
 // DataformRepositoryList contains a list of DataformRepository
 type DataformRepositoryList struct {
 	metav1.TypeMeta `json:",inline"`

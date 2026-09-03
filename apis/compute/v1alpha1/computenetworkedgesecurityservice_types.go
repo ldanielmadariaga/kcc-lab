@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//    http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,36 +15,36 @@
 package v1alpha1
 
 import (
-	computev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
-	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var ComputeNetworkEdgeSecurityServiceGVK = GroupVersion.WithKind("ComputeNetworkEdgeSecurityService")
 
-type ComputeNetworkEdgeSecurityServiceParent struct {
-	// +required
-	ProjectRef *refv1beta1.ProjectRef `json:"projectRef"`
-	// +required
-	Location string `json:"location"`
-}
-
 // ComputeNetworkEdgeSecurityServiceSpec defines the desired state of ComputeNetworkEdgeSecurityService
 // +kcc:spec:proto=google.cloud.compute.v1.NetworkEdgeSecurityService
 type ComputeNetworkEdgeSecurityServiceSpec struct {
-	ComputeNetworkEdgeSecurityServiceParent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
 	// The ComputeNetworkEdgeSecurityService name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// An optional description of this resource. Provide this property when you create the resource.
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.description
 	Description *string `json:"description,omitempty"`
+
 	// Fingerprint of this resource. A hash of the contents stored in this object. This field is used in optimistic locking. This field will be ignored when inserting a NetworkEdgeSecurityService. An up-to-date fingerprint must be provided in order to update the NetworkEdgeSecurityService, otherwise the request will fail with error 412 conditionNotMet. To see the latest fingerprint, make a get() request to retrieve a NetworkEdgeSecurityService.
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.fingerprint
 	Fingerprint *string `json:"fingerprint,omitempty"`
+
+	// [Output Only] URL of the region where the resource resides. You must specify this field as part of the HTTP request URL. It is not settable as a field in the request body.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.region
+	Region *string `json:"region,omitempty"`
+
 	// The resource URL for the network edge security service associated with this network edge security service.
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.security_policy
-	SecurityPolicyRef *computev1beta1.ComputeSecurityPolicyRef `json:"securityPolicyRef,omitempty"`
+	SecurityPolicy *string `json:"securityPolicy,omitempty"`
 }
 
 // ComputeNetworkEdgeSecurityServiceStatus defines the config connector machine state of ComputeNetworkEdgeSecurityService
@@ -67,26 +67,27 @@ type ComputeNetworkEdgeSecurityServiceStatus struct {
 // +kcc:observedstate:proto=google.cloud.compute.v1.NetworkEdgeSecurityService
 type ComputeNetworkEdgeSecurityServiceObservedState struct {
 	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.creation_timestamp
 	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
 
 	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.id
 	ID *uint64 `json:"id,omitempty"`
 
 	// [Output only] Type of the resource. Always compute#networkEdgeSecurityService for NetworkEdgeSecurityServices
+	// +kcc:guess=placement reason=no-field-behavior-on-message
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.kind
 	Kind *string `json:"kind,omitempty"`
 
-	// [Output Only] URL of the region where the resource resides. You must specify this field as part of the HTTP request URL. It is not settable as a field in the request body.
-	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.region
-	Region *string `json:"region,omitempty"`
-
 	// [Output Only] Server-defined URL for the resource.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.self_link
 	SelfLink *string `json:"selfLink,omitempty"`
 
 	// [Output Only] Server-defined URL for this resource with the resource id.
+	// +kcc:guess=placement reason=no-field-behavior-on-message
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.self_link_with_id
 	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
 }

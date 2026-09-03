@@ -1,0 +1,15 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=GKEHubFleet group=gkehub.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=GKEHubFleet group=gkehub.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=GKEHubFleet group=gkehub.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/fleets/{fleet}; confirm the resource is regional and that this is the name for it)
+kind=GKEHubFleet group=gkehub.cnrm.cloud.google.com: field ".spec.defaultClusterConfig.binaryAuthorizationConfig.policyBindings[].name" reason=possible-reference-by-description
+kind=GKEHubFeatureMembership group=gkehub.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=GKEHubFeatureMembership group=gkehub.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-unknown-parent (the proto declares no google.api.resource, so the parent shape is unknown; add location if the resource is regional)
+kind=GKEHubFeatureMembership group=gkehub.cnrm.cloud.google.com: field ".spec.configmanagement.configSync.git.secretType" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=GKEHubFeatureMembership group=gkehub.cnrm.cloud.google.com: field ".spec.configmanagement.configSync.oci.secretType" reason=possible-reference-by-name (SecretManagerSecretVersionRef)

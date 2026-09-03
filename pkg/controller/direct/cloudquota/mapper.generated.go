@@ -36,9 +36,7 @@ func APIQuotaAdjusterSettingsObservedState_FromProto(mapCtx *direct.MapContext, 
 	out := &krm.APIQuotaAdjusterSettingsObservedState{}
 	// MISSING: Name
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	out.Etag = direct.LazyPtr(in.GetEtag())
-	// MISSING: Inherited
-	// MISSING: InheritedFrom
+	out.InheritedFrom = direct.LazyPtr(in.GetInheritedFrom())
 	return out
 }
 func APIQuotaAdjusterSettingsObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIQuotaAdjusterSettingsObservedState) *pb.QuotaAdjusterSettings {
@@ -48,9 +46,7 @@ func APIQuotaAdjusterSettingsObservedState_ToProto(mapCtx *direct.MapContext, in
 	out := &pb.QuotaAdjusterSettings{}
 	// MISSING: Name
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	out.Etag = direct.ValueOf(in.Etag)
-	// MISSING: Inherited
-	// MISSING: InheritedFrom
+	out.InheritedFrom = direct.ValueOf(in.InheritedFrom)
 	return out
 }
 func APIQuotaAdjusterSettingsSpec_FromProto(mapCtx *direct.MapContext, in *pb.QuotaAdjusterSettings) *krm.APIQuotaAdjusterSettingsSpec {
@@ -60,8 +56,8 @@ func APIQuotaAdjusterSettingsSpec_FromProto(mapCtx *direct.MapContext, in *pb.Qu
 	out := &krm.APIQuotaAdjusterSettingsSpec{}
 	// MISSING: Name
 	out.Enablement = direct.Enum_FromProto(mapCtx, in.GetEnablement())
-	// MISSING: Inherited
-	// MISSING: InheritedFrom
+	out.Etag = direct.LazyPtr(in.GetEtag())
+	out.Inherited = direct.LazyPtr(in.GetInherited())
 	return out
 }
 func APIQuotaAdjusterSettingsSpec_ToProto(mapCtx *direct.MapContext, in *krm.APIQuotaAdjusterSettingsSpec) *pb.QuotaAdjusterSettings {
@@ -71,8 +67,8 @@ func APIQuotaAdjusterSettingsSpec_ToProto(mapCtx *direct.MapContext, in *krm.API
 	out := &pb.QuotaAdjusterSettings{}
 	// MISSING: Name
 	out.Enablement = direct.Enum_ToProto[pb.QuotaAdjusterSettings_Enablement](mapCtx, in.Enablement)
-	// MISSING: Inherited
-	// MISSING: InheritedFrom
+	out.Etag = direct.ValueOf(in.Etag)
+	out.Inherited = direct.ValueOf(in.Inherited)
 	return out
 }
 func APIQuotaPreferenceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.QuotaPreference) *krm.APIQuotaPreferenceObservedState {
@@ -82,7 +78,6 @@ func APIQuotaPreferenceObservedState_FromProto(mapCtx *direct.MapContext, in *pb
 	out := &krm.APIQuotaPreferenceObservedState{}
 	// MISSING: Name
 	out.QuotaConfig = QuotaConfigObservedState_FromProto(mapCtx, in.GetQuotaConfig())
-	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.Reconciling = direct.LazyPtr(in.GetReconciling())
@@ -95,7 +90,6 @@ func APIQuotaPreferenceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.
 	out := &pb.QuotaPreference{}
 	// MISSING: Name
 	out.QuotaConfig = QuotaConfigObservedState_ToProto(mapCtx, in.QuotaConfig)
-	out.Etag = direct.ValueOf(in.Etag)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.Reconciling = direct.ValueOf(in.Reconciling)
@@ -109,6 +103,7 @@ func APIQuotaPreferenceSpec_FromProto(mapCtx *direct.MapContext, in *pb.QuotaPre
 	// MISSING: Name
 	out.Dimensions = in.Dimensions
 	out.QuotaConfig = QuotaConfig_FromProto(mapCtx, in.GetQuotaConfig())
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.Service = direct.LazyPtr(in.GetService())
 	out.QuotaID = direct.LazyPtr(in.GetQuotaId())
 	out.Justification = direct.LazyPtr(in.GetJustification())
@@ -123,6 +118,7 @@ func APIQuotaPreferenceSpec_ToProto(mapCtx *direct.MapContext, in *krm.APIQuotaP
 	// MISSING: Name
 	out.Dimensions = in.Dimensions
 	out.QuotaConfig = QuotaConfig_ToProto(mapCtx, in.QuotaConfig)
+	out.Etag = direct.ValueOf(in.Etag)
 	out.Service = direct.ValueOf(in.Service)
 	out.QuotaId = direct.ValueOf(in.QuotaID)
 	out.Justification = direct.ValueOf(in.Justification)

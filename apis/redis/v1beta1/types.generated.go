@@ -45,11 +45,11 @@ type AutomatedBackupConfig_FixedFrequencySchedule struct {
 	// Required. The start time of every automated backup in UTC. It must be set
 	//  to the start of an hour. This field is required.
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.AutomatedBackupConfig.FixedFrequencySchedule.start_time
+	// +required
 	StartTime *TimeOfDay `json:"startTime,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.redis.cluster.v1.Cluster", skipping
-
+/* unreachable type Cluster
 // +kcc:proto=google.cloud.redis.cluster.v1.Cluster
 type Cluster struct {
 	// Optional. Backups stored in Cloud Storage buckets.
@@ -67,6 +67,7 @@ type Cluster struct {
 	//  project and location using the form:
 	//      `projects/{project_id}/locations/{location_id}/clusters/{cluster_id}`
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.Cluster.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. The number of replica nodes per shard.
@@ -138,17 +139,14 @@ type Cluster struct {
 }
 */
 
-/* unreachable type Cluster_GCSBackupSource
 // +kcc:proto=google.cloud.redis.cluster.v1.Cluster.GcsBackupSource
 type Cluster_GCSBackupSource struct {
 	// Optional. URIs of the GCS objects to import.
 	//  Example: gs://bucket1/object1, gs://bucket2/folder2/object2
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.Cluster.GcsBackupSource.uris
-	Uris []string `json:"uris,omitempty"`
+	URIs []string `json:"uris,omitempty"`
 }
-*/
 
-/* unreachable type Cluster_ManagedBackupSource
 // +kcc:proto=google.cloud.redis.cluster.v1.Cluster.ManagedBackupSource
 type Cluster_ManagedBackupSource struct {
 	// Optional. Example:
@@ -160,7 +158,6 @@ type Cluster_ManagedBackupSource struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.Cluster.ManagedBackupSource.backup
 	Backup *string `json:"backup,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.redis.cluster.v1.Cluster.StateInfo
 type Cluster_StateInfo struct {
@@ -180,7 +177,6 @@ type Cluster_StateInfo_UpdateInfo struct {
 	TargetReplicaCount *int32 `json:"targetReplicaCount,omitempty"`
 }
 
-/* unreachable type ClusterEndpoint
 // +kcc:proto=google.cloud.redis.cluster.v1.ClusterEndpoint
 type ClusterEndpoint struct {
 	// A group of PSC connections. They are created in the same VPC network, one
@@ -188,7 +184,6 @@ type ClusterEndpoint struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.ClusterEndpoint.connections
 	Connections []ConnectionDetail `json:"connections,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.redis.cluster.v1.ClusterMaintenancePolicy
 type ClusterMaintenancePolicy struct {
@@ -252,7 +247,6 @@ type ClusterWeeklyMaintenanceWindow struct {
 	StartTime *TimeOfDay `json:"startTime,omitempty"`
 }
 
-/* unreachable type ConnectionDetail
 // +kcc:proto=google.cloud.redis.cluster.v1.ConnectionDetail
 type ConnectionDetail struct {
 	// Detailed information of a PSC connection that is created through
@@ -265,7 +259,6 @@ type ConnectionDetail struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.ConnectionDetail.psc_connection
 	PSCConnection *PSCConnection `json:"pscConnection,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig
 type CrossClusterReplicationConfig struct {
@@ -293,16 +286,14 @@ type CrossClusterReplicationConfig_Membership struct {
 }
 */
 
-/* found existing non-generated go type "CrossClusterReplicationConfig_RemoteCluster", skipping
-
 // +kcc:proto=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig.RemoteCluster
 type CrossClusterReplicationConfig_RemoteCluster struct {
 	// The full resource path of the remote cluster in
 	//  the format: projects/<project>/locations/<region>/clusters/<cluster-id>
+	// +kcc:guess=possible-reference target=RedisCluster
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig.RemoteCluster.cluster
 	Cluster *string `json:"cluster,omitempty"`
 }
-*/
 
 /* unreachable type DiscoveryEndpoint
 // +kcc:proto=google.cloud.redis.cluster.v1.DiscoveryEndpoint
@@ -316,21 +307,21 @@ type EncryptionInfo struct {
 }
 */
 
-/* unreachable type PSCAutoConnection
 // +kcc:proto=google.cloud.redis.cluster.v1.PscAutoConnection
 type PSCAutoConnection struct {
 
 	// Required. The consumer project_id where the forwarding rule is created
 	//  from.
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.PscAutoConnection.project_id
+	// +required
 	ProjectID *string `json:"projectID,omitempty"`
 
 	// Required. The consumer network where the IP address resides, in the form of
 	//  projects/{project_id}/global/networks/{network_id}.
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.PscAutoConnection.network
+	// +required
 	Network *string `json:"network,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.redis.cluster.v1.PscConfig
 type PSCConfig struct {
@@ -338,27 +329,29 @@ type PSCConfig struct {
 	//  be reserved, in the form of
 	//  projects/{network_project}/global/networks/{network_id}.
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.PscConfig.network
+	// +required
 	Network *string `json:"network,omitempty"`
 }
-
-/* found existing non-generated go type with proto tag "google.cloud.redis.cluster.v1.PscConnection", skipping
 
 // +kcc:proto=google.cloud.redis.cluster.v1.PscConnection
 type PSCConnection struct {
 	// Required. The PSC connection id of the forwarding rule connected to the
 	//  service attachment.
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.PscConnection.psc_connection_id
+	// +required
 	PSCConnectionID *string `json:"pscConnectionID,omitempty"`
 
 	// Required. The IP allocated on the consumer network for the PSC forwarding
 	//  rule.
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.PscConnection.address
+	// +required
 	Address *string `json:"address,omitempty"`
 
 	// Required. The URI of the consumer side forwarding rule.
 	//  Example:
 	//  projects/{projectNumOrId}/regions/us-east1/forwardingRules/{resourceId}.
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.PscConnection.forwarding_rule
+	// +required
 	ForwardingRule *string `json:"forwardingRule,omitempty"`
 
 	// Optional. Project ID of the consumer project where the forwarding rule is
@@ -369,15 +362,16 @@ type PSCConnection struct {
 	// Required. The consumer network where the IP address resides, in the form of
 	//  projects/{project_id}/global/networks/{network_id}.
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.PscConnection.network
+	// +required
 	Network *string `json:"network,omitempty"`
 
 	// Required. The service attachment which is the target of the PSC connection,
 	//  in the form of
 	//  projects/{project-id}/regions/{region}/serviceAttachments/{service-attachment-id}.
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.PscConnection.service_attachment
+	// +required
 	ServiceAttachment *string `json:"serviceAttachment,omitempty"`
 }
-*/
 
 /* unreachable type PSCServiceAttachment
 // +kcc:proto=google.cloud.redis.cluster.v1.PscServiceAttachment
@@ -415,6 +409,7 @@ type Instance struct {
 	//  [alternative_location_id][google.cloud.redis.v1.Instance.alternative_location_id]
 	//  fields for more details.
 	// +kcc:proto:field=google.cloud.redis.v1.Instance.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// An arbitrary and optional user-provided name for the instance.
@@ -496,10 +491,12 @@ type Instance struct {
 
 	// Required. The service tier of the instance.
 	// +kcc:proto:field=google.cloud.redis.v1.Instance.tier
+	// +required
 	Tier *string `json:"tier,omitempty"`
 
 	// Required. Redis memory size in GiB.
 	// +kcc:proto:field=google.cloud.redis.v1.Instance.memory_size_gb
+	// +required
 	MemorySizeGB *int32 `json:"memorySizeGB,omitempty"`
 
 	// Optional. The full name of the Google Compute Engine
@@ -652,10 +649,12 @@ type TLSCertificate struct {
 type WeeklyMaintenanceWindow struct {
 	// Required. The day of week that maintenance updates occur.
 	// +kcc:proto:field=google.cloud.redis.v1.WeeklyMaintenanceWindow.day
+	// +required
 	Day *string `json:"day,omitempty"`
 
 	// Required. Start time of the window in UTC time.
 	// +kcc:proto:field=google.cloud.redis.v1.WeeklyMaintenanceWindow.start_time
+	// +required
 	StartTime *TimeOfDay `json:"startTime,omitempty"`
 }
 */
@@ -681,8 +680,7 @@ type TimeOfDay struct {
 	Nanos *int32 `json:"nanos,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.redis.cluster.v1.Cluster", skipping
-
+/* unreachable type ClusterObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.Cluster
 type ClusterObservedState struct {
 	// Output only. The timestamp associated with the cluster creation request.
@@ -755,7 +753,6 @@ type ClusterObservedState struct {
 }
 */
 
-/* unreachable type ClusterEndpointObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.ClusterEndpoint
 type ClusterEndpointObservedState struct {
 	// A group of PSC connections. They are created in the same VPC network, one
@@ -763,7 +760,6 @@ type ClusterEndpointObservedState struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.ClusterEndpoint.connections
 	Connections []ConnectionDetailObservedState `json:"connections,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.ClusterMaintenancePolicy
 type ClusterMaintenancePolicyObservedState struct {
@@ -791,7 +787,6 @@ type ClusterMaintenanceScheduleObservedState struct {
 	EndTime *string `json:"endTime,omitempty"`
 }
 
-/* unreachable type ConnectionDetailObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.ConnectionDetail
 type ConnectionDetailObservedState struct {
 	// Detailed information of a PSC connection that is created through
@@ -804,7 +799,6 @@ type ConnectionDetailObservedState struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.ConnectionDetail.psc_connection
 	PSCConnection *PSCConnectionObservedState `json:"pscConnection,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig
 type CrossClusterReplicationConfigObservedState struct {
@@ -852,8 +846,6 @@ type CrossClusterReplicationConfig_MembershipObservedState struct {
 	SecondaryClusters []CrossClusterReplicationConfig_RemoteClusterObservedState `json:"secondaryClusters,omitempty"`
 }
 
-/* found existing non-generated go type "CrossClusterReplicationConfig_RemoteClusterObservedState", skipping
-
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig.RemoteCluster
 type CrossClusterReplicationConfig_RemoteClusterObservedState struct {
 	// The full resource path of the remote cluster in
@@ -865,7 +857,6 @@ type CrossClusterReplicationConfig_RemoteClusterObservedState struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.CrossClusterReplicationConfig.RemoteCluster.uid
 	Uid *string `json:"uid,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.DiscoveryEndpoint
 type DiscoveryEndpointObservedState struct {
@@ -881,7 +872,7 @@ type DiscoveryEndpointObservedState struct {
 	// Output only. Customer configuration for where the endpoint is created and
 	//  accessed from.
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.DiscoveryEndpoint.psc_config
-	PSCConfig *PSCConfig `json:"pscConfig,omitempty"`
+	PSCConfig *PSCConfigObservedState `json:"pscConfig,omitempty"`
 }
 
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.EncryptionInfo
@@ -905,7 +896,6 @@ type EncryptionInfoObservedState struct {
 	LastUpdateTime *string `json:"lastUpdateTime,omitempty"`
 }
 
-/* unreachable type PSCAutoConnectionObservedState
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.PscAutoConnection
 type PSCAutoConnectionObservedState struct {
 	// Output only. The PSC connection id of the forwarding rule connected to the
@@ -940,9 +930,15 @@ type PSCAutoConnectionObservedState struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.PscAutoConnection.connection_type
 	ConnectionType *string `json:"connectionType,omitempty"`
 }
-*/
 
-/* found existing non-generated go type "PSCConnectionObservedState", skipping
+// +kcc:observedstate:proto=google.cloud.redis.cluster.v1.PscConfig
+type PSCConfigObservedState struct {
+	// Required. The network where the IP address of the discovery endpoint will
+	//  be reserved, in the form of
+	//  projects/{network_project}/global/networks/{network_id}.
+	// +kcc:proto:field=google.cloud.redis.cluster.v1.PscConfig.network
+	Network *string `json:"network,omitempty"`
+}
 
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.PscConnection
 type PSCConnectionObservedState struct {
@@ -957,7 +953,6 @@ type PSCConnectionObservedState struct {
 	// +kcc:proto:field=google.cloud.redis.cluster.v1.PscConnection.connection_type
 	ConnectionType *string `json:"connectionType,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.redis.cluster.v1.PscServiceAttachment
 type PSCServiceAttachmentObservedState struct {

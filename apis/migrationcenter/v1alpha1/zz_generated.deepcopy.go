@@ -131,10 +131,22 @@ func (in *MigrationCenterGroupSpec) DeepCopyInto(out *MigrationCenterGroupSpec) 
 		*out = new(v1beta1.ProjectRef)
 		**out = **in
 	}
+	if in.Location != nil {
+		in, out := &in.Location, &out.Location
+		*out = new(string)
+		**out = **in
+	}
 	if in.ResourceID != nil {
 		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
 		**out = **in
+	}
+	if in.Labels != nil {
+		in, out := &in.Labels, &out.Labels
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
 	}
 	if in.DisplayName != nil {
 		in, out := &in.DisplayName, &out.DisplayName
@@ -145,13 +157,6 @@ func (in *MigrationCenterGroupSpec) DeepCopyInto(out *MigrationCenterGroupSpec) 
 		in, out := &in.Description, &out.Description
 		*out = new(string)
 		**out = **in
-	}
-	if in.Labels != nil {
-		in, out := &in.Labels, &out.Labels
-		*out = make(map[string]string, len(*in))
-		for key, val := range *in {
-			(*out)[key] = val
-		}
 	}
 }
 

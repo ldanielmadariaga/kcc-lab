@@ -84,108 +84,35 @@ spec:
                       In case of other keys being present in the args, then TASK_ARGS
                       will be passed as the last argument.'
                     type: object
-                  kmsKeyRef:
+                  kmsKey:
                     description: 'Optional. The Cloud KMS key to use for encryption,
                       of the form: `projects/{project_number}/locations/{location_id}/keyRings/{key-ring-name}/cryptoKeys/{key-name}`.'
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: A reference to an externally managed KMSCryptoKey.
-                          Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
-                        type: string
-                      name:
-                        description: The `name` of a `KMSCryptoKey` resource.
-                        type: string
-                      namespace:
-                        description: The `namespace` of a `KMSCryptoKey` resource.
-                        type: string
-                    type: object
+                    type: string
                   maxJobExecutionLifetime:
                     description: Optional. The maximum duration after which the job
                       execution is expired.
                     type: string
-                  projectRef:
+                  project:
                     description: Optional. The project in which jobs are run. By default,
                       the project containing the Lake is used. If a project is provided,
                       the [ExecutionSpec.service_account][google.cloud.dataplex.v1.Task.ExecutionSpec.service_account]
                       must belong to this project.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: The `projectID` field of a project, when not
-                          managed by Config Connector.
-                        type: string
-                      kind:
-                        description: The kind of the Project resource; optional but
-                          must be `Project` if provided.
-                        type: string
-                      name:
-                        description: The `name` field of a `Project` resource.
-                        type: string
-                      namespace:
-                        description: The `namespace` field of a `Project` resource.
-                        type: string
-                    type: object
-                  serviceAccountRef:
+                    type: string
+                  serviceAccount:
                     description: Required. Service account to use to execute a task.
                       If not provided, the default Compute service account for the
                       project is used.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: The `email` field of an `IAMServiceAccount` resource.
-                        type: string
-                      name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                        type: string
-                      namespace:
-                        description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
-                        type: string
-                    type: object
+                    type: string
                 required:
-                - serviceAccountRef
+                - serviceAccount
+                type: object
+              labels:
+                additionalProperties:
+                  type: string
+                description: Optional. User-defined labels for the task.
                 type: object
               lakeRef:
-                description: LakeRef is a reference to a DataplexLake.
+                description: The Lake that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -212,9 +139,11 @@ spec:
                     description: The namespace of a DataplexLake resource.
                     type: string
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
               notebook:
-                description: Config related to running scheduled Notebooks. Exactly
-                  one of spark or notebook must be set.
+                description: Config related to running scheduled Notebooks.
                 properties:
                   archiveURIs:
                     description: 'Optional. Cloud Storage URIs of archives to be extracted
@@ -309,13 +238,44 @@ spec:
                 required:
                 - notebook
                 type: object
+              projectRef:
+                description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
+                    type: string
+                  name:
+                    description: The `name` field of a `Project` resource.
+                    type: string
+                  namespace:
+                    description: The `namespace` field of a `Project` resource.
+                    type: string
+                type: object
               resourceID:
                 description: The DataplexTask name. If not given, the metadata.name
                   will be used.
                 type: string
               spark:
-                description: Config related to running custom Spark tasks. Exactly
-                  one of spark or notebook must be set.
+                description: Config related to running custom Spark tasks.
                 properties:
                   archiveURIs:
                     description: 'Optional. Cloud Storage URIs of archives to be extracted
@@ -459,9 +419,13 @@ spec:
                     description: Required. Immutable. Trigger type of the user-specified
                       Task.
                     type: string
+                required:
+                - type
                 type: object
             required:
             - executionSpec
+            - projectRef
+            - triggerSpec
             type: object
           status:
             description: DataplexTaskStatus defines the config connector machine state
@@ -512,7 +476,7 @@ spec:
                     description: Output only. The time when the task was created.
                     type: string
                   executionStatus:
-                    description: ' Status of the task execution (e.g. Jobs).'
+                    description: Output only. Status of the latest task executions.
                     properties:
                       latestJob:
                         description: Output only. latest job execution
@@ -527,39 +491,37 @@ spec:
                               args:
                                 additionalProperties:
                                   type: string
-                                description: 'The arguments to pass to the task. The
-                                  args can use placeholders of the format ${placeholder}
-                                  as part of key/value string. These will be interpolated
-                                  before passing the args to the driver. Currently
-                                  supported placeholders: - ${task_id} - ${job_time}
-                                  To pass positional args, set the key as TASK_ARGS.
-                                  The value should be a comma-separated string of
-                                  all the positional arguments. To use a delimiter
-                                  other than comma, refer to https://cloud.google.com/sdk/gcloud/reference/topic/escaping.
+                                description: 'Optional. The arguments to pass to the
+                                  task. The args can use placeholders of the format
+                                  ${placeholder} as part of key/value string. These
+                                  will be interpolated before passing the args to
+                                  the driver. Currently supported placeholders: -
+                                  ${task_id} - ${job_time} To pass positional args,
+                                  set the key as TASK_ARGS. The value should be a
+                                  comma-separated string of all the positional arguments.
+                                  To use a delimiter other than comma, refer to https://cloud.google.com/sdk/gcloud/reference/topic/escaping.
                                   In case of other keys being present in the args,
                                   then TASK_ARGS will be passed as the last argument.'
                                 type: object
                               kmsKey:
-                                description: 'The Cloud KMS key to use for encryption,
-                                  of the form: `projects/{project_number}/locations/{location_id}/keyRings/{key-ring-name}/cryptoKeys/{key-name}`.'
+                                description: 'Optional. The Cloud KMS key to use for
+                                  encryption, of the form: `projects/{project_number}/locations/{location_id}/keyRings/{key-ring-name}/cryptoKeys/{key-name}`.'
                                 type: string
                               maxJobExecutionLifetime:
-                                description: The maximum duration after which the
-                                  job execution is expired.
+                                description: Optional. The maximum duration after
+                                  which the job execution is expired.
                                 type: string
                               project:
-                                description: The project in which jobs are run. By
-                                  default, the project containing the Lake is used.
-                                  If a project is provided, the [ExecutionSpec.service_account][google.cloud.dataplex.v1.Task.ExecutionSpec.service_account]
+                                description: Optional. The project in which jobs are
+                                  run. By default, the project containing the Lake
+                                  is used. If a project is provided, the [ExecutionSpec.service_account][google.cloud.dataplex.v1.Task.ExecutionSpec.service_account]
                                   must belong to this project.
                                 type: string
                               serviceAccount:
-                                description: Service account to use to execute a task.
-                                  If not provided, the default Compute service account
-                                  for the project is used.
+                                description: Required. Service account to use to execute
+                                  a task. If not provided, the default Compute service
+                                  account for the project is used.
                                 type: string
-                            required:
-                            - serviceAccount
                             type: object
                           labels:
                             additionalProperties:

@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: apihubinstances.apihub.cnrm.cloud.google.com
 spec:
@@ -65,46 +64,14 @@ spec:
               config:
                 description: Required. Config of the ApiHub instance.
                 properties:
-                  cmekKeyRef:
+                  cmekKeyName:
                     description: Required. The Customer Managed Encryption Key (CMEK)
                       used for data encryption. The CMEK name should follow the format
                       of `projects/([^/]+)/locations/([^/]+)/keyRings/([^/]+)/cryptoKeys/([^/]+)`,
                       where the location must match the instance location.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: A reference to an externally managed KMSCryptoKey.
-                          Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
-                        type: string
-                      name:
-                        description: The `name` of a `KMSCryptoKey` resource.
-                        type: string
-                      namespace:
-                        description: The `namespace` of a `KMSCryptoKey` resource.
-                        type: string
-                    type: object
-                  disableSearch:
-                    description: Optional. Disable ApiHub router.
-                    type: boolean
-                  encryptionType:
-                    description: Optional. Encryption type for the region.
                     type: string
-                  vertexLocation:
-                    description: Optional. The Vertex AI location.
-                    type: string
+                required:
+                - cmekKeyName
                 type: object
               description:
                 description: Optional. Description of the ApiHub instance.

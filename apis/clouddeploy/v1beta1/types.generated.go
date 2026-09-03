@@ -48,6 +48,7 @@ type CanaryDeployment struct {
 	//  If the GatewayServiceMesh is configured for Kubernetes, then the range for
 	//  n is 0 <= n <= 100.
 	// +kcc:proto:field=google.cloud.deploy.v1.CanaryDeployment.percentages
+	// +required
 	Percentages []int32 `json:"percentages,omitempty"`
 
 	// Optional. Whether to run verify tests after each percentage deployment via
@@ -96,6 +97,7 @@ type CustomCanaryDeployment struct {
 	// Required. Configuration for each phase in the canary deployment in the
 	//  order executed.
 	// +kcc:proto:field=google.cloud.deploy.v1.CustomCanaryDeployment.phase_configs
+	// +required
 	PhaseConfigs []CustomCanaryDeployment_PhaseConfig `json:"phaseConfigs,omitempty"`
 }
 
@@ -107,10 +109,12 @@ type CustomCanaryDeployment_PhaseConfig struct {
 	//  length of 63 characters. In other words, it must match the following
 	//  regex: `^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$`.
 	// +kcc:proto:field=google.cloud.deploy.v1.CustomCanaryDeployment.PhaseConfig.phase_id
+	// +required
 	PhaseID *string `json:"phaseID,omitempty"`
 
 	// Required. Percentage deployment for the phase.
 	// +kcc:proto:field=google.cloud.deploy.v1.CustomCanaryDeployment.PhaseConfig.percentage
+	// +required
 	Percentage *int32 `json:"percentage,omitempty"`
 
 	// Optional. Skaffold profiles to use when rendering the manifest for this
@@ -135,10 +139,63 @@ type CustomCanaryDeployment_PhaseConfig struct {
 	Postdeploy *Postdeploy `json:"postdeploy,omitempty"`
 }
 
+/* unreachable type DeliveryPipeline
+// +kcc:proto=google.cloud.deploy.v1.DeliveryPipeline
+type DeliveryPipeline struct {
+	// Identifier. Name of the `DeliveryPipeline`. Format is
+	//  `projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}`.
+	//  The `deliveryPipeline` component must match
+	//  `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.name
+	Name *string `json:"name,omitempty"`
+
+	// Optional. Description of the `DeliveryPipeline`. Max length is 255
+	//  characters.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User annotations. These attributes can only be set and used by
+	//  the user, and not by Cloud Deploy.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.annotations
+	Annotations map[string]string `json:"annotations,omitempty"`
+
+	// Labels are attributes that can be set and used by both the
+	//  user and by Cloud Deploy. Labels must meet the following constraints:
+	//
+	//  * Keys and values can contain only lowercase letters, numeric characters,
+	//  underscores, and dashes.
+	//  * All characters must use UTF-8 encoding, and international characters are
+	//  allowed.
+	//  * Keys must start with a lowercase letter or international character.
+	//  * Each resource is limited to a maximum of 64 labels.
+	//
+	//  Both keys and values are additionally constrained to be <= 128 bytes.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. SerialPipeline defines a sequential set of stages for a
+	//  `DeliveryPipeline`.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.serial_pipeline
+	SerialPipeline *SerialPipeline `json:"serialPipeline,omitempty"`
+
+	// This checksum is computed by the server based on the value of other
+	//  fields, and may be sent on update and delete requests to ensure the
+	//  client has an up-to-date value before proceeding.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Optional. When suspended, no new releases or rollouts can be created,
+	//  but in-progress ones will complete.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.suspended
+	Suspended *bool `json:"suspended,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.deploy.v1.DeployParameters
 type DeployParameters struct {
 	// Required. Values are deploy parameters in key-value pairs.
 	// +kcc:proto:field=google.cloud.deploy.v1.DeployParameters.values
+	// +required
 	Values map[string]string `json:"values,omitempty"`
 
 	// Optional. Deploy parameters are applied to targets with match labels.
@@ -163,15 +220,18 @@ type KubernetesConfig struct {
 type KubernetesConfig_GatewayServiceMesh struct {
 	// Required. Name of the Gateway API HTTPRoute.
 	// +kcc:proto:field=google.cloud.deploy.v1.KubernetesConfig.GatewayServiceMesh.http_route
+	// +required
 	HTTPRoute *string `json:"httpRoute,omitempty"`
 
 	// Required. Name of the Kubernetes Service.
 	// +kcc:proto:field=google.cloud.deploy.v1.KubernetesConfig.GatewayServiceMesh.service
+	// +required
 	Service *string `json:"service,omitempty"`
 
 	// Required. Name of the Kubernetes Deployment whose traffic is managed by
 	//  the specified HTTPRoute and Service.
 	// +kcc:proto:field=google.cloud.deploy.v1.KubernetesConfig.GatewayServiceMesh.deployment
+	// +required
 	Deployment *string `json:"deployment,omitempty"`
 
 	// Optional. The time to wait for route updates to propagate. The maximum
@@ -201,15 +261,36 @@ type KubernetesConfig_GatewayServiceMesh struct {
 	RouteDestinations *KubernetesConfig_GatewayServiceMesh_RouteDestinations `json:"routeDestinations,omitempty"`
 }
 
+// +kcc:proto=google.cloud.deploy.v1.KubernetesConfig.GatewayServiceMesh.RouteDestinations
+type KubernetesConfig_GatewayServiceMesh_RouteDestinations struct {
+	// Required. The clusters where the Gateway API HTTPRoute resource will be
+	//  deployed to. Valid entries include the associated entities IDs
+	//  configured in the Target resource and "@self" to include the Target
+	//  cluster.
+	// +kcc:proto:field=google.cloud.deploy.v1.KubernetesConfig.GatewayServiceMesh.RouteDestinations.destination_ids
+	// +required
+	DestinationIDs []string `json:"destinationIDs,omitempty"`
+
+	// Optional. Whether to propagate the Kubernetes Service to the route
+	//  destination clusters. The Service will always be deployed to the Target
+	//  cluster even if the HTTPRoute is not. This option may be used to
+	//  facilitate successful DNS lookup in the route destination clusters. Can
+	//  only be set to true if destinations are specified.
+	// +kcc:proto:field=google.cloud.deploy.v1.KubernetesConfig.GatewayServiceMesh.RouteDestinations.propagate_service
+	PropagateService *bool `json:"propagateService,omitempty"`
+}
+
 // +kcc:proto=google.cloud.deploy.v1.KubernetesConfig.ServiceNetworking
 type KubernetesConfig_ServiceNetworking struct {
 	// Required. Name of the Kubernetes Service.
 	// +kcc:proto:field=google.cloud.deploy.v1.KubernetesConfig.ServiceNetworking.service
+	// +required
 	Service *string `json:"service,omitempty"`
 
 	// Required. Name of the Kubernetes Deployment whose traffic is managed by
 	//  the specified Service.
 	// +kcc:proto:field=google.cloud.deploy.v1.KubernetesConfig.ServiceNetworking.deployment
+	// +required
 	Deployment *string `json:"deployment,omitempty"`
 
 	// Optional. Whether to disable Pod overprovisioning. If Pod
@@ -373,3 +454,24 @@ type TargetsTypeCondition struct {
 	// +kcc:proto:field=google.cloud.deploy.v1.TargetsTypeCondition.error_details
 	ErrorDetails *string `json:"errorDetails,omitempty"`
 }
+
+/* unreachable type DeliveryPipelineObservedState
+// +kcc:observedstate:proto=google.cloud.deploy.v1.DeliveryPipeline
+type DeliveryPipelineObservedState struct {
+	// Output only. Unique identifier of the `DeliveryPipeline`.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. Time at which the pipeline was created.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Most recent time at which the pipeline was updated.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Information around the state of the Delivery Pipeline.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.condition
+	Condition *PipelineCondition `json:"condition,omitempty"`
+}
+*/

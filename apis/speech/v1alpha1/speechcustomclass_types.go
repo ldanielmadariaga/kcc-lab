@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -24,11 +25,15 @@ var SpeechCustomClassGVK = GroupVersion.WithKind("SpeechCustomClass")
 // SpeechCustomClassSpec defines the desired state of SpeechCustomClass
 // +kcc:spec:proto=google.cloud.speech.v2.CustomClass
 type SpeechCustomClassSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/customClasses/{custom_class}
+	Location *string `json:"location"`
+
 	// The SpeechCustomClass name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	Parent `json:",inline"`
-
 	// Optional. User-settable, human-readable name for the CustomClass. Must be
 	//  63 characters or less.
 	// +kcc:proto:field=google.cloud.speech.v2.CustomClass.display_name
@@ -64,16 +69,9 @@ type SpeechCustomClassStatus struct {
 // SpeechCustomClassObservedState is the state of the SpeechCustomClass resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.speech.v2.CustomClass
 type SpeechCustomClassObservedState struct {
-	// Output only. Identifier. The resource name of the CustomClass.
-	//  Format:
-	//  `projects/{project}/locations/{location}/customClasses/{custom_class}`.
-	// +kcc:proto:field=google.cloud.speech.v2.CustomClass.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. System-assigned unique identifier for the CustomClass.
 	// +kcc:proto:field=google.cloud.speech.v2.CustomClass.uid
-	UID *string `json:"uid,omitempty"`
+	Uid *string `json:"uid,omitempty"`
 
 	// Output only. The CustomClass lifecycle state.
 	// +kcc:proto:field=google.cloud.speech.v2.CustomClass.state
@@ -123,7 +121,7 @@ type SpeechCustomClassObservedState struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpspeechcustomclass;gcpspeechcustomclasses
+// +kubebuilder:resource:categories=gcp,shortName=gcpspeechcustomclass;gcpspeechcustomclasss
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"

@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: networksecuritymirroringendpointgroups.networksecurity.cnrm.cloud.google.com
 spec:
@@ -77,16 +76,11 @@ spec:
               location:
                 description: The location of this resource.
                 type: string
-              mirroringDeploymentGroupRef:
+              mirroringDeploymentGroup:
                 description: 'Immutable. The deployment group that this DIRECT endpoint
                   group is connected to, for example: `projects/123456789/locations/global/mirroringDeploymentGroups/my-dg`.
                   See https://google.aip.dev/124.'
-                properties:
-                  external:
-                    description: A reference to an externally managed NetworkSecurityMirroringDeploymentGroup
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/mirroringDeploymentGroups/{{mirroringDeploymentGroupID}}".
-                    type: string
-                type: object
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -129,7 +123,6 @@ spec:
                 type: string
             required:
             - location
-            - mirroringDeploymentGroupRef
             - projectRef
             type: object
           status:
@@ -181,49 +174,12 @@ spec:
                   associations:
                     description: Output only. List of associations to this endpoint
                       group.
-                    items:
-                      properties:
-                        name:
-                          description: 'Output only. The connected association''s
-                            resource name, for example: `projects/123456789/locations/global/mirroringEndpointGroupAssociations/my-ega`.
-                            See https://google.aip.dev/124.'
-                          type: string
-                        network:
-                          description: 'Output only. The associated network, for example:
-                            projects/123456789/global/networks/my-network. See https://google.aip.dev/124.'
-                          type: string
-                        state:
-                          description: Output only. Most recent known state of the
-                            association.
-                          type: string
-                      type: object
+                    items: {}
                     type: array
                   connectedDeploymentGroups:
                     description: Output only. List of details about the connected
                       deployment groups to this endpoint group.
-                    items:
-                      properties:
-                        locations:
-                          description: Output only. The list of locations where the
-                            deployment group is present.
-                          items:
-                            properties:
-                              location:
-                                description: Output only. The cloud location, e.g.
-                                  "us-central1-a" or "asia-south1".
-                                type: string
-                              state:
-                                description: Output only. The current state of the
-                                  association in this location.
-                                type: string
-                            type: object
-                          type: array
-                        name:
-                          description: 'Output only. The connected deployment group''s
-                            resource name, for example: `projects/123456789/locations/global/mirroringDeploymentGroups/my-dg`.
-                            See https://google.aip.dev/124.'
-                          type: string
-                      type: object
+                    items: {}
                     type: array
                   createTime:
                     description: Output only. The timestamp when the resource was
@@ -245,6 +201,8 @@ spec:
                     type: string
                 type: object
             type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true

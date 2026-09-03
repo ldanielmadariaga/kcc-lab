@@ -15,36 +15,47 @@
 package v1beta1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
-	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1beta1"
 )
 
 var APIQuotaAdjusterSettingsGVK = GroupVersion.WithKind("APIQuotaAdjusterSettings")
 
-type AdjusterSettingsParent struct {
-	// +required
-	ProjectRef *refv1beta1.ProjectRef `json:"projectRef"`
-}
-
 // APIQuotaAdjusterSettingsSpec defines the desired state of APIQuotaAdjusterSettings
 // +kcc:spec:proto=google.api.cloudquotas.v1beta.QuotaAdjusterSettings
 type APIQuotaAdjusterSettingsSpec struct {
-	AdjusterSettingsParent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/quotaAdjusterSettings
+	Location *string `json:"location,omitempty"`
+
 	// The APIQuotaAdjusterSettings name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-	// Required. The configured value of the enablement at the given resource.
+	// Optional. The configured value of the enablement at the given resource.
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.enablement
-	//+required
 	Enablement *string `json:"enablement,omitempty"`
+
+	// Optional. The current ETag of the QuotaAdjusterSettings. If an ETag is
+	//  provided on update and does not match the current server's ETag in the
+	//  QuotaAdjusterSettings, the request is blocked and returns an ABORTED error.
+	//  See https://google.aip.dev/134#etags for more details on ETags.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Optional. Indicates whether the setting is inherited or explicitly
+	//  specified.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.inherited
+	Inherited *bool `json:"inherited,omitempty"`
 }
 
 // APIQuotaAdjusterSettingsStatus defines the config connector machine state of APIQuotaAdjusterSettings
 type APIQuotaAdjusterSettingsStatus struct {
 	/* Conditions represent the latest available observations of the
 	   object's current state. */
-	Conditions []v1beta1.Condition `json:"conditions,omitempty"`
+	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
 
 	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
 	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
@@ -59,30 +70,31 @@ type APIQuotaAdjusterSettingsStatus struct {
 // APIQuotaAdjusterSettingsObservedState is the state of the APIQuotaAdjusterSettings resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.api.cloudquotas.v1beta.QuotaAdjusterSettings
 type APIQuotaAdjusterSettingsObservedState struct {
-	// Output only. The timestamp when the QuotaAdjusterSettings was last updated.
+	// Output only. The timestamp when the QuotaAdjusterSettings resource was last
+	//  updated.
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
-	// Optional. The current etag of the QuotaAdjusterSettings. If an etag is
-	//  provided on update and does not match the current server's etag of the
-	//  QuotaAdjusterSettings, the request will be blocked and an ABORTED error
-	//  will be returned. See https://google.aip.dev/134#etags for more details on
-	//  etags.
-	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.etag
-	Etag *string `json:"etag,omitempty"`
+
+	// Output only. The resource container from which the setting is inherited.
+	//  This refers to the  nearest ancestor with enablement set (either ENABLED or
+	//  DISABLED). The value can be an organizations/{organization_id},
+	//  folders/{folder_id}, or can be 'default' if no ancestor exists with
+	//  enablement set. The value will be empty when enablement is directly set on
+	//  this container.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.inherited_from
+	InheritedFrom *string `json:"inheritedFrom,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpapiquotaadjustersettings,path=apiquotaadjustersettings
+// +kubebuilder:resource:categories=gcp,shortName=gcpapiquotaadjustersettings;gcpapiquotaadjustersettingss
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
 // +kubebuilder:printcolumn:name="Status Age",JSONPath=".status.conditions[?(@.type=='Ready')].lastTransitionTime",type="date",description="The last transition time for the value in 'Status'"
-// +kubebuilder:storageversion
 
 // APIQuotaAdjusterSettings is the Schema for the APIQuotaAdjusterSettings API
 // +k8s:openapi-gen=true

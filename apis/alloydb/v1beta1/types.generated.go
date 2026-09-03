@@ -100,10 +100,12 @@ type CloudSQLBackupRunSource struct {
 
 	// Required. The CloudSQL instance ID.
 	// +kcc:proto:field=google.cloud.alloydb.v1beta.CloudSQLBackupRunSource.instance_id
+	// +required
 	InstanceID *string `json:"instanceID,omitempty"`
 
 	// Required. The CloudSQL backup run ID.
 	// +kcc:proto:field=google.cloud.alloydb.v1beta.CloudSQLBackupRunSource.backup_run_id
+	// +required
 	BackupRunID *int64 `json:"backupRunID,omitempty"`
 }
 */
@@ -182,13 +184,133 @@ type GeminiClusterConfig struct {
 }
 */
 
-/* unreachable type GeminiInstanceConfig
 // +kcc:proto=google.cloud.alloydb.v1beta.GeminiInstanceConfig
 type GeminiInstanceConfig struct {
 }
+
+/* unreachable type Instance
+// +kcc:proto=google.cloud.alloydb.v1beta.Instance
+type Instance struct {
+
+	// User-settable and human-readable display name for the Instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Labels as key value pairs
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Required. The type of the instance. Specified at creation time.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.instance_type
+	// +required
+	InstanceType *string `json:"instanceType,omitempty"`
+
+	// Configurations for the machines that host the underlying
+	//  database engine.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.machine_config
+	MachineConfig *Instance_MachineConfig `json:"machineConfig,omitempty"`
+
+	// Availability type of an Instance.
+	//  If empty, defaults to REGIONAL for primary instances.
+	//  For read pools, availability_type is always UNSPECIFIED. Instances in the
+	//  read pools are evenly distributed across available zones within the region
+	//  (i.e. read pools with more than one node will have a node in at
+	//  least two zones).
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.availability_type
+	AvailabilityType *string `json:"availabilityType,omitempty"`
+
+	// The Compute Engine zone that the instance should serve from, per
+	//  https://cloud.google.com/compute/docs/regions-zones
+	//  This can ONLY be specified for ZONAL instances.
+	//  If present for a REGIONAL instance, an error will be thrown.
+	//  If this is absent for a ZONAL instance, instance is created in a random
+	//  zone with available capacity.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.gce_zone
+	GCEZone *string `json:"gceZone,omitempty"`
+
+	// Database flags. Set at the instance level.
+	//  They are copied from the primary instance on secondary instance creation.
+	//  Flags that have restrictions default to the value at primary
+	//  instance on read instances during creation. Read instances can set new
+	//  flags or override existing flags that are relevant for reads, for example,
+	//  for enabling columnar cache on a read instance. Flags set on read instance
+	//  might or might not be present on the primary instance.
+	//
+	//
+	//  This is a list of "key": "value" pairs.
+	//  "key": The name of the flag. These flags are passed at instance setup time,
+	//  so include both server options and system variables for Postgres. Flags are
+	//  specified with underscores, not hyphens.
+	//  "value": The value of the flag. Booleans are set to **on** for true
+	//  and **off** for false. This field must be omitted if the flag
+	//  doesn't take a value.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.database_flags
+	DatabaseFlags map[string]string `json:"databaseFlags,omitempty"`
+
+	// Configuration for query insights.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.query_insights_config
+	QueryInsightsConfig *Instance_QueryInsightsInstanceConfig `json:"queryInsightsConfig,omitempty"`
+
+	// Configuration for observability.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.observability_config
+	ObservabilityConfig *Instance_ObservabilityInstanceConfig `json:"observabilityConfig,omitempty"`
+
+	// Read pool instance configuration.
+	//  This is required if the value of instanceType is READ_POOL.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.read_pool_config
+	ReadPoolConfig *Instance_ReadPoolConfig `json:"readPoolConfig,omitempty"`
+
+	// For Resource freshness validation (https://google.aip.dev/154)
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Annotations to allow client tools to store small amount of arbitrary data.
+	//  This is distinct from labels.
+	//  https://google.aip.dev/128
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.annotations
+	Annotations map[string]string `json:"annotations,omitempty"`
+
+	// Update policy that will be applied during instance update.
+	//  This field is not persisted when you update the instance.
+	//  To use a non-default update policy, you must
+	//  specify explicitly specify the value in each update request.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.update_policy
+	UpdatePolicy *Instance_UpdatePolicy `json:"updatePolicy,omitempty"`
+
+	// Optional. Client connection specific configurations
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.client_connection_config
+	ClientConnectionConfig *Instance_ClientConnectionConfig `json:"clientConnectionConfig,omitempty"`
+
+	// Optional. The configuration for Private Service Connect (PSC) for the
+	//  instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.psc_instance_config
+	PSCInstanceConfig *Instance_PSCInstanceConfig `json:"pscInstanceConfig,omitempty"`
+
+	// Optional. Instance-level network configuration.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.network_config
+	NetworkConfig *Instance_InstanceNetworkConfig `json:"networkConfig,omitempty"`
+
+	// Optional. Deprecated and unused. This field will be removed in the near
+	//  future.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.gemini_config
+	GeminiConfig *GeminiInstanceConfig `json:"geminiConfig,omitempty"`
+
+	// Optional. Specifies whether an instance needs to spin up. Once the instance
+	//  is active, the activation policy can be updated to the `NEVER` to stop the
+	//  instance. Likewise, the activation policy can be updated to `ALWAYS` to
+	//  start the instance.
+	//  There are restrictions around when an instance can/cannot be activated (for
+	//  example, a read pool instance should be stopped before stopping primary
+	//  etc.). Please refer to the API documentation for more details.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.activation_policy
+	ActivationPolicy *string `json:"activationPolicy,omitempty"`
+
+	// Optional. The configuration for Managed Connection Pool (MCP).
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.connection_pool_config
+	ConnectionPoolConfig *Instance_ConnectionPoolConfig `json:"connectionPoolConfig,omitempty"`
+}
 */
 
-/* unreachable type Instance_ClientConnectionConfig
 // +kcc:proto=google.cloud.alloydb.v1beta.Instance.ClientConnectionConfig
 type Instance_ClientConnectionConfig struct {
 	// Optional. Configuration to enforce connectors only (ex: AuthProxy)
@@ -200,7 +322,43 @@ type Instance_ClientConnectionConfig struct {
 	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.ClientConnectionConfig.ssl_config
 	SSLConfig *SSLConfig `json:"sslConfig,omitempty"`
 }
-*/
+
+// +kcc:proto=google.cloud.alloydb.v1beta.Instance.ConnectionPoolConfig
+type Instance_ConnectionPoolConfig struct {
+	// Optional. Whether to enable Managed Connection Pool (MCP).
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.ConnectionPoolConfig.enabled
+	Enabled *bool `json:"enabled,omitempty"`
+
+	// Optional. Connection Pool flags, as a list of "key": "value" pairs.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.ConnectionPoolConfig.flags
+	Flags map[string]string `json:"flags,omitempty"`
+}
+
+// +kcc:proto=google.cloud.alloydb.v1beta.Instance.InstanceNetworkConfig
+type Instance_InstanceNetworkConfig struct {
+	// Optional. A list of external network authorized to access this instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.InstanceNetworkConfig.authorized_external_networks
+	AuthorizedExternalNetworks []Instance_InstanceNetworkConfig_AuthorizedNetwork `json:"authorizedExternalNetworks,omitempty"`
+
+	// Optional. Enabling public ip for the instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.InstanceNetworkConfig.enable_public_ip
+	EnablePublicIP *bool `json:"enablePublicIP,omitempty"`
+
+	// Optional. Enabling an outbound public IP address to support a database
+	//  server sending requests out into the internet.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.InstanceNetworkConfig.enable_outbound_public_ip
+	EnableOutboundPublicIP *bool `json:"enableOutboundPublicIP,omitempty"`
+
+	// Optional. Name of the allocated IP range for the private IP AlloyDB
+	//  instance, for example: "google-managed-services-default". If set, the
+	//  instance IPs will be created from this allocated range and will override
+	//  the IP range used by the parent cluster. The range name must comply with
+	//  [RFC 1035](http://datatracker.ietf.org/doc/html/rfc1035). Specifically,
+	//  the name must be 1-63 characters long and match the regular expression
+	//  [a-z]([-a-z0-9]*[a-z0-9])?.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.InstanceNetworkConfig.allocated_ip_range_override
+	AllocatedIPRangeOverride *string `json:"allocatedIPRangeOverride,omitempty"`
+}
 
 // +kcc:proto=google.cloud.alloydb.v1beta.Instance.InstanceNetworkConfig.AuthorizedNetwork
 type Instance_InstanceNetworkConfig_AuthorizedNetwork struct {
@@ -276,7 +434,6 @@ type Instance_ObservabilityInstanceConfig struct {
 	AssistiveExperiencesEnabled *bool `json:"assistiveExperiencesEnabled,omitempty"`
 }
 
-/* unreachable type Instance_PSCAutoConnectionConfig
 // +kcc:proto=google.cloud.alloydb.v1beta.Instance.PscAutoConnectionConfig
 type Instance_PSCAutoConnectionConfig struct {
 	// The consumer project to which the PSC service automation endpoint will
@@ -291,9 +448,7 @@ type Instance_PSCAutoConnectionConfig struct {
 	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.PscAutoConnectionConfig.consumer_network
 	ConsumerNetwork *string `json:"consumerNetwork,omitempty"`
 }
-*/
 
-/* unreachable type Instance_PSCInstanceConfig
 // +kcc:proto=google.cloud.alloydb.v1beta.Instance.PscInstanceConfig
 type Instance_PSCInstanceConfig struct {
 
@@ -313,9 +468,7 @@ type Instance_PSCInstanceConfig struct {
 	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.PscInstanceConfig.psc_auto_connections
 	PSCAutoConnections []Instance_PSCAutoConnectionConfig `json:"pscAutoConnections,omitempty"`
 }
-*/
 
-/* unreachable type Instance_PSCInterfaceConfig
 // +kcc:proto=google.cloud.alloydb.v1beta.Instance.PscInterfaceConfig
 type Instance_PSCInterfaceConfig struct {
 	// The network attachment resource created in the consumer network to which
@@ -325,7 +478,6 @@ type Instance_PSCInterfaceConfig struct {
 	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.PscInterfaceConfig.network_attachment_resource
 	NetworkAttachmentResource *string `json:"networkAttachmentResource,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.alloydb.v1beta.Instance.QueryInsightsInstanceConfig
 type Instance_QueryInsightsInstanceConfig struct {
@@ -358,14 +510,12 @@ type Instance_ReadPoolConfig struct {
 	NodeCount *int32 `json:"nodeCount,omitempty"`
 }
 
-/* unreachable type Instance_UpdatePolicy
 // +kcc:proto=google.cloud.alloydb.v1beta.Instance.UpdatePolicy
 type Instance_UpdatePolicy struct {
 	// Mode for updating the instance.
 	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.UpdatePolicy.mode
 	Mode *string `json:"mode,omitempty"`
 }
-*/
 
 /* unreachable type MaintenanceSchedule
 // +kcc:proto=google.cloud.alloydb.v1beta.MaintenanceSchedule
@@ -399,7 +549,6 @@ type MaintenanceUpdatePolicy_DenyMaintenancePeriod struct {
 }
 */
 
-/* unreachable type SSLConfig
 // +kcc:proto=google.cloud.alloydb.v1beta.SslConfig
 type SSLConfig struct {
 	// Optional. SSL mode. Specifies client-server SSL/TLS connection behavior.
@@ -411,7 +560,6 @@ type SSLConfig struct {
 	// +kcc:proto:field=google.cloud.alloydb.v1beta.SslConfig.ca_source
 	CASource *string `json:"caSource,omitempty"`
 }
-*/
 
 /* unreachable type Date
 // +kcc:proto=google.type.Date
@@ -450,6 +598,24 @@ type Backup_QuantityBasedExpiryObservedState struct {
 }
 */
 
+/* unreachable type CloudSQLBackupRunSourceObservedState
+// +kcc:observedstate:proto=google.cloud.alloydb.v1beta.CloudSQLBackupRunSource
+type CloudSQLBackupRunSourceObservedState struct {
+	// The project ID of the source CloudSQL instance. This should be the same as
+	//  the AlloyDB cluster's project.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.CloudSQLBackupRunSource.project
+	Project *string `json:"project,omitempty"`
+
+	// Required. The CloudSQL instance ID.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.CloudSQLBackupRunSource.instance_id
+	InstanceID *string `json:"instanceID,omitempty"`
+
+	// Required. The CloudSQL backup run ID.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.CloudSQLBackupRunSource.backup_run_id
+	BackupRunID *int64 `json:"backupRunID,omitempty"`
+}
+*/
+
 /* unreachable type Cluster_PrimaryConfigObservedState
 // +kcc:observedstate:proto=google.cloud.alloydb.v1beta.Cluster.PrimaryConfig
 type Cluster_PrimaryConfigObservedState struct {
@@ -482,14 +648,12 @@ type EncryptionInfoObservedState struct {
 	KMSKeyVersions []string `json:"kmsKeyVersions,omitempty"`
 }
 
-/* unreachable type GcaInstanceConfigObservedState
 // +kcc:observedstate:proto=google.cloud.alloydb.v1beta.GCAInstanceConfig
 type GcaInstanceConfigObservedState struct {
 	// Output only. Represents the GCA entitlement state of the instance.
 	// +kcc:proto:field=google.cloud.alloydb.v1beta.GCAInstanceConfig.gca_entitlement
 	GcaEntitlement *string `json:"gcaEntitlement,omitempty"`
 }
-*/
 
 /* unreachable type GeminiClusterConfigObservedState
 // +kcc:observedstate:proto=google.cloud.alloydb.v1beta.GeminiClusterConfig
@@ -501,7 +665,6 @@ type GeminiClusterConfigObservedState struct {
 }
 */
 
-/* unreachable type GeminiInstanceConfigObservedState
 // +kcc:observedstate:proto=google.cloud.alloydb.v1beta.GeminiInstanceConfig
 type GeminiInstanceConfigObservedState struct {
 	// Output only. Deprecated and unused. This field will be removed in the near
@@ -509,9 +672,115 @@ type GeminiInstanceConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.alloydb.v1beta.GeminiInstanceConfig.entitled
 	Entitled *bool `json:"entitled,omitempty"`
 }
+
+/* unreachable type InstanceObservedState
+// +kcc:observedstate:proto=google.cloud.alloydb.v1beta.Instance
+type InstanceObservedState struct {
+	// Output only. The name of the instance resource with the format:
+	//   * projects/{project}/locations/{region}/clusters/{cluster_id}/instances/{instance_id}
+	//  where the cluster and instance ID segments should satisfy the regex
+	//  expression `[a-z]([a-z0-9-]{0,61}[a-z0-9])?`, e.g. 1-63 characters of
+	//  lowercase letters, numbers, and dashes, starting with a letter, and ending
+	//  with a letter or number. For more details see https://google.aip.dev/122.
+	//  The prefix of the instance resource name is the name of the parent
+	//  resource:
+	//   * projects/{project}/locations/{region}/clusters/{cluster_id}
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.name
+	Name *string `json:"name,omitempty"`
+
+	// Output only. The system-generated UID of the resource. The UID is assigned
+	//  when the resource is created, and it is retained until it is deleted.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. Create time stamp
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Update time stamp
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Delete time stamp
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.delete_time
+	DeleteTime *string `json:"deleteTime,omitempty"`
+
+	// Output only. The current serving state of the instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. This is set for the read-write VM of the PRIMARY instance
+	//  only.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.writable_node
+	WritableNode *Instance_NodeObservedState `json:"writableNode,omitempty"`
+
+	// Output only. List of available read-only VMs in this instance, including
+	//  the standby for a PRIMARY instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.nodes
+	Nodes []Instance_NodeObservedState `json:"nodes,omitempty"`
+
+	// Configuration for observability.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.observability_config
+	ObservabilityConfig *Instance_ObservabilityInstanceConfigObservedState `json:"observabilityConfig,omitempty"`
+
+	// Output only. The IP address for the Instance.
+	//  This is the connection endpoint for an end-user application.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.ip_address
+	IPAddress *string `json:"ipAddress,omitempty"`
+
+	// Output only. The public IP addresses for the Instance. This is available
+	//  ONLY when enable_public_ip is set. This is the connection endpoint for an
+	//  end-user application.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.public_ip_address
+	PublicIPAddress *string `json:"publicIPAddress,omitempty"`
+
+	// Output only. Reconciling (https://google.aip.dev/128#reconciliation).
+	//  Set to true if the current state of Instance does not match the user's
+	//  intended state, and the service is actively updating the resource to
+	//  reconcile them. This can happen due to user-triggered updates or
+	//  system actions like failover or maintenance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.reconciling
+	Reconciling *bool `json:"reconciling,omitempty"`
+
+	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.satisfies_pzs
+	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+
+	// Optional. The configuration for Private Service Connect (PSC) for the
+	//  instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.psc_instance_config
+	PSCInstanceConfig *Instance_PSCInstanceConfigObservedState `json:"pscInstanceConfig,omitempty"`
+
+	// Optional. Instance-level network configuration.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.network_config
+	NetworkConfig *Instance_InstanceNetworkConfigObservedState `json:"networkConfig,omitempty"`
+
+	// Optional. Deprecated and unused. This field will be removed in the near
+	//  future.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.gemini_config
+	GeminiConfig *GeminiInstanceConfigObservedState `json:"geminiConfig,omitempty"`
+
+	// Output only. All outbound public IP addresses configured for the instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.outbound_public_ip_addresses
+	OutboundPublicIPAddresses []string `json:"outboundPublicIPAddresses,omitempty"`
+
+	// Output only. Configuration parameters related to Gemini Cloud Assist.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.gca_config
+	GcaConfig *GcaInstanceConfigObservedState `json:"gcaConfig,omitempty"`
+}
 */
 
-/* unreachable type Instance_NodeObservedState
+// +kcc:observedstate:proto=google.cloud.alloydb.v1beta.Instance.InstanceNetworkConfig
+type Instance_InstanceNetworkConfigObservedState struct {
+	// Output only. The resource link for the VPC network in which instance
+	//  resources are created and from which they are accessible via Private IP.
+	//  This will be the same value as the parent cluster's network. It is
+	//  specified in the form: //
+	//  `projects/{project_number}/global/networks/{network_id}`.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.InstanceNetworkConfig.network
+	Network *string `json:"network,omitempty"`
+}
+
 // +kcc:observedstate:proto=google.cloud.alloydb.v1beta.Instance.Node
 type Instance_NodeObservedState struct {
 	// Output only. The Compute Engine zone of the VM e.g. "us-central1-b".
@@ -534,7 +803,6 @@ type Instance_NodeObservedState struct {
 	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.Node.state
 	State *string `json:"state,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.alloydb.v1beta.Instance.ObservabilityInstanceConfig
 type Instance_ObservabilityInstanceConfigObservedState struct {
@@ -546,7 +814,6 @@ type Instance_ObservabilityInstanceConfigObservedState struct {
 	TrackWaitEventTypes *bool `json:"trackWaitEventTypes,omitempty"`
 }
 
-/* unreachable type Instance_PSCAutoConnectionConfigObservedState
 // +kcc:observedstate:proto=google.cloud.alloydb.v1beta.Instance.PscAutoConnectionConfig
 type Instance_PSCAutoConnectionConfigObservedState struct {
 	// Output only. The IP address of the PSC service automation endpoint.
@@ -585,9 +852,7 @@ type Instance_PSCAutoConnectionConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.PscAutoConnectionConfig.consumer_network_status
 	ConsumerNetworkStatus *string `json:"consumerNetworkStatus,omitempty"`
 }
-*/
 
-/* unreachable type Instance_PSCInstanceConfigObservedState
 // +kcc:observedstate:proto=google.cloud.alloydb.v1beta.Instance.PscInstanceConfig
 type Instance_PSCInstanceConfigObservedState struct {
 	// Output only. The service attachment created when Private
@@ -606,7 +871,6 @@ type Instance_PSCInstanceConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.PscInstanceConfig.psc_auto_connections
 	PSCAutoConnections []Instance_PSCAutoConnectionConfigObservedState `json:"pscAutoConnections,omitempty"`
 }
-*/
 
 /* unreachable type MaintenanceScheduleObservedState
 // +kcc:observedstate:proto=google.cloud.alloydb.v1beta.MaintenanceSchedule

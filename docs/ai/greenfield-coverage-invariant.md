@@ -1,4 +1,4 @@
-# The coverage invariant: produced, flagged, unflagged
+# The coverage invariant: implemented, discrepancy, missing
 
 **Every field present in a k8s-config-connector master CRD is either produced by
 our pipeline, or flagged in the judgement queue.** Nothing silently absent.
@@ -38,24 +38,45 @@ A field can be `absent` **and** flagged at the same time. That is the queue doin
 its job: we did not produce the field, and the queue says so, so a human will see
 it. Nothing about "absent" implies "unreported".
 
-## The three columns
+## The three states
+
+Every baseline field lands in exactly one, and the split is on **what we produced**, not on whether
+we mentioned it.
+
+**implemented** — the same field at the same path. Nothing to do.
+
+**discrepancy** — we produce the field, but not as upstream has it. In the other section, under a
+different name, or as a plain string where upstream has a reference object. A user's YAML still
+breaks, so this is a real difference, but the work is detection or placement rather than generation.
+
+**missing** — we produce nothing at all. This is where generation work goes, less the part we
+decline to produce on purpose (see below).
+
+Leading on "flagged" instead, as this report did until recently, buried that distinction. The two
+axes are close to independent: three quarters of discrepancies carry a queue entry against one in
+seven of absences, so a combined figure describes neither population.
+
+## Whether we said anything, as a second axis
+
+Flagging is recorded against both states rather than being a state of its own.
 
 **field-flagged** — a queue entry names this exact field, with a reason.
 
-**section-flagged** — a resource-level entry names the *section* the field belongs
-to. Today that is `empty-observedstate`, written when a resource's
-`status.observedState` was generated with no fields at all. It is specific enough
-to act on: "your status is empty" tells a human exactly what to go and do, and
-does it better than nineteen separate lines would. The blanket
-`untriaged-bulk-generation` entry names neither field nor section and deliberately
-counts for nothing.
+**section-flagged** — a resource-level entry names the *section* the field belongs to. Today that is
+`empty-observedstate`, written when a resource's `status.observedState` was generated with no fields
+at all. It is specific enough to act on. The blanket `untriaged-bulk-generation` entry names neither
+field nor section and deliberately counts for nothing.
 
-**unflagged** — nothing says anything. This is the number to drive to zero.
+**leaf-flagged** — a shared nested message's finding, written as a `#` comment because it belongs to
+no single Kind, matched back by leaf name. Looser than path matching, and the docstring says so.
+
+**silent** — nothing says anything. A silent discrepancy and a silent absence are both bad and need
+different fixes, which is why they are counted apart.
 
 ## The target, and what is excluded from it
 
-Four of the six classes are the target. The other two are differences we accept,
-reported below the subtotal and left out of it:
+Four of the six classes are the target. The other two are differences we accept, reported below the
+subtotal and left out of it:
 
 * `renamed` (40) is a casing table — `bootDiskMIB` against upstream's
   `bootDiskMiB`. A fix, not a judgement call.
@@ -64,25 +85,32 @@ reported below the subtotal and left out of it:
   open question and is **deliberately deferred**; it is recorded rather than
   counted as a miss.
 
-Current state of the target classes:
+Current state, with the produced axis alongside the class:
 
-| | we miss | by field | by section | unsure | unflagged |
-|---|---|---|---|---|---|
-| `reference-shape` | 82 | 9 | 0 | 34 | 39 |
-| `moved` | 64 | 32 | 2 | 0 | 30 |
-| `absent` | 114 | 29 | 1 | 0 | 84 |
-| `reference-not-detected` | 263 | 246 | 0 | 0 | 17 |
-| **subtotal** | **523** | **316** | **3** | **34** | **170** |
+| why it differs | total | we emit it | we emit nothing | flagged |
+|---|---|---|---|---|
+| `reference-shape` | 123 | 1 | 122 | 9 |
+| `moved` | 64 | 64 | 0 | 34 |
+| `absent` | 481 | 0 | 481 | 30 |
+| `reference-not-detected` | 264 | 264 | 0 | 247 |
+| **subtotal, the target** | **932** | **329** | **603** | **320** |
+| `renamed` | 40 | 40 | 0 | 0 |
+| `intentionally-different` | 62 | 0 | 62 | 0 |
 
-"unsure" is references where the queue named a field at the same parent but upstream renamed it, so
-the two cannot be paired — counted apart rather than guessed either way.
+The `we emit it` column is what makes the classes legible as different problems. `moved` and
+`reference-not-detected` are entirely fields we produce, so no amount of generation work touches
+them. `absent` is entirely fields we do not, so no amount of detection work does.
 
-**The 170 unflagged split two ways, and the split is the point.** 123 are fields we produce nowhere
-at all; the other 47 are `moved` or `reference-not-detected`, meaning the field *is* in our output,
-in the wrong section or as a plain string. The report prints them on separate lines, because rolling
-them together sends people to build generation for fields the types file already carries. That was
-not always true: `truly missed` read 232 until the two emitted classes were separated out. What
-moved the numbers is recorded in
+Three of the classes imply the answer rather than needing it measured: `classify` returns `moved`
+only when the same path is in the other section, `renamed` only when a matching name sits at the
+same parent, and `reference-not-detected` only when a plain field sits at the de-suffixed stem. Each
+is proof we emitted something. Name-pairing alone disagreed with the classifier on 29 `renamed`
+fields and put them in `missing` while the class column said we emit them, so the classifier wins
+for those three.
+
+A fourth column, "unsure", used to sit here: 34 references where the queue named a field at the same
+parent but upstream renamed it beyond pairing. They are counted as silent, which overstates the gap
+rather than flattering it. See
 [greenfield-detection-gaps.md](greenfield-detection-gaps.md).
 
 ## Why each field differs

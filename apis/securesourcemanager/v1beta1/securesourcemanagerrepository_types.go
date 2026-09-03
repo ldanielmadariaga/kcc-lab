@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,33 +15,49 @@
 package v1beta1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var SecureSourceManagerRepositoryGVK = GroupVersion.WithKind("SecureSourceManagerRepository")
 
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // SecureSourceManagerRepositorySpec defines the desired state of SecureSourceManagerRepository
 // +kcc:spec:proto=google.cloud.securesourcemanager.v1.Repository
 type SecureSourceManagerRepositorySpec struct {
-	Parent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/repositories/{repository}
+	Location *string `json:"location"`
 
 	// The SecureSourceManagerRepository name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. Description of the repository, which cannot exceed 500
+	//  characters.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.description
+	Description *string `json:"description,omitempty"`
 
-	// The name of the instance in which the repository is hosted, formatted as
-	// `projects/{project_number}/locations/{location_id}/instances/{instance_id}`
-	// +required
-	InstanceRef *SecureSourceManagerInstanceRef `json:"instanceRef,omitempty"`
+	// Optional. The name of the instance in which the repository is hosted,
+	//  formatted as
+	//  `projects/{project_number}/locations/{location_id}/instances/{instance_id}`
+	//  When creating repository via securesourcemanager.googleapis.com, this field
+	//  is used as input. When creating repository via *.sourcemanager.dev, this
+	//  field is output only.
+	// +kcc:guess=possible-reference target=SecureSourceManagerInstance
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.instance
+	Instance *string `json:"instance,omitempty"`
+
+	// Optional. This checksum is computed by the server based on the value of
+	//  other fields, and may be sent on update and delete requests to ensure the
+	//  client has an up-to-date value before proceeding.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.etag
+	Etag *string `json:"etag,omitempty"`
 
 	// Input only. Initial configurations for the repository.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.initial_config
 	InitialConfig *Repository_InitialConfig `json:"initialConfig,omitempty"`
-
-	// Optional. Description of the repository, which cannot exceed 500 characters.
-	// From the Secure Source Manager team: We are temporarily omitting this for now.
-	// Description *string `json:"description,omitempty"`
 }
 
 // SecureSourceManagerRepositoryStatus defines the config connector machine state of SecureSourceManagerRepository
@@ -61,28 +77,28 @@ type SecureSourceManagerRepositoryStatus struct {
 }
 
 // SecureSourceManagerRepositoryObservedState is the state of the SecureSourceManagerRepository resource as most recently observed in GCP.
+// +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Repository
 type SecureSourceManagerRepositoryObservedState struct {
+	// Output only. Unique identifier of the repository.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.uid
+	Uid *string `json:"uid,omitempty"`
+
 	// Output only. Create timestamp.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. Update timestamp.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
-	// Output only. Unique identifier of the repository.
-	Uid *string `json:"uid,omitempty"`
-
-	// Output only. This checksum is computed by the server based on the value of other
-	// fields, and may be sent on update and delete requests to ensure the
-	// client has an up-to-date value before proceeding.
-	Etag *string `json:"etag,omitempty"`
-
 	// Output only. URIs for the repository.
-	URIs *Repository_UrIsObservedState `json:"uris,omitempty"`
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.uris
+	Uris *Repository_UrIsObservedState `json:"uris,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpsecuresourcemanagerrepository;gcpsecuresourcemanagerrepositories
+// +kubebuilder:resource:categories=gcp,shortName=gcpsecuresourcemanagerrepository;gcpsecuresourcemanagerrepositorys
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
@@ -93,8 +109,6 @@ type SecureSourceManagerRepositoryObservedState struct {
 
 // SecureSourceManagerRepository is the Schema for the SecureSourceManagerRepository API
 // +k8s:openapi-gen=true
-// +kubebuilder:storageversion
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 type SecureSourceManagerRepository struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

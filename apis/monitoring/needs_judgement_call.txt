@@ -1,0 +1,23 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.monitoring.dashboard.v1.ErrorReportingPanel.services target=MonitoringService
+# possible-reference-by-sibling: google.monitoring.v3.Service.CloudEndpoints.service target=MonitoringService
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.columnLayout.columns[].widgets[].alertChart.name" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.columnLayout.columns[].widgets[].errorReportingPanel.projectNames" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.gridLayout.widgets[].alertChart.name" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.gridLayout.widgets[].errorReportingPanel.projectNames" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.mosaicLayout.tiles[].widget.alertChart.name" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.mosaicLayout.tiles[].widget.errorReportingPanel.projectNames" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.rowLayout.rows[].widgets[].alertChart.name" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.rowLayout.rows[].widgets[].errorReportingPanel.projectNames" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)

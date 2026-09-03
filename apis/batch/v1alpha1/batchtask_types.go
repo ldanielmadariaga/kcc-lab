@@ -15,27 +15,31 @@
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var BatchTaskGVK = GroupVersion.WithKind("BatchTask")
 
-type Parent struct {
-	// Immutable. The location where the alloydb cluster should reside.
-	// +required
-	Location *string `json:"location,omitempty"`
-
-	// The project that this resource belongs to.
-	// +required
-	ProjectRef *v1beta1.ProjectRef `json:"projectRef,omitempty"`
-}
-
 // BatchTaskSpec defines the desired state of BatchTask
 // +kcc:spec:proto=google.cloud.batch.v1.Task
 type BatchTaskSpec struct {
-	Parent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/jobs/{job}/taskGroups/{task_group}/tasks/{task}
+	Location *string `json:"location,omitempty"`
+
+	// The Job that this resource belongs to.
+	// +kcc:guess=parent-segment target=BatchJob
+	Job *string `json:"job,omitempty"`
+
+	// The TaskGroup that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/jobs/{job}/taskGroups/{task_group}/tasks/{task}
+	TaskGroup *string `json:"taskGroup,omitempty"`
+
 	// The BatchTask name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 }
@@ -52,12 +56,7 @@ type BatchTaskStatus struct {
 	// A unique specifier for the BatchTask resource in GCP.
 	ExternalRef *string `json:"externalRef,omitempty"`
 
-	// Task name.
-	//  The name is generated from the parent TaskGroup name and 'id' field.
-	//  For example:
-	//  "projects/123456/locations/us-west1/jobs/job01/taskGroups/group01/tasks/task01".
-	// +kcc:proto:field=google.cloud.batch.v1.Task.name
-	Name          *string                 `json:"name,omitempty"`
+	// ObservedState is the state of the resource as most recently observed in GCP.
 	ObservedState *BatchTaskObservedState `json:"observedState,omitempty"`
 }
 
@@ -71,7 +70,6 @@ type BatchTaskObservedState struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// TODO(user): make sure the pluralizaiton below is correct
 // +kubebuilder:resource:categories=gcp,shortName=gcpbatchtask;gcpbatchtasks
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"

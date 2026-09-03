@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: devconnectaccountconnectors.developerconnect.cnrm.cloud.google.com
 spec:
@@ -70,10 +69,15 @@ spec:
                 description: Optional. Allows users to store small amounts of arbitrary
                   data.
                 type: object
+              etag:
+                description: Optional. This checksum is computed by the server based
+                  on the value of other fields, and may be sent on update and delete
+                  requests to ensure the client has an up-to-date value before proceeding.
+                type: string
               labels:
                 additionalProperties:
                   type: string
-                description: Optional. Labels as key value pairs.
+                description: Optional. Labels as key value pairs
                 type: object
               location:
                 description: The location of this resource.
@@ -115,22 +119,13 @@ spec:
                 properties:
                   scopes:
                     description: Required. User selected scopes to apply to the Oauth
-                      config.
+                      config In the event of changing scopes, user records under AccountConnector
+                      will be deleted and users will re-auth again.
                     items:
                       type: string
                     type: array
                   systemProviderID:
                     description: Immutable. Developer Connect provided OAuth.
-                    enum:
-                    - SYSTEM_PROVIDER_UNSPECIFIED
-                    - GITHUB
-                    - GITLAB
-                    - GOOGLE
-                    - SENTRY
-                    - ROVO
-                    - NEW_RELIC
-                    - DATASTAX
-                    - DYNATRACE
                     type: string
                 required:
                 - scopes
@@ -142,7 +137,6 @@ spec:
             required:
             - location
             - projectRef
-            - providerOauthConfig
             type: object
           status:
             description: DevConnectAccountConnectorStatus defines the config connector

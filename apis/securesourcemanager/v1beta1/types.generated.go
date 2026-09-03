@@ -22,8 +22,7 @@
 
 package v1beta1
 
-/* found existing non-generated go type with proto tag "google.cloud.securesourcemanager.v1.Instance", skipping
-
+/* unreachable type Instance
 // +kcc:proto=google.cloud.securesourcemanager.v1.Instance
 type Instance struct {
 	// Optional. A unique identifier for an instance. The name should be of the
@@ -50,7 +49,7 @@ type Instance struct {
 	PrivateConfig *Instance_PrivateConfig `json:"privateConfig,omitempty"`
 
 	// Optional. Immutable. Customer-managed encryption key name, in the format
-	//  projects/* /locations/* /keyRings/* /cryptoKeys/*.
+	//  projects/-*-/locations/-*-/keyRings/-*-/cryptoKeys/-*.
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.kms_key
 	KMSKey *string `json:"kmsKey,omitempty"`
 
@@ -67,12 +66,11 @@ type Instance_HostConfig struct {
 }
 */
 
-/* found existing non-generated go type "Instance_PrivateConfig", skipping
-
 // +kcc:proto=google.cloud.securesourcemanager.v1.Instance.PrivateConfig
 type Instance_PrivateConfig struct {
 	// Required. Immutable. Indicate if it's private instance.
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.PrivateConfig.is_private
+	// +required
 	IsPrivate *bool `json:"isPrivate,omitempty"`
 
 	// Optional. Immutable. CA pool resource, resource must in the format of
@@ -86,19 +84,15 @@ type Instance_PrivateConfig struct {
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.PrivateConfig.psc_allowed_projects
 	PSCAllowedProjects []string `json:"pscAllowedProjects,omitempty"`
 }
-*/
 
-/* unreachable type Instance_WorkforceIdentityFederationConfig
 // +kcc:proto=google.cloud.securesourcemanager.v1.Instance.WorkforceIdentityFederationConfig
 type Instance_WorkforceIdentityFederationConfig struct {
 	// Optional. Immutable. Whether Workforce Identity Federation is enabled.
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.WorkforceIdentityFederationConfig.enabled
 	Enabled *bool `json:"enabled,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.securesourcemanager.v1.Repository", skipping
-
+/* unreachable type Repository
 // +kcc:proto=google.cloud.securesourcemanager.v1.Repository
 type Repository struct {
 	// Optional. A unique identifier for a repository. The name should be of the
@@ -118,6 +112,7 @@ type Repository struct {
 	//  When creating repository via securesourcemanager.googleapis.com, this field
 	//  is used as input. When creating repository via *.sourcemanager.dev, this
 	//  field is output only.
+	// +kcc:guess=possible-reference target=SecureSourceManagerInstance
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.instance
 	Instance *string `json:"instance,omitempty"`
 
@@ -282,8 +277,7 @@ type Repository_UrIs struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.securesourcemanager.v1.Instance", skipping
-
+/* unreachable type InstanceObservedState
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Instance
 type InstanceObservedState struct {
 	// Output only. Create timestamp.
@@ -332,8 +326,6 @@ type Instance_HostConfigObservedState struct {
 	GitSSH *string `json:"gitSSH,omitempty"`
 }
 
-/* found existing non-generated go type "Instance_PrivateConfigObservedState", skipping
-
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Instance.PrivateConfig
 type Instance_PrivateConfigObservedState struct {
 	// Output only. Service Attachment for HTTP, resource is in the format of
@@ -346,10 +338,8 @@ type Instance_PrivateConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.PrivateConfig.ssh_service_attachment
 	SSHServiceAttachment *string `json:"sshServiceAttachment,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.securesourcemanager.v1.Repository", skipping
-
+/* unreachable type RepositoryObservedState
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Repository
 type RepositoryObservedState struct {
 	// Output only. Unique identifier of the repository.

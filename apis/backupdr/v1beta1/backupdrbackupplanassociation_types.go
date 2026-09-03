@@ -15,49 +15,49 @@
 package v1beta1
 
 import (
-	backupdrv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/backupdr/v1alpha1"
-	compute "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var BackupDRBackupPlanAssociationGVK = GroupVersion.WithKind("BackupDRBackupPlanAssociation")
 
-const (
-	ResourceType_ComputeInstance = "compute.googleapis.com/Instance"
-)
-
-type Resource struct {
-	ComputeInstanceRef *compute.InstanceRef `json:"computeInstanceRef,omitempty"`
-	// TODO: add other resource types
-}
-
 // BackupDRBackupPlanAssociationSpec defines the desired state of BackupDRBackupPlanAssociation
 // +kcc:spec:proto=google.cloud.backupdr.v1.BackupPlanAssociation
 type BackupDRBackupPlanAssociationSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/backupPlanAssociations/{backup_plan_association}
+	Location *string `json:"location"`
+
 	// The BackupDRBackupPlanAssociation name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	backupdrv1alpha1.Parent `json:",inline"`
-
 	// Required. Immutable. Resource type of workload on which backupplan is
 	//  applied
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlanAssociation.resource_type
 	// +required
 	ResourceType *string `json:"resourceType,omitempty"`
 
-	// Required. Immutable. Resource name of workload on which backupplan is
-	//  applied
+	// Required. Immutable. Resource name of workload on which the backup plan is
+	//  applied.
+	//
+	//  The format can either be the resource name (e.g.,
+	//  "projects/my-project/zones/us-central1-a/instances/my-instance") or the
+	//  full resource URI (e.g.,
+	//  "https://www.googleapis.com/compute/v1/projects/my-project/zones/us-central1-a/instances/my-instance").
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlanAssociation.resource
 	// +required
-	Resource *Resource `json:"resource,omitempty"`
+	Resource *string `json:"resource,omitempty"`
 
-	// Required. The backup plan which needs to be applied on
-	//  workload.
+	// Required. Resource name of backup plan which needs to be applied on
+	//  workload. Format:
+	//  projects/{project}/locations/{location}/backupPlans/{backupPlanId}
+	// +kcc:guess=possible-reference target=BackupDRBackupPlan
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlanAssociation.backup_plan
 	// +required
-	BackupPlanRef *BackupPlanRef `json:"backupPlanRef,omitempty"`
+	BackupPlan *string `json:"backupPlan,omitempty"`
 }
 
 // BackupDRBackupPlanAssociationStatus defines the config connector machine state of BackupDRBackupPlanAssociation
@@ -79,13 +79,6 @@ type BackupDRBackupPlanAssociationStatus struct {
 // BackupDRBackupPlanAssociationObservedState is the state of the BackupDRBackupPlanAssociation resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.BackupPlanAssociation
 type BackupDRBackupPlanAssociationObservedState struct {
-	// Output only. Identifier. The resource name of BackupPlanAssociation in
-	//  below format Format :
-	//  projects/{project}/locations/{location}/backupPlanAssociations/{backupPlanAssociationId}
-	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlanAssociation.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. The time when the instance was created.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlanAssociation.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -107,16 +100,31 @@ type BackupDRBackupPlanAssociationObservedState struct {
 	//  projects/{project}/locations/{location}/backupVaults/{backupvault}/dataSources/{datasource}
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlanAssociation.data_source
 	DataSource *string `json:"dataSource,omitempty"`
+
+	// Output only. Cloud SQL instance's backup plan association properties.
+	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlanAssociation.cloud_sql_instance_backup_plan_association_properties
+	CloudSQLInstanceBackupPlanAssociationProperties *CloudSQLInstanceBackupPlanAssociationPropertiesObservedState `json:"cloudSQLInstanceBackupPlanAssociationProperties,omitempty"`
+
+	// Output only. The user friendly revision ID of the `BackupPlanRevision`.
+	//
+	//  Example: v0, v1, v2, etc.
+	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlanAssociation.backup_plan_revision_id
+	BackupPlanRevisionID *string `json:"backupPlanRevisionID,omitempty"`
+
+	// Output only. The resource id of the `BackupPlanRevision`.
+	//
+	//  Format:
+	//  `projects/{project}/locations/{location}/backupPlans/{backup_plan}/revisions/{revision_id}`
+	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlanAssociation.backup_plan_revision_name
+	BackupPlanRevisionName *string `json:"backupPlanRevisionName,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:storageversion
 // +kubebuilder:resource:categories=gcp,shortName=gcpbackupdrbackupplanassociation;gcpbackupdrbackupplanassociations
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

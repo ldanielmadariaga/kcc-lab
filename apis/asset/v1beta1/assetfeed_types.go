@@ -15,38 +15,21 @@
 package v1beta1
 
 import (
-	pubsubv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/pubsub/v1beta1"
-	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var AssetFeedGVK = GroupVersion.WithKind("AssetFeed")
 
-// Parent defines the parent field for AssetFeed
-type AssetFeedParent struct {
-	ProjectRef      *refv1beta1.ProjectRef      `json:"projectRef,omitempty"`
-	OrganizationRef *refv1beta1.OrganizationRef `json:"organizationRef,omitempty"`
-	FolderRef       *refv1beta1.FolderRef       `json:"folderRef,omitempty"`
-}
-
-// +kcc:proto=google.cloud.asset.v1.PubsubDestination
-type PubsubDestination struct {
-	// The name of the Pub/Sub topic to publish to.
-	//  Example: `projects/PROJECT_ID/topics/TOPIC_ID`.
-	// +kcc:proto:field=google.cloud.asset.v1.PubsubDestination.topic
-	TopicRef *pubsubv1beta1.PubSubTopicRef `json:"topicRef,omitempty"`
-}
-
 // AssetFeedSpec defines the desired state of AssetFeed
 // +kcc:spec:proto=google.cloud.asset.v1.Feed
 type AssetFeedSpec struct {
-	Parent AssetFeedParent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The AssetFeed name. If not given, the metadata.name will be used.
-	// +kcc:proto:field=google.cloud.asset.v1.Feed.name
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// A list of the full names of the assets to receive updates. You must specify
 	//  either or both of asset_names and asset_types. Only asset updates matching
 	//  specified asset_names or asset_types are exported to the feed.
@@ -74,9 +57,9 @@ type AssetFeedSpec struct {
 
 	// Required. Feed output configuration defining where the asset updates are
 	//  published to.
-	// +required
 	// +kcc:proto:field=google.cloud.asset.v1.Feed.feed_output_config
-	FeedOutputConfig *FeedOutputConfig `json:"feedOutputConfig"`
+	// +required
+	FeedOutputConfig *FeedOutputConfig `json:"feedOutputConfig,omitempty"`
 
 	// A condition which determines whether an asset update should be published.
 	//  If specified, an asset will be returned only when the expression evaluates
@@ -124,6 +107,14 @@ type AssetFeedStatus struct {
 
 	// A unique specifier for the AssetFeed resource in GCP.
 	ExternalRef *string `json:"externalRef,omitempty"`
+
+	// ObservedState is the state of the resource as most recently observed in GCP.
+	ObservedState *AssetFeedObservedState `json:"observedState,omitempty"`
+}
+
+// AssetFeedObservedState is the state of the AssetFeed resource as most recently observed in GCP.
+// +kcc:observedstate:proto=google.cloud.asset.v1.Feed
+type AssetFeedObservedState struct {
 }
 
 // +genclient
@@ -132,7 +123,6 @@ type AssetFeedStatus struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,11 +29,11 @@ type NetworkSecurityAddressGroupSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/addressGroups/{address_group}
 	Location *string `json:"location"`
 
 	// The NetworkSecurityAddressGroup name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. Free-text description of the resource.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.AddressGroup.description
 	Description *string `json:"description,omitempty"`
@@ -42,11 +42,10 @@ type NetworkSecurityAddressGroupSpec struct {
 	// +kcc:proto:field=google.cloud.networksecurity.v1.AddressGroup.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
-	// Required. The type of the Address Group. Possible values are "IPV4" or
+	// Required. The type of the Address Group. Possible values are "IPv4" or
 	//  "IPV6".
-	// +kubebuilder:validation:Enum=IPV4;IPV6
-	// +kubebuilder:validation:Required
 	// +kcc:proto:field=google.cloud.networksecurity.v1.AddressGroup.type
+	// +required
 	Type *string `json:"type,omitempty"`
 
 	// Optional. List of items.
@@ -54,8 +53,8 @@ type NetworkSecurityAddressGroupSpec struct {
 	Items []string `json:"items,omitempty"`
 
 	// Required. Capacity of the Address Group
-	// +kubebuilder:validation:Required
 	// +kcc:proto:field=google.cloud.networksecurity.v1.AddressGroup.capacity
+	// +required
 	Capacity *int32 `json:"capacity,omitempty"`
 
 	// Optional. List of supported purposes of the Address Group.
@@ -95,12 +94,12 @@ type NetworkSecurityAddressGroupObservedState struct {
 	SelfLink *string `json:"selfLink,omitempty"`
 }
 
+// +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:resource:categories=gcp,shortName=gcpnetworksecurityaddressgroup;gcpnetworksecurityaddressgroups
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

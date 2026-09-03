@@ -56,18 +56,14 @@ func WorkflowsWorkflowObservedState_FromProto(mapCtx *direct.MapContext, in *pb.
 	out := &krm.WorkflowsWorkflowObservedState{}
 	// MISSING: Name
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	// MISSING: RevisionID
-	// (near miss): "RevisionID" vs "RevisionId"
+	out.RevisionID = direct.LazyPtr(in.GetRevisionId())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.RevisionCreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetRevisionCreateTime())
-	// MISSING: CryptoKeyName
 	out.StateError = Workflow_StateError_FromProto(mapCtx, in.GetStateError())
-	// MISSING: ExecutionHistoryLevel
-	// MISSING: AllKMSKeys
-	// MISSING: AllKMSKeysVersions
-	// MISSING: CryptoKeyVersion
-	// MISSING: Tags
+	out.AllKMSKeys = in.AllKmsKeys
+	out.AllKMSKeysVersions = in.AllKmsKeysVersions
+	out.CryptoKeyVersion = direct.LazyPtr(in.GetCryptoKeyVersion())
 	return out
 }
 */
@@ -80,18 +76,14 @@ func WorkflowsWorkflowObservedState_ToProto(mapCtx *direct.MapContext, in *krm.W
 	out := &pb.Workflow{}
 	// MISSING: Name
 	out.State = direct.Enum_ToProto[pb.Workflow_State](mapCtx, in.State)
-	// MISSING: RevisionID
-	// (near miss): "RevisionID" vs "RevisionId"
+	out.RevisionId = direct.ValueOf(in.RevisionID)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.RevisionCreateTime = direct.StringTimestamp_ToProto(mapCtx, in.RevisionCreateTime)
-	// MISSING: CryptoKeyName
 	out.StateError = Workflow_StateError_ToProto(mapCtx, in.StateError)
-	// MISSING: ExecutionHistoryLevel
-	// MISSING: AllKMSKeys
-	// MISSING: AllKMSKeysVersions
-	// MISSING: CryptoKeyVersion
-	// MISSING: Tags
+	out.AllKmsKeys = in.AllKMSKeys
+	out.AllKmsKeysVersions = in.AllKMSKeysVersions
+	out.CryptoKeyVersion = direct.ValueOf(in.CryptoKeyVersion)
 	return out
 }
 */
@@ -104,20 +96,14 @@ func WorkflowsWorkflowSpec_FromProto(mapCtx *direct.MapContext, in *pb.Workflow)
 	out := &krm.WorkflowsWorkflowSpec{}
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
-	// MISSING: RevisionID
 	out.Labels = in.Labels
-	if in.GetServiceAccount() != "" {
-		out.ServiceAccountRef = &refsv1beta1.IAMServiceAccountRef{External: in.GetServiceAccount()}
-	}
+	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
 	out.SourceContents = direct.LazyPtr(in.GetSourceContents())
-	// MISSING: CryptoKeyName
+	out.CryptoKeyName = direct.LazyPtr(in.GetCryptoKeyName())
 	out.CallLogLevel = direct.Enum_FromProto(mapCtx, in.GetCallLogLevel())
 	out.UserEnvVars = in.UserEnvVars
-	// MISSING: ExecutionHistoryLevel
-	// MISSING: AllKMSKeys
-	// MISSING: AllKMSKeysVersions
-	// MISSING: CryptoKeyVersion
-	// MISSING: Tags
+	out.ExecutionHistoryLevel = direct.Enum_FromProto(mapCtx, in.GetExecutionHistoryLevel())
+	out.Tags = in.Tags
 	return out
 }
 */
@@ -130,22 +116,16 @@ func WorkflowsWorkflowSpec_ToProto(mapCtx *direct.MapContext, in *krm.WorkflowsW
 	out := &pb.Workflow{}
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
-	// MISSING: RevisionID
 	out.Labels = in.Labels
-	if in.ServiceAccountRef != nil {
-		out.ServiceAccount = in.ServiceAccountRef.External
-	}
+	out.ServiceAccount = direct.ValueOf(in.ServiceAccount)
 	if oneof := WorkflowsWorkflowSpec_SourceContents_ToProto(mapCtx, in.SourceContents); oneof != nil {
 		out.SourceCode = oneof
 	}
-	// MISSING: CryptoKeyName
+	out.CryptoKeyName = direct.ValueOf(in.CryptoKeyName)
 	out.CallLogLevel = direct.Enum_ToProto[pb.Workflow_CallLogLevel](mapCtx, in.CallLogLevel)
 	out.UserEnvVars = in.UserEnvVars
-	// MISSING: ExecutionHistoryLevel
-	// MISSING: AllKMSKeys
-	// MISSING: AllKMSKeysVersions
-	// MISSING: CryptoKeyVersion
-	// MISSING: Tags
+	out.ExecutionHistoryLevel = direct.Enum_ToProto[pb.ExecutionHistoryLevel](mapCtx, in.ExecutionHistoryLevel)
+	out.Tags = in.Tags
 	return out
 }
 */

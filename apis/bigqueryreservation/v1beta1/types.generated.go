@@ -22,8 +22,11 @@
 
 package v1beta1
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.Assignment", skipping
+import (
+	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
+)
 
+/* unreachable type Assignment
 // +kcc:proto=google.cloud.bigquery.reservation.v1.Assignment
 type Assignment struct {
 
@@ -49,12 +52,11 @@ type Assignment struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.Reservation", skipping
-
+/* unreachable type Reservation
 // +kcc:proto=google.cloud.bigquery.reservation.v1.Reservation
 type Reservation struct {
 	// The resource name of the reservation, e.g.,
-	//  `projects/* /locations/* /reservations/team1-prod`.
+	//  `projects/-*-/locations/-*-/reservations/team1-prod`.
 	//  The reservation_id must only contain lower case alphanumeric characters or
 	//  dashes. It must start with a letter and must not end with a dash. Its
 	//  maximum length is 64 characters.
@@ -174,8 +176,6 @@ type Reservation struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.Reservation.Autoscale", skipping
-
 // +kcc:proto=google.cloud.bigquery.reservation.v1.Reservation.Autoscale
 type Reservation_Autoscale struct {
 
@@ -183,7 +183,6 @@ type Reservation_Autoscale struct {
 	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.Autoscale.max_slots
 	MaxSlots *int64 `json:"maxSlots,omitempty"`
 }
-*/
 
 /* unreachable type Reservation_ReplicationStatus
 // +kcc:proto=google.cloud.bigquery.reservation.v1.Reservation.ReplicationStatus
@@ -191,8 +190,7 @@ type Reservation_ReplicationStatus struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.Assignment", skipping
-
+/* unreachable type AssignmentObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.reservation.v1.Assignment
 type AssignmentObservedState struct {
 	// Output only. Name of the resource. E.g.:
@@ -208,8 +206,7 @@ type AssignmentObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.Reservation", skipping
-
+/* unreachable type ReservationObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.reservation.v1.Reservation
 type ReservationObservedState struct {
 	// The configuration parameters for the auto scaling feature.
@@ -249,8 +246,6 @@ type ReservationObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.reservation.v1.Reservation.Autoscale", skipping
-
 // +kcc:observedstate:proto=google.cloud.bigquery.reservation.v1.Reservation.Autoscale
 type Reservation_AutoscaleObservedState struct {
 	// Output only. The slot capacity added to this reservation when autoscale
@@ -261,9 +256,7 @@ type Reservation_AutoscaleObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.Autoscale.current_slots
 	CurrentSlots *int64 `json:"currentSlots,omitempty"`
 }
-*/
 
-/* unreachable type Reservation_ReplicationStatusObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.reservation.v1.Reservation.ReplicationStatus
 type Reservation_ReplicationStatusObservedState struct {
 	// Output only. The last error encountered while trying to replicate changes
@@ -283,4 +276,3 @@ type Reservation_ReplicationStatusObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.ReplicationStatus.last_replication_time
 	LastReplicationTime *string `json:"lastReplicationTime,omitempty"`
 }
-*/

@@ -15,7 +15,7 @@
 package v1beta1
 
 import (
-	krmv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/bigquerybiglake/v1alpha1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,30 +25,37 @@ var BigLakeTableGVK = GroupVersion.WithKind("BigLakeTable")
 // BigLakeTableSpec defines the desired state of BigLakeTable
 // +kcc:spec:proto=google.cloud.bigquery.biglake.v1.Table
 type BigLakeTableSpec struct {
-	// Required. The parent resource where this table will be created.
-	// Format:
-	// projects/{project_id_or_number}/locations/{location_id}/catalogs/{catalog_id}/databases/{database_id}
-	// +required
-	ParentRef *krmv1alpha1.BigQueryBigLakeDatabaseRef `json:"parentDatabaseRef,omitempty"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The BigLake Table ID. If not given, the metadata.name will be used.
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/catalogs/{catalog}/databases/{database}/tables/{table}
+	Location *string `json:"location,omitempty"`
+
+	// The Catalog that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/catalogs/{catalog}/databases/{database}/tables/{table}
+	Catalog *string `json:"catalog,omitempty"`
+
+	// The Database that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/catalogs/{catalog}/databases/{database}/tables/{table}
+	Database *string `json:"database,omitempty"`
+
+	// The BigLakeTable name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Options of a Hive table.
+	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.hive_options
+	HiveOptions *HiveTableOptions `json:"hiveOptions,omitempty"`
 
 	// The table type.
 	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.type
-	// +optional
 	Type *string `json:"type,omitempty"`
 
-	// Options of a Hive table.
-	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.hive_options
-	// +optional
-	HiveOptions *HiveTableOptions `json:"hiveOptions,omitempty"`
-
-	// NOTYET: not supported in Config Connector reconciliation
-	// Output only. The etag for this table.
+	// The checksum of a table object computed by the server based on the value of
+	//  other fields. It may be sent on update requests to ensure the client has an
+	//  up-to-date value before proceeding. It is only checked for update table
+	//  operations.
 	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.etag
-	// +optional
-	// Etag *string `json:"etag,omitempty"`
+	Etag *string `json:"etag,omitempty"`
 }
 
 // BigLakeTableStatus defines the config connector machine state of BigLakeTable
@@ -95,8 +102,6 @@ type BigLakeTableObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=beta"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -104,7 +109,6 @@ type BigLakeTableObservedState struct {
 
 // BigLakeTable is the Schema for the BigLakeTable API
 // +k8s:openapi-gen=true
-// +kubebuilder:storageversion
 type BigLakeTable struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

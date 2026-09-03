@@ -36,6 +36,11 @@ ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.securesourcemanager.v1 \
   --api-version securesourcemanager.cnrm.cloud.google.com/v1beta1 \
   --include-skipped-output \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource SecureSourceManagerInstance:Instance \
   --resource SecureSourceManagerRepository:Repository
 

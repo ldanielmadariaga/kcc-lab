@@ -1,0 +1,21 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=CloudSecurityComplianceCloudControl group=cloudsecuritycompliance.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudSecurityComplianceCloudControl group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of organizations/{organization}/locations/{location}/cloudControls/{cloud_control}; confirm the resource is regional and that this is the name for it)
+kind=CloudSecurityComplianceFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudSecurityComplianceFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of organizations/{organization}/locations/{location}/frameworks/{framework}; confirm the resource is regional and that this is the name for it)
+kind=CloudSecurityFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=CloudSecurityFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of organizations/{organization}/locations/{location}/frameworks/{framework}; confirm the resource is regional and that this is the name for it)
+kind=CloudSecurityComplianceFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.cloudControlDetails[].name" reason=possible-reference-by-description
+kind=CloudSecurityComplianceFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.cloudControlGroupDetails[].cloudControlGroup.cloudControlDetails[].name" reason=possible-reference-by-description
+kind=CloudSecurityComplianceFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.cloudControlGroupDetails[].cloudControlGroup.control" reason=possible-reference-by-description
+kind=CloudSecurityComplianceFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.cloudControlGroupDetails[].cloudControlGroup.name" reason=possible-reference-by-description
+kind=CloudSecurityFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.cloudControlDetails[].name" reason=possible-reference-by-description
+kind=CloudSecurityFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.cloudControlGroupDetails[].cloudControlGroup.cloudControlDetails[].name" reason=possible-reference-by-description
+kind=CloudSecurityFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.cloudControlGroupDetails[].cloudControlGroup.control" reason=possible-reference-by-description
+kind=CloudSecurityFramework group=cloudsecuritycompliance.cnrm.cloud.google.com: field ".spec.cloudControlGroupDetails[].cloudControlGroup.name" reason=possible-reference-by-description

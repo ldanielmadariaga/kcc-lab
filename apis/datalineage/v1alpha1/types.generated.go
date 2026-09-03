@@ -21,40 +21,56 @@
 
 package v1alpha1
 
-/* unreachable type ListValue
-// +kcc:proto=google.protobuf.ListValue
-type ListValue struct {
-	// Repeated field of dynamically typed values.
-	// +kcc:proto:field=google.protobuf.ListValue.values
-	Values []Value `json:"values,omitempty"`
+// +kcc:proto=google.cloud.datacatalog.lineage.v1.Origin
+type Origin struct {
+	// Type of the source.
+	//
+	//  Use of a source_type other than `CUSTOM` for process creation
+	//  or updating is highly discouraged, and may be restricted in the future
+	//  without notice.
+	// +kcc:proto:field=google.cloud.datacatalog.lineage.v1.Origin.source_type
+	SourceType *string `json:"sourceType,omitempty"`
+
+	// If the source_type isn't CUSTOM, the value of this field should be a GCP
+	//  resource name of the system, which reports lineage. The project and
+	//  location parts of the resource name must match the project and location of
+	//  the lineage resource being created. Examples:
+	//
+	//  - `{source_type: COMPOSER, name:
+	//    "projects/foo/locations/us/environments/bar"}`
+	//  - `{source_type: BIGQUERY, name: "projects/foo/locations/eu"}`
+	//  - `{source_type: CUSTOM,   name: "myCustomIntegration"}`
+	// +kcc:proto:field=google.cloud.datacatalog.lineage.v1.Origin.name
+	Name *string `json:"name,omitempty"`
 }
-*/
 
-/* unreachable type Value
-// +kcc:proto=google.protobuf.Value
-type Value struct {
-	// Represents a null value.
-	// +kcc:proto:field=google.protobuf.Value.null_value
-	NullValue *string `json:"nullValue,omitempty"`
+/* unreachable type Process
+// +kcc:proto=google.cloud.datacatalog.lineage.v1.Process
+type Process struct {
+	// Immutable. The resource name of the lineage process. Format:
+	//  `projects/{project}/locations/{location}/processes/{process}`.
+	//  Can be specified or auto-assigned.
+	//  {process} must be not longer than 200 characters and only
+	//  contain characters in a set: `a-zA-Z0-9_-:.`
+	// +kcc:proto:field=google.cloud.datacatalog.lineage.v1.Process.name
+	Name *string `json:"name,omitempty"`
 
-	// Represents a double value.
-	// +kcc:proto:field=google.protobuf.Value.number_value
-	NumberValue *float64 `json:"numberValue,omitempty"`
+	// Optional. A human-readable name you can set to display in a user interface.
+	//  Must be not longer than 200 characters and only contain UTF-8 letters
+	//  or numbers, spaces or characters like `_-:&.`
+	// +kcc:proto:field=google.cloud.datacatalog.lineage.v1.Process.display_name
+	DisplayName *string `json:"displayName,omitempty"`
 
-	// Represents a string value.
-	// +kcc:proto:field=google.protobuf.Value.string_value
-	StringValue *string `json:"stringValue,omitempty"`
+	// Optional. The attributes of the process. Should only be used for the
+	//  purpose of non-semantic management (classifying, describing or labeling the
+	//  process).
+	//
+	//  Up to 100 attributes are allowed.
+	// +kcc:proto:field=google.cloud.datacatalog.lineage.v1.Process.attributes
+	Attributes map[string]apiextensionsv1.JSON `json:"attributes,omitempty"`
 
-	// Represents a boolean value.
-	// +kcc:proto:field=google.protobuf.Value.bool_value
-	BoolValue *bool `json:"boolValue,omitempty"`
-
-	// Represents a structured value.
-	// +kcc:proto:field=google.protobuf.Value.struct_value
-	StructValue apiextensionsv1.JSON `json:"structValue,omitempty"`
-
-	// Represents a repeated `Value`.
-	// +kcc:proto:field=google.protobuf.Value.list_value
-	ListValue *ListValue `json:"listValue,omitempty"`
+	// Optional. The origin of this process and its runs and lineage events.
+	// +kcc:proto:field=google.cloud.datacatalog.lineage.v1.Process.origin
+	Origin *Origin `json:"origin,omitempty"`
 }
 */

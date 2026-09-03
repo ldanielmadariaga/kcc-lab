@@ -22,11 +22,131 @@
 
 package v1beta1
 
+/* unreachable type Feed
+// +kcc:proto=google.cloud.asset.v1.Feed
+type Feed struct {
+	// Required. The format will be
+	//  projects/{project_number}/feeds/{client-assigned_feed_identifier} or
+	//  folders/{folder_number}/feeds/{client-assigned_feed_identifier} or
+	//  organizations/{organization_number}/feeds/{client-assigned_feed_identifier}
+	//
+	//  The client-assigned feed identifier must be unique within the parent
+	//  project/folder/organization.
+	// +kcc:proto:field=google.cloud.asset.v1.Feed.name
+	// +required
+	Name *string `json:"name,omitempty"`
+
+	// A list of the full names of the assets to receive updates. You must specify
+	//  either or both of asset_names and asset_types. Only asset updates matching
+	//  specified asset_names or asset_types are exported to the feed.
+	//  Example:
+	//  `//compute.googleapis.com/projects/my_project_123/zones/zone1/instances/instance1`.
+	//  For a list of the full names for supported asset types, see [Resource
+	//  name format](/asset-inventory/docs/resource-name-format).
+	// +kcc:proto:field=google.cloud.asset.v1.Feed.asset_names
+	AssetNames []string `json:"assetNames,omitempty"`
+
+	// A list of types of the assets to receive updates. You must specify either
+	//  or both of asset_names and asset_types. Only asset updates matching
+	//  specified asset_names or asset_types are exported to the feed.
+	//  Example: `"compute.googleapis.com/Disk"`
+	//
+	//  For a list of all supported asset types, see
+	//  [Supported asset types](/asset-inventory/docs/supported-asset-types).
+	// +kcc:proto:field=google.cloud.asset.v1.Feed.asset_types
+	AssetTypes []string `json:"assetTypes,omitempty"`
+
+	// Asset content type. If not specified, no content but the asset name and
+	//  type will be returned.
+	// +kcc:proto:field=google.cloud.asset.v1.Feed.content_type
+	ContentType *string `json:"contentType,omitempty"`
+
+	// Required. Feed output configuration defining where the asset updates are
+	//  published to.
+	// +kcc:proto:field=google.cloud.asset.v1.Feed.feed_output_config
+	// +required
+	FeedOutputConfig *FeedOutputConfig `json:"feedOutputConfig,omitempty"`
+
+	// A condition which determines whether an asset update should be published.
+	//  If specified, an asset will be returned only when the expression evaluates
+	//  to true.
+	//  When set, `expression` field in the `Expr` must be a valid [CEL expression]
+	//  (https://github.com/google/cel-spec) on a TemporalAsset with name
+	//  `temporal_asset`. Example: a Feed with expression ("temporal_asset.deleted
+	//  == true") will only publish Asset deletions. Other fields of `Expr` are
+	//  optional.
+	//
+	//  See our [user
+	//  guide](https://cloud.google.com/asset-inventory/docs/monitoring-asset-changes-with-condition)
+	//  for detailed instructions.
+	// +kcc:proto:field=google.cloud.asset.v1.Feed.condition
+	Condition *Expr `json:"condition,omitempty"`
+
+	// A list of relationship types to output, for example:
+	//  `INSTANCE_TO_INSTANCEGROUP`. This field should only be specified if
+	//  content_type=RELATIONSHIP.
+	//  * If specified:
+	//  it outputs specified relationship updates on the [asset_names] or the
+	//  [asset_types]. It returns an error if any of the [relationship_types]
+	//  doesn't belong to the supported relationship types of the [asset_names] or
+	//  [asset_types], or any of the [asset_names] or the [asset_types] doesn't
+	//  belong to the source types of the [relationship_types].
+	//  * Otherwise:
+	//  it outputs the supported relationships of the types of [asset_names] and
+	//  [asset_types] or returns an error if any of the [asset_names] or the
+	//  [asset_types] has no replationship support.
+	//  See [Introduction to Cloud Asset
+	//  Inventory](https://cloud.google.com/asset-inventory/docs/overview)
+	//  for all supported asset types and relationship types.
+	// +kcc:proto:field=google.cloud.asset.v1.Feed.relationship_types
+	RelationshipTypes []string `json:"relationshipTypes,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.asset.v1.FeedOutputConfig
 type FeedOutputConfig struct {
 	// Destination on Pub/Sub.
 	// +kcc:proto:field=google.cloud.asset.v1.FeedOutputConfig.pubsub_destination
 	PubsubDestination *PubsubDestination `json:"pubsubDestination,omitempty"`
+}
+
+// +kcc:proto=google.cloud.asset.v1.IamPolicyAnalysisQuery
+type IAMPolicyAnalysisQuery struct {
+	// Required. The relative name of the root asset. Only resources and IAM
+	//  policies within the scope will be analyzed.
+	//
+	//  This can only be an organization number (such as "organizations/123"), a
+	//  folder number (such as "folders/123"), a project ID (such as
+	//  "projects/my-project-id"), or a project number (such as "projects/12345").
+	//
+	//  To know how to get organization ID, visit [here
+	//  ](https://cloud.google.com/resource-manager/docs/creating-managing-organization#retrieving_your_organization_id).
+	//
+	//  To know how to get folder or project ID, visit [here
+	//  ](https://cloud.google.com/resource-manager/docs/creating-managing-folders#viewing_or_listing_folders_and_projects).
+	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.scope
+	// +required
+	Scope *string `json:"scope,omitempty"`
+
+	// Optional. Specifies a resource for analysis.
+	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.resource_selector
+	ResourceSelector *IAMPolicyAnalysisQuery_ResourceSelector `json:"resourceSelector,omitempty"`
+
+	// Optional. Specifies an identity for analysis.
+	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.identity_selector
+	IdentitySelector *IAMPolicyAnalysisQuery_IdentitySelector `json:"identitySelector,omitempty"`
+
+	// Optional. Specifies roles or permissions for analysis. This is optional.
+	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.access_selector
+	AccessSelector *IAMPolicyAnalysisQuery_AccessSelector `json:"accessSelector,omitempty"`
+
+	// Optional. The query options.
+	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.options
+	Options *IAMPolicyAnalysisQuery_Options `json:"options,omitempty"`
+
+	// Optional. The hypothetical context for IAM conditions evaluation.
+	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.condition_context
+	ConditionContext *IAMPolicyAnalysisQuery_ConditionContext `json:"conditionContext,omitempty"`
 }
 
 // +kcc:proto=google.cloud.asset.v1.IamPolicyAnalysisQuery.AccessSelector
@@ -47,6 +167,25 @@ type IAMPolicyAnalysisQuery_ConditionContext struct {
 	//  INVALID_ARGUMENT error will be returned.
 	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.ConditionContext.access_time
 	AccessTime *string `json:"accessTime,omitempty"`
+}
+
+// +kcc:proto=google.cloud.asset.v1.IamPolicyAnalysisQuery.IdentitySelector
+type IAMPolicyAnalysisQuery_IdentitySelector struct {
+	// Required. The identity appear in the form of principals in
+	//  [IAM policy
+	//  binding](https://cloud.google.com/iam/reference/rest/v1/Binding).
+	//
+	//  The examples of supported forms are:
+	//  "user:mike@example.com",
+	//  "group:admins@example.com",
+	//  "domain:google.com",
+	//  "serviceAccount:my-project-id@appspot.gserviceaccount.com".
+	//
+	//  Notice that wildcard characters (such as * and ?) are not supported.
+	//  You must give a specific identity.
+	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.IdentitySelector.identity
+	// +required
+	Identity *string `json:"identity,omitempty"`
 }
 
 // +kcc:proto=google.cloud.asset.v1.IamPolicyAnalysisQuery.Options
@@ -158,6 +297,53 @@ type IAMPolicyAnalysisQuery_Options struct {
 	AnalyzeServiceAccountImpersonation *bool `json:"analyzeServiceAccountImpersonation,omitempty"`
 }
 
+// +kcc:proto=google.cloud.asset.v1.IamPolicyAnalysisQuery.ResourceSelector
+type IAMPolicyAnalysisQuery_ResourceSelector struct {
+	// Required. The [full resource name]
+	//  (https://cloud.google.com/asset-inventory/docs/resource-name-format)
+	//  of a resource of [supported resource
+	//  types](https://cloud.google.com/asset-inventory/docs/supported-asset-types#analyzable_asset_types).
+	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.ResourceSelector.full_resource_name
+	// +required
+	FullResourceName *string `json:"fullResourceName,omitempty"`
+}
+
+// +kcc:proto=google.cloud.asset.v1.PubsubDestination
+type PubsubDestination struct {
+	// The name of the Pub/Sub topic to publish to.
+	//  Example: `projects/PROJECT_ID/topics/TOPIC_ID`.
+	// +kcc:proto:field=google.cloud.asset.v1.PubsubDestination.topic
+	Topic *string `json:"topic,omitempty"`
+}
+
+/* unreachable type SavedQuery
+// +kcc:proto=google.cloud.asset.v1.SavedQuery
+type SavedQuery struct {
+	// The resource name of the saved query. The format must be:
+	//
+	//  * projects/project_number/savedQueries/saved_query_id
+	//  * folders/folder_number/savedQueries/saved_query_id
+	//  * organizations/organization_number/savedQueries/saved_query_id
+	// +kcc:proto:field=google.cloud.asset.v1.SavedQuery.name
+	Name *string `json:"name,omitempty"`
+
+	// The description of this saved query. This value should be fewer than 255
+	//  characters.
+	// +kcc:proto:field=google.cloud.asset.v1.SavedQuery.description
+	Description *string `json:"description,omitempty"`
+
+	// Labels applied on the resource.
+	//  This value should not contain more than 10 entries. The key and value of
+	//  each entry must be non-empty and fewer than 64 characters.
+	// +kcc:proto:field=google.cloud.asset.v1.SavedQuery.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// The query content.
+	// +kcc:proto:field=google.cloud.asset.v1.SavedQuery.content
+	Content *SavedQuery_QueryContent `json:"content,omitempty"`
+}
+*/
+
 // +kcc:proto=google.cloud.asset.v1.SavedQuery.QueryContent
 type SavedQuery_QueryContent struct {
 	// An IAM Policy Analysis query, which could be used in
@@ -193,3 +379,25 @@ type Expr struct {
 	// +kcc:proto:field=google.type.Expr.location
 	Location *string `json:"location,omitempty"`
 }
+
+/* unreachable type SavedQueryObservedState
+// +kcc:observedstate:proto=google.cloud.asset.v1.SavedQuery
+type SavedQueryObservedState struct {
+	// Output only. The create time of this saved query.
+	// +kcc:proto:field=google.cloud.asset.v1.SavedQuery.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The account's email address who has created this saved query.
+	// +kcc:proto:field=google.cloud.asset.v1.SavedQuery.creator
+	Creator *string `json:"creator,omitempty"`
+
+	// Output only. The last update time of this saved query.
+	// +kcc:proto:field=google.cloud.asset.v1.SavedQuery.last_update_time
+	LastUpdateTime *string `json:"lastUpdateTime,omitempty"`
+
+	// Output only. The account's email address who has updated this saved query
+	//  most recently.
+	// +kcc:proto:field=google.cloud.asset.v1.SavedQuery.last_updater
+	LastUpdater *string `json:"lastUpdater,omitempty"`
+}
+*/

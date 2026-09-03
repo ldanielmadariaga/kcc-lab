@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,46 +25,42 @@ var RapidMigrationAssessmentCollectorGVK = GroupVersion.WithKind("RapidMigration
 // RapidMigrationAssessmentCollectorSpec defines the desired state of RapidMigrationAssessmentCollector
 // +kcc:spec:proto=google.cloud.rapidmigrationassessment.v1.Collector
 type RapidMigrationAssessmentCollectorSpec struct {
-	// Immutable. The project that this resource belongs to.
-	// +required
+	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
-	// Immutable. The location of this resource.
-	// +required
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/collectors/{collector}
 	Location *string `json:"location"`
 
-	// Immutable. The RapidMigrationAssessmentCollector name. If not given, the metadata.name will be used.
-	// +optional
+	// The RapidMigrationAssessmentCollector name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Labels as key value pairs.
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.labels
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// User specified name of the Collector.
-	// +optional
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// User specified description of the Collector.
-	// +optional
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.description
 	Description *string `json:"description,omitempty"`
 
-	// Service Account used to ingest data to this Collector.
-	// +optional
-	ServiceAccountRef *refsv1beta1.IAMServiceAccountRef `json:"serviceAccountRef,omitempty"`
+	// Service Account email used to ingest data to this Collector.
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.service_account
+	ServiceAccount *string `json:"serviceAccount,omitempty"`
 
 	// User specified expected asset count.
-	// +optional
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.expected_asset_count
 	ExpectedAssetCount *int64 `json:"expectedAssetCount,omitempty"`
 
 	// How many days to collect data.
-	// +optional
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.collection_days
 	CollectionDays *int32 `json:"collectionDays,omitempty"`
 
 	// Uri for EULA (End User License Agreement) from customer.
-	// +optional
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.eula_uri
 	EulaURI *string `json:"eulaURI,omitempty"`
-
-	// Labels as key value pairs.
-	// +optional
-	Labels map[string]string `json:"labels,omitempty"`
 }
 
 // RapidMigrationAssessmentCollectorStatus defines the config connector machine state of RapidMigrationAssessmentCollector
@@ -87,46 +83,33 @@ type RapidMigrationAssessmentCollectorStatus struct {
 // +kcc:observedstate:proto=google.cloud.rapidmigrationassessment.v1.Collector
 type RapidMigrationAssessmentCollectorObservedState struct {
 	// Output only. Create time stamp.
-	// +optional
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. Update time stamp.
-	// +optional
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. Store cloud storage bucket name (which is a guid) created with
 	//  this Collector.
-	// +optional
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.bucket
 	Bucket *string `json:"bucket,omitempty"`
 
 	// Output only. State of the Collector.
-	// +kubebuilder:validation:Enum=STATE_UNSPECIFIED;STATE_INITIALIZING;STATE_READY_TO_USE;STATE_REGISTERED;STATE_ACTIVE;STATE_PAUSED;STATE_DELETING;STATE_DECOMMISSIONED;STATE_ERROR
-	// +optional
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.state
 	State *string `json:"state,omitempty"`
 
 	// Output only. Client version.
-	// +optional
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.client_version
 	ClientVersion *string `json:"clientVersion,omitempty"`
 
 	// Output only. Reference to MC Source Guest Os Scan.
-	// +optional
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.guest_os_scan
 	GuestOSScan *GuestOSScan `json:"guestOSScan,omitempty"`
 
 	// Output only. Reference to MC Source vsphere_scan.
-	// +optional
+	// +kcc:proto:field=google.cloud.rapidmigrationassessment.v1.Collector.vsphere_scan
 	VsphereScan *VSphereScan `json:"vsphereScan,omitempty"`
-}
-
-type GuestOSScan struct {
-	// reference to the corresponding Guest OS Scan in MC Source.
-	// +optional
-	CoreSource *string `json:"coreSource,omitempty"`
-}
-
-type VSphereScan struct {
-	// reference to the corresponding VSphere Scan in MC Source.
-	// +optional
-	CoreSource *string `json:"coreSource,omitempty"`
 }
 
 // +genclient
@@ -135,7 +118,6 @@ type VSphereScan struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

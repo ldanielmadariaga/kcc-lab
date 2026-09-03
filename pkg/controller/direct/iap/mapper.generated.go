@@ -315,26 +315,6 @@ func CsmSettings_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmiapv1beta1.Cs
 	out.RctokenAud = direct.StringValue_ToProto(mapCtx, in.RctokenAud)
 	return out
 }
-func GcipSettings_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.GcipSettings) *krmiapv1alpha1.GcipSettings {
-	if in == nil {
-		return nil
-	}
-	out := &krmiapv1alpha1.GcipSettings{}
-	// MISSING: TenantIds
-	// (near miss): "TenantIds" vs "TenantIDs"
-	out.LoginPageURI = direct.StringValue_FromProto(mapCtx, in.GetLoginPageUri())
-	return out
-}
-func GcipSettings_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmiapv1alpha1.GcipSettings) *pb.GcipSettings {
-	if in == nil {
-		return nil
-	}
-	out := &pb.GcipSettings{}
-	// MISSING: TenantIds
-	// (near miss): "TenantIds" vs "TenantIDs"
-	out.LoginPageUri = direct.StringValue_ToProto(mapCtx, in.LoginPageURI)
-	return out
-}
 
 /* found existing non-generated mapping function "GcipSettings_v1beta1_FromProto", skipping
 func GcipSettings_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.GcipSettings) *krmiapv1beta1.GcipSettings {
@@ -342,8 +322,7 @@ func GcipSettings_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.GcipSettin
 		return nil
 	}
 	out := &krmiapv1beta1.GcipSettings{}
-	// MISSING: TenantIds
-	// (near miss): "TenantIds" vs "TenantIDs"
+	out.TenantIDs = in.TenantIds
 	out.LoginPageURI = direct.StringValue_FromProto(mapCtx, in.GetLoginPageUri())
 	return out
 }
@@ -357,8 +336,7 @@ found existing non-generated mapping function "GcipSettings_v1beta1_ToProto", sk
 			return nil
 		}
 		out := &pb.GcipSettings{}
-		// MISSING: TenantIds
-		// (near miss): "TenantIds" vs "TenantIDs"
+		out.TenantIds = in.TenantIDs
 		out.LoginPageUri = direct.StringValue_ToProto(mapCtx, in.LoginPageURI)
 		return out
 	}
@@ -383,26 +361,6 @@ func IAPBrandSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmiapv1beta1.I
 	out.SupportEmail = direct.ValueOf(in.SupportEmail)
 	out.ApplicationTitle = direct.ValueOf(in.ApplicationTitle)
 	// MISSING: OrgInternalOnly
-	return out
-}
-func IAPSettingsSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.IapSettings) *krmiapv1alpha1.IAPSettingsSpec {
-	if in == nil {
-		return nil
-	}
-	out := &krmiapv1alpha1.IAPSettingsSpec{}
-	// MISSING: Name
-	out.AccessSettings = AccessSettings_v1alpha1_FromProto(mapCtx, in.GetAccessSettings())
-	out.ApplicationSettings = ApplicationSettings_v1alpha1_FromProto(mapCtx, in.GetApplicationSettings())
-	return out
-}
-func IAPSettingsSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmiapv1alpha1.IAPSettingsSpec) *pb.IapSettings {
-	if in == nil {
-		return nil
-	}
-	out := &pb.IapSettings{}
-	// MISSING: Name
-	out.AccessSettings = AccessSettings_v1alpha1_ToProto(mapCtx, in.AccessSettings)
-	out.ApplicationSettings = ApplicationSettings_v1alpha1_ToProto(mapCtx, in.ApplicationSettings)
 	return out
 }
 func IAPSettingsSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.IapSettings) *krmiapv1beta1.IAPSettingsSpec {

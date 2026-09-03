@@ -62,6 +62,9 @@ spec:
           spec:
             description: DataCatalogTagTemplateSpec defines the desired state of DataCatalogTagTemplate
             properties:
+              dataplexTransferStatus:
+                description: Optional. Transfer status of the TagTemplate
+                type: string
               displayName:
                 description: |-
                   Display name for this template. Defaults to an empty string.
@@ -141,6 +144,8 @@ spec:
                                        (_), dashes (-), spaces ( ), and can't start or end with spaces. The
                                        maximum length is 200 characters.
                                     type: string
+                                required:
+                                - displayName
                                 type: object
                               type: array
                           type: object
@@ -148,8 +153,21 @@ spec:
                           description: Primitive types, such as string, boolean, etc.
                           type: string
                       type: object
+                  required:
+                  - type
                   type: object
-                description: Fields used to create a Tag
+                description: |-
+                  Required. Map of tag template field IDs to the settings for the field.
+                   This map is an exhaustive list of the allowed fields. The map must contain
+                   at least one field and at most 500 fields.
+
+                   The keys to this map are tag template field IDs. The IDs have the
+                   following limitations:
+
+                   * Can contain uppercase and lowercase letters, numbers (0-9) and
+                     underscores (_).
+                   * Must be at least 1 character and at most 64 characters long.
+                   * Must start with a letter or underscore.
                 type: object
               isPubliclyReadable:
                 description: |-
@@ -161,9 +179,10 @@ spec:
                    simple search query in addition to using a ``tag:`` predicate.
                 type: boolean
               location:
+                description: The location of this resource.
                 type: string
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -199,6 +218,7 @@ spec:
                   will be used.
                 type: string
             required:
+            - fields
             - location
             - projectRef
             type: object
@@ -247,10 +267,6 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
-                properties:
-                  dataplexTransferStatus:
-                    description: Optional. Transfer status of the TagTemplate
-                    type: string
                 type: object
             type: object
         required:

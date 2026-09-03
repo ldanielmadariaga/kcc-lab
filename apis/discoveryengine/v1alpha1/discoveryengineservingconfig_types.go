@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,74 +25,210 @@ var DiscoveryEngineServingConfigGVK = GroupVersion.WithKind("DiscoveryEngineServ
 // DiscoveryEngineServingConfigSpec defines the desired state of DiscoveryEngineServingConfig
 // +kcc:spec:proto=google.cloud.discoveryengine.v1beta.ServingConfig
 type DiscoveryEngineServingConfigSpec struct {
-	// Immutable. The Project that this resource belongs to.
-	// +required
+	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// Immutable. Location of the resource.
-	// +required
-	Location string `json:"location"`
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/dataStores/{data_store}/servingConfigs/{serving_config}
+	Location *string `json:"location,omitempty"`
 
-	// Immutable. The Engine this serving config belongs to.
-	// +required
-	EngineRef *DiscoveryEngineEngineRef `json:"engineRef"`
+	// The DataStore that this resource belongs to.
+	// +kcc:guess=parent-segment target=DiscoveryEngineDataStore
+	DataStore *string `json:"dataStore,omitempty"`
 
-	// Immutable.
 	// The DiscoveryEngineServingConfig name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// The MediaConfig of the serving configuration.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.media_config
+	MediaConfig *ServingConfig_MediaConfig `json:"mediaConfig,omitempty"`
 
-	// Required. The human readable serving config display name. Used in Discovery UI.
+	// The GenericConfig of the serving configuration.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.generic_config
+	GenericConfig *ServingConfig_GenericConfig `json:"genericConfig,omitempty"`
+
+	// Required. The human readable serving config display name. Used in Discovery
+	//  UI.
+	//
+	//  This field must be a UTF-8 encoded string with a length limit of 128
+	//  characters. Otherwise, an INVALID_ARGUMENT error is returned.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.display_name
 	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
-	// Required. Immutable. Specifies the solution type that a serving config can be associated with.
+	// Required. Immutable. Specifies the solution type that a serving config can
+	//  be associated with.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.solution_type
 	// +required
 	SolutionType *string `json:"solutionType,omitempty"`
 
 	// The id of the model to use at serving time.
+	//  Currently only RecommendationModels are supported.
+	//  Can be changed but only to a compatible model (e.g.
+	//  others-you-may-like CTR to others-you-may-like CVR).
+	//
+	//  Required when
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_RECOMMENDATION][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_RECOMMENDATION].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.model_id
 	ModelID *string `json:"modelID,omitempty"`
 
-	// How much diversity to use in recommendation model results.
+	// How much diversity to use in recommendation model results e.g.
+	//  `medium-diversity` or `high-diversity`. Currently supported values:
+	//
+	//  * `no-diversity`
+	//  * `low-diversity`
+	//  * `medium-diversity`
+	//  * `high-diversity`
+	//  * `auto-diversity`
+	//
+	//  If not specified, we choose default based on recommendation model
+	//  type. Default value: `no-diversity`.
+	//
+	//  Can only be set if
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_RECOMMENDATION][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_RECOMMENDATION].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.diversity_level
 	DiversityLevel *string `json:"diversityLevel,omitempty"`
 
-	// Bring your own embedding config.
+	// Bring your own embedding config. The config is used for search semantic
+	//  retrieval. The retrieval is based on the dot product of
+	//  [SearchRequest.EmbeddingSpec.EmbeddingVector.vector][google.cloud.discoveryengine.v1beta.SearchRequest.EmbeddingSpec.EmbeddingVector.vector]
+	//  and the document embeddings that are provided by this EmbeddingConfig. If
+	//  [SearchRequest.EmbeddingSpec.EmbeddingVector.vector][google.cloud.discoveryengine.v1beta.SearchRequest.EmbeddingSpec.EmbeddingVector.vector]
+	//  is provided, it overrides this
+	//  [ServingConfig.embedding_config][google.cloud.discoveryengine.v1beta.ServingConfig.embedding_config].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.embedding_config
 	EmbeddingConfig *EmbeddingConfig `json:"embeddingConfig,omitempty"`
 
-	// The ranking expression controls the customized ranking on retrieval documents.
+	// The ranking expression controls the customized ranking on retrieval
+	//  documents. To leverage this, document embedding is required. The ranking
+	//  expression setting in ServingConfig applies to all search requests served
+	//  by the serving config. However, if `SearchRequest.ranking_expression` is
+	//  specified, it overrides the ServingConfig ranking expression.
+	//
+	//  The ranking expression is a single function or multiple functions that are
+	//  joined by "+".
+	//
+	//    * ranking_expression = function, { " + ", function };
+	//
+	//  Supported functions:
+	//
+	//    * double * relevance_score
+	//    * double * dotProduct(embedding_field_path)
+	//
+	//  Function variables:
+	//
+	//    * `relevance_score`: pre-defined keywords, used for measure relevance
+	//    between query and document.
+	//    * `embedding_field_path`: the document embedding field
+	//    used with query embedding vector.
+	//    * `dotProduct`: embedding function between embedding_field_path and query
+	//    embedding vector.
+	//
+	//   Example ranking expression:
+	//
+	//     If document has an embedding field doc_embedding, the ranking expression
+	//     could be `0.5 * relevance_score + 0.3 * dotProduct(doc_embedding)`.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.ranking_expression
 	RankingExpression *string `json:"rankingExpression,omitempty"`
 
 	// Filter controls to use in serving path.
+	//  All triggered filter controls will be applied.
+	//  Filter controls must be in the same data store as the serving config.
+	//  Maximum of 20 filter controls.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.filter_control_ids
 	FilterControlIDs []string `json:"filterControlIDs,omitempty"`
 
 	// Boost controls to use in serving path.
+	//  All triggered boost controls will be applied.
+	//  Boost controls must be in the same data store as the serving config.
+	//  Maximum of 20 boost controls.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.boost_control_ids
 	BoostControlIDs []string `json:"boostControlIDs,omitempty"`
 
-	// IDs of the redirect controls.
+	// IDs of the redirect controls. Only the first triggered redirect
+	//  action is applied, even if multiple apply. Maximum number of
+	//  specifications is 100.
+	//
+	//  Can only be set if
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_SEARCH].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.redirect_control_ids
 	RedirectControlIDs []string `json:"redirectControlIDs,omitempty"`
 
-	// Condition synonyms specifications.
+	// Condition synonyms specifications. If multiple synonyms conditions
+	//  match, all matching synonyms controls in the list will execute.
+	//  Maximum number of specifications is 100.
+	//
+	//  Can only be set if
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_SEARCH].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.synonyms_control_ids
 	SynonymsControlIDs []string `json:"synonymsControlIDs,omitempty"`
 
-	// Condition oneway synonyms specifications.
+	// Condition oneway synonyms specifications. If multiple oneway synonyms
+	//  conditions match, all matching oneway synonyms controls in the list
+	//  will execute. Maximum number of specifications is 100.
+	//
+	//  Can only be set if
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_SEARCH].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.oneway_synonyms_control_ids
 	OnewaySynonymsControlIDs []string `json:"onewaySynonymsControlIDs,omitempty"`
 
-	// Condition do not associate specifications.
+	// Condition do not associate specifications. If multiple do not
+	//  associate conditions match, all matching do not associate controls in
+	//  the list will execute.
+	//  Order does not matter.
+	//  Maximum number of specifications is 100.
+	//
+	//  Can only be set if
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_SEARCH].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.dissociate_control_ids
 	DissociateControlIDs []string `json:"dissociateControlIDs,omitempty"`
 
 	// Condition replacement specifications.
+	//  Applied according to the order in the list.
+	//  A previously replaced term can not be re-replaced.
+	//  Maximum number of specifications is 100.
+	//
+	//  Can only be set if
+	//  [SolutionType][google.cloud.discoveryengine.v1beta.SolutionType] is
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1beta.SolutionType.SOLUTION_TYPE_SEARCH].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.replacement_control_ids
 	ReplacementControlIDs []string `json:"replacementControlIDs,omitempty"`
 
-	// Condition ignore specifications.
+	// Condition ignore specifications. If multiple ignore
+	//  conditions match, all matching ignore controls in the list will
+	//  execute.
+	//  Order does not matter.
+	//  Maximum number of specifications is 100.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.ignore_control_ids
 	IgnoreControlIDs []string `json:"ignoreControlIDs,omitempty"`
 
+	// Condition promote specifications.
+	//
+	//  Maximum number of specifications is 100.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.promote_control_ids
+	PromoteControlIDs []string `json:"promoteControlIDs,omitempty"`
+
 	// The specification for personalization spec.
+	//
+	//  Notice that if both
+	//  [ServingConfig.personalization_spec][google.cloud.discoveryengine.v1beta.ServingConfig.personalization_spec]
+	//  and
+	//  [SearchRequest.personalization_spec][google.cloud.discoveryengine.v1beta.SearchRequest.personalization_spec]
+	//  are set,
+	//  [SearchRequest.personalization_spec][google.cloud.discoveryengine.v1beta.SearchRequest.personalization_spec]
+	//  overrides
+	//  [ServingConfig.personalization_spec][google.cloud.discoveryengine.v1beta.ServingConfig.personalization_spec].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.personalization_spec
 	PersonalizationSpec *SearchRequest_PersonalizationSpec `json:"personalizationSpec,omitempty"`
 
-	// The GenericConfig of the serving configuration.
-	GenericConfig *ServingConfig_GenericConfig `json:"genericConfig,omitempty"`
-
-	// The MediaConfig of the serving configuration.
-	MediaConfig *ServingConfig_MediaConfig `json:"mediaConfig,omitempty"`
+	// Optional. The specification for answer generation.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.answer_generation_spec
+	AnswerGenerationSpec *AnswerGenerationSpec `json:"answerGenerationSpec,omitempty"`
 }
 
 // DiscoveryEngineServingConfigStatus defines the config connector machine state of DiscoveryEngineServingConfig
@@ -115,9 +251,11 @@ type DiscoveryEngineServingConfigStatus struct {
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1beta.ServingConfig
 type DiscoveryEngineServingConfigObservedState struct {
 	// Output only. ServingConfig created timestamp.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. ServingConfig updated timestamp.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.ServingConfig.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
@@ -127,7 +265,6 @@ type DiscoveryEngineServingConfigObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

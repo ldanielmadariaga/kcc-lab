@@ -22,24 +22,18 @@ import (
 
 var BackupDRBackupVaultGVK = GroupVersion.WithKind("BackupDRBackupVault")
 
-type Parent struct {
-	// +required
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
-
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
-	// Immutable.
-	// +required
-	Location string `json:"location"`
-}
-
 // BackupDRBackupVaultSpec defines the desired state of BackupDRBackupVault
 // +kcc:spec:proto=google.cloud.backupdr.v1.BackupVault
 type BackupDRBackupVaultSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/backupVaults/{backupvault}
+	Location *string `json:"location"`
+
 	// The BackupDRBackupVault name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	Parent `json:",inline"`
-
 	// Optional. The description of the BackupVault instance (2048 characters or
 	//  less).
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupVault.description
@@ -48,13 +42,18 @@ type BackupDRBackupVaultSpec struct {
 	// Optional. Resource labels to represent user provided metadata.
 	//  No labels currently defined:
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupVault.labels
-	// Labels map[string]string `json:"labels,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// Required. The default and minimum enforced retention for each backup within
 	//  the backup vault.  The enforced retention for each backup can be extended.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupVault.backup_minimum_enforced_retention_duration
 	// +required
 	BackupMinimumEnforcedRetentionDuration *string `json:"backupMinimumEnforcedRetentionDuration,omitempty"`
+
+	// Optional. Server specified ETag for the backup vault resource to
+	//  prevent simultaneous updates from overwiting each other.
+	// +kcc:proto:field=google.cloud.backupdr.v1.BackupVault.etag
+	Etag *string `json:"etag,omitempty"`
 
 	// Optional. Time after which the BackupVault resource is locked.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupVault.effective_time
@@ -72,11 +71,6 @@ type BackupDRBackupVaultSpec struct {
 	//  Default value is WITHIN_ORGANIZATION if not provided during creation.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupVault.access_restriction
 	AccessRestriction *string `json:"accessRestriction,omitempty"`
-
-	// Optional. If set to true, allows deletion of a backup vault even when it contains inactive data sources.
-	// This overrides the default restriction that prevents deletion of backup vaults with any
-	// data sources, even if those data sources are inactive.
-	IgnoreInactiveDatasources *bool `json:"ignoreInactiveDatasources,omitempty"`
 }
 
 // BackupDRBackupVaultStatus defines the config connector machine state of BackupDRBackupVault
@@ -98,15 +92,6 @@ type BackupDRBackupVaultStatus struct {
 // BackupDRBackupVaultObservedState is the state of the BackupDRBackupVault resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.BackupVault
 type BackupDRBackupVaultObservedState struct {
-	// Output only. Identifier. Name of the backup vault to create. It must have
-	//  the
-	//  format`"projects/{project}/locations/{location}/backupVaults/{backupvault}"`.
-	//  `{backupvault}` cannot be changed after creation. It must be between 3-63
-	//  characters long and must be unique within the project and location.
-	// +kcc:proto:field=google.cloud.backupdr.v1.BackupVault.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. The time when the instance was created.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupVault.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -140,11 +125,7 @@ type BackupDRBackupVaultObservedState struct {
 
 	// Output only. Immutable after resource creation until resource deletion.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupVault.uid
-	UID *string `json:"uid,omitempty"`
-
-	// Output only. A tag that confirms the content of the BackupVault resource.
-	// +kcc:proto:field=google.cloud.backupdr.v1.BackupVault.etag
-	Etag *string `json:"etag,omitempty"`
+	Uid *string `json:"uid,omitempty"`
 }
 
 // +genclient
@@ -153,7 +134,6 @@ type BackupDRBackupVaultObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -161,7 +141,6 @@ type BackupDRBackupVaultObservedState struct {
 
 // BackupDRBackupVault is the Schema for the BackupDRBackupVault API
 // +k8s:openapi-gen=true
-// +kubebuilder:storageversion
 type BackupDRBackupVault struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -24,11 +25,15 @@ var VMwareEnginePrivateCloudGVK = GroupVersion.WithKind("VMwareEnginePrivateClou
 // VMwareEnginePrivateCloudSpec defines the desired state of VMwareEnginePrivateCloud
 // +kcc:spec:proto=google.cloud.vmwareengine.v1.PrivateCloud
 type VMwareEnginePrivateCloudSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/privateClouds/{private_cloud}
+	Location *string `json:"location"`
+
 	// The VMwareEnginePrivateCloud name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	Parent `json:",inline"`
-
 	// Required. Network configuration of the private cloud.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.network_config
 	// +required
@@ -72,15 +77,6 @@ type VMwareEnginePrivateCloudStatus struct {
 // VMwareEnginePrivateCloudObservedState is the state of the VMwareEnginePrivateCloud resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.vmwareengine.v1.PrivateCloud
 type VMwareEnginePrivateCloudObservedState struct {
-	// Output only. The resource name of this private cloud.
-	//  Resource names are schemeless URIs that follow the conventions in
-	//  https://cloud.google.com/apis/design/resource_names.
-	//  For example:
-	//  `projects/my-project/locations/us-central1-a/privateClouds/my-cloud`
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. Creation time of this resource.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -102,25 +98,25 @@ type VMwareEnginePrivateCloudObservedState struct {
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.state
 	State *string `json:"state,omitempty"`
 
-	// Network configuration of the private cloud.
+	// Required. Network configuration of the private cloud.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.network_config
 	NetworkConfig *NetworkConfigObservedState `json:"networkConfig,omitempty"`
 
 	// Output only. HCX appliance.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.hcx
-	HCX *Hcx `json:"hcx,omitempty"`
+	Hcx *HcxObservedState `json:"hcx,omitempty"`
 
 	// Output only. NSX appliance.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.nsx
-	NSX *Nsx `json:"nsx,omitempty"`
+	Nsx *NsxObservedState `json:"nsx,omitempty"`
 
 	// Output only. Vcenter appliance.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.vcenter
-	Vcenter *Vcenter `json:"vcenter,omitempty"`
+	Vcenter *VcenterObservedState `json:"vcenter,omitempty"`
 
 	// Output only. System-generated unique identifier for the resource.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.uid
-	UID *string `json:"uid,omitempty"`
+	Uid *string `json:"uid,omitempty"`
 }
 
 // +genclient
@@ -155,167 +151,4 @@ type VMwareEnginePrivateCloudList struct {
 
 func init() {
 	SchemeBuilder.Register(&VMwareEnginePrivateCloud{}, &VMwareEnginePrivateCloudList{})
-}
-
-// +kcc:proto=google.cloud.vmwareengine.v1.PrivateCloud.ManagementCluster
-type PrivateCloud_ManagementCluster struct {
-	// Required. The user-provided identifier of the new `Cluster`.
-	//  The identifier must meet the following requirements:
-	//
-	//  * Only contains 1-63 alphanumeric characters and hyphens
-	//  * Begins with an alphabetical character
-	//  * Ends with a non-hyphen character
-	//  * Not formatted as a UUID
-	//  * Complies with [RFC
-	//  1034](https://datatracker.ietf.org/doc/html/rfc1034) (section 3.5)
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.ManagementCluster.cluster_id
-	// +required
-	ClusterID *string `json:"clusterID,omitempty"`
-
-	// Required. A list of cluster node types in this cluster.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.ManagementCluster.node_type_configs
-	// +required
-	NodeTypeConfigs []*NodeTypeConfig `json:"nodeTypeConfigs,omitempty"`
-
-	// Optional. Configuration of a stretched cluster. Required for STRETCHED
-	//  private clouds.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.PrivateCloud.ManagementCluster.stretched_cluster_config
-	// NOTYET: this field is not yet supported
-	// StretchedClusterConfig *StretchedClusterConfig `json:"stretchedClusterConfig,omitempty"`
-}
-
-// +kcc:proto=google.cloud.vmwareengine.v1.NodeTypeConfig
-type NodeTypeConfig struct {
-	// Required. The type of the node.
-	// The canonical identifier of the node type (corresponds to the NodeType). For example: standard-72.
-	// +required
-	NodeTypeID *string `json:"nodeTypeID,omitempty"`
-
-	// Required. The number of nodes of this type in the cluster
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.NodeTypeConfig.node_count
-	// +required
-	NodeCount *int32 `json:"nodeCount,omitempty"`
-
-	// Optional. Customized number of cores available to each node of the type.
-	//  This number must always be one of `nodeType.availableCustomCoreCounts`.
-	//  If zero is provided max value from `nodeType.availableCustomCoreCounts`
-	//  will be used.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.NodeTypeConfig.custom_core_count
-	CustomCoreCount *int32 `json:"customCoreCount,omitempty"`
-}
-
-// +kcc:proto=google.cloud.vmwareengine.v1.Hcx
-type Hcx struct {
-	// Internal IP address of the appliance.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.Hcx.internal_ip
-	InternalIP *string `json:"internalIP,omitempty"`
-
-	// Version of the appliance.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.Hcx.version
-	Version *string `json:"version,omitempty"`
-
-	// Fully qualified domain name of the appliance.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.Hcx.fqdn
-	FQDN *string `json:"fqdn,omitempty"`
-
-	// Output only. The state of the appliance.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.Hcx.state
-	State *string `json:"state,omitempty"`
-}
-
-// +kcc:proto=google.cloud.vmwareengine.v1.Nsx
-type Nsx struct {
-	// Internal IP address of the appliance.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.Nsx.internal_ip
-	InternalIP *string `json:"internalIP,omitempty"`
-
-	// Version of the appliance.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.Nsx.version
-	Version *string `json:"version,omitempty"`
-
-	// Fully qualified domain name of the appliance.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.Nsx.fqdn
-	FQDN *string `json:"fqdn,omitempty"`
-
-	// Output only. The state of the appliance.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.Nsx.state
-	State *string `json:"state,omitempty"`
-}
-
-// +kcc:proto=google.cloud.vmwareengine.v1.Vcenter
-type Vcenter struct {
-	// Internal IP address of the appliance.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.Vcenter.internal_ip
-	InternalIP *string `json:"internalIP,omitempty"`
-
-	// Version of the appliance.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.Vcenter.version
-	Version *string `json:"version,omitempty"`
-
-	// Fully qualified domain name of the appliance.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.Vcenter.fqdn
-	FQDN *string `json:"fqdn,omitempty"`
-
-	// Output only. The state of the appliance.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.Vcenter.state
-	State *string `json:"state,omitempty"`
-}
-
-// +kcc:proto=google.cloud.vmwareengine.v1.NetworkConfig
-type NetworkConfig struct {
-	// Required. Management CIDR used by VMware management appliances.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkConfig.management_cidr
-	// +required
-	ManagementCIDR *string `json:"managementCIDR,omitempty"`
-
-	// Optional. The name of the VMware Engine network attached to the private cloud.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkConfig.vmware_engine_network
-	VMwareEngineNetworkRef *VmwareEngineNetworkRef `json:"vmwareEngineNetworkRef,omitempty"`
-}
-
-// +kcc:observedstate:proto=google.cloud.vmwareengine.v1.NetworkConfig
-type NetworkConfigObservedState struct {
-	// Output only. The canonical name of the VMware Engine network in the form:
-	//  `projects/{project_number}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkConfig.vmware_engine_network_canonical
-	VMwareEngineNetworkCanonical *string `json:"vmwareEngineNetworkCanonical,omitempty"`
-
-	// Output only. The IP address layout version of the management IP address
-	//  range. Possible versions include:
-	//  * `managementIpAddressLayoutVersion=1`: Indicates the legacy IP address
-	//  layout used by some existing private cloudqs. This is no longer supported
-	//  for new private clouds as it does not support all features.
-	//  * `managementIpAddressLayoutVersion=2`: Indicates the latest IP address
-	//  layout used by all newly created private clouds. This version supports all
-	//  current features.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkConfig.management_ip_address_layout_version
-	ManagementIPAddressLayoutVersion *int32 `json:"managementIPAddressLayoutVersion,omitempty"`
-
-	// Output only. DNS Server IP of the Private Cloud.
-	//  All DNS queries can be forwarded to this address for name resolution of
-	//  Private Cloud's management entities like vCenter, NSX-T Manager and
-	//  ESXi hosts.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkConfig.dns_server_ip
-	DNSServerIP *string `json:"dnsServerIP,omitempty"`
-}
-
-// +kcc:proto=google.cloud.vmwareengine.v1.StretchedClusterConfig
-type StretchedClusterConfig struct {
-	// Required. Zone that will remain operational when connection between the two
-	//  zones is lost. Specify the resource name of a zone that belongs to the
-	//  region of the private cloud. For example:
-	//  `projects/{project}/locations/europe-west3-a` where `{project}` can either
-	//  be a project number or a project ID.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.StretchedClusterConfig.preferred_location
-	// +required
-	PreferredLocation *string `json:"preferredLocation,omitempty"`
-
-	// Required. Additional zone for a higher level of availability and load
-	//  balancing. Specify the resource name of a zone that belongs to the region
-	//  of the private cloud. For example:
-	//  `projects/{project}/locations/europe-west3-b` where `{project}` can either
-	//  be a project number or a project ID.
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.StretchedClusterConfig.secondary_location
-	// +required
-	SecondaryLocation *string `json:"secondaryLocation,omitempty"`
 }

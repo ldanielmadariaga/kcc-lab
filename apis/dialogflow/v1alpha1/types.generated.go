@@ -57,6 +57,7 @@ type FewShotExample struct {
 
 	// Required. Example output of the model.
 	// +kcc:proto:field=google.cloud.dialogflow.v2.FewShotExample.output
+	// +required
 	Output *GeneratorSuggestion `json:"output,omitempty"`
 }
 
@@ -71,17 +72,21 @@ type FreeFormContext struct {
 type FreeFormSuggestion struct {
 	// Required. Free form suggestion.
 	// +kcc:proto:field=google.cloud.dialogflow.v2.FreeFormSuggestion.response
+	// +required
 	Response *string `json:"response,omitempty"`
 }
 
+/* unreachable type GCSSources
 // +kcc:proto=google.cloud.dialogflow.v2.GcsSources
 type GCSSources struct {
 	// Required. Google Cloud Storage URIs for the inputs. A URI is of the form:
 	//  `gs://bucket/object-prefix-or-name`
 	//  Whether a prefix or name is used depends on the use case.
 	// +kcc:proto:field=google.cloud.dialogflow.v2.GcsSources.uris
-	Uris []string `json:"uris,omitempty"`
+	// +required
+	URIs []string `json:"uris,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.dialogflow.v2.GeneratorSuggestion
 type GeneratorSuggestion struct {
@@ -130,6 +135,7 @@ type InferenceParameter struct {
 	TopP *float64 `json:"topP,omitempty"`
 }
 
+/* unreachable type InputConfig
 // +kcc:proto=google.cloud.dialogflow.v2.InputConfig
 type InputConfig struct {
 	// The Cloud Storage URI has the form gs://<Google Cloud Storage bucket
@@ -138,6 +144,7 @@ type InputConfig struct {
 	// +kcc:proto:field=google.cloud.dialogflow.v2.InputConfig.gcs_source
 	GCSSource *GCSSources `json:"gcsSource,omitempty"`
 }
+*/
 
 // +kcc:proto=google.cloud.dialogflow.v2.MessageEntry
 type MessageEntry struct {
@@ -210,6 +217,7 @@ type SummarizationSectionList struct {
 type SummarySuggestion struct {
 	// Required. All the parts of generated summary.
 	// +kcc:proto:field=google.cloud.dialogflow.v2.SummarySuggestion.summary_sections
+	// +required
 	SummarySections []SummarySuggestion_SummarySection `json:"summarySections,omitempty"`
 }
 
@@ -217,9 +225,29 @@ type SummarySuggestion struct {
 type SummarySuggestion_SummarySection struct {
 	// Required. Name of the section.
 	// +kcc:proto:field=google.cloud.dialogflow.v2.SummarySuggestion.SummarySection.section
+	// +required
 	Section *string `json:"section,omitempty"`
 
 	// Required. Summary text for the section.
 	// +kcc:proto:field=google.cloud.dialogflow.v2.SummarySuggestion.SummarySection.summary
+	// +required
 	Summary *string `json:"summary,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.dialogflow.v2.GcsSources
+type GCSSourcesObservedState struct {
+	// Required. Google Cloud Storage URIs for the inputs. A URI is of the form:
+	//  `gs://bucket/object-prefix-or-name`
+	//  Whether a prefix or name is used depends on the use case.
+	// +kcc:proto:field=google.cloud.dialogflow.v2.GcsSources.uris
+	Uris []string `json:"uris,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.dialogflow.v2.InputConfig
+type InputConfigObservedState struct {
+	// The Cloud Storage URI has the form gs://<Google Cloud Storage bucket
+	//  name>//agent*.json. Wildcards are allowed and will be expanded into all
+	//  matched JSON files, which will be read as one conversation per file.
+	// +kcc:proto:field=google.cloud.dialogflow.v2.InputConfig.gcs_source
+	GCSSource *GCSSourcesObservedState `json:"gcsSource,omitempty"`
 }

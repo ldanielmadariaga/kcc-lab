@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: dialogflowknowledgebases.dialogflow.cnrm.cloud.google.com
 spec:
@@ -74,9 +73,6 @@ spec:
                   KnowledgeBase is created/updated, expect this to be present for
                   non en-us languages. When unspecified, the default language code
                   en-us applies.
-                type: string
-              location:
-                description: The location of this resource.
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
@@ -163,12 +159,6 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
-                properties:
-                  name:
-                    description: 'The knowledge base resource name. The name must
-                      be empty when creating a knowledge base. Format: `projects/<Project
-                      ID>/locations/<Location ID>/knowledgeBases/<Knowledge Base ID>`.'
-                    type: string
                 type: object
             type: object
         required:

@@ -1,0 +1,15 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=ConfigDeliveryFleetPackage group=configdelivery.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=ConfigDeliveryFleetPackage group=configdelivery.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/fleetPackages/{fleet_package}; confirm the resource is regional and that this is the name for it)
+kind=ConfigDeliveryFleetPackage group=configdelivery.cnrm.cloud.google.com: field ".spec.resourceBundleSelector.cloudBuildRepository.name" reason=possible-reference-by-description
+kind=ConfigDeliveryFleetPackage group=configdelivery.cnrm.cloud.google.com: field ".spec.resourceBundleSelector.cloudBuildRepository.serviceAccount" reason=possible-reference-by-description
+kind=ConfigDeliveryFleetPackage group=configdelivery.cnrm.cloud.google.com: field ".spec.resourceBundleSelector.resourceBundle.name" reason=possible-reference-by-description
+kind=ConfigDeliveryFleetPackage group=configdelivery.cnrm.cloud.google.com: field ".spec.target.fleet.project" reason=possible-reference-by-description
+kind=ConfigDeliveryResourceBundle group=configdelivery.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=ConfigDeliveryResourceBundle group=configdelivery.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/resourceBundles/{resource_bundle}; confirm the resource is regional and that this is the name for it)

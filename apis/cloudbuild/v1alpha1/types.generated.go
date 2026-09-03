@@ -21,24 +21,25 @@
 
 package v1alpha1
 
-/* found existing non-generated go type "BitbucketCloudConfig", skipping
-
 // +kcc:proto=google.devtools.cloudbuild.v2.BitbucketCloudConfig
 type BitbucketCloudConfig struct {
 	// Required. The Bitbucket Cloud Workspace ID to be connected to Google Cloud
 	//  Platform.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.BitbucketCloudConfig.workspace
+	// +required
 	Workspace *string `json:"workspace,omitempty"`
 
 	// Required. SecretManager resource containing the webhook secret used to
-	//  verify webhook events, formatted as `projects/* /secrets/* /versions/*`.
+	//  verify webhook events, formatted as `projects/*/secrets/*/versions/*`.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.BitbucketCloudConfig.webhook_secret_secret_version
+	// +required
 	WebhookSecretSecretVersion *string `json:"webhookSecretSecretVersion,omitempty"`
 
 	// Required. An access token with the `repository` access. It can be either a
 	//  workspace, project or repository access token. It's recommended to use a
 	//  system account to generate the credentials.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.BitbucketCloudConfig.read_authorizer_credential
+	// +required
 	ReadAuthorizerCredential *UserCredential `json:"readAuthorizerCredential,omitempty"`
 
 	// Required. An access token with the `webhook`, `repository`,
@@ -46,31 +47,33 @@ type BitbucketCloudConfig struct {
 	//  workspace, project or repository access token. It's recommended to use a
 	//  system account to generate these credentials.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.BitbucketCloudConfig.authorizer_credential
+	// +required
 	AuthorizerCredential *UserCredential `json:"authorizerCredential,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "BitbucketDataCenterConfig", skipping
 
 // +kcc:proto=google.devtools.cloudbuild.v2.BitbucketDataCenterConfig
 type BitbucketDataCenterConfig struct {
 	// Required. The URI of the Bitbucket Data Center instance or cluster this
 	//  connection is for.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.BitbucketDataCenterConfig.host_uri
+	// +required
 	HostURI *string `json:"hostURI,omitempty"`
 
 	// Required. Immutable. SecretManager resource containing the webhook secret
 	//  used to verify webhook events, formatted as
-	//  `projects/* /secrets/* /versions/*`.
+	//  `projects/*/secrets/*/versions/*`.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.BitbucketDataCenterConfig.webhook_secret_secret_version
+	// +required
 	WebhookSecretSecretVersion *string `json:"webhookSecretSecretVersion,omitempty"`
 
 	// Required. A http access token with the `REPO_READ` access.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.BitbucketDataCenterConfig.read_authorizer_credential
+	// +required
 	ReadAuthorizerCredential *UserCredential `json:"readAuthorizerCredential,omitempty"`
 
 	// Required. A http access token with the `REPO_ADMIN` scope access.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.BitbucketDataCenterConfig.authorizer_credential
+	// +required
 	AuthorizerCredential *UserCredential `json:"authorizerCredential,omitempty"`
 
 	// Optional. Configuration for using Service Directory to privately connect to
@@ -85,10 +88,8 @@ type BitbucketDataCenterConfig struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.BitbucketDataCenterConfig.ssl_ca
 	SSLCA *string `json:"sslCA,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.devtools.cloudbuild.v2.Connection", skipping
-
+/* unreachable type Connection
 // +kcc:proto=google.devtools.cloudbuild.v2.Connection
 type Connection struct {
 	// Immutable. The resource name of the connection, in the format
@@ -148,16 +149,16 @@ type GitHubConfig struct {
 	AppInstallationID *int64 `json:"appInstallationID,omitempty"`
 }
 
-/* found existing non-generated go type "GitHubEnterpriseConfig", skipping
-
 // +kcc:proto=google.devtools.cloudbuild.v2.GitHubEnterpriseConfig
 type GitHubEnterpriseConfig struct {
 	// Required. The URI of the GitHub Enterprise host this connection is for.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.GitHubEnterpriseConfig.host_uri
+	// +required
 	HostURI *string `json:"hostURI,omitempty"`
 
 	// Required. API Key used for authentication of webhook events.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.GitHubEnterpriseConfig.api_key
+	// +required
 	APIKey *string `json:"apiKey,omitempty"`
 
 	// Id of the GitHub App created from the manifest.
@@ -169,12 +170,12 @@ type GitHubEnterpriseConfig struct {
 	AppSlug *string `json:"appSlug,omitempty"`
 
 	// SecretManager resource containing the private key of the GitHub App,
-	//  formatted as `projects/* /secrets/* /versions/*`.
+	//  formatted as `projects/*/secrets/*/versions/*`.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.GitHubEnterpriseConfig.private_key_secret_version
 	PrivateKeySecretVersion *string `json:"privateKeySecretVersion,omitempty"`
 
 	// SecretManager resource containing the webhook secret of the GitHub App,
-	//  formatted as `projects/* /secrets/* /versions/*`.
+	//  formatted as `projects/*/secrets/*/versions/*`.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.GitHubEnterpriseConfig.webhook_secret_secret_version
 	WebhookSecretSecretVersion *string `json:"webhookSecretSecretVersion,omitempty"`
 
@@ -194,9 +195,6 @@ type GitHubEnterpriseConfig struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.GitHubEnterpriseConfig.ssl_ca
 	SSLCA *string `json:"sslCA,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "GitLabConfig", skipping
 
 // +kcc:proto=google.devtools.cloudbuild.v2.GitLabConfig
 type GitLabConfig struct {
@@ -207,17 +205,20 @@ type GitLabConfig struct {
 
 	// Required. Immutable. SecretManager resource containing the webhook secret
 	//  of a GitLab Enterprise project, formatted as
-	//  `projects/* /secrets/* /versions/*`.
+	//  `projects/*/secrets/*/versions/*`.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.GitLabConfig.webhook_secret_secret_version
+	// +required
 	WebhookSecretSecretVersion *string `json:"webhookSecretSecretVersion,omitempty"`
 
 	// Required. A GitLab personal access token with the minimum `read_api` scope
 	//  access.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.GitLabConfig.read_authorizer_credential
+	// +required
 	ReadAuthorizerCredential *UserCredential `json:"readAuthorizerCredential,omitempty"`
 
 	// Required. A GitLab personal access token with the `api` scope access.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.GitLabConfig.authorizer_credential
+	// +required
 	AuthorizerCredential *UserCredential `json:"authorizerCredential,omitempty"`
 
 	// Configuration for using Service Directory to privately connect to a GitLab
@@ -232,7 +233,6 @@ type GitLabConfig struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.GitLabConfig.ssl_ca
 	SSLCA *string `json:"sslCA,omitempty"`
 }
-*/
 
 /* unreachable type InstallationState
 // +kcc:proto=google.devtools.cloudbuild.v2.InstallationState
@@ -240,18 +240,13 @@ type InstallationState struct {
 }
 */
 
-/* found existing non-generated go type "OAuthCredential", skipping
-
 // +kcc:proto=google.devtools.cloudbuild.v2.OAuthCredential
 type OAuthCredential struct {
 	// A SecretManager resource containing the OAuth token that authorizes
-	//  the Cloud Build connection. Format: `projects/* /secrets/* /versions/*`.
+	//  the Cloud Build connection. Format: `projects/*/secrets/*/versions/*`.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.OAuthCredential.oauth_token_secret_version
 	OauthTokenSecretVersion *string `json:"oauthTokenSecretVersion,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "ServiceDirectoryConfig", skipping
 
 // +kcc:proto=google.devtools.cloudbuild.v2.ServiceDirectoryConfig
 type ServiceDirectoryConfig struct {
@@ -259,23 +254,19 @@ type ServiceDirectoryConfig struct {
 	//  Format:
 	//  projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.ServiceDirectoryConfig.service
+	// +required
 	Service *string `json:"service,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "UserCredential", skipping
 
 // +kcc:proto=google.devtools.cloudbuild.v2.UserCredential
 type UserCredential struct {
 	// Required. A SecretManager resource containing the user token that
 	//  authorizes the Cloud Build connection. Format:
-	//  `projects/* /secrets/* /versions/*`.
+	//  `projects/*/secrets/*/versions/*`.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.UserCredential.user_token_secret_version
+	// +required
 	UserTokenSecretVersion *string `json:"userTokenSecretVersion,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "BitbucketCloudConfigObservedState", skipping
 
 // +kcc:observedstate:proto=google.devtools.cloudbuild.v2.BitbucketCloudConfig
 type BitbucketCloudConfigObservedState struct {
@@ -292,9 +283,6 @@ type BitbucketCloudConfigObservedState struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.BitbucketCloudConfig.authorizer_credential
 	AuthorizerCredential *UserCredentialObservedState `json:"authorizerCredential,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "BitbucketDataCenterConfigObservedState", skipping
 
 // +kcc:observedstate:proto=google.devtools.cloudbuild.v2.BitbucketDataCenterConfig
 type BitbucketDataCenterConfigObservedState struct {
@@ -311,10 +299,8 @@ type BitbucketDataCenterConfigObservedState struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.BitbucketDataCenterConfig.server_version
 	ServerVersion *string `json:"serverVersion,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.devtools.cloudbuild.v2.Connection", skipping
-
+/* unreachable type ConnectionObservedState
 // +kcc:observedstate:proto=google.devtools.cloudbuild.v2.Connection
 type ConnectionObservedState struct {
 	// Output only. Server assigned timestamp for when the connection was created.
@@ -366,17 +352,12 @@ type GitHubConfigObservedState struct {
 	AuthorizerCredential *OAuthCredentialObservedState `json:"authorizerCredential,omitempty"`
 }
 
-/* found existing non-generated go type "GitHubEnterpriseConfigObservedState", skipping
-
 // +kcc:observedstate:proto=google.devtools.cloudbuild.v2.GitHubEnterpriseConfig
 type GitHubEnterpriseConfigObservedState struct {
 	// Output only. GitHub Enterprise version installed at the host_uri.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.GitHubEnterpriseConfig.server_version
 	ServerVersion *string `json:"serverVersion,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "GitLabConfigObservedState", skipping
 
 // +kcc:observedstate:proto=google.devtools.cloudbuild.v2.GitLabConfig
 type GitLabConfigObservedState struct {
@@ -394,7 +375,6 @@ type GitLabConfigObservedState struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.GitLabConfig.server_version
 	ServerVersion *string `json:"serverVersion,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.devtools.cloudbuild.v2.InstallationState
 type InstallationStateObservedState struct {
@@ -413,17 +393,12 @@ type InstallationStateObservedState struct {
 	ActionURI *string `json:"actionURI,omitempty"`
 }
 
-/* found existing non-generated go type "OAuthCredentialObservedState", skipping
-
 // +kcc:observedstate:proto=google.devtools.cloudbuild.v2.OAuthCredential
 type OAuthCredentialObservedState struct {
 	// Output only. The username associated to this token.
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.OAuthCredential.username
 	Username *string `json:"username,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "UserCredentialObservedState", skipping
 
 // +kcc:observedstate:proto=google.devtools.cloudbuild.v2.UserCredential
 type UserCredentialObservedState struct {
@@ -431,4 +406,3 @@ type UserCredentialObservedState struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v2.UserCredential.username
 	Username *string `json:"username,omitempty"`
 }
-*/

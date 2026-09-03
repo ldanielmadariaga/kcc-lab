@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: sqladminbackups.sqladmin.cnrm.cloud.google.com
 spec:
@@ -66,71 +65,66 @@ spec:
                 description: Specifies the kind of backup, PHYSICAL or DEFAULT_SNAPSHOT.
                 type: string
               description:
-                description: The description of this backup, only applicable to on-demand
+                description: The description of this run, only applicable to on-demand
                   backups.
                 type: string
               diskEncryptionConfiguration:
                 description: Encryption configuration specific to a backup.
                 properties:
-                  kmsKeyRef:
-                    description: KMS key used to encrypt the backup.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: A reference to an externally managed KMSCryptoKey.
-                          Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
-                        type: string
-                      name:
-                        description: The `name` of a `KMSCryptoKey` resource.
-                        type: string
-                      namespace:
-                        description: The `namespace` of a `KMSCryptoKey` resource.
-                        type: string
-                    type: object
+                  kind:
+                    description: This is always `sql#diskEncryptionConfiguration`.
+                    type: string
+                  kmsKeyName:
+                    description: Resource name of KMS key for disk encryption
+                    type: string
                 type: object
-              instanceRef:
-                description: The SQLInstance that this backup belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
+              diskEncryptionStatus:
+                description: Encryption status specific to a backup.
                 properties:
-                  external:
-                    description: The SQLInstance selfLink, when not managed by Config
-                      Connector.
+                  kind:
+                    description: This is always `sql#diskEncryptionStatus`.
                     type: string
-                  name:
-                    description: The `name` field of a `SQLInstance` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `SQLInstance` resource.
+                  kmsKeyVersionName:
+                    description: KMS key version used to encrypt the Cloud SQL instance
+                      resource
                     type: string
                 type: object
+              endTime:
+                description: The time the backup operation completed in UTC timezone
+                  in [RFC 3339](https://tools.ietf.org/html/rfc3339) format, for example
+                  `2012-11-15T16:19:00.094Z`.
+                type: string
+              enqueuedTime:
+                description: The time the run was enqueued in UTC timezone in [RFC
+                  3339](https://tools.ietf.org/html/rfc3339) format, for example `2012-11-15T16:19:00.094Z`.
+                type: string
+              error:
+                description: Information about why the backup operation failed. This
+                  is only present if the run has the FAILED status.
+                properties:
+                  code:
+                    description: Identifies the specific error that occurred.
+                    type: string
+                  kind:
+                    description: This is always `sql#operationError`.
+                    type: string
+                  message:
+                    description: Additional information about the error encountered.
+                    type: string
+                type: object
+              id:
+                description: The identifier for this backup run. Unique only for a
+                  specific Cloud SQL instance.
+                format: int64
+                type: integer
+              instance:
+                description: Name of the database instance.
+                type: string
+              kind:
+                description: This is always `sql#backupRun`.
+                type: string
               location:
-                description: The location of this resource.
+                description: Location of the backups.
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
@@ -165,12 +159,35 @@ spec:
                     type: string
                 type: object
               resourceID:
-                description: The SQLAdminBackup name (ID). If not given, the metadata.name
+                description: The SQLAdminBackup name. If not given, the metadata.name
                   will be used.
                 type: string
+              selfLink:
+                description: The URI of this resource.
+                type: string
+              startTime:
+                description: The time the backup operation actually started in UTC
+                  timezone in [RFC 3339](https://tools.ietf.org/html/rfc3339) format,
+                  for example `2012-11-15T16:19:00.094Z`.
+                type: string
+              status:
+                description: The status of this run.
+                type: string
+              timeZone:
+                description: Backup time zone to prevent restores to an instance with
+                  a different time zone. Now relevant only for SQL Server.
+                type: string
+              type:
+                description: The type of this run; can be either "AUTOMATED" or "ON_DEMAND"
+                  or "FINAL". This field defaults to "ON_DEMAND" and is ignored, when
+                  specified for insert requests.
+                type: string
+              windowStartTime:
+                description: The start time of the backup window during which this
+                  the backup was attempted in [RFC 3339](https://tools.ietf.org/html/rfc3339)
+                  format, for example `2012-11-15T16:19:00.094Z`.
+                type: string
             required:
-            - instanceRef
-            - location
             - projectRef
             type: object
           status:
@@ -219,63 +236,11 @@ spec:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
                 properties:
-                  diskEncryptionStatus:
-                    description: Encryption status specific to a backup.
-                    properties:
-                      kind:
-                        description: This is always `sql#diskEncryptionStatus`.
-                        type: string
-                      kmsKeyVersionName:
-                        description: KMS key version used to encrypt the Cloud SQL
-                          instance resource
-                        type: string
-                    type: object
-                  endTime:
-                    description: The time the backup operation completed in UTC timezone
-                      in RFC 3339 format.
-                    type: string
-                  enqueuedTime:
-                    description: The time the run was enqueued in UTC timezone in
-                      RFC 3339 format.
-                    type: string
-                  error:
-                    description: Information about why the backup operation failed.
-                      This is only present if the run has the FAILED status.
-                    properties:
-                      code:
-                        description: Identifies the specific error that occurred.
-                        type: string
-                      kind:
-                        description: This is always `sql#operationError`.
-                        type: string
-                      message:
-                        description: Additional information about the error encountered.
-                        type: string
-                    type: object
-                  id:
-                    description: The identifier for this backup run. Unique only for
-                      a specific Cloud SQL instance.
+                  maxChargeableBytes:
+                    description: Output only. The maximum chargeable bytes for the
+                      backup.
                     format: int64
                     type: integer
-                  startTime:
-                    description: The time the backup operation actually started in
-                      UTC timezone in RFC 3339 format.
-                    type: string
-                  status:
-                    description: The status of this run.
-                    type: string
-                  timeZone:
-                    description: Backup time zone to prevent restores to an instance
-                      with a different time zone. Now relevant only for SQL Server.
-                    type: string
-                  type:
-                    description: The type of this run; can be either "AUTOMATED" or
-                      "ON_DEMAND" or "FINAL".
-                    type: string
-                  windowStartTime:
-                    description: The start time of the backup window during which
-                      this the backup was attempted in RFC 3339 format.
-                    type: string
                 type: object
             type: object
         required:

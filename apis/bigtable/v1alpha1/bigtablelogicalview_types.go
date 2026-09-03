@@ -15,30 +15,39 @@
 package v1alpha1
 
 import (
-	v1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/bigtable/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var BigtableLogicalViewGVK = GroupVersion.WithKind("BigtableLogicalView")
 
-type BigtableLogicalViewParent struct {
-	// +required
-	InstanceRef *v1beta1.InstanceRef `json:"instanceRef,omitempty"`
-}
-
-// BigtableLogicalViewSpec defines a state of BigtableLogicalView
-// +kcc:proto=google.bigtable.admin.v2.LogicalView
+// BigtableLogicalViewSpec defines the desired state of BigtableLogicalView
+// +kcc:spec:proto=google.bigtable.admin.v2.LogicalView
 type BigtableLogicalViewSpec struct {
-	// The BigtableLogicalView ID. If not given, the metadata.name will be used.
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The Instance that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/instances/{instance}/logicalViews/{logical_view}
+	Instance *string `json:"instance,omitempty"`
+
+	// The BigtableLogicalView name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	BigtableLogicalViewParent `json:",inline"`
-
-	// The BigtableLogicalView's select query.
+	// Required. The logical view's select query.
+	// +kcc:proto:field=google.bigtable.admin.v2.LogicalView.query
+	// +required
 	Query *string `json:"query,omitempty"`
 
+	// Optional. The etag for this logical view.
+	//  This may be sent on update requests to ensure that the client has an
+	//  up-to-date value before proceeding. The server returns an ABORTED error on
+	//  a mismatched etag.
+	// +kcc:proto:field=google.bigtable.admin.v2.LogicalView.etag
+	Etag *string `json:"etag,omitempty"`
+
 	// Optional. Set to true to make the LogicalView protected against deletion.
+	// +kcc:proto:field=google.bigtable.admin.v2.LogicalView.deletion_protection
 	DeletionProtection *bool `json:"deletionProtection,omitempty"`
 }
 
@@ -54,18 +63,14 @@ type BigtableLogicalViewStatus struct {
 	// A unique specifier for the BigtableLogicalView resource in GCP.
 	ExternalRef *string `json:"externalRef,omitempty"`
 
-	// The unique name of the BigtableLogicalView. Values are of the form
-	//  `projects/{project}/instances/{instance}/logicalViews/{logicalViewID}`.
-	// +kcc:proto:field=google.bigtable.admin.v2.LogicalView.name
-	Name *string `json:"name,omitempty"`
-
 	// ObservedState is the state of the resource as most recently observed in GCP.
 	ObservedState *BigtableLogicalViewObservedState `json:"observedState,omitempty"`
 }
 
 // BigtableLogicalViewObservedState is the state of the BigtableLogicalView resource as most recently observed in GCP.
-// +kcc:proto=google.bigtable.admin.v2.LogicalView
-type BigtableLogicalViewObservedState struct{}
+// +kcc:observedstate:proto=google.bigtable.admin.v2.LogicalView
+type BigtableLogicalViewObservedState struct {
+}
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

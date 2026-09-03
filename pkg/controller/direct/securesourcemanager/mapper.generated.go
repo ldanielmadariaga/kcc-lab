@@ -25,7 +25,6 @@ package securesourcemanager
 
 import (
 	pb "cloud.google.com/go/securesourcemanager/apiv1/securesourcemanagerpb"
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/securesourcemanager/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
@@ -60,12 +59,10 @@ func Instance_PrivateConfig_FromProto(mapCtx *direct.MapContext, in *pb.Instance
 	}
 	out := &krm.Instance_PrivateConfig{}
 	out.IsPrivate = direct.LazyPtr(in.GetIsPrivate())
-	if in.GetCaPool() != "" {
-		out.CAPoolRef = &krmprivatecaprivatecarefs.PrivateCACAPoolRef{External: in.GetCaPool()}
-	}
+	out.CAPool = direct.LazyPtr(in.GetCaPool())
 	// MISSING: HTTPServiceAttachment
 	// MISSING: SSHServiceAttachment
-	// MISSING: PSCAllowedProjects
+	out.PSCAllowedProjects = in.PscAllowedProjects
 	return out
 }
 */
@@ -79,12 +76,10 @@ found existing non-generated mapping function "Instance_PrivateConfig_ToProto", 
 		}
 		out := &pb.Instance_PrivateConfig{}
 		out.IsPrivate = direct.ValueOf(in.IsPrivate)
-		if in.CAPoolRef != nil {
-			out.CaPool = in.CAPoolRef.External
-		}
+		out.CaPool = direct.ValueOf(in.CAPool)
 		// MISSING: HTTPServiceAttachment
 		// MISSING: SSHServiceAttachment
-		// MISSING: PSCAllowedProjects
+		out.PscAllowedProjects = in.PSCAllowedProjects
 		return out
 	}
 */
@@ -110,6 +105,22 @@ func Instance_PrivateConfigObservedState_ToProto(mapCtx *direct.MapContext, in *
 	out.HttpServiceAttachment = direct.ValueOf(in.HTTPServiceAttachment)
 	out.SshServiceAttachment = direct.ValueOf(in.SSHServiceAttachment)
 	// MISSING: PSCAllowedProjects
+	return out
+}
+func Instance_WorkforceIdentityFederationConfig_FromProto(mapCtx *direct.MapContext, in *pb.Instance_WorkforceIdentityFederationConfig) *krm.Instance_WorkforceIdentityFederationConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.Instance_WorkforceIdentityFederationConfig{}
+	out.Enabled = direct.LazyPtr(in.GetEnabled())
+	return out
+}
+func Instance_WorkforceIdentityFederationConfig_ToProto(mapCtx *direct.MapContext, in *krm.Instance_WorkforceIdentityFederationConfig) *pb.Instance_WorkforceIdentityFederationConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Instance_WorkforceIdentityFederationConfig{}
+	out.Enabled = direct.ValueOf(in.Enabled)
 	return out
 }
 func Repository_InitialConfig_FromProto(mapCtx *direct.MapContext, in *pb.Repository_InitialConfig) *krm.Repository_InitialConfig {
@@ -166,7 +177,6 @@ func SecureSourceManagerInstanceObservedState_FromProto(mapCtx *direct.MapContex
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.StateNote = direct.Enum_FromProto(mapCtx, in.GetStateNote())
 	out.HostConfig = Instance_HostConfigObservedState_FromProto(mapCtx, in.GetHostConfig())
-	// MISSING: WorkforceIdentityFederationConfig
 	return out
 }
 func SecureSourceManagerInstanceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.SecureSourceManagerInstanceObservedState) *pb.Instance {
@@ -181,7 +191,6 @@ func SecureSourceManagerInstanceObservedState_ToProto(mapCtx *direct.MapContext,
 	out.State = direct.Enum_ToProto[pb.Instance_State](mapCtx, in.State)
 	out.StateNote = direct.Enum_ToProto[pb.Instance_StateNote](mapCtx, in.StateNote)
 	out.HostConfig = Instance_HostConfigObservedState_ToProto(mapCtx, in.HostConfig)
-	// MISSING: WorkforceIdentityFederationConfig
 	return out
 }
 func SecureSourceManagerInstanceSpec_FromProto(mapCtx *direct.MapContext, in *pb.Instance) *krm.SecureSourceManagerInstanceSpec {
@@ -192,10 +201,8 @@ func SecureSourceManagerInstanceSpec_FromProto(mapCtx *direct.MapContext, in *pb
 	// MISSING: Name
 	out.Labels = in.Labels
 	out.PrivateConfig = Instance_PrivateConfig_FromProto(mapCtx, in.GetPrivateConfig())
-	if in.GetKmsKey() != "" {
-		out.KMSKeyRef = &refsv1beta1.KMSCryptoKeyRef{External: in.GetKmsKey()}
-	}
-	// MISSING: WorkforceIdentityFederationConfig
+	out.KMSKey = direct.LazyPtr(in.GetKmsKey())
+	out.WorkforceIdentityFederationConfig = Instance_WorkforceIdentityFederationConfig_FromProto(mapCtx, in.GetWorkforceIdentityFederationConfig())
 	return out
 }
 func SecureSourceManagerInstanceSpec_ToProto(mapCtx *direct.MapContext, in *krm.SecureSourceManagerInstanceSpec) *pb.Instance {
@@ -206,27 +213,51 @@ func SecureSourceManagerInstanceSpec_ToProto(mapCtx *direct.MapContext, in *krm.
 	// MISSING: Name
 	out.Labels = in.Labels
 	out.PrivateConfig = Instance_PrivateConfig_ToProto(mapCtx, in.PrivateConfig)
-	if in.KMSKeyRef != nil {
-		out.KmsKey = in.KMSKeyRef.External
-	}
-	// MISSING: WorkforceIdentityFederationConfig
+	out.KmsKey = direct.ValueOf(in.KMSKey)
+	out.WorkforceIdentityFederationConfig = Instance_WorkforceIdentityFederationConfig_ToProto(mapCtx, in.WorkforceIdentityFederationConfig)
 	return out
 }
+
+/* found existing non-generated mapping function "SecureSourceManagerRepositoryObservedState_FromProto", skipping
+func SecureSourceManagerRepositoryObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Repository) *krm.SecureSourceManagerRepositoryObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.SecureSourceManagerRepositoryObservedState{}
+	// MISSING: Name
+	out.Uid = direct.LazyPtr(in.GetUid())
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.Uris = Repository_UrIsObservedState_FromProto(mapCtx, in.GetUris())
+	return out
+}
+*/
+
+/*
+found existing non-generated mapping function "SecureSourceManagerRepositoryObservedState_ToProto", skipping
+
+	func SecureSourceManagerRepositoryObservedState_ToProto(mapCtx *direct.MapContext, in *krm.SecureSourceManagerRepositoryObservedState) *pb.Repository {
+		if in == nil {
+			return nil
+		}
+		out := &pb.Repository{}
+		// MISSING: Name
+		out.Uid = direct.ValueOf(in.Uid)
+		out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+		out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+		out.Uris = Repository_UrIsObservedState_ToProto(mapCtx, in.Uris)
+		return out
+	}
+*/
 func SecureSourceManagerRepositorySpec_FromProto(mapCtx *direct.MapContext, in *pb.Repository) *krm.SecureSourceManagerRepositorySpec {
 	if in == nil {
 		return nil
 	}
 	out := &krm.SecureSourceManagerRepositorySpec{}
 	// MISSING: Name
-	// MISSING: Description
-	if in.GetInstance() != "" {
-		out.InstanceRef = &krm.SecureSourceManagerInstanceRef{External: in.GetInstance()}
-	}
-	// MISSING: Uid
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Etag
-	// MISSING: Uris
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.Instance = direct.LazyPtr(in.GetInstance())
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.InitialConfig = Repository_InitialConfig_FromProto(mapCtx, in.GetInitialConfig())
 	return out
 }
@@ -236,15 +267,9 @@ func SecureSourceManagerRepositorySpec_ToProto(mapCtx *direct.MapContext, in *kr
 	}
 	out := &pb.Repository{}
 	// MISSING: Name
-	// MISSING: Description
-	if in.InstanceRef != nil {
-		out.Instance = in.InstanceRef.External
-	}
-	// MISSING: Uid
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Etag
-	// MISSING: Uris
+	out.Description = direct.ValueOf(in.Description)
+	out.Instance = direct.ValueOf(in.Instance)
+	out.Etag = direct.ValueOf(in.Etag)
 	out.InitialConfig = Repository_InitialConfig_ToProto(mapCtx, in.InitialConfig)
 	return out
 }

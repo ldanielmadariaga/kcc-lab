@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 package v1beta1
 
 import (
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,117 +25,138 @@ var AlloyDBInstanceGVK = GroupVersion.WithKind("AlloyDBInstance")
 // AlloyDBInstanceSpec defines the desired state of AlloyDBInstance
 // +kcc:spec:proto=google.cloud.alloydb.v1beta.Instance
 type AlloyDBInstanceSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The AlloyDBInstance cluster that this resource belongs to.
-	// +required
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/clusters/{cluster}/instances/{instance}
+	Location *string `json:"location,omitempty"`
+
+	// The Cluster that this resource belongs to.
+	// +kcc:guess=parent-ref target=ClusterRef pattern=projects/{project}/locations/{location}/clusters/{cluster}/instances/{instance}
 	ClusterRef *ClusterRef `json:"clusterRef,omitempty"`
 
-	// Optional. The instanceId of the resource. If not given, the metadata.name will be used.
+	// The AlloyDBInstance name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Annotations to allow client tools to store small amount
-	// of arbitrary data. This is distinct from labels.
-	Annotations map[string]string `json:"annotations,omitempty"`
-
-	// Availability type of an Instance. If empty, defaults to REGIONAL for primary instances.
-	//
-	// For read pools, availabilityType is always UNSPECIFIED. Instances in the
-	// read pools are evenly distributed across available zones within the region
-	// (i.e. read pools with more than one node will have a node in at least two zones).
-	// Possible values: ["AVAILABILITY_TYPE_UNSPECIFIED", "ZONAL", "REGIONAL"].
-	AvailabilityType *string `json:"availabilityType,omitempty"`
-
-	// Configuration for Managed Connection Pool (MCP).
-	ConnectionPoolConfig *Instance_ConnectionPoolConfig `json:"connectionPoolConfig,omitempty"`
-
-	// Database flags. Set at instance level. * They are copied
-	// from primary instance on read instance creation. * Read instances
-	// can set new or override existing flags that are relevant for reads,
-	// e.g. for enabling columnar cache on a read instance. Flags set on
-	// read instance may or may not be present on primary.
-	DatabaseFlags map[string]string `json:"databaseFlags,omitempty"`
-
-	// User-settable and human-readable display name for the
-	// Instance.
+	// User-settable and human-readable display name for the Instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
-	// The Compute Engine zone that the instance should serve
-	// from, per https://cloud.google.com/compute/docs/regions-zones This
-	// can ONLY be specified for ZONAL instances. If present for a REGIONAL
-	// instance, an error will be thrown. If this is absent for a ZONAL
-	// instance, instance is created in a random zone with available capacity.
-	GCEZone *string `json:"gceZone,omitempty"`
+	// Labels as key value pairs
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.labels
+	Labels map[string]string `json:"labels,omitempty"`
 
-	// Not recommended. We recommend that you use `instanceTypeRef` instead.
-	// The type of the instance. Possible values: [PRIMARY, READ_POOL, SECONDARY]
+	// Required. The type of the instance. Specified at creation time.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.instance_type
+	// +required
 	InstanceType *string `json:"instanceType,omitempty"`
 
-	// The type of instance.
-	// Possible values: ["PRIMARY", "READ_POOL", "SECONDARY"]
-	//
-	// For PRIMARY and SECONDARY instances, set the value to refer to the name of the associated cluster.
-	// This is recommended because the instance type of primary and secondary instances is tied to the cluster type of the associated cluster.
-	// If the secondary cluster is promoted to primary cluster, then the associated secondary instance also becomes primary instance.
-	// Example:
-	// instanceTypeRef:
-	//   name: clusterName
-	// For instances of type READ_POOL, set the value using external keyword.
-	// Example:
-	// instanceTypeRef:
-	//   external: READ_POOL
-	// If the instance type is SECONDARY, the delete instance operation does not delete the secondary instance but abandons it instead.
-	// Use deletionPolicy = "FORCE" in the associated secondary cluster and delete the cluster forcefully to delete the secondary cluster as well its associated secondary instance.
-	InstanceTypeRef *refs.AlloyDBClusterTypeRef `json:"instanceTypeRef,omitempty"`
-
 	// Configurations for the machines that host the underlying
-	// database engine.
+	//  database engine.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.machine_config
 	MachineConfig *Instance_MachineConfig `json:"machineConfig,omitempty"`
 
-	// Instance level network configuration.
-	NetworkConfig *Instance_InstanceNetworkConfig `json:"networkConfig,omitempty"`
+	// Availability type of an Instance.
+	//  If empty, defaults to REGIONAL for primary instances.
+	//  For read pools, availability_type is always UNSPECIFIED. Instances in the
+	//  read pools are evenly distributed across available zones within the region
+	//  (i.e. read pools with more than one node will have a node in at
+	//  least two zones).
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.availability_type
+	AvailabilityType *string `json:"availabilityType,omitempty"`
 
-	// Read pool specific config. If the instance type is READ_POOL,
-	// this configuration must be provided.
+	// The Compute Engine zone that the instance should serve from, per
+	//  https://cloud.google.com/compute/docs/regions-zones
+	//  This can ONLY be specified for ZONAL instances.
+	//  If present for a REGIONAL instance, an error will be thrown.
+	//  If this is absent for a ZONAL instance, instance is created in a random
+	//  zone with available capacity.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.gce_zone
+	GCEZone *string `json:"gceZone,omitempty"`
+
+	// Database flags. Set at the instance level.
+	//  They are copied from the primary instance on secondary instance creation.
+	//  Flags that have restrictions default to the value at primary
+	//  instance on read instances during creation. Read instances can set new
+	//  flags or override existing flags that are relevant for reads, for example,
+	//  for enabling columnar cache on a read instance. Flags set on read instance
+	//  might or might not be present on the primary instance.
+	//
+	//
+	//  This is a list of "key": "value" pairs.
+	//  "key": The name of the flag. These flags are passed at instance setup time,
+	//  so include both server options and system variables for Postgres. Flags are
+	//  specified with underscores, not hyphens.
+	//  "value": The value of the flag. Booleans are set to **on** for true
+	//  and **off** for false. This field must be omitted if the flag
+	//  doesn't take a value.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.database_flags
+	DatabaseFlags map[string]string `json:"databaseFlags,omitempty"`
+
+	// Configuration for query insights.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.query_insights_config
+	QueryInsightsConfig *Instance_QueryInsightsInstanceConfig `json:"queryInsightsConfig,omitempty"`
+
+	// Configuration for observability.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.observability_config
+	ObservabilityConfig *Instance_ObservabilityInstanceConfig `json:"observabilityConfig,omitempty"`
+
+	// Read pool instance configuration.
+	//  This is required if the value of instanceType is READ_POOL.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.read_pool_config
 	ReadPoolConfig *Instance_ReadPoolConfig `json:"readPoolConfig,omitempty"`
 
-	QueryInsightsInstanceConfig *Instance_QueryInsightsInstanceConfig `json:"queryInsightsConfig,omitempty"`
+	// For Resource freshness validation (https://google.aip.dev/154)
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.etag
+	Etag *string `json:"etag,omitempty"`
 
-	ObservabilityInstanceConfig *Instance_ObservabilityInstanceConfig `json:"observabilityConfig,omitempty"`
-}
+	// Annotations to allow client tools to store small amount of arbitrary data.
+	//  This is distinct from labels.
+	//  https://google.aip.dev/128
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.annotations
+	Annotations map[string]string `json:"annotations,omitempty"`
 
-// +kcc:proto=google.cloud.alloydb.v1beta.Instance.InstanceNetworkConfig
-type Instance_InstanceNetworkConfig struct {
-	// Optional. A list of external network authorized to
-	// access this instance. This field is only allowed to be set when
-	// 'enablePublicIp' is set to true.
-	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.InstanceNetworkConfig.authorized_external_networks
-	AuthorizedExternalNetworks []Instance_InstanceNetworkConfig_AuthorizedNetwork `json:"authorizedExternalNetworks,omitempty"`
+	// Update policy that will be applied during instance update.
+	//  This field is not persisted when you update the instance.
+	//  To use a non-default update policy, you must
+	//  specify explicitly specify the value in each update request.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.update_policy
+	UpdatePolicy *Instance_UpdatePolicy `json:"updatePolicy,omitempty"`
 
-	// Optional. Enabling public ip for the instance. If
-	// a user wishes to disable this, please also clear the list of
-	// the authorized external networks set on the same instance.
-	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.InstanceNetworkConfig.enable_public_ip
-	EnablePublicIP *bool `json:"enablePublicIp,omitempty"`
+	// Optional. Client connection specific configurations
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.client_connection_config
+	ClientConnectionConfig *Instance_ClientConnectionConfig `json:"clientConnectionConfig,omitempty"`
 
-	// Optional. Enabling an outbound public IP address to support a database
-	//  server sending requests out into the internet.
-	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.InstanceNetworkConfig.enable_outbound_public_ip
-	EnableOutboundPublicIP *bool `json:"enableOutboundPublicIp,omitempty"`
-}
+	// Optional. The configuration for Private Service Connect (PSC) for the
+	//  instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.psc_instance_config
+	PSCInstanceConfig *Instance_PSCInstanceConfig `json:"pscInstanceConfig,omitempty"`
 
-// +kcc:proto=google.cloud.alloydb.v1beta.Instance.ConnectionPoolConfig
-type Instance_ConnectionPoolConfig struct {
-	// Optional. Whether to enable Managed Connection Pool (MCP).
-	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.ConnectionPoolConfig.enabled
-	Enabled *bool `json:"enabled,omitempty"`
+	// Optional. Instance-level network configuration.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.network_config
+	NetworkConfig *Instance_InstanceNetworkConfig `json:"networkConfig,omitempty"`
 
-	// Optional. Connection Pool flags, as a list of "key": "value" pairs.
-	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.ConnectionPoolConfig.flags
-	Flags map[string]string `json:"flags,omitempty"`
+	// Optional. Deprecated and unused. This field will be removed in the near
+	//  future.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.gemini_config
+	GeminiConfig *GeminiInstanceConfig `json:"geminiConfig,omitempty"`
+
+	// Optional. Specifies whether an instance needs to spin up. Once the instance
+	//  is active, the activation policy can be updated to the `NEVER` to stop the
+	//  instance. Likewise, the activation policy can be updated to `ALWAYS` to
+	//  start the instance.
+	//  There are restrictions around when an instance can/cannot be activated (for
+	//  example, a read pool instance should be stopped before stopping primary
+	//  etc.). Please refer to the API documentation for more details.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.activation_policy
+	ActivationPolicy *string `json:"activationPolicy,omitempty"`
+
+	// Optional. The configuration for Managed Connection Pool (MCP).
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.connection_pool_config
+	ConnectionPoolConfig *Instance_ConnectionPoolConfig `json:"connectionPoolConfig,omitempty"`
 }
 
 // AlloyDBInstanceStatus defines the config connector machine state of AlloyDBInstance
-// +kcc:status:proto=google.cloud.alloydb.v1beta.Instance
 type AlloyDBInstanceStatus struct {
 	/* Conditions represent the latest available observations of the
 	   object's current state. */
@@ -149,61 +170,90 @@ type AlloyDBInstanceStatus struct {
 
 	// ObservedState is the state of the resource as most recently observed in GCP.
 	ObservedState *AlloyDBInstanceObservedState `json:"observedState,omitempty"`
+}
 
-	// Time the Instance was created in UTC.
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// The IP address for the Instance. This is the connection
-	// endpoint for an end-user application.
-	IPAddress *string `json:"ipAddress,omitempty"`
-
-	// The name of the instance resource.
-	Name *string `json:"name,omitempty"`
-
-	// The outbound public IP addresses for the instance. This is available ONLY when
-	// networkConfig.enableOutboundPublicIp is set to true. These IP addresses are used
-	// for outbound connections.
-	OutboundPublicIPAddresses []string `json:"outboundPublicIpAddresses,omitempty"`
-
-	// The public IP addresses for the Instance. This is available
-	// ONLY when networkConfig.enablePublicIp is set to true. This is the
-	// connection endpoint for an end-user application.
-	PublicIPAddress *string `json:"publicIpAddress,omitempty"`
-
-	// Set to true if the current state of Instance does not
-	// match the user's intended state, and the service is actively updating
-	// the resource to reconcile them. This can happen due to user-triggered
-	// updates or system actions like failover or maintenance.
-	Reconciling *bool `json:"reconciling,omitempty"`
-
-	// The current state of the alloydb instance.
-	State *string `json:"state,omitempty"`
-
-	// The system-generated UID of the resource.
+// AlloyDBInstanceObservedState is the state of the AlloyDBInstance resource as most recently observed in GCP.
+// +kcc:observedstate:proto=google.cloud.alloydb.v1beta.Instance
+type AlloyDBInstanceObservedState struct {
+	// Output only. The system-generated UID of the resource. The UID is assigned
+	//  when the resource is created, and it is retained until it is deleted.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.uid
 	Uid *string `json:"uid,omitempty"`
 
-	// Time the Instance was updated in UTC.
+	// Output only. Create time stamp
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Update time stamp
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
-}
 
-// AlloyDBInstanceSpec defines the desired state of AlloyDBInstance
-// +kcc:proto=google.cloud.alloydb.v1beta.Instance
-// AlloyDBInstanceObservedState is the state of the AlloyDBInstance resource as most recently observed in GCP.
-type AlloyDBInstanceObservedState struct {
-	// Observability feature status for an instance.
-	// +kcc:observedstate:proto=google.cloud.alloydb.beta.Instance.ObservabilityInstanceConfig
-	ObservabilityInstanceConfig *Instance_ObservabilityInstanceConfigObservedState `json:"observabilityConfig,omitempty"`
+	// Output only. Delete time stamp
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.delete_time
+	DeleteTime *string `json:"deleteTime,omitempty"`
 
-	// Output for Managed Connection Pool (MCP).
-	ConnectionPoolConfig *Instance_ConnectionPoolConfigObservedState `json:"connectionPoolConfig,omitempty"`
-}
+	// Output only. The current serving state of the instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.state
+	State *string `json:"state,omitempty"`
 
-// +kcc:proto=google.cloud.alloydb.v1beta.Instance.ConnectionPoolConfig
-type Instance_ConnectionPoolConfigObservedState struct {
+	// Output only. This is set for the read-write VM of the PRIMARY instance
+	//  only.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.writable_node
+	WritableNode *Instance_NodeObservedState `json:"writableNode,omitempty"`
 
-	// Output only. The number of running poolers per instance.
-	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.ConnectionPoolConfig.pooler_count
-	PoolerCount *int32 `json:"poolerCount,omitempty"`
+	// Output only. List of available read-only VMs in this instance, including
+	//  the standby for a PRIMARY instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.nodes
+	Nodes []Instance_NodeObservedState `json:"nodes,omitempty"`
+
+	// Configuration for observability.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.observability_config
+	ObservabilityConfig *Instance_ObservabilityInstanceConfigObservedState `json:"observabilityConfig,omitempty"`
+
+	// Output only. The IP address for the Instance.
+	//  This is the connection endpoint for an end-user application.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.ip_address
+	IPAddress *string `json:"ipAddress,omitempty"`
+
+	// Output only. The public IP addresses for the Instance. This is available
+	//  ONLY when enable_public_ip is set. This is the connection endpoint for an
+	//  end-user application.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.public_ip_address
+	PublicIPAddress *string `json:"publicIPAddress,omitempty"`
+
+	// Output only. Reconciling (https://google.aip.dev/128#reconciliation).
+	//  Set to true if the current state of Instance does not match the user's
+	//  intended state, and the service is actively updating the resource to
+	//  reconcile them. This can happen due to user-triggered updates or
+	//  system actions like failover or maintenance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.reconciling
+	Reconciling *bool `json:"reconciling,omitempty"`
+
+	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.satisfies_pzs
+	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+
+	// Optional. The configuration for Private Service Connect (PSC) for the
+	//  instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.psc_instance_config
+	PSCInstanceConfig *Instance_PSCInstanceConfigObservedState `json:"pscInstanceConfig,omitempty"`
+
+	// Optional. Instance-level network configuration.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.network_config
+	NetworkConfig *Instance_InstanceNetworkConfigObservedState `json:"networkConfig,omitempty"`
+
+	// Optional. Deprecated and unused. This field will be removed in the near
+	//  future.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.gemini_config
+	GeminiConfig *GeminiInstanceConfigObservedState `json:"geminiConfig,omitempty"`
+
+	// Output only. All outbound public IP addresses configured for the instance.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.outbound_public_ip_addresses
+	OutboundPublicIPAddresses []string `json:"outboundPublicIPAddresses,omitempty"`
+
+	// Output only. Configuration parameters related to Gemini Cloud Assist.
+	// +kcc:proto:field=google.cloud.alloydb.v1beta.Instance.gca_config
+	GcaConfig *GcaInstanceConfigObservedState `json:"gcaConfig,omitempty"`
 }
 
 // +genclient
@@ -211,9 +261,7 @@ type Instance_ConnectionPoolConfigObservedState struct {
 // +kubebuilder:resource:categories=gcp,shortName=gcpalloydbinstance;gcpalloydbinstances
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=stable"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

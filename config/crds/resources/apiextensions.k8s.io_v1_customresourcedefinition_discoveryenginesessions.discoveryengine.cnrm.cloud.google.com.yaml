@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: discoveryenginesessions.discoveryengine.cnrm.cloud.google.com
 spec:
@@ -63,47 +62,28 @@ spec:
           spec:
             description: DiscoveryEngineSessionSpec defines the desired state of DiscoveryEngineSession
             properties:
-              dataStoreRef:
-                description: Immutable. The DataStore this session belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: A reference to an externally managed DiscoveryEngineDataStore
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/datastores/{{datastoreID}}".
-                    type: string
-                  name:
-                    description: The name of a DiscoveryEngineDataStore resource.
-                    type: string
-                  namespace:
-                    description: The namespace of a DiscoveryEngineDataStore resource.
-                    type: string
-                type: object
+              dataStore:
+                description: The DataStore that this resource belongs to.
+                type: string
               displayName:
                 description: |-
                   Optional. The display name of the session.
 
-                  This field is used to identify the session in the UI.
-                  By default, the display name is the first turn query text in the session.
+                   This field is used to identify the session in the UI.
+                   By default, the display name is the first turn query text in the session.
                 type: string
               isPinned:
                 description: Optional. Whether the session is pinned, pinned session
                   will be displayed on the top of the session list.
                 type: boolean
+              labels:
+                description: Optional. The labels for the session. Can be set as filter
+                  in ListSessionsRequest.
+                items:
+                  type: string
+                type: array
               location:
-                description: Immutable. The location of this resource.
+                description: The location of this resource.
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
@@ -143,9 +123,6 @@ spec:
                 type: string
               state:
                 description: The state of the session.
-                enum:
-                - STATE_UNSPECIFIED
-                - IN_PROGRESS
                 type: string
               turns:
                 description: Turns.
@@ -180,8 +157,6 @@ spec:
                 description: A unique identifier for tracking users.
                 type: string
             required:
-            - dataStoreRef
-            - location
             - projectRef
             type: object
           status:

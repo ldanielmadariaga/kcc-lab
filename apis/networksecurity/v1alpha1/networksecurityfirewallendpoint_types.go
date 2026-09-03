@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,64 +22,36 @@ import (
 
 var NetworkSecurityFirewallEndpointGVK = GroupVersion.WithKind("NetworkSecurityFirewallEndpoint")
 
-type FirewallEndpointEndpointSettings struct {
-	// Optional. Immutable. Indicates whether Jumbo Frames are enabled.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.EndpointSettings.jumbo_frames_enabled
-	// +kubebuilder:validation:Optional
-	JumboFramesEnabled *bool `json:"jumboFramesEnabled,omitempty"`
-}
-
-type FirewallEndpointAssociationReference struct {
-	// Output only. The resource name of the FirewallEndpointAssociation.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.AssociationReference.name
-	Name *string `json:"name,omitempty"`
-
-	// Output only. The VPC network associated.
-	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.AssociationReference.network
-	Network *string `json:"network,omitempty"`
-}
-
 // NetworkSecurityFirewallEndpointSpec defines the desired state of NetworkSecurityFirewallEndpoint
 // +kcc:spec:proto=google.cloud.networksecurity.v1.FirewallEndpoint
 type NetworkSecurityFirewallEndpointSpec struct {
-	// The project that this resource belongs to.
-	// +required
-	// +kubebuilder:validation:Required
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	// The organization that this resource belongs to.
+	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef"`
 
 	// The location of this resource.
-	// +required
-	// +kubebuilder:validation:Required
-	Location string `json:"location"`
+	// +kcc:guess=parent-location pattern=organizations/{organization}/locations/{location}/firewallEndpoints/{firewall_endpoint}
+	Location *string `json:"location,omitempty"`
 
 	// The NetworkSecurityFirewallEndpoint name. If not given, the metadata.name will be used.
-	// +optional
-	// +kubebuilder:validation:Optional
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Optional. Description of the firewall endpoint. Max length 2048 characters.
+	// Optional. Description of the firewall endpoint. Max length 2048
+	//  characters.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.description
-	// +optional
-	// +kubebuilder:validation:Optional
 	Description *string `json:"description,omitempty"`
 
-	// Optional. Labels as key value pairs.
+	// Optional. Labels as key value pairs
 	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.labels
-	// +optional
-	// +kubebuilder:validation:Optional
 	Labels map[string]string `json:"labels,omitempty"`
 
-	// Optional. Billing project ID.
+	// Optional. Project to charge for the deployed firewall endpoint.
+	//  This field must be specified when creating the endpoint in the organization
+	//  scope, and should be omitted otherwise.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.billing_project_id
-	// +optional
-	// +kubebuilder:validation:Optional
 	BillingProjectID *string `json:"billingProjectID,omitempty"`
 
 	// Optional. Settings for the endpoint.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.endpoint_settings
-	// +optional
-	// +kubebuilder:validation:Optional
-	EndpointSettings *FirewallEndpointEndpointSettings `json:"endpointSettings,omitempty"`
+	EndpointSettings *FirewallEndpoint_EndpointSettings `json:"endpointSettings,omitempty"`
 }
 
 // NetworkSecurityFirewallEndpointStatus defines the config connector machine state of NetworkSecurityFirewallEndpoint
@@ -105,7 +77,7 @@ type NetworkSecurityFirewallEndpointObservedState struct {
 	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
-	// Output only. Update time stamp.
+	// Output only. Update time stamp
 	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
@@ -113,17 +85,32 @@ type NetworkSecurityFirewallEndpointObservedState struct {
 	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.state
 	State *string `json:"state,omitempty"`
 
-	// Output only. Whether reconciling is in progress, recommended per https://google.aip.dev/128.
+	// Output only. Whether reconciling is in progress, recommended per
+	//  https://google.aip.dev/128.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.reconciling
 	Reconciling *bool `json:"reconciling,omitempty"`
 
-	// Output only. Deprecated: List of networks that are associated with this endpoint in the local zone.
+	// Output only. Deprecated: List of networks that are associated with this
+	//  endpoint in the local zone. This is a projection of the
+	//  FirewallEndpointAssociations pointing at this endpoint. A network will only
+	//  appear in this list after traffic routing is fully configured. Format:
+	//  projects/{project}/global/networks/{name}.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.associated_networks
 	AssociatedNetworks []string `json:"associatedNetworks,omitempty"`
 
-	// Output only. List of FirewallEndpointAssociations that are associated to this endpoint.
+	// Output only. List of FirewallEndpointAssociations that are associated to
+	//  this endpoint. An association will only appear in this list after traffic
+	//  routing is fully configured.
 	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.associations
-	Associations []FirewallEndpointAssociationReference `json:"associations,omitempty"`
+	Associations []FirewallEndpoint_AssociationReferenceObservedState `json:"associations,omitempty"`
+
+	// Output only. [Output Only] Reserved for future use.
+	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.satisfies_pzs
+	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+
+	// Output only. [Output Only] Reserved for future use.
+	// +kcc:proto:field=google.cloud.networksecurity.v1.FirewallEndpoint.satisfies_pzi
+	SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
 }
 
 // +genclient
@@ -132,7 +119,6 @@ type NetworkSecurityFirewallEndpointObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

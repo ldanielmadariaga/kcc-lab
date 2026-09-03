@@ -29,70 +29,28 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
-func BackupVaultObservedState_FromProto(mapCtx *direct.MapContext, in *pb.BackupVault) *krm.BackupVaultObservedState {
+func BackupVault_BackupRetentionPolicy_FromProto(mapCtx *direct.MapContext, in *pb.BackupVault_BackupRetentionPolicy) *krm.BackupVault_BackupRetentionPolicy {
 	if in == nil {
 		return nil
 	}
-	out := &krm.BackupVaultObservedState{}
-	// MISSING: Name
-	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	// MISSING: Labels
-	// MISSING: BackupVaultType
-	// MISSING: SourceRegion
-	// MISSING: BackupRegion
-	// MISSING: SourceBackupVault
-	// MISSING: DestinationBackupVault
-	// MISSING: BackupRetentionPolicy
+	out := &krm.BackupVault_BackupRetentionPolicy{}
+	out.BackupMinimumEnforcedRetentionDays = direct.LazyPtr(in.GetBackupMinimumEnforcedRetentionDays())
+	out.DailyBackupImmutable = direct.LazyPtr(in.GetDailyBackupImmutable())
+	out.WeeklyBackupImmutable = direct.LazyPtr(in.GetWeeklyBackupImmutable())
+	out.MonthlyBackupImmutable = direct.LazyPtr(in.GetMonthlyBackupImmutable())
+	out.ManualBackupImmutable = direct.LazyPtr(in.GetManualBackupImmutable())
 	return out
 }
-func BackupVaultObservedState_ToProto(mapCtx *direct.MapContext, in *krm.BackupVaultObservedState) *pb.BackupVault {
+func BackupVault_BackupRetentionPolicy_ToProto(mapCtx *direct.MapContext, in *krm.BackupVault_BackupRetentionPolicy) *pb.BackupVault_BackupRetentionPolicy {
 	if in == nil {
 		return nil
 	}
-	out := &pb.BackupVault{}
-	// MISSING: Name
-	out.State = direct.Enum_ToProto[pb.BackupVault_State](mapCtx, in.State)
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	// MISSING: Labels
-	// MISSING: BackupVaultType
-	// MISSING: SourceRegion
-	// MISSING: BackupRegion
-	// MISSING: SourceBackupVault
-	// MISSING: DestinationBackupVault
-	// MISSING: BackupRetentionPolicy
-	return out
-}
-func BackupVaultSpec_FromProto(mapCtx *direct.MapContext, in *pb.BackupVault) *krm.BackupVaultSpec {
-	if in == nil {
-		return nil
-	}
-	out := &krm.BackupVaultSpec{}
-	// MISSING: Name
-	out.Description = direct.LazyPtr(in.GetDescription())
-	// MISSING: Labels
-	// MISSING: BackupVaultType
-	// MISSING: SourceRegion
-	// MISSING: BackupRegion
-	// MISSING: SourceBackupVault
-	// MISSING: DestinationBackupVault
-	// MISSING: BackupRetentionPolicy
-	return out
-}
-func BackupVaultSpec_ToProto(mapCtx *direct.MapContext, in *krm.BackupVaultSpec) *pb.BackupVault {
-	if in == nil {
-		return nil
-	}
-	out := &pb.BackupVault{}
-	// MISSING: Name
-	out.Description = direct.ValueOf(in.Description)
-	// MISSING: Labels
-	// MISSING: BackupVaultType
-	// MISSING: SourceRegion
-	// MISSING: BackupRegion
-	// MISSING: SourceBackupVault
-	// MISSING: DestinationBackupVault
-	// MISSING: BackupRetentionPolicy
+	out := &pb.BackupVault_BackupRetentionPolicy{}
+	out.BackupMinimumEnforcedRetentionDays = direct.ValueOf(in.BackupMinimumEnforcedRetentionDays)
+	out.DailyBackupImmutable = direct.ValueOf(in.DailyBackupImmutable)
+	out.WeeklyBackupImmutable = direct.ValueOf(in.WeeklyBackupImmutable)
+	out.MonthlyBackupImmutable = direct.ValueOf(in.MonthlyBackupImmutable)
+	out.ManualBackupImmutable = direct.ValueOf(in.ManualBackupImmutable)
 	return out
 }
 func NetAppBackupPolicyObservedState_FromProto(mapCtx *direct.MapContext, in *pb.BackupPolicy) *krm.NetAppBackupPolicyObservedState {
@@ -103,7 +61,6 @@ func NetAppBackupPolicyObservedState_FromProto(mapCtx *direct.MapContext, in *pb
 	// MISSING: Name
 	out.AssignedVolumeCount = in.AssignedVolumeCount
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	// MISSING: Labels
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	return out
 }
@@ -115,7 +72,6 @@ func NetAppBackupPolicyObservedState_ToProto(mapCtx *direct.MapContext, in *krm.
 	// MISSING: Name
 	out.AssignedVolumeCount = in.AssignedVolumeCount
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	// MISSING: Labels
 	out.State = direct.Enum_ToProto[pb.BackupPolicy_State](mapCtx, in.State)
 	return out
 }
@@ -130,7 +86,7 @@ func NetAppBackupPolicySpec_FromProto(mapCtx *direct.MapContext, in *pb.BackupPo
 	out.MonthlyBackupLimit = in.MonthlyBackupLimit
 	out.Description = in.Description
 	out.Enabled = in.Enabled
-	// MISSING: Labels
+	out.Labels = in.Labels
 	return out
 }
 func NetAppBackupPolicySpec_ToProto(mapCtx *direct.MapContext, in *krm.NetAppBackupPolicySpec) *pb.BackupPolicy {
@@ -144,6 +100,58 @@ func NetAppBackupPolicySpec_ToProto(mapCtx *direct.MapContext, in *krm.NetAppBac
 	out.MonthlyBackupLimit = in.MonthlyBackupLimit
 	out.Description = in.Description
 	out.Enabled = in.Enabled
-	// MISSING: Labels
+	out.Labels = in.Labels
+	return out
+}
+func NetAppBackupVaultObservedState_FromProto(mapCtx *direct.MapContext, in *pb.BackupVault) *krm.NetAppBackupVaultObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.NetAppBackupVaultObservedState{}
+	// MISSING: Name
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.SourceRegion = direct.LazyPtr(in.GetSourceRegion())
+	out.SourceBackupVault = direct.LazyPtr(in.GetSourceBackupVault())
+	out.DestinationBackupVault = direct.LazyPtr(in.GetDestinationBackupVault())
+	return out
+}
+func NetAppBackupVaultObservedState_ToProto(mapCtx *direct.MapContext, in *krm.NetAppBackupVaultObservedState) *pb.BackupVault {
+	if in == nil {
+		return nil
+	}
+	out := &pb.BackupVault{}
+	// MISSING: Name
+	out.State = direct.Enum_ToProto[pb.BackupVault_State](mapCtx, in.State)
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.SourceRegion = direct.ValueOf(in.SourceRegion)
+	out.SourceBackupVault = direct.ValueOf(in.SourceBackupVault)
+	out.DestinationBackupVault = direct.ValueOf(in.DestinationBackupVault)
+	return out
+}
+func NetAppBackupVaultSpec_FromProto(mapCtx *direct.MapContext, in *pb.BackupVault) *krm.NetAppBackupVaultSpec {
+	if in == nil {
+		return nil
+	}
+	out := &krm.NetAppBackupVaultSpec{}
+	// MISSING: Name
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.Labels = in.Labels
+	out.BackupVaultType = direct.Enum_FromProto(mapCtx, in.GetBackupVaultType())
+	out.BackupRegion = direct.LazyPtr(in.GetBackupRegion())
+	out.BackupRetentionPolicy = BackupVault_BackupRetentionPolicy_FromProto(mapCtx, in.GetBackupRetentionPolicy())
+	return out
+}
+func NetAppBackupVaultSpec_ToProto(mapCtx *direct.MapContext, in *krm.NetAppBackupVaultSpec) *pb.BackupVault {
+	if in == nil {
+		return nil
+	}
+	out := &pb.BackupVault{}
+	// MISSING: Name
+	out.Description = direct.ValueOf(in.Description)
+	out.Labels = in.Labels
+	out.BackupVaultType = direct.Enum_ToProto[pb.BackupVault_BackupVaultType](mapCtx, in.BackupVaultType)
+	out.BackupRegion = direct.ValueOf(in.BackupRegion)
+	out.BackupRetentionPolicy = BackupVault_BackupRetentionPolicy_ToProto(mapCtx, in.BackupRetentionPolicy)
 	return out
 }

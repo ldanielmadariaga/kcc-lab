@@ -21,8 +21,6 @@
 
 package v1beta1
 
-/* found existing non-generated go type "AutomatedBackupConfig", skipping
-
 // +kcc:proto=google.cloud.memorystore.v1.AutomatedBackupConfig
 type AutomatedBackupConfig struct {
 	// Optional. Trigger automated backups at a fixed frequency.
@@ -40,25 +38,21 @@ type AutomatedBackupConfig struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.AutomatedBackupConfig.retention
 	Retention *string `json:"retention,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "AutomatedBackupConfig_FixedFrequencySchedule", skipping
 
 // +kcc:proto=google.cloud.memorystore.v1.AutomatedBackupConfig.FixedFrequencySchedule
 type AutomatedBackupConfig_FixedFrequencySchedule struct {
 	// Required. The start time of every automated backup in UTC. It must be set
 	//  to the start of an hour. This field is required.
 	// +kcc:proto:field=google.cloud.memorystore.v1.AutomatedBackupConfig.FixedFrequencySchedule.start_time
+	// +required
 	StartTime *TimeOfDay `json:"startTime,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "CrossInstanceReplicationConfig", skipping
 
 // +kcc:proto=google.cloud.memorystore.v1.CrossInstanceReplicationConfig
 type CrossInstanceReplicationConfig struct {
 	// Required. The role of the instance in cross instance replication.
 	// +kcc:proto:field=google.cloud.memorystore.v1.CrossInstanceReplicationConfig.instance_role
+	// +required
 	InstanceRole *string `json:"instanceRole,omitempty"`
 
 	// Optional. Details of the primary instance that is used as the replication
@@ -75,7 +69,6 @@ type CrossInstanceReplicationConfig struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.CrossInstanceReplicationConfig.secondary_instances
 	SecondaryInstances []CrossInstanceReplicationConfig_RemoteInstance `json:"secondaryInstances,omitempty"`
 }
-*/
 
 /* unreachable type CrossInstanceReplicationConfig_Membership
 // +kcc:proto=google.cloud.memorystore.v1.CrossInstanceReplicationConfig.Membership
@@ -83,26 +76,22 @@ type CrossInstanceReplicationConfig_Membership struct {
 }
 */
 
-/* found existing non-generated go type "CrossInstanceReplicationConfig_RemoteInstance", skipping
-
 // +kcc:proto=google.cloud.memorystore.v1.CrossInstanceReplicationConfig.RemoteInstance
 type CrossInstanceReplicationConfig_RemoteInstance struct {
 	// Optional. The full resource path of the remote instance in
 	//  the format: projects/<project>/locations/<region>/instances/<instance-id>
+	// +kcc:guess=possible-reference target=MemorystoreInstance
 	// +kcc:proto:field=google.cloud.memorystore.v1.CrossInstanceReplicationConfig.RemoteInstance.instance
 	Instance *string `json:"instance,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.memorystore.v1.DiscoveryEndpoint", skipping
-
+/* unreachable type DiscoveryEndpoint
 // +kcc:proto=google.cloud.memorystore.v1.DiscoveryEndpoint
 type DiscoveryEndpoint struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.memorystore.v1.Instance", skipping
-
+/* unreachable type Instance
 // +kcc:proto=google.cloud.memorystore.v1.Instance
 type Instance struct {
 	// Optional. Immutable. Backups that stored in Cloud Storage buckets.
@@ -208,8 +197,6 @@ type Instance struct {
 }
 */
 
-/* found existing non-generated go type "Instance_ConnectionDetail", skipping
-
 // +kcc:proto=google.cloud.memorystore.v1.Instance.ConnectionDetail
 type Instance_ConnectionDetail struct {
 	// Immutable. Detailed information of a PSC connection that is created
@@ -221,18 +208,13 @@ type Instance_ConnectionDetail struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.ConnectionDetail.psc_connection
 	PSCConnection *PSCConnection `json:"pscConnection,omitempty"`
 }
-*/
 
-/* unreachable type Instance_GCSBackupSource
 // +kcc:proto=google.cloud.memorystore.v1.Instance.GcsBackupSource
 type Instance_GCSBackupSource struct {
 	// Optional. Example: gs://bucket1/object1, gs://bucket2/folder2/object2
 	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.GcsBackupSource.uris
-	Uris []string `json:"uris,omitempty"`
+	URIs []string `json:"uris,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Instance_InstanceEndpoint", skipping
 
 // +kcc:proto=google.cloud.memorystore.v1.Instance.InstanceEndpoint
 type Instance_InstanceEndpoint struct {
@@ -241,9 +223,7 @@ type Instance_InstanceEndpoint struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.InstanceEndpoint.connections
 	Connections []Instance_ConnectionDetail `json:"connections,omitempty"`
 }
-*/
 
-/* unreachable type Instance_ManagedBackupSource
 // +kcc:proto=google.cloud.memorystore.v1.Instance.ManagedBackupSource
 type Instance_ManagedBackupSource struct {
 	// Optional. Example:
@@ -255,17 +235,14 @@ type Instance_ManagedBackupSource struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.ManagedBackupSource.backup
 	Backup *string `json:"backup,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.memorystore.v1.Instance.StateInfo", skipping
-
+/* unreachable type Instance_StateInfo
 // +kcc:proto=google.cloud.memorystore.v1.Instance.StateInfo
 type Instance_StateInfo struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.memorystore.v1.Instance.StateInfo.UpdateInfo", skipping
-
+/* unreachable type Instance_StateInfo_UpdateInfo
 // +kcc:proto=google.cloud.memorystore.v1.Instance.StateInfo.UpdateInfo
 type Instance_StateInfo_UpdateInfo struct {
 }
@@ -287,14 +264,11 @@ type MaintenanceSchedule struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.memorystore.v1.NodeConfig", skipping
-
+/* unreachable type NodeConfig
 // +kcc:proto=google.cloud.memorystore.v1.NodeConfig
 type NodeConfig struct {
 }
 */
-
-/* found existing non-generated go type "PersistenceConfig", skipping
 
 // +kcc:proto=google.cloud.memorystore.v1.PersistenceConfig
 type PersistenceConfig struct {
@@ -310,9 +284,6 @@ type PersistenceConfig struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.PersistenceConfig.aof_config
 	AofConfig *PersistenceConfig_AofConfig `json:"aofConfig,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "PersistenceConfig_AofConfig", skipping
 
 // +kcc:proto=google.cloud.memorystore.v1.PersistenceConfig.AOFConfig
 type PersistenceConfig_AofConfig struct {
@@ -320,9 +291,6 @@ type PersistenceConfig_AofConfig struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.PersistenceConfig.AOFConfig.append_fsync
 	AppendFsync *string `json:"appendFsync,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "PersistenceConfig_RdbConfig", skipping
 
 // +kcc:proto=google.cloud.memorystore.v1.PersistenceConfig.RDBConfig
 type PersistenceConfig_RdbConfig struct {
@@ -336,16 +304,12 @@ type PersistenceConfig_RdbConfig struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.PersistenceConfig.RDBConfig.rdb_snapshot_start_time
 	RdbSnapshotStartTime *string `json:"rdbSnapshotStartTime,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.memorystore.v1.PscAttachmentDetail", skipping
-
+/* unreachable type PSCAttachmentDetail
 // +kcc:proto=google.cloud.memorystore.v1.PscAttachmentDetail
 type PSCAttachmentDetail struct {
 }
 */
-
-/* found existing non-generated go type with proto tag "google.cloud.memorystore.v1.PscAutoConnection", skipping
 
 // +kcc:proto=google.cloud.memorystore.v1.PscAutoConnection
 type PSCAutoConnection struct {
@@ -356,16 +320,16 @@ type PSCAutoConnection struct {
 	// Required. The consumer project_id where PSC connections are established.
 	//  This should be the same project_id that the instance is being created in.
 	// +kcc:proto:field=google.cloud.memorystore.v1.PscAutoConnection.project_id
+	// +required
 	ProjectID *string `json:"projectID,omitempty"`
 
 	// Required. The network where the PSC endpoints are created, in the form of
 	//  projects/{project_id}/global/networks/{network_id}.
 	// +kcc:proto:field=google.cloud.memorystore.v1.PscAutoConnection.network
+	// +required
 	Network *string `json:"network,omitempty"`
 }
-*/
 
-/* unreachable type PSCConnection
 // +kcc:proto=google.cloud.memorystore.v1.PscConnection
 type PSCConnection struct {
 	// Optional. port will only be set for Primary/Reader or Discovery endpoint.
@@ -375,31 +339,35 @@ type PSCConnection struct {
 	// Required. The PSC connection id of the forwarding rule connected to the
 	//  service attachment.
 	// +kcc:proto:field=google.cloud.memorystore.v1.PscConnection.psc_connection_id
+	// +required
 	PSCConnectionID *string `json:"pscConnectionID,omitempty"`
 
 	// Required. The IP allocated on the consumer network for the PSC forwarding
 	//  rule.
 	// +kcc:proto:field=google.cloud.memorystore.v1.PscConnection.ip_address
+	// +required
 	IPAddress *string `json:"ipAddress,omitempty"`
 
 	// Required. The URI of the consumer side forwarding rule.
 	//  Format:
 	//  projects/{project}/regions/{region}/forwardingRules/{forwarding_rule}
 	// +kcc:proto:field=google.cloud.memorystore.v1.PscConnection.forwarding_rule
+	// +required
 	ForwardingRule *string `json:"forwardingRule,omitempty"`
 
 	// Required. The consumer network where the IP address resides, in the form of
 	//  projects/{project_id}/global/networks/{network_id}.
 	// +kcc:proto:field=google.cloud.memorystore.v1.PscConnection.network
+	// +required
 	Network *string `json:"network,omitempty"`
 
 	// Required. The service attachment which is the target of the PSC connection,
 	//  in the form of
 	//  projects/{project-id}/regions/{region}/serviceAttachments/{service-attachment-id}.
 	// +kcc:proto:field=google.cloud.memorystore.v1.PscConnection.service_attachment
+	// +required
 	ServiceAttachment *string `json:"serviceAttachment,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.memorystore.v1.WeeklyMaintenanceWindow
 type WeeklyMaintenanceWindow struct {
@@ -412,8 +380,6 @@ type WeeklyMaintenanceWindow struct {
 	StartTime *TimeOfDay `json:"startTime,omitempty"`
 }
 
-/* found existing non-generated go type "ZoneDistributionConfig", skipping
-
 // +kcc:proto=google.cloud.memorystore.v1.ZoneDistributionConfig
 type ZoneDistributionConfig struct {
 	// Optional. Defines zone where all resources will be allocated with
@@ -425,7 +391,6 @@ type ZoneDistributionConfig struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.ZoneDistributionConfig.mode
 	Mode *string `json:"mode,omitempty"`
 }
-*/
 
 // +kcc:proto=google.type.TimeOfDay
 type TimeOfDay struct {
@@ -447,8 +412,6 @@ type TimeOfDay struct {
 	// +kcc:proto:field=google.type.TimeOfDay.nanos
 	Nanos *int32 `json:"nanos,omitempty"`
 }
-
-/* found existing non-generated go type "CrossInstanceReplicationConfigObservedState", skipping
 
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.CrossInstanceReplicationConfig
 type CrossInstanceReplicationConfigObservedState struct {
@@ -484,7 +447,6 @@ type CrossInstanceReplicationConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.CrossInstanceReplicationConfig.membership
 	Membership *CrossInstanceReplicationConfig_MembershipObservedState `json:"membership,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.CrossInstanceReplicationConfig.Membership
 type CrossInstanceReplicationConfig_MembershipObservedState struct {
@@ -499,8 +461,6 @@ type CrossInstanceReplicationConfig_MembershipObservedState struct {
 	SecondaryInstances []CrossInstanceReplicationConfig_RemoteInstanceObservedState `json:"secondaryInstances,omitempty"`
 }
 
-/* found existing non-generated go type "CrossInstanceReplicationConfig_RemoteInstanceObservedState", skipping
-
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.CrossInstanceReplicationConfig.RemoteInstance
 type CrossInstanceReplicationConfig_RemoteInstanceObservedState struct {
 	// Optional. The full resource path of the remote instance in
@@ -512,9 +472,6 @@ type CrossInstanceReplicationConfig_RemoteInstanceObservedState struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.CrossInstanceReplicationConfig.RemoteInstance.uid
 	Uid *string `json:"uid,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "DiscoveryEndpointObservedState", skipping
 
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.DiscoveryEndpoint
 type DiscoveryEndpointObservedState struct {
@@ -532,10 +489,8 @@ type DiscoveryEndpointObservedState struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.DiscoveryEndpoint.network
 	Network *string `json:"network,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.memorystore.v1.Instance", skipping
-
+/* unreachable type InstanceObservedState
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.Instance
 type InstanceObservedState struct {
 	// Output only. Creation timestamp of the instance.
@@ -601,8 +556,6 @@ type InstanceObservedState struct {
 }
 */
 
-/* found existing non-generated go type "Instance_ConnectionDetailObservedState", skipping
-
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.Instance.ConnectionDetail
 type Instance_ConnectionDetailObservedState struct {
 	// Immutable. Detailed information of a PSC connection that is created
@@ -614,9 +567,6 @@ type Instance_ConnectionDetailObservedState struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.ConnectionDetail.psc_connection
 	PSCConnection *PSCConnectionObservedState `json:"pscConnection,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Instance_InstanceEndpointObservedState", skipping
 
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.Instance.InstanceEndpoint
 type Instance_InstanceEndpointObservedState struct {
@@ -625,9 +575,6 @@ type Instance_InstanceEndpointObservedState struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.InstanceEndpoint.connections
 	Connections []Instance_ConnectionDetailObservedState `json:"connections,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Instance_StateInfoObservedState", skipping
 
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.Instance.StateInfo
 type Instance_StateInfoObservedState struct {
@@ -635,9 +582,6 @@ type Instance_StateInfoObservedState struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.StateInfo.update_info
 	UpdateInfo *Instance_StateInfo_UpdateInfoObservedState `json:"updateInfo,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Instance_StateInfo_UpdateInfoObservedState", skipping
 
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.Instance.StateInfo.UpdateInfo
 type Instance_StateInfo_UpdateInfoObservedState struct {
@@ -657,7 +601,6 @@ type Instance_StateInfo_UpdateInfoObservedState struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.StateInfo.UpdateInfo.target_node_type
 	TargetNodeType *string `json:"targetNodeType,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.MaintenancePolicy
 type MaintenancePolicyObservedState struct {
@@ -683,17 +626,12 @@ type MaintenanceScheduleObservedState struct {
 	EndTime *string `json:"endTime,omitempty"`
 }
 
-/* found existing non-generated go type "NodeConfigObservedState", skipping
-
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.NodeConfig
 type NodeConfigObservedState struct {
 	// Output only. Memory size in GB of the node.
 	// +kcc:proto:field=google.cloud.memorystore.v1.NodeConfig.size_gb
 	SizeGB *float64 `json:"sizeGB,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.memorystore.v1.PscAttachmentDetail", skipping
 
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.PscAttachmentDetail
 type PSCAttachmentDetailObservedState struct {
@@ -706,9 +644,6 @@ type PSCAttachmentDetailObservedState struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.PscAttachmentDetail.connection_type
 	ConnectionType *string `json:"connectionType,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.memorystore.v1.PscAutoConnection", skipping
 
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.PscAutoConnection
 type PSCAutoConnectionObservedState struct {
@@ -745,9 +680,7 @@ type PSCAutoConnectionObservedState struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.PscAutoConnection.connection_type
 	ConnectionType *string `json:"connectionType,omitempty"`
 }
-*/
 
-/* unreachable type PSCConnectionObservedState
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.PscConnection
 type PSCConnectionObservedState struct {
 	// Output only. The consumer project_id where the forwarding rule is created
@@ -766,4 +699,3 @@ type PSCConnectionObservedState struct {
 	// +kcc:proto:field=google.cloud.memorystore.v1.PscConnection.connection_type
 	ConnectionType *string `json:"connectionType,omitempty"`
 }
-*/

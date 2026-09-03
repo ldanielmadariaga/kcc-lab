@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -24,11 +25,15 @@ var VMwareEngineNetworkPolicyGVK = GroupVersion.WithKind("VMwareEngineNetworkPol
 // VMwareEngineNetworkPolicySpec defines the desired state of VMwareEngineNetworkPolicy
 // +kcc:spec:proto=google.cloud.vmwareengine.v1.NetworkPolicy
 type VMwareEngineNetworkPolicySpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/networkPolicies/{network_policy}
+	Location *string `json:"location"`
+
 	// The VMwareEngineNetworkPolicy name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	Parent `json:",inline"`
-
 	// Network service that allows VMware workloads to access the internet.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.internet_access
 	InternetAccess *NetworkPolicy_NetworkService `json:"internetAccess,omitempty"`
@@ -48,8 +53,11 @@ type VMwareEngineNetworkPolicySpec struct {
 	EdgeServicesCIDR *string `json:"edgeServicesCIDR,omitempty"`
 
 	// Optional. The relative resource name of the VMware Engine network.
+	//  Specify the name in the following form:
+	//  `projects/{project}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
+	//  where `{project}` can either be a project number or a project ID.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.vmware_engine_network
-	VMwareEngineNetworkRef *VmwareEngineNetworkRef `json:"vmwareEngineNetworkRef,omitempty"`
+	VmwareEngineNetwork *string `json:"vmwareEngineNetwork,omitempty"`
 
 	// Optional. User-provided description for this network policy.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.description
@@ -75,15 +83,6 @@ type VMwareEngineNetworkPolicyStatus struct {
 // VMwareEngineNetworkPolicyObservedState is the state of the VMwareEngineNetworkPolicy resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.vmwareengine.v1.NetworkPolicy
 type VMwareEngineNetworkPolicyObservedState struct {
-	// Output only. The resource name of this network policy.
-	//  Resource names are schemeless URIs that follow the conventions in
-	//  https://cloud.google.com/apis/design/resource_names.
-	//  For example:
-	//  `projects/my-project/locations/us-central1/networkPolicies/my-network-policy`
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. Creation time of this resource.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -104,17 +103,17 @@ type VMwareEngineNetworkPolicyObservedState struct {
 
 	// Output only. System-generated unique identifier for the resource.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.uid
-	UID *string `json:"uid,omitempty"`
+	Uid *string `json:"uid,omitempty"`
 
 	// Output only. The canonical name of the VMware Engine network in the form:
 	//  `projects/{project_number}/locations/{location}/vmwareEngineNetworks/{vmware_engine_network_id}`
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.NetworkPolicy.vmware_engine_network_canonical
-	VMwareEngineNetworkCanonical *string `json:"vmwareEngineNetworkCanonical,omitempty"`
+	VmwareEngineNetworkCanonical *string `json:"vmwareEngineNetworkCanonical,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpvmwareenginenetworkpolicy;gcpvmwareenginenetworkpolicies
+// +kubebuilder:resource:categories=gcp,shortName=gcpvmwareenginenetworkpolicy;gcpvmwareenginenetworkpolicys
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"

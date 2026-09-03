@@ -29,6 +29,22 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
+func AssetFeedObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Feed) *krm.AssetFeedObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AssetFeedObservedState{}
+	// MISSING: Name
+	return out
+}
+func AssetFeedObservedState_ToProto(mapCtx *direct.MapContext, in *krm.AssetFeedObservedState) *pb.Feed {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Feed{}
+	// MISSING: Name
+	return out
+}
 func AssetFeedSpec_FromProto(mapCtx *direct.MapContext, in *pb.Feed) *krm.AssetFeedSpec {
 	if in == nil {
 		return nil

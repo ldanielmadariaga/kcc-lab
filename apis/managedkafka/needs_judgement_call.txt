@@ -1,0 +1,33 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=ManagedKafkaCluster group=managedkafka.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=ManagedKafkaCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/clusters/{cluster}; confirm the resource is regional and that this is the name for it)
+kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/connectClusters/{connect_cluster}; confirm the resource is regional and that this is the name for it)
+kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/clusters/{cluster}/consumerGroups/{consumer_group}; confirm the resource is regional and that this is the name for it)
+kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: field ".spec.clusterRef" reason=parent-ref-guessed (emitted as a reference to ClusterRef, assumed from the collection segment of projects/{project}/locations/{location}/clusters/{cluster}/consumerGroups/{consumer_group}; confirm the target type)
+kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic}; confirm the resource is regional and that this is the name for it)
+kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: field ".spec.clusterRef" reason=parent-ref-guessed (emitted as a reference to ClusterRef, assumed from the collection segment of projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic}; confirm the target type)
+kind=ManagedKafkaCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.accessConfig.networkConfigs[].subnet" reason=possible-reference-by-description
+kind=ManagedKafkaCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.kmsKey" reason=possible-reference-by-description
+kind=ManagedKafkaCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.tlsConfig.trustConfig.casConfigs[].caPool" reason=possible-reference-by-description
+kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.accessConfig.networkConfigs[].primarySubnet" reason=possible-reference-by-description
+kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.secretPaths" reason=possible-reference-by-description
+kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.gcpConfig.secretPaths[]" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=ManagedKafkaConnectCluster group=managedkafka.cnrm.cloud.google.com: field ".spec.kafkaCluster" reason=possible-reference-by-description
+kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: field ".spec.topics" reason=possible-reference-by-description
+kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)
+kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)
+kind=ManagedKafkaConsumerGroup group=managedkafka.cnrm.cloud.google.com: field ".spec.clusterRef" reason=parent-ref-guessed (emitted as a reference to ClusterRef, assumed from the collection segment of projects/{project}/locations/{location}/clusters/{cluster}/consumerGroups/{consumer_group}; confirm the target type (ManagedKafkaCluster, a resource this service declares, matches the name))
+kind=ManagedKafkaTopic group=managedkafka.cnrm.cloud.google.com: field ".spec.clusterRef" reason=parent-ref-guessed (emitted as a reference to ClusterRef, assumed from the collection segment of projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic}; confirm the target type (ManagedKafkaCluster, a resource this service declares, matches the name))
+# Fields dropped because the generator could not produce a Go type for
+# them. They are absent from the CRD. Shared nested messages, so they are
+# listed per service rather than against one Kind.
+# dropped: google.cloud.managedkafka.v1.ConsumerTopicMetadata.partitions reason=unsupported map type with key int32 and value message

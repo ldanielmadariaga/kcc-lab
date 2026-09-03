@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,31 +15,29 @@
 package v1alpha1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var ParameterManagerParameterVersionGVK = GroupVersion.WithKind("ParameterManagerParameterVersion")
 
-// +kcc:proto=google.cloud.parametermanager.v1.ParameterVersionPayload
-type ParameterVersionPayload struct {
-	// Required. bytes data for storing payload. Provide base64-encoded value
-	// +kcc:proto:field=google.cloud.parametermanager.v1.ParameterVersionPayload.data
-	// +kubebuilder:validation:Format=byte
-	// +required
-	Data []byte `json:"data,omitempty"`
-}
-
 // ParameterManagerParameterVersionSpec defines the desired state of ParameterManagerParameterVersion
 // +kcc:spec:proto=google.cloud.parametermanager.v1.ParameterVersion
 type ParameterManagerParameterVersionSpec struct {
-	// The resource name of the [Parameter][google.cloud.parametermanager.v1.Parameter] to create a [ParameterVersion][google.cloud.parametermanager.v1.ParameterVersion] for.
-	// +required
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/parameters/{parameter}/versions/{parameter_version}
+	Location *string `json:"location,omitempty"`
+
+	// The Parameter that this resource belongs to.
+	// +kcc:guess=parent-ref target=ParameterRef pattern=projects/{project}/locations/{location}/parameters/{parameter}/versions/{parameter_version}
 	ParameterRef *ParameterRef `json:"parameterRef,omitempty"`
 
 	// The ParameterManagerParameterVersion name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. Disabled boolean to determine if a ParameterVersion acts as a
 	//  metadata only resource (payload is never returned if disabled is true). If
 	//  true any calls will always default to BASIC view even if the user
@@ -95,7 +93,8 @@ type ParameterManagerParameterVersionObservedState struct {
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:resource:categories=gcp,shortName=gcpparametermanagerparameterversion;gcpparametermanagerparameterversions
 // +kubebuilder:subresource:status
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true";"cnrm.cloud.google.com/system=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
+// +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

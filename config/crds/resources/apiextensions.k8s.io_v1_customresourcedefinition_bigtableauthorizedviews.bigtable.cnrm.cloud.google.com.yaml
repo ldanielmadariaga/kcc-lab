@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: bigtableauthorizedviews.bigtable.cnrm.cloud.google.com
 spec:
@@ -68,25 +67,16 @@ spec:
                   deletion. The parent Table and containing Instance cannot be deleted
                   if an AuthorizedView has this bit set.
                 type: boolean
-              resourceID:
-                description: The BigtableAuthorizedView name. If not given, the metadata.name
-                  will be used.
+              etag:
+                description: The etag for this AuthorizedView. If this is provided
+                  on update, it must match the server's etag. The server returns ABORTED
+                  error on a mismatched etag.
                 type: string
-              subsetView:
-                description: An AuthorizedView permitting access to an explicit subset
-                  of a Table.
-                properties:
-                  rowPrefixes:
-                    description: Row prefixes to be included in the AuthorizedView.
-                      To provide access to all rows, include the empty string as a
-                      prefix ("").
-                    items:
-                      format: byte
-                      type: string
-                    type: array
-                type: object
-              tableRef:
-                description: TableRef is a reference to a BigtableTable.
+              instance:
+                description: The Instance that this resource belongs to.
+                type: string
+              projectRef:
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -103,18 +93,66 @@ spec:
                   - external
                 properties:
                   external:
-                    description: A reference to an externally managed BigtableTable
-                      resource.
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
                     type: string
                   name:
-                    description: The name of a BigtableInstance resource.
+                    description: The `name` field of a `Project` resource.
                     type: string
                   namespace:
-                    description: The namespace of a BigtableInstance resource.
+                    description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
+              resourceID:
+                description: The BigtableAuthorizedView name. If not given, the metadata.name
+                  will be used.
+                type: string
+              subsetView:
+                description: An AuthorizedView permitting access to an explicit subset
+                  of a Table.
+                properties:
+                  familySubsets:
+                    additionalProperties:
+                      properties:
+                        qualifierPrefixes:
+                          description: Prefixes for qualifiers to be included in the
+                            AuthorizedView. Every qualifier starting with one of these
+                            prefixes is included in the AuthorizedView. To provide
+                            access to all qualifiers, include the empty string as
+                            a prefix ("").
+                          items:
+                            format: byte
+                            type: string
+                          type: array
+                        qualifiers:
+                          description: Individual exact column qualifiers to be included
+                            in the AuthorizedView.
+                          items:
+                            format: byte
+                            type: string
+                          type: array
+                      type: object
+                    description: Map from column family name to the columns in this
+                      family to be included in the AuthorizedView.
+                    type: object
+                  rowPrefixes:
+                    description: Row prefixes to be included in the AuthorizedView.
+                      To provide access to all rows, include the empty string as a
+                      prefix ("").
+                    items:
+                      format: byte
+                      type: string
+                    type: array
+                type: object
+              table:
+                description: The Table that this resource belongs to.
+                type: string
             required:
-            - tableRef
+            - projectRef
             type: object
           status:
             description: BigtableAuthorizedViewStatus defines the config connector

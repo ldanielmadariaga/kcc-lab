@@ -81,6 +81,7 @@ type CloudStorageConfig struct {
 	//  any prefix like "gs://". See the [bucket naming
 	//  requirements] (https://cloud.google.com/storage/docs/buckets#naming).
 	// +kcc:proto:field=google.pubsub.v1.CloudStorageConfig.bucket
+	// +required
 	Bucket *string `json:"bucket,omitempty"`
 
 	// Optional. User-provided prefix for Cloud Storage filename. See the [object
@@ -249,17 +250,20 @@ type IngestionDataSourceSettings_AwsKinesis struct {
 
 	// Required. The Kinesis stream ARN to ingest data from.
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.AwsKinesis.stream_arn
+	// +required
 	StreamArn *string `json:"streamArn,omitempty"`
 
 	// Required. The Kinesis consumer ARN to used for ingestion in Enhanced
 	//  Fan-Out mode. The consumer must be already created and ready to be used.
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.AwsKinesis.consumer_arn
+	// +required
 	ConsumerArn *string `json:"consumerArn,omitempty"`
 
 	// Required. AWS role ARN to be used for Federated Identity authentication
 	//  with Kinesis. Check the Pub/Sub docs for how to set up this role and the
 	//  required permissions that need to be attached to it.
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.AwsKinesis.aws_role_arn
+	// +required
 	AwsRoleArn *string `json:"awsRoleArn,omitempty"`
 
 	// Required. The GCP service account to be used for Federated Identity
@@ -267,6 +271,7 @@ type IngestionDataSourceSettings_AwsKinesis struct {
 	//  the provided role). The `aws_role_arn` must be set up with
 	//  `accounts.google.com:sub` equals to this service account number.
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.AwsKinesis.gcp_service_account
+	// +required
 	GcpServiceAccount *string `json:"gcpServiceAccount,omitempty"`
 }
 */
@@ -278,17 +283,21 @@ type IngestionDataSourceSettings_AwsMsk struct {
 	// Required. The Amazon Resource Name (ARN) that uniquely identifies the
 	//  cluster.
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.AwsMsk.cluster_arn
+	// +required
 	ClusterArn *string `json:"clusterArn,omitempty"`
 
 	// Required. The name of the topic in the Amazon MSK cluster that Pub/Sub
 	//  will import from.
+	// +kcc:guess=possible-reference target=PubSubTopic
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.AwsMsk.topic
+	// +required
 	Topic *string `json:"topic,omitempty"`
 
 	// Required. AWS role ARN to be used for Federated Identity authentication
 	//  with Amazon MSK. Check the Pub/Sub docs for how to set up this role and
 	//  the required permissions that need to be attached to it.
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.AwsMsk.aws_role_arn
+	// +required
 	AwsRoleArn *string `json:"awsRoleArn,omitempty"`
 
 	// Required. The GCP service account to be used for Federated Identity
@@ -296,6 +305,7 @@ type IngestionDataSourceSettings_AwsMsk struct {
 	//  for the provided role). The `aws_role_arn` must be set up with
 	//  `accounts.google.com:sub` equals to this service account number.
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.AwsMsk.gcp_service_account
+	// +required
 	GcpServiceAccount *string `json:"gcpServiceAccount,omitempty"`
 }
 */
@@ -401,26 +411,32 @@ type IngestionDataSourceSettings_ConfluentCloud struct {
 
 	// Required. The address of the bootstrap server. The format is url:port.
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.ConfluentCloud.bootstrap_server
+	// +required
 	BootstrapServer *string `json:"bootstrapServer,omitempty"`
 
 	// Required. The id of the cluster.
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.ConfluentCloud.cluster_id
+	// +required
 	ClusterID *string `json:"clusterID,omitempty"`
 
 	// Required. The name of the topic in the Confluent Cloud cluster that
 	//  Pub/Sub will import from.
+	// +kcc:guess=possible-reference target=PubSubTopic
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.ConfluentCloud.topic
+	// +required
 	Topic *string `json:"topic,omitempty"`
 
 	// Required. The id of the identity pool to be used for Federated Identity
 	//  authentication with Confluent Cloud. See
 	//  https://docs.confluent.io/cloud/current/security/authenticate/workload-identities/identity-providers/oauth/identity-pools.html#add-oauth-identity-pools.
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.ConfluentCloud.identity_pool_id
+	// +required
 	IdentityPoolID *string `json:"identityPoolID,omitempty"`
 
 	// Required. The GCP service account to be used for Federated Identity
 	//  authentication with `identity_pool_id`.
 	// +kcc:proto:field=google.pubsub.v1.IngestionDataSourceSettings.ConfluentCloud.gcp_service_account
+	// +required
 	GcpServiceAccount *string `json:"gcpServiceAccount,omitempty"`
 }
 */
@@ -431,6 +447,7 @@ type JavaScriptUdf struct {
 	// Required. Name of the JavasScript function that should applied to Pub/Sub
 	//  messages.
 	// +kcc:proto:field=google.pubsub.v1.JavaScriptUDF.function_name
+	// +required
 	FunctionName *string `json:"functionName,omitempty"`
 
 	// Required. JavaScript code that contains a function `function_name` with the
@@ -464,6 +481,7 @@ type JavaScriptUdf struct {
 	//    }
 	//  ```
 	// +kcc:proto:field=google.pubsub.v1.JavaScriptUDF.code
+	// +required
 	Code *string `json:"code,omitempty"`
 }
 */
@@ -637,6 +655,7 @@ type Schema struct {
 	// Required. Name of the schema.
 	//  Format is `projects/{project}/schemas/{schema}`.
 	// +kcc:proto:field=google.pubsub.v1.Schema.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// The type of the schema definition.
@@ -660,6 +679,7 @@ type SchemaSettings struct {
 	//  value of this field will be `_deleted-schema_` if the schema has been
 	//  deleted.
 	// +kcc:proto:field=google.pubsub.v1.SchemaSettings.schema
+	// +required
 	Schema *string `json:"schema,omitempty"`
 
 	// Optional. The encoding of messages validated against `schema`.
@@ -680,8 +700,7 @@ type SchemaSettings struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.pubsub.v1.Snapshot", skipping
-
+/* unreachable type Snapshot
 // +kcc:proto=google.pubsub.v1.Snapshot
 type Snapshot struct {
 	// Optional. The name of the snapshot.
@@ -690,6 +709,7 @@ type Snapshot struct {
 
 	// Optional. The name of the topic from which this snapshot is retaining
 	//  messages.
+	// +kcc:guess=possible-reference target=PubSubTopic
 	// +kcc:proto:field=google.pubsub.v1.Snapshot.topic
 	Topic *string `json:"topic,omitempty"`
 
@@ -724,12 +744,14 @@ type Subscription struct {
 	//  plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters
 	//  in length, and it must not start with `"goog"`.
 	// +kcc:proto:field=google.pubsub.v1.Subscription.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Required. The name of the topic from which this subscription is receiving
 	//  messages. Format is `projects/{project}/topics/{topic}`. The value of this
 	//  field will be `_deleted-topic_` if the topic has been deleted.
 	// +kcc:proto:field=google.pubsub.v1.Subscription.topic
+	// +required
 	Topic *string `json:"topic,omitempty"`
 
 	// Optional. If push delivery is used with this subscription, this field is
@@ -880,6 +902,7 @@ type Subscription_AnalyticsHubSubscriptionInfo struct {
 	// Optional. The name of the associated Analytics Hub subscription resource.
 	//  Pattern:
 	//  "projects/{project}/locations/{location}/subscriptions/{subscription}"
+	// +kcc:guess=possible-reference target=PubSubSubscription
 	// +kcc:proto:field=google.pubsub.v1.Subscription.AnalyticsHubSubscriptionInfo.subscription
 	Subscription *string `json:"subscription,omitempty"`
 }
@@ -896,6 +919,7 @@ type Topic struct {
 	//  signs (`%`). It must be between 3 and 255 characters in length, and it
 	//  must not start with `"goog"`.
 	// +kcc:proto:field=google.pubsub.v1.Topic.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. See [Creating and managing labels]

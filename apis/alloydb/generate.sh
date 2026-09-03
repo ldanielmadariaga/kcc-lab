@@ -34,6 +34,11 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.alloydb.v1beta \
   --api-version alloydb.cnrm.cloud.google.com/v1beta1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource AlloyDBCluster:Cluster \
   --resource AlloyDBInstance:Instance \
   --resource AlloyDBBackup:Backup \

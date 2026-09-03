@@ -64,11 +64,14 @@ spec:
               of DiscoveryEngineSampleQuerySet
             properties:
               description:
-                description: The description of the SampleQuerySet.
+                description: The description of the [SampleQuerySet][google.cloud.discoveryengine.v1beta.SampleQuerySet].
                 type: string
               displayName:
-                description: Required. The sample query set display name. This field
-                  must be a UTF-8 encoded string with a length limit of 128 characters.
+                description: |-
+                  Required. The sample query set display name.
+
+                   This field must be a UTF-8 encoded string with a length limit of 128
+                   characters.
                 type: string
               location:
                 description: The location of this resource.
@@ -161,8 +164,8 @@ spec:
                   observed in GCP.
                 properties:
                   createTime:
-                    description: Output only. Timestamp the SampleQuerySet was created
-                      at.
+                    description: Output only. Timestamp the [SampleQuerySet][google.cloud.discoveryengine.v1beta.SampleQuerySet]
+                      was created at.
                     type: string
                 type: object
             type: object

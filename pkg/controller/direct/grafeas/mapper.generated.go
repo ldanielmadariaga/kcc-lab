@@ -465,6 +465,20 @@ func SbomReferenceNote_ToProto(mapCtx *direct.MapContext, in *krm.SbomReferenceN
 	out.Version = direct.ValueOf(in.Version)
 	return out
 }
+func SecretNote_FromProto(mapCtx *direct.MapContext, in *pb.SecretNote) *krm.SecretNote {
+	if in == nil {
+		return nil
+	}
+	out := &krm.SecretNote{}
+	return out
+}
+func SecretNote_ToProto(mapCtx *direct.MapContext, in *krm.SecretNote) *pb.SecretNote {
+	if in == nil {
+		return nil
+	}
+	out := &pb.SecretNote{}
+	return out
+}
 func UpgradeDistribution_FromProto(mapCtx *direct.MapContext, in *pb.UpgradeDistribution) *krm.UpgradeDistribution {
 	if in == nil {
 		return nil
@@ -572,8 +586,7 @@ func VulnerabilityAssessmentNote_Assessment_FromProto(mapCtx *direct.MapContext,
 	out.VulnerabilityID = direct.LazyPtr(in.GetVulnerabilityId())
 	out.ShortDescription = direct.LazyPtr(in.GetShortDescription())
 	out.LongDescription = direct.LazyPtr(in.GetLongDescription())
-	// MISSING: RelatedUris
-	// (near miss): "RelatedUris" vs "RelatedURIs"
+	out.RelatedURIs = direct.Slice_FromProto(mapCtx, in.RelatedUris, RelatedURL_FromProto)
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.Impacts = in.Impacts
 	out.Justification = VulnerabilityAssessmentNote_Assessment_Justification_FromProto(mapCtx, in.GetJustification())
@@ -589,8 +602,7 @@ func VulnerabilityAssessmentNote_Assessment_ToProto(mapCtx *direct.MapContext, i
 	out.VulnerabilityId = direct.ValueOf(in.VulnerabilityID)
 	out.ShortDescription = direct.ValueOf(in.ShortDescription)
 	out.LongDescription = direct.ValueOf(in.LongDescription)
-	// MISSING: RelatedUris
-	// (near miss): "RelatedUris" vs "RelatedURIs"
+	out.RelatedUris = direct.Slice_ToProto(mapCtx, in.RelatedURIs, RelatedURL_ToProto)
 	out.State = direct.Enum_ToProto[pb.VulnerabilityAssessmentNote_Assessment_State](mapCtx, in.State)
 	out.Impacts = in.Impacts
 	out.Justification = VulnerabilityAssessmentNote_Assessment_Justification_ToProto(mapCtx, in.Justification)
@@ -804,8 +816,7 @@ func WindowsUpdate_FromProto(mapCtx *direct.MapContext, in *pb.WindowsUpdate) *k
 	out.Title = direct.LazyPtr(in.GetTitle())
 	out.Description = direct.LazyPtr(in.GetDescription())
 	out.Categories = direct.Slice_FromProto(mapCtx, in.Categories, WindowsUpdate_Category_FromProto)
-	// MISSING: KbArticleIds
-	// (near miss): "KbArticleIds" vs "KbArticleIDs"
+	out.KbArticleIDs = in.KbArticleIds
 	out.SupportURL = direct.LazyPtr(in.GetSupportUrl())
 	out.LastPublishedTimestamp = direct.StringTimestamp_FromProto(mapCtx, in.GetLastPublishedTimestamp())
 	return out
@@ -819,8 +830,7 @@ func WindowsUpdate_ToProto(mapCtx *direct.MapContext, in *krm.WindowsUpdate) *pb
 	out.Title = direct.ValueOf(in.Title)
 	out.Description = direct.ValueOf(in.Description)
 	out.Categories = direct.Slice_ToProto(mapCtx, in.Categories, WindowsUpdate_Category_ToProto)
-	// MISSING: KbArticleIds
-	// (near miss): "KbArticleIds" vs "KbArticleIDs"
+	out.KbArticleIds = in.KbArticleIDs
 	out.SupportUrl = direct.ValueOf(in.SupportURL)
 	out.LastPublishedTimestamp = direct.StringTimestamp_ToProto(mapCtx, in.LastPublishedTimestamp)
 	return out

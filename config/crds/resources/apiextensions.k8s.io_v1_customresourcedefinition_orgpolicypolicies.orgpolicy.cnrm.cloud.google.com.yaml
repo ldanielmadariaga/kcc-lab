@@ -111,27 +111,6 @@ spec:
                             names are available from the Tag Manager Service. An example
                             expression is: "resource.matchTag(''123456789/environment,
                             ''prod'')". or "resource.matchTagId(''tagKeys/123'', ''tagValues/456'')".'
-                          properties:
-                            description:
-                              description: Optional. Description of the expression.
-                                This is a longer text which describes the expression,
-                                e.g. when hovered over it in a UI.
-                              type: string
-                            expression:
-                              description: Textual representation of an expression
-                                in Common Expression Language syntax.
-                              type: string
-                            location:
-                              description: Optional. String indicating the location
-                                of the expression for error reporting, e.g. a file
-                                name and a position in the file.
-                              type: string
-                            title:
-                              description: Optional. Title for the expression, i.e.
-                                a short string describing its purpose. This can be
-                                used e.g. in UIs which allow to enter the expression.
-                              type: string
-                          type: object
                         denyAll:
                           description: Setting this to true means that all values
                             are denied. This field can be set only in policies for
@@ -290,18 +269,6 @@ spec:
                         values:
                           description: List of values to be used for this policy rule.
                             This field can be set only in policies for list constraints.
-                          properties:
-                            allowedValues:
-                              description: List of values allowed at this resource.
-                              items:
-                                type: string
-                              type: array
-                            deniedValues:
-                              description: List of values denied at this resource.
-                              items:
-                                type: string
-                              type: array
-                          type: object
                       type: object
                     type: array
                 type: object
@@ -437,27 +404,6 @@ spec:
                             names are available from the Tag Manager Service. An example
                             expression is: "resource.matchTag(''123456789/environment,
                             ''prod'')". or "resource.matchTagId(''tagKeys/123'', ''tagValues/456'')".'
-                          properties:
-                            description:
-                              description: Optional. Description of the expression.
-                                This is a longer text which describes the expression,
-                                e.g. when hovered over it in a UI.
-                              type: string
-                            expression:
-                              description: Textual representation of an expression
-                                in Common Expression Language syntax.
-                              type: string
-                            location:
-                              description: Optional. String indicating the location
-                                of the expression for error reporting, e.g. a file
-                                name and a position in the file.
-                              type: string
-                            title:
-                              description: Optional. Title for the expression, i.e.
-                                a short string describing its purpose. This can be
-                                used e.g. in UIs which allow to enter the expression.
-                              type: string
-                          type: object
                         denyAll:
                           description: Setting this to true means that all values
                             are denied. This field can be set only in policies for
@@ -616,18 +562,6 @@ spec:
                         values:
                           description: List of values to be used for this policy rule.
                             This field can be set only in policies for list constraints.
-                          properties:
-                            allowedValues:
-                              description: List of values allowed at this resource.
-                              items:
-                                type: string
-                              type: array
-                            deniedValues:
-                              description: List of values denied at this resource.
-                              items:
-                                type: string
-                              type: array
-                          type: object
                       type: object
                     type: array
                 type: object
@@ -793,27 +727,6 @@ spec:
                             names are available from the Tag Manager Service. An example
                             expression is: "resource.matchTag(''123456789/environment,
                             ''prod'')". or "resource.matchTagId(''tagKeys/123'', ''tagValues/456'')".'
-                          properties:
-                            description:
-                              description: Optional. Description of the expression.
-                                This is a longer text which describes the expression,
-                                e.g. when hovered over it in a UI.
-                              type: string
-                            expression:
-                              description: Textual representation of an expression
-                                in Common Expression Language syntax.
-                              type: string
-                            location:
-                              description: Optional. String indicating the location
-                                of the expression for error reporting, e.g. a file
-                                name and a position in the file.
-                              type: string
-                            title:
-                              description: Optional. Title for the expression, i.e.
-                                a short string describing its purpose. This can be
-                                used e.g. in UIs which allow to enter the expression.
-                              type: string
-                          type: object
                         denyAll:
                           description: Setting this to true means that all values
                             are denied. This field can be set only in policies for
@@ -972,18 +885,6 @@ spec:
                         values:
                           description: List of values to be used for this policy rule.
                             This field can be set only in policies for list constraints.
-                          properties:
-                            allowedValues:
-                              description: List of values allowed at this resource.
-                              items:
-                                type: string
-                              type: array
-                            deniedValues:
-                              description: List of values denied at this resource.
-                              items:
-                                type: string
-                              type: array
-                          type: object
                       type: object
                     type: array
                 type: object
@@ -1119,27 +1020,6 @@ spec:
                             names are available from the Tag Manager Service. An example
                             expression is: "resource.matchTag(''123456789/environment,
                             ''prod'')". or "resource.matchTagId(''tagKeys/123'', ''tagValues/456'')".'
-                          properties:
-                            description:
-                              description: Optional. Description of the expression.
-                                This is a longer text which describes the expression,
-                                e.g. when hovered over it in a UI.
-                              type: string
-                            expression:
-                              description: Textual representation of an expression
-                                in Common Expression Language syntax.
-                              type: string
-                            location:
-                              description: Optional. String indicating the location
-                                of the expression for error reporting, e.g. a file
-                                name and a position in the file.
-                              type: string
-                            title:
-                              description: Optional. Title for the expression, i.e.
-                                a short string describing its purpose. This can be
-                                used e.g. in UIs which allow to enter the expression.
-                              type: string
-                          type: object
                         denyAll:
                           description: Setting this to true means that all values
                             are denied. This field can be set only in policies for
@@ -1298,18 +1178,6 @@ spec:
                         values:
                           description: List of values to be used for this policy rule.
                             This field can be set only in policies for list constraints.
-                          properties:
-                            allowedValues:
-                              description: List of values allowed at this resource.
-                              items:
-                                type: string
-                              type: array
-                            deniedValues:
-                              description: List of values denied at this resource.
-                              items:
-                                type: string
-                              type: array
-                          type: object
                       type: object
                     type: array
                 type: object

@@ -21,6 +21,144 @@
 
 package v1alpha1
 
+// +kcc:proto=google.cloud.run.v2.BinaryAuthorization
+type BinaryAuthorization struct {
+	// Optional. If True, indicates to use the default project's binary
+	//  authorization policy. If False, binary authorization will be disabled.
+	// +kcc:proto:field=google.cloud.run.v2.BinaryAuthorization.use_default
+	UseDefault *bool `json:"useDefault,omitempty"`
+
+	// Optional. The path to a binary authorization policy.
+	//  Format: `projects/{project}/platforms/cloudRun/{policy-name}`
+	// +kcc:proto:field=google.cloud.run.v2.BinaryAuthorization.policy
+	Policy *string `json:"policy,omitempty"`
+
+	// Optional. If present, indicates to use Breakglass using this justification.
+	//  If use_default is False, then it must be empty.
+	//  For more information on breakglass, see
+	//  https://cloud.google.com/binary-authorization/docs/using-breakglass
+	// +kcc:proto:field=google.cloud.run.v2.BinaryAuthorization.breakglass_justification
+	BreakglassJustification *string `json:"breakglassJustification,omitempty"`
+}
+
+/* unreachable type BuildInfo
+// +kcc:proto=google.cloud.run.v2.BuildInfo
+type BuildInfo struct {
+}
+*/
+
+// +kcc:proto=google.cloud.run.v2.CloudSqlInstance
+type CloudSQLInstance struct {
+	// The Cloud SQL instance connection names, as can be found in
+	//  https://console.cloud.google.com/sql/instances. Visit
+	//  https://cloud.google.com/sql/docs/mysql/connect-run for more information on
+	//  how to connect Cloud SQL and Cloud Run. Format:
+	//  {project}:{location}:{instance}
+	// +kcc:proto:field=google.cloud.run.v2.CloudSqlInstance.instances
+	Instances []string `json:"instances,omitempty"`
+}
+
+/* unreachable type Condition
+// +kcc:proto=google.cloud.run.v2.Condition
+type Condition struct {
+	// type is used to communicate the status of the reconciliation process.
+	//  See also:
+	//  https://github.com/knative/serving/blob/main/docs/spec/errors.md#error-conditions-and-reporting
+	//  Types common to all resources include:
+	//  * "Ready": True when the Resource is ready.
+	// +kcc:proto:field=google.cloud.run.v2.Condition.type
+	Type *string `json:"type,omitempty"`
+
+	// State of the condition.
+	// +kcc:proto:field=google.cloud.run.v2.Condition.state
+	State *string `json:"state,omitempty"`
+
+	// Human readable message indicating details about the current status.
+	// +kcc:proto:field=google.cloud.run.v2.Condition.message
+	Message *string `json:"message,omitempty"`
+
+	// Last time the condition transitioned from one status to another.
+	// +kcc:proto:field=google.cloud.run.v2.Condition.last_transition_time
+	LastTransitionTime *string `json:"lastTransitionTime,omitempty"`
+
+	// How to interpret failures of this condition, one of Error, Warning, Info
+	// +kcc:proto:field=google.cloud.run.v2.Condition.severity
+	Severity *string `json:"severity,omitempty"`
+}
+*/
+
+// +kcc:proto=google.cloud.run.v2.Container
+type Container struct {
+	// Name of the container specified as a DNS_LABEL (RFC 1123).
+	// +kcc:proto:field=google.cloud.run.v2.Container.name
+	Name *string `json:"name,omitempty"`
+
+	// Required. Name of the container image in Dockerhub, Google Artifact
+	//  Registry, or Google Container Registry. If the host is not provided,
+	//  Dockerhub is assumed.
+	// +kcc:proto:field=google.cloud.run.v2.Container.image
+	// +required
+	Image *string `json:"image,omitempty"`
+
+	// Entrypoint array. Not executed within a shell.
+	//  The docker image's ENTRYPOINT is used if this is not provided.
+	// +kcc:proto:field=google.cloud.run.v2.Container.command
+	Command []string `json:"command,omitempty"`
+
+	// Arguments to the entrypoint.
+	//  The docker image's CMD is used if this is not provided.
+	// +kcc:proto:field=google.cloud.run.v2.Container.args
+	Args []string `json:"args,omitempty"`
+
+	// List of environment variables to set in the container.
+	// +kcc:proto:field=google.cloud.run.v2.Container.env
+	Env []EnvVar `json:"env,omitempty"`
+
+	// Compute Resource requirements by this container.
+	// +kcc:proto:field=google.cloud.run.v2.Container.resources
+	Resources *ResourceRequirements `json:"resources,omitempty"`
+
+	// List of ports to expose from the container. Only a single port can be
+	//  specified. The specified ports must be listening on all interfaces
+	//  (0.0.0.0) within the container to be accessible.
+	//
+	//  If omitted, a port number will be chosen and passed to the container
+	//  through the PORT environment variable for the container to listen on.
+	// +kcc:proto:field=google.cloud.run.v2.Container.ports
+	Ports []ContainerPort `json:"ports,omitempty"`
+
+	// Volume to mount into the container's filesystem.
+	// +kcc:proto:field=google.cloud.run.v2.Container.volume_mounts
+	VolumeMounts []VolumeMount `json:"volumeMounts,omitempty"`
+
+	// Container's working directory.
+	//  If not specified, the container runtime's default will be used, which
+	//  might be configured in the container image.
+	// +kcc:proto:field=google.cloud.run.v2.Container.working_dir
+	WorkingDir *string `json:"workingDir,omitempty"`
+
+	// Periodic probe of container liveness.
+	//  Container will be restarted if the probe fails.
+	// +kcc:proto:field=google.cloud.run.v2.Container.liveness_probe
+	LivenessProbe *Probe `json:"livenessProbe,omitempty"`
+
+	// Startup probe of application within the container.
+	//  All other probes are disabled if a startup probe is provided, until it
+	//  succeeds. Container will not be added to service endpoints if the probe
+	//  fails.
+	// +kcc:proto:field=google.cloud.run.v2.Container.startup_probe
+	StartupProbe *Probe `json:"startupProbe,omitempty"`
+
+	// Names of the containers that must start before this container.
+	// +kcc:proto:field=google.cloud.run.v2.Container.depends_on
+	DependsOn []string `json:"dependsOn,omitempty"`
+
+	// Base image for this container. Only supported for services. If set, it
+	//  indicates that the service is enrolled into automatic base image update.
+	// +kcc:proto:field=google.cloud.run.v2.Container.base_image_uri
+	BaseImageURI *string `json:"baseImageURI,omitempty"`
+}
+
 // +kcc:proto=google.cloud.run.v2.ContainerPort
 type ContainerPort struct {
 	// If specified, used to specify which protocol to use.
@@ -53,6 +191,48 @@ type EmptyDirVolumeSource struct {
 	//  https://kubernetes.io/docs/concepts/storage/volumes/#emptydir
 	// +kcc:proto:field=google.cloud.run.v2.EmptyDirVolumeSource.size_limit
 	SizeLimit *string `json:"sizeLimit,omitempty"`
+}
+
+// +kcc:proto=google.cloud.run.v2.EnvVar
+type EnvVar struct {
+	// Required. Name of the environment variable. Must not exceed 32768
+	//  characters.
+	// +kcc:proto:field=google.cloud.run.v2.EnvVar.name
+	// +required
+	Name *string `json:"name,omitempty"`
+
+	// Literal value of the environment variable.
+	//  Defaults to "", and the maximum length is 32768 bytes.
+	//  Variable references are not supported in Cloud Run.
+	// +kcc:proto:field=google.cloud.run.v2.EnvVar.value
+	Value *string `json:"value,omitempty"`
+
+	// Source for the environment variable's value.
+	// +kcc:proto:field=google.cloud.run.v2.EnvVar.value_source
+	ValueSource *EnvVarSource `json:"valueSource,omitempty"`
+}
+
+// +kcc:proto=google.cloud.run.v2.EnvVarSource
+type EnvVarSource struct {
+	// Selects a secret and a specific version from Cloud Secret Manager.
+	// +kcc:proto:field=google.cloud.run.v2.EnvVarSource.secret_key_ref
+	SecretKeyRef *SecretKeySelector `json:"secretKeyRef,omitempty"`
+}
+
+// +kcc:proto=google.cloud.run.v2.GCSVolumeSource
+type GCSVolumeSource struct {
+	// Cloud Storage Bucket name.
+	// +kcc:proto:field=google.cloud.run.v2.GCSVolumeSource.bucket
+	Bucket *string `json:"bucket,omitempty"`
+
+	// If true, the volume will be mounted as read only for all mounts.
+	// +kcc:proto:field=google.cloud.run.v2.GCSVolumeSource.read_only
+	ReadOnly *bool `json:"readOnly,omitempty"`
+
+	// A list of additional flags to pass to the gcsfuse CLI.
+	//  Options should be specified without the leading "--".
+	// +kcc:proto:field=google.cloud.run.v2.GCSVolumeSource.mount_options
+	MountOptions []string `json:"mountOptions,omitempty"`
 }
 
 // +kcc:proto=google.cloud.run.v2.GRPCAction
@@ -93,6 +273,7 @@ type HTTPGetAction struct {
 type HTTPHeader struct {
 	// Required. The header field name
 	// +kcc:proto:field=google.cloud.run.v2.HTTPHeader.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. The header field value
@@ -151,6 +332,7 @@ type NfsVolumeSource struct {
 type NodeSelector struct {
 	// Required. GPU accelerator type to attach to an instance.
 	// +kcc:proto:field=google.cloud.run.v2.NodeSelector.accelerator
+	// +required
 	Accelerator *string `json:"accelerator,omitempty"`
 }
 
@@ -222,6 +404,71 @@ type ResourceRequirements struct {
 	StartupCPUBoost *bool `json:"startupCPUBoost,omitempty"`
 }
 
+// +kcc:proto=google.cloud.run.v2.SecretKeySelector
+type SecretKeySelector struct {
+	// Required. The name of the secret in Cloud Secret Manager.
+	//  Format: {secret_name} if the secret is in the same project.
+	//  projects/{project}/secrets/{secret_name} if the secret is
+	//  in a different project.
+	// +kcc:proto:field=google.cloud.run.v2.SecretKeySelector.secret
+	// +required
+	Secret *string `json:"secret,omitempty"`
+
+	// The Cloud Secret Manager secret version.
+	//  Can be 'latest' for the latest version, an integer for a specific version,
+	//  or a version alias.
+	// +kcc:proto:field=google.cloud.run.v2.SecretKeySelector.version
+	Version *string `json:"version,omitempty"`
+}
+
+// +kcc:proto=google.cloud.run.v2.SecretVolumeSource
+type SecretVolumeSource struct {
+	// Required. The name of the secret in Cloud Secret Manager.
+	//  Format: {secret} if the secret is in the same project.
+	//  projects/{project}/secrets/{secret} if the secret is
+	//  in a different project.
+	// +kcc:proto:field=google.cloud.run.v2.SecretVolumeSource.secret
+	// +required
+	Secret *string `json:"secret,omitempty"`
+
+	// If unspecified, the volume will expose a file whose name is the
+	//  secret, relative to VolumeMount.mount_path.
+	//  If specified, the key will be used as the version to fetch from Cloud
+	//  Secret Manager and the path will be the name of the file exposed in the
+	//  volume. When items are defined, they must specify a path and a version.
+	// +kcc:proto:field=google.cloud.run.v2.SecretVolumeSource.items
+	Items []VersionToPath `json:"items,omitempty"`
+
+	// Integer representation of mode bits to use on created files by default.
+	//  Must be a value between 0000 and 0777 (octal), defaulting to 0444.
+	//  Directories within the path are not affected by  this setting.
+	//
+	//  Notes
+	//
+	//  * Internally, a umask of 0222 will be applied to any non-zero value.
+	//  * This is an integer representation of the mode bits. So, the octal
+	//  integer value should look exactly as the chmod numeric notation with a
+	//  leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal)
+	//  or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or
+	//  493 (base-10).
+	//  * This might be in conflict with other options that affect the
+	//  file mode, like fsGroup, and the result can be other mode bits set.
+	//
+	//  This might be in conflict with other options that affect the
+	//  file mode, like fsGroup, and as a result, other mode bits could be set.
+	// +kcc:proto:field=google.cloud.run.v2.SecretVolumeSource.default_mode
+	DefaultMode *int32 `json:"defaultMode,omitempty"`
+}
+
+// +kcc:proto=google.cloud.run.v2.ServiceMesh
+type ServiceMesh struct {
+	// The Mesh resource name. Format:
+	//  `projects/{project}/locations/global/meshes/{mesh}`, where `{project}` can
+	//  be project id or number.
+	// +kcc:proto:field=google.cloud.run.v2.ServiceMesh.mesh
+	Mesh *string `json:"mesh,omitempty"`
+}
+
 // +kcc:proto=google.cloud.run.v2.TCPSocketAction
 type TCPSocketAction struct {
 	// Optional. Port number to access on the container. Must be in the range 1 to
@@ -231,10 +478,72 @@ type TCPSocketAction struct {
 	Port *int32 `json:"port,omitempty"`
 }
 
+// +kcc:proto=google.cloud.run.v2.VersionToPath
+type VersionToPath struct {
+	// Required. The relative path of the secret in the container.
+	// +kcc:proto:field=google.cloud.run.v2.VersionToPath.path
+	// +required
+	Path *string `json:"path,omitempty"`
+
+	// The Cloud Secret Manager secret version.
+	//  Can be 'latest' for the latest value, or an integer or a secret alias for a
+	//  specific version.
+	// +kcc:proto:field=google.cloud.run.v2.VersionToPath.version
+	Version *string `json:"version,omitempty"`
+
+	// Integer octal mode bits to use on this file, must be a value between
+	//  01 and 0777 (octal). If 0 or not set, the Volume's default mode will be
+	//  used.
+	//
+	//  Notes
+	//
+	//  * Internally, a umask of 0222 will be applied to any non-zero value.
+	//  * This is an integer representation of the mode bits. So, the octal
+	//  integer value should look exactly as the chmod numeric notation with a
+	//  leading zero. Some examples: for chmod 640 (u=rw,g=r), set to 0640 (octal)
+	//  or 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or
+	//  493 (base-10).
+	//  * This might be in conflict with other options that affect the
+	//  file mode, like fsGroup, and the result can be other mode bits set.
+	// +kcc:proto:field=google.cloud.run.v2.VersionToPath.mode
+	Mode *int32 `json:"mode,omitempty"`
+}
+
+// +kcc:proto=google.cloud.run.v2.Volume
+type Volume struct {
+	// Required. Volume's name.
+	// +kcc:proto:field=google.cloud.run.v2.Volume.name
+	// +required
+	Name *string `json:"name,omitempty"`
+
+	// Secret represents a secret that should populate this volume.
+	// +kcc:proto:field=google.cloud.run.v2.Volume.secret
+	Secret *SecretVolumeSource `json:"secret,omitempty"`
+
+	// For Cloud SQL volumes, contains the specific instances that should be
+	//  mounted. Visit https://cloud.google.com/sql/docs/mysql/connect-run for
+	//  more information on how to connect Cloud SQL and Cloud Run.
+	// +kcc:proto:field=google.cloud.run.v2.Volume.cloud_sql_instance
+	CloudSQLInstance *CloudSQLInstance `json:"cloudSQLInstance,omitempty"`
+
+	// Ephemeral storage used as a shared volume.
+	// +kcc:proto:field=google.cloud.run.v2.Volume.empty_dir
+	EmptyDir *EmptyDirVolumeSource `json:"emptyDir,omitempty"`
+
+	// For NFS Voumes, contains the path to the nfs Volume
+	// +kcc:proto:field=google.cloud.run.v2.Volume.nfs
+	Nfs *NfsVolumeSource `json:"nfs,omitempty"`
+
+	// Persistent storage backed by a Google Cloud Storage bucket.
+	// +kcc:proto:field=google.cloud.run.v2.Volume.gcs
+	GCS *GCSVolumeSource `json:"gcs,omitempty"`
+}
+
 // +kcc:proto=google.cloud.run.v2.VolumeMount
 type VolumeMount struct {
 	// Required. This must match the Name of a Volume.
 	// +kcc:proto:field=google.cloud.run.v2.VolumeMount.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Required. Path within the container at which the volume should be mounted.
@@ -243,7 +552,229 @@ type VolumeMount struct {
 	//  available as `/cloudsql/[instance]`. For more information on Cloud SQL
 	//  volumes, visit https://cloud.google.com/sql/docs/mysql/connect-run
 	// +kcc:proto:field=google.cloud.run.v2.VolumeMount.mount_path
+	// +required
 	MountPath *string `json:"mountPath,omitempty"`
+}
+
+// +kcc:proto=google.cloud.run.v2.VpcAccess
+type VPCAccess struct {
+	// VPC Access connector name.
+	//  Format: `projects/{project}/locations/{location}/connectors/{connector}`,
+	//  where `{project}` can be project id or number.
+	//  For more information on sending traffic to a VPC network via a connector,
+	//  visit https://cloud.google.com/run/docs/configuring/vpc-connectors.
+	// +kcc:proto:field=google.cloud.run.v2.VpcAccess.connector
+	Connector *string `json:"connector,omitempty"`
+
+	// Optional. Traffic VPC egress settings. If not provided, it defaults to
+	//  PRIVATE_RANGES_ONLY.
+	// +kcc:proto:field=google.cloud.run.v2.VpcAccess.egress
+	Egress *string `json:"egress,omitempty"`
+
+	// Optional. Direct VPC egress settings. Currently only single network
+	//  interface is supported.
+	// +kcc:proto:field=google.cloud.run.v2.VpcAccess.network_interfaces
+	NetworkInterfaces []VPCAccess_NetworkInterface `json:"networkInterfaces,omitempty"`
+}
+
+// +kcc:proto=google.cloud.run.v2.VpcAccess.NetworkInterface
+type VPCAccess_NetworkInterface struct {
+	// Optional. The VPC network that the Cloud Run resource will be able to
+	//  send traffic to. At least one of network or subnetwork must be specified.
+	//  If both network and subnetwork are specified, the given VPC subnetwork
+	//  must belong to the given VPC network. If network is not specified, it
+	//  will be looked up from the subnetwork.
+	// +kcc:proto:field=google.cloud.run.v2.VpcAccess.NetworkInterface.network
+	Network *string `json:"network,omitempty"`
+
+	// Optional. The VPC subnetwork that the Cloud Run resource will get IPs
+	//  from. At least one of network or subnetwork must be specified. If both
+	//  network and subnetwork are specified, the given VPC subnetwork must
+	//  belong to the given VPC network. If subnetwork is not specified, the
+	//  subnetwork with the same name with the network will be used.
+	// +kcc:proto:field=google.cloud.run.v2.VpcAccess.NetworkInterface.subnetwork
+	Subnetwork *string `json:"subnetwork,omitempty"`
+
+	// Optional. Network tags applied to this Cloud Run resource.
+	// +kcc:proto:field=google.cloud.run.v2.VpcAccess.NetworkInterface.tags
+	Tags []string `json:"tags,omitempty"`
+}
+
+/* unreachable type WorkerPool
+// +kcc:proto=google.cloud.run.v2.WorkerPool
+type WorkerPool struct {
+	// The fully qualified name of this WorkerPool. In CreateWorkerPoolRequest,
+	//  this field is ignored, and instead composed from
+	//  CreateWorkerPoolRequest.parent and CreateWorkerPoolRequest.worker_id.
+	//
+	//  Format:
+	//  `projects/{project}/locations/{location}/workerPools/{worker_id}`
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.name
+	Name *string `json:"name,omitempty"`
+
+	// User-provided description of the WorkerPool. This field currently has a
+	//  512-character limit.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. Unstructured key value map that can be used to organize and
+	//  categorize objects. User-provided labels are shared with Google's billing
+	//  system, so they can be used to filter, or break down billing charges by
+	//  team, component, environment, state, etc. For more information, visit
+	//  https://cloud.google.com/resource-manager/docs/creating-managing-labels or
+	//  https://cloud.google.com/run/docs/configuring/labels.
+	//
+	//  Cloud Run API v2 does not support labels with  `run.googleapis.com`,
+	//  `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev`
+	//  namespaces, and they will be rejected. All system labels in v1 now have a
+	//  corresponding field in v2 WorkerPool.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. Unstructured key value map that may be set by external tools to
+	//  store and arbitrary metadata. They are not queryable and should be
+	//  preserved when modifying objects.
+	//
+	//  Cloud Run API v2 does not support annotations with `run.googleapis.com`,
+	//  `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev`
+	//  namespaces, and they will be rejected in new resources. All system
+	//  annotations in v1 now have a corresponding field in v2 WorkerPool.
+	//
+	//  <p>This field follows Kubernetes
+	//  annotations' namespacing, limits, and rules.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.annotations
+	Annotations map[string]string `json:"annotations,omitempty"`
+
+	// Arbitrary identifier for the API client.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.client
+	Client *string `json:"client,omitempty"`
+
+	// Arbitrary version identifier for the API client.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.client_version
+	ClientVersion *string `json:"clientVersion,omitempty"`
+
+	// Optional. The launch stage as defined by [Google Cloud Platform
+	//   Launch Stages](https://cloud.google.com/terms/launch-stages).
+	//   Cloud Run supports `ALPHA`, `BETA`, and `GA`. If no value is specified, GA
+	//   is assumed.
+	//   Set the launch stage to a preview stage on input to allow use of preview
+	//   features in that stage. On read (or output), describes whether the
+	//   resource uses preview features.
+	//
+	//   For example, if ALPHA is provided as input, but only BETA and GA-level
+	//   features are used, this field will be BETA on output.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.launch_stage
+	LaunchStage *string `json:"launchStage,omitempty"`
+
+	// Optional. Settings for the Binary Authorization feature.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.binary_authorization
+	BinaryAuthorization *BinaryAuthorization `json:"binaryAuthorization,omitempty"`
+
+	// Required. The template used to create revisions for this WorkerPool.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.template
+	// +required
+	Template *WorkerPoolRevisionTemplate `json:"template,omitempty"`
+
+	// Optional. Specifies how to distribute instances over a collection of
+	//  Revisions belonging to the WorkerPool. If instance split is empty or not
+	//  provided, defaults to 100% instances assigned to the latest `Ready`
+	//  Revision.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.instance_splits
+	InstanceSplits []InstanceSplit `json:"instanceSplits,omitempty"`
+
+	// Optional. Specifies worker-pool-level scaling settings
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.scaling
+	Scaling *WorkerPoolScaling `json:"scaling,omitempty"`
+
+	// One or more custom audiences that you want this worker pool to support.
+	//  Specify each custom audience as the full URL in a string. The custom
+	//  audiences are encoded in the token and used to authenticate requests. For
+	//  more information, see
+	//  https://cloud.google.com/run/docs/configuring/custom-audiences.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.custom_audiences
+	CustomAudiences []string `json:"customAudiences,omitempty"`
+}
+*/
+
+// +kcc:proto=google.cloud.run.v2.WorkerPoolRevisionTemplate
+type WorkerPoolRevisionTemplate struct {
+	// Optional. The unique name for the revision. If this field is omitted, it
+	//  will be automatically generated based on the WorkerPool name.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolRevisionTemplate.revision
+	Revision *string `json:"revision,omitempty"`
+
+	// Optional. Unstructured key value map that can be used to organize and
+	//  categorize objects. User-provided labels are shared with Google's billing
+	//  system, so they can be used to filter, or break down billing charges by
+	//  team, component, environment, state, etc. For more information, visit
+	//  https://cloud.google.com/resource-manager/docs/creating-managing-labels or
+	//  https://cloud.google.com/run/docs/configuring/labels.
+	//
+	//  Cloud Run API v2 does not support labels with `run.googleapis.com`,
+	//  `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev`
+	//  namespaces, and they will be rejected. All system labels in v1 now have a
+	//  corresponding field in v2 WorkerPoolRevisionTemplate.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolRevisionTemplate.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. Unstructured key value map that may be set by external tools to
+	//  store and arbitrary metadata. They are not queryable and should be
+	//  preserved when modifying objects.
+	//
+	//  Cloud Run API v2 does not support annotations with `run.googleapis.com`,
+	//  `cloud.googleapis.com`, `serving.knative.dev`, or `autoscaling.knative.dev`
+	//  namespaces, and they will be rejected. All system annotations in v1 now
+	//  have a corresponding field in v2 WorkerPoolRevisionTemplate.
+	//
+	//  This field follows Kubernetes annotations' namespacing, limits, and
+	//  rules.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolRevisionTemplate.annotations
+	Annotations map[string]string `json:"annotations,omitempty"`
+
+	// Optional. VPC Access configuration to use for this Revision. For more
+	//  information, visit
+	//  https://cloud.google.com/run/docs/configuring/connecting-vpc.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolRevisionTemplate.vpc_access
+	VPCAccess *VPCAccess `json:"vpcAccess,omitempty"`
+
+	// Optional. Email address of the IAM service account associated with the
+	//  revision of the service. The service account represents the identity of the
+	//  running revision, and determines what permissions the revision has. If not
+	//  provided, the revision will use the project's default service account.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolRevisionTemplate.service_account
+	ServiceAccount *string `json:"serviceAccount,omitempty"`
+
+	// Holds list of the containers that defines the unit of execution for this
+	//  Revision.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolRevisionTemplate.containers
+	Containers []Container `json:"containers,omitempty"`
+
+	// Optional. A list of Volumes to make available to containers.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolRevisionTemplate.volumes
+	Volumes []Volume `json:"volumes,omitempty"`
+
+	// A reference to a customer managed encryption key (CMEK) to use to encrypt
+	//  this container image. For more information, go to
+	//  https://cloud.google.com/run/docs/securing/using-cmek
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolRevisionTemplate.encryption_key
+	EncryptionKey *string `json:"encryptionKey,omitempty"`
+
+	// Optional. Enables service mesh connectivity.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolRevisionTemplate.service_mesh
+	ServiceMesh *ServiceMesh `json:"serviceMesh,omitempty"`
+
+	// Optional. The action to take if the encryption key is revoked.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolRevisionTemplate.encryption_key_revocation_action
+	EncryptionKeyRevocationAction *string `json:"encryptionKeyRevocationAction,omitempty"`
+
+	// Optional. If encryption_key_revocation_action is SHUTDOWN, the duration
+	//  before shutting down all instances. The minimum increment is 1 hour.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolRevisionTemplate.encryption_key_shutdown_duration
+	EncryptionKeyShutdownDuration *string `json:"encryptionKeyShutdownDuration,omitempty"`
+
+	// Optional. The node selector for the revision template.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolRevisionTemplate.node_selector
+	NodeSelector *NodeSelector `json:"nodeSelector,omitempty"`
 }
 
 // +kcc:proto=google.cloud.run.v2.WorkerPoolScaling
@@ -251,4 +782,192 @@ type WorkerPoolScaling struct {
 	// Optional. The total number of instances in manual scaling mode.
 	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolScaling.manual_instance_count
 	ManualInstanceCount *int32 `json:"manualInstanceCount,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.run.v2.BuildInfo
+type BuildInfoObservedState struct {
+	// Output only. Entry point of the function when the image is a Cloud Run
+	//  function.
+	// +kcc:proto:field=google.cloud.run.v2.BuildInfo.function_target
+	FunctionTarget *string `json:"functionTarget,omitempty"`
+
+	// Output only. Source code location of the image.
+	// +kcc:proto:field=google.cloud.run.v2.BuildInfo.source_location
+	SourceLocation *string `json:"sourceLocation,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.run.v2.Condition
+type ConditionObservedState struct {
+	// type is used to communicate the status of the reconciliation process.
+	//  See also:
+	//  https://github.com/knative/serving/blob/main/docs/spec/errors.md#error-conditions-and-reporting
+	//  Types common to all resources include:
+	//  * "Ready": True when the Resource is ready.
+	// +kcc:proto:field=google.cloud.run.v2.Condition.type
+	Type *string `json:"type,omitempty"`
+
+	// State of the condition.
+	// +kcc:proto:field=google.cloud.run.v2.Condition.state
+	State *string `json:"state,omitempty"`
+
+	// Human readable message indicating details about the current status.
+	// +kcc:proto:field=google.cloud.run.v2.Condition.message
+	Message *string `json:"message,omitempty"`
+
+	// Last time the condition transitioned from one status to another.
+	// +kcc:proto:field=google.cloud.run.v2.Condition.last_transition_time
+	LastTransitionTime *string `json:"lastTransitionTime,omitempty"`
+
+	// How to interpret failures of this condition, one of Error, Warning, Info
+	// +kcc:proto:field=google.cloud.run.v2.Condition.severity
+	Severity *string `json:"severity,omitempty"`
+
+	// Output only. A common (service-level) reason for this condition.
+	// +kcc:proto:field=google.cloud.run.v2.Condition.reason
+	Reason *string `json:"reason,omitempty"`
+
+	// Output only. A reason for the revision condition.
+	// +kcc:proto:field=google.cloud.run.v2.Condition.revision_reason
+	RevisionReason *string `json:"revisionReason,omitempty"`
+
+	// Output only. A reason for the execution condition.
+	// +kcc:proto:field=google.cloud.run.v2.Condition.execution_reason
+	ExecutionReason *string `json:"executionReason,omitempty"`
+}
+
+// +kcc:observedstate:proto=google.cloud.run.v2.Container
+type ContainerObservedState struct {
+	// Output only. The build info of the container image.
+	// +kcc:proto:field=google.cloud.run.v2.Container.build_info
+	BuildInfo *BuildInfoObservedState `json:"buildInfo,omitempty"`
+}
+
+/* unreachable type WorkerPoolObservedState
+// +kcc:observedstate:proto=google.cloud.run.v2.WorkerPool
+type WorkerPoolObservedState struct {
+	// Output only. Server assigned unique identifier for the trigger. The value
+	//  is a UUID4 string and guaranteed to remain unchanged until the resource is
+	//  deleted.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. A number that monotonically increases every time the user
+	//  modifies the desired state.
+	//  Please note that unlike v1, this is an int64 value. As with most Google
+	//  APIs, its JSON representation will be a `string` instead of an `integer`.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.generation
+	Generation *int64 `json:"generation,omitempty"`
+
+	// Output only. The creation time.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The last-modified time.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The deletion time. It is only populated as a response to a
+	//  Delete request.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.delete_time
+	DeleteTime *string `json:"deleteTime,omitempty"`
+
+	// Output only. For a deleted resource, the time after which it will be
+	//  permamently deleted.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.expire_time
+	ExpireTime *string `json:"expireTime,omitempty"`
+
+	// Output only. Email address of the authenticated creator.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.creator
+	Creator *string `json:"creator,omitempty"`
+
+	// Output only. Email address of the last authenticated modifier.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.last_modifier
+	LastModifier *string `json:"lastModifier,omitempty"`
+
+	// Required. The template used to create revisions for this WorkerPool.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.template
+	Template *WorkerPoolRevisionTemplateObservedState `json:"template,omitempty"`
+
+	// Output only. The generation of this WorkerPool currently serving traffic.
+	//  See comments in `reconciling` for additional information on reconciliation
+	//  process in Cloud Run. Please note that unlike v1, this is an int64 value.
+	//  As with most Google APIs, its JSON representation will be a `string`
+	//  instead of an `integer`.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.observed_generation
+	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
+
+	// Output only. The Condition of this WorkerPool, containing its readiness
+	//  status, and detailed error information in case it did not reach a serving
+	//  state. See comments in `reconciling` for additional information on
+	//  reconciliation process in Cloud Run.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.terminal_condition
+	TerminalCondition *ConditionObservedState `json:"terminalCondition,omitempty"`
+
+	// Output only. The Conditions of all other associated sub-resources. They
+	//  contain additional diagnostics information in case the WorkerPool does not
+	//  reach its Serving state. See comments in `reconciling` for additional
+	//  information on reconciliation process in Cloud Run.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.conditions
+	Conditions []ConditionObservedState `json:"conditions,omitempty"`
+
+	// Output only. Name of the latest revision that is serving traffic. See
+	//  comments in `reconciling` for additional information on reconciliation
+	//  process in Cloud Run.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.latest_ready_revision
+	LatestReadyRevision *string `json:"latestReadyRevision,omitempty"`
+
+	// Output only. Name of the last created revision. See comments in
+	//  `reconciling` for additional information on reconciliation process in Cloud
+	//  Run.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.latest_created_revision
+	LatestCreatedRevision *string `json:"latestCreatedRevision,omitempty"`
+
+	// Output only. Detailed status information for corresponding instance splits.
+	//  See comments in `reconciling` for additional information on reconciliation
+	//  process in Cloud Run.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.instance_split_statuses
+	InstanceSplitStatuses []InstanceSplitStatus `json:"instanceSplitStatuses,omitempty"`
+
+	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.satisfies_pzs
+	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+
+	// Output only. Returns true if the WorkerPool is currently being acted upon
+	//  by the system to bring it into the desired state.
+	//
+	//  When a new WorkerPool is created, or an existing one is updated, Cloud Run
+	//  will asynchronously perform all necessary steps to bring the WorkerPool to
+	//  the desired serving state. This process is called reconciliation. While
+	//  reconciliation is in process, `observed_generation`,
+	//  `latest_ready_revison`, `traffic_statuses`, and `uri` will have transient
+	//  values that might mismatch the intended state: Once reconciliation is over
+	//  (and this field is false), there are two possible outcomes: reconciliation
+	//  succeeded and the serving state matches the WorkerPool, or there was an
+	//  error, and reconciliation failed. This state can be found in
+	//  `terminal_condition.state`.
+	//
+	//  If reconciliation succeeded, the following fields will match: `traffic` and
+	//  `traffic_statuses`, `observed_generation` and `generation`,
+	//  `latest_ready_revision` and `latest_created_revision`.
+	//
+	//  If reconciliation failed, `traffic_statuses`, `observed_generation`, and
+	//  `latest_ready_revision` will have the state of the last serving revision,
+	//  or empty for newly created WorkerPools. Additional information on the
+	//  failure can be found in `terminal_condition` and `conditions`.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.reconciling
+	Reconciling *bool `json:"reconciling,omitempty"`
+
+	// Output only. A system-generated fingerprint for this version of the
+	//  resource. May be used to detect modification conflict during updates.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPool.etag
+	Etag *string `json:"etag,omitempty"`
+}
+*/
+
+// +kcc:observedstate:proto=google.cloud.run.v2.WorkerPoolRevisionTemplate
+type WorkerPoolRevisionTemplateObservedState struct {
+	// Holds list of the containers that defines the unit of execution for this
+	//  Revision.
+	// +kcc:proto:field=google.cloud.run.v2.WorkerPoolRevisionTemplate.containers
+	Containers []ContainerObservedState `json:"containers,omitempty"`
 }

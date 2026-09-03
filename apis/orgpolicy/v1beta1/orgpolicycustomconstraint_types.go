@@ -17,24 +17,21 @@ package v1beta1
 import (
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var OrgPolicyCustomConstraintGVK = GroupVersion.WithKind("OrgPolicyCustomConstraint")
 
 // OrgPolicyCustomConstraintSpec defines the desired state of OrgPolicyCustomConstraint
-// +kcc:proto=google.cloud.orgpolicy.v2.CustomConstraint
+// +kcc:spec:proto=google.cloud.orgpolicy.v2.CustomConstraint
 type OrgPolicyCustomConstraintSpec struct {
-	// The Organization that this resource belongs to.
-	// +required
+	// The organization that this resource belongs to.
 	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef"`
 
 	// The OrgPolicyCustomConstraint name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Immutable. The resource instance type on which this policy applies. Format
-	//  will be of the form : `<canonical service name>/<type>` Example:
+	//  will be of the form : `<service name>/<type>` Example:
 	//
 	//   * `compute.googleapis.com/Instance`.
 	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.resource_types
@@ -44,7 +41,8 @@ type OrgPolicyCustomConstraintSpec struct {
 	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.method_types
 	MethodTypes []string `json:"methodTypes,omitempty"`
 
-	// Org policy condition/expression. For example:
+	// A Common Expression Language (CEL) condition which is used in the
+	//  evaluation of the constraint. For example:
 	//  `resource.instanceName.matches("[production|test]_.*_(\d)+")` or,
 	//  `resource.management.auto_upgrade == true`
 	//
@@ -84,23 +82,21 @@ type OrgPolicyCustomConstraintStatus struct {
 }
 
 // OrgPolicyCustomConstraintObservedState is the state of the OrgPolicyCustomConstraint resource as most recently observed in GCP.
-// +kcc:proto=google.cloud.orgpolicy.v2.CustomConstraint
+// +kcc:observedstate:proto=google.cloud.orgpolicy.v2.CustomConstraint
 type OrgPolicyCustomConstraintObservedState struct {
 	// Output only. The last time this custom constraint was updated. This
 	//  represents the last time that the `CreateCustomConstraint` or
-	//  `UpdateCustomConstraint` RPC was called
+	//  `UpdateCustomConstraint` methods were called.
 	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// TODO(user): make sure the pluralizaiton below is correct
 // +kubebuilder:resource:categories=gcp,shortName=gcporgpolicycustomconstraint;gcporgpolicycustomconstraints
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

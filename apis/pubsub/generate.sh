@@ -36,6 +36,11 @@ ${CONTROLLERBUILDER} generate-types \
     --service google.pubsub.v1 \
     --api-version pubsub.cnrm.cloud.google.com/v1beta1 \
     --include-skipped-output \
+    --prepopulate-spec \
+    --emit-required-from-proto \
+    --emit-plural-acronyms \
+    --detect-output-only-in-comments \
+    --place-server-set-fields \
     --resource PubSubSnapshot:Snapshot \
     --resource PubSubSchema:Schema \
     --resource PubSubTopic:Topic \

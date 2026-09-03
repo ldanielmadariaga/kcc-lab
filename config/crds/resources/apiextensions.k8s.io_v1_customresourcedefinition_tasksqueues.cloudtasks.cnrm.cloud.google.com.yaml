@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: tasksqueues.cloudtasks.cnrm.cloud.google.com
 spec:
@@ -149,10 +148,10 @@ spec:
                     type: string
                 type: object
               location:
-                description: Required. The location of the queue.
+                description: The location of this resource.
                 type: string
               projectRef:
-                description: Required. The host project of the queue.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -183,6 +182,21 @@ spec:
                     description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
+              purgeTime:
+                description: |-
+                  Output only. The last time this queue was purged.
+
+                   All tasks that were [created][google.cloud.tasks.v2.Task.create_time]
+                   before this time were purged.
+
+                   A queue can be purged using
+                   [PurgeQueue][google.cloud.tasks.v2.CloudTasks.PurgeQueue], the [App Engine
+                   Task Queue SDK, or the Cloud
+                   Console](https://cloud.google.com/appengine/docs/standard/python/taskqueue/push/deleting-tasks-and-queues#purging_all_tasks_from_a_queue).
+
+                   Purge time will be truncated to the nearest microsecond. Purge
+                   time will be unset if the queue has never been purged.
+                type: string
               rateLimits:
                 description: |-
                   Rate limits for task dispatches.
@@ -415,6 +429,20 @@ spec:
                       0.0 is the default and means that no operations are logged.
                     type: number
                 type: object
+              state:
+                description: |-
+                  Output only. The state of the queue.
+
+                   `state` can only be changed by calling
+                   [PauseQueue][google.cloud.tasks.v2.CloudTasks.PauseQueue],
+                   [ResumeQueue][google.cloud.tasks.v2.CloudTasks.ResumeQueue], or uploading
+                   [queue.yaml/xml](https://cloud.google.com/appengine/docs/python/config/queueref).
+                   [UpdateQueue][google.cloud.tasks.v2.CloudTasks.UpdateQueue] cannot be used
+                   to change `state`.
+                type: string
+            required:
+            - location
+            - projectRef
             type: object
           status:
             description: TasksQueueStatus defines the config connector machine state
@@ -460,33 +488,6 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
-                properties:
-                  purgeTime:
-                    description: |-
-                      Output only. The last time this queue was purged.
-
-                       All tasks that were [created][google.cloud.tasks.v2.Task.create_time]
-                       before this time were purged.
-
-                       A queue can be purged using
-                       [PurgeQueue][google.cloud.tasks.v2.CloudTasks.PurgeQueue], the [App Engine
-                       Task Queue SDK, or the Cloud
-                       Console](https://cloud.google.com/appengine/docs/standard/python/taskqueue/push/deleting-tasks-and-queues#purging_all_tasks_from_a_queue).
-
-                       Purge time will be truncated to the nearest microsecond. Purge
-                       time will be unset if the queue has never been purged.
-                    type: string
-                  state:
-                    description: |-
-                      Output only. The state of the queue.
-
-                       `state` can only be changed by calling
-                       [PauseQueue][google.cloud.tasks.v2.CloudTasks.PauseQueue],
-                       [ResumeQueue][google.cloud.tasks.v2.CloudTasks.ResumeQueue], or uploading
-                       [queue.yaml/xml](https://cloud.google.com/appengine/docs/python/config/queueref).
-                       [UpdateQueue][google.cloud.tasks.v2.CloudTasks.UpdateQueue] cannot be used
-                       to change `state`.
-                    type: string
                 type: object
             type: object
         required:

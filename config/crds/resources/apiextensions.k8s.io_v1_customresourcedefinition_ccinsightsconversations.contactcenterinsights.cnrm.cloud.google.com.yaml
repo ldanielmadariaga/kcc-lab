@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: ccinsightsconversations.contactcenterinsights.cnrm.cloud.google.com
 spec:
@@ -125,14 +124,10 @@ spec:
               medium:
                 description: Immutable. The conversation medium, if unspecified will
                   default to PHONE_CALL.
-                enum:
-                - MEDIUM_UNSPECIFIED
-                - PHONE_CALL
-                - CHAT
                 type: string
               metadataJson:
                 description: Input only. JSON metadata encoded as a string. This field
-                  is primarily used by Insights integrations with various telephony
+                  is primarily used by Insights integrations with various telphony
                   systems and must be in one of Insight's supported formats.
                 type: string
               obfuscatedUserID:
@@ -275,6 +270,31 @@ spec:
                     description: Output only. The time at which the conversation was
                       created.
                     type: string
+                  dataSource:
+                    description: The source of the audio and transcription for the
+                      conversation.
+                    properties:
+                      dialogflowSource:
+                        description: The source when the conversation comes from Dialogflow.
+                        properties:
+                          dialogflowConversation:
+                            description: 'Output only. The name of the Dialogflow
+                              conversation that this conversation resource is derived
+                              from. Format: projects/{project}/locations/{location}/conversations/{conversation}'
+                            type: string
+                        type: object
+                    type: object
+                  dialogflowIntents:
+                    additionalProperties:
+                      properties:
+                        displayName:
+                          description: The human-readable name of the intent.
+                          type: string
+                      type: object
+                    description: 'Output only. All the matched Dialogflow intents
+                      in the call. The key corresponds to a Dialogflow intent, format:
+                      projects/{project}/agent/{agent}/intents/{intent}'
+                    type: object
                   duration:
                     description: Output only. The duration of the conversation.
                     type: string
@@ -282,6 +302,527 @@ spec:
                     description: Output only. The conversation's latest analysis,
                       if one exists.
                     properties:
+                      analysisResult:
+                        description: Output only. The result of the analysis, which
+                          is populated when the analysis finishes.
+                        properties:
+                          callAnalysisMetadata:
+                            description: Call-specific metadata created by the analysis.
+                            properties:
+                              annotations:
+                                description: A list of call annotations that apply
+                                  to this call.
+                                items:
+                                  properties:
+                                    annotationEndBoundary:
+                                      description: The boundary in the conversation
+                                        where the annotation ends, inclusive.
+                                      properties:
+                                        transcriptIndex:
+                                          description: The index in the sequence of
+                                            transcribed pieces of the conversation
+                                            where the boundary is located. This index
+                                            starts at zero.
+                                          format: int32
+                                          type: integer
+                                        wordIndex:
+                                          description: The word index of this boundary
+                                            with respect to the first word in the
+                                            transcript piece. This index starts at
+                                            zero.
+                                          format: int32
+                                          type: integer
+                                      type: object
+                                    annotationStartBoundary:
+                                      description: The boundary in the conversation
+                                        where the annotation starts, inclusive.
+                                      properties:
+                                        transcriptIndex:
+                                          description: The index in the sequence of
+                                            transcribed pieces of the conversation
+                                            where the boundary is located. This index
+                                            starts at zero.
+                                          format: int32
+                                          type: integer
+                                        wordIndex:
+                                          description: The word index of this boundary
+                                            with respect to the first word in the
+                                            transcript piece. This index starts at
+                                            zero.
+                                          format: int32
+                                          type: integer
+                                      type: object
+                                    channelTag:
+                                      description: The channel of the audio where
+                                        the annotation occurs. For single-channel
+                                        audio, this field is not populated.
+                                      format: int32
+                                      type: integer
+                                    entityMentionData:
+                                      description: Data specifying an entity mention.
+                                      properties:
+                                        entityUniqueID:
+                                          description: The key of this entity in conversation
+                                            entities. Can be used to retrieve the
+                                            exact `Entity` this mention is attached
+                                            to.
+                                          type: string
+                                        sentiment:
+                                          description: Sentiment expressed for this
+                                            mention of the entity.
+                                          properties:
+                                            magnitude:
+                                              description: A non-negative number from
+                                                0 to infinity which represents the
+                                                abolute magnitude of sentiment regardless
+                                                of score.
+                                              type: number
+                                            score:
+                                              description: The sentiment score between
+                                                -1.0 (negative) and 1.0 (positive).
+                                              type: number
+                                          type: object
+                                        type:
+                                          description: The type of the entity mention.
+                                          type: string
+                                      type: object
+                                    holdData:
+                                      description: Data specifying a hold.
+                                      type: object
+                                    intentMatchData:
+                                      description: Data specifying an intent match.
+                                      properties:
+                                        intentUniqueID:
+                                          description: The id of the matched intent.
+                                            Can be used to retrieve the corresponding
+                                            intent information.
+                                          type: string
+                                      type: object
+                                    interruptionData:
+                                      description: Data specifying an interruption.
+                                      type: object
+                                    issueMatchData:
+                                      description: Data specifying an issue match.
+                                      properties:
+                                        issueAssignment:
+                                          description: Information about the issue's
+                                            assignment.
+                                          properties:
+                                            displayName:
+                                              description: Immutable. Display name
+                                                of the assigned issue. This field
+                                                is set at time of analyis and immutable
+                                                since then.
+                                              type: string
+                                            issue:
+                                              description: Resource name of the assigned
+                                                issue.
+                                              type: string
+                                            score:
+                                              description: Score indicating the likelihood
+                                                of the issue assignment. currently
+                                                bounded on [0,1].
+                                              type: number
+                                          type: object
+                                      type: object
+                                    phraseMatchData:
+                                      description: Data specifying a phrase match.
+                                      properties:
+                                        displayName:
+                                          description: The human-readable name of
+                                            the phrase matcher.
+                                          type: string
+                                        phraseMatcher:
+                                          description: The unique identifier (the
+                                            resource name) of the phrase matcher.
+                                          type: string
+                                      type: object
+                                    sentimentData:
+                                      description: Data specifying sentiment.
+                                      properties:
+                                        magnitude:
+                                          description: A non-negative number from
+                                            0 to infinity which represents the abolute
+                                            magnitude of sentiment regardless of score.
+                                          type: number
+                                        score:
+                                          description: The sentiment score between
+                                            -1.0 (negative) and 1.0 (positive).
+                                          type: number
+                                      type: object
+                                    silenceData:
+                                      description: Data specifying silence.
+                                      type: object
+                                  type: object
+                                type: array
+                              entities:
+                                additionalProperties:
+                                  properties:
+                                    displayName:
+                                      description: The representative name for the
+                                        entity.
+                                      type: string
+                                    metadata:
+                                      additionalProperties:
+                                        type: string
+                                      description: |-
+                                        Metadata associated with the entity.
+
+                                         For most entity types, the metadata is a Wikipedia URL (`wikipedia_url`)
+                                         and Knowledge Graph MID (`mid`), if they are available. For the metadata
+                                         associated with other entity types, see the Type table below.
+                                      type: object
+                                    salience:
+                                      description: |-
+                                        The salience score associated with the entity in the [0, 1.0] range.
+
+                                         The salience score for an entity provides information about the
+                                         importance or centrality of that entity to the entire document text.
+                                         Scores closer to 0 are less salient, while scores closer to 1.0 are highly
+                                         salient.
+                                      type: number
+                                    sentiment:
+                                      description: The aggregate sentiment expressed
+                                        for this entity in the conversation.
+                                      properties:
+                                        magnitude:
+                                          description: A non-negative number from
+                                            0 to infinity which represents the abolute
+                                            magnitude of sentiment regardless of score.
+                                          type: number
+                                        score:
+                                          description: The sentiment score between
+                                            -1.0 (negative) and 1.0 (positive).
+                                          type: number
+                                      type: object
+                                    type:
+                                      description: The entity type.
+                                      type: string
+                                  type: object
+                                description: All the entities in the call.
+                                type: object
+                              intents:
+                                additionalProperties:
+                                  properties:
+                                    displayName:
+                                      description: The human-readable name of the
+                                        intent.
+                                      type: string
+                                    id:
+                                      description: The unique identifier of the intent.
+                                      type: string
+                                  type: object
+                                description: All the matched intents in the call.
+                                type: object
+                              issueModelResult:
+                                description: Overall conversation-level issue modeling
+                                  result.
+                                properties:
+                                  issueModel:
+                                    description: 'Issue model that generates the result.
+                                      Format: projects/{project}/locations/{location}/issueModels/{issue_model}'
+                                    type: string
+                                  issues:
+                                    description: All the matched issues.
+                                    items:
+                                      properties:
+                                        displayName:
+                                          description: Immutable. Display name of
+                                            the assigned issue. This field is set
+                                            at time of analyis and immutable since
+                                            then.
+                                          type: string
+                                        issue:
+                                          description: Resource name of the assigned
+                                            issue.
+                                          type: string
+                                        score:
+                                          description: Score indicating the likelihood
+                                            of the issue assignment. currently bounded
+                                            on [0,1].
+                                          type: number
+                                      type: object
+                                    type: array
+                                type: object
+                              phraseMatchers:
+                                additionalProperties:
+                                  properties:
+                                    displayName:
+                                      description: The human-readable name of the
+                                        phrase matcher.
+                                      type: string
+                                    phraseMatcher:
+                                      description: The unique identifier (the resource
+                                        name) of the phrase matcher.
+                                      type: string
+                                  type: object
+                                description: All the matched phrase matchers in the
+                                  call.
+                                type: object
+                              qaScorecardResults:
+                                description: Results of scoring QaScorecards.
+                                items:
+                                  properties:
+                                    agentID:
+                                      description: ID of the agent that handled the
+                                        conversation.
+                                      type: string
+                                    conversation:
+                                      description: The conversation scored by this
+                                        result.
+                                      type: string
+                                    createTime:
+                                      description: Output only. The timestamp that
+                                        the revision was created.
+                                      type: string
+                                    name:
+                                      description: 'Identifier. The name of the scorecard
+                                        result. Format: projects/{project}/locations/{location}/qaScorecardResults/{qa_scorecard_result}'
+                                      type: string
+                                    normalizedScore:
+                                      description: The normalized score, which is
+                                        the score divided by the potential score.
+                                        Any manual edits are included if they exist.
+                                      type: number
+                                    potentialScore:
+                                      description: The maximum potential overall score
+                                        of the scorecard. Any questions answered using
+                                        `na_value` are excluded from this calculation.
+                                      type: number
+                                    qaAnswers:
+                                      description: Set of QaAnswers represented in
+                                        the result.
+                                      items:
+                                        properties:
+                                          answerSources:
+                                            description: List of all individual answers
+                                              given to the question.
+                                            items:
+                                              properties:
+                                                answerValue:
+                                                  description: The answer value from
+                                                    this source.
+                                                  properties:
+                                                    boolValue:
+                                                      description: Boolean value.
+                                                      type: boolean
+                                                    key:
+                                                      description: A short string
+                                                        used as an identifier. Matches
+                                                        the value used in QaQuestion.AnswerChoice.key.
+                                                      type: string
+                                                    naValue:
+                                                      description: A value of "Not
+                                                        Applicable (N/A)". Should
+                                                        only ever be `true`.
+                                                      type: boolean
+                                                    normalizedScore:
+                                                      description: Output only. Normalized
+                                                        score of the questions. Calculated
+                                                        as score / potential_score.
+                                                      type: number
+                                                    numValue:
+                                                      description: Numerical value.
+                                                      type: number
+                                                    potentialScore:
+                                                      description: Output only. The
+                                                        maximum potential score of
+                                                        the question.
+                                                      type: number
+                                                    score:
+                                                      description: Output only. Numerical
+                                                        score of the answer.
+                                                      type: number
+                                                    strValue:
+                                                      description: String value.
+                                                      type: string
+                                                  type: object
+                                                sourceType:
+                                                  description: What created the answer.
+                                                  type: string
+                                              type: object
+                                            type: array
+                                          answerValue:
+                                            description: The main answer value, incorporating
+                                              any manual edits if they exist.
+                                            properties:
+                                              boolValue:
+                                                description: Boolean value.
+                                                type: boolean
+                                              key:
+                                                description: A short string used as
+                                                  an identifier. Matches the value
+                                                  used in QaQuestion.AnswerChoice.key.
+                                                type: string
+                                              naValue:
+                                                description: A value of "Not Applicable
+                                                  (N/A)". Should only ever be `true`.
+                                                type: boolean
+                                              normalizedScore:
+                                                description: Output only. Normalized
+                                                  score of the questions. Calculated
+                                                  as score / potential_score.
+                                                type: number
+                                              numValue:
+                                                description: Numerical value.
+                                                type: number
+                                              potentialScore:
+                                                description: Output only. The maximum
+                                                  potential score of the question.
+                                                type: number
+                                              score:
+                                                description: Output only. Numerical
+                                                  score of the answer.
+                                                type: number
+                                              strValue:
+                                                description: String value.
+                                                type: string
+                                            type: object
+                                          conversation:
+                                            description: The conversation the answer
+                                              applies to.
+                                            type: string
+                                          qaQuestion:
+                                            description: The QaQuestion answered by
+                                              this answer.
+                                            type: string
+                                          questionBody:
+                                            description: Question text. E.g., "Did
+                                              the agent greet the customer?"
+                                            type: string
+                                          tags:
+                                            description: User-defined list of arbitrary
+                                              tags. Matches the value from QaScorecard.ScorecardQuestion.tags.
+                                              Used for grouping/organization and for
+                                              weighting the score of each answer.
+                                            items:
+                                              type: string
+                                            type: array
+                                        type: object
+                                      type: array
+                                    qaScorecardRevision:
+                                      description: The QaScorecardRevision scored
+                                        by this result.
+                                      type: string
+                                    qaTagResults:
+                                      description: Collection of tags and their scores.
+                                      items:
+                                        properties:
+                                          normalizedScore:
+                                            description: The normalized score the
+                                              tag applies to.
+                                            type: number
+                                          potentialScore:
+                                            description: The potential score the tag
+                                              applies to.
+                                            type: number
+                                          score:
+                                            description: The score the tag applies
+                                              to.
+                                            type: number
+                                          tag:
+                                            description: The tag the score applies
+                                              to.
+                                            type: string
+                                        type: object
+                                      type: array
+                                    score:
+                                      description: The overall numerical score of
+                                        the result, incorporating any manual edits
+                                        if they exist.
+                                      type: number
+                                    scoreSources:
+                                      description: List of all individual score sets.
+                                      items:
+                                        properties:
+                                          normalizedScore:
+                                            description: The normalized score, which
+                                              is the score divided by the potential
+                                              score.
+                                            type: number
+                                          potentialScore:
+                                            description: The maximum potential overall
+                                              score of the scorecard. Any questions
+                                              answered using `na_value` are excluded
+                                              from this calculation.
+                                            type: number
+                                          qaTagResults:
+                                            description: Collection of tags and their
+                                              scores.
+                                            items:
+                                              properties:
+                                                normalizedScore:
+                                                  description: The normalized score
+                                                    the tag applies to.
+                                                  type: number
+                                                potentialScore:
+                                                  description: The potential score
+                                                    the tag applies to.
+                                                  type: number
+                                                score:
+                                                  description: The score the tag applies
+                                                    to.
+                                                  type: number
+                                                tag:
+                                                  description: The tag the score applies
+                                                    to.
+                                                  type: string
+                                              type: object
+                                            type: array
+                                          score:
+                                            description: The overall numerical score
+                                              of the result.
+                                            type: number
+                                          sourceType:
+                                            description: What created the score.
+                                            type: string
+                                        type: object
+                                      type: array
+                                  type: object
+                                type: array
+                              sentiments:
+                                description: Overall conversation-level sentiment
+                                  for each channel of the call.
+                                items:
+                                  properties:
+                                    channelTag:
+                                      description: The channel of the audio that the
+                                        data applies to.
+                                      format: int32
+                                      type: integer
+                                    sentimentData:
+                                      description: Data specifying sentiment.
+                                      properties:
+                                        magnitude:
+                                          description: A non-negative number from
+                                            0 to infinity which represents the abolute
+                                            magnitude of sentiment regardless of score.
+                                          type: number
+                                        score:
+                                          description: The sentiment score between
+                                            -1.0 (negative) and 1.0 (positive).
+                                          type: number
+                                      type: object
+                                  type: object
+                                type: array
+                              silence:
+                                description: Overall conversation-level silence during
+                                  the call.
+                                properties:
+                                  silenceDuration:
+                                    description: Amount of time calculated to be in
+                                      silence.
+                                    type: string
+                                  silencePercentage:
+                                    description: Percentage of the total conversation
+                                      spent in silence.
+                                    type: number
+                                type: object
+                            type: object
+                          endTime:
+                            description: The time at which the analysis ended.
+                            type: string
+                        type: object
                       annotatorSelector:
                         description: To select the annotators to run and the phrase
                           matchers to use (if any). If not specified, all annotators
@@ -362,9 +903,17 @@ spec:
                                 type: string
                             type: object
                         type: object
+                      createTime:
+                        description: Output only. The time at which the analysis was
+                          created, which occurs when the long-running operation completes.
+                        type: string
                       name:
                         description: 'Immutable. The resource name of the analysis.
                           Format: projects/{project}/locations/{location}/conversations/{conversation}/analyses/{analysis}'
+                        type: string
+                      requestTime:
+                        description: Output only. The time at which the analysis was
+                          requested.
                         type: string
                     type: object
                   latestSummary:

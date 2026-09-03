@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: gkemulticloudattachedclusters.gkemulticloud.cnrm.cloud.google.com
 spec:
@@ -67,13 +66,16 @@ spec:
               annotations:
                 additionalProperties:
                   type: string
-                description: 'Optional. Annotations on the cluster. This field has
-                  the same restrictions as Kubernetes annotations. The total size
-                  of all keys and values combined is limited to 256k. Key can have
-                  2 segments: prefix (optional) and name (required), separated by
-                  a slash (/). Prefix must be a DNS subdomain. Name must be 63 characters
-                  or less, begin and end with alphanumerics, with dashes (-), underscores
-                  (_), dots (.), and alphanumerics between.'
+                description: |-
+                  Optional. Annotations on the cluster.
+
+                   This field has the same restrictions as Kubernetes annotations.
+                   The total size of all keys and values combined is limited to 256k.
+                   Key can have 2 segments: prefix (optional) and name (required),
+                   separated by a slash (/).
+                   Prefix must be a DNS subdomain.
+                   Name must be 63 characters or less, begin and end with alphanumerics,
+                   with dashes (-), underscores (_), dots (.), and alphanumerics between.
                 type: object
               authorization:
                 description: Optional. Configuration related to the cluster RBAC settings.
@@ -91,6 +93,8 @@ spec:
                         group:
                           description: Required. The name of the group, e.g. `my-group@domain.com`.
                           type: string
+                      required:
+                      - group
                       type: object
                     type: array
                   adminUsers:
@@ -106,6 +110,8 @@ spec:
                         username:
                           description: Required. The name of the user, e.g. `my-gcp-id@gmail.com`.
                           type: string
+                      required:
+                      - username
                       type: object
                     type: array
                 type: object
@@ -123,53 +129,36 @@ spec:
                   Cannot be longer than 255 UTF-8 encoded bytes.
                 type: string
               distribution:
-                description: 'Required. The Kubernetes distribution of the underlying
-                  attached cluster. Supported values: ["eks", "aks", "generic"].'
+                description: |-
+                  Required. The Kubernetes distribution of the underlying attached cluster.
+
+                   Supported values: ["eks", "aks", "generic"].
+                type: string
+              etag:
+                description: |-
+                  Allows clients to perform consistent read-modify-writes
+                   through optimistic concurrency control.
+
+                   Can be sent on update and delete requests to ensure the
+                   client has an up-to-date value before proceeding.
                 type: string
               fleet:
                 description: Required. Fleet configuration.
                 properties:
-                  projectRef:
-                    description: The host project of the fleet.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: The `projectID` field of a project, when not
-                          managed by Config Connector.
-                        type: string
-                      kind:
-                        description: The kind of the Project resource; optional but
-                          must be `Project` if provided.
-                        type: string
-                      name:
-                        description: The `name` field of a `Project` resource.
-                        type: string
-                      namespace:
-                        description: The `namespace` field of a `Project` resource.
-                        type: string
-                    type: object
+                  project:
+                    description: |-
+                      Required. The name of the Fleet host project where this cluster will be
+                       registered.
+
+                       Project names are formatted as
+                       `projects/<project-number>`.
+                    type: string
                 required:
-                - projectRef
+                - project
                 type: object
               location:
-                description: Immutable. The location of this resource.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
               loggingConfig:
                 description: Optional. Logging configuration for this cluster.
                 properties:
@@ -225,9 +214,12 @@ spec:
                     type: string
                 type: object
               platformVersion:
-                description: Required. The platform version for the cluster (e.g.
-                  `1.19.0-gke.1000`). You can list all supported versions on a given
-                  Google Cloud region by calling GetAttachedServerConfig.
+                description: |-
+                  Required. The platform version for the cluster (e.g. `1.19.0-gke.1000`).
+
+                   You can list all supported versions on a given Google Cloud region by
+                   calling
+                   [GetAttachedServerConfig][google.cloud.gkemulticloud.v1.AttachedClusters.GetAttachedServerConfig].
                 type: string
               projectRef:
                 description: The project that this resource belongs to.
@@ -293,9 +285,20 @@ spec:
               tags:
                 additionalProperties:
                   type: string
-                description: Optional. Input only. Tag keys/values directly bound
-                  to this resource. See Tags overview for more details on Google Cloud
-                  Platform tags.
+                description: |-
+                  Optional. Input only. Tag keys/values directly bound to this resource.
+
+                   Tag key must be specified in the format <tag namespace>/<tag key name>
+                   where the tag namespace is the ID of the organization or name of the
+                   project that the tag key is defined in.
+                   The short name of a tag key or value can have a maximum length of 256
+                   characters. The permitted character set for the short name includes UTF-8
+                   encoded Unicode characters except single quotes ('), double quotes ("),
+                   backslashes (\), and forward slashes (/).
+
+                   See
+                   [Tags](https://cloud.google.com/resource-manager/docs/tags/tags-overview)
+                   for more details on Google Cloud Platform tags.
                 type: object
             required:
             - distribution
@@ -352,9 +355,11 @@ spec:
                   observed in GCP.
                 properties:
                   clusterRegion:
-                    description: Output only. The region where this cluster runs.
-                      For EKS clusters, this is an AWS region. For AKS clusters, this
-                      is an Azure region.
+                    description: |-
+                      Output only. The region where this cluster runs.
+
+                       For EKS clusters, this is a AWS region. For AKS clusters,
+                       this is an Azure region.
                     type: string
                   createTime:
                     description: Output only. The time at which this cluster was registered.
@@ -372,8 +377,12 @@ spec:
                     description: Required. Fleet configuration.
                     properties:
                       membership:
-                        description: Output only. The name of the managed Hub Membership
-                          resource associated to this cluster.
+                        description: |-
+                          Output only. The name of the managed Hub Membership resource associated to
+                           this cluster.
+
+                           Membership names are formatted as
+                           `projects/<project-number>/locations/global/membership/<cluster-id>`.
                         type: string
                     type: object
                   kubernetesVersion:

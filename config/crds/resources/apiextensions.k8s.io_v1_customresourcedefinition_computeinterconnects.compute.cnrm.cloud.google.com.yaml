@@ -62,6 +62,10 @@ spec:
           spec:
             description: ComputeInterconnectSpec defines the desired state of ComputeInterconnect
             properties:
+              aaiEnabled:
+                description: Enable or disable the application awareness feature on
+                  this Cloud Interconnect.
+                type: boolean
               adminEnabled:
                 description: Administrative status of the interconnect. When this
                   is set to true, the Interconnect is functional and can carry traffic.
@@ -69,6 +73,85 @@ spec:
                   and no BGP routes are exchanged over it. By default, the status
                   is set to true.
                 type: boolean
+              applicationAwareInterconnect:
+                description: Configuration information for application awareness on
+                  this Cloud Interconnect.
+                properties:
+                  bandwidthPercentagePolicy:
+                    properties:
+                      bandwidthPercentages:
+                        description: Specify bandwidth percentages for various traffic
+                          classes for queuing type Bandwidth Percent.
+                        items:
+                          properties:
+                            percentage:
+                              description: Bandwidth percentage for a specific traffic
+                                class.
+                              format: int32
+                              type: integer
+                            trafficClass:
+                              description: TrafficClass whose bandwidth percentage
+                                is being specified. Check the TrafficClass enum for
+                                the list of possible values.
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                  profileDescription:
+                    description: Description for the application awareness profile
+                      on this Cloud Interconnect.
+                    type: string
+                  shapeAveragePercentages:
+                    description: Optional field to specify a list of shape average
+                      percentages to be applied in conjunction with StrictPriorityPolicy
+                      or BandwidthPercentagePolicy.
+                    items:
+                      properties:
+                        percentage:
+                          description: Bandwidth percentage for a specific traffic
+                            class.
+                          format: int32
+                          type: integer
+                        trafficClass:
+                          description: TrafficClass whose bandwidth percentage is
+                            being specified. Check the TrafficClass enum for the list
+                            of possible values.
+                          type: string
+                      type: object
+                    type: array
+                  strictPriorityPolicy:
+                    type: object
+                type: object
+              availableFeatures:
+                description: '[Output only] List of features available for this Interconnect
+                  connection, which can take one of the following values: - IF_MACSEC
+                  If present then the Interconnect connection is provisioned on MACsec
+                  capable hardware ports. If not present then the Interconnect connection
+                  is provisioned on non-MACsec capable ports and MACsec isn''t supported
+                  and enabling MACsec fails. Check the AvailableFeatures enum for
+                  the list of possible values.'
+                items:
+                  type: string
+                type: array
+              circuitInfos:
+                description: '[Output Only] A list of CircuitInfo objects, that describe
+                  the individual circuits in this LAG.'
+                items:
+                  properties:
+                    customerDemarcID:
+                      description: Customer-side demarc ID for this circuit.
+                      type: string
+                    googleCircuitID:
+                      description: Google-assigned unique ID for this circuit. Assigned
+                        at circuit turn-up.
+                      type: string
+                    googleDemarcID:
+                      description: Google-side demarc ID for this circuit. Assigned
+                        at circuit turn-up and provided by Google to the customer
+                        in the LOA.
+                      type: string
+                  type: object
+                type: array
               customerName:
                 description: Customer name, to put in the Letter of Authorization
                   as the party authorized to request a crossconnect.
@@ -77,6 +160,84 @@ spec:
                 description: An optional description of this resource. Provide this
                   property when you create the resource.
                 type: string
+              expectedOutages:
+                description: '[Output Only] A list of outages expected for this Interconnect.'
+                items:
+                  properties:
+                    affectedCircuits:
+                      description: If issue_type is IT_PARTIAL_OUTAGE, a list of the
+                        Google-side circuit IDs that will be affected.
+                      items:
+                        type: string
+                      type: array
+                    description:
+                      description: A description about the purpose of the outage.
+                      type: string
+                    endTime:
+                      description: Scheduled end time for the outage (milliseconds
+                        since Unix epoch).
+                      format: int64
+                      type: integer
+                    issueType:
+                      description: 'Form this outage is expected to take, which can
+                        take one of the following values: - OUTAGE: The Interconnect
+                        may be completely out of service for some or all of the specified
+                        window. - PARTIAL_OUTAGE: Some circuits comprising the Interconnect
+                        as a whole should remain up, but with reduced bandwidth. Note
+                        that the versions of this enum prefixed with "IT_" have been
+                        deprecated in favor of the unprefixed values. Check the IssueType
+                        enum for the list of possible values.'
+                      type: string
+                    name:
+                      description: Unique identifier for this outage notification.
+                      type: string
+                    source:
+                      description: 'The party that generated this notification, which
+                        can take the following value: - GOOGLE: this notification
+                        as generated by Google. Note that the value of NSRC_GOOGLE
+                        has been deprecated in favor of GOOGLE. Check the Source enum
+                        for the list of possible values.'
+                      type: string
+                    startTime:
+                      description: Scheduled start time for the outage (milliseconds
+                        since Unix epoch).
+                      format: int64
+                      type: integer
+                    state:
+                      description: 'State of this notification, which can take one
+                        of the following values: - ACTIVE: This outage notification
+                        is active. The event could be in the past, present, or future.
+                        See start_time and end_time for scheduling. - CANCELLED: The
+                        outage associated with this notification was cancelled before
+                        the outage was due to start. - COMPLETED: The outage associated
+                        with this notification is complete. Note that the versions
+                        of this enum prefixed with "NS_" have been deprecated in favor
+                        of the unprefixed values. Check the State enum for the list
+                        of possible values.'
+                      type: string
+                  type: object
+                type: array
+              googleIPAddress:
+                description: '[Output Only] IP address configured on the Google side
+                  of the Interconnect link. This can be used only for ping tests.'
+                type: string
+              googleReferenceID:
+                description: '[Output Only] Google reference ID to be used when raising
+                  support tickets with Google or otherwise to debug backend connectivity
+                  issues.'
+                type: string
+              interconnectAttachments:
+                description: '[Output Only] A list of the URLs of all InterconnectAttachments
+                  configured to use this Interconnect.'
+                items:
+                  type: string
+                type: array
+              interconnectGroups:
+                description: '[Output Only] URLs of InterconnectGroups that include
+                  this Interconnect. Order is arbitrary and items are unique.'
+                items:
+                  type: string
+                type: array
               interconnectType:
                 description: 'Type of interconnect, which can take one of the following
                   values: - PARTNER: A partner-managed interconnection shared between
@@ -105,7 +266,8 @@ spec:
               linkType:
                 description: 'Type of link requested, which can take one of the following
                   values: - LINK_TYPE_ETHERNET_10G_LR: A 10G Ethernet with LR optics
-                  - LINK_TYPE_ETHERNET_100G_LR: A 100G Ethernet with LR optics. Note
+                  - LINK_TYPE_ETHERNET_100G_LR: A 100G Ethernet with LR optics. -
+                  LINK_TYPE_ETHERNET_400G_LR4: A 400G Ethernet with LR4 optics. Note
                   that this field indicates the speed of each of the links in the
                   bundle, not the speed of the entire bundle. Check the LinkType enum
                   for the list of possible values.'
@@ -170,8 +332,25 @@ spec:
                   This field is required for users who sign up for Cloud Interconnect
                   using workforce identity federation.
                 type: string
+              operationalStatus:
+                description: '[Output Only] The current status of this Interconnect''s
+                  functionality, which can take one of the following values: - OS_ACTIVE:
+                  A valid Interconnect, which is turned up and is ready to use. Attachments
+                  may be provisioned on this Interconnect. - OS_UNPROVISIONED: An
+                  Interconnect that has not completed turnup. No attachments may be
+                  provisioned on this Interconnect. - OS_UNDER_MAINTENANCE: An Interconnect
+                  that is undergoing internal maintenance. No attachments may be provisioned
+                  or updated on this Interconnect. Check the OperationalStatus enum
+                  for the list of possible values.'
+                type: string
+              peerIPAddress:
+                description: '[Output Only] IP address configured on the customer
+                  side of the Interconnect link. The customer should configure this
+                  IP address during turnup when prompted by Google NOC. This can be
+                  used only for ping tests.'
+                type: string
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -202,6 +381,11 @@ spec:
                     description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
+              provisionedLinkCount:
+                description: '[Output Only] Number of links actually provisioned in
+                  this interconnect.'
+                format: int32
+                type: integer
               remoteLocation:
                 description: Indicates that this is a Cross-Cloud Interconnect. This
                   field specifies the location outside of Google's network that the
@@ -227,6 +411,19 @@ spec:
               resourceID:
                 description: The ComputeInterconnect name. If not given, the metadata.name
                   will be used.
+                type: string
+              satisfiesPzs:
+                description: '[Output Only] Reserved for future use.'
+                type: boolean
+              state:
+                description: '[Output Only] The current state of Interconnect functionality,
+                  which can take one of the following values: - ACTIVE: The Interconnect
+                  is valid, turned up and ready to use. Attachments may be provisioned
+                  on this Interconnect. - UNPROVISIONED: The Interconnect has not
+                  completed turnup. No attachments may be provisioned on this Interconnect.
+                  - UNDER_MAINTENANCE: The Interconnect is undergoing internal maintenance.
+                  No attachments may be provisioned or updated on this Interconnect.
+                  Check the State enum for the list of possible values.'
                 type: string
             required:
             - projectRef
@@ -277,163 +474,21 @@ spec:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
                 properties:
-                  availableFeatures:
-                    description: '[Output only] List of features available for this
-                      Interconnect connection, which can take one of the following
-                      values: - IF_MACSEC If present then the Interconnect connection
-                      is provisioned on MACsec capable hardware ports. If not present
-                      then the Interconnect connection is provisioned on non-MACsec
-                      capable ports and MACsec isn''t supported and enabling MACsec
-                      fails. Check the AvailableFeatures enum for the list of possible
-                      values.'
-                    items:
-                      type: string
-                    type: array
-                  circuitInfos:
-                    description: '[Output Only] A list of CircuitInfo objects, that
-                      describe the individual circuits in this LAG.'
-                    items:
-                      properties:
-                        customerDemarcID:
-                          description: Customer-side demarc ID for this circuit.
-                          type: string
-                        googleCircuitID:
-                          description: Google-assigned unique ID for this circuit.
-                            Assigned at circuit turn-up.
-                          type: string
-                        googleDemarcID:
-                          description: Google-side demarc ID for this circuit. Assigned
-                            at circuit turn-up and provided by Google to the customer
-                            in the LOA.
-                          type: string
-                      type: object
-                    type: array
                   creationTimestamp:
                     description: '[Output Only] Creation timestamp in RFC3339 text
                       format.'
-                    type: string
-                  expectedOutages:
-                    description: '[Output Only] A list of outages expected for this
-                      Interconnect.'
-                    items:
-                      properties:
-                        affectedCircuits:
-                          description: If issue_type is IT_PARTIAL_OUTAGE, a list
-                            of the Google-side circuit IDs that will be affected.
-                          items:
-                            type: string
-                          type: array
-                        description:
-                          description: A description about the purpose of the outage.
-                          type: string
-                        endTime:
-                          description: Scheduled end time for the outage (milliseconds
-                            since Unix epoch).
-                          format: int64
-                          type: integer
-                        issueType:
-                          description: 'Form this outage is expected to take, which
-                            can take one of the following values: - OUTAGE: The Interconnect
-                            may be completely out of service for some or all of the
-                            specified window. - PARTIAL_OUTAGE: Some circuits comprising
-                            the Interconnect as a whole should remain up, but with
-                            reduced bandwidth. Note that the versions of this enum
-                            prefixed with "IT_" have been deprecated in favor of the
-                            unprefixed values. Check the IssueType enum for the list
-                            of possible values.'
-                          type: string
-                        name:
-                          description: Unique identifier for this outage notification.
-                          type: string
-                        source:
-                          description: 'The party that generated this notification,
-                            which can take the following value: - GOOGLE: this notification
-                            as generated by Google. Note that the value of NSRC_GOOGLE
-                            has been deprecated in favor of GOOGLE. Check the Source
-                            enum for the list of possible values.'
-                          type: string
-                        startTime:
-                          description: Scheduled start time for the outage (milliseconds
-                            since Unix epoch).
-                          format: int64
-                          type: integer
-                        state:
-                          description: 'State of this notification, which can take
-                            one of the following values: - ACTIVE: This outage notification
-                            is active. The event could be in the past, present, or
-                            future. See start_time and end_time for scheduling. -
-                            CANCELLED: The outage associated with this notification
-                            was cancelled before the outage was due to start. - COMPLETED:
-                            The outage associated with this notification is complete.
-                            Note that the versions of this enum prefixed with "NS_"
-                            have been deprecated in favor of the unprefixed values.
-                            Check the State enum for the list of possible values.'
-                          type: string
-                      type: object
-                    type: array
-                  googleIPAddress:
-                    description: '[Output Only] IP address configured on the Google
-                      side of the Interconnect link. This can be used only for ping
-                      tests.'
-                    type: string
-                  googleReferenceID:
-                    description: '[Output Only] Google reference ID to be used when
-                      raising support tickets with Google or otherwise to debug backend
-                      connectivity issues.'
                     type: string
                   id:
                     description: '[Output Only] The unique identifier for the resource.
                       This identifier is defined by the server.'
                     format: int64
                     type: integer
-                  interconnectAttachments:
-                    description: '[Output Only] A list of the URLs of all InterconnectAttachments
-                      configured to use this Interconnect.'
-                    items:
-                      type: string
-                    type: array
                   kind:
                     description: '[Output Only] Type of the resource. Always compute#interconnect
                       for interconnects.'
                     type: string
-                  operationalStatus:
-                    description: '[Output Only] The current status of this Interconnect''s
-                      functionality, which can take one of the following values: -
-                      OS_ACTIVE: A valid Interconnect, which is turned up and is ready
-                      to use. Attachments may be provisioned on this Interconnect.
-                      - OS_UNPROVISIONED: An Interconnect that has not completed turnup.
-                      No attachments may be provisioned on this Interconnect. - OS_UNDER_MAINTENANCE:
-                      An Interconnect that is undergoing internal maintenance. No
-                      attachments may be provisioned or updated on this Interconnect.
-                      Check the OperationalStatus enum for the list of possible values.'
-                    type: string
-                  peerIPAddress:
-                    description: '[Output Only] IP address configured on the customer
-                      side of the Interconnect link. The customer should configure
-                      this IP address during turnup when prompted by Google NOC. This
-                      can be used only for ping tests.'
-                    type: string
-                  provisionedLinkCount:
-                    description: '[Output Only] Number of links actually provisioned
-                      in this interconnect.'
-                    format: int32
-                    type: integer
-                  satisfiesPzs:
-                    description: '[Output Only] Reserved for future use.'
-                    type: boolean
                   selfLink:
                     description: '[Output Only] Server-defined URL for the resource.'
-                    type: string
-                  state:
-                    description: '[Output Only] The current state of Interconnect
-                      functionality, which can take one of the following values: -
-                      ACTIVE: The Interconnect is valid, turned up and ready to use.
-                      Attachments may be provisioned on this Interconnect. - UNPROVISIONED:
-                      The Interconnect has not completed turnup. No attachments may
-                      be provisioned on this Interconnect. - UNDER_MAINTENANCE: The
-                      Interconnect is undergoing internal maintenance. No attachments
-                      may be provisioned or updated on this Interconnect. Check the
-                      State enum for the list of possible values.'
                     type: string
                 type: object
             type: object

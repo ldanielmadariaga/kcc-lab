@@ -1,0 +1,11 @@
+# Spec fields whose proto comment says "Output only." but which carry no
+# google.api.field_behavior annotation, so the generator could not place them
+# in ObservedState by itself.
+#
+# This file reports; it changes nothing. To act on an entry, move the field
+# out of the Spec struct and into the ObservedState struct in
+# <kind>_types.go by hand.
+
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: field ".spec.uuid" comment="Output only. The UUID (Universally Unique IDentifier) associated with this environment. This value is generated when the environment is created."
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: field ".spec.createTime" comment="Output only. The time at which this environment was created."
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: field ".spec.updateTime" comment="Output only. The time at which this environment was last modified."

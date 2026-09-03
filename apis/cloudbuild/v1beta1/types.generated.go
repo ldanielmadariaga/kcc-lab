@@ -434,6 +434,7 @@ type BuildOptions struct {
 	LogStreamingOption *string `json:"logStreamingOption,omitempty"`
 
 	// This field deprecated; please use `pool.name` instead.
+	// +kcc:guess=possible-reference target=CloudBuildWorkerPool
 	// +kcc:proto:field=google.devtools.cloudbuild.v1.BuildOptions.worker_pool
 	WorkerPool *string `json:"workerPool,omitempty"`
 
@@ -1019,7 +1020,7 @@ type InlineSecret struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v1.InlineSecret.kms_key_name
 	KMSKeyName *string `json:"kmsKeyName,omitempty"`
 
-	// TODO: unsupported map type with key string and value bytes
+	// TODO: envMap: unsupported map type with key string and value bytes
 
 }
 */
@@ -1224,7 +1225,7 @@ type Secret struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v1.Secret.kms_key_name
 	KMSKeyName *string `json:"kmsKeyName,omitempty"`
 
-	// TODO: unsupported map type with key string and value bytes
+	// TODO: secretEnv: unsupported map type with key string and value bytes
 
 }
 */
@@ -1574,7 +1575,19 @@ type BuildObservedState struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v1.Build.log_url
 	LogURL *string `json:"logURL,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// Output only. Stores timing information for phases of the build. Valid keys
+	//  are:
+	//
+	//  * BUILD: time to execute all build steps.
+	//  * PUSH: time to push all artifacts including docker images and non docker
+	//  artifacts.
+	//  * FETCHSOURCE: time to fetch source.
+	//  * SETUPBUILD: time to set up build.
+	//
+	//  If the build does not specify source or images,
+	//  these keys will not be included.
+	// +kcc:proto:field=google.devtools.cloudbuild.v1.Build.timing
+	Timing map[string]TimeSpan `json:"timing,omitempty"`
 
 	// Output only. Describes this build's approval configuration, status,
 	//  and result.
@@ -1773,8 +1786,18 @@ type SourceProvenanceObservedState struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v1.SourceProvenance.resolved_storage_source_manifest
 	ResolvedStorageSourceManifest *StorageSourceManifest `json:"resolvedStorageSourceManifest,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Output only. Hash(es) of the build source, which can be used to verify that
+	//  the original source integrity was maintained in the build. Note that
+	//  `FileHashes` will only be populated if `BuildOptions` has requested a
+	//  `SourceProvenanceHash`.
+	//
+	//  The keys to this map are file paths used as build source and the values
+	//  contain the hash values for those files.
+	//
+	//  If the build source came in a single package such as a gzipped tarfile
+	//  (`.tar.gz`), the `FileHash` will be for the single path to that file.
+	// +kcc:proto:field=google.devtools.cloudbuild.v1.SourceProvenance.file_hashes
+	FileHashes map[string]FileHashes `json:"fileHashes,omitempty"`
 }
 */
 

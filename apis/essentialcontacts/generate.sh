@@ -35,6 +35,11 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
     --service google.cloud.essentialcontacts.v1 \
     --api-version "essentialcontacts.cnrm.cloud.google.com/v1beta1" \
+    --prepopulate-spec \
+    --emit-required-from-proto \
+    --emit-plural-acronyms \
+    --detect-output-only-in-comments \
+    --place-server-set-fields \
     --resource EssentialContactsContact:Contact
 
 ${CONTROLLERBUILDER} generate-mapper \

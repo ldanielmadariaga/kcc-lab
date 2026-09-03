@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: testingdevicesessions.testing.cnrm.cloud.google.com
 spec:
@@ -83,11 +82,6 @@ spec:
                     description: Required. How the device is oriented during the test.
                       Use the TestEnvironmentDiscoveryService to get supported options.
                     type: string
-                required:
-                - androidModelID
-                - androidVersionID
-                - locale
-                - orientation
                 type: object
               expireTime:
                 description: Optional. If the device is still in use at this time,

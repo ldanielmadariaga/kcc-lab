@@ -1,0 +1,38 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/privateConnections/{private_connection}; confirm the resource is regional and that this is the name for it)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/connectionProfiles/{connection_profile}; confirm the resource is regional and that this is the name for it)
+kind=DatastreamRoute group=datastream.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DatastreamRoute group=datastream.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=DatastreamRoute group=datastream.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/privateConnections/{private_connection}/routes/{route}; confirm the resource is regional and that this is the name for it)
+kind=DatastreamRoute group=datastream.cnrm.cloud.google.com: field ".spec.privateConnectionRef" reason=parent-ref-guessed (emitted as a reference to PrivateConnectionRef, assumed from the collection segment of projects/{project}/locations/{location}/privateConnections/{private_connection}/routes/{route}; confirm the target type)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.gcsProfile.bucket" reason=possible-reference-by-description
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.mongodbProfile.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.mongodbProfile.sslConfig.secretManagerStoredClientKey" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.mysqlProfile.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.oracleProfile.oracleAsmConfig.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.oracleProfile.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.postgresqlProfile.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.privateConnectivity.privateConnection" reason=possible-reference-by-description
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.salesforceProfile.oauth2ClientCredentials.clientSecret" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.salesforceProfile.oauth2ClientCredentials.secretManagerStoredClientSecret" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.salesforceProfile.userCredentials.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.salesforceProfile.userCredentials.secretManagerStoredSecurityToken" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamConnectionProfile group=datastream.cnrm.cloud.google.com: field ".spec.sqlServerProfile.secretManagerStoredPassword" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: field ".spec.pscInterfaceConfig.networkAttachment" reason=possible-reference-by-description
+kind=DatastreamPrivateConnection group=datastream.cnrm.cloud.google.com: field ".spec.vpcPeeringConfig.vpc" reason=possible-reference-by-description
+kind=DatastreamRoute group=datastream.cnrm.cloud.google.com: field ".spec.privateConnectionRef" reason=parent-ref-guessed (emitted as a reference to PrivateConnectionRef, assumed from the collection segment of projects/{project}/locations/{location}/privateConnections/{private_connection}/routes/{route}; confirm the target type (DatastreamPrivateConnection, a resource this service declares, matches the name))
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.cloud.datastream.v1.PrivateConnectivity.privateConnection target=DatastreamPrivateConnection

@@ -23,6 +23,12 @@
 
 package workstations
 
+import (
+	pb "cloud.google.com/go/workstations/apiv1/workstationspb"
+	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/workstations/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
+)
+
 /* found existing non-generated mapping function "WorkstationClusterObservedState_FromProto", skipping
 func WorkstationClusterObservedState_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationCluster) *krm.WorkstationClusterObservedState {
 	if in == nil {
@@ -35,10 +41,10 @@ func WorkstationClusterObservedState_FromProto(mapCtx *direct.MapContext, in *pb
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
-	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.ControlPlaneIP = direct.LazyPtr(in.GetControlPlaneIp())
+	out.PrivateClusterConfig = WorkstationCluster_PrivateClusterConfigObservedState_FromProto(mapCtx, in.GetPrivateClusterConfig())
 	out.Degraded = direct.LazyPtr(in.GetDegraded())
-	// MISSING: Conditions
+	out.Conditions = direct.Slice_FromProto(mapCtx, in.Conditions, common.Status_FromProto)
 	return out
 }
 */
@@ -55,10 +61,10 @@ func WorkstationClusterObservedState_ToProto(mapCtx *direct.MapContext, in *krm.
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
-	out.Etag = direct.ValueOf(in.Etag)
 	out.ControlPlaneIp = direct.ValueOf(in.ControlPlaneIP)
+	out.PrivateClusterConfig = WorkstationCluster_PrivateClusterConfigObservedState_ToProto(mapCtx, in.PrivateClusterConfig)
 	out.Degraded = direct.ValueOf(in.Degraded)
-	// MISSING: Conditions
+	out.Conditions = direct.Slice_ToProto(mapCtx, in.Conditions, common.Status_ToProto)
 	return out
 }
 */
@@ -73,14 +79,10 @@ func WorkstationClusterSpec_FromProto(mapCtx *direct.MapContext, in *pb.Workstat
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	out.Annotations = in.Annotations
 	out.Labels = in.Labels
-	if in.GetNetwork() != "" {
-		out.NetworkRef = &krmcomputerefs.ComputeNetworkRef{External: in.GetNetwork()}
-	}
-	if in.GetSubnetwork() != "" {
-		out.SubnetworkRef = &krmcomputev1beta1.ComputeSubnetworkRef{External: in.GetSubnetwork()}
-	}
+	out.Etag = direct.LazyPtr(in.GetEtag())
+	out.Network = direct.LazyPtr(in.GetNetwork())
+	out.Subnetwork = direct.LazyPtr(in.GetSubnetwork())
 	out.PrivateClusterConfig = WorkstationCluster_PrivateClusterConfig_FromProto(mapCtx, in.GetPrivateClusterConfig())
-	// MISSING: Conditions
 	return out
 }
 */
@@ -95,14 +97,10 @@ func WorkstationClusterSpec_ToProto(mapCtx *direct.MapContext, in *krm.Workstati
 	out.DisplayName = direct.ValueOf(in.DisplayName)
 	out.Annotations = in.Annotations
 	out.Labels = in.Labels
-	if in.NetworkRef != nil {
-		out.Network = in.NetworkRef.External
-	}
-	if in.SubnetworkRef != nil {
-		out.Subnetwork = in.SubnetworkRef.External
-	}
+	out.Etag = direct.ValueOf(in.Etag)
+	out.Network = direct.ValueOf(in.Network)
+	out.Subnetwork = direct.ValueOf(in.Subnetwork)
 	out.PrivateClusterConfig = WorkstationCluster_PrivateClusterConfig_ToProto(mapCtx, in.PrivateClusterConfig)
-	// MISSING: Conditions
 	return out
 }
 */
@@ -116,24 +114,48 @@ func WorkstationCluster_PrivateClusterConfig_FromProto(mapCtx *direct.MapContext
 	out.EnablePrivateEndpoint = direct.LazyPtr(in.GetEnablePrivateEndpoint())
 	// MISSING: ClusterHostname
 	// MISSING: ServiceAttachmentURI
-	out.AllowedProjects = WorkstationCluster_PrivateClusterConfig_AllowedProjects_FromProto(mapCtx, in.AllowedProjects)
+	out.AllowedProjects = in.AllowedProjects
 	return out
 }
 */
 
-/* found existing non-generated mapping function "WorkstationCluster_PrivateClusterConfig_ToProto", skipping
-func WorkstationCluster_PrivateClusterConfig_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationCluster_PrivateClusterConfig) *pb.WorkstationCluster_PrivateClusterConfig {
+/*
+found existing non-generated mapping function "WorkstationCluster_PrivateClusterConfig_ToProto", skipping
+
+	func WorkstationCluster_PrivateClusterConfig_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationCluster_PrivateClusterConfig) *pb.WorkstationCluster_PrivateClusterConfig {
+		if in == nil {
+			return nil
+		}
+		out := &pb.WorkstationCluster_PrivateClusterConfig{}
+		out.EnablePrivateEndpoint = direct.ValueOf(in.EnablePrivateEndpoint)
+		// MISSING: ClusterHostname
+		// MISSING: ServiceAttachmentURI
+		out.AllowedProjects = in.AllowedProjects
+		return out
+	}
+*/
+func WorkstationCluster_PrivateClusterConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationCluster_PrivateClusterConfig) *krm.WorkstationCluster_PrivateClusterConfigObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.WorkstationCluster_PrivateClusterConfigObservedState{}
+	// MISSING: EnablePrivateEndpoint
+	out.ClusterHostname = direct.LazyPtr(in.GetClusterHostname())
+	out.ServiceAttachmentURI = direct.LazyPtr(in.GetServiceAttachmentUri())
+	// MISSING: AllowedProjects
+	return out
+}
+func WorkstationCluster_PrivateClusterConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationCluster_PrivateClusterConfigObservedState) *pb.WorkstationCluster_PrivateClusterConfig {
 	if in == nil {
 		return nil
 	}
 	out := &pb.WorkstationCluster_PrivateClusterConfig{}
-	out.EnablePrivateEndpoint = direct.ValueOf(in.EnablePrivateEndpoint)
-	// MISSING: ClusterHostname
-	// MISSING: ServiceAttachmentURI
-	out.AllowedProjects = WorkstationCluster_PrivateClusterConfig_AllowedProjects_ToProto(mapCtx, in.AllowedProjects)
+	// MISSING: EnablePrivateEndpoint
+	out.ClusterHostname = direct.ValueOf(in.ClusterHostname)
+	out.ServiceAttachmentUri = direct.ValueOf(in.ServiceAttachmentURI)
+	// MISSING: AllowedProjects
 	return out
 }
-*/
 
 /* found existing non-generated mapping function "WorkstationConfigObservedState_FromProto", skipping
 func WorkstationConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationConfig) *krm.WorkstationConfigObservedState {
@@ -142,16 +164,14 @@ func WorkstationConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.
 	}
 	out := &krm.WorkstationConfigObservedState{}
 	// MISSING: Name
-	// MISSING: Uid
-	// (near miss): "Uid" vs "UID"
-	// MISSING: Reconciling
+	out.Uid = direct.LazyPtr(in.GetUid())
+	out.Reconciling = direct.LazyPtr(in.GetReconciling())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
-	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.Host = WorkstationConfig_HostObservedState_FromProto(mapCtx, in.GetHost())
 	out.Degraded = direct.LazyPtr(in.GetDegraded())
-	// MISSING: Conditions
+	out.Conditions = direct.Slice_FromProto(mapCtx, in.Conditions, common.Status_FromProto)
 	return out
 }
 */
@@ -163,16 +183,14 @@ func WorkstationConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.W
 	}
 	out := &pb.WorkstationConfig{}
 	// MISSING: Name
-	// MISSING: Uid
-	// (near miss): "Uid" vs "UID"
-	// MISSING: Reconciling
+	out.Uid = direct.ValueOf(in.Uid)
+	out.Reconciling = direct.ValueOf(in.Reconciling)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
-	out.Etag = direct.ValueOf(in.Etag)
 	out.Host = WorkstationConfig_HostObservedState_ToProto(mapCtx, in.Host)
 	out.Degraded = direct.ValueOf(in.Degraded)
-	// MISSING: Conditions
+	out.Conditions = direct.Slice_ToProto(mapCtx, in.Conditions, common.Status_ToProto)
 	return out
 }
 */
@@ -185,10 +203,9 @@ func WorkstationConfigSpec_FromProto(mapCtx *direct.MapContext, in *pb.Workstati
 	out := &krm.WorkstationConfigSpec{}
 	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: Uid
-	// MISSING: Reconciling
 	out.Annotations = in.Annotations
 	out.Labels = in.Labels
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.IdleTimeout = direct.StringDuration_FromProto(mapCtx, in.GetIdleTimeout())
 	out.RunningTimeout = direct.StringDuration_FromProto(mapCtx, in.GetRunningTimeout())
 	out.Host = WorkstationConfig_Host_FromProto(mapCtx, in.GetHost())
@@ -197,7 +214,6 @@ func WorkstationConfigSpec_FromProto(mapCtx *direct.MapContext, in *pb.Workstati
 	out.EncryptionKey = WorkstationConfig_CustomerEncryptionKey_FromProto(mapCtx, in.GetEncryptionKey())
 	out.ReadinessChecks = direct.Slice_FromProto(mapCtx, in.ReadinessChecks, WorkstationConfig_ReadinessCheck_FromProto)
 	out.ReplicaZones = in.ReplicaZones
-	// MISSING: Conditions
 	return out
 }
 */
@@ -210,10 +226,9 @@ func WorkstationConfigSpec_ToProto(mapCtx *direct.MapContext, in *krm.Workstatio
 	out := &pb.WorkstationConfig{}
 	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	// MISSING: Uid
-	// MISSING: Reconciling
 	out.Annotations = in.Annotations
 	out.Labels = in.Labels
+	out.Etag = direct.ValueOf(in.Etag)
 	out.IdleTimeout = direct.StringDuration_ToProto(mapCtx, in.IdleTimeout)
 	out.RunningTimeout = direct.StringDuration_ToProto(mapCtx, in.RunningTimeout)
 	out.Host = WorkstationConfig_Host_ToProto(mapCtx, in.Host)
@@ -222,7 +237,6 @@ func WorkstationConfigSpec_ToProto(mapCtx *direct.MapContext, in *krm.Workstatio
 	out.EncryptionKey = WorkstationConfig_CustomerEncryptionKey_ToProto(mapCtx, in.EncryptionKey)
 	out.ReadinessChecks = direct.Slice_ToProto(mapCtx, in.ReadinessChecks, WorkstationConfig_ReadinessCheck_ToProto)
 	out.ReplicaZones = in.ReplicaZones
-	// MISSING: Conditions
 	return out
 }
 */
@@ -265,8 +279,8 @@ func WorkstationConfig_CustomerEncryptionKey_FromProto(mapCtx *direct.MapContext
 		return nil
 	}
 	out := &krm.WorkstationConfig_CustomerEncryptionKey{}
-	// MISSING: KMSKey
-	// MISSING: KMSKeyServiceAccount
+	out.KMSKey = direct.LazyPtr(in.GetKmsKey())
+	out.KMSKeyServiceAccount = direct.LazyPtr(in.GetKmsKeyServiceAccount())
 	return out
 }
 */
@@ -277,8 +291,8 @@ func WorkstationConfig_CustomerEncryptionKey_ToProto(mapCtx *direct.MapContext, 
 		return nil
 	}
 	out := &pb.WorkstationConfig_CustomerEncryptionKey{}
-	// MISSING: KMSKey
-	// MISSING: KMSKeyServiceAccount
+	out.KmsKey = direct.ValueOf(in.KMSKey)
+	out.KmsKeyServiceAccount = direct.ValueOf(in.KMSKeyServiceAccount)
 	return out
 }
 */
@@ -289,8 +303,7 @@ func WorkstationConfig_Host_FromProto(mapCtx *direct.MapContext, in *pb.Workstat
 		return nil
 	}
 	out := &krm.WorkstationConfig_Host{}
-	// MISSING: GCEInstance
-	// (near miss): "GCEInstance" vs "GceInstance"
+	out.GCEInstance = WorkstationConfig_Host_GCEInstance_FromProto(mapCtx, in.GetGceInstance())
 	return out
 }
 */
@@ -301,8 +314,9 @@ func WorkstationConfig_Host_ToProto(mapCtx *direct.MapContext, in *krm.Workstati
 		return nil
 	}
 	out := &pb.WorkstationConfig_Host{}
-	// MISSING: GCEInstance
-	// (near miss): "GCEInstance" vs "GceInstance"
+	if oneof := WorkstationConfig_Host_GCEInstance_ToProto(mapCtx, in.GCEInstance); oneof != nil {
+		out.Config = &pb.WorkstationConfig_Host_GceInstance_{GceInstance: oneof}
+	}
 	return out
 }
 */
@@ -313,76 +327,66 @@ func WorkstationConfig_HostObservedState_FromProto(mapCtx *direct.MapContext, in
 		return nil
 	}
 	out := &krm.WorkstationConfig_HostObservedState{}
-	// MISSING: GCEInstance
-	// (near miss): "GCEInstance" vs "GceInstance"
+	out.GCEInstance = WorkstationConfig_Host_GCEInstanceObservedState_FromProto(mapCtx, in.GetGceInstance())
 	return out
 }
 */
 
-/* found existing non-generated mapping function "WorkstationConfig_HostObservedState_ToProto", skipping
-func WorkstationConfig_HostObservedState_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_HostObservedState) *pb.WorkstationConfig_Host {
-	if in == nil {
-		return nil
-	}
-	out := &pb.WorkstationConfig_Host{}
-	// MISSING: GCEInstance
-	// (near miss): "GCEInstance" vs "GceInstance"
-	return out
-}
-*/
+/*
+found existing non-generated mapping function "WorkstationConfig_HostObservedState_ToProto", skipping
 
-/* found existing non-generated mapping function "WorkstationConfig_Host_GceInstance_FromProto", skipping
-func WorkstationConfig_Host_GceInstance_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationConfig_Host_GceInstance) *krm.WorkstationConfig_Host_GceInstance {
+	func WorkstationConfig_HostObservedState_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_HostObservedState) *pb.WorkstationConfig_Host {
+		if in == nil {
+			return nil
+		}
+		out := &pb.WorkstationConfig_Host{}
+		if oneof := WorkstationConfig_Host_GCEInstanceObservedState_ToProto(mapCtx, in.GCEInstance); oneof != nil {
+			out.Config = &pb.WorkstationConfig_Host_GceInstance_{GceInstance: oneof}
+		}
+		return out
+	}
+*/
+func WorkstationConfig_Host_GCEInstance_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationConfig_Host_GceInstance) *krm.WorkstationConfig_Host_GCEInstance {
 	if in == nil {
 		return nil
 	}
-	out := &krm.WorkstationConfig_Host_GceInstance{}
+	out := &krm.WorkstationConfig_Host_GCEInstance{}
 	out.MachineType = direct.LazyPtr(in.GetMachineType())
-	if in.GetServiceAccount() != "" {
-		out.ServiceAccountRef = &refsv1beta1.IAMServiceAccountRef{External: in.GetServiceAccount()}
-	}
+	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
 	out.ServiceAccountScopes = in.ServiceAccountScopes
 	out.Tags = in.Tags
 	out.PoolSize = direct.LazyPtr(in.GetPoolSize())
 	// MISSING: PooledInstances
 	out.DisablePublicIPAddresses = direct.LazyPtr(in.GetDisablePublicIpAddresses())
 	out.EnableNestedVirtualization = direct.LazyPtr(in.GetEnableNestedVirtualization())
-	out.ShieldedInstanceConfig = WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig_FromProto(mapCtx, in.GetShieldedInstanceConfig())
-	out.ConfidentialInstanceConfig = WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig_FromProto(mapCtx, in.GetConfidentialInstanceConfig())
+	out.ShieldedInstanceConfig = WorkstationConfig_Host_GCEInstance_GCEShieldedInstanceConfig_FromProto(mapCtx, in.GetShieldedInstanceConfig())
+	out.ConfidentialInstanceConfig = WorkstationConfig_Host_GCEInstance_GCEConfidentialInstanceConfig_FromProto(mapCtx, in.GetConfidentialInstanceConfig())
 	out.BootDiskSizeGB = direct.LazyPtr(in.GetBootDiskSizeGb())
 	return out
 }
-*/
-
-/* found existing non-generated mapping function "WorkstationConfig_Host_GceInstance_ToProto", skipping
-func WorkstationConfig_Host_GceInstance_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_Host_GceInstance) *pb.WorkstationConfig_Host_GceInstance {
+func WorkstationConfig_Host_GCEInstance_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_Host_GCEInstance) *pb.WorkstationConfig_Host_GceInstance {
 	if in == nil {
 		return nil
 	}
 	out := &pb.WorkstationConfig_Host_GceInstance{}
 	out.MachineType = direct.ValueOf(in.MachineType)
-	if in.ServiceAccountRef != nil {
-		out.ServiceAccount = in.ServiceAccountRef.External
-	}
+	out.ServiceAccount = direct.ValueOf(in.ServiceAccount)
 	out.ServiceAccountScopes = in.ServiceAccountScopes
 	out.Tags = in.Tags
 	out.PoolSize = direct.ValueOf(in.PoolSize)
 	// MISSING: PooledInstances
 	out.DisablePublicIpAddresses = direct.ValueOf(in.DisablePublicIPAddresses)
 	out.EnableNestedVirtualization = direct.ValueOf(in.EnableNestedVirtualization)
-	out.ShieldedInstanceConfig = WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig_ToProto(mapCtx, in.ShieldedInstanceConfig)
-	out.ConfidentialInstanceConfig = WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig_ToProto(mapCtx, in.ConfidentialInstanceConfig)
+	out.ShieldedInstanceConfig = WorkstationConfig_Host_GCEInstance_GCEShieldedInstanceConfig_ToProto(mapCtx, in.ShieldedInstanceConfig)
+	out.ConfidentialInstanceConfig = WorkstationConfig_Host_GCEInstance_GCEConfidentialInstanceConfig_ToProto(mapCtx, in.ConfidentialInstanceConfig)
 	out.BootDiskSizeGb = direct.ValueOf(in.BootDiskSizeGB)
 	return out
 }
-*/
-
-/* found existing non-generated mapping function "WorkstationConfig_Host_GceInstanceObservedState_FromProto", skipping
-func WorkstationConfig_Host_GceInstanceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationConfig_Host_GceInstance) *krm.WorkstationConfig_Host_GceInstanceObservedState {
+func WorkstationConfig_Host_GCEInstanceObservedState_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationConfig_Host_GceInstance) *krm.WorkstationConfig_Host_GCEInstanceObservedState {
 	if in == nil {
 		return nil
 	}
-	out := &krm.WorkstationConfig_Host_GceInstanceObservedState{}
+	out := &krm.WorkstationConfig_Host_GCEInstanceObservedState{}
 	// MISSING: MachineType
 	// MISSING: ServiceAccount
 	// MISSING: ServiceAccountScopes
@@ -396,10 +400,7 @@ func WorkstationConfig_Host_GceInstanceObservedState_FromProto(mapCtx *direct.Ma
 	// MISSING: BootDiskSizeGB
 	return out
 }
-*/
-
-/* found existing non-generated mapping function "WorkstationConfig_Host_GceInstanceObservedState_ToProto", skipping
-func WorkstationConfig_Host_GceInstanceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_Host_GceInstanceObservedState) *pb.WorkstationConfig_Host_GceInstance {
+func WorkstationConfig_Host_GCEInstanceObservedState_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_Host_GCEInstanceObservedState) *pb.WorkstationConfig_Host_GceInstance {
 	if in == nil {
 		return nil
 	}
@@ -417,21 +418,15 @@ func WorkstationConfig_Host_GceInstanceObservedState_ToProto(mapCtx *direct.MapC
 	// MISSING: BootDiskSizeGB
 	return out
 }
-*/
-
-/* found existing non-generated mapping function "WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig_FromProto", skipping
-func WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig) *krm.WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig {
+func WorkstationConfig_Host_GCEInstance_GCEConfidentialInstanceConfig_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig) *krm.WorkstationConfig_Host_GCEInstance_GCEConfidentialInstanceConfig {
 	if in == nil {
 		return nil
 	}
-	out := &krm.WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig{}
+	out := &krm.WorkstationConfig_Host_GCEInstance_GCEConfidentialInstanceConfig{}
 	out.EnableConfidentialCompute = direct.LazyPtr(in.GetEnableConfidentialCompute())
 	return out
 }
-*/
-
-/* found existing non-generated mapping function "WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig_ToProto", skipping
-func WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig) *pb.WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig {
+func WorkstationConfig_Host_GCEInstance_GCEConfidentialInstanceConfig_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_Host_GCEInstance_GCEConfidentialInstanceConfig) *pb.WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig {
 	if in == nil {
 		return nil
 	}
@@ -439,23 +434,17 @@ func WorkstationConfig_Host_GceInstance_GceConfidentialInstanceConfig_ToProto(ma
 	out.EnableConfidentialCompute = direct.ValueOf(in.EnableConfidentialCompute)
 	return out
 }
-*/
-
-/* found existing non-generated mapping function "WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig_FromProto", skipping
-func WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig) *krm.WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig {
+func WorkstationConfig_Host_GCEInstance_GCEShieldedInstanceConfig_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig) *krm.WorkstationConfig_Host_GCEInstance_GCEShieldedInstanceConfig {
 	if in == nil {
 		return nil
 	}
-	out := &krm.WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig{}
+	out := &krm.WorkstationConfig_Host_GCEInstance_GCEShieldedInstanceConfig{}
 	out.EnableSecureBoot = direct.LazyPtr(in.GetEnableSecureBoot())
 	out.EnableVTPM = direct.LazyPtr(in.GetEnableVtpm())
 	out.EnableIntegrityMonitoring = direct.LazyPtr(in.GetEnableIntegrityMonitoring())
 	return out
 }
-*/
-
-/* found existing non-generated mapping function "WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig_ToProto", skipping
-func WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig) *pb.WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig {
+func WorkstationConfig_Host_GCEInstance_GCEShieldedInstanceConfig_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_Host_GCEInstance_GCEShieldedInstanceConfig) *pb.WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig {
 	if in == nil {
 		return nil
 	}
@@ -465,7 +454,6 @@ func WorkstationConfig_Host_GceInstance_GceShieldedInstanceConfig_ToProto(mapCtx
 	out.EnableIntegrityMonitoring = direct.ValueOf(in.EnableIntegrityMonitoring)
 	return out
 }
-*/
 
 /* found existing non-generated mapping function "WorkstationConfig_PersistentDirectory_FromProto", skipping
 func WorkstationConfig_PersistentDirectory_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationConfig_PersistentDirectory) *krm.WorkstationConfig_PersistentDirectory {
@@ -473,32 +461,32 @@ func WorkstationConfig_PersistentDirectory_FromProto(mapCtx *direct.MapContext, 
 		return nil
 	}
 	out := &krm.WorkstationConfig_PersistentDirectory{}
-	// MISSING: GCEPD
-	// (near miss): "GCEPD" vs "GcePD"
+	out.GCEPD = WorkstationConfig_PersistentDirectory_GCERegionalPersistentDisk_FromProto(mapCtx, in.GetGcePd())
 	out.MountPath = direct.LazyPtr(in.GetMountPath())
 	return out
 }
 */
 
-/* found existing non-generated mapping function "WorkstationConfig_PersistentDirectory_ToProto", skipping
-func WorkstationConfig_PersistentDirectory_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_PersistentDirectory) *pb.WorkstationConfig_PersistentDirectory {
-	if in == nil {
-		return nil
-	}
-	out := &pb.WorkstationConfig_PersistentDirectory{}
-	// MISSING: GCEPD
-	// (near miss): "GCEPD" vs "GcePD"
-	out.MountPath = direct.ValueOf(in.MountPath)
-	return out
-}
-*/
+/*
+found existing non-generated mapping function "WorkstationConfig_PersistentDirectory_ToProto", skipping
 
-/* found existing non-generated mapping function "WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk_FromProto", skipping
-func WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk) *krm.WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk {
+	func WorkstationConfig_PersistentDirectory_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_PersistentDirectory) *pb.WorkstationConfig_PersistentDirectory {
+		if in == nil {
+			return nil
+		}
+		out := &pb.WorkstationConfig_PersistentDirectory{}
+		if oneof := WorkstationConfig_PersistentDirectory_GCERegionalPersistentDisk_ToProto(mapCtx, in.GCEPD); oneof != nil {
+			out.DirectoryType = &pb.WorkstationConfig_PersistentDirectory_GcePd{GcePd: oneof}
+		}
+		out.MountPath = direct.ValueOf(in.MountPath)
+		return out
+	}
+*/
+func WorkstationConfig_PersistentDirectory_GCERegionalPersistentDisk_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk) *krm.WorkstationConfig_PersistentDirectory_GCERegionalPersistentDisk {
 	if in == nil {
 		return nil
 	}
-	out := &krm.WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk{}
+	out := &krm.WorkstationConfig_PersistentDirectory_GCERegionalPersistentDisk{}
 	out.SizeGB = direct.LazyPtr(in.GetSizeGb())
 	out.FSType = direct.LazyPtr(in.GetFsType())
 	out.DiskType = direct.LazyPtr(in.GetDiskType())
@@ -506,10 +494,7 @@ func WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk_FromProto(m
 	out.ReclaimPolicy = direct.Enum_FromProto(mapCtx, in.GetReclaimPolicy())
 	return out
 }
-*/
-
-/* found existing non-generated mapping function "WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk_ToProto", skipping
-func WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk) *pb.WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk {
+func WorkstationConfig_PersistentDirectory_GCERegionalPersistentDisk_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationConfig_PersistentDirectory_GCERegionalPersistentDisk) *pb.WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk {
 	if in == nil {
 		return nil
 	}
@@ -521,7 +506,6 @@ func WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk_ToProto(map
 	out.ReclaimPolicy = direct.Enum_ToProto[pb.WorkstationConfig_PersistentDirectory_GceRegionalPersistentDisk_ReclaimPolicy](mapCtx, in.ReclaimPolicy)
 	return out
 }
-*/
 
 /* found existing non-generated mapping function "WorkstationConfig_ReadinessCheck_FromProto", skipping
 func WorkstationConfig_ReadinessCheck_FromProto(mapCtx *direct.MapContext, in *pb.WorkstationConfig_ReadinessCheck) *krm.WorkstationConfig_ReadinessCheck {
@@ -554,14 +538,12 @@ func WorkstationObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Workst
 	}
 	out := &krm.WorkstationObservedState{}
 	// MISSING: Name
-	// MISSING: Uid
-	// (near miss): "Uid" vs "UID"
-	// MISSING: Reconciling
+	out.Uid = direct.LazyPtr(in.GetUid())
+	out.Reconciling = direct.LazyPtr(in.GetReconciling())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.StartTime = direct.StringTimestamp_FromProto(mapCtx, in.GetStartTime())
 	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
-	out.Etag = direct.LazyPtr(in.GetEtag())
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.Host = direct.LazyPtr(in.GetHost())
 	return out
@@ -575,14 +557,12 @@ func WorkstationObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Worksta
 	}
 	out := &pb.Workstation{}
 	// MISSING: Name
-	// MISSING: Uid
-	// (near miss): "Uid" vs "UID"
-	// MISSING: Reconciling
+	out.Uid = direct.ValueOf(in.Uid)
+	out.Reconciling = direct.ValueOf(in.Reconciling)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.StartTime = direct.StringTimestamp_ToProto(mapCtx, in.StartTime)
 	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
-	out.Etag = direct.ValueOf(in.Etag)
 	out.State = direct.Enum_ToProto[pb.Workstation_State](mapCtx, in.State)
 	out.Host = direct.ValueOf(in.Host)
 	return out
@@ -597,10 +577,9 @@ func WorkstationSpec_FromProto(mapCtx *direct.MapContext, in *pb.Workstation) *k
 	out := &krm.WorkstationSpec{}
 	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: Uid
-	// MISSING: Reconciling
 	out.Annotations = in.Annotations
 	out.Labels = in.Labels
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	return out
 }
 */
@@ -613,10 +592,9 @@ func WorkstationSpec_ToProto(mapCtx *direct.MapContext, in *krm.WorkstationSpec)
 	out := &pb.Workstation{}
 	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	// MISSING: Uid
-	// MISSING: Reconciling
 	out.Annotations = in.Annotations
 	out.Labels = in.Labels
+	out.Etag = direct.ValueOf(in.Etag)
 	return out
 }
 */

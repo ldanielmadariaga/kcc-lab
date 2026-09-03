@@ -29,26 +29,28 @@ type BeyondCorpClientConnectorServiceSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/clientConnectorServices/{client_connector_service}
 	Location *string `json:"location"`
 
 	// The BeyondCorpClientConnectorService name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. User-provided name.
-	// The display name should follow certain format.
-	// * Must be 6 to 30 characters in length.
-	// * Can only contain lowercase letters, numbers, and hyphens.
-	// * Must start with a letter.
-	// +kubebuilder:validation:Optional
+	//  The display name should follow certain format.
+	//  * Must be 6 to 30 characters in length.
+	//  * Can only contain lowercase letters, numbers, and hyphens.
+	//  * Must start with a letter.
+	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Required. The details of the ingress settings.
-	// +kubebuilder:validation:Required
-	Ingress *ClientConnectorServiceIngress `json:"ingress"`
+	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.ingress
+	// +required
+	Ingress *ClientConnectorService_Ingress `json:"ingress,omitempty"`
 
 	// Required. The details of the egress settings.
-	// +kubebuilder:validation:Required
-	Egress *ClientConnectorServiceEgress `json:"egress"`
+	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.egress
+	// +required
+	Egress *ClientConnectorService_Egress `json:"egress,omitempty"`
 }
 
 // BeyondCorpClientConnectorServiceStatus defines the config connector machine state of BeyondCorpClientConnectorService
@@ -71,12 +73,15 @@ type BeyondCorpClientConnectorServiceStatus struct {
 // +kcc:observedstate:proto=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService
 type BeyondCorpClientConnectorServiceObservedState struct {
 	// Output only. [Output only] Create time stamp.
+	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. [Output only] Update time stamp.
+	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. The operational state of the ClientConnectorService.
+	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.state
 	State *string `json:"state,omitempty"`
 }
 
@@ -112,50 +117,4 @@ type BeyondCorpClientConnectorServiceList struct {
 
 func init() {
 	SchemeBuilder.Register(&BeyondCorpClientConnectorService{}, &BeyondCorpClientConnectorServiceList{})
-}
-
-// +kcc:proto=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.Egress
-type ClientConnectorServiceEgress struct {
-	// A VPC from the consumer project.
-	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.Egress.peered_vpc
-	PeeredVPC *ClientConnectorServiceEgressPeeredVPC `json:"peeredVPC,omitempty"`
-}
-
-// +kcc:proto=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.Egress.PeeredVpc
-type ClientConnectorServiceEgressPeeredVPC struct {
-	// Required. The name of the peered VPC owned by the consumer project.
-	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.Egress.PeeredVpc.network_vpc
-	NetworkVPC *string `json:"networkVPC,omitempty"`
-}
-
-// +kcc:proto=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.Ingress
-type ClientConnectorServiceIngress struct {
-	// The basic ingress config for ClientGateways.
-	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.Ingress.config
-	Config *ClientConnectorServiceIngressConfig `json:"config,omitempty"`
-}
-
-// +kcc:proto=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.Ingress.Config
-type ClientConnectorServiceIngressConfig struct {
-	// Required. Immutable. The transport protocol used between the client and
-	//  the server.
-	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.Ingress.Config.transport_protocol
-	TransportProtocol *string `json:"transportProtocol,omitempty"`
-
-	// Required. The settings used to configure basic ClientGateways.
-	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.Ingress.Config.destination_routes
-	DestinationRoutes []ClientConnectorServiceIngressConfigDestinationRoute `json:"destinationRoutes,omitempty"`
-}
-
-// +kcc:proto=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.Ingress.Config.DestinationRoute
-type ClientConnectorServiceIngressConfigDestinationRoute struct {
-	// Required. The network address of the subnet
-	//  for which the packet is routed to the ClientGateway.
-	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.Ingress.Config.DestinationRoute.address
-	Address *string `json:"address,omitempty"`
-
-	// Required. The network mask of the subnet
-	//  for which the packet is routed to the ClientGateway.
-	// +kcc:proto:field=google.cloud.beyondcorp.clientconnectorservices.v1.ClientConnectorService.Ingress.Config.DestinationRoute.netmask
-	Netmask *string `json:"netmask,omitempty"`
 }

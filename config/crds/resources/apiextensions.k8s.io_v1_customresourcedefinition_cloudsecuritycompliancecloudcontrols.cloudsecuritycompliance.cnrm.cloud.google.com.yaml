@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: cloudsecuritycompliancecloudcontrols.cloudsecuritycompliance.cnrm.cloud.google.com
 spec:
@@ -65,7 +64,7 @@ spec:
               state of CloudSecurityComplianceCloudControl
             properties:
               categories:
-                description: Optional. The categories for the cloud control.
+                description: Optional. The categories of the cloud control.
                 items:
                   type: string
                 type: array
@@ -74,12 +73,12 @@ spec:
                   length is 2000 characters.
                 type: string
               displayName:
-                description: Optional. The friendly name of the cloud control. The
+                description: Optional. The display name of the cloud control. The
                   maximum length is 200 characters.
                 type: string
               findingCategory:
-                description: Optional. The finding category for the cloud control
-                  findings. The maximum length is 255 characters.
+                description: Optional. The finding_category of the cloud control.
+                  The maximum length is 255 characters.
                 type: string
               location:
                 description: The location of this resource.
@@ -95,41 +94,43 @@ spec:
                 - external
                 type: object
               parameterSpec:
-                description: Optional. The parameter specifications for the cloud
-                  control.
+                description: Optional. The parameter spec of the cloud control.
                 items:
                   properties:
                     defaultValue:
                       description: Optional. The default value of the parameter.
                       properties:
                         boolValue:
-                          description: Optional. A boolean value.
+                          description: Represents a boolean value.
                           type: boolean
                         numberValue:
-                          description: Optional. A double value.
+                          description: Represents a double value.
                           type: number
                         oneofValue:
-                          description: Optional. Sub-parameter values.
+                          description: Represents sub-parameter values.
                           properties:
                             name:
-                              description: Required. The name or key of the parameter.
+                              description: Required. The name of the parameter.
                               type: string
                             parameterValue:
-                              description: Required. The value of the parameter.
-                              type: object
-                              x-kubernetes-preserve-unknown-fields: true
+                              description: Required. The value of the parameter
+                          required:
+                          - name
+                          - parameterValue
                           type: object
                         stringListValue:
-                          description: Optional. A repeated string.
+                          description: Represents a repeated string.
                           properties:
                             values:
                               description: Required. The strings in the list.
                               items:
                                 type: string
                               type: array
+                          required:
+                          - values
                           type: object
                         stringValue:
-                          description: Optional. A string value.
+                          description: Represents a string value.
                           type: string
                       type: object
                     description:
@@ -137,167 +138,21 @@ spec:
                         maximum length is 2000 characters.
                       type: string
                     displayName:
-                      description: Optional. The friendly name of the parameter. The
+                      description: Optional. The display name of the parameter. The
                         maximum length is 200 characters.
                       type: string
                     isRequired:
-                      description: Required. Whether the parameter is required.
+                      description: Required. if the parameter is required
                       type: boolean
                     name:
                       description: Required. The name of the parameter.
                       type: string
                     subParameters:
-                      description: Optional. The parameter specification for `oneOf`
-                        attributes.
-                      items:
-                        properties:
-                          defaultValue:
-                            description: Optional. The default value of the parameter.
-                            properties:
-                              boolValue:
-                                description: Optional. A boolean value.
-                                type: boolean
-                              numberValue:
-                                description: Optional. A double value.
-                                type: number
-                              oneofValue:
-                                description: Optional. Sub-parameter values.
-                                properties:
-                                  name:
-                                    description: Required. The name or key of the
-                                      parameter.
-                                    type: string
-                                  parameterValue:
-                                    description: Required. The value of the parameter.
-                                    type: object
-                                    x-kubernetes-preserve-unknown-fields: true
-                                type: object
-                              stringListValue:
-                                description: Optional. A repeated string.
-                                properties:
-                                  values:
-                                    description: Required. The strings in the list.
-                                    items:
-                                      type: string
-                                    type: array
-                                type: object
-                              stringValue:
-                                description: Optional. A string value.
-                                type: string
-                            type: object
-                          description:
-                            description: Optional. The description of the parameter.
-                              The maximum length is 2000 characters.
-                            type: string
-                          displayName:
-                            description: Optional. The friendly name of the parameter.
-                              The maximum length is 200 characters.
-                            type: string
-                          isRequired:
-                            description: Required. Whether the parameter is required.
-                            type: boolean
-                          name:
-                            description: Required. The name of the parameter.
-                            type: string
-                          substitutionRules:
-                            description: Optional. The list of parameter substitutions.
-                            items:
-                              properties:
-                                attributeSubstitutionRule:
-                                  description: Attribute substitution rule.
-                                  properties:
-                                    attribute:
-                                      description: 'Fully qualified proto attribute
-                                        path (in dot notation). Example: rules[0].cel_expression.resource_types_values'
-                                      type: string
-                                  type: object
-                                placeholderSubstitutionRule:
-                                  description: Placeholder substitution rule.
-                                  properties:
-                                    attribute:
-                                      description: Fully qualified proto attribute
-                                        path (e.g., dot notation)
-                                      type: string
-                                  type: object
-                              type: object
-                            type: array
-                          validation:
-                            description: Optional. The permitted set of values for
-                              the parameter.
-                            properties:
-                              allowedValues:
-                                description: Allowed set of values for the parameter.
-                                properties:
-                                  values:
-                                    description: Required. List of allowed values
-                                      for the parameter.
-                                    items:
-                                      properties:
-                                        boolValue:
-                                          description: Optional. A boolean value.
-                                          type: boolean
-                                        numberValue:
-                                          description: Optional. A double value.
-                                          type: number
-                                        oneofValue:
-                                          description: Optional. Sub-parameter values.
-                                          properties:
-                                            name:
-                                              description: Required. The name or key
-                                                of the parameter.
-                                              type: string
-                                            parameterValue:
-                                              description: Required. The value of
-                                                the parameter.
-                                              type: object
-                                              x-kubernetes-preserve-unknown-fields: true
-                                          type: object
-                                        stringListValue:
-                                          description: Optional. A repeated string.
-                                          properties:
-                                            values:
-                                              description: Required. The strings in
-                                                the list.
-                                              items:
-                                                type: string
-                                              type: array
-                                          type: object
-                                        stringValue:
-                                          description: Optional. A string value.
-                                          type: string
-                                      type: object
-                                    type: array
-                                type: object
-                              intRange:
-                                description: Allowed range for numeric parameters.
-                                properties:
-                                  max:
-                                    description: Required. Maximum allowed value for
-                                      the numeric parameter (inclusive).
-                                    format: int64
-                                    type: integer
-                                  min:
-                                    description: Required. Minimum allowed value for
-                                      the numeric parameter (inclusive).
-                                    format: int64
-                                    type: integer
-                                type: object
-                              regexpPattern:
-                                description: Regular expression for string parameters.
-                                properties:
-                                  pattern:
-                                    description: Required. Regex Pattern to match
-                                      the value(s) of parameter.
-                                    type: string
-                                type: object
-                            type: object
-                          valueType:
-                            description: Required. The parameter value type.
-                            type: string
-                        type: object
+                      description: Optional. ParameterSpec for oneof attributes.
+                      items: {}
                       type: array
                     substitutionRules:
-                      description: Optional. The list of parameter substitutions.
+                      description: Optional. List of parameter substitutions.
                       items:
                         properties:
                           attributeSubstitutionRule:
@@ -319,7 +174,7 @@ spec:
                         type: object
                       type: array
                     validation:
-                      description: Optional. The permitted set of values for the parameter.
+                      description: Optional. The allowed set of values for the parameter.
                       properties:
                         allowedValues:
                           description: Allowed set of values for the parameter.
@@ -330,25 +185,25 @@ spec:
                               items:
                                 properties:
                                   boolValue:
-                                    description: Optional. A boolean value.
+                                    description: Represents a boolean value.
                                     type: boolean
                                   numberValue:
-                                    description: Optional. A double value.
+                                    description: Represents a double value.
                                     type: number
                                   oneofValue:
-                                    description: Optional. Sub-parameter values.
+                                    description: Represents sub-parameter values.
                                     properties:
                                       name:
-                                        description: Required. The name or key of
-                                          the parameter.
+                                        description: Required. The name of the parameter.
                                         type: string
                                       parameterValue:
-                                        description: Required. The value of the parameter.
-                                        type: object
-                                        x-kubernetes-preserve-unknown-fields: true
+                                        description: Required. The value of the parameter
+                                    required:
+                                    - name
+                                    - parameterValue
                                     type: object
                                   stringListValue:
-                                    description: Optional. A repeated string.
+                                    description: Represents a repeated string.
                                     properties:
                                       values:
                                         description: Required. The strings in the
@@ -356,12 +211,16 @@ spec:
                                         items:
                                           type: string
                                         type: array
+                                    required:
+                                    - values
                                     type: object
                                   stringValue:
-                                    description: Optional. A string value.
+                                    description: Represents a string value.
                                     type: string
                                 type: object
                               type: array
+                          required:
+                          - values
                           type: object
                         intRange:
                           description: Allowed range for numeric parameters.
@@ -376,6 +235,9 @@ spec:
                                 numeric parameter (inclusive).
                               format: int64
                               type: integer
+                          required:
+                          - max
+                          - min
                           type: object
                         regexpPattern:
                           description: Regular expression for string parameters.
@@ -384,24 +246,30 @@ spec:
                               description: Required. Regex Pattern to match the value(s)
                                 of parameter.
                               type: string
+                          required:
+                          - pattern
                           type: object
                       type: object
                     valueType:
-                      description: Required. The parameter value type.
+                      description: Required. Parameter value type.
                       type: string
+                  required:
+                  - isRequired
+                  - name
+                  - valueType
                   type: object
                 type: array
               remediationSteps:
-                description: Optional. The remediation steps for the cloud control
-                  findings. The maximum length is 400 characters.
+                description: Optional. The remediation steps for the findings generated
+                  by the cloud control. The maximum length is 400 characters.
                 type: string
               resourceID:
                 description: The CloudSecurityComplianceCloudControl name. If not
                   given, the metadata.name will be used.
                 type: string
               rules:
-                description: Optional. The rules that you can enforce to meet your
-                  security or compliance intent.
+                description: Optional. The Policy to be enforced to prevent/detect
+                  resource non-compliance.
                 items:
                   properties:
                     celExpression:
@@ -421,7 +289,11 @@ spec:
                               items:
                                 type: string
                               type: array
+                          required:
+                          - values
                           type: object
+                      required:
+                      - expression
                       type: object
                     description:
                       description: Optional. Description of the Rule. The maximum
@@ -432,25 +304,25 @@ spec:
                       items:
                         type: string
                       type: array
+                  required:
+                  - ruleActionTypes
                   type: object
                 type: array
               severity:
-                description: Optional. The severity of the findings that are generated
-                  by the cloud control.
+                description: Optional. The severity of findings generated by the cloud
+                  control.
                 type: string
               supportedCloudProviders:
-                description: Optional. The supported cloud providers.
+                description: Optional. cloud providers supported
                 items:
                   type: string
                 type: array
               supportedTargetResourceTypes:
-                description: Optional. The target resource types that are supported
-                  by the cloud control.
+                description: Optional. target resource types supported by the CloudControl.
                 items:
                   type: string
                 type: array
             required:
-            - location
             - organizationRef
             type: object
           status:
@@ -500,24 +372,23 @@ spec:
                   observed in GCP.
                 properties:
                   createTime:
-                    description: Output only. The time that the cloud control was
-                      last updated. create_time is used because a new cloud control
-                      is created whenever an existing cloud control is updated.
+                    description: Output only. The last updated time of the cloud control.
+                      The create_time is used because a new CC is created whenever
+                      we update an existing CC.
                     type: string
                   majorRevisionID:
-                    description: Output only. The major version of the cloud control,
-                      which is incremented in ascending order.
+                    description: Output only. Major revision of the cloud control
+                      incremented in ascending order.
                     format: int64
                     type: integer
                   relatedFrameworks:
-                    description: Output only. The frameworks that include this cloud
-                      control.
+                    description: Output only. The Frameworks that include this CloudControl
                     items:
                       type: string
                     type: array
                   supportedEnforcementModes:
-                    description: Output only. The supported enforcement modes for
-                      the cloud control.
+                    description: Output only. The supported enforcement mode of the
+                      cloud control. Default is DETECTIVE.
                     items:
                       type: string
                     type: array

@@ -141,6 +141,16 @@ func (in *CloudTalentSolutionCompanySpec) DeepCopyInto(out *CloudTalentSolutionC
 		*out = new(string)
 		**out = **in
 	}
+	if in.DisplayName != nil {
+		in, out := &in.DisplayName, &out.DisplayName
+		*out = new(string)
+		**out = **in
+	}
+	if in.ExternalID != nil {
+		in, out := &in.ExternalID, &out.ExternalID
+		*out = new(string)
+		**out = **in
+	}
 	if in.Size != nil {
 		in, out := &in.Size, &out.Size
 		*out = new(string)

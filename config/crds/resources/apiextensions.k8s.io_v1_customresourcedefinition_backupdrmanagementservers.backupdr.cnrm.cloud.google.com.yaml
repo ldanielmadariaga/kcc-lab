@@ -67,6 +67,10 @@ spec:
                 description: Optional. The description of the ManagementServer instance
                   (2048 characters or less).
                 type: string
+              etag:
+                description: Optional. Server specified ETag for the ManagementServer
+                  resource to prevent simultaneous updates from overwiting each other.
+                type: string
               labels:
                 additionalProperties:
                   type: string
@@ -75,47 +79,19 @@ spec:
                   If set to true, the MS is created in migration ready mode.'
                 type: object
               location:
-                description: Immutable.
+                description: The location of this resource.
                 type: string
-                x-kubernetes-validations:
-                - message: Location field is immutable
-                  rule: self == oldSelf
               networks:
                 description: Optional. VPC networks to which the ManagementServer
                   instance is connected. For this version, only a single network is
                   supported. This field is optional if MS is created without PSA
                 items:
                   properties:
-                    networkRef:
+                    network:
                       description: Optional. The resource name of the Google Compute
                         Engine VPC network to which the ManagementServer instance
                         is connected.
-                      oneOf:
-                      - not:
-                          required:
-                          - external
-                        required:
-                        - name
-                      - not:
-                          anyOf:
-                          - required:
-                            - name
-                          - required:
-                            - namespace
-                        required:
-                        - external
-                      properties:
-                        external:
-                          description: A reference to an externally managed ComputeNetwork
-                            resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
-                          type: string
-                        name:
-                          description: The name of a ComputeNetwork resource.
-                          type: string
-                        namespace:
-                          description: The namespace of a ComputeNetwork resource.
-                          type: string
-                      type: object
+                      type: string
                     peeringMode:
                       description: Optional. The network connect mode of the ManagementServer
                         instance. For this version, only PRIVATE_SERVICE_ACCESS is
@@ -124,7 +100,7 @@ spec:
                   type: object
                 type: array
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -212,7 +188,7 @@ spec:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
                 properties:
-                  baProxyURIs:
+                  baProxyURI:
                     description: Output only. The hostname or ip address of the exposed
                       AGM endpoints, used by BAs to connect to BA proxy.
                     items:
@@ -230,7 +206,7 @@ spec:
                         description: Output only. The ManagementServer AGM/RD API
                           URL.
                         type: string
-                      webUI:
+                      webUi:
                         description: Output only. The ManagementServer AGM/RD WebUI
                           URL.
                         type: string
@@ -241,6 +217,12 @@ spec:
                       This is the value that should be provided in the 'aud' field
                       of the OIDC ID Token (see openid specification https://openid.net/specs/openid-connect-core-1_0.html#IDToken).
                     type: string
+                  satisfiesPzi:
+                    description: Output only. Reserved for future use.
+                    type: boolean
+                  satisfiesPzs:
+                    description: Output only. Reserved for future use.
+                    type: boolean
                   state:
                     description: Output only. The ManagementServer state.
                     type: string
@@ -261,15 +243,15 @@ spec:
                           Identity Providers.
                         type: string
                     type: object
-                  workforceIdentityBasedOAuth2ClientID:
+                  workforceIdentityBasedOAUTH2ClientID:
                     description: Output only. The OAuth client IDs for both types
                       of user i.e. 1p and 3p.
                     properties:
-                      firstPartyOAuth2ClientID:
+                      firstPartyOAUTH2ClientID:
                         description: Output only. First party OAuth Client ID for
                           Google Identities.
                         type: string
-                      thirdPartyOAuth2ClientID:
+                      thirdPartyOAUTH2ClientID:
                         description: Output only. Third party OAuth Client ID for
                           External Identity Providers.
                         type: string

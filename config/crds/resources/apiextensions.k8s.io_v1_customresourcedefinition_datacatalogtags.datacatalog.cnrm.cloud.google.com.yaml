@@ -69,10 +69,36 @@ spec:
                    To attach a tag to a nested column, separate column names with a dot
                    (`.`). Example: `column.nested_column`.
                 type: string
+              entryGroupRef:
+                description: The EntryGroup that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed DataCatalogEntryGroup
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/entrygroups/{{entrygroupID}}".
+                    type: string
+                  name:
+                    description: The name of a DataCatalogEntryGroup resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a DataCatalogEntryGroup resource.
+                    type: string
+                type: object
               entryRef:
-                description: Required. Reference to the DataCatalogEntry that owns
-                  this Tag. The entry must be in the same project and location as
-                  the tag.
+                description: The Entry that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -136,16 +162,18 @@ spec:
                       description: The value of a tag field with a timestamp type.
                       type: string
                   type: object
-                type: object
-              resourceID:
-                description: The DataCatalogTag name. If not given, the metadata.name
-                  will be used.
-                type: string
-              templateRef:
                 description: |-
-                  Required. The resource name of the tag template this tag uses.
+                  Required. Maps the ID of a tag field to its value and additional
+                   information about that field.
 
-                   This field cannot be modified after creation.
+                   Tag template defines valid field IDs. A tag
+                   must have at least 1 field and at most 500 fields.
+                type: object
+              location:
+                description: The location of this resource.
+                type: string
+              projectRef:
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -162,19 +190,36 @@ spec:
                   - external
                 properties:
                   external:
-                    description: A reference to an externally managed DataCatalogTagTemplate
-                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/tagTemplates/{{tagTemplateID}}".
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
                     type: string
                   name:
-                    description: The name of a DataCatalogTagTemplate resource.
+                    description: The `name` field of a `Project` resource.
                     type: string
                   namespace:
-                    description: The namespace of a DataCatalogTagTemplate resource.
+                    description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
+              resourceID:
+                description: The DataCatalogTag name. If not given, the metadata.name
+                  will be used.
+                type: string
+              template:
+                description: |-
+                  Required. The resource name of the tag template this tag uses. Example:
+
+                   `projects/{PROJECT_ID}/locations/{LOCATION}/tagTemplates/{TAG_TEMPLATE_ID}`
+
+                   This field cannot be modified after creation.
+                type: string
             required:
-            - entryRef
-            - templateRef
+            - fields
+            - projectRef
+            - template
             type: object
           status:
             description: DataCatalogTagStatus defines the config connector machine

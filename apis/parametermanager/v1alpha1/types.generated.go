@@ -22,9 +22,106 @@
 
 package v1alpha1
 
+/* unreachable type Parameter
+// +kcc:proto=google.cloud.parametermanager.v1.Parameter
+type Parameter struct {
+	// Identifier. [Output only] The resource name of the Parameter in the format
+	//  `projects/-*-/locations/-*-/parameters/-*`.
+	// +kcc:proto:field=google.cloud.parametermanager.v1.Parameter.name
+	Name *string `json:"name,omitempty"`
+
+	// Optional. Labels as key value pairs
+	// +kcc:proto:field=google.cloud.parametermanager.v1.Parameter.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. Specifies the format of a Parameter.
+	// +kcc:proto:field=google.cloud.parametermanager.v1.Parameter.format
+	Format *string `json:"format,omitempty"`
+
+	// Optional. Customer managed encryption key (CMEK) to use for encrypting the
+	//  Parameter Versions. If not set, the default Google-managed encryption key
+	//  will be used. Cloud KMS CryptoKeys must reside in the same location as the
+	//  Parameter. The expected format is
+	//  `projects/-*-/locations/-*-/keyRings/-*-/cryptoKeys/-*`.
+	// +kcc:proto:field=google.cloud.parametermanager.v1.Parameter.kms_key
+	KMSKey *string `json:"kmsKey,omitempty"`
+}
+*/
+
+/* unreachable type ParameterVersion
+// +kcc:proto=google.cloud.parametermanager.v1.ParameterVersion
+type ParameterVersion struct {
+	// Identifier. [Output only] The resource name of the ParameterVersion in the
+	//  format `projects/-*-/locations/-*-/parameters/-*-/versions/-*`.
+	// +kcc:proto:field=google.cloud.parametermanager.v1.ParameterVersion.name
+	Name *string `json:"name,omitempty"`
+
+	// Optional. Disabled boolean to determine if a ParameterVersion acts as a
+	//  metadata only resource (payload is never returned if disabled is true). If
+	//  true any calls will always default to BASIC view even if the user
+	//  explicitly passes FULL view as part of the request. A render call on a
+	//  disabled resource fails with an error. Default value is False.
+	// +kcc:proto:field=google.cloud.parametermanager.v1.ParameterVersion.disabled
+	Disabled *bool `json:"disabled,omitempty"`
+
+	// Required. Immutable. Payload content of a ParameterVersion resource.  This
+	//  is only returned when the request provides the View value of FULL (default
+	//  for GET request).
+	// +kcc:proto:field=google.cloud.parametermanager.v1.ParameterVersion.payload
+	// +required
+	Payload *ParameterVersionPayload `json:"payload,omitempty"`
+}
+*/
+
+// +kcc:proto=google.cloud.parametermanager.v1.ParameterVersionPayload
+type ParameterVersionPayload struct {
+	// Required. bytes data for storing payload.
+	// +kcc:proto:field=google.cloud.parametermanager.v1.ParameterVersionPayload.data
+	// +required
+	Data []byte `json:"data,omitempty"`
+}
+
 /* unreachable type ResourcePolicyMember
 // +kcc:proto=google.iam.v1.ResourcePolicyMember
 type ResourcePolicyMember struct {
+}
+*/
+
+/* unreachable type ParameterObservedState
+// +kcc:observedstate:proto=google.cloud.parametermanager.v1.Parameter
+type ParameterObservedState struct {
+	// Output only. [Output only] Create time stamp
+	// +kcc:proto:field=google.cloud.parametermanager.v1.Parameter.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. [Output only] Update time stamp
+	// +kcc:proto:field=google.cloud.parametermanager.v1.Parameter.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. [Output-only] policy member strings of a Google Cloud
+	//  resource.
+	// +kcc:proto:field=google.cloud.parametermanager.v1.Parameter.policy_member
+	PolicyMember *ResourcePolicyMemberObservedState `json:"policyMember,omitempty"`
+}
+*/
+
+/* unreachable type ParameterVersionObservedState
+// +kcc:observedstate:proto=google.cloud.parametermanager.v1.ParameterVersion
+type ParameterVersionObservedState struct {
+	// Output only. [Output only] Create time stamp
+	// +kcc:proto:field=google.cloud.parametermanager.v1.ParameterVersion.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. [Output only] Update time stamp
+	// +kcc:proto:field=google.cloud.parametermanager.v1.ParameterVersion.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Optional. Output only. [Output only] The resource name of the KMS key
+	//  version used to encrypt the ParameterVersion payload. This field is
+	//  populated only if the Parameter resource has customer managed encryption
+	//  key (CMEK) configured.
+	// +kcc:proto:field=google.cloud.parametermanager.v1.ParameterVersion.kms_key_version
+	KMSKeyVersion *string `json:"kmsKeyVersion,omitempty"`
 }
 */
 

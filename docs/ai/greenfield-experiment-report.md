@@ -1,8 +1,15 @@
 # Bulk-generating greenfield resources: what we tried, and what it measured
 
-*A proposal for the KCC team. Everything here is reproducible from the sandbox repo
+*Everything here is reproducible from the sandbox repo
 [ldanielmadariaga/kcc-lab](https://github.com/ldanielmadariaga/kcc-lab); the commands are named
 throughout.*
+
+> **There is a second, fuller version of this report.**
+> [`greenfield-experiment-report.html`](greenfield-experiment-report.html) is the page published to
+> claude.ai, and it has since moved ahead of this file: it is framed as a report rather than a
+> proposal, and it carries an appendix on the prerequisites that made deterministic generation
+> possible and on how the non-deterministic parts are flagged. Edit the HTML and republish it;
+> treat this file as the plain-text summary.
 
 ## The proposal, up front
 
@@ -47,19 +54,20 @@ fields in seconds.
 `c1df0b9326`:
 
 ```
-  1. implemented                      10232   (94.2%)   same field, same path
-  2. flagged                            319   (2.9%)    a human is told to decide
-  3. missed                             306   (2.8%)
-        truly missed                     123   (1.1%)   produced nowhere, mentioned nowhere
-        emitted, wrong section            30   (0.3%)   spec vs status.observedState
-        emitted as a plain string         17   (0.2%)   upstream references it, we did not
-        emitted, renamed or reshaped     102   (0.9%)   present, different name or shape
-        reference, name unpairable        34   (0.3%)   queue likely names it, unprovable
+  1. implemented                      13195   (94.3%)   the same field at the same path
+  2. discrepancy                        445   (3.2%)    we produce it, but not as upstream has it
+        flagged for a second pass         281   (76%)
+        nothing says so                    88
+  3. missing                            357   (2.6%)    we produce nothing at all
+        a gap to close                    295
+        we model it differently on purpose 62
+        flagged for a second pass          39   (6%)
                                      ------
-  fields in KCC master CRDs           10857
+  fields in KCC master CRDs           13997
 ```
 
-**123 fields is the honest gap** — 1.1% of the surface. Reproduce with
+295 fields is the gap that needs generating, 2.1% of the surface. The 368 discrepancies are fields
+we do produce in a shape upstream does not have; they need detecting or moving. Reproduce with
 `hack/tools/greenfield/silence_report.py`.
 
 ### 2. Everything needing judgement is flagged — met, and machine-checked
@@ -120,7 +128,7 @@ That one unrecognised spelling covers **1,605 fields in `compute.proto` alone**,
 
 A coverage report like this improves if you simply stop emitting a field and flag it instead. So the
 report prints `implemented` beside the gap, and any change that moves the gap without holding
-`implemented` steady is treated as suspect. The most recent change took `truly missed` from 232 to
+`implemented` steady is treated as suspect. One recent change took the not-generated count from 232 to
 123 **and** `implemented` from 10,176 to 10,232, which is what a real improvement looks like.
 
 Two further habits worth keeping:

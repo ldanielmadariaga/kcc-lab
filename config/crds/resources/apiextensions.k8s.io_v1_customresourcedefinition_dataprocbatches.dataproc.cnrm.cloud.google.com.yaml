@@ -20,7 +20,7 @@ spec:
     plural: dataprocbatches
     shortNames:
     - gcpdataprocbatch
-    - gcpdataprocbatches
+    - gcpdataprocbatchs
     singular: dataprocbatch
   preserveUnknownFields: false
   scope: Namespaced
@@ -67,6 +67,18 @@ spec:
                   executionConfig:
                     description: Optional. Execution configuration for a workload.
                     properties:
+                      authenticationConfig:
+                        description: Optional. Authentication configuration used to
+                          set the default identity for the workload execution. The
+                          config specifies the type of identity (service account or
+                          user) that will be used by workloads to access resources
+                          on the project(s).
+                        properties:
+                          userWorkloadAuthenticationType:
+                            description: Optional. Authentication type for the user
+                              workload running in containers.
+                            type: string
+                        type: object
                       idleTTL:
                         description: 'Optional. Applies to sessions only. The duration
                           to keep the session alive while it''s idling. Exceeding
@@ -79,34 +91,9 @@ spec:
                           when it has been idle for `idle_ttl` or when `ttl` has been
                           exceeded, whichever occurs first.'
                         type: string
-                      kmsKeyRef:
+                      kmsKey:
                         description: Optional. The Cloud KMS key to use for encryption.
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: A reference to an externally managed KMSCryptoKey.
-                              Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
-                            type: string
-                          name:
-                            description: The `name` of a `KMSCryptoKey` resource.
-                            type: string
-                          namespace:
-                            description: The `namespace` of a `KMSCryptoKey` resource.
-                            type: string
-                        type: object
+                        type: string
                       networkTags:
                         description: Optional. Tags used for network traffic control.
                         items:
@@ -115,36 +102,11 @@ spec:
                       networkURI:
                         description: Optional. Network URI to connect workload to.
                         type: string
-                      serviceAccountRef:
+                      serviceAccount:
                         description: Optional. Service account that used to execute
                           workload.
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: The `email` field of an `IAMServiceAccount`
-                              resource.
-                            type: string
-                          name:
-                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                            type: string
-                          namespace:
-                            description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
-                            type: string
-                        type: object
-                      stagingBucketRef:
+                        type: string
+                      stagingBucket:
                         description: Optional. A Cloud Storage bucket used to stage
                           workload dependencies, config files, and store workload
                           output and other ephemeral data, such as Spark history files.
@@ -154,32 +116,7 @@ spec:
                           project-level, per-location staging and temporary buckets.
                           **This field requires a Cloud Storage bucket name, not a
                           `gs://...` URI to a Cloud Storage bucket.**
-                        oneOf:
-                        - not:
-                            required:
-                            - external
-                          required:
-                          - name
-                        - not:
-                            anyOf:
-                            - required:
-                              - name
-                            - required:
-                              - namespace
-                          required:
-                          - external
-                        properties:
-                          external:
-                            description: A reference to an externally managed StorageBucket
-                              resource. Should be in the format "projects/{{projectID}}/buckets/{{bucketID}}".
-                            type: string
-                          name:
-                            description: The name of a StorageBucket resource.
-                            type: string
-                          namespace:
-                            description: The namespace of a StorageBucket resource.
-                            type: string
-                        type: object
+                        type: string
                       subnetworkURI:
                         description: Optional. Subnetwork URI to connect workload
                           to.
@@ -219,7 +156,7 @@ spec:
                         description: Optional. The Spark History Server configuration
                           for the workload.
                         properties:
-                          dataprocClusterRef:
+                          dataprocCluster:
                             description: |-
                               Optional. Resource name of an existing Dataproc Cluster to act as a Spark
                                History Server for the workload.
@@ -227,33 +164,7 @@ spec:
                                Example:
 
                                * `projects/[project_id]/regions/[region]/clusters/[cluster_name]`
-                            oneOf:
-                            - not:
-                                required:
-                                - external
-                              required:
-                              - name
-                            - not:
-                                anyOf:
-                                - required:
-                                  - name
-                                - required:
-                                  - namespace
-                              required:
-                              - external
-                            properties:
-                              external:
-                                description: A reference to an externally managed
-                                  DataprocCluster resource. Should be in the format
-                                  "projects/{{projectID}}/regions/{{region}}/clusters/{{clusterName}}".
-                                type: string
-                              name:
-                                description: The name of a DataprocCluster resource.
-                                type: string
-                              namespace:
-                                description: The namespace of a DataprocCluster resource.
-                                type: string
-                            type: object
+                            type: string
                         type: object
                     type: object
                 type: object
@@ -268,10 +179,10 @@ spec:
                   No more than 32 labels can be associated with a batch.
                 type: object
               location:
-                description: Required.
+                description: The location of this resource.
                 type: string
               projectRef:
-                description: Required.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -343,6 +254,8 @@ spec:
                     items:
                       type: string
                     type: array
+                required:
+                - mainPythonFileURI
                 type: object
               resourceID:
                 description: The DataprocBatch name. If not given, the metadata.name
@@ -458,6 +371,8 @@ spec:
                     description: Required. The HCFS URI of the main R file to use
                       as the driver. Must be a `.R` or `.r` file.
                     type: string
+                required:
+                - mainRFileURI
                 type: object
               sparkSQLBatch:
                 description: Optional. SparkSql batch config.
@@ -478,7 +393,12 @@ spec:
                     description: 'Optional. Mapping of query variable names to values
                       (equivalent to the Spark SQL command: `SET name="value";`).'
                     type: object
+                required:
+                - queryFileURI
                 type: object
+            required:
+            - location
+            - projectRef
             type: object
           status:
             description: DataprocBatchStatus defines the config connector machine

@@ -62,7 +62,7 @@ spec:
             description: GKEBackupBackupSpec defines the desired state of GKEBackupBackup
             properties:
               backupPlanRef:
-                description: Required. The BackupPlan from which this Backup is created.
+                description: The BackupPlan that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -112,6 +112,41 @@ spec:
                   type: string
                 description: Optional. A set of custom labels supplied by user.
                 type: object
+              location:
+                description: The location of this resource.
+                type: string
+              projectRef:
+                description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
+                    type: string
+                  name:
+                    description: The `name` field of a `Project` resource.
+                    type: string
+                  namespace:
+                    description: The `namespace` field of a `Project` resource.
+                    type: string
+                type: object
               resourceID:
                 description: The GKEBackupBackup name. If not given, the metadata.name
                   will be used.
@@ -134,7 +169,7 @@ spec:
                 format: int32
                 type: integer
             required:
-            - backupPlanRef
+            - projectRef
             type: object
           status:
             description: GKEBackupBackupStatus defines the config connector machine
@@ -193,7 +228,7 @@ spec:
                       anthosVersion:
                         description: Output only. Anthos version
                         type: string
-                      backupCRDVersions:
+                      backupCrdVersions:
                         additionalProperties:
                           type: string
                         description: Output only. A list of the Backup for GKE CRD
@@ -296,6 +331,12 @@ spec:
                     description: Output only. The time at which this Backup will be
                       automatically deleted (calculated from create_time + [retain_days][google.cloud.gkebackup.v1.Backup.retain_days]).
                     type: string
+                  satisfiesPzi:
+                    description: Output only. [Output Only] Reserved for future use.
+                    type: boolean
+                  satisfiesPzs:
+                    description: Output only. [Output Only] Reserved for future use.
+                    type: boolean
                   selectedApplications:
                     description: Output only. If set, the list of ProtectedApplications
                       whose resources were included in the Backup.
@@ -334,7 +375,9 @@ spec:
                     type: string
                   stateReason:
                     description: Output only. Human-readable description of why the
-                      backup is in the current `state`.
+                      backup is in the current `state`. This field is only meant for
+                      human readability and should not be used programmatically as
+                      this field is not guaranteed to be consistent.
                     type: string
                   uid:
                     description: Output only. Server generated global unique identifier

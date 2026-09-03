@@ -248,7 +248,7 @@ type MetricDescriptor_MetricDescriptorMetadata struct {
 }
 */
 
-/* found existing non-generated go type "MonitoredResource", skipping
+/* found existing non-generated go type with proto tag "google.api.MonitoredResource", skipping
 
 // +kcc:proto=google.api.MonitoredResource
 type MonitoredResource struct {
@@ -269,8 +269,6 @@ type MonitoredResource struct {
 	Labels map[string]string `json:"labels,omitempty"`
 }
 */
-
-/* found existing non-generated go type "Aggregation", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.Aggregation
 type Aggregation struct {
@@ -342,9 +340,6 @@ type Aggregation struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.Aggregation.group_by_fields
 	GroupByFields []string `json:"groupByFields,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "AlertChart", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.AlertChart
 type AlertChart struct {
@@ -352,11 +347,9 @@ type AlertChart struct {
 	//
 	//      projects/[PROJECT_ID_OR_NUMBER]/alertPolicies/[ALERT_POLICY_ID]
 	// +kcc:proto:field=google.monitoring.dashboard.v1.AlertChart.name
+	// +required
 	Name *string `json:"name,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "ChartOptions", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.ChartOptions
 type ChartOptions struct {
@@ -364,9 +357,6 @@ type ChartOptions struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.ChartOptions.mode
 	Mode *string `json:"mode,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "CollapsibleGroup", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.CollapsibleGroup
 type CollapsibleGroup struct {
@@ -374,9 +364,6 @@ type CollapsibleGroup struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.CollapsibleGroup.collapsed
 	Collapsed *bool `json:"collapsed,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "ColumnLayout", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.ColumnLayout
 type ColumnLayout struct {
@@ -384,9 +371,6 @@ type ColumnLayout struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.ColumnLayout.columns
 	Columns []ColumnLayout_Column `json:"columns,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "ColumnLayout_Column", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.ColumnLayout.Column
 type ColumnLayout_Column struct {
@@ -401,10 +385,8 @@ type ColumnLayout_Column struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.ColumnLayout.Column.widgets
 	Widgets []Widget `json:"widgets,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.monitoring.dashboard.v1.Dashboard", skipping
-
+/* unreachable type Dashboard
 // +kcc:proto=google.monitoring.dashboard.v1.Dashboard
 type Dashboard struct {
 	// Identifier. The resource name of the dashboard.
@@ -413,6 +395,7 @@ type Dashboard struct {
 
 	// Required. The mutable, human-readable name.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.Dashboard.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// `etag` is used for optimistic concurrency control as a way to help
@@ -455,12 +438,11 @@ type Dashboard struct {
 }
 */
 
-/* found existing non-generated go type "DashboardFilter", skipping
-
 // +kcc:proto=google.monitoring.dashboard.v1.DashboardFilter
 type DashboardFilter struct {
 	// Required. The key for the label
 	// +kcc:proto:field=google.monitoring.dashboard.v1.DashboardFilter.label_key
+	// +required
 	LabelKey *string `json:"labelKey,omitempty"`
 
 	// The placeholder text that can be referenced in a filter string or MQL
@@ -477,9 +459,6 @@ type DashboardFilter struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.DashboardFilter.filter_type
 	FilterType *string `json:"filterType,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "ErrorReportingPanel", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.ErrorReportingPanel
 type ErrorReportingPanel struct {
@@ -499,6 +478,7 @@ type ErrorReportingPanel struct {
 	//
 	//  Contains the service name for error reports extracted from Google
 	//  App Engine logs or `default` if the App Engine default service is used.
+	// +kcc:guess=possible-reference target=MonitoringService
 	// +kcc:proto:field=google.monitoring.dashboard.v1.ErrorReportingPanel.services
 	Services []string `json:"services,omitempty"`
 
@@ -509,9 +489,6 @@ type ErrorReportingPanel struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.ErrorReportingPanel.versions
 	Versions []string `json:"versions,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "GridLayout", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.GridLayout
 type GridLayout struct {
@@ -524,9 +501,6 @@ type GridLayout struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.GridLayout.widgets
 	Widgets []Widget `json:"widgets,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "IncidentList", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.IncidentList
 type IncidentList struct {
@@ -543,9 +517,6 @@ type IncidentList struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.IncidentList.policy_names
 	PolicyNames []string `json:"policyNames,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "LogsPanel", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.LogsPanel
 type LogsPanel struct {
@@ -561,9 +532,6 @@ type LogsPanel struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.LogsPanel.resource_names
 	ResourceNames []string `json:"resourceNames,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "MosaicLayout", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.MosaicLayout
 type MosaicLayout struct {
@@ -576,9 +544,6 @@ type MosaicLayout struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.MosaicLayout.tiles
 	Tiles []MosaicLayout_Tile `json:"tiles,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "MosaicLayout_Tile", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.MosaicLayout.Tile
 type MosaicLayout_Tile struct {
@@ -607,9 +572,6 @@ type MosaicLayout_Tile struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.MosaicLayout.Tile.widget
 	Widget *Widget `json:"widget,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "PickTimeSeriesFilter", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.PickTimeSeriesFilter
 type PickTimeSeriesFilter struct {
@@ -631,33 +593,30 @@ type PickTimeSeriesFilter struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.PickTimeSeriesFilter.interval
 	Interval *Interval `json:"interval,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "PieChart", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.PieChart
 type PieChart struct {
 	// Required. The queries for the chart's data.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.PieChart.data_sets
+	// +required
 	DataSets []PieChart_PieChartDataSet `json:"dataSets,omitempty"`
 
 	// Required. Indicates the visualization type for the PieChart.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.PieChart.chart_type
+	// +required
 	ChartType *string `json:"chartType,omitempty"`
 
 	// Optional. Indicates whether or not the pie chart should show slices' labels
 	// +kcc:proto:field=google.monitoring.dashboard.v1.PieChart.show_labels
 	ShowLabels *bool `json:"showLabels,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "PieChart_PieChartDataSet", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.PieChart.PieChartDataSet
 type PieChart_PieChartDataSet struct {
 	// Required. The query for the PieChart. See,
 	//  `google.monitoring.dashboard.v1.TimeSeriesQuery`.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.PieChart.PieChartDataSet.time_series_query
+	// +required
 	TimeSeriesQuery *TimeSeriesQuery `json:"timeSeriesQuery,omitempty"`
 
 	// Optional. A template for the name of the slice. This name will be
@@ -677,9 +636,6 @@ type PieChart_PieChartDataSet struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.PieChart.PieChartDataSet.min_alignment_period
 	MinAlignmentPeriod *string `json:"minAlignmentPeriod,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "RowLayout", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.RowLayout
 type RowLayout struct {
@@ -687,9 +643,6 @@ type RowLayout struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.RowLayout.rows
 	Rows []RowLayout_Row `json:"rows,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "RowLayout_Row", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.RowLayout.Row
 type RowLayout_Row struct {
@@ -704,15 +657,13 @@ type RowLayout_Row struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.RowLayout.Row.widgets
 	Widgets []Widget `json:"widgets,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Scorecard", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.Scorecard
 type Scorecard struct {
 	// Required. Fields for querying time series data from the
 	//  Stackdriver metrics API.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.Scorecard.time_series_query
+	// +required
 	TimeSeriesQuery *TimeSeriesQuery `json:"timeSeriesQuery,omitempty"`
 
 	// Will cause the scorecard to show a gauge chart.
@@ -769,9 +720,6 @@ type Scorecard struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.Scorecard.thresholds
 	Thresholds []Threshold `json:"thresholds,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Scorecard_GaugeView", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.Scorecard.GaugeView
 type Scorecard_GaugeView struct {
@@ -785,14 +733,12 @@ type Scorecard_GaugeView struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.Scorecard.GaugeView.upper_bound
 	UpperBound *float64 `json:"upperBound,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Scorecard_SparkChartView", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.Scorecard.SparkChartView
 type Scorecard_SparkChartView struct {
 	// Required. The type of sparkchart to show in this chartView.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.Scorecard.SparkChartView.spark_chart_type
+	// +required
 	SparkChartType *string `json:"sparkChartType,omitempty"`
 
 	// The lower bound on data point frequency in the chart implemented by
@@ -803,9 +749,6 @@ type Scorecard_SparkChartView struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.Scorecard.SparkChartView.min_alignment_period
 	MinAlignmentPeriod *string `json:"minAlignmentPeriod,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "SectionHeader", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.SectionHeader
 type SectionHeader struct {
@@ -817,16 +760,10 @@ type SectionHeader struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.SectionHeader.divider_below
 	DividerBelow *bool `json:"dividerBelow,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "SingleViewGroup", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.SingleViewGroup
 type SingleViewGroup struct {
 }
-*/
-
-/* found existing non-generated go type "StatisticalTimeSeriesFilter", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.StatisticalTimeSeriesFilter
 type StatisticalTimeSeriesFilter struct {
@@ -842,9 +779,6 @@ type StatisticalTimeSeriesFilter struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.StatisticalTimeSeriesFilter.num_time_series
 	NumTimeSeries *int32 `json:"numTimeSeries,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "TableDisplayOptions", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.TableDisplayOptions
 type TableDisplayOptions struct {
@@ -853,9 +787,6 @@ type TableDisplayOptions struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.TableDisplayOptions.shown_columns
 	ShownColumns []string `json:"shownColumns,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Text", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.Text
 type Text struct {
@@ -871,9 +802,6 @@ type Text struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.Text.style
 	Style *Text_TextStyle `json:"style,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Text_TextStyle", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.Text.TextStyle
 type Text_TextStyle struct {
@@ -906,9 +834,6 @@ type Text_TextStyle struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.Text.TextStyle.pointer_location
 	PointerLocation *string `json:"pointerLocation,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Threshold", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.Threshold
 type Threshold struct {
@@ -935,9 +860,6 @@ type Threshold struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.Threshold.target_axis
 	TargetAxis *string `json:"targetAxis,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "TimeSeriesFilter", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesFilter
 type TimeSeriesFilter struct {
@@ -945,6 +867,7 @@ type TimeSeriesFilter struct {
 	//  filter](https://cloud.google.com/monitoring/api/v3/filters) that identifies
 	//  the metric types, resources, and projects to query.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.TimeSeriesFilter.filter
+	// +required
 	Filter *string `json:"filter,omitempty"`
 
 	// By default, the raw time series data is returned.
@@ -966,9 +889,6 @@ type TimeSeriesFilter struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.TimeSeriesFilter.statistical_time_series_filter
 	StatisticalTimeSeriesFilter *StatisticalTimeSeriesFilter `json:"statisticalTimeSeriesFilter,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "TimeSeriesFilterRatio", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesFilterRatio
 type TimeSeriesFilterRatio struct {
@@ -993,9 +913,6 @@ type TimeSeriesFilterRatio struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.TimeSeriesFilterRatio.statistical_time_series_filter
 	StatisticalTimeSeriesFilter *StatisticalTimeSeriesFilter `json:"statisticalTimeSeriesFilter,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "TimeSeriesFilterRatio_RatioPart", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesFilterRatio.RatioPart
 type TimeSeriesFilterRatio_RatioPart struct {
@@ -1003,6 +920,7 @@ type TimeSeriesFilterRatio_RatioPart struct {
 	//  filter](https://cloud.google.com/monitoring/api/v3/filters) that
 	//  identifies the metric types, resources, and projects to query.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.TimeSeriesFilterRatio.RatioPart.filter
+	// +required
 	Filter *string `json:"filter,omitempty"`
 
 	// By default, the raw time series data is returned.
@@ -1011,9 +929,6 @@ type TimeSeriesFilterRatio_RatioPart struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.TimeSeriesFilterRatio.RatioPart.aggregation
 	Aggregation *Aggregation `json:"aggregation,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "TimeSeriesQuery", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesQuery
 type TimeSeriesQuery struct {
@@ -1051,14 +966,12 @@ type TimeSeriesQuery struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.TimeSeriesQuery.output_full_duration
 	OutputFullDuration *bool `json:"outputFullDuration,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "TimeSeriesTable", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesTable
 type TimeSeriesTable struct {
 	// Required. The data displayed in this table.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.TimeSeriesTable.data_sets
+	// +required
 	DataSets []TimeSeriesTable_TableDataSet `json:"dataSets,omitempty"`
 
 	// Optional. Store rendering strategy
@@ -1069,29 +982,26 @@ type TimeSeriesTable struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.TimeSeriesTable.column_settings
 	ColumnSettings []TimeSeriesTable_ColumnSettings `json:"columnSettings,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "TimeSeriesTable_ColumnSettings", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesTable.ColumnSettings
 type TimeSeriesTable_ColumnSettings struct {
 	// Required. The id of the column.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.TimeSeriesTable.ColumnSettings.column
+	// +required
 	Column *string `json:"column,omitempty"`
 
 	// Required. Whether the column should be visible on page load.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.TimeSeriesTable.ColumnSettings.visible
+	// +required
 	Visible *bool `json:"visible,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "TimeSeriesTable_TableDataSet", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.TimeSeriesTable.TableDataSet
 type TimeSeriesTable_TableDataSet struct {
 	// Required. Fields for querying time series data from the
 	//  Stackdriver metrics API.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.TimeSeriesTable.TableDataSet.time_series_query
+	// +required
 	TimeSeriesQuery *TimeSeriesQuery `json:"timeSeriesQuery,omitempty"`
 
 	// Optional. A template string for naming `TimeSeries` in the resulting data
@@ -1114,9 +1024,6 @@ type TimeSeriesTable_TableDataSet struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.TimeSeriesTable.TableDataSet.table_display_options
 	TableDisplayOptions *TableDisplayOptions `json:"tableDisplayOptions,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Widget", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.Widget
 type Widget struct {
@@ -1183,14 +1090,12 @@ type Widget struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.Widget.id
 	ID *string `json:"id,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "XyChart", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.XyChart
 type XyChart struct {
 	// Required. The data displayed in this chart.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.XyChart.data_sets
+	// +required
 	DataSets []XyChart_DataSet `json:"dataSets,omitempty"`
 
 	// The duration used to display a comparison chart. A comparison chart
@@ -1221,9 +1126,6 @@ type XyChart struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.XyChart.chart_options
 	ChartOptions *ChartOptions `json:"chartOptions,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "XyChart_Axis", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.XyChart.Axis
 type XyChart_Axis struct {
@@ -1235,15 +1137,13 @@ type XyChart_Axis struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.XyChart.Axis.scale
 	Scale *string `json:"scale,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "XyChart_DataSet", skipping
 
 // +kcc:proto=google.monitoring.dashboard.v1.XyChart.DataSet
 type XyChart_DataSet struct {
 	// Required. Fields for querying time series data from the
 	//  Stackdriver metrics API.
 	// +kcc:proto:field=google.monitoring.dashboard.v1.XyChart.DataSet.time_series_query
+	// +required
 	TimeSeriesQuery *TimeSeriesQuery `json:"timeSeriesQuery,omitempty"`
 
 	// How this data should be plotted on the chart.
@@ -1268,7 +1168,6 @@ type XyChart_DataSet struct {
 	// +kcc:proto:field=google.monitoring.dashboard.v1.XyChart.DataSet.target_axis
 	TargetAxis *string `json:"targetAxis,omitempty"`
 }
-*/
 
 /* found existing non-generated go type with proto tag "google.monitoring.metricsscope.v1.MonitoredProject", skipping
 
@@ -1284,7 +1183,7 @@ type MonitoredProject struct {
 }
 */
 
-/* found existing non-generated go type "Aggregation", skipping
+/* found existing non-generated go type with proto tag "google.monitoring.v3.Aggregation", skipping
 
 // +kcc:proto=google.monitoring.v3.Aggregation
 type Aggregation struct {
@@ -1616,6 +1515,7 @@ type AlertPolicy_Condition_LogMatch struct {
 	//  Queries](https://cloud.google.com/logging/docs/view/advanced-queries)
 	//  for how this filter should be constructed.
 	// +kcc:proto:field=google.monitoring.v3.AlertPolicy.Condition.LogMatch.filter
+	// +required
 	Filter *string `json:"filter,omitempty"`
 
 	// Optional. A map from a label key to an extractor expression, which is
@@ -1650,6 +1550,7 @@ type AlertPolicy_Condition_MetricAbsence struct {
 	//  type. Optionally, it can specify resource labels and metric labels.
 	//  This field must not exceed 2048 Unicode characters in length.
 	// +kcc:proto:field=google.monitoring.v3.AlertPolicy.Condition.MetricAbsence.filter
+	// +required
 	Filter *string `json:"filter,omitempty"`
 
 	// Specifies the alignment of data points in individual time series as
@@ -1701,6 +1602,7 @@ type AlertPolicy_Condition_MetricThreshold struct {
 	//  type. Optionally, it can specify resource labels and metric labels.
 	//  This field must not exceed 2048 Unicode characters in length.
 	// +kcc:proto:field=google.monitoring.v3.AlertPolicy.Condition.MetricThreshold.filter
+	// +required
 	Filter *string `json:"filter,omitempty"`
 
 	// Specifies the alignment of data points in individual time series as
@@ -1804,6 +1706,7 @@ type AlertPolicy_Condition_MetricThreshold_ForecastOptions struct {
 	//  considered to be failing.
 	//  The forecast horizon can range from 1 hour to 60 hours.
 	// +kcc:proto:field=google.monitoring.v3.AlertPolicy.Condition.MetricThreshold.ForecastOptions.forecast_horizon
+	// +required
 	ForecastHorizon *string `json:"forecastHorizon,omitempty"`
 }
 */
@@ -1854,6 +1757,7 @@ type AlertPolicy_Condition_PrometheusQueryLanguageCondition struct {
 	//  this expression is evaluated at the current time, and all resultant
 	//  time series become pending/firing alerts. This field must not be empty.
 	// +kcc:proto:field=google.monitoring.v3.AlertPolicy.Condition.PrometheusQueryLanguageCondition.query
+	// +required
 	Query *string `json:"query,omitempty"`
 
 	// Optional. Alerts are considered firing once their PromQL expression was
@@ -1949,6 +1853,7 @@ type AlertPolicy_Condition_SQLCondition struct {
 	//      WHERE
 	//        http_request IS NOT NULL
 	// +kcc:proto:field=google.monitoring.v3.AlertPolicy.Condition.SqlCondition.query
+	// +required
 	Query *string `json:"query,omitempty"`
 
 	// Schedule the query to execute every so many minutes.
@@ -1980,6 +1885,7 @@ type AlertPolicy_Condition_SQLCondition_BooleanTest struct {
 	// Required. The name of the column containing the boolean value. If the
 	//  value in a row is NULL, that row is ignored.
 	// +kcc:proto:field=google.monitoring.v3.AlertPolicy.Condition.SqlCondition.BooleanTest.column
+	// +required
 	Column *string `json:"column,omitempty"`
 }
 */
@@ -1991,6 +1897,7 @@ type AlertPolicy_Condition_SQLCondition_Daily struct {
 	// Required. The number of days between runs. Must be greater than or
 	//  equal to 1 day and less than or equal to 31 days.
 	// +kcc:proto:field=google.monitoring.v3.AlertPolicy.Condition.SqlCondition.Daily.periodicity
+	// +required
 	Periodicity *int32 `json:"periodicity,omitempty"`
 
 	// Optional. The time of day (in UTC) at which the query should run. If
@@ -2008,6 +1915,7 @@ type AlertPolicy_Condition_SQLCondition_Hourly struct {
 	// Required. The number of hours between runs. Must be greater than or
 	//  equal to 1 hour and less than or equal to 48 hours.
 	// +kcc:proto:field=google.monitoring.v3.AlertPolicy.Condition.SqlCondition.Hourly.periodicity
+	// +required
 	Periodicity *int32 `json:"periodicity,omitempty"`
 
 	// Optional. The number of minutes after the hour (in UTC) to run the
@@ -2027,6 +1935,7 @@ type AlertPolicy_Condition_SQLCondition_Minutes struct {
 	//  greater than or equal to 5 minutes and less than or equal to 1440
 	//  minutes.
 	// +kcc:proto:field=google.monitoring.v3.AlertPolicy.Condition.SqlCondition.Minutes.periodicity
+	// +required
 	Periodicity *int32 `json:"periodicity,omitempty"`
 }
 */
@@ -2038,10 +1947,12 @@ type AlertPolicy_Condition_SQLCondition_RowCountTest struct {
 	// Required. The comparison to apply between the number of rows returned
 	//  by the query and the threshold.
 	// +kcc:proto:field=google.monitoring.v3.AlertPolicy.Condition.SqlCondition.RowCountTest.comparison
+	// +required
 	Comparison *string `json:"comparison,omitempty"`
 
 	// Required. The value against which to compare the row count.
 	// +kcc:proto:field=google.monitoring.v3.AlertPolicy.Condition.SqlCondition.RowCountTest.threshold
+	// +required
 	Threshold *int64 `json:"threshold,omitempty"`
 }
 */
@@ -2418,6 +2329,7 @@ type Service_CloudEndpoints struct {
 	// The name of the Cloud Endpoints service underlying this service.
 	//  Corresponds to the `service` resource label in the [`api` monitored
 	//  resource](https://cloud.google.com/monitoring/api/resources#tag_api).
+	// +kcc:guess=possible-reference target=MonitoringService
 	// +kcc:proto:field=google.monitoring.v3.Service.CloudEndpoints.service
 	Service *string `json:"service,omitempty"`
 }
@@ -2610,6 +2522,7 @@ type SyntheticMonitorTarget_CloudFunctionV2Target struct {
 	//  i.e. `projects/{project}/locations/{location}/functions/{function}`
 	//  Required.
 	// +kcc:proto:field=google.monitoring.v3.SyntheticMonitorTarget.CloudFunctionV2Target.name
+	// +required
 	Name *string `json:"name,omitempty"`
 }
 */
@@ -2950,14 +2863,10 @@ type UptimeCheckConfig_TCPCheck struct {
 }
 */
 
-/* found existing non-generated go type "Empty", skipping
-
 // +kcc:proto=google.protobuf.Empty
 type Empty struct {
 }
-*/
 
-/* unreachable type Interval
 // +kcc:proto=google.type.Interval
 type Interval struct {
 	// Optional. Inclusive start of the interval.
@@ -2974,7 +2883,6 @@ type Interval struct {
 	// +kcc:proto:field=google.type.Interval.end_time
 	EndTime *string `json:"endTime,omitempty"`
 }
-*/
 
 /* found existing non-generated go type with proto tag "google.type.TimeOfDay", skipping
 

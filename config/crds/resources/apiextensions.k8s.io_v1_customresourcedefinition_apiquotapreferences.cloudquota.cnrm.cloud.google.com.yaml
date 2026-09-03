@@ -59,12 +59,13 @@ spec:
           metadata:
             type: object
           spec:
+            description: APIQuotaPreferenceSpec defines the desired state of APIQuotaPreference
             properties:
               contactEmail:
                 description: |-
-                  Input only. An email address that can be used to contact the the user, in
-                   case Google Cloud needs more information to make a decision before
-                   additional quota can be granted.
+                  Input only. An email address that can be used to contact the user, in case
+                   Google Cloud needs more information to make a decision before additional
+                   quota can be granted.
 
                    When requesting a quota increase, the email address is required.
                    When requesting a quota decrease, the email address is optional.
@@ -77,68 +78,36 @@ spec:
                   type: string
                 description: |-
                   Immutable. The dimensions that this quota preference applies to. The key of
-                   the map entry is the name of a dimension, such as "region", "zone",
-                   "network_id", and the value of the map entry is the dimension value.
+                   the map entry is the name of a dimension, such as `region`, `zone`,
+                   `network_id`, and the value of the map entry is the dimension value.
 
                    If a dimension is missing from the map of dimensions, the quota preference
                    applies to all the dimension values except for those that have other quota
                    preferences configured for the specific value.
 
-                   NOTE: QuotaPreferences can only be applied across all values of "user" and
-                   "resource" dimension. Do not set values for "user" or "resource" in the
+                   Note: QuotaPreferences can only be applied across all values of `user` and
+                   `resource` dimension. Do not set values for `user` or `resource` in the
                    dimension map.
 
-                   Example: {"provider", "Foo Inc"} where "provider" is a service specific
-                   dimension.
+                   For example: `{"provider" : "Example Organization"}` where `provider` is a
+                   service-specific quota dimension and `Example Organization` is the provider
+                   name.
                 type: object
-              folderRef:
-                description: The Folder that contains this resource.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
-                properties:
-                  external:
-                    description: The 'name' field of a folder, when not managed by
-                      Config Connector. This field must be set when 'name' field is
-                      not set.
-                    type: string
-                  name:
-                    description: The 'name' field of a 'Folder' resource. This field
-                      must be set when 'external' field is not set.
-                    type: string
-                  namespace:
-                    description: The 'namespace' field of a 'Folder' resource. If
-                      unset, the namespace is defaulted to the namespace of the referencer
-                      resource.
-                    type: string
-                type: object
+              etag:
+                description: Optional. The current etag of the quota preference. If
+                  an etag is provided on update and does not match the current server's
+                  etag of the quota preference, the request will be blocked and an
+                  ABORTED error will be returned. See https://google.aip.dev/134#etags
+                  for more details on etags.
+                type: string
               justification:
                 description: The reason / justification for this quota preference.
                 type: string
-              organizationRef:
-                description: OrganizationRef represents the Organization that this
-                  resource belongs to.
-                properties:
-                  external:
-                    description: The 'name' field of an organization, when not managed
-                      by Config Connector.
-                    type: string
-                required:
-                - external
-                type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -184,10 +153,13 @@ spec:
                       or equal to -1. If set to -1, it means the value is "unlimited".
                     format: int64
                     type: integer
+                required:
+                - preferredValue
                 type: object
               quotaID:
-                description: 'Required. The id of the quota to which the quota preference
-                  is applied. A quota name is unique in the service. Example: `CpusPerProjectPerRegion`'
+                description: Required. The id of the quota to which the quota preference
+                  is applied. A quota name is unique in the service. For example,
+                  `CpusPerProjectPerRegion`
                 type: string
               resourceID:
                 description: The APIQuotaPreference name. If not given, the metadata.name
@@ -198,6 +170,8 @@ spec:
                   preference is applied.
                 type: string
             required:
+            - location
+            - projectRef
             - quotaConfig
             - quotaID
             - service
@@ -250,13 +224,6 @@ spec:
                 properties:
                   createTime:
                     description: Output only. Create time stamp
-                    type: string
-                  etag:
-                    description: Optional. The current etag of the quota preference.
-                      If an etag is provided on update and does not match the current
-                      server's etag of the quota preference, the request will be blocked
-                      and an ABORTED error will be returned. See https://google.aip.dev/134#etags
-                      for more details on etags.
                     type: string
                   quotaConfig:
                     description: Required. Preferred quota configuration.

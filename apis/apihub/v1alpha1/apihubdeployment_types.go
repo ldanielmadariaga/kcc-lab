@@ -29,21 +29,22 @@ type APIHubDeploymentSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/deployments/{deployment}
 	Location *string `json:"location"`
 
 	// The APIHubDeployment name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. The display name of the deployment.
-	// +kubebuilder:validation:Required
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Optional. The description of the deployment.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.description
 	Description *string `json:"description,omitempty"`
 
 	// Optional. The documentation of the deployment.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.documentation
 	Documentation *Documentation `json:"documentation,omitempty"`
 
 	// Required. The type of deployment.
@@ -54,19 +55,22 @@ type APIHubDeploymentSpec struct {
 	//  cardinality of the attribute. The same can be retrieved via GetAttribute
 	//  API. All values should be from the list of allowed values defined for the
 	//  attribute.
-	// +kubebuilder:validation:Required
-	DeploymentTypeRef *APIHubAttributeValueRef `json:"deploymentTypeRef,omitempty"`
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.deployment_type
+	// +required
+	DeploymentType *AttributeValues `json:"deploymentType,omitempty"`
 
 	// Required. A URI to the runtime resource. This URI can be used to manage the
 	//  resource. For example, if the runtime resource is of type APIGEE_PROXY,
 	//  then this field will contain the URI to the management UI of the proxy.
-	// +kubebuilder:validation:Required
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.resource_uri
+	// +required
 	ResourceURI *string `json:"resourceURI,omitempty"`
 
 	// Required. The endpoints at which this deployment resource is listening for
 	//  API requests. This could be a list of complete URIs, hostnames or an IP
 	//  addresses.
-	// +kubebuilder:validation:Required
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.endpoints
+	// +required
 	Endpoints []string `json:"endpoints,omitempty"`
 
 	// Optional. The SLO for this deployment.
@@ -77,8 +81,8 @@ type APIHubDeploymentSpec struct {
 	//  cardinality of the attribute. The same can be retrieved via GetAttribute
 	//  API. All values should be from the list of allowed values defined for the
 	//  attribute.
-	// +kubebuilder:validation:Optional
-	SloRef *APIHubAttributeValueRef `json:"sloRef,omitempty"`
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.slo
+	Slo *AttributeValues `json:"slo,omitempty"`
 
 	// Optional. The environment mapping to this deployment.
 	//  This maps to the following system defined attribute:
@@ -88,17 +92,15 @@ type APIHubDeploymentSpec struct {
 	//  cardinality of the attribute. The same can be retrieved via GetAttribute
 	//  API. All values should be from the list of allowed values defined for the
 	//  attribute.
-	// +kubebuilder:validation:Optional
-	EnvironmentRef *APIHubAttributeValueRef `json:"environmentRef,omitempty"`
-}
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.environment
+	Environment *AttributeValues `json:"environment,omitempty"`
 
-type APIHubAttributeValueRef struct {
-	/* The `id` of an allowed value of an attribute, when not managed by Config Connector. */
-	External string `json:"external,omitempty"`
-	/* The `name` field of a `APIHubAttribute` resource. */
-	Name string `json:"name,omitempty"`
-	/* The `namespace` field of a `APIHubAttribute` resource. */
-	Namespace string `json:"namespace,omitempty"`
+	// Optional. The list of user defined attributes associated with the
+	//  deployment resource. The key is the attribute name. It will be of the
+	//  format: `projects/{project}/locations/{location}/attributes/{attribute}`.
+	//  The value is the attribute values associated with the resource.
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.attributes
+	Attributes map[string]AttributeValues `json:"attributes,omitempty"`
 }
 
 // APIHubDeploymentStatus defines the config connector machine state of APIHubDeployment
@@ -120,16 +122,52 @@ type APIHubDeploymentStatus struct {
 // APIHubDeploymentObservedState is the state of the APIHubDeployment resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.apihub.v1.Deployment
 type APIHubDeploymentObservedState struct {
+	// Required. The type of deployment.
+	//  This maps to the following system defined attribute:
+	//  `projects/{project}/locations/{location}/attributes/system-deployment-type`
+	//  attribute.
+	//  The number of values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.deployment_type
+	DeploymentType *AttributeValuesObservedState `json:"deploymentType,omitempty"`
+
 	// Output only. The API versions linked to this deployment.
 	//  Note: A particular deployment could be linked to multiple different API
 	//  versions (of same or different APIs).
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.api_versions
 	APIVersions []string `json:"apiVersions,omitempty"`
 
 	// Output only. The time at which the deployment was created.
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. The time at which the deployment was last updated.
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Optional. The SLO for this deployment.
+	//  This maps to the following system defined attribute:
+	//  `projects/{project}/locations/{location}/attributes/system-slo`
+	//  attribute.
+	//  The number of values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.slo
+	Slo *AttributeValuesObservedState `json:"slo,omitempty"`
+
+	// Optional. The environment mapping to this deployment.
+	//  This maps to the following system defined attribute:
+	//  `projects/{project}/locations/{location}/attributes/system-environment`
+	//  attribute.
+	//  The number of values for this attribute will be based on the
+	//  cardinality of the attribute. The same can be retrieved via GetAttribute
+	//  API. All values should be from the list of allowed values defined for the
+	//  attribute.
+	// +kcc:proto:field=google.cloud.apihub.v1.Deployment.environment
+	Environment *AttributeValuesObservedState `json:"environment,omitempty"`
 }
 
 // +genclient

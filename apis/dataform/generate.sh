@@ -71,6 +71,11 @@ ${CONTROLLERBUILDER} generate-types \
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.dataform.v1beta1 \
   --api-version dataform.cnrm.cloud.google.com/v1beta1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource DataformRepository:Repository \
   --proto-source-path ${PROTO_OUT}
 

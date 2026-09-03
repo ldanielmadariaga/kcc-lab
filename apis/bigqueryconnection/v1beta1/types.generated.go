@@ -21,8 +21,6 @@
 
 package v1beta1
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.AwsAccessRole", skipping
-
 // +kcc:proto=google.cloud.bigquery.connection.v1.AwsAccessRole
 type AwsAccessRole struct {
 	// The user’s AWS IAM Role that trusts the Google-owned AWS IAM user
@@ -35,9 +33,7 @@ type AwsAccessRole struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AwsAccessRole.identity
 	Identity *string `json:"identity,omitempty"`
 }
-*/
 
-/* unreachable type AwsCrossAccountRole
 // +kcc:proto=google.cloud.bigquery.connection.v1.AwsCrossAccountRole
 type AwsCrossAccountRole struct {
 	// The user’s AWS IAM Role that trusts the Google-owned AWS IAM user
@@ -45,9 +41,6 @@ type AwsCrossAccountRole struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AwsCrossAccountRole.iam_role_id
 	IAMRoleID *string `json:"iamRoleID,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.AwsProperties", skipping
 
 // +kcc:proto=google.cloud.bigquery.connection.v1.AwsProperties
 type AwsProperties struct {
@@ -62,9 +55,6 @@ type AwsProperties struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AwsProperties.access_role
 	AccessRole *AwsAccessRole `json:"accessRole,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.AzureProperties", skipping
 
 // +kcc:proto=google.cloud.bigquery.connection.v1.AzureProperties
 type AzureProperties struct {
@@ -83,16 +73,11 @@ type AzureProperties struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AzureProperties.federated_application_client_id
 	FederatedApplicationClientID *string `json:"federatedApplicationClientID,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.CloudResourceProperties", skipping
 
 // +kcc:proto=google.cloud.bigquery.connection.v1.CloudResourceProperties
 type CloudResourceProperties struct {
 }
-*/
 
-/* unreachable type CloudSpannerProperties
 // +kcc:proto=google.cloud.bigquery.connection.v1.CloudSpannerProperties
 type CloudSpannerProperties struct {
 	// Cloud Spanner database in the form `project/instance/database'
@@ -142,9 +127,6 @@ type CloudSpannerProperties struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.CloudSpannerProperties.database_role
 	DatabaseRole *string `json:"databaseRole,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.CloudSqlCredential", skipping
 
 // +kcc:proto=google.cloud.bigquery.connection.v1.CloudSqlCredential
 type CloudSQLCredential struct {
@@ -156,9 +138,6 @@ type CloudSQLCredential struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.CloudSqlCredential.password
 	Password *string `json:"password,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.CloudSqlProperties", skipping
 
 // +kcc:proto=google.cloud.bigquery.connection.v1.CloudSqlProperties
 type CloudSQLProperties struct {
@@ -178,10 +157,8 @@ type CloudSQLProperties struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.CloudSqlProperties.credential
 	Credential *CloudSQLCredential `json:"credential,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.Connection", skipping
-
+/* unreachable type Connection
 // +kcc:proto=google.cloud.bigquery.connection.v1.Connection
 type Connection struct {
 	// The resource name of the connection in the form of:
@@ -229,7 +206,6 @@ type Connection struct {
 }
 */
 
-/* unreachable type MetastoreServiceConfig
 // +kcc:proto=google.cloud.bigquery.connection.v1.MetastoreServiceConfig
 type MetastoreServiceConfig struct {
 	// Optional. Resource name of an existing Dataproc Metastore service.
@@ -240,9 +216,7 @@ type MetastoreServiceConfig struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.MetastoreServiceConfig.metastore_service
 	MetastoreService *string `json:"metastoreService,omitempty"`
 }
-*/
 
-/* unreachable type SalesforceDataCloudProperties
 // +kcc:proto=google.cloud.bigquery.connection.v1.SalesforceDataCloudProperties
 type SalesforceDataCloudProperties struct {
 	// The URL to the user's Salesforce DataCloud instance.
@@ -253,9 +227,7 @@ type SalesforceDataCloudProperties struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.SalesforceDataCloudProperties.tenant_id
 	TenantID *string `json:"tenantID,omitempty"`
 }
-*/
 
-/* unreachable type SparkHistoryServerConfig
 // +kcc:proto=google.cloud.bigquery.connection.v1.SparkHistoryServerConfig
 type SparkHistoryServerConfig struct {
 	// Optional. Resource name of an existing Dataproc Cluster to act as a Spark
@@ -267,9 +239,6 @@ type SparkHistoryServerConfig struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.SparkHistoryServerConfig.dataproc_cluster
 	DataprocCluster *string `json:"dataprocCluster,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.SparkProperties", skipping
 
 // +kcc:proto=google.cloud.bigquery.connection.v1.SparkProperties
 type SparkProperties struct {
@@ -282,9 +251,7 @@ type SparkProperties struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.SparkProperties.spark_history_server_config
 	SparkHistoryServerConfig *SparkHistoryServerConfig `json:"sparkHistoryServerConfig,omitempty"`
 }
-*/
 
-/* unreachable type AwsCrossAccountRoleObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.AwsCrossAccountRole
 type AwsCrossAccountRoleObservedState struct {
 	// Output only. Google-owned AWS IAM User for a Connection.
@@ -298,9 +265,6 @@ type AwsCrossAccountRoleObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AwsCrossAccountRole.external_id
 	ExternalID *string `json:"externalID,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.AwsProperties", skipping
 
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.AwsProperties
 type AwsPropertiesObservedState struct {
@@ -310,9 +274,6 @@ type AwsPropertiesObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AwsProperties.cross_account_role
 	CrossAccountRole *AwsCrossAccountRoleObservedState `json:"crossAccountRole,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.AzureProperties", skipping
 
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.AzureProperties
 type AzurePropertiesObservedState struct {
@@ -334,9 +295,6 @@ type AzurePropertiesObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AzureProperties.identity
 	Identity *string `json:"identity,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.CloudResourceProperties", skipping
 
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.CloudResourceProperties
 type CloudResourcePropertiesObservedState struct {
@@ -354,9 +312,6 @@ type CloudResourcePropertiesObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.CloudResourceProperties.service_account_id
 	ServiceAccountID *string `json:"serviceAccountID,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.CloudSqlProperties", skipping
 
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.CloudSqlProperties
 type CloudSQLPropertiesObservedState struct {
@@ -369,10 +324,8 @@ type CloudSQLPropertiesObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.CloudSqlProperties.service_account_id
 	ServiceAccountID *string `json:"serviceAccountID,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.Connection", skipping
-
+/* unreachable type ConnectionObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.Connection
 type ConnectionObservedState struct {
 	// Cloud SQL properties.
@@ -415,7 +368,6 @@ type ConnectionObservedState struct {
 }
 */
 
-/* unreachable type SalesforceDataCloudPropertiesObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.SalesforceDataCloudProperties
 type SalesforceDataCloudPropertiesObservedState struct {
 	// Output only. A unique Google-owned and Google-generated service account
@@ -423,9 +375,6 @@ type SalesforceDataCloudPropertiesObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.SalesforceDataCloudProperties.identity
 	Identity *string `json:"identity,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.bigquery.connection.v1.SparkProperties", skipping
 
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.SparkProperties
 type SparkPropertiesObservedState struct {
@@ -443,4 +392,3 @@ type SparkPropertiesObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.SparkProperties.service_account_id
 	ServiceAccountID *string `json:"serviceAccountID,omitempty"`
 }
-*/

@@ -26,6 +26,7 @@ type ContainerImage struct {
 	// Required. The path to the container image repository. For example:
 	//  `gcr.io/{project_id}/{image_name}`
 	// +kcc:proto:field=google.cloud.notebooks.v1.ContainerImage.repository
+	// +required
 	Repository *string `json:"repository,omitempty"`
 
 	// The tag of the container image. If not specified, this defaults
@@ -34,8 +35,7 @@ type ContainerImage struct {
 	Tag *string `json:"tag,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Instance", skipping
-
+/* unreachable type Instance
 // +kcc:proto=google.cloud.notebooks.v1.Instance
 type Instance struct {
 
@@ -89,6 +89,7 @@ type Instance struct {
 	//  type](https://cloud.google.com/compute/docs/machine-types) of this
 	//  instance.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.machine_type
+	// +required
 	MachineType *string `json:"machineType,omitempty"`
 
 	// The hardware accelerator used on this instance. If you use
@@ -412,6 +413,7 @@ type VMImage struct {
 	// Required. The name of the Google Cloud project that this VM image belongs to.
 	//  Format: `{project_id}`
 	// +kcc:proto:field=google.cloud.notebooks.v1.VmImage.project
+	// +required
 	Project *string `json:"project,omitempty"`
 
 	// Use VM image name to find the image.
@@ -424,8 +426,7 @@ type VMImage struct {
 	ImageFamily *string `json:"imageFamily,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.notebooks.v1.Instance", skipping
-
+/* unreachable type InstanceObservedState
 // +kcc:observedstate:proto=google.cloud.notebooks.v1.Instance
 type InstanceObservedState struct {
 	// Output only. The name of this notebook instance. Format:

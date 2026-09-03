@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,44 +15,39 @@
 package v1beta1
 
 import (
-	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
-	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var BigQueryReservationReservationGVK = GroupVersion.WithKind("BigQueryReservationReservation")
 
-type Parent struct {
-	// +required
-	ProjectRef *refv1beta1.ProjectRef `json:"projectRef"`
-
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
-	// Immutable.
-	// You can configure spec.secondaryLocation to enable the reservation fail-over to a secondary location,
-	// in which case the primary location could be different from the spec.location.
-	// +required
-	Location string `json:"location"`
-}
-
 // BigQueryReservationReservationSpec defines the desired state of BigQueryReservationReservation
 // +kcc:spec:proto=google.cloud.bigquery.reservation.v1.Reservation
 type BigQueryReservationReservationSpec struct {
-	Parent `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// Immutable. Optional.
-	// The BigQuery Reservation ID used for resource creation or acquisition.
-	// It must only contain lower case alphanumeric
-	// characters or dashes. It must start with a letter and must not end
-	// with a dash. Its maximum length is 64 characters.
-	// For creation: If specified, this value is used as the Reservation ID. If not provided, a UUID will be generated and assigned as the Reservation ID.
-	// For acquisition: This field must be provided to identify the Reservation resource to acquire.
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/reservations/{reservation}
+	Location *string `json:"location"`
+
+	// The BigQueryReservationReservation name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Optional. Baseline slots available to this reservation. A slot is a unit of
+	// Baseline slots available to this reservation. A slot is a unit of
 	//  computational power in BigQuery, and serves as the unit of parallelism.
 	//
 	//  Queries using this reservation might use more slots during runtime if
 	//  ignore_idle_slots is set to false, or autoscaling is enabled.
+	//
+	//  The total slot_capacity of the reservation and its siblings
+	//  may exceed the total slot_count of capacity commitments. In that case, the
+	//  exceeding slots will be charged with the autoscale SKU. You can increase
+	//  the number of baseline slots in a reservation every few minutes. If you
+	//  want to decrease your baseline slots, you are limited to once an hour if
+	//  you have recently changed your baseline slot capacity and your baseline
+	//  slots exceed your committed slots. Otherwise, you can decrease your
+	//  baseline slots every few minutes.
 	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.slot_capacity
 	SlotCapacity *int64 `json:"slotCapacity,omitempty"`
 
@@ -63,8 +58,9 @@ type BigQueryReservationReservationSpec struct {
 	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.ignore_idle_slots
 	IgnoreIdleSlots *bool `json:"ignoreIdleSlots,omitempty"`
 
-	// Optional. The configuration parameters for the auto scaling feature.
-	Autoscale *AutoscaleSpec `json:"autoscale,omitempty"`
+	// The configuration parameters for the auto scaling feature.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.autoscale
+	Autoscale *Reservation_Autoscale `json:"autoscale,omitempty"`
 
 	// Job concurrency target which sets a soft upper bound on the number of jobs
 	//  that can run concurrently in this reservation. This is a soft target due to
@@ -77,21 +73,84 @@ type BigQueryReservationReservationSpec struct {
 	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.concurrency
 	Concurrency *int64 `json:"concurrency,omitempty"`
 
-	// Immutable. Optional.
-	// Edition of the reservation. Valid values are STANDARD, ENTERPRISE, ENTERPRISE_PLUS
+	// Applicable only for reservations located within one of the BigQuery
+	//  multi-regions (US or EU).
+	//
+	//  If set to true, this reservation is placed in the organization's
+	//  secondary region which is designated for disaster recovery purposes.
+	//  If false, this reservation is placed in the organization's default region.
+	//
+	//  NOTE: this is a preview feature. Project must be allow-listed in order to
+	//  set this field.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.multi_region_auxiliary
+	MultiRegionAuxiliary *bool `json:"multiRegionAuxiliary,omitempty"`
+
+	// Edition of the reservation.
 	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.edition
 	Edition *string `json:"edition,omitempty"`
 
-	// Optional. This field is only set for reservations using the managed disaster recovery
-	//  feature. Users can set this to create a failover reservation.
-	FailOver *FailoverSpec `json:"failover,omitempty"`
+	// Optional. The current location of the reservation's secondary replica. This
+	//  field is only set for reservations using the managed disaster recovery
+	//  feature. Users can set this in create reservation calls
+	//  to create a failover reservation or in update reservation calls to convert
+	//  a non-failover reservation to a failover reservation(or vice versa).
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.secondary_location
+	SecondaryLocation *string `json:"secondaryLocation,omitempty"`
+
+	// Optional. The overall max slots for the reservation, covering slot_capacity
+	//  (baseline), idle slots (if ignore_idle_slots is false) and scaled slots.
+	//  If present, the reservation won't use more than the specified number of
+	//  slots, even if there is demand and supply (from idle slots).
+	//  NOTE: capping a reservation's idle slot usage is best effort and its
+	//  usage may exceed the max_slots value. However, in terms of
+	//  autoscale.current_slots (which accounts for the additional added slots), it
+	//  will never exceed the max_slots - baseline.
+	//
+	//
+	//  This field must be set together with the scaling_mode enum value.
+	//
+	//  If the max_slots and scaling_mode are set, the autoscale or
+	//  autoscale.max_slots field must be unset. However, the
+	//  autoscale field may still be in the output. The autopscale.max_slots will
+	//  always show as 0 and the autoscaler.current_slots will represent the
+	//  current slots from autoscaler excluding idle slots.
+	//  For example, if the max_slots is 1000 and scaling_mode is AUTOSCALE_ONLY,
+	//  then in the output, the autoscaler.max_slots will be 0 and the
+	//  autoscaler.current_slots may be any value between 0 and 1000.
+	//
+	//  If the max_slots is 1000, scaling_mode is ALL_SLOTS, the baseline is 100
+	//  and idle slots usage is 200, then in the output, the autoscaler.max_slots
+	//  will be 0 and the autoscaler.current_slots will not be higher than 700.
+	//
+	//  If the max_slots is 1000, scaling_mode is IDLE_SLOTS_ONLY, then in the
+	//  output, the autoscaler field will be null.
+	//
+	//  If the max_slots and scaling_mode are set, then the ignore_idle_slots field
+	//  must be aligned with the scaling_mode enum value.(See details in
+	//  ScalingMode comments).
+	//
+	//  Please note,  the max_slots is for user to manage the part of slots greater
+	//  than the baseline. Therefore, we don't allow users to set max_slots smaller
+	//  or equal to the baseline as it will not be meaningful. If the field is
+	//  present and slot_capacity>=max_slots.
+	//
+	//  Please note that if max_slots is set to 0, we will treat it as unset.
+	//  Customers can set max_slots to 0 and set scaling_mode to
+	//  SCALING_MODE_UNSPECIFIED to disable the max_slots feature.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.max_slots
+	MaxSlots *int64 `json:"maxSlots,omitempty"`
+
+	// Optional. The scaling mode for the reservation.
+	//  If the field is present but max_slots is not present.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.scaling_mode
+	ScalingMode *string `json:"scalingMode,omitempty"`
 }
 
 // BigQueryReservationReservationStatus defines the config connector machine state of BigQueryReservationReservation
 type BigQueryReservationReservationStatus struct {
 	/* Conditions represent the latest available observations of the
 	   object's current state. */
-	Conditions []v1beta1.Condition `json:"conditions,omitempty"`
+	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
 
 	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
 	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
@@ -103,12 +162,43 @@ type BigQueryReservationReservationStatus struct {
 	ObservedState *BigQueryReservationReservationObservedState `json:"observedState,omitempty"`
 }
 
-// BigQueryReservationReservationSpec defines the desired state of BigQueryReservationReservation
-// +kcc:proto=google.cloud.bigquery.reservation.v1.Reservation
 // BigQueryReservationReservationObservedState is the state of the BigQueryReservationReservation resource as most recently observed in GCP.
+// +kcc:observedstate:proto=google.cloud.bigquery.reservation.v1.Reservation
 type BigQueryReservationReservationObservedState struct {
-	FailOver  *FailoverObservedState  `json:"failover,omitempty"`
-	Autoscale *AutoscaleObservedState `json:"autoscale,omitempty"`
+	// The configuration parameters for the auto scaling feature.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.autoscale
+	Autoscale *Reservation_AutoscaleObservedState `json:"autoscale,omitempty"`
+
+	// Output only. Creation time of the reservation.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.creation_time
+	CreationTime *string `json:"creationTime,omitempty"`
+
+	// Output only. Last update time of the reservation.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The current location of the reservation's primary replica.
+	//  This field is only set for reservations using the managed disaster recovery
+	//  feature.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.primary_location
+	PrimaryLocation *string `json:"primaryLocation,omitempty"`
+
+	// Output only. The location where the reservation was originally created.
+	//  This is set only during the failover reservation's creation. All billing
+	//  charges for the failover reservation will be applied to this location.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.original_primary_location
+	OriginalPrimaryLocation *string `json:"originalPrimaryLocation,omitempty"`
+
+	// Output only. The Disaster Recovery(DR) replication status of the
+	//  reservation. This is only available for the primary replicas of DR/failover
+	//  reservations and provides information about the both the staleness of the
+	//  secondary and the last error encountered while trying to replicate changes
+	//  from the primary to the secondary. If this field is blank, it means that
+	//  the reservation is either not a DR reservation or the reservation is a DR
+	//  secondary or that any replication operations on the reservation have
+	//  succeeded.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.replication_status
+	ReplicationStatus *Reservation_ReplicationStatusObservedState `json:"replicationStatus,omitempty"`
 }
 
 // +genclient
@@ -117,14 +207,12 @@ type BigQueryReservationReservationObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
 // +kubebuilder:printcolumn:name="Status Age",JSONPath=".status.conditions[?(@.type=='Ready')].lastTransitionTime",type="date",description="The last transition time for the value in 'Status'"
 
 // BigQueryReservationReservation is the Schema for the BigQueryReservationReservation API
-// +kubebuilder:storageversion
 // +k8s:openapi-gen=true
 type BigQueryReservationReservation struct {
 	metav1.TypeMeta   `json:",inline"`
@@ -141,60 +229,6 @@ type BigQueryReservationReservationList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []BigQueryReservationReservation `json:"items"`
-}
-
-// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.autoscale
-type AutoscaleSpec struct {
-	// Number of slots to be scaled when needed.
-	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.Autoscale.max_slots
-	MaxSlots *int64 `json:"maxSlots,omitempty"`
-}
-
-type FailoverSpec struct {
-	// Users can update this field to convert a non-failover reservation to a
-	// failover reservation (by setting a specific region value) or convert a
-	// failover reservation to a non-failover reservation (by removing spec.failover).
-	// However, changes from one region to another region will be ignored by the
-	// controller. Additionally, if the value of this field changes during manual failover
-	// by the API, the controller will not attempt to revert these changes.
-	//
-	// Note: This field is only available for ENTERPRISE_PLUS edition reservations.
-	// +required
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="secondaryLocation field is immutable"
-	// Immutable.
-	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.secondary_location
-	SecondaryLocation *string `json:"secondaryLocation,omitempty"`
-}
-
-type FailoverObservedState struct {
-	// The current location of the reservation's primary replica. This
-	//  field is only set for reservations using the managed disaster recovery
-	//  feature.
-	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.primary_location
-	PrimaryLocation *string `json:"primaryLocation,omitempty"`
-	// The current location of the reservation's secondary replica. This
-	//  field is only set for reservations using the managed disaster recovery
-	//  feature. Users can set this in create reservation calls
-	//  to create a failover reservation or in update reservation calls to convert
-	//  a non-failover reservation to a failover reservation(or vice versa).
-	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.secondary_location
-	SecondaryLocation *string `json:"secondaryLocation,omitempty"`
-	// The location where the reservation was originally created. This
-	//  is set only during the failover reservation's creation. All billing charges
-	//  for the failover reservation will be applied to this location.
-	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.original_primary_location
-	OriginalPrimaryLocation *string `json:"originalPrimaryLocation,omitempty"`
-}
-
-// +kcc:observedstate:proto=google.cloud.bigquery.reservation.v1.Reservation.Autoscale
-type AutoscaleObservedState struct {
-	// The slot capacity added to this reservation when autoscale
-	//  happens. Will be between [0, max_slots]. Note: after users reduce
-	//  max_slots, it may take a while before it can be propagated, so
-	//  current_slots may stay in the original value and could be larger than
-	//  max_slots for that brief period (less than one minute)
-	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.Autoscale.current_slots
-	CurrentSlots *int64 `json:"currentSlots,omitempty"`
 }
 
 func init() {

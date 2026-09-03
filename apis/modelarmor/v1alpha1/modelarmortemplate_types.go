@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 package v1alpha1
 
 import (
-	dlpv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/dlp/v1alpha1"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -30,19 +29,22 @@ type ModelArmorTemplateSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/templates/{template}
 	Location *string `json:"location"`
 
 	// The ModelArmorTemplate name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Optional. Labels as key value pairs
+	// +kcc:proto:field=google.cloud.modelarmor.v1.Template.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// Required. filter configuration for this template
+	// +kcc:proto:field=google.cloud.modelarmor.v1.Template.filter_config
 	// +required
-	FilterConfig *FilterConfig `json:"filterConfig"`
+	FilterConfig *FilterConfig `json:"filterConfig,omitempty"`
 
 	// Optional. metadata for this template
+	// +kcc:proto:field=google.cloud.modelarmor.v1.Template.template_metadata
 	TemplateMetadata *Template_TemplateMetadata `json:"templateMetadata,omitempty"`
 }
 
@@ -66,9 +68,11 @@ type ModelArmorTemplateStatus struct {
 // +kcc:observedstate:proto=google.cloud.modelarmor.v1.Template
 type ModelArmorTemplateObservedState struct {
 	// Output only. [Output only] Create time stamp
+	// +kcc:proto:field=google.cloud.modelarmor.v1.Template.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. [Output only] Update time stamp
+	// +kcc:proto:field=google.cloud.modelarmor.v1.Template.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
@@ -78,7 +82,6 @@ type ModelArmorTemplateObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -105,65 +108,4 @@ type ModelArmorTemplateList struct {
 
 func init() {
 	SchemeBuilder.Register(&ModelArmorTemplate{}, &ModelArmorTemplateList{})
-}
-
-// +kcc:proto=google.cloud.modelarmor.v1.SdpAdvancedConfig
-type SdpAdvancedConfig struct {
-	// Optional. Sensitive Data Protection inspect template resource name
-	//
-	//  If only inspect template is provided (de-identify template not provided),
-	//  then Sensitive Data Protection InspectContent action is performed during
-	//  Sanitization. All Sensitive Data Protection findings identified during
-	//  inspection will be returned as SdpFinding in SdpInsepctionResult.
-	//
-	//  e.g.
-	//  `projects/{project}/locations/{location}/inspectTemplates/{inspect_template}`
-	// +kcc:proto:field=google.cloud.modelarmor.v1.SdpAdvancedConfig.inspect_template
-	InspectTemplateRef *dlpv1alpha1.DLPInspectTemplateRef `json:"inspectTemplateRef,omitempty"`
-
-	// Optional. Optional Sensitive Data Protection Deidentify template resource
-	//  name.
-	//
-	//  If provided then DeidentifyContent action is performed during Sanitization
-	//  using this template and inspect template. The De-identified data will
-	//  be returned in SdpDeidentifyResult.
-	//  Note that all info-types present in the deidentify template must be present
-	//  in inspect template.
-	//
-	//  e.g.
-	//  `projects/{project}/locations/{location}/deidentifyTemplates/{deidentify_template}`
-	// +kcc:proto:field=google.cloud.modelarmor.v1.SdpAdvancedConfig.deidentify_template
-	DeidentifyTemplateRef *dlpv1alpha1.DLPDeidentifyTemplateRef `json:"deidentifyTemplateRef,omitempty"`
-}
-
-// +kcc:proto=google.cloud.modelarmor.v1.RaiFilterSettings
-type RaiFilterSettings struct {
-	// Required. List of Responsible AI filters enabled for template.
-	// +required
-	// +kcc:proto:field=google.cloud.modelarmor.v1.RaiFilterSettings.rai_filters
-	RaiFilters []RaiFilterSettings_RaiFilter `json:"raiFilters,omitempty"`
-}
-
-// +kcc:proto=google.cloud.modelarmor.v1.RaiFilterSettings.RaiFilter
-type RaiFilterSettings_RaiFilter struct {
-	// Required. Type of responsible AI filter.
-	// +required
-	// +kcc:proto:field=google.cloud.modelarmor.v1.RaiFilterSettings.RaiFilter.filter_type
-	FilterType *string `json:"filterType,omitempty"`
-
-	// Optional. Confidence level for this RAI filter.
-	//  During data sanitization, if data is classified under this filter with a
-	//  confidence level equal to or greater than the specified level, a positive
-	//  match is reported. If the confidence level is unspecified (i.e., 0), the
-	//  system will use a reasonable default level based on the `filter_type`.
-	// +kcc:proto:field=google.cloud.modelarmor.v1.RaiFilterSettings.RaiFilter.confidence_level
-	ConfidenceLevel *string `json:"confidenceLevel,omitempty"`
-}
-
-// +kcc:proto=google.cloud.modelarmor.v1.Template.TemplateMetadata.MultiLanguageDetection
-type Template_TemplateMetadata_MultiLanguageDetection struct {
-	// Required. If true, multi language detection will be enabled.
-	// +required
-	// +kcc:proto:field=google.cloud.modelarmor.v1.Template.TemplateMetadata.MultiLanguageDetection.enable_multi_language_detection
-	EnableMultiLanguageDetection *bool `json:"enableMultiLanguageDetection,omitempty"`
 }

@@ -15,8 +15,8 @@
 package v1beta1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
-	pkgk8sv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -25,7 +25,15 @@ var AppHubApplicationGVK = GroupVersion.WithKind("AppHubApplication")
 // AppHubApplicationSpec defines the desired state of AppHubApplication
 // +kcc:spec:proto=google.cloud.apphub.v1.Application
 type AppHubApplicationSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/applications/{application}
+	Location *string `json:"location"`
+
+	// The AppHubApplication name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. User-defined name for the Application.
 	//  Can have a maximum length of 63 characters.
 	// +kcc:proto:field=google.cloud.apphub.v1.Application.display_name
@@ -43,50 +51,27 @@ type AppHubApplicationSpec struct {
 	// Required. Immutable. Defines what data can be included into this
 	//  Application. Limits which Services and Workloads can be registered.
 	// +kcc:proto:field=google.cloud.apphub.v1.Application.scope
+	// +required
 	Scope *Scope `json:"scope,omitempty"`
-
-	// Required. Defines the parent path of the resource.
-	Location string `json:"location,omitempty"`
-
-	// Required. The host project of the resource.
-	ProjectRef *v1beta1.ProjectRef `json:"projectRef,omitempty"`
-	// The AppHubApplication name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
-}
-
-// +kcc:proto=google.cloud.apphub.v1.Criticality
-type Criticality struct {
-	// Required. Criticality Type.
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="the field is immutable"
-	// +kcc:proto:field=google.cloud.apphub.v1.Criticality.type
-	Type *string `json:"type,omitempty"`
-}
-
-// +kcc:proto=google.cloud.apphub.v1.Environment
-type Environment struct {
-	// Required. Environment Type.
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="the field is immutable"
-	// +kcc:proto:field=google.cloud.apphub.v1.Environment.type
-	Type *string `json:"type,omitempty"`
 }
 
 // AppHubApplicationStatus defines the config connector machine state of AppHubApplication
 type AppHubApplicationStatus struct {
 	/* Conditions represent the latest available observations of the
 	   object's current state. */
-	Conditions []pkgk8sv1beta1.Condition `json:"conditions,omitempty"`
+	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
 
 	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
 	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
 
-	// A unique specifier for the AppHubApplication resource in Google Cloud .
+	// A unique specifier for the AppHubApplication resource in GCP.
 	ExternalRef *string `json:"externalRef,omitempty"`
 
-	// ObservedState is the state of the resource as most recently observed in {{gcp_name_short}}.
+	// ObservedState is the state of the resource as most recently observed in GCP.
 	ObservedState *AppHubApplicationObservedState `json:"observedState,omitempty"`
 }
 
-// AppHubApplicationObservedState is the state of the AppHubApplication resource as most recently observed in Google Cloud .
+// AppHubApplicationObservedState is the state of the AppHubApplication resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.apphub.v1.Application
 type AppHubApplicationObservedState struct {
 	// Output only. Create time.
@@ -113,7 +98,6 @@ type AppHubApplicationObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -121,7 +105,6 @@ type AppHubApplicationObservedState struct {
 
 // AppHubApplication is the Schema for the AppHubApplication API
 // +k8s:openapi-gen=true
-// +kubebuilder:storageversion
 type AppHubApplication struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

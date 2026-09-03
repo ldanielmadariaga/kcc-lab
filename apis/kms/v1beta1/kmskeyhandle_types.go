@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,32 +15,31 @@
 package v1beta1
 
 import (
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var KMSKeyHandleGVK = GroupVersion.WithKind("KMSKeyHandle")
 
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // KMSKeyHandleSpec defines the desired state of KMSKeyHandle
 // +kcc:spec:proto=google.cloud.kms.v1.KeyHandle
 type KMSKeyHandleSpec struct {
-	// The KMS Key Handle ID used for resource creation or acquisition.
-	// For creation: If specified, this value is used as the key handle ID. If not provided, a UUID will be generated and assigned as the key handle ID.
-	// For acquisition: This field must be provided to identify the key handle resource to acquire.
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/keyHandles/{key_handle}
+	Location *string `json:"location"`
+
+	// The KMSKeyHandle name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Project hosting KMSKeyHandle
-	ProjectRef *refs.ProjectRef `json:"projectRef,omitempty"`
-
-	// Location name to create KeyHandle
-	Location *string `json:"location,omitempty"`
-
-	// Indicates the resource type that the resulting [CryptoKey][] is meant to
-	// protect, e.g. `{SERVICE}.googleapis.com/{TYPE}`. See documentation for
-	// supported resource types https://cloud.google.com/kms/docs/autokey-overview#compatible-services.
+	// Required. Indicates the resource type that the resulting
+	//  [CryptoKey][google.cloud.kms.v1.CryptoKey] is meant to protect, e.g.
+	//  `{SERVICE}.googleapis.com/{TYPE}`. See documentation for supported resource
+	//  types.
+	// +kcc:proto:field=google.cloud.kms.v1.KeyHandle.resource_type_selector
+	// +required
 	ResourceTypeSelector *string `json:"resourceTypeSelector,omitempty"`
 }
 
@@ -63,6 +62,18 @@ type KMSKeyHandleStatus struct {
 // KMSKeyHandleObservedState is the state of the KMSKeyHandle resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.kms.v1.KeyHandle
 type KMSKeyHandleObservedState struct {
+	// Output only. Name of a [CryptoKey][google.cloud.kms.v1.CryptoKey] that has
+	//  been provisioned for Customer Managed Encryption Key (CMEK) use in the
+	//  [KeyHandle][google.cloud.kms.v1.KeyHandle] project and location for the
+	//  requested resource type. The [CryptoKey][google.cloud.kms.v1.CryptoKey]
+	//  project will reflect the value configured in the
+	//  [AutokeyConfig][google.cloud.kms.v1.AutokeyConfig] on the resource
+	//  project's ancestor folder at the time of the
+	//  [KeyHandle][google.cloud.kms.v1.KeyHandle] creation. If more than one
+	//  ancestor folder has a configured
+	//  [AutokeyConfig][google.cloud.kms.v1.AutokeyConfig], the nearest of these
+	//  configurations is used.
+	// +kcc:proto:field=google.cloud.kms.v1.KeyHandle.kms_key
 	KMSKey *string `json:"kmsKey,omitempty"`
 }
 
@@ -72,8 +83,6 @@ type KMSKeyHandleObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=beta"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -81,7 +90,6 @@ type KMSKeyHandleObservedState struct {
 
 // KMSKeyHandle is the Schema for the KMSKeyHandle API
 // +k8s:openapi-gen=true
-// +kubebuilder:storageversion
 type KMSKeyHandle struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

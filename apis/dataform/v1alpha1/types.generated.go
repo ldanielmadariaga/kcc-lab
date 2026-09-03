@@ -20,3 +20,40 @@
 // resource: DataformTeamFolder:TeamFolder
 
 package v1alpha1
+
+/* unreachable type TeamFolder
+// +kcc:proto=google.cloud.dataform.v1.TeamFolder
+type TeamFolder struct {
+	// Identifier. The TeamFolder's name.
+	// +kcc:proto:field=google.cloud.dataform.v1.TeamFolder.name
+	Name *string `json:"name,omitempty"`
+
+	// Required. The TeamFolder's user-friendly name.
+	// +kcc:proto:field=google.cloud.dataform.v1.TeamFolder.display_name
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+}
+*/
+
+/* unreachable type TeamFolderObservedState
+// +kcc:observedstate:proto=google.cloud.dataform.v1.TeamFolder
+type TeamFolderObservedState struct {
+	// Output only. The timestamp of when the TeamFolder was created.
+	// +kcc:proto:field=google.cloud.dataform.v1.TeamFolder.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The timestamp of when the TeamFolder was last updated.
+	// +kcc:proto:field=google.cloud.dataform.v1.TeamFolder.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. All the metadata information that is used internally to serve
+	//  the resource. For example: timestamps, flags, status fields, etc. The
+	//  format of this field is a JSON string.
+	// +kcc:proto:field=google.cloud.dataform.v1.TeamFolder.internal_metadata
+	InternalMetadata *string `json:"internalMetadata,omitempty"`
+
+	// Output only. The IAM principal identifier of the creator of the TeamFolder.
+	// +kcc:proto:field=google.cloud.dataform.v1.TeamFolder.creator_iam_principal
+	CreatorIAMPrincipal *string `json:"creatorIAMPrincipal,omitempty"`
+}
+*/

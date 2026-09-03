@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package v1alpha1
 import (
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
-	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -27,23 +26,21 @@ var VertexAISpecialistPoolGVK = GroupVersion.WithKind("VertexAISpecialistPool")
 // +kcc:spec:proto=google.cloud.aiplatform.v1.SpecialistPool
 type VertexAISpecialistPoolSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +required
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/specialistPools/{specialist_pool}
 	Location *string `json:"location"`
 
 	// The VertexAISpecialistPool name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. The user-defined name of the SpecialistPool.
 	//  The name can be up to 128 characters long and can consist of any UTF-8
 	//  characters.
 	//  This field should be unique on project-level.
 	// +kcc:proto:field=google.cloud.aiplatform.v1.SpecialistPool.display_name
 	// +required
-	DisplayName *string `json:"displayName"`
+	DisplayName *string `json:"displayName,omitempty"`
 
 	// The email addresses of the managers in the SpecialistPool.
 	// +kcc:proto:field=google.cloud.aiplatform.v1.SpecialistPool.specialist_manager_emails
@@ -88,7 +85,6 @@ type VertexAISpecialistPoolObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
@@ -116,6 +112,3 @@ type VertexAISpecialistPoolList struct {
 func init() {
 	SchemeBuilder.Register(&VertexAISpecialistPool{}, &VertexAISpecialistPoolList{})
 }
-
-// Declaring dummy variable to keep the unused import of apiextensionsv1 if types.generated.go is compiled separately.
-var _ = apiextensionsv1.JSON{}

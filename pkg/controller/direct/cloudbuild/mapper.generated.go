@@ -29,8 +29,6 @@ import (
 	cloudbuildpb "cloud.google.com/go/cloudbuild/apiv2/cloudbuildpb"
 	krmcloudbuildv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/cloudbuild/v1alpha1"
 	krmcloudbuildv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/cloudbuild/v1beta1"
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
-	krmservicedirectoryv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/servicedirectory/v1alpha1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -40,9 +38,7 @@ func BitbucketCloudConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *clou
 	}
 	out := &krmcloudbuildv1alpha1.BitbucketCloudConfig{}
 	out.Workspace = direct.LazyPtr(in.GetWorkspace())
-	if in.GetWebhookSecretSecretVersion() != "" {
-		out.WebhookSecretSecretVersionRef = &refsv1beta1.SecretManagerSecretVersionRef{External: in.GetWebhookSecretSecretVersion()}
-	}
+	out.WebhookSecretSecretVersion = direct.LazyPtr(in.GetWebhookSecretSecretVersion())
 	out.ReadAuthorizerCredential = UserCredential_v1alpha1_FromProto(mapCtx, in.GetReadAuthorizerCredential())
 	out.AuthorizerCredential = UserCredential_v1alpha1_FromProto(mapCtx, in.GetAuthorizerCredential())
 	return out
@@ -53,9 +49,7 @@ func BitbucketCloudConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmclo
 	}
 	out := &cloudbuildpb.BitbucketCloudConfig{}
 	out.Workspace = direct.ValueOf(in.Workspace)
-	if in.WebhookSecretSecretVersionRef != nil {
-		out.WebhookSecretSecretVersion = in.WebhookSecretSecretVersionRef.External
-	}
+	out.WebhookSecretSecretVersion = direct.ValueOf(in.WebhookSecretSecretVersion)
 	out.ReadAuthorizerCredential = UserCredential_v1alpha1_ToProto(mapCtx, in.ReadAuthorizerCredential)
 	out.AuthorizerCredential = UserCredential_v1alpha1_ToProto(mapCtx, in.AuthorizerCredential)
 	return out
@@ -88,9 +82,7 @@ func BitbucketDataCenterConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in 
 	}
 	out := &krmcloudbuildv1alpha1.BitbucketDataCenterConfig{}
 	out.HostURI = direct.LazyPtr(in.GetHostUri())
-	if in.GetWebhookSecretSecretVersion() != "" {
-		out.WebhookSecretSecretVersionRef = &refsv1beta1.SecretManagerSecretVersionRef{External: in.GetWebhookSecretSecretVersion()}
-	}
+	out.WebhookSecretSecretVersion = direct.LazyPtr(in.GetWebhookSecretSecretVersion())
 	out.ReadAuthorizerCredential = UserCredential_v1alpha1_FromProto(mapCtx, in.GetReadAuthorizerCredential())
 	out.AuthorizerCredential = UserCredential_v1alpha1_FromProto(mapCtx, in.GetAuthorizerCredential())
 	out.ServiceDirectoryConfig = ServiceDirectoryConfig_v1alpha1_FromProto(mapCtx, in.GetServiceDirectoryConfig())
@@ -104,9 +96,7 @@ func BitbucketDataCenterConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *k
 	}
 	out := &cloudbuildpb.BitbucketDataCenterConfig{}
 	out.HostUri = direct.ValueOf(in.HostURI)
-	if in.WebhookSecretSecretVersionRef != nil {
-		out.WebhookSecretSecretVersion = in.WebhookSecretSecretVersionRef.External
-	}
+	out.WebhookSecretSecretVersion = direct.ValueOf(in.WebhookSecretSecretVersion)
 	out.ReadAuthorizerCredential = UserCredential_v1alpha1_ToProto(mapCtx, in.ReadAuthorizerCredential)
 	out.AuthorizerCredential = UserCredential_v1alpha1_ToProto(mapCtx, in.AuthorizerCredential)
 	out.ServiceDirectoryConfig = ServiceDirectoryConfig_v1alpha1_ToProto(mapCtx, in.ServiceDirectoryConfig)
@@ -121,8 +111,8 @@ func BitbucketDataCenterConfigObservedState_v1alpha1_FromProto(mapCtx *direct.Ma
 	out := &krmcloudbuildv1alpha1.BitbucketDataCenterConfigObservedState{}
 	// MISSING: HostURI
 	// MISSING: WebhookSecretSecretVersion
-	// MISSING: ReadAuthorizerCredential
-	// MISSING: AuthorizerCredential
+	out.ReadAuthorizerCredential = UserCredentialObservedState_v1alpha1_FromProto(mapCtx, in.GetReadAuthorizerCredential())
+	out.AuthorizerCredential = UserCredentialObservedState_v1alpha1_FromProto(mapCtx, in.GetAuthorizerCredential())
 	// MISSING: ServiceDirectoryConfig
 	// MISSING: SSLCA
 	out.ServerVersion = direct.LazyPtr(in.GetServerVersion())
@@ -135,8 +125,8 @@ func BitbucketDataCenterConfigObservedState_v1alpha1_ToProto(mapCtx *direct.MapC
 	out := &cloudbuildpb.BitbucketDataCenterConfig{}
 	// MISSING: HostURI
 	// MISSING: WebhookSecretSecretVersion
-	// MISSING: ReadAuthorizerCredential
-	// MISSING: AuthorizerCredential
+	out.ReadAuthorizerCredential = UserCredentialObservedState_v1alpha1_ToProto(mapCtx, in.ReadAuthorizerCredential)
+	out.AuthorizerCredential = UserCredentialObservedState_v1alpha1_ToProto(mapCtx, in.AuthorizerCredential)
 	// MISSING: ServiceDirectoryConfig
 	// MISSING: SSLCA
 	out.ServerVersion = direct.ValueOf(in.ServerVersion)
@@ -157,7 +147,6 @@ func CloudBuildConnectionObservedState_v1alpha1_FromProto(mapCtx *direct.MapCont
 	out.BitbucketCloudConfig = BitbucketCloudConfigObservedState_v1alpha1_FromProto(mapCtx, in.GetBitbucketCloudConfig())
 	out.InstallationState = InstallationStateObservedState_v1alpha1_FromProto(mapCtx, in.GetInstallationState())
 	out.Reconciling = direct.LazyPtr(in.GetReconciling())
-	out.Etag = direct.LazyPtr(in.GetEtag())
 	return out
 }
 func CloudBuildConnectionObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcloudbuildv1alpha1.CloudBuildConnectionObservedState) *cloudbuildpb.Connection {
@@ -185,7 +174,6 @@ func CloudBuildConnectionObservedState_v1alpha1_ToProto(mapCtx *direct.MapContex
 	}
 	out.InstallationState = InstallationStateObservedState_v1alpha1_ToProto(mapCtx, in.InstallationState)
 	out.Reconciling = direct.ValueOf(in.Reconciling)
-	out.Etag = direct.ValueOf(in.Etag)
 	return out
 }
 func CloudBuildConnectionSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *cloudbuildpb.Connection) *krmcloudbuildv1alpha1.CloudBuildConnectionSpec {
@@ -201,6 +189,7 @@ func CloudBuildConnectionSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *
 	out.BitbucketCloudConfig = BitbucketCloudConfig_v1alpha1_FromProto(mapCtx, in.GetBitbucketCloudConfig())
 	out.Disabled = direct.LazyPtr(in.GetDisabled())
 	out.Annotations = in.Annotations
+	out.Etag = direct.LazyPtr(in.GetEtag())
 	return out
 }
 func CloudBuildConnectionSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcloudbuildv1alpha1.CloudBuildConnectionSpec) *cloudbuildpb.Connection {
@@ -226,6 +215,7 @@ func CloudBuildConnectionSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *kr
 	}
 	out.Disabled = direct.ValueOf(in.Disabled)
 	out.Annotations = in.Annotations
+	out.Etag = direct.ValueOf(in.Etag)
 	return out
 }
 func CloudBuildTriggerObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.BuildTrigger) *krmcloudbuildv1beta1.CloudBuildTriggerObservedState {
@@ -460,12 +450,8 @@ func GitHubEnterpriseConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *cl
 	out.APIKey = direct.LazyPtr(in.GetApiKey())
 	out.AppID = direct.LazyPtr(in.GetAppId())
 	out.AppSlug = direct.LazyPtr(in.GetAppSlug())
-	if in.GetPrivateKeySecretVersion() != "" {
-		out.PrivateKeySecretVersionRef = &refsv1beta1.SecretManagerSecretVersionRef{External: in.GetPrivateKeySecretVersion()}
-	}
-	if in.GetWebhookSecretSecretVersion() != "" {
-		out.WebhookSecretSecretVersionRef = &refsv1beta1.SecretManagerSecretVersionRef{External: in.GetWebhookSecretSecretVersion()}
-	}
+	out.PrivateKeySecretVersion = direct.LazyPtr(in.GetPrivateKeySecretVersion())
+	out.WebhookSecretSecretVersion = direct.LazyPtr(in.GetWebhookSecretSecretVersion())
 	out.AppInstallationID = direct.LazyPtr(in.GetAppInstallationId())
 	out.ServiceDirectoryConfig = ServiceDirectoryConfig_v1alpha1_FromProto(mapCtx, in.GetServiceDirectoryConfig())
 	out.SSLCA = direct.LazyPtr(in.GetSslCa())
@@ -481,12 +467,8 @@ func GitHubEnterpriseConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmc
 	out.ApiKey = direct.ValueOf(in.APIKey)
 	out.AppId = direct.ValueOf(in.AppID)
 	out.AppSlug = direct.ValueOf(in.AppSlug)
-	if in.PrivateKeySecretVersionRef != nil {
-		out.PrivateKeySecretVersion = in.PrivateKeySecretVersionRef.External
-	}
-	if in.WebhookSecretSecretVersionRef != nil {
-		out.WebhookSecretSecretVersion = in.WebhookSecretSecretVersionRef.External
-	}
+	out.PrivateKeySecretVersion = direct.ValueOf(in.PrivateKeySecretVersion)
+	out.WebhookSecretSecretVersion = direct.ValueOf(in.WebhookSecretSecretVersion)
 	out.AppInstallationId = direct.ValueOf(in.AppInstallationID)
 	out.ServiceDirectoryConfig = ServiceDirectoryConfig_v1alpha1_ToProto(mapCtx, in.ServiceDirectoryConfig)
 	out.SslCa = direct.ValueOf(in.SSLCA)
@@ -533,9 +515,7 @@ func GitLabConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *cloudbuildpb
 	}
 	out := &krmcloudbuildv1alpha1.GitLabConfig{}
 	out.HostURI = direct.LazyPtr(in.GetHostUri())
-	if in.GetWebhookSecretSecretVersion() != "" {
-		out.WebhookSecretSecretVersionRef = &refsv1beta1.SecretManagerSecretVersionRef{External: in.GetWebhookSecretSecretVersion()}
-	}
+	out.WebhookSecretSecretVersion = direct.LazyPtr(in.GetWebhookSecretSecretVersion())
 	out.ReadAuthorizerCredential = UserCredential_v1alpha1_FromProto(mapCtx, in.GetReadAuthorizerCredential())
 	out.AuthorizerCredential = UserCredential_v1alpha1_FromProto(mapCtx, in.GetAuthorizerCredential())
 	out.ServiceDirectoryConfig = ServiceDirectoryConfig_v1alpha1_FromProto(mapCtx, in.GetServiceDirectoryConfig())
@@ -549,9 +529,7 @@ func GitLabConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcloudbuildv
 	}
 	out := &cloudbuildpb.GitLabConfig{}
 	out.HostUri = direct.ValueOf(in.HostURI)
-	if in.WebhookSecretSecretVersionRef != nil {
-		out.WebhookSecretSecretVersion = in.WebhookSecretSecretVersionRef.External
-	}
+	out.WebhookSecretSecretVersion = direct.ValueOf(in.WebhookSecretSecretVersion)
 	out.ReadAuthorizerCredential = UserCredential_v1alpha1_ToProto(mapCtx, in.ReadAuthorizerCredential)
 	out.AuthorizerCredential = UserCredential_v1alpha1_ToProto(mapCtx, in.AuthorizerCredential)
 	out.ServiceDirectoryConfig = ServiceDirectoryConfig_v1alpha1_ToProto(mapCtx, in.ServiceDirectoryConfig)
@@ -567,7 +545,7 @@ func GitLabConfigObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in 
 	// MISSING: HostURI
 	// MISSING: WebhookSecretSecretVersion
 	out.ReadAuthorizerCredential = UserCredentialObservedState_v1alpha1_FromProto(mapCtx, in.GetReadAuthorizerCredential())
-	// MISSING: AuthorizerCredential
+	out.AuthorizerCredential = UserCredentialObservedState_v1alpha1_FromProto(mapCtx, in.GetAuthorizerCredential())
 	// MISSING: ServiceDirectoryConfig
 	// MISSING: SSLCA
 	out.ServerVersion = direct.LazyPtr(in.GetServerVersion())
@@ -581,7 +559,7 @@ func GitLabConfigObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *k
 	// MISSING: HostURI
 	// MISSING: WebhookSecretSecretVersion
 	out.ReadAuthorizerCredential = UserCredentialObservedState_v1alpha1_ToProto(mapCtx, in.ReadAuthorizerCredential)
-	// MISSING: AuthorizerCredential
+	out.AuthorizerCredential = UserCredentialObservedState_v1alpha1_ToProto(mapCtx, in.AuthorizerCredential)
 	// MISSING: ServiceDirectoryConfig
 	// MISSING: SSLCA
 	out.ServerVersion = direct.ValueOf(in.ServerVersion)
@@ -630,9 +608,7 @@ func OAuthCredential_v1alpha1_FromProto(mapCtx *direct.MapContext, in *cloudbuil
 		return nil
 	}
 	out := &krmcloudbuildv1alpha1.OAuthCredential{}
-	if in.GetOauthTokenSecretVersion() != "" {
-		out.OauthTokenSecretVersionRef = &refsv1beta1.SecretManagerSecretVersionRef{External: in.GetOauthTokenSecretVersion()}
-	}
+	out.OauthTokenSecretVersion = direct.LazyPtr(in.GetOauthTokenSecretVersion())
 	// MISSING: Username
 	return out
 }
@@ -641,9 +617,7 @@ func OAuthCredential_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcloudbui
 		return nil
 	}
 	out := &cloudbuildpb.OAuthCredential{}
-	if in.OauthTokenSecretVersionRef != nil {
-		out.OauthTokenSecretVersion = in.OauthTokenSecretVersionRef.External
-	}
+	out.OauthTokenSecretVersion = direct.ValueOf(in.OauthTokenSecretVersion)
 	// MISSING: Username
 	return out
 }
@@ -798,9 +772,7 @@ func ServiceDirectoryConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *cl
 		return nil
 	}
 	out := &krmcloudbuildv1alpha1.ServiceDirectoryConfig{}
-	if in.GetService() != "" {
-		out.ServiceRef = &krmservicedirectoryv1alpha1.ServiceDirectoryServiceRef{External: in.GetService()}
-	}
+	out.Service = direct.LazyPtr(in.GetService())
 	return out
 }
 func ServiceDirectoryConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcloudbuildv1alpha1.ServiceDirectoryConfig) *cloudbuildpb.ServiceDirectoryConfig {
@@ -808,9 +780,7 @@ func ServiceDirectoryConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmc
 		return nil
 	}
 	out := &cloudbuildpb.ServiceDirectoryConfig{}
-	if in.ServiceRef != nil {
-		out.Service = in.ServiceRef.External
-	}
+	out.Service = direct.ValueOf(in.Service)
 	return out
 }
 func UserCredential_v1alpha1_FromProto(mapCtx *direct.MapContext, in *cloudbuildpb.UserCredential) *krmcloudbuildv1alpha1.UserCredential {
@@ -818,9 +788,7 @@ func UserCredential_v1alpha1_FromProto(mapCtx *direct.MapContext, in *cloudbuild
 		return nil
 	}
 	out := &krmcloudbuildv1alpha1.UserCredential{}
-	if in.GetUserTokenSecretVersion() != "" {
-		out.UserTokenSecretVersionRef = &refsv1beta1.SecretManagerSecretVersionRef{External: in.GetUserTokenSecretVersion()}
-	}
+	out.UserTokenSecretVersion = direct.LazyPtr(in.GetUserTokenSecretVersion())
 	// MISSING: Username
 	return out
 }
@@ -829,9 +797,7 @@ func UserCredential_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmcloudbuil
 		return nil
 	}
 	out := &cloudbuildpb.UserCredential{}
-	if in.UserTokenSecretVersionRef != nil {
-		out.UserTokenSecretVersion = in.UserTokenSecretVersionRef.External
-	}
+	out.UserTokenSecretVersion = direct.ValueOf(in.UserTokenSecretVersion)
 	// MISSING: Username
 	return out
 }

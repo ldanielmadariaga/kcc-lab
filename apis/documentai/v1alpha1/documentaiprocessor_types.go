@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,8 +15,7 @@
 package v1alpha1
 
 import (
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
-	commonv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/common/v1alpha1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -26,14 +25,15 @@ var DocumentAIProcessorGVK = GroupVersion.WithKind("DocumentAIProcessor")
 // DocumentAIProcessorSpec defines the desired state of DocumentAIProcessor
 // +kcc:spec:proto=google.cloud.documentai.v1.Processor
 type DocumentAIProcessorSpec struct {
-	commonv1alpha1.CommonSpec `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// +required
-	Location string `json:"location"`
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/processors/{processor}
+	Location *string `json:"location"`
 
 	// The DocumentAIProcessor name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// The processor type, such as: `OCR_PROCESSOR`, `INVOICE_PROCESSOR`.
 	//  To get a list of processor types, see
 	//  [FetchProcessorTypes][google.cloud.documentai.v1.DocumentProcessorService.FetchProcessorTypes].
@@ -46,13 +46,12 @@ type DocumentAIProcessorSpec struct {
 
 	// The default processor version.
 	// +kcc:proto:field=google.cloud.documentai.v1.Processor.default_processor_version
-	// NOTYET
-	// DefaultProcessorVersion *string `json:"defaultProcessorVersion,omitempty"`
+	DefaultProcessorVersion *string `json:"defaultProcessorVersion,omitempty"`
 
 	// The [KMS key](https://cloud.google.com/security-key-management) used for
 	//  encryption and decryption in CMEK scenarios.
 	// +kcc:proto:field=google.cloud.documentai.v1.Processor.kms_key_name
-	KmsKeyRef *refs.KMSCryptoKeyRef `json:"kmsKeyRef,omitempty"`
+	KMSKeyName *string `json:"kmsKeyName,omitempty"`
 }
 
 // DocumentAIProcessorStatus defines the config connector machine state of DocumentAIProcessor
@@ -71,19 +70,9 @@ type DocumentAIProcessorStatus struct {
 	ObservedState *DocumentAIProcessorObservedState `json:"observedState,omitempty"`
 }
 
-// DocumentAIProcessorSpec defines the desired state of DocumentAIProcessor
-// +kcc:proto=google.cloud.documentai.v1.Processor
 // DocumentAIProcessorObservedState is the state of the DocumentAIProcessor resource as most recently observed in GCP.
+// +kcc:observedstate:proto=google.cloud.documentai.v1.Processor
 type DocumentAIProcessorObservedState struct {
-	// The time the processor was created.
-	// +kcc:proto:field=google.cloud.documentai.v1.Processor.create_time
-	CreateTime *string `json:"createTime,omitempty"`
-
-	// Output only. Immutable. The resource name of the processor.
-	//  Format: `projects/{project}/locations/{location}/processors/{processor}`
-	// +kcc:proto:field=google.cloud.documentai.v1.Processor.name
-	Name *string `json:"name,omitempty"`
-
 	// Output only. The state of the processor.
 	// +kcc:proto:field=google.cloud.documentai.v1.Processor.state
 	State *string `json:"state,omitempty"`
@@ -97,19 +86,17 @@ type DocumentAIProcessorObservedState struct {
 	// +kcc:proto:field=google.cloud.documentai.v1.Processor.process_endpoint
 	ProcessEndpoint *string `json:"processEndpoint,omitempty"`
 
-	// The default processor version.
-	// +kcc:proto:field=google.cloud.documentai.v1.Processor.default_processor_version
-	DefaultProcessorVersion *string `json:"defaultProcessorVersion,omitempty"`
+	// Output only. The time the processor was created.
+	// +kcc:proto:field=google.cloud.documentai.v1.Processor.create_time
+	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. Reserved for future use.
 	// +kcc:proto:field=google.cloud.documentai.v1.Processor.satisfies_pzs
-	// NOTYET
-	// SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
 
 	// Output only. Reserved for future use.
 	// +kcc:proto:field=google.cloud.documentai.v1.Processor.satisfies_pzi
-	// NOTYET
-	// SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
+	SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
 }
 
 // +genclient

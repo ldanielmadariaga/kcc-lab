@@ -196,31 +196,13 @@ type GcipSettings struct {
 	//  agent flow is used, `tenant_ids` should only contain one single element,
 	//  while for tenant flow, `tenant_ids` can contain multiple elements.
 	// +kcc:proto:field=google.cloud.iap.v1.GcipSettings.tenant_ids
-	TenantIds []string `json:"tenantIds,omitempty"`
+	TenantIDs []string `json:"tenantIDs,omitempty"`
 
 	// Login page URI associated with the GCIP tenants.
 	//  Typically, all resources within the same project share the same login page,
 	//  though it could be overridden at the sub resource level.
 	// +kcc:proto:field=google.cloud.iap.v1.GcipSettings.login_page_uri
 	LoginPageURI *string `json:"loginPageURI,omitempty"`
-}
-*/
-
-/* found existing non-generated go type "IAPSettings", skipping
-
-// +kcc:proto=google.cloud.iap.v1.IapSettings
-type IAPSettings struct {
-	// Required. The resource name of the IAP protected resource.
-	// +kcc:proto:field=google.cloud.iap.v1.IapSettings.name
-	Name *string `json:"name,omitempty"`
-
-	// Optional. Top level wrapper for all access related setting in IAP
-	// +kcc:proto:field=google.cloud.iap.v1.IapSettings.access_settings
-	AccessSettings *AccessSettings `json:"accessSettings,omitempty"`
-
-	// Optional. Top level wrapper for all application related settings in IAP
-	// +kcc:proto:field=google.cloud.iap.v1.IapSettings.application_settings
-	ApplicationSettings *ApplicationSettings `json:"applicationSettings,omitempty"`
 }
 */
 
@@ -311,16 +293,6 @@ type BrandObservedState struct {
 	//  G Suite organization only.
 	// +kcc:proto:field=google.cloud.iap.v1.Brand.org_internal_only
 	OrgInternalOnly *bool `json:"orgInternalOnly,omitempty"`
-}
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.iap.v1.IapSettings", skipping
-
-// +kcc:observedstate:proto=google.cloud.iap.v1.IapSettings
-type IAPSettingsObservedState struct {
-	// Optional. Top level wrapper for all access related setting in IAP
-	// +kcc:proto:field=google.cloud.iap.v1.IapSettings.access_settings
-	AccessSettings *AccessSettingsObservedState `json:"accessSettings,omitempty"`
 }
 */
 

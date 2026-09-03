@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,21 +29,25 @@ type CCInsightsIssueModelSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	Location string `json:"location"`
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/issueModels/{issue_model}
+	Location *string `json:"location"`
 
 	// The CCInsightsIssueModel name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// The representative name for the issue model.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModel.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
 	// Configs for the input data that used to create the issue model.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModel.input_data_config
 	InputDataConfig *IssueModel_InputDataConfig `json:"inputDataConfig,omitempty"`
 
 	// Type of the model.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModel.model_type
 	ModelType *string `json:"modelType,omitempty"`
 
 	// Language of the model.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModel.language_code
 	LanguageCode *string `json:"languageCode,omitempty"`
 }
 
@@ -67,21 +71,28 @@ type CCInsightsIssueModelStatus struct {
 // +kcc:observedstate:proto=google.cloud.contactcenterinsights.v1.IssueModel
 type CCInsightsIssueModelObservedState struct {
 	// Output only. The time at which this issue model was created.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModel.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
 	// Output only. The most recent time at which the issue model was updated.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModel.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. Number of issues in this issue model.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModel.issue_count
 	IssueCount *int64 `json:"issueCount,omitempty"`
 
 	// Output only. State of the model.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModel.state
 	State *string `json:"state,omitempty"`
 
 	// Configs for the input data that used to create the issue model.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModel.input_data_config
 	InputDataConfig *IssueModel_InputDataConfigObservedState `json:"inputDataConfig,omitempty"`
 
-	// Output only. Immutable. The issue model's label statistics on its training data.
+	// Output only. Immutable. The issue model's label statistics on its training
+	//  data.
+	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModel.training_stats
 	TrainingStats *IssueModelLabelStats `json:"trainingStats,omitempty"`
 }
 
@@ -91,7 +102,6 @@ type CCInsightsIssueModelObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

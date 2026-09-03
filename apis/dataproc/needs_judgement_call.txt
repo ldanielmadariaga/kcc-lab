@@ -1,0 +1,46 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/batches/{batch}; confirm the resource is regional and that this is the name for it)
+kind=DataprocJob group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataprocJob group=dataproc.cnrm.cloud.google.com: field ".spec.location" reason=location-omitted-unknown-parent (the proto declares no google.api.resource, so the parent shape is unknown; add location if the resource is regional)
+kind=DataprocNodeGroup group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataprocNodeGroup group=dataproc.cnrm.cloud.google.com: field ".spec.region" reason=parent-location-guessed (emitted from the location segment of projects/{project}/regions/{region}/clusters/{cluster}/nodeGroups/{node_group}; confirm the resource is regional and that this is the name for it)
+kind=DataprocNodeGroup group=dataproc.cnrm.cloud.google.com: field ".spec.cluster" reason=parent-segment-guessed (emitted as a plain string from the pattern projects/{project}/regions/{region}/clusters/{cluster}/nodeGroups/{node_group}; upstream may model this as a reference instead)
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.sessionTemplate" reason=possible-reference (target=dataproc.googleapis.com/SessionTemplate)
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/sessions/{session}; confirm the resource is regional and that this is the name for it)
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/sessionTemplates/{template}; confirm the resource is regional and that this is the name for it)
+kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.kmsKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.serviceAccount" reason=possible-reference-by-description
+kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.stagingBucket" reason=possible-reference-by-description
+kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.metastoreService" reason=possible-reference-by-description-loose
+kind=DataprocBatch group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.sparkHistoryServerConfig.dataprocCluster" reason=possible-reference-by-description-loose
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.kmsKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.serviceAccount" reason=possible-reference-by-description
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.stagingBucket" reason=possible-reference-by-description
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.metastoreService" reason=possible-reference-by-description-loose
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.sparkHistoryServerConfig.dataprocCluster" reason=possible-reference-by-description-loose
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.sessionTemplate" reason=possible-reference-by-description-loose
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.kmsKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.serviceAccount" reason=possible-reference-by-description
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.executionConfig.stagingBucket" reason=possible-reference-by-description
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.metastoreService" reason=possible-reference-by-description-loose
+kind=DataprocSessionTemplate group=dataproc.cnrm.cloud.google.com: field ".spec.environmentConfig.peripheralsConfig.sparkHistoryServerConfig.dataprocCluster" reason=possible-reference-by-description-loose
+kind=DataprocSession group=dataproc.cnrm.cloud.google.com: field ".spec.sessionTemplate" reason=possible-reference-by-sibling (the name matches DataprocSessionTemplate, a resource this service declares; confirm whether it should be a reference)
+# Fields dropped because the generator could not produce a Go type for
+# them. They are absent from the CRD. Shared nested messages, so they are
+# listed per service rather than against one Kind.
+# dropped: google.cloud.dataproc.v1.LoggingConfig.driverLogLevels reason=unsupported map type with key string and value enum
+# Fields inside nested messages whose name matches a resource this service
+# declares, so they may want to be references. Each carries a +kcc:guess
+# marker in types.generated.go. Shared nested messages, so they are listed
+# per service rather than against one Kind.
+# possible-reference-by-sibling: google.cloud.dataproc.v1.Session.sessionTemplate target=DataprocSessionTemplate

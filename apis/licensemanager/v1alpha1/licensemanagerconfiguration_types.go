@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,48 +29,39 @@ type LicenseManagerConfigurationSpec struct {
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	Location string `json:"location"`
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/configurations/{configuration}
+	Location *string `json:"location"`
 
 	// The LicenseManagerConfiguration name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// +kubebuilder:validation:Required
 	// Required. User given name.
+	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.display_name
+	// +required
 	DisplayName *string `json:"displayName,omitempty"`
 
-	// +kubebuilder:validation:Required
 	// Required. Name field (with URL) of the Product offered for SPLA.
+	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.product
+	// +required
 	Product *string `json:"product,omitempty"`
 
-	// +kubebuilder:validation:Required
-	// Required. LicenseType to be applied for billing.
+	// Required. LicenseType to be applied for billing
+	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.license_type
+	// +required
 	LicenseType *string `json:"licenseType,omitempty"`
 
-	// +kubebuilder:validation:Required
 	// Required. Billing information applicable till end of the current month.
+	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.current_billing_info
+	// +required
 	CurrentBillingInfo *BillingInfo `json:"currentBillingInfo,omitempty"`
 
-	// +kubebuilder:validation:Required
 	// Required. Billing information applicable for next month.
+	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.next_billing_info
+	// +required
 	NextBillingInfo *BillingInfo `json:"nextBillingInfo,omitempty"`
 
-	// +kubebuilder:validation:Optional
-	// Optional. Labels as key value pairs.
+	// Optional. Labels as key value pairs
+	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.labels
 	Labels map[string]string `json:"labels,omitempty"`
-}
-
-// +kcc:proto=google.cloud.licensemanager.v1.BillingInfo
-type BillingInfo struct {
-	// +kubebuilder:validation:Required
-	// Required. This type of billing uses user count for computing total charge.
-	UserCountBilling *UserCountBillingInfo `json:"userCountBilling,omitempty"`
-}
-
-// +kcc:proto=google.cloud.licensemanager.v1.UserCountBillingInfo
-type UserCountBillingInfo struct {
-	// +kubebuilder:validation:Required
-	// Required. Number of users to bill for.
-	UserCount *int32 `json:"userCount,omitempty"`
 }
 
 // LicenseManagerConfigurationStatus defines the config connector machine state of LicenseManagerConfiguration
@@ -93,28 +84,24 @@ type LicenseManagerConfigurationStatus struct {
 // +kcc:observedstate:proto=google.cloud.licensemanager.v1.Configuration
 type LicenseManagerConfigurationObservedState struct {
 	// Required. Billing information applicable till end of the current month.
+	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.current_billing_info
 	CurrentBillingInfo *BillingInfoObservedState `json:"currentBillingInfo,omitempty"`
 
 	// Required. Billing information applicable for next month.
+	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.next_billing_info
 	NextBillingInfo *BillingInfoObservedState `json:"nextBillingInfo,omitempty"`
 
-	// Output only. [Output only] Create time stamp.
+	// Output only. [Output only] Create time stamp
+	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.create_time
 	CreateTime *string `json:"createTime,omitempty"`
 
-	// Output only. [Output only] Update time stamp.
+	// Output only. [Output only] Update time stamp
+	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
 	// Output only. State of the configuration.
+	// +kcc:proto:field=google.cloud.licensemanager.v1.Configuration.state
 	State *string `json:"state,omitempty"`
-}
-
-// +kcc:observedstate:proto=google.cloud.licensemanager.v1.BillingInfo
-type BillingInfoObservedState struct {
-	// Output only. When the billing starts.
-	StartTime *string `json:"startTime,omitempty"`
-
-	// Output only. When the billing ends.
-	EndTime *string `json:"endTime,omitempty"`
 }
 
 // +genclient
@@ -123,7 +110,6 @@ type BillingInfoObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

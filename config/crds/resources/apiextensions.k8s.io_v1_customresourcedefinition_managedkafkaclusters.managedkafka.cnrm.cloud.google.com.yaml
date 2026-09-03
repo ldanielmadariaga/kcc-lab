@@ -94,82 +94,28 @@ spec:
                           be specified.
                         items:
                           properties:
-                            subnetworkRef:
+                            subnet:
                               description: |-
-                                Required. Reference to the VPC subnet in which to create Private Service Connect
-                                 (PSC) endpoints for the Kafka brokers and bootstrap address.
+                                Required. Name of the VPC subnet in which to create Private Service Connect
+                                 (PSC) endpoints for the Kafka brokers and bootstrap address. Structured
+                                 like: projects/{project}/regions/{region}/subnetworks/{subnet_id}
 
                                  The subnet must be located in the same region as the Kafka cluster. The
                                  project may differ. Multiple subnets from the same parent network must not
                                  be specified.
-
-                                 The CIDR range of the subnet must be within the IPv4 address ranges for
-                                 private networks, as specified in RFC 1918.
-                              oneOf:
-                              - not:
-                                  required:
-                                  - external
-                                required:
-                                - name
-                              - not:
-                                  anyOf:
-                                  - required:
-                                    - name
-                                  - required:
-                                    - namespace
-                                required:
-                                - external
-                              properties:
-                                external:
-                                  description: A reference to an externally managed
-                                    ComputeSubnetwork resource. Should be in the format
-                                    "projects/{{projectID}}/regions/{{region}}/subnetworks/{{subnetworkID}}".
-                                  type: string
-                                name:
-                                  description: The name of a ComputeSubnetwork resource.
-                                  type: string
-                                namespace:
-                                  description: The namespace of a ComputeSubnetwork
-                                    resource.
-                                  type: string
-                              type: object
+                              type: string
                           required:
-                          - subnetworkRef
+                          - subnet
                           type: object
                         type: array
                     required:
                     - networkConfigs
                     type: object
-                  kmsKeyRef:
-                    description: Optional. Immutable. The Cloud KMS Key name to use
+                  kmsKey:
+                    description: 'Optional. Immutable. The Cloud KMS Key name to use
                       for encryption. The key must be located in the same region as
-                      the cluster and cannot be changed.
-                    oneOf:
-                    - not:
-                        required:
-                        - external
-                      required:
-                      - name
-                    - not:
-                        anyOf:
-                        - required:
-                          - name
-                        - required:
-                          - namespace
-                      required:
-                      - external
-                    properties:
-                      external:
-                        description: A reference to an externally managed KMSCryptoKey.
-                          Should be in the format `projects/[kms_project_id]/locations/[region]/keyRings/[key_ring_id]/cryptoKeys/[key]`.
-                        type: string
-                      name:
-                        description: The `name` of a `KMSCryptoKey` resource.
-                        type: string
-                      namespace:
-                        description: The `namespace` of a `KMSCryptoKey` resource.
-                        type: string
-                    type: object
+                      the cluster and cannot be changed. Structured like: projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}.'
+                    type: string
                 required:
                 - accessConfig
                 type: object
@@ -179,9 +125,10 @@ spec:
                 description: Optional. Labels as key value pairs.
                 type: object
               location:
+                description: The location of this resource.
                 type: string
               projectRef:
-                description: The Project that this resource belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -221,9 +168,45 @@ spec:
                     type: string
                 type: object
               resourceID:
-                description: The GCP resource identifier. If not given, the metadata.name
+                description: The ManagedKafkaCluster name. If not given, the metadata.name
                   will be used.
                 type: string
+              tlsConfig:
+                description: Optional. TLS configuration for the Kafka cluster.
+                properties:
+                  sslPrincipalMappingRules:
+                    description: |-
+                      Optional. A list of rules for mapping from SSL principal names to
+                       short names. These are applied in order by Kafka.
+                       Refer to the Apache Kafka documentation for `ssl.principal.mapping.rules`
+                       for the precise formatting details and syntax.
+                       Example: "RULE:^CN=(.*?),OU=ServiceUsers.*$/$1@example.com/,DEFAULT"
+
+                       This is a static Kafka broker configuration. Setting or modifying this
+                       field will trigger a rolling restart of the Kafka brokers to apply
+                       the change. An empty string means no rules are applied (Kafka default).
+                    type: string
+                  trustConfig:
+                    description: Optional. The configuration of the broker truststore.
+                      If specified, clients can use mTLS for authentication.
+                    properties:
+                      casConfigs:
+                        description: Optional. Configuration for the Google Certificate
+                          Authority Service. Maximum 10.
+                        items:
+                          properties:
+                            caPool:
+                              description: 'Required. The name of the CA pool to pull
+                                CA certificates from. Structured like: projects/{project}/locations/{location}/caPools/{ca_pool}.
+                                The CA pool does not need to be in the same project
+                                or location as the Kafka cluster.'
+                              type: string
+                          required:
+                          - caPool
+                          type: object
+                        type: array
+                    type: object
+                type: object
             required:
             - capacityConfig
             - gcpConfig
@@ -279,6 +262,12 @@ spec:
                   createTime:
                     description: Output only. The time when the cluster was created.
                     type: string
+                  satisfiesPzi:
+                    description: Output only. Reserved for future use.
+                    type: boolean
+                  satisfiesPzs:
+                    description: Output only. Reserved for future use.
+                    type: boolean
                   state:
                     description: Output only. The current state of the cluster.
                     type: string

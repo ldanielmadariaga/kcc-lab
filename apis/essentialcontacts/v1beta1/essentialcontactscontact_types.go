@@ -15,47 +15,46 @@
 package v1beta1
 
 import (
-	refv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var EssentialContactsContactGVK = GroupVersion.WithKind("EssentialContactsContact")
 
-type Parent struct {
-	// +optional
-	ProjectRef *refv1beta1.ProjectRef `json:"projectRef,omitempty"`
-	// +optional
-	FolderRef *refv1beta1.FolderRef `json:"folderRef,omitempty"`
-	// +optional
-	OrganizationRef *refv1beta1.OrganizationRef `json:"organizationRef,omitempty"`
-}
-
 // EssentialContactsContactSpec defines the desired state of EssentialContactsContact
 // +kcc:spec:proto=google.cloud.essentialcontacts.v1.Contact
 type EssentialContactsContactSpec struct {
-	Parent `json:",inline"`
-	// Immutable. Optional. The service-generated name of the resource. Used for acquisition only. Leave unset to create a new resource.
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The EssentialContactsContact name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
 	// Required. The email address to send notifications to. The email address
 	//  does not need to be a Google Account.
 	// +kcc:proto:field=google.cloud.essentialcontacts.v1.Contact.email
-	//+required
+	// +required
 	Email *string `json:"email,omitempty"`
 
 	// Required. The categories of notifications that the contact will receive
 	//  communications for.
 	// +kcc:proto:field=google.cloud.essentialcontacts.v1.Contact.notification_category_subscriptions
-	//+required
+	// +required
 	NotificationCategorySubscriptions []string `json:"notificationCategorySubscriptions,omitempty"`
 
-	// Required. The preferred language for notifications, as an ISO 639-1 language
+	// Required. The preferred language for notifications, as a ISO 639-1 language
 	//  code. See [Supported
 	//  languages](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#supported-languages)
 	//  for a list of supported languages.
 	// +kcc:proto:field=google.cloud.essentialcontacts.v1.Contact.language_tag
-	//+required
+	// +required
 	LanguageTag *string `json:"languageTag,omitempty"`
+
+	// The last time the validation_state was updated, either manually or
+	//  automatically. A contact is considered stale if its validation state was
+	//  updated more than 1 year ago.
+	// +kcc:proto:field=google.cloud.essentialcontacts.v1.Contact.validate_time
+	ValidateTime *string `json:"validateTime,omitempty"`
 }
 
 // EssentialContactsContactStatus defines the config connector machine state of EssentialContactsContact
@@ -77,32 +76,22 @@ type EssentialContactsContactStatus struct {
 // EssentialContactsContactObservedState is the state of the EssentialContactsContact resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.essentialcontacts.v1.Contact
 type EssentialContactsContactObservedState struct {
-
 	// Output only. The validity of the contact. A contact is considered valid if
 	//  it is the correct recipient for notifications for a particular resource.
 	// +kcc:proto:field=google.cloud.essentialcontacts.v1.Contact.validation_state
 	ValidationState *string `json:"validationState,omitempty"`
-
-	// The last time the validation_state was updated, either manually or
-	//  automatically. A contact is considered stale if its validation state was
-	//  updated more than 1 year ago.
-	// +kcc:proto:field=google.cloud.essentialcontacts.v1.Contact.validate_time
-	ValidateTime *string `json:"validateTime,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// TODO(user): make sure the pluralizaiton below is correct
 // +kubebuilder:resource:categories=gcp,shortName=gcpessentialcontactscontact;gcpessentialcontactscontacts
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
 // +kubebuilder:printcolumn:name="Status Age",JSONPath=".status.conditions[?(@.type=='Ready')].lastTransitionTime",type="date",description="The last transition time for the value in 'Status'"
-// +kubebuilder:storageversion
 
 // EssentialContactsContact is the Schema for the EssentialContactsContact API
 // +k8s:openapi-gen=true

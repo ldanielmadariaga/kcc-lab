@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,65 +25,88 @@ var DiscoveryEngineEngineGVK = GroupVersion.WithKind("DiscoveryEngineEngine")
 // DiscoveryEngineEngineSpec defines the desired state of DiscoveryEngineEngine
 // +kcc:spec:proto=google.cloud.discoveryengine.v1.Engine
 type DiscoveryEngineEngineSpec struct {
-	// Required. The display name of the engine. Should be human readable. UTF-8
-	// encoded string with limit of 1024 characters.
-	// +required
-	DisplayName *string `json:"displayName,omitempty"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// The data stores associated with this engine.
-	// For SOLUTION_TYPE_SEARCH and SOLUTION_TYPE_RECOMMENDATION type of
-	// engines, they can only associate with at most one data store.
-	// If solution_type is SOLUTION_TYPE_CHAT, multiple DataStores in the
-	// same Collection can be associated here.
-	// Note that when used in CreateEngineRequest, one DataStore must be
-	// provided as the system will use it for necessary initializations.
-	DataStoreRefs []*DiscoveryEngineDataStoreRef `json:"dataStoreRefs,omitempty"`
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/collections/{collection}/engines/{engine}
+	Location *string `json:"location,omitempty"`
 
-	// Required. The solutions of the engine.
-	// +required
-	SolutionType *string `json:"solutionType,omitempty"`
+	// The Collection that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/collections/{collection}/engines/{engine}
+	Collection *string `json:"collection,omitempty"`
 
-	// The industry vertical that the engine registers.
-	// The restriction of the Engine industry vertical is based on
-	// DataStore: If unspecified, default to `GENERIC`. Vertical on Engine
-	// has to match vertical of the DataStore linked to the engine.
-	IndustryVertical *string `json:"industryVertical,omitempty"`
-
-	// Common config spec that specifies the metadata of the engine.
-	CommonConfig *Engine_CommonConfig `json:"commonConfig,omitempty"`
-
-	/*NOTYET
-	// Optional. Whether to disable analytics for searches performed on this
-	// engine.
-	DisableAnalytics *bool `json:"disableAnalytics,omitempty"`
-	*/
-
+	// The DiscoveryEngineEngine name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Configurations for the Chat Engine. Only applicable if
-	// solution_type is SOLUTION_TYPE_CHAT.
+	//  [solution_type][google.cloud.discoveryengine.v1.Engine.solution_type] is
+	//  [SOLUTION_TYPE_CHAT][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_CHAT].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.chat_engine_config
 	ChatEngineConfig *Engine_ChatEngineConfig `json:"chatEngineConfig,omitempty"`
 
 	// Configurations for the Search Engine. Only applicable if
-	// solution_type is SOLUTION_TYPE_SEARCH.
+	//  [solution_type][google.cloud.discoveryengine.v1.Engine.solution_type] is
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_SEARCH].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.search_engine_config
 	SearchEngineConfig *Engine_SearchEngineConfig `json:"searchEngineConfig,omitempty"`
+
+	// Configurations for the Media Engine. Only applicable on the data
+	//  stores with
+	//  [solution_type][google.cloud.discoveryengine.v1.Engine.solution_type]
+	//  [SOLUTION_TYPE_RECOMMENDATION][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_RECOMMENDATION]
+	//  and
+	//  [IndustryVertical.MEDIA][google.cloud.discoveryengine.v1.IndustryVertical.MEDIA]
+	//  vertical.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.media_recommendation_engine_config
+	MediaRecommendationEngineConfig *Engine_MediaRecommendationEngineConfig `json:"mediaRecommendationEngineConfig,omitempty"`
+
+	// Required. The display name of the engine. Should be human readable. UTF-8
+	//  encoded string with limit of 1024 characters.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.display_name
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. The data stores associated with this engine.
+	//
+	//  For
+	//  [SOLUTION_TYPE_SEARCH][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_SEARCH]
+	//  and
+	//  [SOLUTION_TYPE_RECOMMENDATION][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_RECOMMENDATION]
+	//  type of engines, they can only associate with at most one data store.
+	//
+	//  If [solution_type][google.cloud.discoveryengine.v1.Engine.solution_type] is
+	//  [SOLUTION_TYPE_CHAT][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_CHAT],
+	//  multiple [DataStore][google.cloud.discoveryengine.v1.DataStore]s in the
+	//  same [Collection][google.cloud.discoveryengine.v1.Collection] can be
+	//  associated here.
+	//
+	//  Note that when used in
+	//  [CreateEngineRequest][google.cloud.discoveryengine.v1.CreateEngineRequest],
+	//  one DataStore id must be provided as the system will use it for necessary
+	//  initializations.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.data_store_ids
+	DataStoreIDs []string `json:"dataStoreIDs,omitempty"`
+
+	// Required. The solutions of the engine.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.solution_type
+	// +required
+	SolutionType *string `json:"solutionType,omitempty"`
+
+	// Optional. The industry vertical that the engine registers.
+	//  The restriction of the Engine industry vertical is based on
+	//  [DataStore][google.cloud.discoveryengine.v1.DataStore]: Vertical on Engine
+	//  has to match vertical of the DataStore linked to the engine.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.industry_vertical
+	IndustryVertical *string `json:"industryVertical,omitempty"`
+
+	// Common config spec that specifies the metadata of the engine.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.common_config
+	CommonConfig *Engine_CommonConfig `json:"commonConfig,omitempty"`
 
 	// Optional. Whether to disable analytics for searches performed on this
 	//  engine.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.disable_analytics
 	DisableAnalytics *bool `json:"disableAnalytics,omitempty"`
-
-	/* Immutable. The Project that this resource belongs to. */
-	ProjectRef *refs.ProjectRef `json:"projectRef"`
-
-	/* Immutable. Location of the resource. */
-	// +required
-	Location string `json:"location"`
-
-	// Immutable. The collection for the Engine.
-	// +required
-	Collection string `json:"collection"`
-
-	// Immutable.
-	// The DiscoveryEngineChatEngine name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
 }
 
 // DiscoveryEngineEngineStatus defines the config connector machine state of DiscoveryEngineEngine
@@ -105,6 +128,20 @@ type DiscoveryEngineEngineStatus struct {
 // DiscoveryEngineEngineObservedState is the state of the DiscoveryEngineEngine resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1.Engine
 type DiscoveryEngineEngineObservedState struct {
+	// Output only. Additional information of the Chat Engine. Only applicable
+	//  if [solution_type][google.cloud.discoveryengine.v1.Engine.solution_type]
+	//  is
+	//  [SOLUTION_TYPE_CHAT][google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_CHAT].
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.chat_engine_metadata
+	ChatEngineMetadata *Engine_ChatEngineMetadata `json:"chatEngineMetadata,omitempty"`
+
+	// Output only. Timestamp the Recommendation Engine was created at.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Timestamp the Recommendation Engine was last updated.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1.Engine.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient

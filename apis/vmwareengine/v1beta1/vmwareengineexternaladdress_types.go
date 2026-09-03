@@ -15,6 +15,7 @@
 package v1beta1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -24,13 +25,19 @@ var VMwareEngineExternalAddressGVK = GroupVersion.WithKind("VMwareEngineExternal
 // VMwareEngineExternalAddressSpec defines the desired state of VMwareEngineExternalAddress
 // +kcc:spec:proto=google.cloud.vmwareengine.v1.ExternalAddress
 type VMwareEngineExternalAddressSpec struct {
-	// The VMwareEngineExternalAddress name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// Required. The resource name of the private cloud to create a new external IP address in.
-	// +required
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/privateClouds/{private_cloud}/externalAddresses/{external_address}
+	Location *string `json:"location,omitempty"`
+
+	// The PrivateCloud that this resource belongs to.
+	// +kcc:guess=parent-ref target=PrivateCloudRef pattern=projects/{project}/locations/{location}/privateClouds/{private_cloud}/externalAddresses/{external_address}
 	PrivateCloudRef *PrivateCloudRef `json:"privateCloudRef,omitempty"`
 
+	// The VMwareEngineExternalAddress name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// The internal IP address of a workload VM.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAddress.internal_ip
 	InternalIP *string `json:"internalIP,omitempty"`
@@ -59,15 +66,6 @@ type VMwareEngineExternalAddressStatus struct {
 // VMwareEngineExternalAddressObservedState is the state of the VMwareEngineExternalAddress resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.vmwareengine.v1.ExternalAddress
 type VMwareEngineExternalAddressObservedState struct {
-	// Output only. The resource name of this external IP address.
-	//  Resource names are schemeless URIs that follow the conventions in
-	//  https://cloud.google.com/apis/design/resource_names.
-	//  For example:
-	//  `projects/my-project/locations/us-central1-a/privateClouds/my-cloud/externalAddresses/my-address`
-	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAddress.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. Creation time of this resource.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAddress.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -86,12 +84,12 @@ type VMwareEngineExternalAddressObservedState struct {
 
 	// Output only. System-generated unique identifier for the resource.
 	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAddress.uid
-	UID *string `json:"uid,omitempty"`
+	Uid *string `json:"uid,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:resource:categories=gcp,shortName=gcpvmwareengineexternaladdress;gcpvmwareengineexternaladdresses
+// +kubebuilder:resource:categories=gcp,shortName=gcpvmwareengineexternaladdress;gcpvmwareengineexternaladdresss
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
@@ -99,8 +97,6 @@ type VMwareEngineExternalAddressObservedState struct {
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
 // +kubebuilder:printcolumn:name="Status Age",JSONPath=".status.conditions[?(@.type=='Ready')].lastTransitionTime",type="date",description="The last transition time for the value in 'Status'"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
-// +kubebuilder:storageversion
 
 // VMwareEngineExternalAddress is the Schema for the VMwareEngineExternalAddress API
 // +k8s:openapi-gen=true

@@ -70,12 +70,8 @@ func ComposerEnvironmentObservedState_FromProto(mapCtx *direct.MapContext, in *p
 	out := &krm.ComposerEnvironmentObservedState{}
 	// MISSING: Name
 	out.Config = EnvironmentConfigObservedState_FromProto(mapCtx, in.GetConfig())
-	out.Uuid = direct.LazyPtr(in.GetUuid())
-	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
+	out.SatisfiesPzs = direct.LazyPtr(in.GetSatisfiesPzs())
+	out.SatisfiesPzi = direct.LazyPtr(in.GetSatisfiesPzi())
 	return out
 }
 func ComposerEnvironmentObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ComposerEnvironmentObservedState) *pb.Environment {
@@ -85,12 +81,8 @@ func ComposerEnvironmentObservedState_ToProto(mapCtx *direct.MapContext, in *krm
 	out := &pb.Environment{}
 	// MISSING: Name
 	out.Config = EnvironmentConfigObservedState_ToProto(mapCtx, in.Config)
-	out.Uuid = direct.ValueOf(in.Uuid)
-	out.State = direct.Enum_ToProto[pb.Environment_State](mapCtx, in.State)
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
+	out.SatisfiesPzs = direct.ValueOf(in.SatisfiesPzs)
+	out.SatisfiesPzi = direct.ValueOf(in.SatisfiesPzi)
 	return out
 }
 func ComposerEnvironmentSpec_FromProto(mapCtx *direct.MapContext, in *pb.Environment) *krm.ComposerEnvironmentSpec {
@@ -100,9 +92,11 @@ func ComposerEnvironmentSpec_FromProto(mapCtx *direct.MapContext, in *pb.Environ
 	out := &krm.ComposerEnvironmentSpec{}
 	// MISSING: Name
 	out.Config = EnvironmentConfig_FromProto(mapCtx, in.GetConfig())
+	out.Uuid = direct.LazyPtr(in.GetUuid())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.Labels = in.Labels
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
 	out.StorageConfig = StorageConfig_FromProto(mapCtx, in.GetStorageConfig())
 	return out
 }
@@ -113,9 +107,11 @@ func ComposerEnvironmentSpec_ToProto(mapCtx *direct.MapContext, in *krm.Composer
 	out := &pb.Environment{}
 	// MISSING: Name
 	out.Config = EnvironmentConfig_ToProto(mapCtx, in.Config)
+	out.Uuid = direct.ValueOf(in.Uuid)
+	out.State = direct.Enum_ToProto[pb.Environment_State](mapCtx, in.State)
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.Labels = in.Labels
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
 	out.StorageConfig = StorageConfig_ToProto(mapCtx, in.StorageConfig)
 	return out
 }
@@ -160,8 +156,8 @@ func EnvironmentConfig_FromProto(mapCtx *direct.MapContext, in *pb.EnvironmentCo
 		return nil
 	}
 	out := &krm.EnvironmentConfig{}
-	// MISSING: GKECluster
-	// MISSING: DagGCSPrefix
+	out.GKECluster = direct.LazyPtr(in.GetGkeCluster())
+	out.DagGCSPrefix = direct.LazyPtr(in.GetDagGcsPrefix())
 	out.NodeCount = direct.LazyPtr(in.GetNodeCount())
 	out.SoftwareConfig = SoftwareConfig_FromProto(mapCtx, in.GetSoftwareConfig())
 	out.NodeConfig = NodeConfig_FromProto(mapCtx, in.GetNodeConfig())
@@ -173,7 +169,7 @@ func EnvironmentConfig_FromProto(mapCtx *direct.MapContext, in *pb.EnvironmentCo
 	out.MaintenanceWindow = MaintenanceWindow_FromProto(mapCtx, in.GetMaintenanceWindow())
 	out.WorkloadsConfig = WorkloadsConfig_FromProto(mapCtx, in.GetWorkloadsConfig())
 	out.EnvironmentSize = direct.Enum_FromProto(mapCtx, in.GetEnvironmentSize())
-	// MISSING: AirflowURI
+	out.AirflowURI = direct.LazyPtr(in.GetAirflowUri())
 	// MISSING: AirflowBYOIDURI
 	out.MasterAuthorizedNetworksConfig = MasterAuthorizedNetworksConfig_FromProto(mapCtx, in.GetMasterAuthorizedNetworksConfig())
 	out.RecoveryConfig = RecoveryConfig_FromProto(mapCtx, in.GetRecoveryConfig())
@@ -186,8 +182,8 @@ func EnvironmentConfig_ToProto(mapCtx *direct.MapContext, in *krm.EnvironmentCon
 		return nil
 	}
 	out := &pb.EnvironmentConfig{}
-	// MISSING: GKECluster
-	// MISSING: DagGCSPrefix
+	out.GkeCluster = direct.ValueOf(in.GKECluster)
+	out.DagGcsPrefix = direct.ValueOf(in.DagGCSPrefix)
 	out.NodeCount = direct.ValueOf(in.NodeCount)
 	out.SoftwareConfig = SoftwareConfig_ToProto(mapCtx, in.SoftwareConfig)
 	out.NodeConfig = NodeConfig_ToProto(mapCtx, in.NodeConfig)
@@ -199,7 +195,7 @@ func EnvironmentConfig_ToProto(mapCtx *direct.MapContext, in *krm.EnvironmentCon
 	out.MaintenanceWindow = MaintenanceWindow_ToProto(mapCtx, in.MaintenanceWindow)
 	out.WorkloadsConfig = WorkloadsConfig_ToProto(mapCtx, in.WorkloadsConfig)
 	out.EnvironmentSize = direct.Enum_ToProto[pb.EnvironmentConfig_EnvironmentSize](mapCtx, in.EnvironmentSize)
-	// MISSING: AirflowURI
+	out.AirflowUri = direct.ValueOf(in.AirflowURI)
 	// MISSING: AirflowBYOIDURI
 	out.MasterAuthorizedNetworksConfig = MasterAuthorizedNetworksConfig_ToProto(mapCtx, in.MasterAuthorizedNetworksConfig)
 	out.RecoveryConfig = RecoveryConfig_ToProto(mapCtx, in.RecoveryConfig)
@@ -212,8 +208,8 @@ func EnvironmentConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.
 		return nil
 	}
 	out := &krm.EnvironmentConfigObservedState{}
-	out.GKECluster = direct.LazyPtr(in.GetGkeCluster())
-	out.DagGCSPrefix = direct.LazyPtr(in.GetDagGcsPrefix())
+	// MISSING: GKECluster
+	// MISSING: DagGCSPrefix
 	// MISSING: NodeCount
 	// MISSING: SoftwareConfig
 	// MISSING: NodeConfig
@@ -225,7 +221,7 @@ func EnvironmentConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.
 	// MISSING: MaintenanceWindow
 	// MISSING: WorkloadsConfig
 	// MISSING: EnvironmentSize
-	out.AirflowURI = direct.LazyPtr(in.GetAirflowUri())
+	// MISSING: AirflowURI
 	out.AirflowBYOIDURI = direct.LazyPtr(in.GetAirflowByoidUri())
 	// MISSING: MasterAuthorizedNetworksConfig
 	// MISSING: RecoveryConfig
@@ -238,8 +234,8 @@ func EnvironmentConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.E
 		return nil
 	}
 	out := &pb.EnvironmentConfig{}
-	out.GkeCluster = direct.ValueOf(in.GKECluster)
-	out.DagGcsPrefix = direct.ValueOf(in.DagGCSPrefix)
+	// MISSING: GKECluster
+	// MISSING: DagGCSPrefix
 	// MISSING: NodeCount
 	// MISSING: SoftwareConfig
 	// MISSING: NodeConfig
@@ -251,7 +247,7 @@ func EnvironmentConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.E
 	// MISSING: MaintenanceWindow
 	// MISSING: WorkloadsConfig
 	// MISSING: EnvironmentSize
-	out.AirflowUri = direct.ValueOf(in.AirflowURI)
+	// MISSING: AirflowURI
 	out.AirflowByoidUri = direct.ValueOf(in.AirflowBYOIDURI)
 	// MISSING: MasterAuthorizedNetworksConfig
 	// MISSING: RecoveryConfig

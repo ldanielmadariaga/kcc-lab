@@ -15,8 +15,7 @@
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
-	service "github.com/GoogleCloudPlatform/k8s-config-connector/apis/servicedirectory/v1alpha1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -26,33 +25,30 @@ var NetworkServicesServiceBindingGVK = GroupVersion.WithKind("NetworkServicesSer
 // NetworkServicesServiceBindingSpec defines the desired state of NetworkServicesServiceBinding
 // +kcc:spec:proto=google.cloud.networkservices.v1.ServiceBinding
 type NetworkServicesServiceBindingSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/serviceBindings/{service_binding}
+	Location *string `json:"location"`
+
+	// The NetworkServicesServiceBinding name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Optional. A free-text description of the resource. Max length 1024
 	//  characters.
 	// +kcc:proto:field=google.cloud.networkservices.v1.ServiceBinding.description
 	Description *string `json:"description,omitempty"`
 
-	// Required. The full service directory service name of the format
-	//  /projects/*/locations/*/namespaces/*/services/*
+	// Optional. The full Service Directory Service name of the format
+	//  `projects/*/locations/*/namespaces/*/services/*`.
+	//  This field is for Service Directory integration which will be deprecated
+	//  soon.
 	// +kcc:proto:field=google.cloud.networkservices.v1.ServiceBinding.service
-	ServiceRef *service.ServiceDirectoryServiceRef `json:"serviceRef,omitempty"`
+	Service *string `json:"service,omitempty"`
 
 	// Optional. Set of label tags associated with the ServiceBinding resource.
 	// +kcc:proto:field=google.cloud.networkservices.v1.ServiceBinding.labels
 	Labels map[string]string `json:"labels,omitempty"`
-
-	*Parent `json:",inline"`
-
-	// The NetworkServicesServiceBinding name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
-}
-
-type Parent struct {
-	// Required. The location of the application.
-	Location string `json:"location,omitempty"`
-
-	// Required. The host project of the application.
-	ProjectRef *v1beta1.ProjectRef `json:"projectRef,omitempty"`
 }
 
 // NetworkServicesServiceBindingStatus defines the config connector machine state of NetworkServicesServiceBinding
@@ -81,11 +77,18 @@ type NetworkServicesServiceBindingObservedState struct {
 	// Output only. The timestamp when the resource was updated.
 	// +kcc:proto:field=google.cloud.networkservices.v1.ServiceBinding.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The unique identifier of the Service Directory Service against
+	//  which the ServiceBinding resource is validated. This is populated when the
+	//  Service Binding resource is used in another resource (like Backend
+	//  Service). This is of the UUID4 format. This field is for Service Directory
+	//  integration which will be deprecated soon.
+	// +kcc:proto:field=google.cloud.networkservices.v1.ServiceBinding.service_id
+	ServiceID *string `json:"serviceID,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// TODO(user): make sure the pluralizaiton below is correct
 // +kubebuilder:resource:categories=gcp,shortName=gcpnetworkservicesservicebinding;gcpnetworkservicesservicebindings
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"

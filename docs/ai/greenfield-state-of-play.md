@@ -18,27 +18,41 @@ Three things had to hold first, and this page reports on each:
 
 ## 1. Coverage — met
 
-All 231 in-scope resources generate both a types file and a CRD. Measured against baseline
-`c1df0b9326`:
+The corpus is 275 resources, derived by `hack/tools/greenfield/build_inscope.py` rather than
+maintained by hand. Measured against baseline `c1df0b9326`:
 
 ```
-  1. implemented                      10232   (94.2%)
-  2. flagged                            319   (2.9%)
-        named in needs_judgement_call.txt               319
-        ...and also in the types file                    22
-  3. missed                             306   (2.8%)
-        truly missed                     123   (1.1%)   we produce nothing at all
-        emitted, wrong section            30   (0.3%)   spec vs status.observedState
-        emitted as a plain string         17   (0.2%)   upstream references it, we did not
-        emitted, renamed or reshaped     102   (0.9%)   present, different name or shape
-        reference, name unpairable        34   (0.3%)   queue likely names it, unprovable
+  1. implemented                      13195   (94.3%)   same field, same path
+  2. discrepancy                        445   (3.2%)    we produce it, but not as upstream has it
+        flagged for a second pass         315   (71%)
+        nothing says so                   130
+  3. missing                            357   (2.6%)    we produce nothing at all
+        a gap to close                    295
+        we model it differently on purpose 62
+        flagged for a second pass          48   (13%)
 ```
 
-**123 is the gap.** Everything else under `missed` is a field we do produce, in a different section,
-shape or name. Those still break a user's YAML and still need work, but the work is detection or
-placement, not generation — and a headline that lumps them together sends people to build generation
-for fields the types file already carries. It did exactly that until recently: `truly missed` read
-232, and about a third of it was fields sitting in the types file all along.
+The split is on what we produced, not on whether we mentioned it, and the two are close to
+independent: seven in ten discrepancies carry a judgement-queue entry against one in eight of the
+absences.
+
+295 is the number to drive down. It was 603 a day earlier, and the difference was configuration
+rather than generation: 42 of the 275 were emitting 13-field scaffolds because the `generate-types`
+invocation declaring them never passed `--prepopulate-spec`. The flag is set per invocation, and a
+`generate.sh` can hold several — `compute` had it on one and not on the one declaring 47 kinds — so
+a per-service check found only 22 of the 42. Enabling it on 31 invocations moved `implemented` by
+2,229 fields.
+
+The baseline count moves with it, 12,000 to 13,997, which is worth understanding rather than
+glossing. A resource that generates real fields exposes more of the baseline to comparison than a
+stub does, because with a stub most of upstream's tree collapses into a handful of missing-parent
+defects.
+
+**Two health warnings on this number.** 12 resources have stale CRDs: their types regenerated but
+`controller-gen` then failed for the service, so the published CRD is the previous one. And this
+counts a missing subtree as one defect rather than as its fields, which is the right unit for a work
+list but is not field coverage — see
+[greenfield-coverage-invariant.md](greenfield-coverage-invariant.md).
 
 Run it with `hack/tools/greenfield/silence_report.py`; see
 [greenfield-coverage-invariant.md](greenfield-coverage-invariant.md) for what each state means, and
@@ -49,7 +63,7 @@ than 231, because 42 generated nothing at all; every absolute number moved with 
 
 ## 2. Flagging — met, and enforced
 
-295 `+kcc:guess` markers, **every one with a judgement-queue entry**, checked by
+348 `+kcc:guess` markers, **every one with a judgement-queue entry**, checked by
 `hack/tools/greenfield/check_guess_entries.py` as the last step of `dev/tasks/greenfield-regenerate`.
 
 The rule is: anything the generator marks as a guess needs a human, so it belongs in the queue —
@@ -143,6 +157,8 @@ comparison is the method that transfers.
 
 ## Related
 
+* [greenfield-model-comparison.md](greenfield-model-comparison.md) — this experiment against the
+  parallel Gemini attempt, compared on the 267 resources both measured
 * [greenfield-branch-inventory.md](greenfield-branch-inventory.md) — what every branch and PR
   is, what is superseded, and the one branch waiting on a decision
 * [greenfield-experiment-report.md](greenfield-experiment-report.md) — the write-up for leads: what

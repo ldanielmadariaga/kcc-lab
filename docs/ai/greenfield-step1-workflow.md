@@ -169,11 +169,15 @@ silent.** A field a human must decide is a fine outcome; a field nobody was told
 measure it — `hack/tools/greenfield/silence_report.py` compares every field of every baseline CRD
 against ours and reports implemented / flagged / missed.
 
-Read the `missed` breakdown rather than the total. Only its first line, **truly missed**, is a field
-we produce nowhere; the lines under it are fields we do produce, in the wrong section or as a plain
-string where upstream has a reference. Those need detection or placement work, not generation, and
-treating them as one number sends people to write generators for fields the types file already
-carries.
+The three states split on **what we produced**, not on whether we mentioned it. `discrepancy` is a
+field we do emit, in the wrong section or under a different name or as a plain string where upstream
+has a reference object; it needs detecting or moving. `missing` is a field we emit nowhere, and only
+that one needs generating. Flagging is reported against both rather than being a state of its own,
+because the two axes are close to independent: three quarters of discrepancies carry a queue entry
+against one in seven of absences.
+
+Within `missing`, read `a gap to close` rather than the total. The rest is the `google.protobuf.Value`
+union arms, which we map whole to `apiextensionsv1.JSON` on purpose.
 
 ## Stage 2b — Seed the queue with hints
 

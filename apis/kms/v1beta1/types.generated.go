@@ -25,8 +25,7 @@
 
 package v1beta1
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.AutokeyConfig", skipping
-
+/* unreachable type AutokeyConfig
 // +kcc:proto=google.cloud.kms.v1.AutokeyConfig
 type AutokeyConfig struct {
 	// Identifier. Name of the [AutokeyConfig][google.cloud.kms.v1.AutokeyConfig]
@@ -195,6 +194,7 @@ type CryptoKeyVersionTemplate struct {
 	//  [CryptoKey.purpose][google.cloud.kms.v1.CryptoKey.purpose] is
 	//  [ENCRYPT_DECRYPT][google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose.ENCRYPT_DECRYPT].
 	// +kcc:proto:field=google.cloud.kms.v1.CryptoKeyVersionTemplate.algorithm
+	// +required
 	Algorithm *string `json:"algorithm,omitempty"`
 }
 */
@@ -216,14 +216,14 @@ type ExternalProtectionLevelOptions struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.ImportJob", skipping
-
+/* unreachable type ImportJob
 // +kcc:proto=google.cloud.kms.v1.ImportJob
 type ImportJob struct {
 
 	// Required. Immutable. The wrapping method to be used for incoming key
 	//  material.
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.import_method
+	// +required
 	ImportMethod *string `json:"importMethod,omitempty"`
 
 	// Required. Immutable. The protection level of the
@@ -233,11 +233,10 @@ type ImportJob struct {
 	//  on the [CryptoKey][google.cloud.kms.v1.CryptoKey] you attempt to import
 	//  into.
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.protection_level
+	// +required
 	ProtectionLevel *string `json:"protectionLevel,omitempty"`
 }
 */
-
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.ImportJob.WrappingPublicKey", skipping
 
 // +kcc:proto=google.cloud.kms.v1.ImportJob.WrappingPublicKey
 type ImportJob_WrappingPublicKey struct {
@@ -249,7 +248,6 @@ type ImportJob_WrappingPublicKey struct {
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.WrappingPublicKey.pem
 	Pem *string `json:"pem,omitempty"`
 }
-*/
 
 /* unreachable type KeyAccessJustificationsPolicy
 // +kcc:proto=google.cloud.kms.v1.KeyAccessJustificationsPolicy
@@ -264,8 +262,7 @@ type KeyAccessJustificationsPolicy struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.KeyHandle", skipping
-
+/* unreachable type KeyHandle
 // +kcc:proto=google.cloud.kms.v1.KeyHandle
 type KeyHandle struct {
 	// Identifier. Name of the [KeyHandle][google.cloud.kms.v1.KeyHandle]
@@ -279,6 +276,7 @@ type KeyHandle struct {
 	//  `{SERVICE}.googleapis.com/{TYPE}`. See documentation for supported resource
 	//  types.
 	// +kcc:proto:field=google.cloud.kms.v1.KeyHandle.resource_type_selector
+	// +required
 	ResourceTypeSelector *string `json:"resourceTypeSelector,omitempty"`
 }
 */
@@ -311,8 +309,7 @@ type KeyRing struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.AutokeyConfig", skipping
-
+/* unreachable type AutokeyConfigObservedState
 // +kcc:observedstate:proto=google.cloud.kms.v1.AutokeyConfig
 type AutokeyConfigObservedState struct {
 	// Output only. The state for the AutokeyConfig.
@@ -464,13 +461,12 @@ type CryptoKeyVersionObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.ImportJob", skipping
-
+/* unreachable type ImportJobObservedState
 // +kcc:observedstate:proto=google.cloud.kms.v1.ImportJob
 type ImportJobObservedState struct {
 	// Output only. The resource name for this
 	//  [ImportJob][google.cloud.kms.v1.ImportJob] in the format
-	//  `projects/* /locations/* /keyRings/* /importJobs/*`.
+	//  `projects/-*-/locations/-*-/keyRings/-*-/importJobs/-*`.
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.name
 	Name *string `json:"name,omitempty"`
 
@@ -518,8 +514,7 @@ type ImportJobObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.kms.v1.KeyHandle", skipping
-
+/* unreachable type KeyHandleObservedState
 // +kcc:observedstate:proto=google.cloud.kms.v1.KeyHandle
 type KeyHandleObservedState struct {
 	// Output only. Name of a [CryptoKey][google.cloud.kms.v1.CryptoKey] that has

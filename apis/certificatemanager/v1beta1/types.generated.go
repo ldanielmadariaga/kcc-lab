@@ -184,13 +184,12 @@ type CertificateMapEntry struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.certificatemanager.v1.DnsAuthorization", skipping
-
+/* unreachable type DNSAuthorization
 // +kcc:proto=google.cloud.certificatemanager.v1.DnsAuthorization
 type DNSAuthorization struct {
 	// A user-defined name of the dns authorization. DnsAuthorization names must
 	//  be unique globally and match pattern
-	//  `projects/* /locations/* /dnsAuthorizations/*`.
+	//  `projects/-*-/locations/-*-/dnsAuthorizations/-*`.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.DnsAuthorization.name
 	Name *string `json:"name,omitempty"`
 
@@ -207,6 +206,7 @@ type DNSAuthorization struct {
 	//  `example.com` can be used to issue certificates for `example.com` and
 	//  `*.example.com`.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.DnsAuthorization.domain
+	// +required
 	Domain *string `json:"domain,omitempty"`
 
 	// Immutable. Type of DnsAuthorization. If unset during resource creation the
@@ -392,8 +392,7 @@ type CertificateMapEntryObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.certificatemanager.v1.DnsAuthorization", skipping
-
+/* unreachable type DNSAuthorizationObservedState
 // +kcc:observedstate:proto=google.cloud.certificatemanager.v1.DnsAuthorization
 type DNSAuthorizationObservedState struct {
 	// Output only. The creation timestamp of a DnsAuthorization.

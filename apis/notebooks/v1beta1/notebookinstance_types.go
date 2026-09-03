@@ -15,9 +15,7 @@
 package v1beta1
 
 import (
-	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
-	computev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,9 +23,13 @@ import (
 var NotebookInstanceGVK = GroupVersion.WithKind("NotebookInstance")
 
 // NotebookInstanceSpec defines the desired state of NotebookInstance
-// +kcc:proto=google.cloud.notebooks.v1.Instance
+// +kcc:spec:proto=google.cloud.notebooks.v1.Instance
 type NotebookInstanceSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The NotebookInstance name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Use a Compute Engine VM image to start the notebook instance.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.vm_image
 	VMImage *VMImage `json:"vmImage,omitempty"`
@@ -59,7 +61,7 @@ type NotebookInstanceSpec struct {
 	//  account](https://cloud.google.com/compute/docs/access/service-accounts#default_service_account)
 	//  is used.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.service_account
-	ServiceAccountRef *v1beta1.IAMServiceAccountRef `json:"serviceAccountRef,omitempty"`
+	ServiceAccount *string `json:"serviceAccount,omitempty"`
 
 	// Optional. The URIs of service account scopes to be included in
 	//  Compute Engine instances.
@@ -77,8 +79,8 @@ type NotebookInstanceSpec struct {
 	// Required. The [Compute Engine machine
 	//  type](https://cloud.google.com/compute/docs/machine-types) of this
 	//  instance.
-	// +required.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.machine_type
+	// +required
 	MachineType *string `json:"machineType,omitempty"`
 
 	// The hardware accelerator used on this instance. If you use
@@ -132,9 +134,12 @@ type NotebookInstanceSpec struct {
 
 	// Input only. The KMS key used to encrypt the disks, only applicable if disk_encryption
 	//  is CMEK.
+	//  Format:
+	//  `projects/{project_id}/locations/{location}/keyRings/{key_ring_id}/cryptoKeys/{key_id}`
+	//
 	//  Learn more about [using your own encryption keys](/kms/docs/quickstart).
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.kms_key
-	KMSKeyRef *v1beta1.KMSCryptoKeyRef `json:"kmsKeyRef,omitempty"`
+	KMSKey *string `json:"kmsKey,omitempty"`
 
 	// Optional. Shielded VM configuration.
 	//  [Images using supported Shielded VM
@@ -151,12 +156,16 @@ type NotebookInstanceSpec struct {
 	NoProxyAccess *bool `json:"noProxyAccess,omitempty"`
 
 	// The name of the VPC that this instance is in.
+	//  Format:
+	//  `projects/{project_id}/global/networks/{network_id}`
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.network
-	NetworkRef *computerefs.ComputeNetworkRef `json:"networkRef,omitempty"`
+	Network *string `json:"network,omitempty"`
 
 	// The name of the subnet that this instance is in.
+	//  Format:
+	//  `projects/{project_id}/regions/{region}/subnetworks/{subnetwork_id}`
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.subnet
-	SubnetRef *computev1beta1.ComputeSubnetworkRef `json:"subnetRef,omitempty"`
+	Subnet *string `json:"subnet,omitempty"`
 
 	// Labels to apply to this instance.
 	//  These can be later modified by the setLabels method.
@@ -192,17 +201,6 @@ type NotebookInstanceSpec struct {
 	//  https://cloud.google.com/vpc/docs/using-routes#canipforward
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.can_ip_forward
 	CanIPForward *bool `json:"canIPForward,omitempty"`
-
-	// Immutable. The location where the notebook instance should reside.
-	// +required
-	Zone string `json:"zone,omitempty"`
-
-	// The project that this resource belongs to.
-	// +required
-	ProjectRef *v1beta1.ProjectRef `json:"projectRef,omitempty"`
-
-	// The NotebookInstance name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
 }
 
 // NotebookInstanceStatus defines the config connector machine state of NotebookInstance
@@ -222,9 +220,8 @@ type NotebookInstanceStatus struct {
 }
 
 // NotebookInstanceObservedState is the state of the NotebookInstance resource as most recently observed in GCP.
-// +kcc:proto=google.cloud.notebooks.v1.Instance
+// +kcc:observedstate:proto=google.cloud.notebooks.v1.Instance
 type NotebookInstanceObservedState struct {
-
 	// Output only. The proxy endpoint that is used to access the Jupyter notebook.
 	// +kcc:proto:field=google.cloud.notebooks.v1.Instance.proxy_uri
 	ProxyURI *string `json:"proxyURI,omitempty"`
@@ -263,8 +260,6 @@ type NotebookInstanceObservedState struct {
 
 // NotebookInstance is the Schema for the NotebookInstance API
 // +k8s:openapi-gen=true
-// +kubebuilder:storageversion
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 type NotebookInstance struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

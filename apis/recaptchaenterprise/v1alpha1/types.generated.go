@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -89,8 +89,7 @@ type FirewallAction_SubstituteAction struct {
 	Path *string `json:"path,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.recaptchaenterprise.v1.FirewallPolicy", skipping
-
+/* unreachable type FirewallPolicy
 // +kcc:proto=google.cloud.recaptchaenterprise.v1.FirewallPolicy
 type FirewallPolicy struct {
 	// Identifier. The resource name for the FirewallPolicy in the format

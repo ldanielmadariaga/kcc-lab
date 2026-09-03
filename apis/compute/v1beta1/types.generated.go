@@ -135,6 +135,7 @@ type AccessConfig struct {
 	PublicPtrDomainName *string `json:"publicPtrDomainName,omitempty"`
 
 	// The resource URL for the security policy associated with this access config.
+	// +kcc:guess=possible-reference target=ComputeSecurityPolicy
 	// +kcc:proto:field=google.cloud.compute.v1.AccessConfig.security_policy
 	SecurityPolicy *string `json:"securityPolicy,omitempty"`
 
@@ -520,6 +521,7 @@ type AttachedDiskInitializeParams struct {
 	ResourceManagerTags map[string]string `json:"resourceManagerTags,omitempty"`
 
 	// Resource policies applied to this disk for automatic snapshot creations. Specified using the full or partial URL. For instance template, specify only the resource policy name.
+	// +kcc:guess=possible-reference target=ComputeResourcePolicy
 	// +kcc:proto:field=google.cloud.compute.v1.AttachedDiskInitializeParams.resource_policies
 	ResourcePolicies []string `json:"resourcePolicies,omitempty"`
 
@@ -1176,6 +1178,7 @@ type BackendServiceHaPolicyLeader struct {
 // +kcc:proto=google.cloud.compute.v1.BackendServiceHAPolicyLeaderNetworkEndpoint
 type BackendServiceHaPolicyLeaderNetworkEndpoint struct {
 	// The name of the VM instance of the leader network endpoint. The instance must already be attached to the NEG specified in the haPolicy.leader.backendGroup. The name must be 1-63 characters long, and comply with RFC1035. Authorization requires the following IAM permission on the specified resource instance: compute.instances.use
+	// +kcc:guess=possible-reference target=ComputeInstance
 	// +kcc:proto:field=google.cloud.compute.v1.BackendServiceHAPolicyLeaderNetworkEndpoint.instance
 	Instance *string `json:"instance,omitempty"`
 }
@@ -1947,8 +1950,7 @@ type FirewallPolicyAssociation struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.FirewallPolicyRule", skipping
-
+/* unreachable type FirewallPolicyRule
 // +kcc:proto=google.cloud.compute.v1.FirewallPolicyRule
 type FirewallPolicyRule struct {
 	// The Action to perform when the client connection triggers the rule. Valid actions for firewall rules are: "allow", "deny", "apply_security_profile_group" and "goto_next". Valid actions for packet mirroring rules are: "mirror", "do_not_mirror" and "goto_next".
@@ -2014,8 +2016,6 @@ type FirewallPolicyRule struct {
 }
 */
 
-/* found existing non-generated go type "FirewallPolicyRuleMatcher", skipping
-
 // +kcc:proto=google.cloud.compute.v1.FirewallPolicyRuleMatcher
 type FirewallPolicyRuleMatcher struct {
 	// Address groups which should be matched against the traffic destination. Maximum number of destination address groups is 10.
@@ -2024,7 +2024,7 @@ type FirewallPolicyRuleMatcher struct {
 
 	// Fully Qualified Domain Name (FQDN) which should be matched against traffic destination. Maximum number of destination fqdn allowed is 100.
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.dest_fqdns
-	DestFqdns []string `json:"destFqdns,omitempty"`
+	DestFQDNs []string `json:"destFQDNs,omitempty"`
 
 	// CIDR IP address range. Maximum number of destination CIDR IP ranges allowed is 5000.
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.dest_ip_ranges
@@ -2053,7 +2053,7 @@ type FirewallPolicyRuleMatcher struct {
 
 	// Fully Qualified Domain Name (FQDN) which should be matched against traffic source. Maximum number of source fqdn allowed is 100.
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.src_fqdns
-	SrcFqdns []string `json:"srcFqdns,omitempty"`
+	SrcFQDNs []string `json:"srcFQDNs,omitempty"`
 
 	// CIDR IP address range. Maximum number of source CIDR IP ranges allowed is 5000.
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.src_ip_ranges
@@ -2080,9 +2080,6 @@ type FirewallPolicyRuleMatcher struct {
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcher.src_threat_intelligences
 	SrcThreatIntelligences []string `json:"srcThreatIntelligences,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "FirewallPolicyRuleMatcherLayer4Config", skipping
 
 // +kcc:proto=google.cloud.compute.v1.FirewallPolicyRuleMatcherLayer4Config
 type FirewallPolicyRuleMatcherLayer4Config struct {
@@ -2094,9 +2091,7 @@ type FirewallPolicyRuleMatcherLayer4Config struct {
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleMatcherLayer4Config.ports
 	Ports []string `json:"ports,omitempty"`
 }
-*/
 
-/* unreachable type FirewallPolicyRuleSecureTag
 // +kcc:proto=google.cloud.compute.v1.FirewallPolicyRuleSecureTag
 type FirewallPolicyRuleSecureTag struct {
 	// Name of the secure tag, created with TagManager's TagValue API.
@@ -2108,7 +2103,6 @@ type FirewallPolicyRuleSecureTag struct {
 	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRuleSecureTag.state
 	State *string `json:"state,omitempty"`
 }
-*/
 
 /* unreachable type FixedOrPercent
 // +kcc:proto=google.cloud.compute.v1.FixedOrPercent
@@ -3519,6 +3513,7 @@ type InstanceGroupManagerAllInstancesConfig struct {
 // +kcc:proto=google.cloud.compute.v1.InstanceGroupManagerAutoHealingPolicy
 type InstanceGroupManagerAutoHealingPolicy struct {
 	// The URL for the health check that signals autohealing.
+	// +kcc:guess=possible-reference target=ComputeHealthCheck
 	// +kcc:proto:field=google.cloud.compute.v1.InstanceGroupManagerAutoHealingPolicy.health_check
 	HealthCheck *string `json:"healthCheck,omitempty"`
 
@@ -3531,9 +3526,9 @@ type InstanceGroupManagerAutoHealingPolicy struct {
 /* unreachable type InstanceGroupManagerInstanceFlexibilityPolicy
 // +kcc:proto=google.cloud.compute.v1.InstanceGroupManagerInstanceFlexibilityPolicy
 type InstanceGroupManagerInstanceFlexibilityPolicy struct {
-
-	// TODO: unsupported map type with key string and value message
-
+	// Named instance selections configuring properties that the group will use when creating new VMs.
+	// +kcc:proto:field=google.cloud.compute.v1.InstanceGroupManagerInstanceFlexibilityPolicy.instance_selections
+	InstanceSelections map[string]InstanceGroupManagerInstanceFlexibilityPolicyInstanceSelection `json:"instanceSelections,omitempty"`
 }
 */
 
@@ -4348,6 +4343,7 @@ type NetworkInterface struct {
 	Name *string `json:"name,omitempty"`
 
 	// URL of the VPC network resource for this instance. When creating an instance, if neither the network nor the subnetwork is specified, the default network global/networks/default is used. If the selected project doesn't have the default network, you must specify a network or subnet. If the network is not specified but the subnetwork is specified, the network is inferred. If you specify this property, you can specify the network as a full or partial URL. For example, the following are all valid URLs: - https://www.googleapis.com/compute/v1/projects/project/global/networks/ network - projects/project/global/networks/network - global/networks/default
+	// +kcc:guess=possible-reference target=ComputeNetwork
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkInterface.network
 	Network *string `json:"network,omitempty"`
 
@@ -4374,6 +4370,7 @@ type NetworkInterface struct {
 	StackType *string `json:"stackType,omitempty"`
 
 	// The URL of the Subnetwork resource for this instance. If the network resource is in legacy mode, do not specify this field. If the network is in auto subnet mode, specifying the subnetwork is optional. If the network is in custom subnet mode, specifying the subnetwork is required. If you specify this field, you can specify the subnetwork as a full or partial URL. For example, the following are all valid URLs: - https://www.googleapis.com/compute/v1/projects/project/regions/region /subnetworks/subnetwork - regions/region/subnetworks/subnetwork
+	// +kcc:guess=possible-reference target=ComputeSubnetwork
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkInterface.subnetwork
 	Subnetwork *string `json:"subnetwork,omitempty"`
 }
@@ -4736,7 +4733,7 @@ type NodeTemplate struct {
 // +kcc:proto=google.cloud.compute.v1.NodeTemplateNodeTypeFlexibility
 type NodeTemplateNodeTypeFlexibility struct {
 	// +kcc:proto:field=google.cloud.compute.v1.NodeTemplateNodeTypeFlexibility.cpus
-	Cpus *string `json:"cpus,omitempty"`
+	CPUs *string `json:"cpus,omitempty"`
 
 	// +kcc:proto:field=google.cloud.compute.v1.NodeTemplateNodeTypeFlexibility.local_ssd
 	LocalSsd *string `json:"localSsd,omitempty"`
@@ -5711,7 +5708,7 @@ type Router struct {
 
 	// A list of NAT services created in this router.
 	// +kcc:proto:field=google.cloud.compute.v1.Router.nats
-	Nats []RouterNAT `json:"nats,omitempty"`
+	NATs []RouterNAT `json:"nats,omitempty"`
 
 	// URI of the network to which this router belongs.
 	// +kcc:proto:field=google.cloud.compute.v1.Router.network
@@ -5977,7 +5974,7 @@ type RouterNAT struct {
 
 	// A list of URLs of the IP resources to be drained. These IPs must be valid static external IPs that have been assigned to the NAT. These IPs should be used for updating/patching a NAT only.
 	// +kcc:proto:field=google.cloud.compute.v1.RouterNat.drain_nat_ips
-	DrainNATIps []string `json:"drainNATIps,omitempty"`
+	DrainNATIPs []string `json:"drainNATIPs,omitempty"`
 
 	// Enable Dynamic Port Allocation. If not specified, it is disabled by default. If set to true, - Dynamic Port Allocation will be enabled on this NAT config. - enableEndpointIndependentMapping cannot be set to true. - If minPorts is set, minPortsPerVm must be set to a power of two greater than or equal to 32. If minPortsPerVm is not set, a minimum of 32 ports will be allocated to a VM from this NAT config.
 	// +kcc:proto:field=google.cloud.compute.v1.RouterNat.enable_dynamic_port_allocation
@@ -6022,7 +6019,7 @@ type RouterNAT struct {
 
 	// A list of URLs of the IP resources used for this Nat service. These IP addresses must be valid static external IP addresses assigned to the project.
 	// +kcc:proto:field=google.cloud.compute.v1.RouterNat.nat_ips
-	NATIps []string `json:"natIps,omitempty"`
+	NATIPs []string `json:"natIPs,omitempty"`
 
 	// A list of rules associated with this NAT.
 	// +kcc:proto:field=google.cloud.compute.v1.RouterNat.rules
@@ -6105,7 +6102,7 @@ type RouterNATRule struct {
 type RouterNATRuleAction struct {
 	// A list of URLs of the IP resources used for this NAT rule. These IP addresses must be valid static external IP addresses assigned to the project. This field is used for public NAT.
 	// +kcc:proto:field=google.cloud.compute.v1.RouterNatRuleAction.source_nat_active_ips
-	SourceNATActiveIps []string `json:"sourceNATActiveIps,omitempty"`
+	SourceNATActiveIPs []string `json:"sourceNATActiveIPs,omitempty"`
 
 	// A list of URLs of the subnetworks used as source ranges for this NAT Rule. These subnetworks must have purpose set to PRIVATE_NAT. This field is used for private NAT.
 	// +kcc:proto:field=google.cloud.compute.v1.RouterNatRuleAction.source_nat_active_ranges
@@ -6113,7 +6110,7 @@ type RouterNATRuleAction struct {
 
 	// A list of URLs of the IP resources to be drained. These IPs must be valid static external IPs that have been assigned to the NAT. These IPs should be used for updating/patching a NAT rule only. This field is used for public NAT.
 	// +kcc:proto:field=google.cloud.compute.v1.RouterNatRuleAction.source_nat_drain_ips
-	SourceNATDrainIps []string `json:"sourceNATDrainIps,omitempty"`
+	SourceNATDrainIPs []string `json:"sourceNATDrainIPs,omitempty"`
 
 	// A list of URLs of subnetworks representing source ranges to be drained. This is only supported on patch/update, and these subnetworks must have previously been used as active ranges in this NAT Rule. This field is used for private NAT.
 	// +kcc:proto:field=google.cloud.compute.v1.RouterNatRuleAction.source_nat_drain_ranges
@@ -6214,7 +6211,7 @@ type Scheduling struct {
 
 	// The minimum number of virtual CPUs this instance will consume when running on a sole-tenant node.
 	// +kcc:proto:field=google.cloud.compute.v1.Scheduling.min_node_cpus
-	MinNodeCpus *int32 `json:"minNodeCpus,omitempty"`
+	MinNodeCPUs *int32 `json:"minNodeCPUs,omitempty"`
 
 	// A set of node affinity and anti-affinity configurations. Refer to Configuring node affinity for more information. Overrides reservationAffinity.
 	// +kcc:proto:field=google.cloud.compute.v1.Scheduling.node_affinities
@@ -6674,11 +6671,11 @@ type SecurityPolicyRulePreconfiguredWafConfigExclusion struct {
 
 	// A list of request URIs from the request line to be excluded from inspection during preconfigured WAF evaluation. When specifying this field, the query or fragment part should be excluded.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRulePreconfiguredWafConfigExclusion.request_uris_to_exclude
-	RequestUrisToExclude []SecurityPolicyRulePreconfiguredWafConfigExclusionFieldParams `json:"requestUrisToExclude,omitempty"`
+	RequestURIsToExclude []SecurityPolicyRulePreconfiguredWafConfigExclusionFieldParams `json:"requestURIsToExclude,omitempty"`
 
 	// A list of target rule IDs under the WAF rule set to apply the preconfigured WAF exclusion. If omitted, it refers to all the rule IDs under the WAF rule set.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRulePreconfiguredWafConfigExclusion.target_rule_ids
-	TargetRuleIds []string `json:"targetRuleIds,omitempty"`
+	TargetRuleIDs []string `json:"targetRuleIDs,omitempty"`
 
 	// Target WAF rule set to apply the preconfigured WAF exclusion.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRulePreconfiguredWafConfigExclusion.target_rule_set
@@ -6992,9 +6989,9 @@ type ServiceAttachmentConsumerProjectLimit struct {
 
 // +kcc:proto=google.cloud.compute.v1.ShareSettings
 type ShareSettings struct {
-
-	// TODO: unsupported map type with key string and value message
-
+	// A map of project id and project config. This is only valid when share_type's value is SPECIFIC_PROJECTS.
+	// +kcc:proto:field=google.cloud.compute.v1.ShareSettings.project_map
+	ProjectMap map[string]ShareSettingsProjectConfig `json:"projectMap,omitempty"`
 
 	// Type of sharing for this shared-reservation
 	//  Check the ShareType enum for the list of possible values.
@@ -7362,13 +7359,17 @@ type StatefulPolicy struct {
 /* unreachable type StatefulPolicyPreservedState
 // +kcc:proto=google.cloud.compute.v1.StatefulPolicyPreservedState
 type StatefulPolicyPreservedState struct {
+	// Disks created on the instances that will be preserved on instance delete, update, etc. This map is keyed with the device names of the disks.
+	// +kcc:proto:field=google.cloud.compute.v1.StatefulPolicyPreservedState.disks
+	Disks map[string]StatefulPolicyPreservedStateDiskDevice `json:"disks,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// External network IPs assigned to the instances that will be preserved on instance delete, update, etc. This map is keyed with the network interface name.
+	// +kcc:proto:field=google.cloud.compute.v1.StatefulPolicyPreservedState.external_i_ps
+	ExternalIPs map[string]StatefulPolicyPreservedStateNetworkIP `json:"externalIPs,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
-	// TODO: unsupported map type with key string and value message
-
+	// Internal network IPs assigned to the instances that will be preserved on instance delete, update, etc. This map is keyed with the network interface name.
+	// +kcc:proto:field=google.cloud.compute.v1.StatefulPolicyPreservedState.internal_i_ps
+	InternalIPs map[string]StatefulPolicyPreservedStateNetworkIP `json:"internalIPs,omitempty"`
 }
 */
 
@@ -8485,5 +8486,876 @@ type WeightedBackendService struct {
 	// Specifies the fraction of traffic sent to a backend service, computed as weight / (sum of all weightedBackendService weights in routeAction) . The selection of a backend service is determined only for new traffic. Once a user's request has been directed to a backend service, subsequent requests are sent to the same backend service as determined by the backend service's session affinity policy. Don't configure session affinity if you're using weighted traffic splitting. If you do, the weighted traffic splitting configuration takes precedence. The value must be from 0 to 1000.
 	// +kcc:proto:field=google.cloud.compute.v1.WeightedBackendService.weight
 	Weight *uint32 `json:"weight,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.BackendBucket", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.BackendBucket
+type BackendBucketObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.BackendBucket.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] Unique identifier for the resource; defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.BackendBucket.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// Type of the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.BackendBucket.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.BackendBucket.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.BackendService", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.BackendService
+type BackendServiceObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.BackendService.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.BackendService.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of resource. Always compute#backendService for backend services.
+	// +kcc:proto:field=google.cloud.compute.v1.BackendService.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.BackendService.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.ExternalVpnGateway", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.ExternalVpnGateway
+type ExternalVPNGatewayObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.ExternalVpnGateway.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.ExternalVpnGateway.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#externalVpnGateway for externalVpnGateways.
+	// +kcc:proto:field=google.cloud.compute.v1.ExternalVpnGateway.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.ExternalVpnGateway.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Firewall", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.Firewall
+type FirewallObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.Firewall.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.Firewall.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#firewall for firewall rules.
+	// +kcc:proto:field=google.cloud.compute.v1.Firewall.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.Firewall.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.FirewallPolicy", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.FirewallPolicy
+type FirewallPolicyObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicy.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicy.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output only] Type of the resource. Always compute#firewallPolicyfor firewall policies
+	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicy.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+
+	// [Output Only] Server-defined URL for this resource with the resource id.
+	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicy.self_link_with_id
+	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
+}
+*/
+
+/* unreachable type FirewallPolicyRuleObservedState
+// +kcc:observedstate:proto=google.cloud.compute.v1.FirewallPolicyRule
+type FirewallPolicyRuleObservedState struct {
+	// [Output only] Type of the resource. Returns compute#firewallPolicyRule for firewall rules and compute#packetMirroringRule for packet mirroring rules.
+	// +kcc:proto:field=google.cloud.compute.v1.FirewallPolicyRule.kind
+	Kind *string `json:"kind,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.ForwardingRule", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.ForwardingRule
+type ForwardingRuleObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.ForwardingRule.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.ForwardingRule.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#forwardingRule for forwarding rule resources.
+	// +kcc:proto:field=google.cloud.compute.v1.ForwardingRule.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.ForwardingRule.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+
+	// [Output Only] Server-defined URL for this resource with the resource id.
+	// +kcc:proto:field=google.cloud.compute.v1.ForwardingRule.self_link_with_id
+	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.HealthCheck", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.HealthCheck
+type HealthCheckObservedState struct {
+	// [Output Only] Creation timestamp in 3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.HealthCheck.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.HealthCheck.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// Type of the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.HealthCheck.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.HealthCheck.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Image", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.Image
+type ImageObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.Image.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.Image.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#image for images.
+	// +kcc:proto:field=google.cloud.compute.v1.Image.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.Image.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Instance", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.Instance
+type InstanceObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.Instance.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.Instance.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#instance for instances.
+	// +kcc:proto:field=google.cloud.compute.v1.Instance.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for this resource.
+	// +kcc:proto:field=google.cloud.compute.v1.Instance.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.InstanceGroup", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.InstanceGroup
+type InstanceGroupObservedState struct {
+	// [Output Only] The creation timestamp for this instance group in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.InstanceGroup.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] A unique identifier for this instance group, generated by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.InstanceGroup.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] The resource type, which is always compute#instanceGroup for instance groups.
+	// +kcc:proto:field=google.cloud.compute.v1.InstanceGroup.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] The URL for this instance group. The server generates this URL.
+	// +kcc:proto:field=google.cloud.compute.v1.InstanceGroup.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.InstanceGroupManager", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.InstanceGroupManager
+type InstanceGroupManagerObservedState struct {
+	// [Output Only] The creation timestamp for this managed instance group in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.InstanceGroupManager.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] A unique identifier for this resource type. The server generates this identifier.
+	// +kcc:proto:field=google.cloud.compute.v1.InstanceGroupManager.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] The resource type, which is always compute#instanceGroupManager for managed instance groups.
+	// +kcc:proto:field=google.cloud.compute.v1.InstanceGroupManager.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] The URL for this managed instance group. The server defines this URL.
+	// +kcc:proto:field=google.cloud.compute.v1.InstanceGroupManager.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.InterconnectAttachment", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.InterconnectAttachment
+type InterconnectAttachmentObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.InterconnectAttachment.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.InterconnectAttachment.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#interconnectAttachment for interconnect attachments.
+	// +kcc:proto:field=google.cloud.compute.v1.InterconnectAttachment.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.InterconnectAttachment.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Metadata", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.Metadata
+type MetadataObservedState struct {
+	// [Output Only] Type of the resource. Always compute#metadata for metadata.
+	// +kcc:proto:field=google.cloud.compute.v1.Metadata.kind
+	Kind *string `json:"kind,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Network", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.Network
+type NetworkObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.Network.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.Network.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#network for networks.
+	// +kcc:proto:field=google.cloud.compute.v1.Network.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.Network.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+
+	// [Output Only] Server-defined URL for this resource with the resource id.
+	// +kcc:proto:field=google.cloud.compute.v1.Network.self_link_with_id
+	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.NetworkEndpointGroup", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.NetworkEndpointGroup
+type NetworkEndpointGroupObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEndpointGroup.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEndpointGroup.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#networkEndpointGroup for network endpoint group.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEndpointGroup.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEndpointGroup.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.NodeGroup", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.NodeGroup
+type NodeGroupObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.NodeGroup.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.NodeGroup.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] The type of the resource. Always compute#nodeGroup for node group.
+	// +kcc:proto:field=google.cloud.compute.v1.NodeGroup.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.NodeGroup.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.NodeTemplate", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.NodeTemplate
+type NodeTemplateObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.NodeTemplate.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.NodeTemplate.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] The type of the resource. Always compute#nodeTemplate for node templates.
+	// +kcc:proto:field=google.cloud.compute.v1.NodeTemplate.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.NodeTemplate.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.PacketMirroring", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.PacketMirroring
+type PacketMirroringObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.PacketMirroring.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.PacketMirroring.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#packetMirroring for packet mirrorings.
+	// +kcc:proto:field=google.cloud.compute.v1.PacketMirroring.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.PacketMirroring.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Reservation", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.Reservation
+type ReservationObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.Reservation.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.Reservation.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#reservations for reservations.
+	// +kcc:proto:field=google.cloud.compute.v1.Reservation.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined fully-qualified URL for this resource.
+	// +kcc:proto:field=google.cloud.compute.v1.Reservation.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.ResourcePolicy", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.ResourcePolicy
+type ResourcePolicyObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.ResourcePolicy.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.ResourcePolicy.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#resource_policies for resource policies.
+	// +kcc:proto:field=google.cloud.compute.v1.ResourcePolicy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined fully-qualified URL for this resource.
+	// +kcc:proto:field=google.cloud.compute.v1.ResourcePolicy.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Route", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.Route
+type RouteObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.Route.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.Route.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of this resource. Always compute#routes for Route resources.
+	// +kcc:proto:field=google.cloud.compute.v1.Route.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined fully-qualified URL for this resource.
+	// +kcc:proto:field=google.cloud.compute.v1.Route.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Router", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.Router
+type RouterObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.Router.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.Router.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of resource. Always compute#router for routers.
+	// +kcc:proto:field=google.cloud.compute.v1.Router.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.Router.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.SecurityPolicy", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.SecurityPolicy
+type SecurityPolicyObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output only] Type of the resource. Always compute#securityPolicyfor security policies
+	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.ServiceAttachment", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.ServiceAttachment
+type ServiceAttachmentObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.ServiceAttachment.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource type. The server generates this identifier.
+	// +kcc:proto:field=google.cloud.compute.v1.ServiceAttachment.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#serviceAttachment for service attachments.
+	// +kcc:proto:field=google.cloud.compute.v1.ServiceAttachment.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.ServiceAttachment.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Snapshot", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.Snapshot
+type SnapshotObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.Snapshot.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.Snapshot.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#snapshot for Snapshot resources.
+	// +kcc:proto:field=google.cloud.compute.v1.Snapshot.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.Snapshot.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.SslCertificate", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.SslCertificate
+type SSLCertificateObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.SslCertificate.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.SslCertificate.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#sslCertificate for SSL certificates.
+	// +kcc:proto:field=google.cloud.compute.v1.SslCertificate.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.SslCertificate.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.SslPolicy", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.SslPolicy
+type SSLPolicyObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.SslPolicy.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.SslPolicy.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output only] Type of the resource. Always compute#sslPolicyfor SSL policies.
+	// +kcc:proto:field=google.cloud.compute.v1.SslPolicy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.SslPolicy.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Subnetwork", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.Subnetwork
+type SubnetworkObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.Subnetwork.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.Subnetwork.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#subnetwork for Subnetwork resources.
+	// +kcc:proto:field=google.cloud.compute.v1.Subnetwork.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.Subnetwork.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.TargetGrpcProxy", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.TargetGrpcProxy
+type TargetGrpcProxyObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetGrpcProxy.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource type. The server generates this identifier.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetGrpcProxy.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#targetGrpcProxy for target grpc proxies.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetGrpcProxy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetGrpcProxy.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+
+	// [Output Only] Server-defined URL with id for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetGrpcProxy.self_link_with_id
+	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.TargetHttpProxy", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.TargetHttpProxy
+type TargetHTTPProxyObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetHttpProxy.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetHttpProxy.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of resource. Always compute#targetHttpProxy for target HTTP proxies.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetHttpProxy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetHttpProxy.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.TargetHttpsProxy", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.TargetHttpsProxy
+type TargetHTTPSProxyObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetHttpsProxy.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetHttpsProxy.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of resource. Always compute#targetHttpsProxy for target HTTPS proxies.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetHttpsProxy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetHttpsProxy.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.TargetInstance", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.TargetInstance
+type TargetInstanceObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetInstance.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetInstance.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] The type of the resource. Always compute#targetInstance for target instances.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetInstance.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetInstance.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.TargetPool", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.TargetPool
+type TargetPoolObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetPool.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetPool.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#targetPool for target pools.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetPool.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetPool.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.TargetSslProxy", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.TargetSslProxy
+type TargetSSLProxyObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetSslProxy.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetSslProxy.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#targetSslProxy for target SSL proxies.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetSslProxy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetSslProxy.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.TargetTcpProxy", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.TargetTcpProxy
+type TargetTCPProxyObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetTcpProxy.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetTcpProxy.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#targetTcpProxy for target TCP proxies.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetTcpProxy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetTcpProxy.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.TargetVpnGateway", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.TargetVpnGateway
+type TargetVPNGatewayObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetVpnGateway.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetVpnGateway.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of resource. Always compute#targetVpnGateway for target VPN gateways.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetVpnGateway.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.TargetVpnGateway.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.UrlMap", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.UrlMap
+type URLMapObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.UrlMap.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.UrlMap.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#urlMaps for url maps.
+	// +kcc:proto:field=google.cloud.compute.v1.UrlMap.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.UrlMap.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.VpnGateway", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.VpnGateway
+type VPNGatewayObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.VpnGateway.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.VpnGateway.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of resource. Always compute#vpnGateway for VPN gateways.
+	// +kcc:proto:field=google.cloud.compute.v1.VpnGateway.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.VpnGateway.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.VpnTunnel", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.VpnTunnel
+type VPNTunnelObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.VpnTunnel.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.VpnTunnel.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of resource. Always compute#vpnTunnel for VPN tunnels.
+	// +kcc:proto:field=google.cloud.compute.v1.VpnTunnel.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.VpnTunnel.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
 }
 */

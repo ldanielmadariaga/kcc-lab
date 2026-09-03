@@ -15,9 +15,7 @@
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common/parent"
-	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
-	computev1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/v1beta1"
+	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -28,23 +26,34 @@ var CloudDMSMigrationJobGVK = GroupVersion.WithKind("CloudDMSMigrationJob")
 // CloudDMSMigrationJobSpec defines the desired state of CloudDMSMigrationJob
 // +kcc:spec:proto=google.cloud.clouddms.v1.MigrationJob
 type CloudDMSMigrationJobSpec struct {
-	// Required. Defines the parent path of the resource.
-	*parent.ProjectAndLocationRef `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/migrationJobs/{migration_job}
+	Location *string `json:"location"`
+
+	// The CloudDMSMigrationJob name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// The resource labels for migration job to use to annotate any related
 	//  underlying resources such as Compute Engine VMs. An object containing a
 	//  list of "key": "value" pairs.
 	//
 	//  Example: `{ "name": "wrench", "mass": "1.3kg", "count": "3" }`.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.labels
-	// Labels map[string]string `json:"labels,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// The migration job display name.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
+	// The current migration job state.
+	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.state
+	State *string `json:"state,omitempty"`
+
 	// Required. The migration job type.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.type
+	// +required
 	Type *string `json:"type,omitempty"`
 
 	// The path to the dump file in Google Cloud Storage,
@@ -58,13 +67,15 @@ type CloudDMSMigrationJobSpec struct {
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.dump_flags
 	DumpFlags *MigrationJob_DumpFlags `json:"dumpFlags,omitempty"`
 
-	// Required. The Connection Profile resource of the source connection profile.
+	// Required. The resource name (URI) of the source connection profile.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.source
-	SourceRef *CloudDMSConnectionProfileRef `json:"sourceRef,omitempty"`
+	// +required
+	Source *string `json:"source,omitempty"`
 
-	// Required. The Connection Profile of the destination connection profile.
+	// Required. The resource name (URI) of the destination connection profile.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.destination
-	DestinationRef *CloudDMSConnectionProfileRef `json:"destinationRef,omitempty"`
+	// +required
+	Destination *string `json:"destination,omitempty"`
 
 	// The details needed to communicate to the source over Reverse SSH
 	//  tunnel connectivity.
@@ -111,15 +122,12 @@ type CloudDMSMigrationJobSpec struct {
 	//  Each Cloud CMEK key has the following format:
 	//  projects/[PROJECT]/locations/[REGION]/keyRings/[RING]/cryptoKeys/[KEY_NAME]
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.cmek_key_name
-	CmekKeyNameRef *refsv1beta1.KMSCryptoKeyRef `json:"cmekKeyNameRef,omitempty"`
+	CmekKeyName *string `json:"cmekKeyName,omitempty"`
 
 	// Optional. Data dump parallelism settings used by the migration.
 	//  Currently applicable only for MySQL to Cloud SQL for MySQL migrations only.
 	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.performance_config
 	PerformanceConfig *MigrationJob_PerformanceConfig `json:"performanceConfig,omitempty"`
-
-	// The CloudDMSMigrationJob name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
 }
 
 // CloudDMSMigrationJobStatus defines the config connector machine state of CloudDMSMigrationJob
@@ -141,6 +149,36 @@ type CloudDMSMigrationJobStatus struct {
 // CloudDMSMigrationJobObservedState is the state of the CloudDMSMigrationJob resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.clouddms.v1.MigrationJob
 type CloudDMSMigrationJobObservedState struct {
+	// Output only. The timestamp when the migration job resource was created.
+	//  A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds.
+	//  Example: "2014-10-02T15:01:23.045123456Z".
+	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The timestamp when the migration job resource was last
+	//  updated. A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds.
+	//  Example: "2014-10-02T15:01:23.045123456Z".
+	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The current migration job phase.
+	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.phase
+	Phase *string `json:"phase,omitempty"`
+
+	// Output only. The duration of the migration job (in seconds). A duration in
+	//  seconds with up to nine fractional digits, terminated by 's'. Example:
+	//  "3.5s".
+	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.duration
+	Duration *string `json:"duration,omitempty"`
+
+	// Output only. The error details in case of state FAILED.
+	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.error
+	Error *common.Status `json:"error,omitempty"`
+
+	// Output only. If the migration job is completed, the time when it was
+	//  completed.
+	// +kcc:proto:field=google.cloud.clouddms.v1.MigrationJob.end_time
+	EndTime *string `json:"endTime,omitempty"`
 }
 
 // +genclient
@@ -175,33 +213,4 @@ type CloudDMSMigrationJobList struct {
 
 func init() {
 	SchemeBuilder.Register(&CloudDMSMigrationJob{}, &CloudDMSMigrationJobList{})
-}
-
-// +kcc:proto=google.cloud.clouddms.v1.VpcPeeringConnectivity
-type VPCPeeringConnectivity struct {
-	// The name of the VPC network to peer with the Cloud SQL private network.
-	// +kcc:proto:field=google.cloud.clouddms.v1.VpcPeeringConnectivity.vpc
-	VPCRef *computerefs.ComputeNetworkRef `json:"vpcRef,omitempty"`
-}
-
-// +kcc:proto=google.cloud.clouddms.v1.ReverseSshConnectivity
-type ReverseSSHConnectivity struct {
-	// Required. The IP of the virtual machine (Compute Engine) used as the
-	//  bastion server for the SSH tunnel.
-	// +kcc:proto:field=google.cloud.clouddms.v1.ReverseSshConnectivity.vm_ip
-	VMIP *string `json:"vmIP,omitempty"`
-
-	// Required. The forwarding port of the virtual machine (Compute Engine) used
-	//  as the bastion server for the SSH tunnel.
-	// +kcc:proto:field=google.cloud.clouddms.v1.ReverseSshConnectivity.vm_port
-	VMPort *int32 `json:"vmPort,omitempty"`
-
-	// The name of the virtual machine (Compute Engine) used as the bastion server
-	//  for the SSH tunnel.
-	// +kcc:proto:field=google.cloud.clouddms.v1.ReverseSshConnectivity.vm
-	VMRef *computev1beta1.InstanceRef `json:"vmRef,omitempty"`
-
-	// The name of the VPC to peer with the Cloud SQL private network.
-	// +kcc:proto:field=google.cloud.clouddms.v1.ReverseSshConnectivity.vpc
-	VPCRef *computerefs.ComputeNetworkRef `json:"vpcRef,omitempty"`
 }

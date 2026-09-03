@@ -79,37 +79,13 @@ spec:
                   it using the `IpRange.external_address` property.
                 items:
                   properties:
-                    externalAddressRef:
-                      description: The name of an `ExternalAddress` resource. The
+                    externalAddress:
+                      description: 'The name of an `ExternalAddress` resource. The
                         external address must have been reserved in the scope of this
-                        external access rule's parent network policy.
-                      oneOf:
-                      - not:
-                          required:
-                          - external
-                        required:
-                        - name
-                      - not:
-                          anyOf:
-                          - required:
-                            - name
-                          - required:
-                            - namespace
-                        required:
-                        - external
-                      properties:
-                        external:
-                          description: A reference to an externally managed VMwareEngineExternalAddress
-                            resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/privateClouds/{{privatecloudID}}/externalAddresses/{{externaladdressID}}".
-                          type: string
-                        name:
-                          description: The name of a VMwareEngineExternalAddress resource.
-                          type: string
-                        namespace:
-                          description: The namespace of a VMwareEngineExternalAddress
-                            resource.
-                          type: string
-                      type: object
+                        external access rule''s parent network policy.  Provide the
+                        external address name in the form of `projects/{project}/locations/{location}/privateClouds/{private_cloud}/externalAddresses/{external_address}`.
+                        For example: `projects/my-project/locations/us-central1-a/privateClouds/my-cloud/externalAddresses/my-address`.'
+                      type: string
                     ipAddress:
                       description: 'A single IP address. For example: `10.0.0.5`.'
                       type: string
@@ -133,9 +109,11 @@ spec:
                   This value can be one of the following three protocol strings (not
                   case-sensitive): `tcp`, `udp`, or `icmp`.'
                 type: string
+              location:
+                description: The location of this resource.
+                type: string
               networkPolicyRef:
-                description: Required. The resource name of the network policy to
-                  create a new external access firewall rule in.
+                description: The NetworkPolicy that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -173,6 +151,38 @@ spec:
                   a rule with priority `101`.
                 format: int32
                 type: integer
+              projectRef:
+                description: The project that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: The `projectID` field of a project, when not managed
+                      by Config Connector.
+                    type: string
+                  kind:
+                    description: The kind of the Project resource; optional but must
+                      be `Project` if provided.
+                    type: string
+                  name:
+                    description: The `name` field of a `Project` resource.
+                    type: string
+                  namespace:
+                    description: The `namespace` field of a `Project` resource.
+                    type: string
+                type: object
               resourceID:
                 description: The VMwareEngineExternalAccessRule name. If not given,
                   the metadata.name will be used.
@@ -186,37 +196,13 @@ spec:
                   rule. To match all source addresses, specify `0.0.0.0/0`.
                 items:
                   properties:
-                    externalAddressRef:
-                      description: The name of an `ExternalAddress` resource. The
+                    externalAddress:
+                      description: 'The name of an `ExternalAddress` resource. The
                         external address must have been reserved in the scope of this
-                        external access rule's parent network policy.
-                      oneOf:
-                      - not:
-                          required:
-                          - external
-                        required:
-                        - name
-                      - not:
-                          anyOf:
-                          - required:
-                            - name
-                          - required:
-                            - namespace
-                        required:
-                        - external
-                      properties:
-                        external:
-                          description: A reference to an externally managed VMwareEngineExternalAddress
-                            resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/privateClouds/{{privatecloudID}}/externalAddresses/{{externaladdressID}}".
-                          type: string
-                        name:
-                          description: The name of a VMwareEngineExternalAddress resource.
-                          type: string
-                        namespace:
-                          description: The namespace of a VMwareEngineExternalAddress
-                            resource.
-                          type: string
-                      type: object
+                        external access rule''s parent network policy.  Provide the
+                        external address name in the form of `projects/{project}/locations/{location}/privateClouds/{private_cloud}/externalAddresses/{external_address}`.
+                        For example: `projects/my-project/locations/us-central1-a/privateClouds/my-cloud/externalAddresses/my-address`.'
+                      type: string
                     ipAddress:
                       description: 'A single IP address. For example: `10.0.0.5`.'
                       type: string
@@ -236,7 +222,7 @@ spec:
                   type: string
                 type: array
             required:
-            - networkPolicyRef
+            - projectRef
             type: object
           status:
             description: VMwareEngineExternalAccessRuleStatus defines the config connector

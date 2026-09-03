@@ -21,8 +21,7 @@
 
 package v1beta1
 
-/* found existing non-generated go type with proto tag "google.cloud.apphub.v1.Application", skipping
-
+/* unreachable type Application
 // +kcc:proto=google.cloud.apphub.v1.Application
 type Application struct {
 	// Identifier. The resource name of an Application. Format:
@@ -47,6 +46,7 @@ type Application struct {
 	// Required. Immutable. Defines what data can be included into this
 	//  Application. Limits which Services and Workloads can be registered.
 	// +kcc:proto:field=google.cloud.apphub.v1.Application.scope
+	// +required
 	Scope *Scope `json:"scope,omitempty"`
 }
 */
@@ -84,38 +84,35 @@ type ContactInfo struct {
 
 	// Required. Email address of the contacts.
 	// +kcc:proto:field=google.cloud.apphub.v1.ContactInfo.email
+	// +required
 	Email *string `json:"email,omitempty"`
 }
-
-/* found existing non-generated go type "Criticality", skipping
 
 // +kcc:proto=google.cloud.apphub.v1.Criticality
 type Criticality struct {
 	// Required. Criticality Type.
 	// +kcc:proto:field=google.cloud.apphub.v1.Criticality.type
+	// +required
 	Type *string `json:"type,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "Environment", skipping
 
 // +kcc:proto=google.cloud.apphub.v1.Environment
 type Environment struct {
 	// Required. Environment Type.
 	// +kcc:proto:field=google.cloud.apphub.v1.Environment.type
+	// +required
 	Type *string `json:"type,omitempty"`
 }
-*/
 
 // +kcc:proto=google.cloud.apphub.v1.Scope
 type Scope struct {
 	// Required. Scope Type.
 	// +kcc:proto:field=google.cloud.apphub.v1.Scope.type
+	// +required
 	Type *string `json:"type,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.apphub.v1.Application", skipping
-
+/* unreachable type ApplicationObservedState
 // +kcc:observedstate:proto=google.cloud.apphub.v1.Application
 type ApplicationObservedState struct {
 	// Output only. Create time.

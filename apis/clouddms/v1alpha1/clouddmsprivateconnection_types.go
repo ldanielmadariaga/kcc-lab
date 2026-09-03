@@ -15,90 +15,41 @@
 package v1alpha1
 
 import (
-	computerefs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/compute/refs"
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var CloudDMSPrivateConnectionGVK = GroupVersion.WithKind("CloudDMSPrivateConnection")
 
-type Parent struct {
-	// Required. The location of the application.
-	Location string `json:"location,omitempty"`
+// CloudDMSPrivateConnectionSpec defines the desired state of CloudDMSPrivateConnection
+// +kcc:spec:proto=google.cloud.clouddms.v1.PrivateConnection
+type CloudDMSPrivateConnectionSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// Required. The host project of the application.
-	ProjectRef *refs.ProjectRef `json:"projectRef,omitempty"`
-}
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/privateConnections/{private_connection}
+	Location *string `json:"location"`
 
-// +kcc:proto=google.protobuf.Any
-type Any struct {
-	// A URL/resource name that uniquely identifies the type of the serialized
-	//  protocol buffer message. This string must contain at least
-	//  one "/" character. The last segment of the URL's path must represent
-	//  the fully qualified name of the type (as in
-	//  `path/google.protobuf.Duration`). The name should be in a canonical form
-	//  (e.g., leading "." is not accepted).
+	// The CloudDMSPrivateConnection name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
+	// The resource labels for private connections to use to annotate any related
+	//  underlying resources such as Compute Engine VMs. An object containing a
+	//  list of "key": "value" pairs.
 	//
-	//  In practice, teams usually precompile into the binary all types that they
-	//  expect it to use in the context of Any. However, for URLs which use the
-	//  scheme `http`, `https`, or no scheme, one can optionally set up a type
-	//  server that maps type URLs to message definitions as follows:
-	//
-	//  * If no scheme is provided, `https` is assumed.
-	//  * An HTTP GET on the URL must yield a [google.protobuf.Type][]
-	//    value in binary format, or produce an error.
-	//  * Applications are allowed to cache lookup results based on the
-	//    URL, or have them precompiled into a binary to avoid any
-	//    lookup. Therefore, binary compatibility needs to be preserved
-	//    on changes to types. (Use versioned type names to manage
-	//    breaking changes.)
-	//
-	//  Note: this functionality is not currently available in the official
-	//  protobuf release, and it is not used for type URLs beginning with
-	//  type.googleapis.com.
-	//
-	//  Schemes other than `http`, `https` (or the empty scheme) might be
-	//  used with implementation specific semantics.
-	// +kcc:proto:field=google.protobuf.Any.type_url
-	TypeURL *string `json:"typeURL,omitempty"`
+	//  Example: `{ "name": "wrench", "mass": "1.3kg", "count": "3" }`.
+	// +kcc:proto:field=google.cloud.clouddms.v1.PrivateConnection.labels
+	Labels map[string]string `json:"labels,omitempty"`
 
-	// Must be a valid serialized protocol buffer of the above specified type.
-	// +kcc:proto:field=google.protobuf.Any.value
-	Value []byte `json:"value,omitempty"`
-}
+	// The private connection display name.
+	// +kcc:proto:field=google.cloud.clouddms.v1.PrivateConnection.display_name
+	DisplayName *string `json:"displayName,omitempty"`
 
-// +kcc:proto=google.rpc.Status
-type Status struct {
-	// The status code, which should be an enum value of
-	//  [google.rpc.Code][google.rpc.Code].
-	// +kcc:proto:field=google.rpc.Status.code
-	Code *int32 `json:"code,omitempty"`
-
-	// A developer-facing error message, which should be in English. Any
-	//  user-facing error message should be localized and sent in the
-	//  [google.rpc.Status.details][google.rpc.Status.details] field, or localized
-	//  by the client.
-	// +kcc:proto:field=google.rpc.Status.message
-	Message *string `json:"message,omitempty"`
-
-	// NOT YET
-	// A list of messages that carry the error details.  There is a common set of
-	//  message types for APIs to use.
-	// +kcc:proto:field=google.rpc.Status.details
-	// Details []Any `json:"details,omitempty"`
-}
-
-// +kcc:proto=google.cloud.clouddms.v1.VpcPeeringConfig
-type VpcPeeringConfig struct {
-	// Required. Fully qualified name of the VPC that Database Migration Service
-	//  will peer to.
-	// +kcc:proto:field=google.cloud.clouddms.v1.VpcPeeringConfig.vpc_name
-	VpcNameRef *computerefs.ComputeNetworkRef `json:"vpcNameRef,omitempty"`
-
-	// Required. A free subnet for peering. (CIDR of /29)
-	// +kcc:proto:field=google.cloud.clouddms.v1.VpcPeeringConfig.subnet
-	Subnet *string `json:"subnet,omitempty"`
+	// VPC peering configuration.
+	// +kcc:proto:field=google.cloud.clouddms.v1.PrivateConnection.vpc_peering_config
+	VPCPeeringConfig *VPCPeeringConfig `json:"vpcPeeringConfig,omitempty"`
 }
 
 // CloudDMSPrivateConnectionStatus defines the config connector machine state of CloudDMSPrivateConnection
@@ -115,32 +66,6 @@ type CloudDMSPrivateConnectionStatus struct {
 
 	// ObservedState is the state of the resource as most recently observed in GCP.
 	ObservedState *CloudDMSPrivateConnectionObservedState `json:"observedState,omitempty"`
-}
-
-// CloudDMSPrivateConnectionSpec defines the desired state of CloudDMSPrivateConnection
-// +kcc:spec:proto=google.cloud.clouddms.v1.PrivateConnection
-type CloudDMSPrivateConnectionSpec struct {
-	// The CloudDMSPrivateConnection name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Required. Defines the parent path of the resource.
-	*Parent `json:",inline"`
-
-	// The resource labels for private connections to use to annotate any related
-	//  underlying resources such as Compute Engine VMs. An object containing a
-	//  list of "key": "value" pairs.
-	//
-	//  Example: `{ "name": "wrench", "mass": "1.3kg", "count": "3" }`.
-	// +kcc:proto:field=google.cloud.clouddms.v1.PrivateConnection.labels
-	Labels map[string]string `json:"labels,omitempty"`
-
-	// The private connection display name.
-	// +kcc:proto:field=google.cloud.clouddms.v1.PrivateConnection.display_name
-	DisplayName *string `json:"displayName,omitempty"`
-
-	// VPC peering configuration.
-	// +kcc:proto:field=google.cloud.clouddms.v1.PrivateConnection.vpc_peering_config
-	VpcPeeringConfig *VpcPeeringConfig `json:"vpcPeeringConfig,omitempty"`
 }
 
 // CloudDMSPrivateConnectionObservedState is the state of the CloudDMSPrivateConnection resource as most recently observed in GCP.
@@ -160,7 +85,7 @@ type CloudDMSPrivateConnectionObservedState struct {
 
 	// Output only. The error details in case of state FAILED.
 	// +kcc:proto:field=google.cloud.clouddms.v1.PrivateConnection.error
-	Error *Status `json:"error,omitempty"`
+	Error *common.Status `json:"error,omitempty"`
 }
 
 // +genclient

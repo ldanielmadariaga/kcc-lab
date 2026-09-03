@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,19 +28,20 @@ type DialogflowSipTrunkSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// Immutable. The location of this resource.
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Location field is immutable"
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/sipTrunks/{siptrunk}
 	Location *string `json:"location"`
 
 	// The DialogflowSipTrunk name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Required. The expected hostnames in the peer certificate from partner that is used for TLS authentication.
-	// +kubebuilder:validation:Required
-	ExpectedHostname []string `json:"expectedHostname"`
+	// Required. The expected hostnames in the peer certificate from partner that
+	//  is used for TLS authentication.
+	// +kcc:proto:field=google.cloud.dialogflow.v2beta1.SipTrunk.expected_hostname
+	// +required
+	ExpectedHostname []string `json:"expectedHostname,omitempty"`
 
 	// Optional. Human readable alias for this trunk.
-	// +kubebuilder:validation:Optional
+	// +kcc:proto:field=google.cloud.dialogflow.v2beta1.SipTrunk.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 }
 
@@ -64,29 +65,8 @@ type DialogflowSipTrunkStatus struct {
 // +kcc:observedstate:proto=google.cloud.dialogflow.v2beta1.SipTrunk
 type DialogflowSipTrunkObservedState struct {
 	// Output only. Connections of the SIP trunk.
+	// +kcc:proto:field=google.cloud.dialogflow.v2beta1.SipTrunk.connections
 	Connections []ConnectionObservedState `json:"connections,omitempty"`
-}
-
-type ConnectionObservedState struct {
-	// Output only. The unique identifier of the SIP Trunk connection.
-	ConnectionID *string `json:"connectionID,omitempty"`
-
-	// Output only. State of the connection.
-	State *string `json:"state,omitempty"`
-
-	// Output only. When the connection status changed.
-	UpdateTime *string `json:"updateTime,omitempty"`
-
-	// Output only. The error details for the connection. Only populated when authentication errors occur.
-	ErrorDetails *Connection_ErrorDetailsObservedState `json:"errorDetails,omitempty"`
-}
-
-type Connection_ErrorDetailsObservedState struct {
-	// Output only. The status of the certificate authentication.
-	CertificateState *string `json:"certificateState,omitempty"`
-
-	// The error message provided from SIP trunking auth service.
-	ErrorMessage *string `json:"errorMessage,omitempty"`
 }
 
 // +genclient
@@ -95,7 +75,6 @@ type Connection_ErrorDetailsObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

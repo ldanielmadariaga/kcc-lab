@@ -22,7 +22,64 @@
 
 package v1beta1
 
-/* unreachable type Database_CmekConfig
+/* unreachable type Database
+// +kcc:proto=google.firestore.admin.v1.Database
+type Database struct {
+	// The resource name of the Database.
+	//  Format: `projects/{project}/databases/{database}`
+	// +kcc:proto:field=google.firestore.admin.v1.Database.name
+	Name *string `json:"name,omitempty"`
+
+	// The location of the database. Available locations are listed at
+	//  https://cloud.google.com/firestore/docs/locations.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.location_id
+	LocationID *string `json:"locationID,omitempty"`
+
+	// The type of the database.
+	//  See https://cloud.google.com/datastore/docs/firestore-or-datastore for
+	//  information about how to choose.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.type
+	Type *string `json:"type,omitempty"`
+
+	// The concurrency control mode to use for this database.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.concurrency_mode
+	ConcurrencyMode *string `json:"concurrencyMode,omitempty"`
+
+	// Whether to enable the PITR feature on this database.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.point_in_time_recovery_enablement
+	PointInTimeRecoveryEnablement *string `json:"pointInTimeRecoveryEnablement,omitempty"`
+
+	// The App Engine integration mode to use for this database.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.app_engine_integration_mode
+	AppEngineIntegrationMode *string `json:"appEngineIntegrationMode,omitempty"`
+
+	// State of delete protection for the database.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.delete_protection_state
+	DeleteProtectionState *string `json:"deleteProtectionState,omitempty"`
+
+	// Optional. Presence indicates CMEK is enabled for this database.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.cmek_config
+	CmekConfig *Database_CmekConfig `json:"cmekConfig,omitempty"`
+
+	// Optional. Input only. Immutable. Tag keys/values directly bound to this
+	//  resource. For example:
+	//    "123/environment": "production",
+	//    "123/costCenter": "marketing"
+	// +kcc:proto:field=google.firestore.admin.v1.Database.tags
+	Tags map[string]string `json:"tags,omitempty"`
+
+	// This checksum is computed by the server based on the value of other
+	//  fields, and may be sent on update and delete requests to ensure the
+	//  client has an up-to-date value before proceeding.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Immutable. The edition of the database.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.database_edition
+	DatabaseEdition *string `json:"databaseEdition,omitempty"`
+}
+*/
+
 // +kcc:proto=google.firestore.admin.v1.Database.CmekConfig
 type Database_CmekConfig struct {
 	// Required. Only keys in the same location as this database are allowed to
@@ -36,11 +93,10 @@ type Database_CmekConfig struct {
 	//  The expected format is
 	//  `projects/{project_id}/locations/{kms_location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}`.
 	// +kcc:proto:field=google.firestore.admin.v1.Database.CmekConfig.kms_key_name
+	// +required
 	KMSKeyName *string `json:"kmsKeyName,omitempty"`
 }
-*/
 
-/* unreachable type Database_SourceInfo
 // +kcc:proto=google.firestore.admin.v1.Database.SourceInfo
 type Database_SourceInfo struct {
 	// If set, this database was restored from the specified backup (or a
@@ -54,9 +110,7 @@ type Database_SourceInfo struct {
 	// +kcc:proto:field=google.firestore.admin.v1.Database.SourceInfo.operation
 	Operation *string `json:"operation,omitempty"`
 }
-*/
 
-/* unreachable type Database_SourceInfo_BackupSource
 // +kcc:proto=google.firestore.admin.v1.Database.SourceInfo.BackupSource
 type Database_SourceInfo_BackupSource struct {
 	// The resource name of the backup that was used to restore this
@@ -65,7 +119,6 @@ type Database_SourceInfo_BackupSource struct {
 	// +kcc:proto:field=google.firestore.admin.v1.Database.SourceInfo.BackupSource.backup
 	Backup *string `json:"backup,omitempty"`
 }
-*/
 
 /* unreachable type Index_IndexField_VectorConfig
 // +kcc:proto=google.firestore.admin.v1.Index.IndexField.VectorConfig
@@ -75,6 +128,7 @@ type Index_IndexField_VectorConfig struct {
 	//  The resulting index will only include vectors of this dimension, and
 	//  can be used for vector search with the same dimension.
 	// +kcc:proto:field=google.firestore.admin.v1.Index.IndexField.VectorConfig.dimension
+	// +required
 	Dimension *int32 `json:"dimension,omitempty"`
 
 	// Indicates the vector index is a flat index.
@@ -89,7 +143,92 @@ type Index_IndexField_VectorConfig_FlatIndex struct {
 }
 */
 
-/* unreachable type Database_CmekConfigObservedState
+/* unreachable type DatabaseObservedState
+// +kcc:observedstate:proto=google.firestore.admin.v1.Database
+type DatabaseObservedState struct {
+	// Output only. The system-generated UUID4 for this Database.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. The timestamp at which this database was created. Databases
+	//  created before 2016 do not populate create_time.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The timestamp at which this database was most recently
+	//  updated. Note this only includes updates to the database resource and not
+	//  data contained by the database.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The timestamp at which this database was deleted. Only set if
+	//  the database has been deleted.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.delete_time
+	DeleteTime *string `json:"deleteTime,omitempty"`
+
+	// Output only. The period during which past versions of data are retained in
+	//  the database.
+	//
+	//  Any [read][google.firestore.v1.GetDocumentRequest.read_time]
+	//  or [query][google.firestore.v1.ListDocumentsRequest.read_time] can specify
+	//  a `read_time` within this window, and will read the state of the database
+	//  at that time.
+	//
+	//  If the PITR feature is enabled, the retention period is 7 days. Otherwise,
+	//  the retention period is 1 hour.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.version_retention_period
+	VersionRetentionPeriod *string `json:"versionRetentionPeriod,omitempty"`
+
+	// Output only. The earliest timestamp at which older versions of the data can
+	//  be read from the database. See [version_retention_period] above; this field
+	//  is populated with `now - version_retention_period`.
+	//
+	//  This value is continuously updated, and becomes stale the moment it is
+	//  queried. If you are using this value to recover data, make sure to account
+	//  for the time from the moment when the value is queried to the moment when
+	//  you initiate the recovery.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.earliest_version_time
+	EarliestVersionTime *string `json:"earliestVersionTime,omitempty"`
+
+	// Output only. The key_prefix for this database. This key_prefix is used, in
+	//  combination with the project ID ("<key prefix>~<project id>") to construct
+	//  the application ID that is returned from the Cloud Datastore APIs in Google
+	//  App Engine first generation runtimes.
+	//
+	//  This value may be empty in which case the appid to use for URL-encoded keys
+	//  is the project_id (eg: foo instead of v~foo).
+	// +kcc:proto:field=google.firestore.admin.v1.Database.key_prefix
+	KeyPrefix *string `json:"keyPrefix,omitempty"`
+
+	// Optional. Presence indicates CMEK is enabled for this database.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.cmek_config
+	CmekConfig *Database_CmekConfigObservedState `json:"cmekConfig,omitempty"`
+
+	// Output only. The database resource's prior database ID. This field is only
+	//  populated for deleted databases.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.previous_id
+	PreviousID *string `json:"previousID,omitempty"`
+
+	// Output only. Information about the provenance of this database.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.source_info
+	SourceInfo *Database_SourceInfo `json:"sourceInfo,omitempty"`
+
+	// Output only. Background: Free tier is the ability of a Firestore database
+	//  to use a small amount of resources every day without being charged. Once
+	//  usage exceeds the free tier limit further usage is charged.
+	//
+	//  Whether this database can make use of the free tier. Only one database
+	//  per project can be eligible for the free tier.
+	//
+	//  The first (or next) database that is created in a project without a free
+	//  tier database will be marked as eligible for the free tier. Databases that
+	//  are created while there is a free tier database will not be eligible for
+	//  the free tier.
+	// +kcc:proto:field=google.firestore.admin.v1.Database.free_tier
+	FreeTier *bool `json:"freeTier,omitempty"`
+}
+*/
+
 // +kcc:observedstate:proto=google.firestore.admin.v1.Database.CmekConfig
 type Database_CmekConfigObservedState struct {
 	// Output only. Currently in-use [KMS key
@@ -102,4 +241,3 @@ type Database_CmekConfigObservedState struct {
 	// +kcc:proto:field=google.firestore.admin.v1.Database.CmekConfig.active_key_version
 	ActiveKeyVersion []string `json:"activeKeyVersion,omitempty"`
 }
-*/

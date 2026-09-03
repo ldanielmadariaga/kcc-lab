@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,19 +26,18 @@ var VertexAIDeploymentResourcePoolGVK = GroupVersion.WithKind("VertexAIDeploymen
 // +kcc:spec:proto=google.cloud.aiplatform.v1beta1.DeploymentResourcePool
 type VertexAIDeploymentResourcePoolSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +required
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/deploymentResourcePools/{deployment_resource_pool}
 	Location *string `json:"location"`
 
 	// The VertexAIDeploymentResourcePool name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. The underlying DedicatedResources that the DeploymentResourcePool
 	//  uses.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.DeploymentResourcePool.dedicated_resources
+	// +required
 	DedicatedResources *DedicatedResources `json:"dedicatedResources,omitempty"`
 
 	// Customer-managed encryption key spec for a DeploymentResourcePool. If set,
@@ -48,12 +47,22 @@ type VertexAIDeploymentResourcePoolSpec struct {
 	EncryptionSpec *EncryptionSpec `json:"encryptionSpec,omitempty"`
 
 	// The service account that the DeploymentResourcePool's container(s) run as.
+	//  Specify the email address of the service account. If this service account
+	//  is not specified, the container(s) run as a service account that doesn't
+	//  have access to the resource project.
+	//
+	//  Users deploying the Models to this DeploymentResourcePool must have the
+	//  `iam.serviceAccounts.actAs` permission on this service account.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.DeploymentResourcePool.service_account
-	ServiceAccountRef *refsv1beta1.IAMServiceAccountRef `json:"serviceAccountRef,omitempty"`
+	ServiceAccount *string `json:"serviceAccount,omitempty"`
 
 	// If the DeploymentResourcePool is deployed with custom-trained Models or
 	//  AutoML Tabular Models, the container(s) of the DeploymentResourcePool will
 	//  send `stderr` and `stdout` streams to Cloud Logging by default.
+	//  Please note that the logs incur cost, which are subject to [Cloud Logging
+	//  pricing](https://cloud.google.com/logging/pricing).
+	//
+	//  User can disable container logging by setting this flag to true.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.DeploymentResourcePool.disable_container_logging
 	DisableContainerLogging *bool `json:"disableContainerLogging,omitempty"`
 }
@@ -96,7 +105,6 @@ type VertexAIDeploymentResourcePoolObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

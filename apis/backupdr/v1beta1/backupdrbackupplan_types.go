@@ -15,8 +15,8 @@
 package v1beta1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/backupdr/v1alpha1"
-	k8sv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -25,11 +25,15 @@ var BackupDRBackupPlanGVK = GroupVersion.WithKind("BackupDRBackupPlan")
 // BackupDRBackupPlanSpec defines the desired state of BackupDRBackupPlan
 // +kcc:spec:proto=google.cloud.backupdr.v1.BackupPlan
 type BackupDRBackupPlanSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/backupPlans/{backup_plan}
+	Location *string `json:"location"`
+
 	// The BackupDRBackupPlan name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	v1alpha1.Parent `json:",inline"`
-
 	// Optional. The description of the `BackupPlan` resource.
 	//
 	//  The description allows for additional details about `BackupPlan` and its
@@ -42,38 +46,50 @@ type BackupDRBackupPlanSpec struct {
 	// Optional. This collection of key/value pairs allows for custom labels to be
 	//  supplied by the user.  Example, {"tag": "Weekly"}.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.labels
-	// Labels map[string]string `json:"labels,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// Required. The backup rules for this `BackupPlan`. There must be at least
 	//  one `BackupRule` message.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.backup_rules
+	// +required
 	BackupRules []BackupRule `json:"backupRules,omitempty"`
 
 	// Required. The resource type to which the `BackupPlan` will be applied.
 	//  Examples include, "compute.googleapis.com/Instance",
-	//  "sqladmin.googleapis.com/Instance", or "alloydb.googleapis.com/Cluster".
+	//  "sqladmin.googleapis.com/Instance", "alloydb.googleapis.com/Cluster",
+	//  "compute.googleapis.com/Disk".
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.resource_type
+	// +required
 	ResourceType *string `json:"resourceType,omitempty"`
 
-	// NOTYET: not supported in Config Connector reconciliation
 	// Optional. `etag` is returned from the service in the response. As a user of
 	//  the service, you may provide an etag value in this field to prevent stale
 	//  resources.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.etag
-	// Etag *string `json:"etag,omitempty"`
+	Etag *string `json:"etag,omitempty"`
 
 	// Required. Resource name of backup vault which will be used as storage
-	//  location for backups.
+	//  location for backups. Format:
+	//  projects/{project}/locations/{location}/backupVaults/{backupvault}
+	// +kcc:guess=possible-reference target=BackupDRBackupVault
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.backup_vault
 	// +required
-	BackupVaultRef *BackupVaultRef `json:"backupVaultRef,omitempty"`
+	BackupVault *string `json:"backupVault,omitempty"`
+
+	// Optional. Applicable only for CloudSQL resource_type.
+	//
+	//  Configures how long logs will be stored. It is defined in “days”. This
+	//  value should be greater than or equal to minimum enforced log retention
+	//  duration of the backup vault.
+	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.log_retention_days
+	LogRetentionDays *int64 `json:"logRetentionDays,omitempty"`
 }
 
 // BackupDRBackupPlanStatus defines the config connector machine state of BackupDRBackupPlan
 type BackupDRBackupPlanStatus struct {
 	/* Conditions represent the latest available observations of the
 	   object's current state. */
-	Conditions []k8sv1alpha1.Condition `json:"conditions,omitempty"`
+	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
 
 	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
 	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
@@ -88,13 +104,6 @@ type BackupDRBackupPlanStatus struct {
 // BackupDRBackupPlanObservedState is the state of the BackupDRBackupPlan resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.BackupPlan
 type BackupDRBackupPlanObservedState struct {
-	// Output only. Identifier. The resource name of the `BackupPlan`.
-	//
-	//  Format: `projects/{project}/locations/{location}/backupPlans/{backup_plan}`
-	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. When the `BackupPlan` was created.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -112,22 +121,35 @@ type BackupDRBackupPlanObservedState struct {
 	//  Vault Service Account.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.backup_vault_service_account
 	BackupVaultServiceAccount *string `json:"backupVaultServiceAccount,omitempty"`
+
+	// Output only. All resource types to which backupPlan can be applied.
+	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.supported_resource_types
+	SupportedResourceTypes []string `json:"supportedResourceTypes,omitempty"`
+
+	// Output only. The user friendly revision ID of the `BackupPlanRevision`.
+	//
+	//  Example: v0, v1, v2, etc.
+	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.revision_id
+	RevisionID *string `json:"revisionID,omitempty"`
+
+	// Output only. The resource id of the `BackupPlanRevision`.
+	//
+	//  Format:
+	//  `projects/{project}/locations/{location}/backupPlans/{backup_plan}/revisions/{revision_id}`
+	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.revision_name
+	RevisionName *string `json:"revisionName,omitempty"`
 }
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +kubebuilder:storageversion
 // +kubebuilder:resource:categories=gcp,shortName=gcpbackupdrbackupplan;gcpbackupdrbackupplans
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
 // +kubebuilder:printcolumn:name="Status Age",JSONPath=".status.conditions[?(@.type=='Ready')].lastTransitionTime",type="date",description="The last transition time for the value in 'Status'"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
-// +kubebuilder:storageversion
 
 // BackupDRBackupPlan is the Schema for the BackupDRBackupPlan API
 // +k8s:openapi-gen=true

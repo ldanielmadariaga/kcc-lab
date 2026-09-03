@@ -46,7 +46,6 @@ type AcceleratorConfig struct {
 }
 */
 
-/* unreachable type AccessConfig
 // +kcc:proto=google.cloud.compute.v1.AccessConfig
 type AccessConfig struct {
 	// Applies to ipv6AccessConfigs only. The first IPv6 address of the external IPv6 range associated with this instance, prefix length is stored in externalIpv6PrefixLength in ipv6AccessConfig. To use a static external IP address, it must be unused and in the same region as the instance's zone. If not specified, Google Cloud will automatically assign an external IPv6 address from the instance's subnetwork.
@@ -91,9 +90,7 @@ type AccessConfig struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AccessConfig.type
 	Type *string `json:"type,omitempty"`
 }
-*/
 
-/* unreachable type AdvancedMachineFeatures
 // +kcc:proto=google.cloud.compute.v1.AdvancedMachineFeatures
 type AdvancedMachineFeatures struct {
 	// Whether to enable nested virtualization or not (default is false).
@@ -121,9 +118,7 @@ type AdvancedMachineFeatures struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AdvancedMachineFeatures.visible_core_count
 	VisibleCoreCount *int32 `json:"visibleCoreCount,omitempty"`
 }
-*/
 
-/* unreachable type AliasIPRange
 // +kcc:proto=google.cloud.compute.v1.AliasIpRange
 type AliasIPRange struct {
 	// The IP alias ranges to allocate for this interface. This IP CIDR range must belong to the specified subnetwork and cannot contain IP addresses reserved by system or used by other network interfaces. This range may be a single IP address (such as 10.2.3.4), a netmask (such as /24) or a CIDR-formatted string (such as 10.1.2.0/24).
@@ -134,9 +129,7 @@ type AliasIPRange struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AliasIpRange.subnetwork_range_name
 	SubnetworkRangeName *string `json:"subnetworkRangeName,omitempty"`
 }
-*/
 
-/* unreachable type AttachedDisk
 // +kcc:proto=google.cloud.compute.v1.AttachedDisk
 type AttachedDisk struct {
 	// [Output Only] The architecture of the attached disk. Valid values are ARM64 or X86_64.
@@ -216,9 +209,7 @@ type AttachedDisk struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AttachedDisk.type
 	Type *string `json:"type,omitempty"`
 }
-*/
 
-/* unreachable type AttachedDiskInitializeParams
 // +kcc:proto=google.cloud.compute.v1.AttachedDiskInitializeParams
 type AttachedDiskInitializeParams struct {
 	// The architecture of the attached disk. Valid values are arm64 or x86_64.
@@ -299,7 +290,6 @@ type AttachedDiskInitializeParams struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AttachedDiskInitializeParams.storage_pool
 	StoragePool *string `json:"storagePool,omitempty"`
 }
-*/
 
 /* found existing non-generated go type with proto tag "google.cloud.compute.v1.Autoscaler", skipping
 
@@ -337,8 +327,9 @@ type Autoscaler struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.region
 	Region *string `json:"region,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// [Output Only] Status information of existing scaling schedules.
+	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.scaling_schedule_status
+	ScalingScheduleStatus map[string]ScalingScheduleStatus `json:"scalingScheduleStatus,omitempty"`
 
 	// [Output Only] Server-defined URL for the resource.
 	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.self_link
@@ -363,7 +354,6 @@ type Autoscaler struct {
 }
 */
 
-/* unreachable type AutoscalerStatusDetails
 // +kcc:proto=google.cloud.compute.v1.AutoscalerStatusDetails
 type AutoscalerStatusDetails struct {
 	// The status message.
@@ -375,9 +365,6 @@ type AutoscalerStatusDetails struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AutoscalerStatusDetails.type
 	Type *string `json:"type,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.AutoscalingPolicy", skipping
 
 // +kcc:proto=google.cloud.compute.v1.AutoscalingPolicy
 type AutoscalingPolicy struct {
@@ -413,12 +400,10 @@ type AutoscalingPolicy struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AutoscalingPolicy.scale_in_control
 	ScaleInControl *AutoscalingPolicyScaleInControl `json:"scaleInControl,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
+	// Scaling schedules defined for an autoscaler. Multiple schedules can be set on an autoscaler, and they can overlap. During overlapping periods the greatest min_required_replicas of all scaling schedules is applied. Up to 128 scaling schedules are allowed.
+	// +kcc:proto:field=google.cloud.compute.v1.AutoscalingPolicy.scaling_schedules
+	ScalingSchedules map[string]AutoscalingPolicyScalingSchedule `json:"scalingSchedules,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.AutoscalingPolicyCpuUtilization", skipping
 
 // +kcc:proto=google.cloud.compute.v1.AutoscalingPolicyCpuUtilization
 type AutoscalingPolicyCPUUtilization struct {
@@ -431,9 +416,6 @@ type AutoscalingPolicyCPUUtilization struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AutoscalingPolicyCpuUtilization.utilization_target
 	UtilizationTarget *float64 `json:"utilizationTarget,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.AutoscalingPolicyCustomMetricUtilization", skipping
 
 // +kcc:proto=google.cloud.compute.v1.AutoscalingPolicyCustomMetricUtilization
 type AutoscalingPolicyCustomMetricUtilization struct {
@@ -458,9 +440,6 @@ type AutoscalingPolicyCustomMetricUtilization struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AutoscalingPolicyCustomMetricUtilization.utilization_target_type
 	UtilizationTargetType *string `json:"utilizationTargetType,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.AutoscalingPolicyLoadBalancingUtilization", skipping
 
 // +kcc:proto=google.cloud.compute.v1.AutoscalingPolicyLoadBalancingUtilization
 type AutoscalingPolicyLoadBalancingUtilization struct {
@@ -468,9 +447,6 @@ type AutoscalingPolicyLoadBalancingUtilization struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AutoscalingPolicyLoadBalancingUtilization.utilization_target
 	UtilizationTarget *float64 `json:"utilizationTarget,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.AutoscalingPolicyScaleInControl", skipping
 
 // +kcc:proto=google.cloud.compute.v1.AutoscalingPolicyScaleInControl
 type AutoscalingPolicyScaleInControl struct {
@@ -482,9 +458,6 @@ type AutoscalingPolicyScaleInControl struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AutoscalingPolicyScaleInControl.time_window_sec
 	TimeWindowSec *int32 `json:"timeWindowSec,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.AutoscalingPolicyScalingSchedule", skipping
 
 // +kcc:proto=google.cloud.compute.v1.AutoscalingPolicyScalingSchedule
 type AutoscalingPolicyScalingSchedule struct {
@@ -512,9 +485,7 @@ type AutoscalingPolicyScalingSchedule struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AutoscalingPolicyScalingSchedule.time_zone
 	TimeZone *string `json:"timeZone,omitempty"`
 }
-*/
 
-/* unreachable type ConfidentialInstanceConfig
 // +kcc:proto=google.cloud.compute.v1.ConfidentialInstanceConfig
 type ConfidentialInstanceConfig struct {
 	// Defines the type of technology used by the confidential instance.
@@ -526,9 +497,6 @@ type ConfidentialInstanceConfig struct {
 	// +kcc:proto:field=google.cloud.compute.v1.ConfidentialInstanceConfig.enable_confidential_compute
 	EnableConfidentialCompute *bool `json:"enableConfidentialCompute,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.CustomerEncryptionKey", skipping
 
 // +kcc:proto=google.cloud.compute.v1.CustomerEncryptionKey
 type CustomerEncryptionKey struct {
@@ -552,9 +520,7 @@ type CustomerEncryptionKey struct {
 	// +kcc:proto:field=google.cloud.compute.v1.CustomerEncryptionKey.sha256
 	Sha256 *string `json:"sha256,omitempty"`
 }
-*/
 
-/* unreachable type Data
 // +kcc:proto=google.cloud.compute.v1.Data
 type Data struct {
 	// [Output Only] A key that provides more detail on the warning being returned. For example, for warnings where there are no results in a list request for a particular zone, this key might be scope and the key value might be the zone name. Other examples might be a key indicating a deprecated resource and a suggested replacement, or a warning about invalid network settings (for example, if an instance attempts to perform IP forwarding but is not enabled for IP forwarding).
@@ -565,7 +531,6 @@ type Data struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Data.value
 	Value *string `json:"value,omitempty"`
 }
-*/
 
 /* found existing non-generated go type "Duration", skipping
 
@@ -581,7 +546,6 @@ type Duration struct {
 }
 */
 
-/* unreachable type Expr
 // +kcc:proto=google.cloud.compute.v1.Expr
 type Expr struct {
 	// Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.
@@ -600,9 +564,7 @@ type Expr struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Expr.title
 	Title *string `json:"title,omitempty"`
 }
-*/
 
-/* unreachable type FileContentBuffer
 // +kcc:proto=google.cloud.compute.v1.FileContentBuffer
 type FileContentBuffer struct {
 	// The raw content in the secure keys file.
@@ -614,9 +576,6 @@ type FileContentBuffer struct {
 	// +kcc:proto:field=google.cloud.compute.v1.FileContentBuffer.file_type
 	FileType *string `json:"fileType,omitempty"`
 }
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.FixedOrPercent", skipping
 
 // +kcc:proto=google.cloud.compute.v1.FixedOrPercent
 type FixedOrPercent struct {
@@ -632,9 +591,7 @@ type FixedOrPercent struct {
 	// +kcc:proto:field=google.cloud.compute.v1.FixedOrPercent.percent
 	Percent *int32 `json:"percent,omitempty"`
 }
-*/
 
-/* unreachable type GuestOSFeature
 // +kcc:proto=google.cloud.compute.v1.GuestOsFeature
 type GuestOSFeature struct {
 	// The ID of a supported feature. To add multiple values, use commas to separate values. Set to one or more of the following values: - VIRTIO_SCSI_MULTIQUEUE - WINDOWS - MULTI_IP_SUBNET - UEFI_COMPATIBLE - GVNIC - SEV_CAPABLE - SUSPEND_RESUME_COMPATIBLE - SEV_LIVE_MIGRATABLE_V2 - SEV_SNP_CAPABLE - TDX_CAPABLE - IDPF - SNP_SVSM_CAPABLE For more information, see Enabling guest operating system features.
@@ -642,9 +599,7 @@ type GuestOSFeature struct {
 	// +kcc:proto:field=google.cloud.compute.v1.GuestOsFeature.type
 	Type *string `json:"type,omitempty"`
 }
-*/
 
-/* unreachable type InitialStateConfig
 // +kcc:proto=google.cloud.compute.v1.InitialStateConfig
 type InitialStateConfig struct {
 	// The Key Database (db).
@@ -663,9 +618,7 @@ type InitialStateConfig struct {
 	// +kcc:proto:field=google.cloud.compute.v1.InitialStateConfig.pk
 	Pk *FileContentBuffer `json:"pk,omitempty"`
 }
-*/
 
-/* unreachable type InstanceProperties
 // +kcc:proto=google.cloud.compute.v1.InstanceProperties
 type InstanceProperties struct {
 	// Controls for advanced machine-related behavior features. Note that for MachineImage, this is not supported yet.
@@ -754,10 +707,8 @@ type InstanceProperties struct {
 	// +kcc:proto:field=google.cloud.compute.v1.InstanceProperties.tags
 	Tags *Tags `json:"tags,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Interconnect", skipping
-
+/* unreachable type Interconnect
 // +kcc:proto=google.cloud.compute.v1.Interconnect
 type Interconnect struct {
 	// Enable or disable the application awareness feature on this Cloud Interconnect.
@@ -900,7 +851,6 @@ type Interconnect struct {
 }
 */
 
-/* unreachable type InterconnectApplicationAwareInterconnect
 // +kcc:proto=google.cloud.compute.v1.InterconnectApplicationAwareInterconnect
 type InterconnectApplicationAwareInterconnect struct {
 	// +kcc:proto:field=google.cloud.compute.v1.InterconnectApplicationAwareInterconnect.bandwidth_percentage_policy
@@ -917,9 +867,7 @@ type InterconnectApplicationAwareInterconnect struct {
 	// +kcc:proto:field=google.cloud.compute.v1.InterconnectApplicationAwareInterconnect.strict_priority_policy
 	StrictPriorityPolicy *InterconnectApplicationAwareInterconnectStrictPriorityPolicy `json:"strictPriorityPolicy,omitempty"`
 }
-*/
 
-/* unreachable type InterconnectApplicationAwareInterconnectBandwidthPercentage
 // +kcc:proto=google.cloud.compute.v1.InterconnectApplicationAwareInterconnectBandwidthPercentage
 type InterconnectApplicationAwareInterconnectBandwidthPercentage struct {
 	// Bandwidth percentage for a specific traffic class.
@@ -931,22 +879,17 @@ type InterconnectApplicationAwareInterconnectBandwidthPercentage struct {
 	// +kcc:proto:field=google.cloud.compute.v1.InterconnectApplicationAwareInterconnectBandwidthPercentage.traffic_class
 	TrafficClass *string `json:"trafficClass,omitempty"`
 }
-*/
 
-/* unreachable type InterconnectApplicationAwareInterconnectBandwidthPercentagePolicy
 // +kcc:proto=google.cloud.compute.v1.InterconnectApplicationAwareInterconnectBandwidthPercentagePolicy
 type InterconnectApplicationAwareInterconnectBandwidthPercentagePolicy struct {
 	// Specify bandwidth percentages for various traffic classes for queuing type Bandwidth Percent.
 	// +kcc:proto:field=google.cloud.compute.v1.InterconnectApplicationAwareInterconnectBandwidthPercentagePolicy.bandwidth_percentages
 	BandwidthPercentages []InterconnectApplicationAwareInterconnectBandwidthPercentage `json:"bandwidthPercentages,omitempty"`
 }
-*/
 
-/* unreachable type InterconnectApplicationAwareInterconnectStrictPriorityPolicy
 // +kcc:proto=google.cloud.compute.v1.InterconnectApplicationAwareInterconnectStrictPriorityPolicy
 type InterconnectApplicationAwareInterconnectStrictPriorityPolicy struct {
 }
-*/
 
 /* found existing non-generated go type "InterconnectCircuitInfo", skipping
 
@@ -1035,7 +978,6 @@ type InterconnectOutageNotification struct {
 }
 */
 
-/* unreachable type Items
 // +kcc:proto=google.cloud.compute.v1.Items
 type Items struct {
 	// Key for the metadata entry. Keys must conform to the following regexp: [a-zA-Z0-9-_]+, and be less than 128 bytes in length. This is reflected as part of a URL in the metadata server. Additionally, to avoid ambiguity, keys must not conflict with any other metadata keys for the project.
@@ -1046,7 +988,6 @@ type Items struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Items.value
 	Value *string `json:"value,omitempty"`
 }
-*/
 
 /* found existing non-generated go type with proto tag "google.cloud.compute.v1.MachineImage", skipping
 
@@ -1135,7 +1076,6 @@ type MachineImage struct {
 }
 */
 
-/* unreachable type Metadata
 // +kcc:proto=google.cloud.compute.v1.Metadata
 type Metadata struct {
 	// Specifies a fingerprint for this request, which is essentially a hash of the metadata's contents and used for optimistic locking. The fingerprint is initially generated by Compute Engine and changes after every request to modify or update metadata. You must always provide an up-to-date fingerprint hash in order to update or change metadata, otherwise the request will fail with error 412 conditionNotMet. To see the latest fingerprint, make a get() request to retrieve the resource.
@@ -1150,10 +1090,8 @@ type Metadata struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Metadata.kind
 	Kind *string `json:"kind,omitempty"`
 }
-*/
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.NetworkAttachment", skipping
-
+/* unreachable type NetworkAttachment
 // +kcc:proto=google.cloud.compute.v1.NetworkAttachment
 type NetworkAttachment struct {
 	// [Output Only] An array of connections for all the producers connected to this network attachment.
@@ -1253,8 +1191,7 @@ type NetworkAttachmentConnectedEndpoint struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.compute.v1.NetworkEdgeSecurityService", skipping
-
+/* unreachable type NetworkEdgeSecurityService
 // +kcc:proto=google.cloud.compute.v1.NetworkEdgeSecurityService
 type NetworkEdgeSecurityService struct {
 	// [Output Only] Creation timestamp in RFC3339 text format.
@@ -1333,7 +1270,6 @@ type NetworkEndpoint struct {
 }
 */
 
-/* unreachable type NetworkInterface
 // +kcc:proto=google.cloud.compute.v1.NetworkInterface
 type NetworkInterface struct {
 	// An array of configurations for this interface. Currently, only one access config, ONE_TO_ONE_NAT, is supported. If there are no accessConfigs specified, then this instance will have no external internet access.
@@ -1378,6 +1314,7 @@ type NetworkInterface struct {
 	Network *string `json:"network,omitempty"`
 
 	// The URL of the network attachment that this interface should connect to in the following format: projects/{project_number}/regions/{region_name}/networkAttachments/{network_attachment_name}.
+	// +kcc:guess=possible-reference target=ComputeNetworkAttachment
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkInterface.network_attachment
 	NetworkAttachment *string `json:"networkAttachment,omitempty"`
 
@@ -1403,16 +1340,13 @@ type NetworkInterface struct {
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkInterface.subnetwork
 	Subnetwork *string `json:"subnetwork,omitempty"`
 }
-*/
 
-/* unreachable type NetworkPerformanceConfig
 // +kcc:proto=google.cloud.compute.v1.NetworkPerformanceConfig
 type NetworkPerformanceConfig struct {
 	// Check the TotalEgressBandwidthTier enum for the list of possible values.
 	// +kcc:proto:field=google.cloud.compute.v1.NetworkPerformanceConfig.total_egress_bandwidth_tier
 	TotalEgressBandwidthTier *string `json:"totalEgressBandwidthTier,omitempty"`
 }
-*/
 
 /* found existing non-generated go type with proto tag "google.cloud.compute.v1.PerInstanceConfig", skipping
 
@@ -1437,23 +1371,25 @@ type PerInstanceConfig struct {
 }
 */
 
-/* unreachable type PreservedState
 // +kcc:proto=google.cloud.compute.v1.PreservedState
 type PreservedState struct {
+	// Preserved disks defined for this instance. This map is keyed with the device names of the disks.
+	// +kcc:proto:field=google.cloud.compute.v1.PreservedState.disks
+	Disks map[string]PreservedStatePreservedDisk `json:"disks,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// Preserved external IPs defined for this instance. This map is keyed with the name of the network interface.
+	// +kcc:proto:field=google.cloud.compute.v1.PreservedState.external_i_ps
+	ExternalIPs map[string]PreservedStatePreservedNetworkIP `json:"externalIPs,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
-
-	// TODO: unsupported map type with key string and value message
+	// Preserved internal IPs defined for this instance. This map is keyed with the name of the network interface.
+	// +kcc:proto:field=google.cloud.compute.v1.PreservedState.internal_i_ps
+	InternalIPs map[string]PreservedStatePreservedNetworkIP `json:"internalIPs,omitempty"`
 
 	// Preserved metadata defined for this instance.
 	// +kcc:proto:field=google.cloud.compute.v1.PreservedState.metadata
 	Metadata map[string]string `json:"metadata,omitempty"`
 }
-*/
 
-/* unreachable type PreservedStatePreservedDisk
 // +kcc:proto=google.cloud.compute.v1.PreservedStatePreservedDisk
 type PreservedStatePreservedDisk struct {
 	// These stateful disks will never be deleted during autohealing, update, instance recreate operations. This flag is used to configure if the disk should be deleted after it is no longer used by the group, e.g. when the given instance or the whole MIG is deleted. Note: disks attached in READ_ONLY mode cannot be auto-deleted.
@@ -1470,9 +1406,7 @@ type PreservedStatePreservedDisk struct {
 	// +kcc:proto:field=google.cloud.compute.v1.PreservedStatePreservedDisk.source
 	Source *string `json:"source,omitempty"`
 }
-*/
 
-/* unreachable type PreservedStatePreservedNetworkIP
 // +kcc:proto=google.cloud.compute.v1.PreservedStatePreservedNetworkIp
 type PreservedStatePreservedNetworkIP struct {
 	// These stateful IPs will never be released during autohealing, update or VM instance recreate operations. This flag is used to configure if the IP reservation should be deleted after it is no longer used by the group, e.g. when the given instance or the whole group is deleted.
@@ -1484,9 +1418,7 @@ type PreservedStatePreservedNetworkIP struct {
 	// +kcc:proto:field=google.cloud.compute.v1.PreservedStatePreservedNetworkIp.ip_address
 	IPAddress *PreservedStatePreservedNetworkIPIPAddress `json:"ipAddress,omitempty"`
 }
-*/
 
-/* unreachable type PreservedStatePreservedNetworkIPIPAddress
 // +kcc:proto=google.cloud.compute.v1.PreservedStatePreservedNetworkIpIpAddress
 type PreservedStatePreservedNetworkIPIPAddress struct {
 	// The URL of the reservation for this IP address.
@@ -1497,9 +1429,7 @@ type PreservedStatePreservedNetworkIPIPAddress struct {
 	// +kcc:proto:field=google.cloud.compute.v1.PreservedStatePreservedNetworkIpIpAddress.literal
 	Literal *string `json:"literal,omitempty"`
 }
-*/
 
-/* unreachable type ReservationAffinity
 // +kcc:proto=google.cloud.compute.v1.ReservationAffinity
 type ReservationAffinity struct {
 	// Specifies the type of reservation from which this instance can consume resources: ANY_RESERVATION (default), SPECIFIC_RESERVATION, or NO_RESERVATION. See Consuming reserved instances for examples.
@@ -1515,9 +1445,7 @@ type ReservationAffinity struct {
 	// +kcc:proto:field=google.cloud.compute.v1.ReservationAffinity.values
 	Values []string `json:"values,omitempty"`
 }
-*/
 
-/* unreachable type SavedAttachedDisk
 // +kcc:proto=google.cloud.compute.v1.SavedAttachedDisk
 type SavedAttachedDisk struct {
 	// Specifies whether the disk will be auto-deleted when the instance is deleted (but not when the disk is detached from the instance).
@@ -1588,9 +1516,7 @@ type SavedAttachedDisk struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SavedAttachedDisk.type
 	Type *string `json:"type,omitempty"`
 }
-*/
 
-/* unreachable type SavedDisk
 // +kcc:proto=google.cloud.compute.v1.SavedDisk
 type SavedDisk struct {
 	// [Output Only] The architecture of the attached disk.
@@ -1615,9 +1541,7 @@ type SavedDisk struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SavedDisk.storage_bytes_status
 	StorageBytesStatus *string `json:"storageBytesStatus,omitempty"`
 }
-*/
 
-/* unreachable type ScalingScheduleStatus
 // +kcc:proto=google.cloud.compute.v1.ScalingScheduleStatus
 type ScalingScheduleStatus struct {
 	// [Output Only] The last time the scaling schedule became active. Note: this is a timestamp when a schedule actually became active, not when it was planned to do so. The timestamp is in RFC3339 text format.
@@ -1633,9 +1557,7 @@ type ScalingScheduleStatus struct {
 	// +kcc:proto:field=google.cloud.compute.v1.ScalingScheduleStatus.state
 	State *string `json:"state,omitempty"`
 }
-*/
 
-/* unreachable type Scheduling
 // +kcc:proto=google.cloud.compute.v1.Scheduling
 type Scheduling struct {
 	// Specifies whether the instance should be automatically restarted if it is terminated by Compute Engine (not terminated by a user). You can only set the automatic restart option for standard instances. Preemptible instances cannot be automatically restarted. By default, this is set to true so an instance is automatically restarted if it is terminated by Compute Engine.
@@ -1669,7 +1591,7 @@ type Scheduling struct {
 
 	// The minimum number of virtual CPUs this instance will consume when running on a sole-tenant node.
 	// +kcc:proto:field=google.cloud.compute.v1.Scheduling.min_node_cpus
-	MinNodeCpus *int32 `json:"minNodeCpus,omitempty"`
+	MinNodeCPUs *int32 `json:"minNodeCPUs,omitempty"`
 
 	// A set of node affinity and anti-affinity configurations. Refer to Configuring node affinity for more information. Overrides reservationAffinity.
 	// +kcc:proto:field=google.cloud.compute.v1.Scheduling.node_affinities
@@ -1696,9 +1618,7 @@ type Scheduling struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Scheduling.termination_time
 	TerminationTime *string `json:"terminationTime,omitempty"`
 }
-*/
 
-/* unreachable type SchedulingNodeAffinity
 // +kcc:proto=google.cloud.compute.v1.SchedulingNodeAffinity
 type SchedulingNodeAffinity struct {
 	// Corresponds to the label key of Node resource.
@@ -1714,16 +1634,13 @@ type SchedulingNodeAffinity struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SchedulingNodeAffinity.values
 	Values []string `json:"values,omitempty"`
 }
-*/
 
-/* unreachable type SchedulingOnInstanceStopAction
 // +kcc:proto=google.cloud.compute.v1.SchedulingOnInstanceStopAction
 type SchedulingOnInstanceStopAction struct {
 	// If true, the contents of any attached Local SSD disks will be discarded else, the Local SSD data will be preserved when the instance is stopped at the end of the run duration/termination time.
 	// +kcc:proto:field=google.cloud.compute.v1.SchedulingOnInstanceStopAction.discard_local_ssd
 	DiscardLocalSsd *bool `json:"discardLocalSsd,omitempty"`
 }
-*/
 
 /* found existing non-generated go type with proto tag "google.cloud.compute.v1.SecurityPolicy", skipping
 
@@ -1796,16 +1713,13 @@ type SecurityPolicy struct {
 }
 */
 
-/* unreachable type SecurityPolicyAdaptiveProtectionConfig
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyAdaptiveProtectionConfig
 type SecurityPolicyAdaptiveProtectionConfig struct {
 	// If set to true, enables Cloud Armor Machine Learning.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyAdaptiveProtectionConfig.layer7_ddos_defense_config
 	Layer7DdosDefenseConfig *SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfig `json:"layer7DdosDefenseConfig,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfig
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfig
 type SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfig struct {
 	// If set to true, enables CAAP for L7 DDoS detection. This field is only supported in Global Security Policies of type CLOUD_ARMOR.
@@ -1821,9 +1735,7 @@ type SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfig struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfig.threshold_configs
 	ThresholdConfigs []SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfigThresholdConfig `json:"thresholdConfigs,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfigThresholdConfig
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfigThresholdConfig
 type SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfigThresholdConfig struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfigThresholdConfig.auto_deploy_confidence_threshold
@@ -1855,9 +1767,7 @@ type SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfigThresholdConfi
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfigThresholdConfig.traffic_granularity_configs
 	TrafficGranularityConfigs []SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfigThresholdConfigTrafficGranularityConfig `json:"trafficGranularityConfigs,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfigThresholdConfigTrafficGranularityConfig
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfigThresholdConfigTrafficGranularityConfig
 type SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfigThresholdConfigTrafficGranularityConfig struct {
 	// If enabled, traffic matching each unique value for the specified type constitutes a separate traffic unit. It can only be set to true if `value` is empty.
@@ -1873,9 +1783,7 @@ type SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfigThresholdConfi
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyAdaptiveProtectionConfigLayer7DdosDefenseConfigThresholdConfigTrafficGranularityConfig.value
 	Value *string `json:"value,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyAdvancedOptionsConfig
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyAdvancedOptionsConfig
 type SecurityPolicyAdvancedOptionsConfig struct {
 	// Custom configuration to apply the JSON parsing. Only applicable when json_parsing is set to STANDARD.
@@ -1894,36 +1802,28 @@ type SecurityPolicyAdvancedOptionsConfig struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyAdvancedOptionsConfig.user_ip_request_headers
 	UserIPRequestHeaders []string `json:"userIPRequestHeaders,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyAdvancedOptionsConfigJsonCustomConfig
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyAdvancedOptionsConfigJsonCustomConfig
 type SecurityPolicyAdvancedOptionsConfigJsonCustomConfig struct {
 	// A list of custom Content-Type header values to apply the JSON parsing. As per RFC 1341, a Content-Type header value has the following format: Content-Type := type "/" subtype *[";" parameter] When configuring a custom Content-Type header value, only the type/subtype needs to be specified, and the parameters should be excluded.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyAdvancedOptionsConfigJsonCustomConfig.content_types
 	ContentTypes []string `json:"contentTypes,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyDdosProtectionConfig
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyDdosProtectionConfig
 type SecurityPolicyDdosProtectionConfig struct {
 	// Check the DdosProtection enum for the list of possible values.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyDdosProtectionConfig.ddos_protection
 	DdosProtection *string `json:"ddosProtection,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRecaptchaOptionsConfig
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRecaptchaOptionsConfig
 type SecurityPolicyRecaptchaOptionsConfig struct {
 	// An optional field to supply a reCAPTCHA site key to be used for all the rules using the redirect action with the type of GOOGLE_RECAPTCHA under the security policy. The specified site key needs to be created from the reCAPTCHA API. The user is responsible for the validity of the specified site key. If not specified, a Google-managed site key is used. This field is only supported in Global Security Policies of type CLOUD_ARMOR.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRecaptchaOptionsConfig.redirect_site_key
 	RedirectSiteKey *string `json:"redirectSiteKey,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRule
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRule
 type SecurityPolicyRule struct {
 	// The Action to perform when the rule is matched. The following are the valid actions: - allow: allow access to target. - deny(STATUS): deny access to target, returns the HTTP response code specified. Valid values for `STATUS` are 403, 404, and 502. - rate_based_ban: limit client traffic to the configured threshold and ban the client if the traffic exceeds the threshold. Configure parameters for this action in RateLimitOptions. Requires rate_limit_options to be set. - redirect: redirect to a different target. This can either be an internal reCAPTCHA redirect, or an external URL-based redirect via a 302 response. Parameters for this action can be configured via redirectOptions. This action is only supported in Global Security Policies of type CLOUD_ARMOR. - throttle: limit client traffic to the configured threshold. Configure parameters for this action in rateLimitOptions. Requires rate_limit_options to be set for this.
@@ -1970,18 +1870,14 @@ type SecurityPolicyRule struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRule.redirect_options
 	RedirectOptions *SecurityPolicyRuleRedirectOptions `json:"redirectOptions,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRuleHTTPHeaderAction
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRuleHttpHeaderAction
 type SecurityPolicyRuleHTTPHeaderAction struct {
 	// The list of request headers to add or overwrite if they're already present.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRuleHttpHeaderAction.request_headers_to_adds
 	RequestHeadersToAdds []SecurityPolicyRuleHTTPHeaderActionHTTPHeaderOption `json:"requestHeadersToAdds,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRuleHTTPHeaderActionHTTPHeaderOption
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRuleHttpHeaderActionHttpHeaderOption
 type SecurityPolicyRuleHTTPHeaderActionHTTPHeaderOption struct {
 	// The name of the header to set.
@@ -1992,9 +1888,7 @@ type SecurityPolicyRuleHTTPHeaderActionHTTPHeaderOption struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRuleHttpHeaderActionHttpHeaderOption.header_value
 	HeaderValue *string `json:"headerValue,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRuleMatcher
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRuleMatcher
 type SecurityPolicyRuleMatcher struct {
 	// The configuration options available when specifying versioned_expr. This field must be specified if versioned_expr is specified and cannot be specified if versioned_expr is not specified.
@@ -2014,27 +1908,21 @@ type SecurityPolicyRuleMatcher struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRuleMatcher.versioned_expr
 	VersionedExpr *string `json:"versionedExpr,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRuleMatcherConfig
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRuleMatcherConfig
 type SecurityPolicyRuleMatcherConfig struct {
 	// CIDR IP address range. Maximum number of src_ip_ranges allowed is 10.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRuleMatcherConfig.src_ip_ranges
 	SrcIPRanges []string `json:"srcIPRanges,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRuleMatcherExprOptions
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRuleMatcherExprOptions
 type SecurityPolicyRuleMatcherExprOptions struct {
 	// reCAPTCHA configuration options to be applied for the rule. If the rule does not evaluate reCAPTCHA tokens, this field has no effect.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRuleMatcherExprOptions.recaptcha_options
 	RecaptchaOptions *SecurityPolicyRuleMatcherExprOptionsRecaptchaOptions `json:"recaptchaOptions,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRuleMatcherExprOptionsRecaptchaOptions
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRuleMatcherExprOptionsRecaptchaOptions
 type SecurityPolicyRuleMatcherExprOptionsRecaptchaOptions struct {
 	// A list of site keys to be used during the validation of reCAPTCHA action-tokens. The provided site keys need to be created from reCAPTCHA API under the same project where the security policy is created.
@@ -2045,9 +1933,7 @@ type SecurityPolicyRuleMatcherExprOptionsRecaptchaOptions struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRuleMatcherExprOptionsRecaptchaOptions.session_token_site_keys
 	SessionTokenSiteKeys []string `json:"sessionTokenSiteKeys,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRuleNetworkMatcher
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRuleNetworkMatcher
 type SecurityPolicyRuleNetworkMatcher struct {
 	// Destination IPv4/IPv6 addresses or CIDR prefixes, in standard text format.
@@ -2082,9 +1968,7 @@ type SecurityPolicyRuleNetworkMatcher struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRuleNetworkMatcher.user_defined_fields
 	UserDefinedFields []SecurityPolicyRuleNetworkMatcherUserDefinedFieldMatch `json:"userDefinedFields,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRuleNetworkMatcherUserDefinedFieldMatch
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRuleNetworkMatcherUserDefinedFieldMatch
 type SecurityPolicyRuleNetworkMatcherUserDefinedFieldMatch struct {
 	// Name of the user-defined field, as given in the definition.
@@ -2095,18 +1979,14 @@ type SecurityPolicyRuleNetworkMatcherUserDefinedFieldMatch struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRuleNetworkMatcherUserDefinedFieldMatch.values
 	Values []string `json:"values,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRulePreconfiguredWafConfig
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRulePreconfiguredWafConfig
 type SecurityPolicyRulePreconfiguredWafConfig struct {
 	// A list of exclusions to apply during preconfigured WAF evaluation.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRulePreconfiguredWafConfig.exclusions
 	Exclusions []SecurityPolicyRulePreconfiguredWafConfigExclusion `json:"exclusions,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRulePreconfiguredWafConfigExclusion
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRulePreconfiguredWafConfigExclusion
 type SecurityPolicyRulePreconfiguredWafConfigExclusion struct {
 	// A list of request cookie names whose value will be excluded from inspection during preconfigured WAF evaluation.
@@ -2123,19 +2003,17 @@ type SecurityPolicyRulePreconfiguredWafConfigExclusion struct {
 
 	// A list of request URIs from the request line to be excluded from inspection during preconfigured WAF evaluation. When specifying this field, the query or fragment part should be excluded.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRulePreconfiguredWafConfigExclusion.request_uris_to_exclude
-	RequestUrisToExclude []SecurityPolicyRulePreconfiguredWafConfigExclusionFieldParams `json:"requestUrisToExclude,omitempty"`
+	RequestURIsToExclude []SecurityPolicyRulePreconfiguredWafConfigExclusionFieldParams `json:"requestURIsToExclude,omitempty"`
 
 	// A list of target rule IDs under the WAF rule set to apply the preconfigured WAF exclusion. If omitted, it refers to all the rule IDs under the WAF rule set.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRulePreconfiguredWafConfigExclusion.target_rule_ids
-	TargetRuleIds []string `json:"targetRuleIds,omitempty"`
+	TargetRuleIDs []string `json:"targetRuleIDs,omitempty"`
 
 	// Target WAF rule set to apply the preconfigured WAF exclusion.
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRulePreconfiguredWafConfigExclusion.target_rule_set
 	TargetRuleSet *string `json:"targetRuleSet,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRulePreconfiguredWafConfigExclusionFieldParams
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRulePreconfiguredWafConfigExclusionFieldParams
 type SecurityPolicyRulePreconfiguredWafConfigExclusionFieldParams struct {
 	// The match operator for the field.
@@ -2147,9 +2025,7 @@ type SecurityPolicyRulePreconfiguredWafConfigExclusionFieldParams struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRulePreconfiguredWafConfigExclusionFieldParams.val
 	Val *string `json:"val,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRuleRateLimitOptions
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRuleRateLimitOptions
 type SecurityPolicyRuleRateLimitOptions struct {
 	// Can only be specified if the action for the rule is "rate_based_ban". If specified, determines the time (in seconds) the traffic will continue to be banned by the rate limit after the rate falls below the threshold.
@@ -2189,9 +2065,7 @@ type SecurityPolicyRuleRateLimitOptions struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRuleRateLimitOptions.rate_limit_threshold
 	RateLimitThreshold *SecurityPolicyRuleRateLimitOptionsThreshold `json:"rateLimitThreshold,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRuleRateLimitOptionsEnforceOnKeyConfig
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRuleRateLimitOptionsEnforceOnKeyConfig
 type SecurityPolicyRuleRateLimitOptionsEnforceOnKeyConfig struct {
 	// Rate limit key name applicable only for the following key types: HTTP_HEADER -- Name of the HTTP header whose value is taken as the key value. HTTP_COOKIE -- Name of the HTTP cookie whose value is taken as the key value.
@@ -2203,9 +2077,7 @@ type SecurityPolicyRuleRateLimitOptionsEnforceOnKeyConfig struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRuleRateLimitOptionsEnforceOnKeyConfig.enforce_on_key_type
 	EnforceOnKeyType *string `json:"enforceOnKeyType,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRuleRateLimitOptionsThreshold
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRuleRateLimitOptionsThreshold
 type SecurityPolicyRuleRateLimitOptionsThreshold struct {
 	// Number of HTTP(S) requests for calculating the threshold.
@@ -2216,9 +2088,7 @@ type SecurityPolicyRuleRateLimitOptionsThreshold struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRuleRateLimitOptionsThreshold.interval_sec
 	IntervalSec *int32 `json:"intervalSec,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyRuleRedirectOptions
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyRuleRedirectOptions
 type SecurityPolicyRuleRedirectOptions struct {
 	// Target for the redirect action. This is required if the type is EXTERNAL_302 and cannot be specified for GOOGLE_RECAPTCHA.
@@ -2230,9 +2100,7 @@ type SecurityPolicyRuleRedirectOptions struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyRuleRedirectOptions.type
 	Type *string `json:"type,omitempty"`
 }
-*/
 
-/* unreachable type SecurityPolicyUserDefinedField
 // +kcc:proto=google.cloud.compute.v1.SecurityPolicyUserDefinedField
 type SecurityPolicyUserDefinedField struct {
 	// The base relative to which 'offset' is measured. Possible values are: - IPV4: Points to the beginning of the IPv4 header. - IPV6: Points to the beginning of the IPv6 header. - TCP: Points to the beginning of the TCP header, skipping over any IPv4 options or IPv6 extension headers. Not present for non-first fragments. - UDP: Points to the beginning of the UDP header, skipping over any IPv4 options or IPv6 extension headers. Not present for non-first fragments. required
@@ -2256,9 +2124,7 @@ type SecurityPolicyUserDefinedField struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicyUserDefinedField.size
 	Size *int32 `json:"size,omitempty"`
 }
-*/
 
-/* unreachable type ServiceAccount
 // +kcc:proto=google.cloud.compute.v1.ServiceAccount
 type ServiceAccount struct {
 	// Email address of the service account.
@@ -2269,9 +2135,7 @@ type ServiceAccount struct {
 	// +kcc:proto:field=google.cloud.compute.v1.ServiceAccount.scopes
 	Scopes []string `json:"scopes,omitempty"`
 }
-*/
 
-/* unreachable type ShieldedInstanceConfig
 // +kcc:proto=google.cloud.compute.v1.ShieldedInstanceConfig
 type ShieldedInstanceConfig struct {
 	// Defines whether the instance has integrity monitoring enabled. Enabled by default.
@@ -2286,7 +2150,6 @@ type ShieldedInstanceConfig struct {
 	// +kcc:proto:field=google.cloud.compute.v1.ShieldedInstanceConfig.enable_vtpm
 	EnableVTPM *bool `json:"enableVTPM,omitempty"`
 }
-*/
 
 /* found existing non-generated go type with proto tag "google.cloud.compute.v1.SignedUrlKey", skipping
 
@@ -2302,7 +2165,6 @@ type SignedURLKey struct {
 }
 */
 
-/* unreachable type SourceDiskEncryptionKey
 // +kcc:proto=google.cloud.compute.v1.SourceDiskEncryptionKey
 type SourceDiskEncryptionKey struct {
 	// The customer-supplied encryption key of the source disk. Required if the source disk is protected by a customer-supplied encryption key.
@@ -2313,9 +2175,7 @@ type SourceDiskEncryptionKey struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SourceDiskEncryptionKey.source_disk
 	SourceDisk *string `json:"sourceDisk,omitempty"`
 }
-*/
 
-/* unreachable type SourceInstanceProperties
 // +kcc:proto=google.cloud.compute.v1.SourceInstanceProperties
 type SourceInstanceProperties struct {
 	// Enables instances created based on this machine image to send packets with source IP addresses other than their own and receive packets with destination IP addresses other than their own. If these instances will be used as an IP gateway or it will be set as the next-hop in a Route resource, specify true. If unsure, leave this set to false. See the Enable IP forwarding documentation for more information.
@@ -2375,7 +2235,6 @@ type SourceInstanceProperties struct {
 	// +kcc:proto:field=google.cloud.compute.v1.SourceInstanceProperties.tags
 	Tags *Tags `json:"tags,omitempty"`
 }
-*/
 
 /* found existing non-generated go type with proto tag "google.cloud.compute.v1.SslPolicy", skipping
 
@@ -2437,7 +2296,6 @@ type SSLPolicy struct {
 }
 */
 
-/* unreachable type Tags
 // +kcc:proto=google.cloud.compute.v1.Tags
 type Tags struct {
 	// Specifies a fingerprint for this request, which is essentially a hash of the tags' contents and used for optimistic locking. The fingerprint is initially generated by Compute Engine and changes after every request to modify or update tags. You must always provide an up-to-date fingerprint hash in order to update or change tags. To see the latest fingerprint, make get() request to the instance.
@@ -2448,9 +2306,7 @@ type Tags struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Tags.items
 	Items []string `json:"items,omitempty"`
 }
-*/
 
-/* unreachable type Warnings
 // +kcc:proto=google.cloud.compute.v1.Warnings
 type Warnings struct {
 	// [Output Only] A warning code, if applicable. For example, Compute Engine returns NO_RESULTS_ON_PAGE if there are no results in the response.
@@ -2466,7 +2322,6 @@ type Warnings struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Warnings.message
 	Message *string `json:"message,omitempty"`
 }
-*/
 
 /* found existing non-generated go type "AcceleratorConfig", skipping
 
@@ -2481,8 +2336,6 @@ type AcceleratorConfig struct {
 	AcceleratorType *string `json:"acceleratorType,omitempty"`
 }
 */
-
-/* found existing non-generated go type "AllocationAggregateReservation", skipping
 
 // +kcc:proto=google.cloud.compute.v1beta.AllocationAggregateReservation
 type AllocationAggregateReservation struct {
@@ -2504,7 +2357,6 @@ type AllocationAggregateReservation struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.AllocationAggregateReservation.workload_type
 	WorkloadType *string `json:"workloadType,omitempty"`
 }
-*/
 
 /* found existing non-generated go type "AllocationAggregateReservationReservedResourceInfo", skipping
 
@@ -2825,8 +2677,6 @@ type FutureReservationStatusLastKnownGoodState struct {
 }
 */
 
-/* found existing non-generated go type "FutureReservationStatusLastKnownGoodStateFutureReservationSpecs", skipping
-
 // +kcc:proto=google.cloud.compute.v1beta.FutureReservationStatusLastKnownGoodStateFutureReservationSpecs
 type FutureReservationStatusLastKnownGoodStateFutureReservationSpecs struct {
 	// [Output Only] The previous share settings of the Future Reservation.
@@ -2841,7 +2691,6 @@ type FutureReservationStatusLastKnownGoodStateFutureReservationSpecs struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservationStatusLastKnownGoodStateFutureReservationSpecs.time_window
 	TimeWindow *FutureReservationTimeWindow `json:"timeWindow,omitempty"`
 }
-*/
 
 /* found existing non-generated go type "FutureReservationStatusSpecificSkuProperties", skipping
 
@@ -2869,13 +2718,11 @@ type FutureReservationTimeWindow struct {
 }
 */
 
-/* found existing non-generated go type "ShareSettings", skipping
-
 // +kcc:proto=google.cloud.compute.v1beta.ShareSettings
 type ShareSettings struct {
-
-	// TODO: unsupported map type with key string and value message
-
+	// A map of project id and project config. This is only valid when share_type's value is SPECIFIC_PROJECTS.
+	// +kcc:proto:field=google.cloud.compute.v1beta.ShareSettings.project_map
+	ProjectMap map[string]ShareSettingsProjectConfig `json:"projectMap,omitempty"`
 
 	// A List of Project names to specify consumer projects for this shared-reservation. This is only valid when share_type's value is SPECIFIC_PROJECTS.
 	// +kcc:proto:field=google.cloud.compute.v1beta.ShareSettings.projects
@@ -2886,14 +2733,194 @@ type ShareSettings struct {
 	// +kcc:proto:field=google.cloud.compute.v1beta.ShareSettings.share_type
 	ShareType *string `json:"shareType,omitempty"`
 }
-*/
-
-/* found existing non-generated go type "ShareSettingsProjectConfig", skipping
 
 // +kcc:proto=google.cloud.compute.v1beta.ShareSettingsProjectConfig
 type ShareSettingsProjectConfig struct {
 	// The project ID, should be same as the key of this project config in the parent map.
 	// +kcc:proto:field=google.cloud.compute.v1beta.ShareSettingsProjectConfig.project_id
 	ProjectID *string `json:"projectID,omitempty"`
+}
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.Autoscaler", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.Autoscaler
+type AutoscalerObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#autoscaler for autoscalers.
+	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* unreachable type InterconnectObservedState
+// +kcc:observedstate:proto=google.cloud.compute.v1.Interconnect
+type InterconnectObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#interconnect for interconnects.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.Interconnect.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.MachineImage", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.MachineImage
+type MachineImageObservedState struct {
+	// [Output Only] The creation timestamp for this machine image in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.MachineImage.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] A unique identifier for this machine image. The server defines this identifier.
+	// +kcc:proto:field=google.cloud.compute.v1.MachineImage.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] The resource type, which is always compute#machineImage for machine image.
+	// +kcc:proto:field=google.cloud.compute.v1.MachineImage.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] The URL for this machine image. The server defines this URL.
+	// +kcc:proto:field=google.cloud.compute.v1.MachineImage.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* unreachable type NetworkAttachmentObservedState
+// +kcc:observedstate:proto=google.cloud.compute.v1.NetworkAttachment
+type NetworkAttachmentObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource type. The server generates this identifier.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+
+	// [Output Only] Server-defined URL for this resource's resource id.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkAttachment.self_link_with_id
+	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
+}
+*/
+
+/* unreachable type NetworkEdgeSecurityServiceObservedState
+// +kcc:observedstate:proto=google.cloud.compute.v1.NetworkEdgeSecurityService
+type NetworkEdgeSecurityServiceObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output only] Type of the resource. Always compute#networkEdgeSecurityService for NetworkEdgeSecurityServices
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+
+	// [Output Only] Server-defined URL for this resource with the resource id.
+	// +kcc:proto:field=google.cloud.compute.v1.NetworkEdgeSecurityService.self_link_with_id
+	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.SecurityPolicy", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.SecurityPolicy
+type SecurityPolicyObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output only] Type of the resource. Always compute#securityPolicyfor security policies
+	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.SecurityPolicy.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* found existing non-generated go type with proto tag "google.cloud.compute.v1.SslPolicy", skipping
+
+// +kcc:observedstate:proto=google.cloud.compute.v1.SslPolicy
+type SSLPolicyObservedState struct {
+	// [Output Only] Creation timestamp in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1.SslPolicy.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] The unique identifier for the resource. This identifier is defined by the server.
+	// +kcc:proto:field=google.cloud.compute.v1.SslPolicy.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output only] Type of the resource. Always compute#sslPolicyfor SSL policies.
+	// +kcc:proto:field=google.cloud.compute.v1.SslPolicy.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined URL for the resource.
+	// +kcc:proto:field=google.cloud.compute.v1.SslPolicy.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+}
+*/
+
+/* unreachable type FutureReservationObservedState
+// +kcc:observedstate:proto=google.cloud.compute.v1beta.FutureReservation
+type FutureReservationObservedState struct {
+	// [Output Only] The creation timestamp for this future reservation in RFC3339 text format.
+	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservation.creation_timestamp
+	CreationTimestamp *string `json:"creationTimestamp,omitempty"`
+
+	// [Output Only] A unique identifier for this future reservation. The server defines this identifier.
+	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservation.id
+	ID *uint64 `json:"id,omitempty"`
+
+	// [Output Only] Type of the resource. Always compute#futureReservation for future reservations.
+	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservation.kind
+	Kind *string `json:"kind,omitempty"`
+
+	// [Output Only] Server-defined fully-qualified URL for this resource.
+	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservation.self_link
+	SelfLink *string `json:"selfLink,omitempty"`
+
+	// [Output Only] Server-defined URL for this resource with the resource id.
+	// +kcc:proto:field=google.cloud.compute.v1beta.FutureReservation.self_link_with_id
+	SelfLinkWithID *string `json:"selfLinkWithID,omitempty"`
 }
 */

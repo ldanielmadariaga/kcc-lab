@@ -70,6 +70,9 @@ spec:
                   type:
                     description: Required. Type of TPU.
                     type: string
+                required:
+                - topology
+                - type
                 type: object
               acceleratorType:
                 description: Optional. The type of hardware accelerators associated
@@ -103,9 +106,16 @@ spec:
                 description: The user-supplied description of the TPU. Maximum of
                   512 characters.
                 type: string
+              health:
+                description: The health status of the TPU node.
+                type: string
+              labels:
+                additionalProperties:
+                  type: string
+                description: Resource labels to represent user-provided metadata.
+                type: object
               location:
-                description: Immutable. The location where the TPU virtual machine
-                  should reside.
+                description: The location of this resource.
                 type: string
               metadata:
                 additionalProperties:
@@ -280,7 +290,7 @@ spec:
                   type: object
                 type: array
               projectRef:
-                description: The project that the TPU virtual machine belongs to.
+                description: The project that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -388,6 +398,7 @@ spec:
             required:
             - location
             - projectRef
+            - runtimeVersion
             type: object
           status:
             description: TPUVirtualMachineStatus defines the config connector machine
@@ -435,13 +446,20 @@ spec:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
                 properties:
-                  health:
-                    description: The health status of the TPU node.
+                  apiVersion:
+                    description: Output only. The API version that created this Node.
+                    type: string
+                  createTime:
+                    description: Output only. The time when the node was created.
                     type: string
                   healthDescription:
                     description: Output only. If this field is populated, it contains
                       a description of why the TPU Node is unhealthy.
                     type: string
+                  id:
+                    description: Output only. The unique identifier for the TPU Node.
+                    format: int64
+                    type: integer
                   multisliceNode:
                     description: Output only. Whether the Node belongs to a Multislice
                       group.

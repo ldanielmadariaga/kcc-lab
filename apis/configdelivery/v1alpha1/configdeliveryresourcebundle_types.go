@@ -15,7 +15,7 @@
 package v1alpha1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common/parent"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -25,19 +25,22 @@ var ConfigDeliveryResourceBundleGVK = GroupVersion.WithKind("ConfigDeliveryResou
 // ConfigDeliveryResourceBundleSpec defines the desired state of ConfigDeliveryResourceBundle
 // +kcc:spec:proto=google.cloud.configdelivery.v1.ResourceBundle
 type ConfigDeliveryResourceBundleSpec struct {
-	// Required. Defines the parent path of the resource.
-	*parent.ProjectAndLocationRef `json:",inline"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/resourceBundles/{resource_bundle}
+	Location *string `json:"location"`
 
 	// The ConfigDeliveryResourceBundle name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. Labels as key value pairs.
+	// +kcc:proto:field=google.cloud.configdelivery.v1.ResourceBundle.labels
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// Optional. Human readable description of the `ResourceBundle`.
 	// +kcc:proto:field=google.cloud.configdelivery.v1.ResourceBundle.description
 	Description *string `json:"description,omitempty"`
-
-	// Optional. Labels as key value pairs.
-	// +kcc:proto:field=google.cloud.configdelivery.v1.ResourceBundle.labels
-	// Labels map[string]string `json:"labels,omitempty"`
 }
 
 // ConfigDeliveryResourceBundleStatus defines the config connector machine state of ConfigDeliveryResourceBundle

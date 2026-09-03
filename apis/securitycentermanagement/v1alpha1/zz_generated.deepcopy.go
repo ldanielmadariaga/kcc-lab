@@ -21,7 +21,6 @@ package v1alpha1
 import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	k8sv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
-	v1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -127,11 +126,12 @@ func (in *SecurityCenterManagementEventThreatDetectionCustomModuleSpec) DeepCopy
 		*out = new(string)
 		**out = **in
 	}
-	if in.Config != nil {
-		in, out := &in.Config, &out.Config
-		*out = new(v1.JSON)
-		(*in).DeepCopyInto(*out)
+	if in.ResourceID != nil {
+		in, out := &in.ResourceID, &out.ResourceID
+		*out = new(string)
+		**out = **in
 	}
+	in.Config.DeepCopyInto(&out.Config)
 	if in.EnablementState != nil {
 		in, out := &in.EnablementState, &out.EnablementState
 		*out = new(string)
@@ -149,11 +149,6 @@ func (in *SecurityCenterManagementEventThreatDetectionCustomModuleSpec) DeepCopy
 	}
 	if in.Description != nil {
 		in, out := &in.Description, &out.Description
-		*out = new(string)
-		**out = **in
-	}
-	if in.ResourceID != nil {
-		in, out := &in.ResourceID, &out.ResourceID
 		*out = new(string)
 		**out = **in
 	}

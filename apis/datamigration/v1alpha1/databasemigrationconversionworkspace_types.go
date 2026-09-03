@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,22 +26,22 @@ var DatabaseMigrationConversionWorkspaceGVK = GroupVersion.WithKind("DatabaseMig
 // +kcc:spec:proto=google.cloud.clouddms.v1.ConversionWorkspace
 type DatabaseMigrationConversionWorkspaceSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
 	// The location of this resource.
-	// +required
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}
 	Location *string `json:"location"`
 
 	// The DatabaseMigrationConversionWorkspace name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. The source engine details.
 	// +kcc:proto:field=google.cloud.clouddms.v1.ConversionWorkspace.source
+	// +required
 	Source *DatabaseEngineInfo `json:"source,omitempty"`
 
 	// Required. The destination engine details.
 	// +kcc:proto:field=google.cloud.clouddms.v1.ConversionWorkspace.destination
+	// +required
 	Destination *DatabaseEngineInfo `json:"destination,omitempty"`
 
 	// Optional. A generic list of settings for the workspace.
@@ -104,7 +104,6 @@ type DatabaseMigrationConversionWorkspaceObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

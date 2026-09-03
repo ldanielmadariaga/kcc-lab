@@ -1,0 +1,776 @@
+<title>Claude and Gemini on Bulk CRD Generation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap">
+
+<style>
+  :root {
+    --ground:      #F3F5F7;
+    --surface:     #FFFFFF;
+    --surface-alt: #E9EDF1;
+    --ink:         #151E27;
+    --ink-soft:    #4A5866;
+    --ink-faint:   #7C8894;
+    --rule:        #D3DAE1;
+    --rule-soft:   #E3E8ED;
+    --accent:      #26706B;
+    --accent-soft: #DCEBE9;
+    --ok:          #3D7A50;
+    --warn:        #9C6C1B;
+    --bad:         #A34438;
+    --ok-soft:     #DFEBE1;
+    --warn-soft:   #F3E7CE;
+    --bad-soft:    #F2DFDC;
+    --shadow:      0 1px 2px rgba(21, 30, 39, .06), 0 8px 24px -12px rgba(21, 30, 39, .18);
+
+    --measure: 68ch;
+    --f-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --f-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #11171E;
+      --surface:     #18202A;
+      --surface-alt: #202A35;
+      --ink:         #E2E8EE;
+      --ink-soft:    #A4B0BD;
+      --ink-faint:   #78848F;
+      --rule:        #2C3843;
+      --rule-soft:   #232E39;
+      --accent:      #63B5AE;
+      --accent-soft: #1B2F32;
+      --ok:          #7CB98D;
+      --warn:        #D2A44E;
+      --bad:         #DE8C82;
+      --ok-soft:     #1D2B22;
+      --warn-soft:   #2E2617;
+      --bad-soft:    #2E1E1C;
+      --shadow:      0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -12px rgba(0, 0, 0, .6);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #11171E;
+    --surface:     #18202A;
+    --surface-alt: #202A35;
+    --ink:         #E2E8EE;
+    --ink-soft:    #A4B0BD;
+    --ink-faint:   #78848F;
+    --rule:        #2C3843;
+    --rule-soft:   #232E39;
+    --accent:      #63B5AE;
+    --accent-soft: #1B2F32;
+    --ok:          #7CB98D;
+    --warn:        #D2A44E;
+    --bad:         #DE8C82;
+    --ok-soft:     #1D2B22;
+    --warn-soft:   #2E2617;
+    --bad-soft:    #2E1E1C;
+    --shadow:      0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -12px rgba(0, 0, 0, .6);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 16.5px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 56px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px 96px;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    grid-column: 1 / -1;
+    border-bottom: 1px solid var(--rule);
+    padding: 64px 0 40px;
+    margin-bottom: 48px;
+  }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 20px;
+  }
+
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: clamp(2.1rem, 5vw, 3.1rem);
+    line-height: 1.08;
+    letter-spacing: -.018em;
+    text-wrap: balance;
+    margin: 0 0 20px;
+    max-width: 20ch;
+  }
+
+  .standfirst {
+    font-family: var(--f-display);
+    font-size: clamp(1.08rem, 2vw, 1.28rem);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  .headline-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 36px;
+  }
+
+  .stat {
+    flex: 1 1 150px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 16px 18px;
+  }
+
+  .stat b {
+    display: block;
+    font-family: var(--f-display);
+    font-size: 1.85rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat span {
+    display: block;
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: var(--ink-faint);
+    margin-top: 5px;
+  }
+
+  .stat.is-ok b   { color: var(--ok); }
+  .stat.is-bad b  { color: var(--bad); }
+
+  /* ---------- rail ---------- */
+
+  nav.rail {
+    align-self: start;
+    position: sticky;
+    top: 32px;
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
+
+  nav.rail p {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 12px;
+  }
+
+  nav.rail ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    border-left: 1px solid var(--rule);
+  }
+
+  nav.rail a {
+    display: block;
+    padding-left: 13px;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  nav.rail a:hover,
+  nav.rail a:focus-visible { color: var(--accent); border-left-color: var(--accent); }
+
+  /* ---------- prose ---------- */
+
+  main { max-width: var(--measure); }
+
+  section + section { margin-top: 56px; }
+
+  h2 {
+    font-family: var(--f-display);
+    font-size: 1.62rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -.012em;
+    text-wrap: balance;
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  h3 {
+    font-family: var(--f-body);
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: .002em;
+    text-wrap: balance;
+    margin: 32px 0 10px;
+  }
+
+  p { margin: 0 0 16px; }
+
+  main a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+  code {
+    font-family: var(--f-mono);
+    font-size: .855em;
+    background: var(--surface-alt);
+    border-radius: 2px;
+    padding: .12em .34em;
+  }
+
+  strong { font-weight: 600; }
+
+  ul { margin: 0 0 16px; padding-left: 1.15em; }
+  li { margin-bottom: 7px; }
+  li::marker { color: var(--ink-faint); }
+
+  /* ---------- accounting ---------- */
+
+  .ledger {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 22px 24px 24px;
+    margin: 0 0 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .ledger-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 16px;
+  }
+
+  .bar {
+    display: flex;
+    height: 13px;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background: var(--surface-alt);
+  }
+
+  .bar i { display: block; height: 100%; }
+  .bar .b-ok   { background: var(--ok); }
+  .bar .b-warn { background: var(--warn); }
+  .bar .b-bad  { background: var(--bad); }
+
+  table.acct { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+
+  table.acct th {
+    text-align: left;
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 400;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  table.acct th.num, table.acct td.num {
+    text-align: right;
+    font-family: var(--f-mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  table.acct td { padding: 7px 0; border-bottom: 1px solid var(--rule-soft); vertical-align: baseline; }
+  table.acct td.num { width: 5.5em; }
+  table.acct td.pct { width: 4.5em; color: var(--ink-faint); }
+  table.acct tr.sub td:first-child { padding-left: 20px; color: var(--ink-soft); }
+  table.acct tr.total td { border-bottom: none; font-weight: 600; padding-top: 11px; }
+  table.acct .gloss { display: block; font-size: 12.5px; color: var(--ink-faint); line-height: 1.35; }
+
+  .swatch {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 1px;
+    margin-right: 8px;
+    vertical-align: baseline;
+  }
+  .sw-ok { background: var(--ok); }
+  .sw-warn { background: var(--warn); }
+  .sw-bad { background: var(--bad); }
+
+  /* ---------- generic table ---------- */
+
+  .scroll { overflow-x: auto; margin: 0 0 20px; }
+
+  table.grid {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14.5px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+  }
+
+  table.grid th {
+    text-align: left;
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 400;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+
+  table.grid td { padding: 11px 16px; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+  table.grid tr:last-child td { border-bottom: none; }
+
+  table.grid th.num, table.grid td.num {
+    text-align: right;
+    font-family: var(--f-mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    width: 4em;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .tag.derive { background: var(--ok-soft); color: var(--ok); }
+  .tag.remember { background: var(--bad-soft); color: var(--bad); }
+  .tag.fact { background: var(--accent-soft); color: var(--accent); }
+
+  /* ---------- callouts ---------- */
+
+  .note {
+    border-left: 2px solid var(--accent);
+    background: var(--surface);
+    padding: 16px 20px;
+    margin: 0 0 20px;
+    border-radius: 0 3px 3px 0;
+  }
+  .note :last-child { margin-bottom: 0; }
+
+  .note.caution { border-left-color: var(--warn); }
+
+  .note-label {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 7px;
+  }
+  .note.caution .note-label { color: var(--warn); }
+
+  /* ---------- decisions ---------- */
+
+  ol.decisions { list-style: none; margin: 0; padding: 0; counter-reset: d; }
+
+  ol.decisions li {
+    counter-increment: d;
+    position: relative;
+    padding: 0 0 0 46px;
+    margin-bottom: 22px;
+  }
+
+  ol.decisions li::before {
+    content: counter(d);
+    position: absolute;
+    left: 0; top: 1px;
+    width: 28px; height: 28px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 50%;
+    font-family: var(--f-mono);
+    font-size: 12.5px;
+  }
+
+  ol.decisions p { margin: 0; }
+  ol.decisions .q { font-weight: 600; display: block; margin-bottom: 3px; }
+
+  /* ---------- appendix ---------- */
+
+  .appendix-rule {
+    margin: 72px 0 0;
+    border: 0;
+    border-top: 2px solid var(--rule);
+  }
+
+  .appendix-mark {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 18px 0 0;
+  }
+
+  .pr {
+    display: inline-block;
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    padding: 1px 6px;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    color: var(--ink-soft);
+    background: var(--surface);
+    white-space: nowrap;
+    margin-right: 3px;
+  }
+  .pr.open { border-color: var(--accent); color: var(--accent); }
+
+  .stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--surface);
+    margin: 0 0 20px;
+    overflow: hidden;
+  }
+
+  .stage > div {
+    padding: 15px 18px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .stage > div:last-child { border-bottom: none; }
+
+  .stage h4 {
+    font-family: var(--f-body);
+    font-size: 14.5px;
+    font-weight: 600;
+    margin: 0 0 5px;
+  }
+
+  .stage p { font-size: 14.5px; margin: 0 0 8px; color: var(--ink-soft); }
+  .stage .prs { margin: 0; line-height: 2; }
+
+  /* ---------- footer ---------- */
+
+  footer {
+    grid-column: 1 / -1;
+    margin-top: 72px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 13.5px;
+    color: var(--ink-faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+  }
+
+  footer code { background: none; padding: 0; }
+
+  @media (max-width: 860px) {
+    .wrap { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 0 22px 72px; }
+    nav.rail { display: none; }
+    .masthead { padding-top: 44px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  .coi {
+    border: 1px solid var(--warn);
+    background: var(--warn-soft);
+    border-radius: 3px;
+    padding: 18px 20px;
+    margin: 0 0 24px;
+  }
+  .coi :last-child { margin-bottom: 0; }
+  .coi .note-label { color: var(--warn); }
+
+  table.vs td.me   { background: var(--accent-soft); }
+  table.vs td.them { background: var(--surface-alt); }
+  .who {
+    font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .05em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 2px; white-space: nowrap;
+  }
+  .who.c { background: var(--accent-soft); color: var(--accent); }
+  .who.g { background: var(--surface-alt); color: var(--ink-soft); }
+</style>
+
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Config Connector &middot; Model comparison</p>
+    <h1>Claude and Gemini on Bulk CRD Generation</h1>
+    <p class="standfirst">Two independent attempts at generating KCC resource types from protos. One ran over roughly twenty pull requests, the other over one. This compares them on the 267 resources both measured.</p>
+
+    <div class="headline-stats">
+      <div class="stat"><b>79.4%</b><span>Claude, on the 217 v1alpha1 kinds both produced</span></div>
+      <div class="stat"><b>70.4%</b><span>Gemini, on those same kinds</span></div>
+      <div class="stat is-bad"><b>11.2%</b><span>of the surface a reviewer is not told about, against 29.6% for Gemini</span></div>
+      <div class="stat"><b>20&times;</b><span>difference in generator work: ~20 PRs against 1</span></div>
+    </div>
+  </header>
+
+  <nav class="rail">
+    <p>Contents</p>
+    <ol>
+      <li><a href="#coi">Who wrote this</a></li>
+      <li><a href="#sizes">Not the same size</a></li>
+      <li><a href="#shared">Like for like</a></li>
+      <li><a href="#reports">What only we report</a></li>
+      <li><a href="#scoping">Both mis-scoped</a></li>
+      <li><a href="#gemini">Gemini ahead</a></li>
+      <li><a href="#claude">Claude ahead</a></li>
+      <li><a href="#converge">Found independently</a></li>
+      <li><a href="#faults">Shortcomings</a></li>
+      <li><a href="#verdict">Verdict</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="coi">
+      <div class="coi">
+        <span class="note-label">Who wrote this</span>
+        <p>Claude wrote this, about work Claude did, comparing it to work Gemini did. That is a conflict of interest and no amount of care removes it. What can be done is to anchor every comparative claim to resources both experiments measured, cite the Gemini material by section so it can be checked without trusting this summary, and record our own defects at the same resolution as theirs. Where a number flatters this side for a methodological reason, the reason is in the same sentence.</p>
+      </div>
+      <p>Gemini's write-up is <a href="https://github.com/GoogleCloudPlatform/k8s-config-connector/pull/12681">PR 12681</a>, a design proposal with a benchmark, a learnings log and an 18,639-line JSON dataset, with its generator change in <a href="https://github.com/GoogleCloudPlatform/k8s-config-connector/pull/12682">PR 12682</a>. This side is the sandbox repo <code>ldanielmadariaga/kcc-lab</code>, PRs #21, #22 and #26.</p>
+    </section>
+
+    <section id="sizes">
+      <h2>The two experiments are not the same size</h2>
+      <div class="scroll">
+        <table class="grid vs">
+          <thead><tr><th></th><th>Claude</th><th>Gemini</th></tr></thead>
+          <tbody>
+            <tr><td>generator work</td><td class="me">~20 PRs over three weeks</td><td class="them">1 PR, 6 files, +179/&minus;4</td></tr>
+            <tr><td>corpus</td><td class="me">275 greenfield resources</td><td class="them">396 kinds across 122 services</td></tr>
+            <tr><td>method</td><td class="me">delete upstream's types, regenerate, compare field by field</td><td class="them">per-service sandbox: wipe, regenerate, isolated <code>controller-gen</code>, compare, revert</td></tr>
+            <tr><td>headline</td><td class="me">91.4% implemented</td><td class="them">45.9% repo-wide; 82.6% build-passing</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Effort and breadth run in opposite directions. Gemini's one change does roughly what PRs #15 and #17 did here: populate the root Spec and ObservedState from the proto, and infer the parent from <code>(google.api.resource).pattern</code>.</p>
+      <p>The effort ratio is real, but it is not a like-for-like measure of autonomy, and reading it as "reached the same design in one change" would be wrong. Gemini's starting design was steered by someone carrying results from this experiment, and several of the conclusions that look like agreement between the two were handed over rather than found. Neither number in the table measures what either model would do unassisted.</p>
+    </section>
+
+    <section id="shared">
+      <h2>Like for like: one harness, one baseline, one denominator</h2>
+      <p>The first version of this page compared Gemini's self-reported match count against ours. Those are different definitions computed by different code, so the comparison was not worth much. Gemini has since published its generated CRDs in <a href="https://github.com/GoogleCloudPlatform/k8s-config-connector/pull/12737">PR 12737</a>, which lets our harness score both sides.</p>
+      <p>Everything below is controlled: the same scorer, the same baseline (<code>25aedf2f10ef</code>, Gemini's), the same kinds, and the judgement queue switched off so neither side is credited with our flagging.</p>
+      <div class="note">
+        <span class="note-label">The denominator, and why it matters</span>
+        <p><code>matched + missing + mismatch</code>, the count of fields in upstream's CRD. It is a property of upstream rather than of either generator, so both sides must agree on it. Our own report uses a different one that collapses every child of a missing parent into a single defect: right for a work list, useless for comparing generators, because a side missing one fifty-field subtree scores one defect where a side missing twenty scattered leaves scores twenty. On this corpus that choice reverses the ordering.</p>
+      </div>
+      <div class="ledger">
+        <table class="acct">
+          <thead><tr><th>Test</th><th class="num">Kinds</th><th class="num">Claude</th><th class="num">Gemini</th></tr></thead>
+          <tbody>
+            <tr><td>A. all versions</td><td class="num">255</td><td class="num pct">78.3%</td><td class="num pct">69.6%</td></tr>
+            <tr><td>B. v1alpha1 only</td><td class="num">217</td><td class="num pct">79.4%</td><td class="num pct">70.4%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Both arms have exactly matching denominators, and both put the gap at about nine points.</p>
+      <p>Test B exists because Gemini's corpus is 40% v1beta1 against our 15%, and beta resources are the mature hand-curated ones a generator does worst against, so Test A looked structurally unkind to it. Restricting to alpha moves each side by about half a point, so that hypothesis was wrong: composition is not what separates them.</p>
+      <p>12 of our resources are excluded from both arms. Their types regenerated but <code>controller-gen</code> then failed for the service, leaving the previously published CRD in place, so scoring them would have credited us with upstream's own output. Removing them costs about a third of a point.</p>
+
+      <h3>The shape behind the aggregate</h3>
+      <p>Nine points sounds modest against spot checks that showed us reproducing 269 of a resource's 333 fields where Gemini managed 64. Both are true, and the win/loss record explains why.</p>
+      <div class="ledger">
+        <table class="acct">
+          <thead><tr><th></th><th class="num">Kinds</th><th class="num">Fields</th><th class="num">Claude</th><th class="num">Gemini</th></tr></thead>
+          <tbody>
+            <tr><td>identical outcome</td><td class="num">141</td><td class="num">4,959</td><td class="num pct">73.8%</td><td class="num pct">73.8%</td></tr>
+            <tr><td>we produce more</td><td class="num">76</td><td class="num">6,442</td><td class="num pct">83.7%</td><td class="num pct">67.7%</td></tr>
+            <tr><td>Gemini produces more</td><td class="num">0</td><td class="num">&mdash;</td><td class="num pct">&mdash;</td><td class="num pct">&mdash;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>We do not lose a single kind. An earlier version of this page said we lose on small flat resources; that came from <code>GKEHubFleet</code> at 28/33 against 33/33, which turned out to be one of the 12 resources whose CRD had gone stale. With those excluded there are no losses at all.</p>
+      <p>The gap is concentrated rather than broad: the five largest wins account for 54% of the entire field advantage, and the top twenty for 81%. On 141 of 217 kinds the two generators produce the same outcome.</p>
+      <p>The mechanism is depth. Our generator walks the whole proto message tree and writes every nested message into <code>types.generated.go</code>. Gemini's single change populates the root Spec from the root message and does not recurse as far, so on a deeply nested resource the top-level fields appear and the subtrees under them do not.</p>
+
+      <h3>Why neither side reaches 100%</h3>
+      <p>On the 141 tied kinds both sit at exactly 73.8%, which means they are missing the same fields. Those are the domain decisions no proto-driven generator makes: a raw string that upstream models as a <code>*Ref</code>, a credential that becomes a <code>SecretRef</code>, a parent that is another resource rather than a project. Both experiments reached that conclusion independently, and the tie rate is the measurement of it.</p>
+      <p>So depth is why one generator beats the other, and the human-judgement layer is why neither gets close to the baseline.</p>
+    </section>
+
+    <section id="reports">
+      <h2>What only one side reports</h2>
+      <p>Coverage is not the only axis. A generator can also record what it could not decide, and that changes what a reviewer has to discover for themselves.</p>
+      <p>Same 217 kinds, same harness, same baseline, with our judgement queue switched off for Gemini's output because the queue is keyed by Kind and would otherwise credit its fields with our flagging.</p>
+      <div class="ledger">
+        <table class="acct">
+          <thead><tr><th></th><th class="num">Reproduced</th><th class="num">Flagged for a human</th><th class="num">Nobody is told</th></tr></thead>
+          <tbody>
+            <tr><td><span class="who c">Claude</span></td><td class="num pct">79.4%</td><td class="num pct">9.4%</td><td class="num pct">11.2%</td></tr>
+            <tr><td><span class="who g">Gemini</span></td><td class="num pct">70.4%</td><td class="num pct">0.0%</td><td class="num pct">29.6%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Denominators agree to 0.01%. A reviewer is left unaware of 11.2% of the surface with our approach against 29.6% with Gemini's, a factor of about 2.6. We reproduce nine points more, and of the divergence that remains we hand nearly half to a person: a <code>+kcc:guess</code> marker in the generated Go and an entry in the service's judgement queue naming the field, with a machine check that no marker exists without one.</p>
+      <div class="note">
+        <span class="note-label">Two things this does not say</span>
+        <p>Gemini's zero is a property of what it built, not a failure. It set out to generate, and its design proposes flagging ambiguous strings for agent review without building the artifact. Flagging is a separable capability neither model was asked for, and one of the two experiments built it.</p>
+        <p>And our 9.4% is a self-assessment: it says we told someone, not that what we told them was right. The sibling rule's measured 77% precision is the only evidence on that question, and it covers one detector out of four.</p>
+      </div>
+    </section>
+
+    <section id="scoping">
+      <h2>Both experiments mis-scoped their corpus, in opposite directions</h2>
+      <p>This is the least flattering section for both sides and the most useful.</p>
+      <p><span class="who g">Gemini</span> included resources its own design doc excludes. Section 5.1 states the taxonomy correctly: exclude "Dual-Mode &amp; Legacy: 78 Brownfield resources (dual Direct + TF/DCL) and 226 Legacy resources". Its benchmark then evaluated 396 kinds of which 126 are dual-mode or legacy by <code>static_config.go</code>. <code>AlloyDBCluster</code>, <code>ArtifactRegistryRepository</code> and <code>BigtableTable</code> all carry Terraform or DCL controllers alongside Direct, and all three appear in its five-service deep dive. Those resources are years of hand-curation, so including them depresses its parity for a reason unrelated to the generator.</p>
+      <p><span class="who c">Claude</span> omitted 44 resources that belonged. Our corpus was hand-maintained and had drifted. Applying the criteria properly gives 275, not 231. The 44 additions score near 64% where the original set scored 94%, and correcting it moved our headline from 94.2% to 91.4%. Nothing about the generator changed between those two runs.</p>
+      <p>So 91.4% is the number this comparison uses, and the 94.2% that appeared in our report and PRs for several days was an artefact of an incomplete corpus. Worth noting that Gemini's doc is what prompted the audit: its "Class B: In-Flight / Unregistered Greenfield" category is exactly what our first corrected filter got wrong, and reading it caught a rule that would have dropped 96 resources.</p>
+    </section>
+
+    <section id="gemini">
+      <h2>Where Gemini is ahead</h2>
+      <h3>Breadth</h3>
+      <p>122 services and 396 kinds against 275 resources, from one change. It measured the whole repository; we measured a curated subset.</p>
+      <h3>Failure diagnosis</h3>
+      <p>Its build failures are grouped by root cause with named services and a quantified remediation estimate. Ours says 22 packages do not compile and 16 are a floor we chose not to chase, which is less actionable.</p>
+      <h3>Presentation</h3>
+      <p>The parity-tier distribution, with kind counts per band, conveys the shape of the result better than a single percentage. "74.6% of kinds reach at least 80% parity" is a more useful sentence for someone deciding whether to fund the work.</p>
+      <h3>A machine-readable dataset</h3>
+      <p><code>benchmark-results.json</code> is per-kind and reusable. Ours lives in a text report; this comparison had to parse theirs and re-derive ours.</p>
+      <h3>One modelling insight we lack</h3>
+      <p>Its section 7.4 notes that a single KRM <code>SecretRef</code> replaces two or three proto credential strings, so simple property-name matching undercounts coverage. Our pairing does not model those atomic substitutions.</p>
+      <h3>It documented its own corrections</h3>
+      <p><code>learnings-and-corrections.md</code> records, in its own words, four proposals it got wrong and had to be talked out of. That is the reason the error in the first version of this comparison was catchable: had those conclusions been presented as findings, the claim that both models converged independently would have gone unchallenged. This side has no equivalent artifact.</p>
+    </section>
+
+    <section id="claude">
+      <h2>Where this side is ahead</h2>
+      <h3>A flagging mechanism, not just an intention</h3>
+      <p>Both experiments conclude that references and secrets are the irreducible judgement calls. Gemini's design says to flag ambiguous strings for agent or developer review, but there is no artifact and no enforcement. Here there is a per-service judgement queue, a <code>+kcc:guess</code> marker in the generated Go, and a machine check that every marker has a queue entry: 301 markers, zero without one, and it caught three regressions review would not have. This is the clearest capability difference in the comparison, though it is a difference in how far the work went rather than proof about the models.</p>
+      <h3>Detection measured rather than asserted</h3>
+      <p>Rules are scored against what upstream actually did and rejected on the evidence. A <code>Certificate</code>-suffix rule scored 0 useful hits against 6 false ones and was dropped; the sibling-resource rule runs at a measured 77% precision. Gemini proposes multi-signal heuristics without precision numbers.</p>
+      <h3>A specific, large detection finding</h3>
+      <p>The output-only detector tested for a comment opening <code>Output only.</code> Compute writes <code>[Output Only]</code>, which is 1,605 fields in <code>compute.proto</code> alone.</p>
+      <h3>Two of Gemini's Phase 1 roadmap items are already done here</h3>
+      <p>, including the <code>apiextensionsv1</code> auto-import it estimates would unblock 7 services.</p>
+    </section>
+
+    <section id="converge">
+      <h2>What was found independently, and what was handed over</h2>
+      <div class="coi">
+        <span class="note-label">A correction to an earlier version of this page</span>
+        <p>This section previously said both models independently reached the same architecture, and called that the strongest signal in the comparison. That was wrong. Gemini's learnings doc states its purpose as recording "critical course corrections <em>provided during</em> the design and evaluation sessions", and its sections 1 to 4 are each an <em>Initial Flawed Proposal</em> followed by <em>The Correction</em>.</p>
+      </div>
+      <div class="scroll">
+        <table class="grid vs">
+          <thead><tr><th>Gemini's section</th><th>What it proposed</th><th>What it was corrected to</th></tr></thead>
+          <tbody>
+            <tr><td>§1 enums</td><td class="them">Go string types with <code>+kubebuilder:validation:Enum</code> markers</td><td>unvalidated <code>*string</code>, no markers</td></tr>
+            <tr><td>§2 overlays</td><td class="them">an "elaborate YAML overlay DSL, custom AST patch engines"</td><td>KCC's native Go override model</td></tr>
+            <tr><td>§3 annotations</td><td class="them">assumed <code>google.api.resource_reference</code> was widely available</td><td>present in under 10% of APIs</td></tr>
+            <tr><td>§4 credentials</td><td class="them">credential gaps as a category of their own</td><td>a subtype of resource reference</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The corrections came from the person running the experiment, carrying results from this one. The architectural agreement was therefore transmitted, not independent. The earlier claim that "Gemini explicitly considered and rejected a YAML overlay DSL as over-engineering" inverts what happened: it proposed the overlay DSL and was told not to build it. The same applies to the <code>resource_reference</code> sparsity finding, which reads as a striking match between the two experiments and was in fact passed on to save time.</p>
+
+      <h3>What is still genuine convergence</h3>
+      <p>Its sections 5 and 7, the validation-planning failure and the evaluation-suite failures, are its own. Nobody handed it those, and they land on the same traps this side hit unprompted.</p>
+      <ul>
+        <li>A global <code>controller-gen</code> abort making a harness compare a baseline against itself. Gemini's §7.5 calls it the "99.66% fidelity illusion"; this side runs <code>SKIP_GENERATE_CRDS=1</code> then per-service <code>controller-gen</code> for exactly that reason.</li>
+        <li>Reporting accuracy numbers before building the harness that justifies them. Its §5 names this as a planning failure; the counterpart here is arithmetic that double-counted 16 fields.</li>
+        <li>A wipe destroying hand-written files it was never meant to touch.</li>
+        <li>Conflating "has a Direct controller" with "is greenfield", which both experiments got wrong in opposite directions.</li>
+      </ul>
+      <p>Two harnesses built independently hitting the same four traps is a real finding. It says the traps are properties of the problem rather than of either model, and it is the part of this section that survives.</p>
+    </section>
+
+    <section id="faults">
+      <h2>Shortcomings, ours alongside theirs</h2>
+      <p>Paired deliberately. Most of Gemini's logged failures have a direct counterpart here.</p>
+      <div class="scroll">
+        <table class="grid vs">
+          <thead><tr><th>Trap</th><th>Gemini</th><th>Claude</th></tr></thead>
+          <tbody>
+            <tr><td>global <code>controller-gen</code> aborts, comparison reads stale files</td><td class="them">its "99.66% fidelity illusion", §7.5: one failing package aborted generation and the harness compared baseline against baseline</td><td class="me">same failure; the regenerate task runs <code>SKIP_GENERATE_CRDS=1</code> then per-service <code>controller-gen</code> for exactly this reason</td></tr>
+            <tr><td>numbers reported before the harness existed</td><td class="them">§5, "failed to plan ahead on how to test and validate results before producing/reporting accuracy numbers"</td><td class="me">arithmetic double-counted 16 fields (148 vs 132); a detection rule was measured on one population and implemented against another, firing on nothing; a healthy 40-minute regeneration was killed on a misread</td></tr>
+            <tr><td>over-aggressive wipe destroys hand-written files</td><td class="them">§7.2, <code>rm -f apis/{svc}/v*/*types*</code> deleted custom non-proto types</td><td class="me">two resources lost to <code>--skip-scaffold-files</code> in the 239-resource run before anyone noticed</td></tr>
+            <tr><td>conflating Direct controllers with greenfield</td><td class="them">§7.1, cost it a drop from ~90% to 53.33% on a five-service run</td><td class="me">the same error in the other direction: 44 greenfield resources omitted, worth 2.8 points</td></tr>
+            <tr><td>upstream proto drift versus a static baseline</td><td class="them">§7.3, new proto fields counted as discrepancies</td><td class="me">handled, but only after the report double-counted and had to be rebuilt to count buckets rather than derive them</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Two further defects on this side with no Gemini counterpart: 331 files of intermediate <code>controller-gen</code> output and a 12MB binary were committed by a careless <code>git add -A</code>, and the published report carried 94.2% for several days on an under-scoped corpus.</p>
+    </section>
+
+    <section id="verdict">
+      <h2>Verdict</h2>
+      <p>Measured properly, our output reproduces about nine points more of upstream's CRD fields than Gemini's: 79.4% against 70.4% on v1alpha1 resources, with identical denominators. That is a real gap, and larger than the five points the first version of this page reported from Gemini's own harness.</p>
+      <p>It is also not a like-for-like measure of the two models. Ours had roughly twenty pull requests of generator work behind it against Gemini's one, and the mechanism behind most of the gap is a single structural difference: our generator recurses through the whole proto message tree while Gemini's change populates the root Spec. That is a scope difference in what was built, not evidence about what either model could build.</p>
+      <p>What this comparison cannot tell you is which model is better at the task, and the reasons are worth being explicit about.</p>
+      <ul>
+        <li>Gemini's architectural conclusions were largely handed to it, by someone carrying results from this experiment. The two designs agreeing is therefore not evidence about either model.</li>
+        <li>Both sides have now been scored by one harness on one baseline, so the gap is real as measured. What it measures is one generator against another at a moment in time, not either model's ceiling.</li>
+        <li>The effort differs by roughly twenty PRs, and the flagging mechanism and measured detection rules on this side are products of that time rather than of the model.</li>
+        <li>Both corpora were mis-scoped, in opposite directions, and both were corrected only after the fact.</li>
+      </ul>
+      <div class="note caution">
+        <span class="note-label">What would answer it</span>
+        <p>The same corpus, the same harness, the same number of iterations, the same amount of human steering, and ideally a third party running both. Short of that, the defensible claim is narrow: both models produced designs a KCC engineer would recognise as sound, and nothing here argues for choosing one over the other.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>267 resources measured by both</span>
+    <span>Claude: 275 resources, baseline <code>c1df0b9326</code></span>
+    <span>Gemini: 396 kinds, PR 12681</span>
+  </footer>
+
+</div>

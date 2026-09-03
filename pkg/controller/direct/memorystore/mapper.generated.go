@@ -27,11 +27,61 @@ import (
 	pb "cloud.google.com/go/memorystore/apiv1/memorystorepb"
 	krmmemorystorev1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/memorystore/v1alpha1"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/memorystore/v1beta1"
-	refs "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 	dayofweekpb "google.golang.org/genproto/googleapis/type/dayofweek"
 )
 
+/* found existing non-generated mapping function "AutomatedBackupConfig_FromProto", skipping
+func AutomatedBackupConfig_FromProto(mapCtx *direct.MapContext, in *pb.AutomatedBackupConfig) *krm.AutomatedBackupConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AutomatedBackupConfig{}
+	out.FixedFrequencySchedule = AutomatedBackupConfig_FixedFrequencySchedule_FromProto(mapCtx, in.GetFixedFrequencySchedule())
+	out.AutomatedBackupMode = direct.Enum_FromProto(mapCtx, in.GetAutomatedBackupMode())
+	out.Retention = direct.StringDuration_FromProto(mapCtx, in.GetRetention())
+	return out
+}
+*/
+
+/* found existing non-generated mapping function "AutomatedBackupConfig_ToProto", skipping
+func AutomatedBackupConfig_ToProto(mapCtx *direct.MapContext, in *krm.AutomatedBackupConfig) *pb.AutomatedBackupConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AutomatedBackupConfig{}
+	if oneof := AutomatedBackupConfig_FixedFrequencySchedule_ToProto(mapCtx, in.FixedFrequencySchedule); oneof != nil {
+		out.Schedule = &pb.AutomatedBackupConfig_FixedFrequencySchedule_{FixedFrequencySchedule: oneof}
+	}
+	out.AutomatedBackupMode = direct.Enum_ToProto[pb.AutomatedBackupConfig_AutomatedBackupMode](mapCtx, in.AutomatedBackupMode)
+	out.Retention = direct.StringDuration_ToProto(mapCtx, in.Retention)
+	return out
+}
+*/
+
+/* found existing non-generated mapping function "AutomatedBackupConfig_FixedFrequencySchedule_FromProto", skipping
+func AutomatedBackupConfig_FixedFrequencySchedule_FromProto(mapCtx *direct.MapContext, in *pb.AutomatedBackupConfig_FixedFrequencySchedule) *krm.AutomatedBackupConfig_FixedFrequencySchedule {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AutomatedBackupConfig_FixedFrequencySchedule{}
+	out.StartTime = TimeOfDay_FromProto(mapCtx, in.GetStartTime())
+	return out
+}
+*/
+
+/*
+found existing non-generated mapping function "AutomatedBackupConfig_FixedFrequencySchedule_ToProto", skipping
+
+	func AutomatedBackupConfig_FixedFrequencySchedule_ToProto(mapCtx *direct.MapContext, in *krm.AutomatedBackupConfig_FixedFrequencySchedule) *pb.AutomatedBackupConfig_FixedFrequencySchedule {
+		if in == nil {
+			return nil
+		}
+		out := &pb.AutomatedBackupConfig_FixedFrequencySchedule{}
+		out.StartTime = TimeOfDay_ToProto(mapCtx, in.StartTime)
+		return out
+	}
+*/
 func CrossInstanceReplicationConfig_FromProto(mapCtx *direct.MapContext, in *pb.CrossInstanceReplicationConfig) *krm.CrossInstanceReplicationConfig {
 	if in == nil {
 		return nil
@@ -103,9 +153,7 @@ func CrossInstanceReplicationConfig_RemoteInstance_FromProto(mapCtx *direct.MapC
 		return nil
 	}
 	out := &krm.CrossInstanceReplicationConfig_RemoteInstance{}
-	if in.GetInstance() != "" {
-		out.InstanceRef = &refs.MemorystoreInstanceRef{External: in.GetInstance()}
-	}
+	out.Instance = direct.LazyPtr(in.GetInstance())
 	// MISSING: Uid
 	return out
 }
@@ -114,9 +162,7 @@ func CrossInstanceReplicationConfig_RemoteInstance_ToProto(mapCtx *direct.MapCon
 		return nil
 	}
 	out := &pb.CrossInstanceReplicationConfig_RemoteInstance{}
-	if in.InstanceRef != nil {
-		out.Instance = in.InstanceRef.External
-	}
+	out.Instance = direct.ValueOf(in.Instance)
 	// MISSING: Uid
 	return out
 }
@@ -261,9 +307,8 @@ func Instance_ConnectionDetail_FromProto(mapCtx *direct.MapContext, in *pb.Insta
 		return nil
 	}
 	out := &krm.Instance_ConnectionDetail{}
-	// MISSING: PSCAutoConnection
-	// (near miss): "PSCAutoConnection" vs "PscAutoConnection"
-	// MISSING: PSCConnection
+	out.PSCAutoConnection = PSCAutoConnection_FromProto(mapCtx, in.GetPscAutoConnection())
+	out.PSCConnection = PSCConnection_FromProto(mapCtx, in.GetPscConnection())
 	return out
 }
 */
@@ -274,9 +319,12 @@ func Instance_ConnectionDetail_ToProto(mapCtx *direct.MapContext, in *krm.Instan
 		return nil
 	}
 	out := &pb.Instance_ConnectionDetail{}
-	// MISSING: PSCAutoConnection
-	// (near miss): "PSCAutoConnection" vs "PscAutoConnection"
-	// MISSING: PSCConnection
+	if oneof := PSCAutoConnection_ToProto(mapCtx, in.PSCAutoConnection); oneof != nil {
+		out.Connection = &pb.Instance_ConnectionDetail_PscAutoConnection{PscAutoConnection: oneof}
+	}
+	if oneof := PSCConnection_ToProto(mapCtx, in.PSCConnection); oneof != nil {
+		out.Connection = &pb.Instance_ConnectionDetail_PscConnection{PscConnection: oneof}
+	}
 	return out
 }
 */
@@ -287,25 +335,45 @@ func Instance_ConnectionDetailObservedState_FromProto(mapCtx *direct.MapContext,
 		return nil
 	}
 	out := &krm.Instance_ConnectionDetailObservedState{}
-	// MISSING: PSCAutoConnection
-	// (near miss): "PSCAutoConnection" vs "PscAutoConnection"
-	// MISSING: PSCConnection
+	out.PSCAutoConnection = PSCAutoConnectionObservedState_FromProto(mapCtx, in.GetPscAutoConnection())
+	out.PSCConnection = PSCConnectionObservedState_FromProto(mapCtx, in.GetPscConnection())
 	return out
 }
 */
 
-/* found existing non-generated mapping function "Instance_ConnectionDetailObservedState_ToProto", skipping
-func Instance_ConnectionDetailObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Instance_ConnectionDetailObservedState) *pb.Instance_ConnectionDetail {
+/*
+found existing non-generated mapping function "Instance_ConnectionDetailObservedState_ToProto", skipping
+
+	func Instance_ConnectionDetailObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Instance_ConnectionDetailObservedState) *pb.Instance_ConnectionDetail {
+		if in == nil {
+			return nil
+		}
+		out := &pb.Instance_ConnectionDetail{}
+		if oneof := PSCAutoConnectionObservedState_ToProto(mapCtx, in.PSCAutoConnection); oneof != nil {
+			out.Connection = &pb.Instance_ConnectionDetail_PscAutoConnection{PscAutoConnection: oneof}
+		}
+		if oneof := PSCConnectionObservedState_ToProto(mapCtx, in.PSCConnection); oneof != nil {
+			out.Connection = &pb.Instance_ConnectionDetail_PscConnection{PscConnection: oneof}
+		}
+		return out
+	}
+*/
+func Instance_GCSBackupSource_FromProto(mapCtx *direct.MapContext, in *pb.Instance_GcsBackupSource) *krm.Instance_GCSBackupSource {
 	if in == nil {
 		return nil
 	}
-	out := &pb.Instance_ConnectionDetail{}
-	// MISSING: PSCAutoConnection
-	// (near miss): "PSCAutoConnection" vs "PscAutoConnection"
-	// MISSING: PSCConnection
+	out := &krm.Instance_GCSBackupSource{}
+	out.URIs = in.Uris
 	return out
 }
-*/
+func Instance_GCSBackupSource_ToProto(mapCtx *direct.MapContext, in *krm.Instance_GCSBackupSource) *pb.Instance_GcsBackupSource {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Instance_GcsBackupSource{}
+	out.Uris = in.URIs
+	return out
+}
 
 /* found existing non-generated mapping function "Instance_InstanceEndpoint_FromProto", skipping
 func Instance_InstanceEndpoint_FromProto(mapCtx *direct.MapContext, in *pb.Instance_InstanceEndpoint) *krm.Instance_InstanceEndpoint {
@@ -340,16 +408,34 @@ func Instance_InstanceEndpointObservedState_FromProto(mapCtx *direct.MapContext,
 }
 */
 
-/* found existing non-generated mapping function "Instance_InstanceEndpointObservedState_ToProto", skipping
-func Instance_InstanceEndpointObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Instance_InstanceEndpointObservedState) *pb.Instance_InstanceEndpoint {
+/*
+found existing non-generated mapping function "Instance_InstanceEndpointObservedState_ToProto", skipping
+
+	func Instance_InstanceEndpointObservedState_ToProto(mapCtx *direct.MapContext, in *krm.Instance_InstanceEndpointObservedState) *pb.Instance_InstanceEndpoint {
+		if in == nil {
+			return nil
+		}
+		out := &pb.Instance_InstanceEndpoint{}
+		out.Connections = direct.Slice_ToProto(mapCtx, in.Connections, Instance_ConnectionDetailObservedState_ToProto)
+		return out
+	}
+*/
+func Instance_ManagedBackupSource_FromProto(mapCtx *direct.MapContext, in *pb.Instance_ManagedBackupSource) *krm.Instance_ManagedBackupSource {
 	if in == nil {
 		return nil
 	}
-	out := &pb.Instance_InstanceEndpoint{}
-	out.Connections = direct.Slice_ToProto(mapCtx, in.Connections, Instance_ConnectionDetailObservedState_ToProto)
+	out := &krm.Instance_ManagedBackupSource{}
+	out.Backup = direct.LazyPtr(in.GetBackup())
 	return out
 }
-*/
+func Instance_ManagedBackupSource_ToProto(mapCtx *direct.MapContext, in *krm.Instance_ManagedBackupSource) *pb.Instance_ManagedBackupSource {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Instance_ManagedBackupSource{}
+	out.Backup = direct.ValueOf(in.Backup)
+	return out
+}
 
 /* found existing non-generated mapping function "Instance_StateInfoObservedState_FromProto", skipping
 func Instance_StateInfoObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Instance_StateInfo) *krm.Instance_StateInfoObservedState {
@@ -383,8 +469,8 @@ func Instance_StateInfo_UpdateInfoObservedState_FromProto(mapCtx *direct.MapCont
 	out := &krm.Instance_StateInfo_UpdateInfoObservedState{}
 	out.TargetShardCount = in.TargetShardCount
 	out.TargetReplicaCount = in.TargetReplicaCount
-	// MISSING: TargetEngineVersion
-	// MISSING: TargetNodeType
+	out.TargetEngineVersion = in.TargetEngineVersion
+	out.TargetNodeType = direct.Enum_FromProto(mapCtx, in.GetTargetNodeType())
 	return out
 }
 */
@@ -399,8 +485,10 @@ found existing non-generated mapping function "Instance_StateInfo_UpdateInfoObse
 		out := &pb.Instance_StateInfo_UpdateInfo{}
 		out.TargetShardCount = in.TargetShardCount
 		out.TargetReplicaCount = in.TargetReplicaCount
-		// MISSING: TargetEngineVersion
-		// MISSING: TargetNodeType
+		out.TargetEngineVersion = in.TargetEngineVersion
+		if oneof := Instance_StateInfo_UpdateInfoObservedState_TargetNodeType_ToProto(mapCtx, in.TargetNodeType); oneof != nil {
+			out.TargetNodeType = oneof
+		}
 		return out
 	}
 */
@@ -637,26 +725,21 @@ func MemorystoreInstanceObservedState_FromProto(mapCtx *direct.MapContext, in *p
 		return nil
 	}
 	out := &krm.MemorystoreInstanceObservedState{}
-	// MISSING: GCSSource
-	// MISSING: ManagedBackupSource
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.StateInfo = Instance_StateInfoObservedState_FromProto(mapCtx, in.GetStateInfo())
 	out.Uid = direct.LazyPtr(in.GetUid())
-	// MISSING: DiscoveryEndpoints
+	out.DiscoveryEndpoints = direct.Slice_FromProto(mapCtx, in.DiscoveryEndpoints, DiscoveryEndpointObservedState_FromProto)
 	out.NodeConfig = NodeConfigObservedState_FromProto(mapCtx, in.GetNodeConfig())
-	// MISSING: PSCAutoConnections
-	// MISSING: PSCAttachmentDetails
-	// (near miss): "PSCAttachmentDetails" vs "PscAttachmentDetails"
+	out.PSCAutoConnections = direct.Slice_FromProto(mapCtx, in.PscAutoConnections, PSCAutoConnectionObservedState_FromProto)
+	out.PSCAttachmentDetails = direct.Slice_FromProto(mapCtx, in.PscAttachmentDetails, PSCAttachmentDetailObservedState_FromProto)
 	out.Endpoints = direct.Slice_FromProto(mapCtx, in.Endpoints, Instance_InstanceEndpointObservedState_FromProto)
-	// MISSING: OndemandMaintenance
 	out.MaintenancePolicy = MaintenancePolicyObservedState_FromProto(mapCtx, in.GetMaintenancePolicy())
 	out.MaintenanceSchedule = MaintenanceScheduleObservedState_FromProto(mapCtx, in.GetMaintenanceSchedule())
 	out.CrossInstanceReplicationConfig = CrossInstanceReplicationConfigObservedState_FromProto(mapCtx, in.GetCrossInstanceReplicationConfig())
-	// MISSING: AsyncInstanceEndpointsDeletionEnabled
-	// MISSING: BackupCollection
+	out.BackupCollection = in.BackupCollection
 	return out
 }
 */
@@ -667,26 +750,21 @@ func MemorystoreInstanceObservedState_ToProto(mapCtx *direct.MapContext, in *krm
 		return nil
 	}
 	out := &pb.Instance{}
-	// MISSING: GCSSource
-	// MISSING: ManagedBackupSource
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	out.State = direct.Enum_ToProto[pb.Instance_State](mapCtx, in.State)
 	out.StateInfo = Instance_StateInfoObservedState_ToProto(mapCtx, in.StateInfo)
 	out.Uid = direct.ValueOf(in.Uid)
-	// MISSING: DiscoveryEndpoints
+	out.DiscoveryEndpoints = direct.Slice_ToProto(mapCtx, in.DiscoveryEndpoints, DiscoveryEndpointObservedState_ToProto)
 	out.NodeConfig = NodeConfigObservedState_ToProto(mapCtx, in.NodeConfig)
-	// MISSING: PSCAutoConnections
-	// MISSING: PSCAttachmentDetails
-	// (near miss): "PSCAttachmentDetails" vs "PscAttachmentDetails"
+	out.PscAutoConnections = direct.Slice_ToProto(mapCtx, in.PSCAutoConnections, PSCAutoConnectionObservedState_ToProto)
+	out.PscAttachmentDetails = direct.Slice_ToProto(mapCtx, in.PSCAttachmentDetails, PSCAttachmentDetailObservedState_ToProto)
 	out.Endpoints = direct.Slice_ToProto(mapCtx, in.Endpoints, Instance_InstanceEndpointObservedState_ToProto)
-	// MISSING: OndemandMaintenance
 	out.MaintenancePolicy = MaintenancePolicyObservedState_ToProto(mapCtx, in.MaintenancePolicy)
 	out.MaintenanceSchedule = MaintenanceScheduleObservedState_ToProto(mapCtx, in.MaintenanceSchedule)
 	out.CrossInstanceReplicationConfig = CrossInstanceReplicationConfigObservedState_ToProto(mapCtx, in.CrossInstanceReplicationConfig)
-	// MISSING: AsyncInstanceEndpointsDeletionEnabled
-	// MISSING: BackupCollection
+	out.BackupCollection = in.BackupCollection
 	return out
 }
 */
@@ -697,30 +775,27 @@ func MemorystoreInstanceSpec_FromProto(mapCtx *direct.MapContext, in *pb.Instanc
 		return nil
 	}
 	out := &krm.MemorystoreInstanceSpec{}
-	// MISSING: GCSSource
-	// MISSING: ManagedBackupSource
+	out.GCSSource = Instance_GCSBackupSource_FromProto(mapCtx, in.GetGcsSource())
+	out.ManagedBackupSource = Instance_ManagedBackupSource_FromProto(mapCtx, in.GetManagedBackupSource())
 	// MISSING: Name
 	out.Labels = in.Labels
 	out.ReplicaCount = in.ReplicaCount
 	out.AuthorizationMode = direct.Enum_FromProto(mapCtx, in.GetAuthorizationMode())
 	out.TransitEncryptionMode = direct.Enum_FromProto(mapCtx, in.GetTransitEncryptionMode())
 	out.ShardCount = direct.LazyPtr(in.GetShardCount())
-	// MISSING: DiscoveryEndpoints
 	out.NodeType = direct.Enum_FromProto(mapCtx, in.GetNodeType())
 	out.PersistenceConfig = PersistenceConfig_FromProto(mapCtx, in.GetPersistenceConfig())
 	out.EngineVersion = direct.LazyPtr(in.GetEngineVersion())
 	out.EngineConfigs = in.EngineConfigs
 	out.ZoneDistributionConfig = ZoneDistributionConfig_FromProto(mapCtx, in.GetZoneDistributionConfig())
 	out.DeletionProtectionEnabled = in.DeletionProtectionEnabled
-	// MISSING: PSCAutoConnections
-	// MISSING: PSCAttachmentDetails
+	out.PSCAutoConnections = direct.Slice_FromProto(mapCtx, in.PscAutoConnections, PSCAutoConnection_FromProto)
 	out.Endpoints = direct.Slice_FromProto(mapCtx, in.Endpoints, Instance_InstanceEndpoint_FromProto)
 	out.Mode = direct.Enum_FromProto(mapCtx, in.GetMode())
-	// MISSING: OndemandMaintenance
+	out.OndemandMaintenance = in.OndemandMaintenance
 	out.MaintenancePolicy = MaintenancePolicy_FromProto(mapCtx, in.GetMaintenancePolicy())
 	out.CrossInstanceReplicationConfig = CrossInstanceReplicationConfig_FromProto(mapCtx, in.GetCrossInstanceReplicationConfig())
-	// MISSING: AsyncInstanceEndpointsDeletionEnabled
-	// MISSING: BackupCollection
+	out.AsyncInstanceEndpointsDeletionEnabled = in.AsyncInstanceEndpointsDeletionEnabled
 	out.AutomatedBackupConfig = AutomatedBackupConfig_FromProto(mapCtx, in.GetAutomatedBackupConfig())
 	return out
 }
@@ -732,30 +807,31 @@ func MemorystoreInstanceSpec_ToProto(mapCtx *direct.MapContext, in *krm.Memoryst
 		return nil
 	}
 	out := &pb.Instance{}
-	// MISSING: GCSSource
-	// MISSING: ManagedBackupSource
+	if oneof := Instance_GCSBackupSource_ToProto(mapCtx, in.GCSSource); oneof != nil {
+		out.ImportSources = &pb.Instance_GcsSource{GcsSource: oneof}
+	}
+	if oneof := Instance_ManagedBackupSource_ToProto(mapCtx, in.ManagedBackupSource); oneof != nil {
+		out.ImportSources = &pb.Instance_ManagedBackupSource_{ManagedBackupSource: oneof}
+	}
 	// MISSING: Name
 	out.Labels = in.Labels
 	out.ReplicaCount = in.ReplicaCount
 	out.AuthorizationMode = direct.Enum_ToProto[pb.Instance_AuthorizationMode](mapCtx, in.AuthorizationMode)
 	out.TransitEncryptionMode = direct.Enum_ToProto[pb.Instance_TransitEncryptionMode](mapCtx, in.TransitEncryptionMode)
 	out.ShardCount = direct.ValueOf(in.ShardCount)
-	// MISSING: DiscoveryEndpoints
 	out.NodeType = direct.Enum_ToProto[pb.Instance_NodeType](mapCtx, in.NodeType)
 	out.PersistenceConfig = PersistenceConfig_ToProto(mapCtx, in.PersistenceConfig)
 	out.EngineVersion = direct.ValueOf(in.EngineVersion)
 	out.EngineConfigs = in.EngineConfigs
 	out.ZoneDistributionConfig = ZoneDistributionConfig_ToProto(mapCtx, in.ZoneDistributionConfig)
 	out.DeletionProtectionEnabled = in.DeletionProtectionEnabled
-	// MISSING: PSCAutoConnections
-	// MISSING: PSCAttachmentDetails
+	out.PscAutoConnections = direct.Slice_ToProto(mapCtx, in.PSCAutoConnections, PSCAutoConnection_ToProto)
 	out.Endpoints = direct.Slice_ToProto(mapCtx, in.Endpoints, Instance_InstanceEndpoint_ToProto)
 	out.Mode = direct.Enum_ToProto[pb.Instance_Mode](mapCtx, in.Mode)
-	// MISSING: OndemandMaintenance
+	out.OndemandMaintenance = in.OndemandMaintenance
 	out.MaintenancePolicy = MaintenancePolicy_ToProto(mapCtx, in.MaintenancePolicy)
 	out.CrossInstanceReplicationConfig = CrossInstanceReplicationConfig_ToProto(mapCtx, in.CrossInstanceReplicationConfig)
-	// MISSING: AsyncInstanceEndpointsDeletionEnabled
-	// MISSING: BackupCollection
+	out.AsyncInstanceEndpointsDeletionEnabled = in.AsyncInstanceEndpointsDeletionEnabled
 	out.AutomatedBackupConfig = AutomatedBackupConfig_ToProto(mapCtx, in.AutomatedBackupConfig)
 	return out
 }
@@ -772,16 +848,180 @@ func NodeConfigObservedState_FromProto(mapCtx *direct.MapContext, in *pb.NodeCon
 }
 */
 
-/* found existing non-generated mapping function "NodeConfigObservedState_ToProto", skipping
-func NodeConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.NodeConfigObservedState) *pb.NodeConfig {
+/*
+found existing non-generated mapping function "NodeConfigObservedState_ToProto", skipping
+
+	func NodeConfigObservedState_ToProto(mapCtx *direct.MapContext, in *krm.NodeConfigObservedState) *pb.NodeConfig {
+		if in == nil {
+			return nil
+		}
+		out := &pb.NodeConfig{}
+		out.SizeGb = direct.ValueOf(in.SizeGB)
+		return out
+	}
+*/
+func PSCAttachmentDetailObservedState_FromProto(mapCtx *direct.MapContext, in *pb.PscAttachmentDetail) *krm.PSCAttachmentDetailObservedState {
 	if in == nil {
 		return nil
 	}
-	out := &pb.NodeConfig{}
-	out.SizeGb = direct.ValueOf(in.SizeGB)
+	out := &krm.PSCAttachmentDetailObservedState{}
+	out.ServiceAttachment = direct.LazyPtr(in.GetServiceAttachment())
+	out.ConnectionType = direct.Enum_FromProto(mapCtx, in.GetConnectionType())
 	return out
 }
-*/
+func PSCAttachmentDetailObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PSCAttachmentDetailObservedState) *pb.PscAttachmentDetail {
+	if in == nil {
+		return nil
+	}
+	out := &pb.PscAttachmentDetail{}
+	out.ServiceAttachment = direct.ValueOf(in.ServiceAttachment)
+	out.ConnectionType = direct.Enum_ToProto[pb.ConnectionType](mapCtx, in.ConnectionType)
+	return out
+}
+func PSCAutoConnection_FromProto(mapCtx *direct.MapContext, in *pb.PscAutoConnection) *krm.PSCAutoConnection {
+	if in == nil {
+		return nil
+	}
+	out := &krm.PSCAutoConnection{}
+	out.Port = direct.LazyPtr(in.GetPort())
+	// MISSING: PSCConnectionID
+	// MISSING: IPAddress
+	// MISSING: ForwardingRule
+	out.ProjectID = direct.LazyPtr(in.GetProjectId())
+	out.Network = direct.LazyPtr(in.GetNetwork())
+	// MISSING: ServiceAttachment
+	// MISSING: PSCConnectionStatus
+	// MISSING: ConnectionType
+	return out
+}
+func PSCAutoConnection_ToProto(mapCtx *direct.MapContext, in *krm.PSCAutoConnection) *pb.PscAutoConnection {
+	if in == nil {
+		return nil
+	}
+	out := &pb.PscAutoConnection{}
+	if oneof := PSCAutoConnection_Port_ToProto(mapCtx, in.Port); oneof != nil {
+		out.Ports = oneof
+	}
+	// MISSING: PSCConnectionID
+	// MISSING: IPAddress
+	// MISSING: ForwardingRule
+	out.ProjectId = direct.ValueOf(in.ProjectID)
+	out.Network = direct.ValueOf(in.Network)
+	// MISSING: ServiceAttachment
+	// MISSING: PSCConnectionStatus
+	// MISSING: ConnectionType
+	return out
+}
+func PSCAutoConnection_Port_ToProto(mapCtx *direct.MapContext, in *int32) *pb.PscAutoConnection_Port {
+	if in == nil {
+		return nil
+	}
+	return &pb.PscAutoConnection_Port{Port: *in}
+}
+func PSCAutoConnectionObservedState_FromProto(mapCtx *direct.MapContext, in *pb.PscAutoConnection) *krm.PSCAutoConnectionObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.PSCAutoConnectionObservedState{}
+	// MISSING: Port
+	out.PSCConnectionID = direct.LazyPtr(in.GetPscConnectionId())
+	out.IPAddress = direct.LazyPtr(in.GetIpAddress())
+	out.ForwardingRule = direct.LazyPtr(in.GetForwardingRule())
+	// MISSING: ProjectID
+	// MISSING: Network
+	out.ServiceAttachment = direct.LazyPtr(in.GetServiceAttachment())
+	out.PSCConnectionStatus = direct.Enum_FromProto(mapCtx, in.GetPscConnectionStatus())
+	out.ConnectionType = direct.Enum_FromProto(mapCtx, in.GetConnectionType())
+	return out
+}
+func PSCAutoConnectionObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PSCAutoConnectionObservedState) *pb.PscAutoConnection {
+	if in == nil {
+		return nil
+	}
+	out := &pb.PscAutoConnection{}
+	// MISSING: Port
+	out.PscConnectionId = direct.ValueOf(in.PSCConnectionID)
+	out.IpAddress = direct.ValueOf(in.IPAddress)
+	out.ForwardingRule = direct.ValueOf(in.ForwardingRule)
+	// MISSING: ProjectID
+	// MISSING: Network
+	out.ServiceAttachment = direct.ValueOf(in.ServiceAttachment)
+	out.PscConnectionStatus = direct.Enum_ToProto[pb.PscConnectionStatus](mapCtx, in.PSCConnectionStatus)
+	out.ConnectionType = direct.Enum_ToProto[pb.ConnectionType](mapCtx, in.ConnectionType)
+	return out
+}
+func PSCConnection_FromProto(mapCtx *direct.MapContext, in *pb.PscConnection) *krm.PSCConnection {
+	if in == nil {
+		return nil
+	}
+	out := &krm.PSCConnection{}
+	out.Port = direct.LazyPtr(in.GetPort())
+	out.PSCConnectionID = direct.LazyPtr(in.GetPscConnectionId())
+	out.IPAddress = direct.LazyPtr(in.GetIpAddress())
+	out.ForwardingRule = direct.LazyPtr(in.GetForwardingRule())
+	// MISSING: ProjectID
+	out.Network = direct.LazyPtr(in.GetNetwork())
+	out.ServiceAttachment = direct.LazyPtr(in.GetServiceAttachment())
+	// MISSING: PSCConnectionStatus
+	// MISSING: ConnectionType
+	return out
+}
+func PSCConnection_ToProto(mapCtx *direct.MapContext, in *krm.PSCConnection) *pb.PscConnection {
+	if in == nil {
+		return nil
+	}
+	out := &pb.PscConnection{}
+	if oneof := PSCConnection_Port_ToProto(mapCtx, in.Port); oneof != nil {
+		out.Ports = oneof
+	}
+	out.PscConnectionId = direct.ValueOf(in.PSCConnectionID)
+	out.IpAddress = direct.ValueOf(in.IPAddress)
+	out.ForwardingRule = direct.ValueOf(in.ForwardingRule)
+	// MISSING: ProjectID
+	out.Network = direct.ValueOf(in.Network)
+	out.ServiceAttachment = direct.ValueOf(in.ServiceAttachment)
+	// MISSING: PSCConnectionStatus
+	// MISSING: ConnectionType
+	return out
+}
+func PSCConnection_Port_ToProto(mapCtx *direct.MapContext, in *int32) *pb.PscConnection_Port {
+	if in == nil {
+		return nil
+	}
+	return &pb.PscConnection_Port{Port: *in}
+}
+func PSCConnectionObservedState_FromProto(mapCtx *direct.MapContext, in *pb.PscConnection) *krm.PSCConnectionObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.PSCConnectionObservedState{}
+	// MISSING: Port
+	// MISSING: PSCConnectionID
+	// MISSING: IPAddress
+	// MISSING: ForwardingRule
+	out.ProjectID = direct.LazyPtr(in.GetProjectId())
+	// MISSING: Network
+	// MISSING: ServiceAttachment
+	out.PSCConnectionStatus = direct.Enum_FromProto(mapCtx, in.GetPscConnectionStatus())
+	out.ConnectionType = direct.Enum_FromProto(mapCtx, in.GetConnectionType())
+	return out
+}
+func PSCConnectionObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PSCConnectionObservedState) *pb.PscConnection {
+	if in == nil {
+		return nil
+	}
+	out := &pb.PscConnection{}
+	// MISSING: Port
+	// MISSING: PSCConnectionID
+	// MISSING: IPAddress
+	// MISSING: ForwardingRule
+	out.ProjectId = direct.ValueOf(in.ProjectID)
+	// MISSING: Network
+	// MISSING: ServiceAttachment
+	out.PscConnectionStatus = direct.Enum_ToProto[pb.PscConnectionStatus](mapCtx, in.PSCConnectionStatus)
+	out.ConnectionType = direct.Enum_ToProto[pb.ConnectionType](mapCtx, in.ConnectionType)
+	return out
+}
 
 /* found existing non-generated mapping function "PersistenceConfig_FromProto", skipping
 func PersistenceConfig_FromProto(mapCtx *direct.MapContext, in *pb.PersistenceConfig) *krm.PersistenceConfig {
@@ -843,132 +1083,15 @@ func PersistenceConfig_RdbConfig_FromProto(mapCtx *direct.MapContext, in *pb.Per
 }
 */
 
-/*
-found existing non-generated mapping function "PersistenceConfig_RdbConfig_ToProto", skipping
-
-	func PersistenceConfig_RdbConfig_ToProto(mapCtx *direct.MapContext, in *krm.PersistenceConfig_RdbConfig) *pb.PersistenceConfig_RDBConfig {
-		if in == nil {
-			return nil
-		}
-		out := &pb.PersistenceConfig_RDBConfig{}
-		out.RdbSnapshotPeriod = direct.Enum_ToProto[pb.PersistenceConfig_RDBConfig_SnapshotPeriod](mapCtx, in.RdbSnapshotPeriod)
-		out.RdbSnapshotStartTime = direct.StringTimestamp_ToProto(mapCtx, in.RdbSnapshotStartTime)
-		return out
-	}
-*/
-func PscAttachmentDetailObservedState_FromProto(mapCtx *direct.MapContext, in *pb.PscAttachmentDetail) *krm.PscAttachmentDetailObservedState {
+/* found existing non-generated mapping function "PersistenceConfig_RdbConfig_ToProto", skipping
+func PersistenceConfig_RdbConfig_ToProto(mapCtx *direct.MapContext, in *krm.PersistenceConfig_RdbConfig) *pb.PersistenceConfig_RDBConfig {
 	if in == nil {
 		return nil
 	}
-	out := &krm.PscAttachmentDetailObservedState{}
-	out.ServiceAttachment = direct.LazyPtr(in.GetServiceAttachment())
-	out.ConnectionType = direct.Enum_FromProto(mapCtx, in.GetConnectionType())
+	out := &pb.PersistenceConfig_RDBConfig{}
+	out.RdbSnapshotPeriod = direct.Enum_ToProto[pb.PersistenceConfig_RDBConfig_SnapshotPeriod](mapCtx, in.RdbSnapshotPeriod)
+	out.RdbSnapshotStartTime = direct.StringTimestamp_ToProto(mapCtx, in.RdbSnapshotStartTime)
 	return out
-}
-func PscAttachmentDetailObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PscAttachmentDetailObservedState) *pb.PscAttachmentDetail {
-	if in == nil {
-		return nil
-	}
-	out := &pb.PscAttachmentDetail{}
-	out.ServiceAttachment = direct.ValueOf(in.ServiceAttachment)
-	out.ConnectionType = direct.Enum_ToProto[pb.ConnectionType](mapCtx, in.ConnectionType)
-	return out
-}
-
-/* found existing non-generated mapping function "PscAutoConnection_FromProto", skipping
-func PscAutoConnection_FromProto(mapCtx *direct.MapContext, in *pb.PscAutoConnection) *krm.PscAutoConnection {
-	if in == nil {
-		return nil
-	}
-	out := &krm.PscAutoConnection{}
-	// MISSING: Port
-	// MISSING: PSCConnectionID
-	// MISSING: IPAddress
-	// MISSING: ForwardingRule
-	// MISSING: ProjectID
-	if in.GetNetwork() != "" {
-		out.NetworkRef = &krmcomputerefs.ComputeNetworkRef{External: in.GetNetwork()}
-	}
-	// MISSING: ServiceAttachment
-	// MISSING: PSCConnectionStatus
-	// MISSING: ConnectionType
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "PscAutoConnection_ToProto", skipping
-func PscAutoConnection_ToProto(mapCtx *direct.MapContext, in *krm.PscAutoConnection) *pb.PscAutoConnection {
-	if in == nil {
-		return nil
-	}
-	out := &pb.PscAutoConnection{}
-	// MISSING: Port
-	// MISSING: PSCConnectionID
-	// MISSING: IPAddress
-	// MISSING: ForwardingRule
-	// MISSING: ProjectID
-	if in.NetworkRef != nil {
-		out.Network = in.NetworkRef.External
-	}
-	// MISSING: ServiceAttachment
-	// MISSING: PSCConnectionStatus
-	// MISSING: ConnectionType
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "PscAutoConnectionObservedState_FromProto", skipping
-func PscAutoConnectionObservedState_FromProto(mapCtx *direct.MapContext, in *pb.PscAutoConnection) *krm.PscAutoConnectionObservedState {
-	if in == nil {
-		return nil
-	}
-	out := &krm.PscAutoConnectionObservedState{}
-	out.Port = direct.LazyPtr(in.GetPort())
-	// MISSING: PSCConnectionID
-	// (near miss): "PSCConnectionID" vs "PscConnectionID"
-	// MISSING: IPAddress
-	// (near miss): "IPAddress" vs "IpAddress"
-	out.ForwardingRule = direct.LazyPtr(in.GetForwardingRule())
-	// MISSING: ProjectID
-	// MISSING: Network
-	out.ServiceAttachment = direct.LazyPtr(in.GetServiceAttachment())
-	// MISSING: PSCConnectionStatus
-	// (near miss): "PSCConnectionStatus" vs "PscConnectionStatus"
-	out.ConnectionType = direct.Enum_FromProto(mapCtx, in.GetConnectionType())
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "PscAutoConnectionObservedState_ToProto", skipping
-func PscAutoConnectionObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PscAutoConnectionObservedState) *pb.PscAutoConnection {
-	if in == nil {
-		return nil
-	}
-	out := &pb.PscAutoConnection{}
-	if oneof := PscAutoConnectionObservedState_Port_ToProto(mapCtx, in.Port); oneof != nil {
-		out.Ports = oneof
-	}
-	// MISSING: PSCConnectionID
-	// (near miss): "PSCConnectionID" vs "PscConnectionID"
-	// MISSING: IPAddress
-	// (near miss): "IPAddress" vs "IpAddress"
-	out.ForwardingRule = direct.ValueOf(in.ForwardingRule)
-	// MISSING: ProjectID
-	// MISSING: Network
-	out.ServiceAttachment = direct.ValueOf(in.ServiceAttachment)
-	// MISSING: PSCConnectionStatus
-	// (near miss): "PSCConnectionStatus" vs "PscConnectionStatus"
-	out.ConnectionType = direct.Enum_ToProto[pb.ConnectionType](mapCtx, in.ConnectionType)
-	return out
-}
-*/
-
-/* found existing non-generated mapping function "PscAutoConnectionObservedState_Port_ToProto", skipping
-func PscAutoConnectionObservedState_Port_ToProto(mapCtx *direct.MapContext, in *int32) *pb.PscAutoConnection_Port {
-	if in == nil {
-		return nil
-	}
-	return &pb.PscAutoConnection_Port{Port: *in}
 }
 */
 

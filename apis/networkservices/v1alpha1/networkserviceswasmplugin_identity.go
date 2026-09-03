@@ -22,6 +22,7 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common/identity"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/apis/common/parent"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -64,13 +65,25 @@ func (i *WasmPluginIdentity) FromExternal(ref string) error {
 var _ identity.Resource = &NetworkServicesWasmPlugin{}
 
 func (obj *NetworkServicesWasmPlugin) GetIdentity(ctx context.Context, reader client.Reader) (identity.Identity, error) {
-	id := &WasmPluginIdentity{
-		parent: &parent.ProjectAndLocationParent{},
-	}
-
-	// Resolve user-configured Parent
-	if err := obj.Spec.ProjectAndLocationRef.Build(ctx, reader, obj.GetNamespace(), id.parent); err != nil {
+	// Resolve user-configured Parent. The Spec carries projectRef and location
+	// separately rather than an inline ProjectAndLocationRef, so the parent is
+	// assembled here; this mirrors clouddeploy and clouddms.
+	projectRef, err := refsv1beta1.ResolveProject(ctx, reader, obj.GetNamespace(), obj.Spec.ProjectRef)
+	if err != nil {
 		return nil, err
+	}
+	if projectRef.ProjectID == "" {
+		return nil, fmt.Errorf("cannot resolve project")
+	}
+	location := common.ValueOf(obj.Spec.Location)
+	if location == "" {
+		return nil, fmt.Errorf("cannot resolve location")
+	}
+	id := &WasmPluginIdentity{
+		parent: &parent.ProjectAndLocationParent{
+			ProjectID: projectRef.ProjectID,
+			Location:  location,
+		},
 	}
 
 	// Get desired ID
@@ -99,13 +112,25 @@ func (obj *NetworkServicesWasmPlugin) GetIdentity(ctx context.Context, reader cl
 
 // NewWasmPluginIdentity builds a WasmPluginIdentity from the Config Connector WasmPlugin object.
 func NewWasmPluginIdentity(ctx context.Context, reader client.Reader, obj *NetworkServicesWasmPlugin) (*WasmPluginIdentity, error) {
-	id := &WasmPluginIdentity{
-		parent: &parent.ProjectAndLocationParent{},
-	}
-
-	// Resolve user-configured Parent
-	if err := obj.Spec.ProjectAndLocationRef.Build(ctx, reader, obj.GetNamespace(), id.parent); err != nil {
+	// Resolve user-configured Parent. The Spec carries projectRef and location
+	// separately rather than an inline ProjectAndLocationRef, so the parent is
+	// assembled here; this mirrors clouddeploy and clouddms.
+	projectRef, err := refsv1beta1.ResolveProject(ctx, reader, obj.GetNamespace(), obj.Spec.ProjectRef)
+	if err != nil {
 		return nil, err
+	}
+	if projectRef.ProjectID == "" {
+		return nil, fmt.Errorf("cannot resolve project")
+	}
+	location := common.ValueOf(obj.Spec.Location)
+	if location == "" {
+		return nil, fmt.Errorf("cannot resolve location")
+	}
+	id := &WasmPluginIdentity{
+		parent: &parent.ProjectAndLocationParent{
+			ProjectID: projectRef.ProjectID,
+			Location:  location,
+		},
 	}
 
 	// Get desired ID

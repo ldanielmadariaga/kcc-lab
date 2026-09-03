@@ -15,6 +15,7 @@
 package v1alpha1
 
 import (
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -24,11 +25,15 @@ var SpeechPhraseSetGVK = GroupVersion.WithKind("SpeechPhraseSet")
 // SpeechPhraseSetSpec defines the desired state of SpeechPhraseSet
 // +kcc:spec:proto=google.cloud.speech.v2.PhraseSet
 type SpeechPhraseSetSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/phraseSets/{phrase_set}
+	Location *string `json:"location"`
+
 	// The SpeechPhraseSet name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	Parent `json:",inline"`
-
 	// A list of word and phrases.
 	// +kcc:proto:field=google.cloud.speech.v2.PhraseSet.phrases
 	Phrases []PhraseSet_Phrase `json:"phrases,omitempty"`
@@ -40,7 +45,7 @@ type SpeechPhraseSetSpec struct {
 	//  binary search approach to finding the optimal value for your use case as
 	//  well as adding phrases both with and without boost to your requests.
 	// +kcc:proto:field=google.cloud.speech.v2.PhraseSet.boost
-	/* NOTYET Boost *string `json:"boost,omitempty"` */
+	Boost *float32 `json:"boost,omitempty"`
 
 	// User-settable, human-readable name for the PhraseSet. Must be 63
 	//  characters or less.
@@ -73,15 +78,9 @@ type SpeechPhraseSetStatus struct {
 // SpeechPhraseSetObservedState is the state of the SpeechPhraseSet resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.speech.v2.PhraseSet
 type SpeechPhraseSetObservedState struct {
-	// Output only. Identifier. The resource name of the PhraseSet.
-	//  Format: `projects/{project}/locations/{location}/phraseSets/{phrase_set}`.
-	// +kcc:proto:field=google.cloud.speech.v2.PhraseSet.name
-	// NOTYET: this field serves the same purpose as externalRef
-	// Name *string `json:"name,omitempty"`
-
 	// Output only. System-assigned unique identifier for the PhraseSet.
 	// +kcc:proto:field=google.cloud.speech.v2.PhraseSet.uid
-	UID *string `json:"uid,omitempty"`
+	Uid *string `json:"uid,omitempty"`
 
 	// Output only. The PhraseSet lifecycle state.
 	// +kcc:proto:field=google.cloud.speech.v2.PhraseSet.state
@@ -161,24 +160,4 @@ type SpeechPhraseSetList struct {
 
 func init() {
 	SchemeBuilder.Register(&SpeechPhraseSet{}, &SpeechPhraseSetList{})
-}
-
-// +kcc:proto=google.cloud.speech.v2.PhraseSet.Phrase
-type PhraseSet_Phrase struct {
-	// The phrase itself.
-	// +kcc:proto:field=google.cloud.speech.v2.PhraseSet.Phrase.value
-	Value *string `json:"value,omitempty"`
-
-	// Hint Boost. Overrides the boost set at the phrase set level.
-	//  Positive value will increase the probability that a specific phrase will
-	//  be recognized over other similar sounding phrases. The higher the boost,
-	//  the higher the chance of false positive recognition as well. Negative
-	//  boost values would correspond to anti-biasing. Anti-biasing is not
-	//  enabled, so negative boost values will return an error. Boost values must
-	//  be between 0 and 20. Any values outside that range will return an error.
-	//  We recommend using a binary search approach to finding the optimal value
-	//  for your use case as well as adding phrases both with and without boost
-	//  to your requests.
-	// +kcc:proto:field=google.cloud.speech.v2.PhraseSet.Phrase.boost
-	Boost *string `json:"boost,omitempty"`
 }

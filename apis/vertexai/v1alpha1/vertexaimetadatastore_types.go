@@ -25,28 +25,28 @@ var VertexAIMetadataStoreGVK = GroupVersion.WithKind("VertexAIMetadataStore")
 // VertexAIMetadataStoreSpec defines the desired state of VertexAIMetadataStore
 // +kcc:spec:proto=google.cloud.aiplatform.v1beta1.MetadataStore
 type VertexAIMetadataStoreSpec struct {
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/metadataStores/{metadata_store}
+	Location *string `json:"location"`
+
+	// The VertexAIMetadataStore name. If not given, the metadata.name will be used.
+	ResourceID *string `json:"resourceID,omitempty"`
 	// Customer-managed encryption key spec for a Metadata Store. If set, this
-	// Metadata Store and all sub-resources of this Metadata Store are secured
-	// using this key.
+	//  Metadata Store and all sub-resources of this Metadata Store are secured
+	//  using this key.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.MetadataStore.encryption_spec
 	EncryptionSpec *EncryptionSpec `json:"encryptionSpec,omitempty"`
-
-	// Optional. Dataplex integration settings.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.MetadataStore.dataplex_config
-	DataplexConfig *MetadataStore_DataplexConfig `json:"dataplexConfig,omitempty"`
 
 	// Description of the MetadataStore.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.MetadataStore.description
 	Description *string `json:"description,omitempty"`
 
-	// The region of the Metadata Store. eg us-central1.
-	Region string `json:"region,omitempty"`
-
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef,omitempty"`
-
-	// The VertexAIMetadataStore name. If not given, the metadata.name will be used.
-	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. Dataplex integration settings.
+	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.MetadataStore.dataplex_config
+	DataplexConfig *MetadataStore_DataplexConfig `json:"dataplexConfig,omitempty"`
 }
 
 // VertexAIMetadataStoreStatus defines the config connector machine state of VertexAIMetadataStore
@@ -68,10 +68,6 @@ type VertexAIMetadataStoreStatus struct {
 // VertexAIMetadataStoreObservedState is the state of the VertexAIMetadataStore resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.aiplatform.v1beta1.MetadataStore
 type VertexAIMetadataStoreObservedState struct {
-	// Output only. The resource name of the MetadataStore instance.
-	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.MetadataStore.name
-	Name *string `json:"name,omitempty"`
-
 	// Output only. Timestamp when this MetadataStore was created.
 	// +kcc:proto:field=google.cloud.aiplatform.v1beta1.MetadataStore.create_time
 	CreateTime *string `json:"createTime,omitempty"`
@@ -87,12 +83,10 @@ type VertexAIMetadataStoreObservedState struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// TODO(user): make sure the pluralizaiton below is correct"
 // +kubebuilder:resource:categories=gcp,shortName=gcpvertexaimetadatastore;gcpvertexaimetadatastores
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=stable"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

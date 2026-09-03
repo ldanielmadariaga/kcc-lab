@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: modelarmortemplates.modelarmor.cnrm.cloud.google.com
 spec:
@@ -124,7 +123,7 @@ spec:
                           templates. Supports both Sensitive Data Protection inspection
                           and de-identification operations.
                         properties:
-                          deidentifyTemplateRef:
+                          deidentifyTemplate:
                             description: |-
                               Optional. Optional Sensitive Data Protection Deidentify template resource
                                name.
@@ -137,36 +136,8 @@ spec:
 
                                e.g.
                                `projects/{project}/locations/{location}/deidentifyTemplates/{deidentify_template}`
-                            oneOf:
-                            - not:
-                                required:
-                                - external
-                              required:
-                              - name
-                            - not:
-                                anyOf:
-                                - required:
-                                  - name
-                                - required:
-                                  - namespace
-                              required:
-                              - external
-                            properties:
-                              external:
-                                description: A reference to an externally managed
-                                  DLP Deidentify Template. Should be in the format
-                                  `projects/[project_id]/locations/[location]/deidentifyTemplates/[deidentify_template]`.
-                                type: string
-                              name:
-                                description: The `name` of a `DLPDeidentifyTemplate`
-                                  resource.
-                                type: string
-                              namespace:
-                                description: The `namespace` of a `DLPDeidentifyTemplate`
-                                  resource.
-                                type: string
-                            type: object
-                          inspectTemplateRef:
+                            type: string
+                          inspectTemplate:
                             description: |-
                               Optional. Sensitive Data Protection inspect template resource name
 
@@ -177,34 +148,7 @@ spec:
 
                                e.g.
                                `projects/{project}/locations/{location}/inspectTemplates/{inspect_template}`
-                            oneOf:
-                            - not:
-                                required:
-                                - external
-                              required:
-                              - name
-                            - not:
-                                anyOf:
-                                - required:
-                                  - name
-                                - required:
-                                  - namespace
-                              required:
-                              - external
-                            properties:
-                              external:
-                                description: A reference to an externally managed
-                                  DLP Inspect Template. Should be in the format `projects/[project_id]/locations/[location]/inspectTemplates/[inspect_template]`.
-                                type: string
-                              name:
-                                description: The `name` of a `DLPInspectTemplate`
-                                  resource.
-                                type: string
-                              namespace:
-                                description: The `namespace` of a `DLPInspectTemplate`
-                                  resource.
-                                type: string
-                            type: object
+                            type: string
                         type: object
                       basicConfig:
                         description: Optional. Basic Sensitive Data Protection configuration

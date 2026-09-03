@@ -36,6 +36,11 @@ ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.workstations.v1 \
   --api-version workstations.cnrm.cloud.google.com/v1beta1 \
   --include-skipped-output \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource WorkstationCluster:WorkstationCluster \
   --resource WorkstationConfig:WorkstationConfig \
   --resource Workstation:Workstation

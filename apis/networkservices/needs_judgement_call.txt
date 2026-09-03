@@ -1,0 +1,21 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=NetworkServicesServiceBinding group=networkservices.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NetworkServicesServiceBinding group=networkservices.cnrm.cloud.google.com: field ".spec.service" reason=possible-reference (target=servicedirectory.googleapis.com/Service)
+kind=NetworkServicesServiceBinding group=networkservices.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/serviceBindings/{service_binding}; confirm the resource is regional and that this is the name for it)
+kind=NetworkServicesLBRouteExtension group=networkservices.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NetworkServicesLBRouteExtension group=networkservices.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/lbRouteExtensions/{lb_route_extension}; confirm the resource is regional and that this is the name for it)
+kind=NetworkServicesWasmPlugin group=networkservices.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NetworkServicesWasmPlugin group=networkservices.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/wasmPlugins/{wasm_plugin}; confirm the resource is regional and that this is the name for it)
+kind=NetworkServicesAuthzExtension group=networkservices.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NetworkServicesAuthzExtension group=networkservices.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/authzExtensions/{authz_extension}; confirm the resource is regional and that this is the name for it)
+kind=NetworkServicesAuthzExtension group=networkservices.cnrm.cloud.google.com: field ".spec.service" reason=possible-reference-by-description
+kind=NetworkServicesLBRouteExtension group=networkservices.cnrm.cloud.google.com: field ".spec.extensionChains[].extensions[].service" reason=possible-reference-by-description
+kind=NetworkServicesLBTrafficExtension group=networkservices.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=NetworkServicesLBTrafficExtension group=networkservices.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/lbTrafficExtensions/{lb_traffic_extension}; confirm the resource is regional and that this is the name for it)
+kind=NetworkServicesLBTrafficExtension group=networkservices.cnrm.cloud.google.com: field ".spec.extensionChains[].extensions[].service" reason=possible-reference-by-description

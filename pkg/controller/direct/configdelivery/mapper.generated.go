@@ -26,7 +26,6 @@ package configdelivery
 import (
 	pb "cloud.google.com/go/configdelivery/apiv1/configdeliverypb"
 	krm "github.com/GoogleCloudPlatform/k8s-config-connector/apis/configdelivery/v1alpha1"
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -52,7 +51,6 @@ func ConfigDeliveryFleetPackageObservedState_FromProto(mapCtx *direct.MapContext
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Labels
 	out.Info = FleetPackageInfoObservedState_FromProto(mapCtx, in.GetInfo())
 	return out
 }
@@ -64,7 +62,6 @@ func ConfigDeliveryFleetPackageObservedState_ToProto(mapCtx *direct.MapContext, 
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Labels
 	out.Info = FleetPackageInfoObservedState_ToProto(mapCtx, in.Info)
 	return out
 }
@@ -74,7 +71,7 @@ func ConfigDeliveryFleetPackageSpec_FromProto(mapCtx *direct.MapContext, in *pb.
 	}
 	out := &krm.ConfigDeliveryFleetPackageSpec{}
 	// MISSING: Name
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.ResourceBundleSelector = FleetPackage_ResourceBundleSelector_FromProto(mapCtx, in.GetResourceBundleSelector())
 	out.Target = FleetPackage_Target_FromProto(mapCtx, in.GetTarget())
 	out.RolloutStrategy = RolloutStrategy_FromProto(mapCtx, in.GetRolloutStrategy())
@@ -89,7 +86,7 @@ func ConfigDeliveryFleetPackageSpec_ToProto(mapCtx *direct.MapContext, in *krm.C
 	}
 	out := &pb.FleetPackage{}
 	// MISSING: Name
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.ResourceBundleSelector = FleetPackage_ResourceBundleSelector_ToProto(mapCtx, in.ResourceBundleSelector)
 	out.Target = FleetPackage_Target_ToProto(mapCtx, in.Target)
 	out.RolloutStrategy = RolloutStrategy_ToProto(mapCtx, in.RolloutStrategy)
@@ -106,7 +103,6 @@ func ConfigDeliveryResourceBundleObservedState_FromProto(mapCtx *direct.MapConte
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Labels
 	return out
 }
 func ConfigDeliveryResourceBundleObservedState_ToProto(mapCtx *direct.MapContext, in *krm.ConfigDeliveryResourceBundleObservedState) *pb.ResourceBundle {
@@ -117,7 +113,6 @@ func ConfigDeliveryResourceBundleObservedState_ToProto(mapCtx *direct.MapContext
 	// MISSING: Name
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Labels
 	return out
 }
 func ConfigDeliveryResourceBundleSpec_FromProto(mapCtx *direct.MapContext, in *pb.ResourceBundle) *krm.ConfigDeliveryResourceBundleSpec {
@@ -126,7 +121,7 @@ func ConfigDeliveryResourceBundleSpec_FromProto(mapCtx *direct.MapContext, in *p
 	}
 	out := &krm.ConfigDeliveryResourceBundleSpec{}
 	// MISSING: Name
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.Description = direct.LazyPtr(in.GetDescription())
 	return out
 }
@@ -136,7 +131,7 @@ func ConfigDeliveryResourceBundleSpec_ToProto(mapCtx *direct.MapContext, in *krm
 	}
 	out := &pb.ResourceBundle{}
 	// MISSING: Name
-	// MISSING: Labels
+	out.Labels = in.Labels
 	out.Description = direct.ValueOf(in.Description)
 	return out
 }
@@ -145,9 +140,7 @@ func Fleet_FromProto(mapCtx *direct.MapContext, in *pb.Fleet) *krm.Fleet {
 		return nil
 	}
 	out := &krm.Fleet{}
-	if in.GetProject() != "" {
-		out.ProjectRef = &refsv1beta1.ProjectRef{External: in.GetProject()}
-	}
+	out.Project = direct.LazyPtr(in.GetProject())
 	out.Selector = Fleet_LabelSelector_FromProto(mapCtx, in.GetSelector())
 	return out
 }
@@ -156,9 +149,7 @@ func Fleet_ToProto(mapCtx *direct.MapContext, in *krm.Fleet) *pb.Fleet {
 		return nil
 	}
 	out := &pb.Fleet{}
-	if in.ProjectRef != nil {
-		out.Project = in.ProjectRef.External
-	}
+	out.Project = direct.ValueOf(in.Project)
 	out.Selector = Fleet_LabelSelector_ToProto(mapCtx, in.Selector)
 	return out
 }

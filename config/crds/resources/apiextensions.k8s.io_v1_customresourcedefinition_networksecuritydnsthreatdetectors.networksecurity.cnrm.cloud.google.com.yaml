@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: networksecuritydnsthreatdetectors.networksecurity.cnrm.cloud.google.com
 spec:
@@ -64,45 +63,21 @@ spec:
             description: NetworkSecurityDNSThreatDetectorSpec defines the desired
               state of NetworkSecurityDNSThreatDetector
             properties:
-              description:
-                description: Optional. A human-readable description of the resource.
-                type: string
-              excludedNetworkRefs:
-                description: Optional. The list of VPC networks to exclude from DNS
-                  threat detection. If empty, all networks in the project are included.
+              excludedNetworks:
+                description: |-
+                  Optional. A list of network resource names which aren't monitored by this
+                   DnsThreatDetector.
+
+                   Example:
+                   `projects/PROJECT_ID/global/networks/NETWORK_NAME`.
                 items:
-                  description: ComputeNetworkRef is a reference to a GCP ComputeNetwork.
-                  oneOf:
-                  - not:
-                      required:
-                      - external
-                    required:
-                    - name
-                  - not:
-                      anyOf:
-                      - required:
-                        - name
-                      - required:
-                        - namespace
-                    required:
-                    - external
-                  properties:
-                    external:
-                      description: A reference to an externally managed ComputeNetwork
-                        resource. Should be in the format "projects/{{projectID}}/global/networks/{{networkID}}".
-                      type: string
-                    name:
-                      description: The name of a ComputeNetwork resource.
-                      type: string
-                    namespace:
-                      description: The namespace of a ComputeNetwork resource.
-                      type: string
-                  type: object
+                  type: string
                 type: array
               labels:
                 additionalProperties:
                   type: string
-                description: Optional. Labels as key value pairs.
+                description: Optional. Any labels associated with the DnsThreatDetector,
+                  listed as key value pairs.
                 type: object
               location:
                 description: The location of this resource.
@@ -140,9 +115,7 @@ spec:
                     type: string
                 type: object
               provider:
-                description: Required. The provider of the DNS threat detection service.
-                enum:
-                - INFOBLOX
+                description: Required. The provider used for DNS threat analysis.
                 type: string
               resourceID:
                 description: The NetworkSecurityDNSThreatDetector name. If not given,
@@ -200,12 +173,10 @@ spec:
                   observed in GCP.
                 properties:
                   createTime:
-                    description: Output only. The timestamp when the resource was
-                      created.
+                    description: Output only. Create time stamp.
                     type: string
                   updateTime:
-                    description: Output only. The timestamp when the resource was
-                      updated.
+                    description: Output only. Update time stamp.
                     type: string
                 type: object
             type: object

@@ -1,4 +1,4 @@
-// Copyright 2026 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,33 +26,44 @@ var DiscoveryEngineUserStoreGVK = GroupVersion.WithKind("DiscoveryEngineUserStor
 // +kcc:spec:proto=google.cloud.discoveryengine.v1beta.UserStore
 type DiscoveryEngineUserStoreSpec struct {
 	// The project that this resource belongs to.
-	// +required
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
-	// Immutable. The location of this resource.
-	// +required
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/userStores/{user_store}
 	Location *string `json:"location"`
 
 	// The DiscoveryEngineUserStore name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
-	// Optional. The display name of the User Store.
+	// The display name of the User Store.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.UserStore.display_name
 	DisplayName *string `json:"displayName,omitempty"`
 
-	// Optional. The default subscription LicenseConfig for the UserStore. If
-	//  enableLicenseAutoRegister is true, new users will automatically register
-	//  under the default subscription.
-	DefaultLicenseConfigRef *DiscoveryEngineLicenseConfigRef `json:"defaultLicenseConfigRef,omitempty"`
+	// Optional. The default subscription
+	//  [LicenseConfig][google.cloud.discoveryengine.v1beta.LicenseConfig] for the
+	//  UserStore, if
+	//  [UserStore.enable_license_auto_register][google.cloud.discoveryengine.v1beta.UserStore.enable_license_auto_register]
+	//  is true, new users will automatically register under the default
+	//  subscription.
+	//
+	//  If default
+	//  [LicenseConfig][google.cloud.discoveryengine.v1beta.LicenseConfig] doesn't
+	//  have remaining license seats left, new users will not be assigned with
+	//  license and will be blocked for Vertex AI Search features. This is used if
+	//  `license_assignment_tier_rules` is not configured.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.UserStore.default_license_config
+	DefaultLicenseConfig *string `json:"defaultLicenseConfig,omitempty"`
 
 	// Optional. Whether to enable license auto register for users in this User
 	//  Store. If true, new users will automatically register under the default
 	//  license config as long as the default license config has seats left.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.UserStore.enable_license_auto_register
 	EnableLicenseAutoRegister *bool `json:"enableLicenseAutoRegister,omitempty"`
 
 	// Optional. Whether to enable license auto update for users in this User
 	//  Store. If true, users with expired licenses will automatically be updated
 	//  to use the default license config as long as the default license config has
 	//  seats left.
+	// +kcc:proto:field=google.cloud.discoveryengine.v1beta.UserStore.enable_expired_license_auto_update
 	EnableExpiredLicenseAutoUpdate *bool `json:"enableExpiredLicenseAutoUpdate,omitempty"`
 }
 
@@ -73,7 +84,6 @@ type DiscoveryEngineUserStoreStatus struct {
 }
 
 // DiscoveryEngineUserStoreObservedState is the state of the DiscoveryEngineUserStore resource as most recently observed in GCP.
-// +kubebuilder:validation:XPreserveUnknownFields
 // +kcc:observedstate:proto=google.cloud.discoveryengine.v1beta.UserStore
 type DiscoveryEngineUserStoreObservedState struct {
 }
@@ -84,7 +94,6 @@ type DiscoveryEngineUserStoreObservedState struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="cnrm.cloud.google.com/stability-level=alpha"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"

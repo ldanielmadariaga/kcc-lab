@@ -27,8 +27,7 @@ import (
 	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
 )
 
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.BackupPlan", skipping
-
+/* unreachable type BackupPlan
 // +kcc:proto=google.cloud.backupdr.v1.BackupPlan
 type BackupPlan struct {
 
@@ -49,6 +48,7 @@ type BackupPlan struct {
 	// Required. The backup rules for this `BackupPlan`. There must be at least
 	//  one `BackupRule` message.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.backup_rules
+	// +required
 	BackupRules []BackupRule `json:"backupRules,omitempty"`
 
 	// Required. The resource type to which the `BackupPlan` will be applied.
@@ -56,6 +56,7 @@ type BackupPlan struct {
 	//  "sqladmin.googleapis.com/Instance", "alloydb.googleapis.com/Cluster",
 	//  "compute.googleapis.com/Disk".
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.resource_type
+	// +required
 	ResourceType *string `json:"resourceType,omitempty"`
 
 	// Optional. `etag` is returned from the service in the response. As a user of
@@ -67,7 +68,9 @@ type BackupPlan struct {
 	// Required. Resource name of backup vault which will be used as storage
 	//  location for backups. Format:
 	//  projects/{project}/locations/{location}/backupVaults/{backupvault}
+	// +kcc:guess=possible-reference target=BackupDRBackupVault
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlan.backup_vault
+	// +required
 	BackupVault *string `json:"backupVault,omitempty"`
 
 	// Optional. Applicable only for CloudSQL resource_type.
@@ -80,14 +83,14 @@ type BackupPlan struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.BackupPlanAssociation", skipping
-
+/* unreachable type BackupPlanAssociation
 // +kcc:proto=google.cloud.backupdr.v1.BackupPlanAssociation
 type BackupPlanAssociation struct {
 
 	// Required. Immutable. Resource type of workload on which backupplan is
 	//  applied
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlanAssociation.resource_type
+	// +required
 	ResourceType *string `json:"resourceType,omitempty"`
 
 	// Required. Immutable. Resource name of workload on which the backup plan is
@@ -98,12 +101,15 @@ type BackupPlanAssociation struct {
 	//  full resource URI (e.g.,
 	//  "https://www.googleapis.com/compute/v1/projects/my-project/zones/us-central1-a/instances/my-instance").
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlanAssociation.resource
+	// +required
 	Resource *string `json:"resource,omitempty"`
 
 	// Required. Resource name of backup plan which needs to be applied on
 	//  workload. Format:
 	//  projects/{project}/locations/{location}/backupPlans/{backupPlanId}
+	// +kcc:guess=possible-reference target=BackupDRBackupPlan
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupPlanAssociation.backup_plan
+	// +required
 	BackupPlan *string `json:"backupPlan,omitempty"`
 }
 */
@@ -115,6 +121,7 @@ type BackupRule struct {
 	//  followed by up to 62 lowercase letters, numbers, or hyphens. Pattern,
 	//  /[a-z][a-z0-9-]{,62}/.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupRule.rule_id
+	// +required
 	RuleID *string `json:"ruleID,omitempty"`
 
 	// Required. Configures the duration for which backup data will be kept. It is
@@ -125,6 +132,7 @@ type BackupRule struct {
 	//  on-demand backup.
 	//  Minimum and maximum values are workload specific for all other rules.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupRule.backup_retention_days
+	// +required
 	BackupRetentionDays *int32 `json:"backupRetentionDays,omitempty"`
 
 	// Optional. Defines a schedule that runs within the confines of a defined
@@ -133,8 +141,7 @@ type BackupRule struct {
 	StandardSchedule *StandardSchedule `json:"standardSchedule,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.BackupVault", skipping
-
+/* unreachable type BackupVault
 // +kcc:proto=google.cloud.backupdr.v1.BackupVault
 type BackupVault struct {
 
@@ -151,6 +158,7 @@ type BackupVault struct {
 	// Required. The default and minimum enforced retention for each backup within
 	//  the backup vault.  The enforced retention for each backup can be extended.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupVault.backup_minimum_enforced_retention_duration
+	// +required
 	BackupMinimumEnforcedRetentionDuration *string `json:"backupMinimumEnforcedRetentionDuration,omitempty"`
 
 	// Optional. Server specified ETag for the backup vault resource to
@@ -182,6 +190,7 @@ type BackupWindow struct {
 	// Required. The hour of day (0-23) when the window starts for e.g. if value
 	//  of start hour of day is 6 that mean backup window start at 6:00.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupWindow.start_hour_of_day
+	// +required
 	StartHourOfDay *int32 `json:"startHourOfDay,omitempty"`
 
 	// Required. The hour of day (1-24) when the window end for e.g. if value of
@@ -193,6 +202,7 @@ type BackupWindow struct {
 	//  End hour of day is not include in backup window that mean if
 	//  end_hour_of_day= 10 jobs should start before 10:00.
 	// +kcc:proto:field=google.cloud.backupdr.v1.BackupWindow.end_hour_of_day
+	// +required
 	EndHourOfDay *int32 `json:"endHourOfDay,omitempty"`
 }
 
@@ -212,6 +222,7 @@ type RuleConfigInfo struct {
 type StandardSchedule struct {
 	// Required. Specifies the `RecurrenceType` for the schedule.
 	// +kcc:proto:field=google.cloud.backupdr.v1.StandardSchedule.recurrence_type
+	// +required
 	RecurrenceType *string `json:"recurrenceType,omitempty"`
 
 	// Optional. Specifies frequency for hourly backups. A hourly frequency of 2
@@ -271,6 +282,7 @@ type StandardSchedule struct {
 	//
 	//  Note: running jobs will not be cancelled at the end of the window.
 	// +kcc:proto:field=google.cloud.backupdr.v1.StandardSchedule.backup_window
+	// +required
 	BackupWindow *BackupWindow `json:"backupWindow,omitempty"`
 
 	// Required. The time zone to be used when interpreting the schedule.
@@ -278,6 +290,7 @@ type StandardSchedule struct {
 	//  See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for the
 	//  list of valid timezone names. For e.g., Europe/Paris.
 	// +kcc:proto:field=google.cloud.backupdr.v1.StandardSchedule.time_zone
+	// +required
 	TimeZone *string `json:"timeZone,omitempty"`
 }
 
@@ -285,15 +298,16 @@ type StandardSchedule struct {
 type WeekDayOfMonth struct {
 	// Required. Specifies the week of the month.
 	// +kcc:proto:field=google.cloud.backupdr.v1.WeekDayOfMonth.week_of_month
+	// +required
 	WeekOfMonth *string `json:"weekOfMonth,omitempty"`
 
 	// Required. Specifies the day of the week.
 	// +kcc:proto:field=google.cloud.backupdr.v1.WeekDayOfMonth.day_of_week
+	// +required
 	DayOfWeek *string `json:"dayOfWeek,omitempty"`
 }
 
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.BackupPlan", skipping
-
+/* unreachable type BackupPlanObservedState
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.BackupPlan
 type BackupPlanObservedState struct {
 	// Output only. Identifier. The resource name of the `BackupPlan`.
@@ -339,8 +353,7 @@ type BackupPlanObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.BackupPlanAssociation", skipping
-
+/* unreachable type BackupPlanAssociationObservedState
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.BackupPlanAssociation
 type BackupPlanAssociationObservedState struct {
 	// Output only. Identifier. The resource name of BackupPlanAssociation in
@@ -390,8 +403,7 @@ type BackupPlanAssociationObservedState struct {
 }
 */
 
-/* found existing non-generated go type with proto tag "google.cloud.backupdr.v1.BackupVault", skipping
-
+/* unreachable type BackupVaultObservedState
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.BackupVault
 type BackupVaultObservedState struct {
 	// Output only. Identifier. Name of the backup vault to create. It must have
@@ -439,14 +451,12 @@ type BackupVaultObservedState struct {
 }
 */
 
-/* unreachable type CloudSQLInstanceBackupPlanAssociationPropertiesObservedState
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.CloudSqlInstanceBackupPlanAssociationProperties
 type CloudSQLInstanceBackupPlanAssociationPropertiesObservedState struct {
 	// Output only. The time when the instance was created.
 	// +kcc:proto:field=google.cloud.backupdr.v1.CloudSqlInstanceBackupPlanAssociationProperties.instance_create_time
 	InstanceCreateTime *string `json:"instanceCreateTime,omitempty"`
 }
-*/
 
 // +kcc:observedstate:proto=google.cloud.backupdr.v1.RuleConfigInfo
 type RuleConfigInfoObservedState struct {

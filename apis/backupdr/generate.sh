@@ -47,6 +47,11 @@ ${CONTROLLERBUILDER} generate-types \
 ${CONTROLLERBUILDER} generate-types \
     --service google.cloud.backupdr.v1 \
     --api-version backupdr.cnrm.cloud.google.com/v1beta1 \
+    --prepopulate-spec \
+    --emit-required-from-proto \
+    --emit-plural-acronyms \
+    --detect-output-only-in-comments \
+    --place-server-set-fields \
     --include-skipped-output \
     --resource BackupDRBackupPlanAssociation:BackupPlanAssociation \
     --resource BackupDRBackupPlan:BackupPlan \

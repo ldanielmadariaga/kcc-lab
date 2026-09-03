@@ -8,7 +8,6 @@ metadata:
   creationTimestamp: null
   labels:
     cnrm.cloud.google.com/managed-by-kcc: "true"
-    cnrm.cloud.google.com/stability-level: alpha
     cnrm.cloud.google.com/system: "true"
   name: securitycentermuteconfigs.securitycenter.cnrm.cloud.google.com
 spec:
@@ -67,17 +66,37 @@ spec:
               description:
                 description: A description of the mute config.
                 type: string
+              displayName:
+                description: The human readable name to be displayed for the mute
+                  config.
+                type: string
               expiryTime:
                 description: Optional. The expiry of the mute config. Only applicable
                   for dynamic configs. If the expiry is set, when the config expires,
                   it is removed from all findings.
                 type: string
               filter:
-                description: Required. An expression that defines the filter to apply
-                  across create/update events of findings. While creating a filter
-                  string, be mindful of the scope in which the mute configuration
-                  is being created. E.g., If a filter contains project = X but is
-                  created under the project = Y scope, it might not match any findings.
+                description: |-
+                  Required. An expression that defines the filter to apply across
+                   create/update events of findings. While creating a filter string, be
+                   mindful of the scope in which the mute configuration is being created.
+                   E.g., If a filter contains project = X but is created under the project = Y
+                   scope, it might not match any findings.
+
+                   The following field and operator combinations are supported:
+
+                   * severity: `=`, `:`
+                   * category: `=`, `:`
+                   * resource.name: `=`, `:`
+                   * resource.project_name: `=`, `:`
+                   * resource.project_display_name: `=`, `:`
+                   * resource.folders.resource_folder: `=`, `:`
+                   * resource.parent_name: `=`, `:`
+                   * resource.parent_display_name: `=`, `:`
+                   * resource.type: `=`, `:`
+                   * finding_class: `=`, `:`
+                   * indicator.ip_addresses: `=`, `:`
+                   * indicator.domains: `=`, `:`
                 type: string
               organizationRef:
                 description: The organization that this resource belongs to.
@@ -98,10 +117,6 @@ spec:
                   what type of mute state the config affects. The static mute state
                   takes precedence over the dynamic mute state. Immutable after creation.
                   STATIC by default if not set during creation.
-                enum:
-                - MUTE_CONFIG_TYPE_UNSPECIFIED
-                - STATIC
-                - DYNAMIC
                 type: string
             required:
             - filter

@@ -27,8 +27,6 @@ import (
 	pb "cloud.google.com/go/documentai/apiv1/documentaipb"
 	krmdocumentaiv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/documentai/v1alpha1"
 	krmdocumentaiv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/documentai/v1beta1"
-	krmkmsv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/kms/v1alpha1"
-	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
@@ -37,15 +35,13 @@ func DocumentAIProcessorObservedState_v1alpha1_FromProto(mapCtx *direct.MapConte
 		return nil
 	}
 	out := &krmdocumentaiv1alpha1.DocumentAIProcessorObservedState{}
-	out.Name = direct.LazyPtr(in.GetName())
+	// MISSING: Name
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
-	out.DefaultProcessorVersion = direct.LazyPtr(in.GetDefaultProcessorVersion())
 	out.ProcessorVersionAliases = direct.Slice_FromProto(mapCtx, in.ProcessorVersionAliases, ProcessorVersionAlias_v1alpha1_FromProto)
 	out.ProcessEndpoint = direct.LazyPtr(in.GetProcessEndpoint())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	// MISSING: KMSKeyName
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
+	out.SatisfiesPzs = direct.LazyPtr(in.GetSatisfiesPzs())
+	out.SatisfiesPzi = direct.LazyPtr(in.GetSatisfiesPzi())
 	return out
 }
 func DocumentAIProcessorObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1alpha1.DocumentAIProcessorObservedState) *pb.Processor {
@@ -53,15 +49,13 @@ func DocumentAIProcessorObservedState_v1alpha1_ToProto(mapCtx *direct.MapContext
 		return nil
 	}
 	out := &pb.Processor{}
-	out.Name = direct.ValueOf(in.Name)
+	// MISSING: Name
 	out.State = direct.Enum_ToProto[pb.Processor_State](mapCtx, in.State)
-	out.DefaultProcessorVersion = direct.ValueOf(in.DefaultProcessorVersion)
 	out.ProcessorVersionAliases = direct.Slice_ToProto(mapCtx, in.ProcessorVersionAliases, ProcessorVersionAlias_v1alpha1_ToProto)
 	out.ProcessEndpoint = direct.ValueOf(in.ProcessEndpoint)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	// MISSING: KMSKeyName
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
+	out.SatisfiesPzs = direct.ValueOf(in.SatisfiesPzs)
+	out.SatisfiesPzi = direct.ValueOf(in.SatisfiesPzi)
 	return out
 }
 func DocumentAIProcessorSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Processor) *krmdocumentaiv1alpha1.DocumentAIProcessorSpec {
@@ -69,11 +63,11 @@ func DocumentAIProcessorSpec_v1alpha1_FromProto(mapCtx *direct.MapContext, in *p
 		return nil
 	}
 	out := &krmdocumentaiv1alpha1.DocumentAIProcessorSpec{}
+	// MISSING: Name
 	out.Type = direct.LazyPtr(in.GetType())
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	// MISSING: KMSKeyName
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
+	out.DefaultProcessorVersion = direct.LazyPtr(in.GetDefaultProcessorVersion())
+	out.KMSKeyName = direct.LazyPtr(in.GetKmsKeyName())
 	return out
 }
 func DocumentAIProcessorSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1alpha1.DocumentAIProcessorSpec) *pb.Processor {
@@ -81,11 +75,11 @@ func DocumentAIProcessorSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krm
 		return nil
 	}
 	out := &pb.Processor{}
+	// MISSING: Name
 	out.Type = direct.ValueOf(in.Type)
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	// MISSING: KMSKeyName
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
+	out.DefaultProcessorVersion = direct.ValueOf(in.DefaultProcessorVersion)
+	out.KmsKeyName = direct.ValueOf(in.KMSKeyName)
 	return out
 }
 func DocumentAIProcessorVersionObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.ProcessorVersion) *krmdocumentaiv1beta1.DocumentAIProcessorVersionObservedState {
@@ -98,7 +92,10 @@ func DocumentAIProcessorVersionObservedState_v1beta1_FromProto(mapCtx *direct.Ma
 	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
 	out.LatestEvaluation = EvaluationReference_v1beta1_FromProto(mapCtx, in.GetLatestEvaluation())
+	out.KMSKeyName = direct.LazyPtr(in.GetKmsKeyName())
+	out.KMSKeyVersionName = direct.LazyPtr(in.GetKmsKeyVersionName())
 	out.GoogleManaged = direct.LazyPtr(in.GetGoogleManaged())
+	out.DeprecationInfo = ProcessorVersion_DeprecationInfo_v1beta1_FromProto(mapCtx, in.GetDeprecationInfo())
 	out.ModelType = direct.Enum_FromProto(mapCtx, in.GetModelType())
 	out.SatisfiesPzs = direct.LazyPtr(in.GetSatisfiesPzs())
 	out.SatisfiesPzi = direct.LazyPtr(in.GetSatisfiesPzi())
@@ -115,7 +112,10 @@ func DocumentAIProcessorVersionObservedState_v1beta1_ToProto(mapCtx *direct.MapC
 	out.State = direct.Enum_ToProto[pb.ProcessorVersion_State](mapCtx, in.State)
 	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
 	out.LatestEvaluation = EvaluationReference_v1beta1_ToProto(mapCtx, in.LatestEvaluation)
+	out.KmsKeyName = direct.ValueOf(in.KMSKeyName)
+	out.KmsKeyVersionName = direct.ValueOf(in.KMSKeyVersionName)
 	out.GoogleManaged = direct.ValueOf(in.GoogleManaged)
+	out.DeprecationInfo = ProcessorVersion_DeprecationInfo_v1beta1_ToProto(mapCtx, in.DeprecationInfo)
 	out.ModelType = direct.Enum_ToProto[pb.ProcessorVersion_ModelType](mapCtx, in.ModelType)
 	out.SatisfiesPzs = direct.ValueOf(in.SatisfiesPzs)
 	out.SatisfiesPzi = direct.ValueOf(in.SatisfiesPzi)
@@ -129,13 +129,6 @@ func DocumentAIProcessorVersionSpec_v1beta1_FromProto(mapCtx *direct.MapContext,
 	out := &krmdocumentaiv1beta1.DocumentAIProcessorVersionSpec{}
 	// MISSING: Name
 	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
-	if in.GetKmsKeyName() != "" {
-		out.KMSKeyNameRef = &refsv1beta1.KMSCryptoKeyRef{External: in.GetKmsKeyName()}
-	}
-	if in.GetKmsKeyVersionName() != "" {
-		out.KMSKeyVersionNameRef = &krmkmsv1alpha1.KMSCryptoKeyVersionRef{External: in.GetKmsKeyVersionName()}
-	}
-	out.DeprecationInfo = ProcessorVersion_DeprecationInfo_v1beta1_FromProto(mapCtx, in.GetDeprecationInfo())
 	return out
 }
 func DocumentAIProcessorVersionSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1beta1.DocumentAIProcessorVersionSpec) *pb.ProcessorVersion {
@@ -145,13 +138,6 @@ func DocumentAIProcessorVersionSpec_v1beta1_ToProto(mapCtx *direct.MapContext, i
 	out := &pb.ProcessorVersion{}
 	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
-	if in.KMSKeyNameRef != nil {
-		out.KmsKeyName = in.KMSKeyNameRef.External
-	}
-	if in.KMSKeyVersionNameRef != nil {
-		out.KmsKeyVersionName = in.KMSKeyVersionNameRef.External
-	}
-	out.DeprecationInfo = ProcessorVersion_DeprecationInfo_v1beta1_ToProto(mapCtx, in.DeprecationInfo)
 	return out
 }
 func DocumentSchema_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.DocumentSchema) *krmdocumentaiv1beta1.DocumentSchema {

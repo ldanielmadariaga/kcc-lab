@@ -15,7 +15,8 @@
 package v1beta1
 
 import (
-	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1beta1"
+	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
+	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -24,31 +25,41 @@ var KMSImportJobGVK = GroupVersion.WithKind("KMSImportJob")
 // KMSImportJobSpec defines the desired state of KMSImportJob
 // +kcc:spec:proto=google.cloud.kms.v1.ImportJob
 type KMSImportJobSpec struct {
-	KMSKeyRingRef *KMSKeyRingRef `json:"kmsKeyRingRef"`
+	// The project that this resource belongs to.
+	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/keyRings/{key_ring}/importJobs/{import_job}
+	Location *string `json:"location,omitempty"`
+
+	// The KeyRing that this resource belongs to.
+	// +kcc:guess=parent-segment target=KMSKeyRing
+	KeyRing *string `json:"keyRing,omitempty"`
 
 	// The KMSImportJob name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
-
 	// Required. Immutable. The wrapping method to be used for incoming key
-	// material.
+	//  material.
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.import_method
-	ImportMethod *string `json:"importMethod"`
+	// +required
+	ImportMethod *string `json:"importMethod,omitempty"`
 
 	// Required. Immutable. The protection level of the
-	// [ImportJob][google.cloud.kms.v1.ImportJob]. This must match the
-	// [protection_level][google.cloud.kms.v1.CryptoKeyVersionTemplate.protection_level]
-	// of the [version_template][google.cloud.kms.v1.CryptoKey.version_template]
-	// on the [CryptoKey][google.cloud.kms.v1.CryptoKey] you attempt to import
-	// into.
+	//  [ImportJob][google.cloud.kms.v1.ImportJob]. This must match the
+	//  [protection_level][google.cloud.kms.v1.CryptoKeyVersionTemplate.protection_level]
+	//  of the [version_template][google.cloud.kms.v1.CryptoKey.version_template]
+	//  on the [CryptoKey][google.cloud.kms.v1.CryptoKey] you attempt to import
+	//  into.
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.protection_level
-	ProtectionLevel *string `json:"protectionLevel"`
+	// +required
+	ProtectionLevel *string `json:"protectionLevel,omitempty"`
 }
 
 // KMSImportJobStatus defines the config connector machine state of KMSImportJob
 type KMSImportJobStatus struct {
 	/* Conditions represent the latest available observations of the
 	   object's current state. */
-	Conditions []v1beta1.Condition `json:"conditions,omitempty"`
+	Conditions []v1alpha1.Condition `json:"conditions,omitempty"`
 
 	// ObservedGeneration is the generation of the resource that was most recently observed by the Config Connector controller. If this is equal to metadata.generation, then that means that the current reported status reflects the most recent desired state of the resource.
 	ObservedGeneration *int64 `json:"observedGeneration,omitempty"`
@@ -63,7 +74,6 @@ type KMSImportJobStatus struct {
 // KMSImportJobObservedState is the state of the KMSImportJob resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.kms.v1.ImportJob
 type KMSImportJobObservedState struct {
-
 	// Output only. The time at which this
 	//  [ImportJob][google.cloud.kms.v1.ImportJob] was created.
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.create_time
@@ -95,7 +105,7 @@ type KMSImportJobObservedState struct {
 	//  import. Only returned if [state][google.cloud.kms.v1.ImportJob.state] is
 	//  [ACTIVE][google.cloud.kms.v1.ImportJob.ImportJobState.ACTIVE].
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.public_key
-	PublicKey *ImportJob_WrappingPublicKeyObservedState `json:"publicKey,omitempty"`
+	PublicKey *ImportJob_WrappingPublicKey `json:"publicKey,omitempty"`
 
 	// Output only. Statement that was generated and signed by the key creator
 	//  (for example, an HSM) at key creation time. Use this statement to verify
@@ -107,31 +117,18 @@ type KMSImportJobObservedState struct {
 	Attestation *KeyOperationAttestationObservedState `json:"attestation,omitempty"`
 }
 
-// +kcc:observedstate:proto=google.cloud.kms.v1.ImportJob.WrappingPublicKey
-type ImportJob_WrappingPublicKeyObservedState struct {
-	// The public key, encoded in PEM format. For more information, see the [RFC
-	//  7468](https://tools.ietf.org/html/rfc7468) sections for [General
-	//  Considerations](https://tools.ietf.org/html/rfc7468#section-2) and
-	//  [Textual Encoding of Subject Public Key Info]
-	//  (https://tools.ietf.org/html/rfc7468#section-13).
-	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.WrappingPublicKey.pem
-	Pem *string `json:"pem,omitempty"`
-}
-
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:resource:categories=gcp,shortName=gcpkmsimportjob;gcpkmsimportjobs
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/managed-by-kcc=true"
 // +kubebuilder:metadata:labels="cnrm.cloud.google.com/system=true"
-// +kubebuilder:metadata:labels="internal.cloud.google.com/additional-versions=v1alpha1"
 // +kubebuilder:printcolumn:name="Age",JSONPath=".metadata.creationTimestamp",type="date"
 // +kubebuilder:printcolumn:name="Ready",JSONPath=".status.conditions[?(@.type=='Ready')].status",type="string",description="When 'True', the most recent reconcile of the resource succeeded"
 // +kubebuilder:printcolumn:name="Status",JSONPath=".status.conditions[?(@.type=='Ready')].reason",type="string",description="The reason for the value in 'Ready'"
 // +kubebuilder:printcolumn:name="Status Age",JSONPath=".status.conditions[?(@.type=='Ready')].lastTransitionTime",type="date",description="The last transition time for the value in 'Status'"
 
 // KMSImportJob is the Schema for the KMSImportJob API
-// +kubebuilder:storageversion
 // +k8s:openapi-gen=true
 type KMSImportJob struct {
 	metav1.TypeMeta   `json:",inline"`

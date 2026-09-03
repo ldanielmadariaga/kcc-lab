@@ -1,0 +1,19 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/workerPools/{worker_pool}; confirm the resource is regional and that this is the name for it)
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.binaryAuthorization.policy" reason=possible-reference-by-description
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.containers[].env[].valueSource.secretKeyRef.secret" reason=possible-reference-by-description
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.encryptionKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.serviceAccount" reason=possible-reference-by-description
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.serviceMesh.mesh" reason=possible-reference-by-description
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.volumes[].gcs.bucket" reason=possible-reference-by-description
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.volumes[].secret" reason=possible-reference-by-name (SecretManagerSecretVersionRef)
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.volumes[].secret.secret" reason=possible-reference-by-description
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.vpcAccess.connector" reason=possible-reference-by-description
+kind=RunWorkerPool group=run.cnrm.cloud.google.com: field ".spec.template.vpcAccess.networkInterfaces[].network" reason=possible-reference-by-name (ComputeNetworkRef)

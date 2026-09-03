@@ -29,6 +29,22 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
+func BigQueryDataset_FromProto(mapCtx *direct.MapContext, in *pb.BigQueryDataset) *krm.BigQueryDataset {
+	if in == nil {
+		return nil
+	}
+	out := &krm.BigQueryDataset{}
+	// MISSING: DatasetID
+	return out
+}
+func BigQueryDataset_ToProto(mapCtx *direct.MapContext, in *krm.BigQueryDataset) *pb.BigQueryDataset {
+	if in == nil {
+		return nil
+	}
+	out := &pb.BigQueryDataset{}
+	// MISSING: DatasetID
+	return out
+}
 func BigQueryDatasetObservedState_FromProto(mapCtx *direct.MapContext, in *pb.BigQueryDataset) *krm.BigQueryDatasetObservedState {
 	if in == nil {
 		return nil
@@ -74,6 +90,7 @@ func LoggingLinkSpec_FromProto(mapCtx *direct.MapContext, in *pb.Link) *krm.Logg
 	out := &krm.LoggingLinkSpec{}
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
+	out.BigqueryDataset = BigQueryDataset_FromProto(mapCtx, in.GetBigqueryDataset())
 	return out
 }
 func LoggingLinkSpec_ToProto(mapCtx *direct.MapContext, in *krm.LoggingLinkSpec) *pb.Link {
@@ -83,6 +100,7 @@ func LoggingLinkSpec_ToProto(mapCtx *direct.MapContext, in *krm.LoggingLinkSpec)
 	out := &pb.Link{}
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
+	out.BigqueryDataset = BigQueryDataset_ToProto(mapCtx, in.BigqueryDataset)
 	return out
 }
 
@@ -161,42 +179,24 @@ found existing non-generated mapping function "LoggingLogExclusionSpec_ToProto",
 		return out
 	}
 */
-func LoggingLogMetric_FromProto(mapCtx *direct.MapContext, in *pb.LogMetric) *krm.LoggingLogMetric {
+func LoggingLogMetricObservedState_FromProto(mapCtx *direct.MapContext, in *pb.LogMetric) *krm.LoggingLogMetricObservedState {
 	if in == nil {
 		return nil
 	}
-	out := &krm.LoggingLogMetric{}
+	out := &krm.LoggingLogMetricObservedState{}
 	// MISSING: Name
-	// MISSING: Description
-	// MISSING: Filter
-	// MISSING: BucketName
-	// MISSING: Disabled
-	// MISSING: MetricDescriptor
-	// MISSING: ValueExtractor
-	// MISSING: LabelExtractors
-	// MISSING: BucketOptions
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Version
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	return out
 }
-func LoggingLogMetric_ToProto(mapCtx *direct.MapContext, in *krm.LoggingLogMetric) *pb.LogMetric {
+func LoggingLogMetricObservedState_ToProto(mapCtx *direct.MapContext, in *krm.LoggingLogMetricObservedState) *pb.LogMetric {
 	if in == nil {
 		return nil
 	}
 	out := &pb.LogMetric{}
 	// MISSING: Name
-	// MISSING: Description
-	// MISSING: Filter
-	// MISSING: BucketName
-	// MISSING: Disabled
-	// MISSING: MetricDescriptor
-	// MISSING: ValueExtractor
-	// MISSING: LabelExtractors
-	// MISSING: BucketOptions
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Version
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	return out
 }
 func LoggingLogMetricSpec_FromProto(mapCtx *direct.MapContext, in *pb.LogMetric) *krm.LoggingLogMetricSpec {
@@ -206,16 +206,14 @@ func LoggingLogMetricSpec_FromProto(mapCtx *direct.MapContext, in *pb.LogMetric)
 	out := &krm.LoggingLogMetricSpec{}
 	// MISSING: Name
 	out.Description = direct.LazyPtr(in.GetDescription())
-	out.Filter = in.GetFilter()
-	// MISSING: BucketName
+	out.Filter = direct.LazyPtr(in.GetFilter())
+	out.BucketName = direct.LazyPtr(in.GetBucketName())
 	out.Disabled = direct.LazyPtr(in.GetDisabled())
-	out.MetricDescriptor = LogmetricMetricDescriptor_FromProto(mapCtx, in.GetMetricDescriptor())
+	out.MetricDescriptor = MetricDescriptor_FromProto(mapCtx, in.GetMetricDescriptor())
 	out.ValueExtractor = direct.LazyPtr(in.GetValueExtractor())
 	out.LabelExtractors = in.LabelExtractors
-	out.BucketOptions = LogmetricBucketOptions_FromProto(mapCtx, in.GetBucketOptions())
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Version
+	out.BucketOptions = Distribution_BucketOptions_FromProto(mapCtx, in.GetBucketOptions())
+	out.Version = direct.Enum_FromProto(mapCtx, in.GetVersion())
 	return out
 }
 func LoggingLogMetricSpec_ToProto(mapCtx *direct.MapContext, in *krm.LoggingLogMetricSpec) *pb.LogMetric {
@@ -225,54 +223,14 @@ func LoggingLogMetricSpec_ToProto(mapCtx *direct.MapContext, in *krm.LoggingLogM
 	out := &pb.LogMetric{}
 	// MISSING: Name
 	out.Description = direct.ValueOf(in.Description)
-	out.Filter = LoggingLogMetricSpec_Filter_ToProto(mapCtx, in.Filter)
-	// MISSING: BucketName
+	out.Filter = direct.ValueOf(in.Filter)
+	out.BucketName = direct.ValueOf(in.BucketName)
 	out.Disabled = direct.ValueOf(in.Disabled)
-	out.MetricDescriptor = LogmetricMetricDescriptor_ToProto(mapCtx, in.MetricDescriptor)
+	out.MetricDescriptor = MetricDescriptor_ToProto(mapCtx, in.MetricDescriptor)
 	out.ValueExtractor = direct.ValueOf(in.ValueExtractor)
 	out.LabelExtractors = in.LabelExtractors
-	out.BucketOptions = LogmetricBucketOptions_ToProto(mapCtx, in.BucketOptions)
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Version
-	return out
-}
-func LoggingLogMetricStatus_FromProto(mapCtx *direct.MapContext, in *pb.LogMetric) *krm.LoggingLogMetricStatus {
-	if in == nil {
-		return nil
-	}
-	out := &krm.LoggingLogMetricStatus{}
-	// MISSING: Name
-	// MISSING: Description
-	// MISSING: Filter
-	// MISSING: BucketName
-	// MISSING: Disabled
-	out.MetricDescriptor = LogmetricMetricDescriptorStatus_FromProto(mapCtx, in.GetMetricDescriptor())
-	// MISSING: ValueExtractor
-	// MISSING: LabelExtractors
-	// MISSING: BucketOptions
-	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
-	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
-	// MISSING: Version
-	return out
-}
-func LoggingLogMetricStatus_ToProto(mapCtx *direct.MapContext, in *krm.LoggingLogMetricStatus) *pb.LogMetric {
-	if in == nil {
-		return nil
-	}
-	out := &pb.LogMetric{}
-	// MISSING: Name
-	// MISSING: Description
-	// MISSING: Filter
-	// MISSING: BucketName
-	// MISSING: Disabled
-	out.MetricDescriptor = LogmetricMetricDescriptorStatus_ToProto(mapCtx, in.MetricDescriptor)
-	// MISSING: ValueExtractor
-	// MISSING: LabelExtractors
-	// MISSING: BucketOptions
-	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
-	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
-	// MISSING: Version
+	out.BucketOptions = Distribution_BucketOptions_ToProto(mapCtx, in.BucketOptions)
+	out.Version = direct.Enum_ToProto[pb.LogMetric_ApiVersion](mapCtx, in.Version)
 	return out
 }
 
