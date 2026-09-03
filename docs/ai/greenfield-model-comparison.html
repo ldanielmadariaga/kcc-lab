@@ -570,6 +570,7 @@
       <li><a href="#converge">Found independently</a></li>
       <li><a href="#faults">Shortcomings</a></li>
       <li><a href="#verdict">Verdict</a></li>
+      <li><a href="#pending">Pending work</a></li>
     </ol>
   </nav>
 
@@ -596,7 +597,8 @@
           </tbody>
         </table>
       </div>
-      <p>Effort and breadth run in opposite directions, and that is the single most important thing to hold onto. Gemini's one change does roughly what PRs #15 and #17 did here: populate the root Spec and ObservedState from the proto, and infer the parent from <code>(google.api.resource).pattern</code>. Reaching that in a single change is a strong result, and comparing it to twenty PRs of accumulated fixing without saying so would be dishonest.</p>
+      <p>Effort and breadth run in opposite directions. Gemini's one change does roughly what PRs #15 and #17 did here: populate the root Spec and ObservedState from the proto, and infer the parent from <code>(google.api.resource).pattern</code>.</p>
+      <p>The effort ratio is real, but it is not a like-for-like measure of autonomy, and reading it as "reached the same design in one change" would be wrong. Gemini's starting design was steered by someone carrying results from this experiment, and several of the conclusions that look like agreement between the two were handed over rather than found. Neither number in the table measures what either model would do unassisted.</p>
     </section>
 
     <section id="shared">
@@ -614,7 +616,11 @@
           </tbody>
         </table>
       </div>
-      <p>Five points apart, on denominators within 7% of each other. That is the fairest single comparison available, and it is closer than either headline suggests.</p>
+      <p>Five points apart, on denominators within 7% of each other. That is the fairest comparison currently available, and it is closer than either headline suggests.</p>
+      <div class="note caution">
+        <span class="note-label">Not a settled number</span>
+        <p>Gemini's <code>exact_matches</code> and our <code>implemented</code> are different definitions computed by different code, and the 20% denominator gap on the same kinds says the two harnesses do not count the same things. Its match test is documented as requiring name, type, format and description to agree, which is stricter than ours; if that is what it does, 86.5% understates it. Settling this means scoring its generated CRDs with our harness, which is pending.</p>
+      </div>
 
       <h3>Where Gemini's build failed &mdash; 70 kinds</h3>
       <div class="ledger">
@@ -643,30 +649,60 @@
 
     <section id="gemini">
       <h2>Where Gemini is ahead</h2>
-      <p><strong>Breadth.</strong> 122 services and 396 kinds against 275 resources, from one change. It measured the whole repository; we measured a curated subset.</p>
-      <p><strong>Failure diagnosis.</strong> Its build failures are grouped by root cause with named services and a quantified remediation estimate. Ours says 22 packages do not compile and 16 are a floor we chose not to chase, which is less actionable.</p>
-      <p><strong>Presentation.</strong> The parity-tier distribution, with kind counts per band, conveys the shape of the result better than a single percentage. "74.6% of kinds reach at least 80% parity" is a more useful sentence for someone deciding whether to fund the work.</p>
-      <p><strong>A machine-readable dataset.</strong> <code>benchmark-results.json</code> is per-kind and reusable. Ours lives in a text report; this comparison had to parse theirs and re-derive ours.</p>
-      <p><strong>One modelling insight we lack.</strong> Its section 7.4 notes that a single KRM <code>SecretRef</code> replaces two or three proto credential strings, so simple property-name matching undercounts coverage. Our pairing does not model those atomic substitutions.</p>
+      <h3>Breadth</h3>
+      <p>122 services and 396 kinds against 275 resources, from one change. It measured the whole repository; we measured a curated subset.</p>
+      <h3>Failure diagnosis</h3>
+      <p>Its build failures are grouped by root cause with named services and a quantified remediation estimate. Ours says 22 packages do not compile and 16 are a floor we chose not to chase, which is less actionable.</p>
+      <h3>Presentation</h3>
+      <p>The parity-tier distribution, with kind counts per band, conveys the shape of the result better than a single percentage. "74.6% of kinds reach at least 80% parity" is a more useful sentence for someone deciding whether to fund the work.</p>
+      <h3>A machine-readable dataset</h3>
+      <p><code>benchmark-results.json</code> is per-kind and reusable. Ours lives in a text report; this comparison had to parse theirs and re-derive ours.</p>
+      <h3>One modelling insight we lack</h3>
+      <p>Its section 7.4 notes that a single KRM <code>SecretRef</code> replaces two or three proto credential strings, so simple property-name matching undercounts coverage. Our pairing does not model those atomic substitutions.</p>
+      <h3>It documented its own corrections</h3>
+      <p><code>learnings-and-corrections.md</code> records, in its own words, four proposals it got wrong and had to be talked out of. That is the reason the error in the first version of this comparison was catchable: had those conclusions been presented as findings, the claim that both models converged independently would have gone unchallenged. This side has no equivalent artifact.</p>
     </section>
 
     <section id="claude">
       <h2>Where this side is ahead</h2>
-      <p><strong>A flagging mechanism, not just an intention.</strong> Both experiments conclude that references and secrets are the irreducible judgement calls. Gemini's design says to flag ambiguous strings for agent or developer review, but there is no artifact and no enforcement. Here there is a per-service judgement queue, a <code>+kcc:guess</code> marker in the generated Go, and a machine check that every marker has a queue entry: 301 markers, zero without one, and it caught three regressions review would not have. This is the clearest capability difference in the comparison, though it is a difference in how far the work went rather than proof about the models.</p>
-      <p><strong>Detection measured rather than asserted.</strong> Rules are scored against what upstream actually did and rejected on the evidence. A <code>Certificate</code>-suffix rule scored 0 useful hits against 6 false ones and was dropped; the sibling-resource rule runs at a measured 77% precision. Gemini proposes multi-signal heuristics without precision numbers.</p>
-      <p><strong>A specific, large detection finding.</strong> The output-only detector tested for a comment opening <code>Output only.</code> Compute writes <code>[Output Only]</code>, which is 1,605 fields in <code>compute.proto</code> alone.</p>
-      <p><strong>Two of Gemini's Phase 1 roadmap items are already done here</strong>, including the <code>apiextensionsv1</code> auto-import it estimates would unblock 7 services.</p>
+      <h3>A flagging mechanism, not just an intention</h3>
+      <p>Both experiments conclude that references and secrets are the irreducible judgement calls. Gemini's design says to flag ambiguous strings for agent or developer review, but there is no artifact and no enforcement. Here there is a per-service judgement queue, a <code>+kcc:guess</code> marker in the generated Go, and a machine check that every marker has a queue entry: 301 markers, zero without one, and it caught three regressions review would not have. This is the clearest capability difference in the comparison, though it is a difference in how far the work went rather than proof about the models.</p>
+      <h3>Detection measured rather than asserted</h3>
+      <p>Rules are scored against what upstream actually did and rejected on the evidence. A <code>Certificate</code>-suffix rule scored 0 useful hits against 6 false ones and was dropped; the sibling-resource rule runs at a measured 77% precision. Gemini proposes multi-signal heuristics without precision numbers.</p>
+      <h3>A specific, large detection finding</h3>
+      <p>The output-only detector tested for a comment opening <code>Output only.</code> Compute writes <code>[Output Only]</code>, which is 1,605 fields in <code>compute.proto</code> alone.</p>
+      <h3>Two of Gemini's Phase 1 roadmap items are already done here</h3>
+      <p>, including the <code>apiextensionsv1</code> auto-import it estimates would unblock 7 services.</p>
     </section>
 
     <section id="converge">
-      <h2>What both found independently</h2>
-      <p>This is the strongest signal in the comparison, and it points at the design rather than at either model.</p>
+      <h2>What was found independently, and what was handed over</h2>
+      <div class="coi">
+        <span class="note-label">A correction to an earlier version of this page</span>
+        <p>This section previously said both models independently reached the same architecture, and called that the strongest signal in the comparison. That was wrong. Gemini's learnings doc states its purpose as recording "critical course corrections <em>provided during</em> the design and evaluation sessions", and its sections 1 to 4 are each an <em>Initial Flawed Proposal</em> followed by <em>The Correction</em>.</p>
+      </div>
+      <div class="scroll">
+        <table class="grid vs">
+          <thead><tr><th>Gemini's section</th><th>What it proposed</th><th>What it was corrected to</th></tr></thead>
+          <tbody>
+            <tr><td>§1 enums</td><td class="them">Go string types with <code>+kubebuilder:validation:Enum</code> markers</td><td>unvalidated <code>*string</code>, no markers</td></tr>
+            <tr><td>§2 overlays</td><td class="them">an "elaborate YAML overlay DSL, custom AST patch engines"</td><td>KCC's native Go override model</td></tr>
+            <tr><td>§3 annotations</td><td class="them">assumed <code>google.api.resource_reference</code> was widely available</td><td>present in under 10% of APIs</td></tr>
+            <tr><td>§4 credentials</td><td class="them">credential gaps as a category of their own</td><td>a subtype of resource reference</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The corrections came from the person running the experiment, carrying results from this one. The architectural agreement was therefore transmitted, not independent. The earlier claim that "Gemini explicitly considered and rejected a YAML overlay DSL as over-engineering" inverts what happened: it proposed the overlay DSL and was told not to build it. The same applies to the <code>resource_reference</code> sparsity finding, which reads as a striking match between the two experiments and was in fact passed on to save time.</p>
+
+      <h3>What is still genuine convergence</h3>
+      <p>Its sections 5 and 7, the validation-planning failure and the evaluation-suite failures, are its own. Nobody handed it those, and they land on the same traps this side hit unprompted.</p>
       <ul>
-        <li><strong>The same architecture.</strong> Deterministic generation into <code>types.generated.go</code>, overrides in <code>&lt;kind&gt;_types.go</code>, and the generator skipping what the override file declares. Gemini explicitly considered and rejected a YAML overlay DSL as over-engineering; no overlay mechanism was built here either.</li>
-        <li><strong>The same irreducible core.</strong> References and secrets are what a generator cannot decide.</li>
-        <li><strong>The same finding about proto annotations.</strong> Gemini measured <code>google.api.resource_reference</code> as present in under 10% of APIs; we measured 11 of 111 references on a 239-resource run. Both concluded it is authoritative where present and useless as a primary signal.</li>
-        <li><strong>The same measurement traps</strong>, below.</li>
+        <li>A global <code>controller-gen</code> abort making a harness compare a baseline against itself. Gemini's §7.5 calls it the "99.66% fidelity illusion"; this side runs <code>SKIP_GENERATE_CRDS=1</code> then per-service <code>controller-gen</code> for exactly that reason.</li>
+        <li>Reporting accuracy numbers before building the harness that justifies them. Its §5 names this as a planning failure; the counterpart here is arithmetic that double-counted 16 fields.</li>
+        <li>A wipe destroying hand-written files it was never meant to touch.</li>
+        <li>Conflating "has a Direct controller" with "is greenfield", which both experiments got wrong in opposite directions.</li>
       </ul>
+      <p>Two harnesses built independently hitting the same four traps is a real finding. It says the traps are properties of the problem rather than of either model, and it is the part of this section that survives.</p>
     </section>
 
     <section id="faults">
@@ -689,13 +725,25 @@
 
     <section id="verdict">
       <h2>Verdict</h2>
-      <p>On the evidence available the two models look close on this task, and the visible difference tracks how much work each was given rather than capability. Where both generated successfully, 86.5% against 91.5% is a five-point gap after roughly twenty times the generator effort on this side. Gemini reached the same architecture, the same irreducible core, and the same measurement traps independently and in one change.</p>
-      <p>The larger headline gap is almost entirely build failures, and its own doc attributes those to two named bugs it estimates would take the pass rate from 81.1% to 93.4%. One of them was already fixed here.</p>
-      <p>Where a real difference does show is in what was built on top of generation: a flagging mechanism with an enforced invariant, and detection rules with measured precision. That is depth of work, and this experiment had twenty times more of it.</p>
+      <p>The two models look close on this task, and what separates the published numbers is mostly not the models. Where both generated successfully, 86.5% against 91.5% is five points, and even that is measured by two different harnesses whose denominators disagree by 20%. The larger headline gap is build failures that Gemini's own doc attributes to two named bugs, one of which was already fixed here.</p>
+      <p>What this comparison cannot tell you is which model is better at the task, and the reasons are worth being explicit about.</p>
+      <ul>
+        <li>Gemini's architectural conclusions were largely handed to it, by someone carrying results from this experiment. The two designs agreeing is therefore not evidence about either model.</li>
+        <li>The two harnesses count differently, and Gemini's numbers have not been reproduced by anything other than Gemini's own tooling.</li>
+        <li>The effort differs by roughly twenty PRs, and the flagging mechanism and measured detection rules on this side are products of that time rather than of the model.</li>
+        <li>Both corpora were mis-scoped, in opposite directions, and both were corrected only after the fact.</li>
+      </ul>
       <div class="note caution">
-        <span class="note-label">What would actually answer the capability question</span>
-        <p>This does not. Answering it needs the same corpus, the same harness, the same number of iterations, and ideally a third party running both. Until then the defensible claim is that both models produced sound designs that agree with each other, and neither result argues for choosing one over the other on this task.</p>
+        <span class="note-label">What would answer it</span>
+        <p>The same corpus, the same harness, the same number of iterations, the same amount of human steering, and ideally a third party running both. Short of that, the defensible claim is narrow: both models produced designs a KCC engineer would recognise as sound, and nothing here argues for choosing one over the other.</p>
       </div>
+    </section>
+
+    <section id="pending">
+      <h2>Pending: scoring Gemini's output with our harness</h2>
+      <p>The largest source of doubt above is that each side's coverage number comes from its own measurement code. Gemini's benchmark writes generated CRDs to <code>.build/sandbox-crds/&lt;service&gt;/</code>; with that tree published, <code>silence_report.py</code> can score it directly, since it takes nothing but a TSV of kind, service, types path and CRD path.</p>
+      <p>That would put Gemini's output through the same three states this report uses for ours, on the kinds both corpora share. Any gap between that result and its self-reported 86.5% is a difference in measurement rather than in generation, which is exactly what is unresolved today.</p>
+      <p>Three things are needed: the post-processed CRD YAMLs rather than raw <code>controller-gen</code> output, the exact baseline SHA its benchmark diffed against (ours is <code>c1df0b9326</code>, roughly two weeks earlier, and proto drift between them is real), and optionally the generated Go so we can see whether anything was flagged for review.</p>
     </section>
 
   </main>
