@@ -1,0 +1,12 @@
+APIKeysKey	apikeys	Direct+Terraform
+BigQueryReservationCapacityCommitment	bigqueryreservation	Direct+Terraform
+ComputeAutoscaler	compute	Direct+Terraform
+ComputeBackendServiceSignedURLKey	compute	Direct+Terraform
+ComputeMachineImage	compute	Terraform
+ComputeNetworkEndpoint	compute	Terraform
+ComputeOrganizationSecurityPolicy	compute	Terraform
+ComputeRegionPerInstanceConfig	compute	Terraform
+ComputeRegionSSLPolicy	compute	Terraform
+KMSCryptoKeyVersion	kms	Terraform
+KMSKeyRingImportJob	kms	Terraform
+VertexAITensorboard	vertexai	Direct+Terraform

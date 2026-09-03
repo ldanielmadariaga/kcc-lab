@@ -31,6 +31,21 @@ type APIArgs struct {
 	// from google.api.resource, e.g. "lbTrafficExtensions". Empty when the proto
 	// declares no pattern, in which case templates fall back to guessing.
 	Collection string
+	// ParentRefFields holds every part of the resource's name below the root:
+	// refs to parent resources, plain strings where no ref type exists, and the
+	// location. Rendered by the scaffolder, since only it can tell which ref
+	// types are available.
+	ParentRefFields string
+	// RootRefType, RootRefField and RootRefDescription name the ref for the root
+	// of the resource's name -- ProjectRef for nearly everything, OrganizationRef
+	// or FolderRef for a resource rooted outside a project, which has no project
+	// to point at.
+	// SkipGVK suppresses the GVK var when the package already declares one,
+	// which scaffoldRefsFile does in <kind>_reference.go.
+	SkipGVK            bool
+	RootRefType        string
+	RootRefField       string
+	RootRefDescription string
 	// ParentStyle is the shape of the resource's parent: "project_location",
 	// "project", "organization", "folder", "other" or "unknown".
 	ParentStyle string
@@ -41,8 +56,26 @@ type APIArgs struct {
 	// field per proto field. Empty means the old three-field stub, which is what
 	// every service gets until it opts in.
 	SpecFields string
+	// ObservedStateFields is the same for the ObservedState struct. Empty leaves
+	// it empty, which is what a proto with no OUTPUT_ONLY field should produce.
+	ObservedStateFields string
+	// ExtraImports are complete aliased import lines the rendered fields need
+	// beyond the three below, e.g. common "github.com/.../apis/common" when a
+	// field is a google.rpc.Status. Aliased because the qualifier a field uses
+	// is often not the import path's last segment.
+	ExtraImports []string
 }
 
+// Location, emitted only when the proto's resource pattern makes the parent
+// project+location, is a pointer: 100 of the 129 existing resources that
+// declare one use that form, and the value form does not compile against
+// hand-written identity files that dereference it. It carries no omitempty, so
+// the field stays required, as upstream has it.
+//
+// Its comment in the template is the one-line "The location of this resource."
+// and nothing more. Whatever is written there becomes the field's CRD
+// description, which users read; a rationale for the generator's own choice
+// does not belong in a published API schema.
 const TypesTemplate = `
 // Copyright 2025 Google LLC
 //
@@ -64,20 +97,23 @@ import (
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+{{- range .ExtraImports }}
+	{{ . }}
+{{- end }}
 )
 
+{{- if not .SkipGVK }}
 var {{ .Kind }}GVK = GroupVersion.WithKind("{{ .Kind }}")
+{{- end }}
 
 // {{ .Kind }}Spec defines the desired state of {{ .Kind }}
 {{- if .KindProtoTag }}
 // +kcc:spec:proto={{ .KindProtoTag }}
 {{- end }}
 type {{ .Kind }}Spec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef ` + "`" + `json:"projectRef"` + "`" + `
-
-	// The location of this resource.
-	Location string ` + "`" + `json:"location"` + "`" + `
+	// {{ .RootRefDescription }}
+	{{ .RootRefType }} *refsv1beta1.{{ .RootRefType }} ` + "`" + `json:"{{ .RootRefField }}"` + "`" + `
+{{ .ParentRefFields }}
 
 	// The {{ .Kind }} name. If not given, the metadata.name will be used.
 	ResourceID *string ` + "`" + `json:"resourceID,omitempty"` + "`" + `
@@ -104,7 +140,7 @@ type {{ .Kind }}Status struct {
 // +kcc:observedstate:proto={{ .KindProtoTag }}
 {{- end }}
 type {{ .Kind }}ObservedState struct {
-}
+{{ .ObservedStateFields }}}
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

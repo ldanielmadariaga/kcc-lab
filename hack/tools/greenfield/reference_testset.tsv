@@ -1,0 +1,135 @@
+# Confirmed reference fields: an EVALUATION SET, never an input to generation.
+#
+# Each row is a field that upstream implemented as a KCC reference and that our
+# mechanically generated CRD emitted as a plain string. The answers exist only
+# because upstream had already done the work; a genuinely new resource has no
+# such answer, so nothing here can feed the generator.
+#
+# What it is for: measuring a reference heuristic's RECALL. An earlier attempt at
+# name-based detection was abandoned after it produced 2,164 findings, but nobody
+# could count how many real references it caught, because no list of correct
+# answers existed. This is that list.
+#
+# Provenance: the 239-resource replication run on branch greenfield-healthy100,
+# baseline c1df0b9326 (predates every experiment commit, so all resources there
+# are hand-written upstream work). Pairs come from `crd-mcp-server score`, which
+# reports each baseline reference path alongside the plain field we generated in
+# its place. Target types are resolved by matching the JSON tag in upstream's Go
+# source -- not by deriving a field name from the path, which left 15-22 rows
+# unresolved and mis-stated several per-type counts.
+#
+# Scope: the 98 measured resources, excluding compute and networksecurity whose
+# CRD generation failed and left stale files.
+#
+# kind<TAB>service<TAB>plain field we generated<TAB>reference path upstream used<TAB>target ref type
+ApigeeRegistryInstance	apigeeregistry	spec.config.cmekKeyName	spec.config.cmekKeyNameRef	KMSCryptoKeyRef
+AppOptimizeReport	appoptimize	spec.scopes[].application	spec.scopes[].applicationRef	ApplicationRef
+AppOptimizeReport	appoptimize	spec.scopes[].project	spec.scopes[].projectRef	ProjectRef
+AssuredWorkloadsWorkload	assuredworkloads	spec.billingAccount	spec.billingAccountRef	BillingAccountRef
+BackupDRManagementServer	backupdr	spec.networks[].network	spec.networks[].networkRef	ComputeNetworkRef
+BigQueryDataPolicy	bigquerydatapolicy	spec.policyTag	spec.policyTagRef	PolicyTagRef
+CertificateManagerCertificateIssuanceConfig	certificatemanager	spec.certificateAuthorityConfig.certificateAuthorityServiceConfig.caPool	spec.certificateAuthorityConfig.certificateAuthorityServiceConfig.caPoolRef	PrivateCACAPoolRef
+CloudBuildConnection	cloudbuild	spec.bitbucketCloudConfig.authorizerCredential.userTokenSecretVersion	spec.bitbucketCloudConfig.authorizerCredential.userTokenSecretVersionRef	SecretManagerSecretVersionRef
+CloudBuildConnection	cloudbuild	spec.bitbucketCloudConfig.readAuthorizerCredential.userTokenSecretVersion	spec.bitbucketCloudConfig.readAuthorizerCredential.userTokenSecretVersionRef	SecretManagerSecretVersionRef
+CloudBuildConnection	cloudbuild	spec.bitbucketCloudConfig.webhookSecretSecretVersion	spec.bitbucketCloudConfig.webhookSecretSecretVersionRef	SecretManagerSecretVersionRef
+CloudBuildConnection	cloudbuild	spec.bitbucketDataCenterConfig.authorizerCredential.userTokenSecretVersion	spec.bitbucketDataCenterConfig.authorizerCredential.userTokenSecretVersionRef	SecretManagerSecretVersionRef
+CloudBuildConnection	cloudbuild	spec.bitbucketDataCenterConfig.readAuthorizerCredential.userTokenSecretVersion	spec.bitbucketDataCenterConfig.readAuthorizerCredential.userTokenSecretVersionRef	SecretManagerSecretVersionRef
+CloudBuildConnection	cloudbuild	spec.bitbucketDataCenterConfig.serviceDirectoryConfig.service	spec.bitbucketDataCenterConfig.serviceDirectoryConfig.serviceRef	ServiceDirectoryServiceRef
+CloudBuildConnection	cloudbuild	spec.bitbucketDataCenterConfig.webhookSecretSecretVersion	spec.bitbucketDataCenterConfig.webhookSecretSecretVersionRef	SecretManagerSecretVersionRef
+CloudBuildConnection	cloudbuild	spec.githubConfig.authorizerCredential.oauthTokenSecretVersion	spec.githubConfig.authorizerCredential.oauthTokenSecretVersionRef	SecretManagerSecretVersionRef
+CloudBuildConnection	cloudbuild	spec.githubEnterpriseConfig.privateKeySecretVersion	spec.githubEnterpriseConfig.privateKeySecretVersionRef	SecretManagerSecretVersionRef
+CloudBuildConnection	cloudbuild	spec.githubEnterpriseConfig.serviceDirectoryConfig.service	spec.githubEnterpriseConfig.serviceDirectoryConfig.serviceRef	ServiceDirectoryServiceRef
+CloudBuildConnection	cloudbuild	spec.githubEnterpriseConfig.webhookSecretSecretVersion	spec.githubEnterpriseConfig.webhookSecretSecretVersionRef	SecretManagerSecretVersionRef
+CloudBuildConnection	cloudbuild	spec.gitlabConfig.authorizerCredential.userTokenSecretVersion	spec.gitlabConfig.authorizerCredential.userTokenSecretVersionRef	SecretManagerSecretVersionRef
+CloudBuildConnection	cloudbuild	spec.gitlabConfig.readAuthorizerCredential.userTokenSecretVersion	spec.gitlabConfig.readAuthorizerCredential.userTokenSecretVersionRef	SecretManagerSecretVersionRef
+CloudBuildConnection	cloudbuild	spec.gitlabConfig.serviceDirectoryConfig.service	spec.gitlabConfig.serviceDirectoryConfig.serviceRef	ServiceDirectoryServiceRef
+CloudBuildConnection	cloudbuild	spec.gitlabConfig.webhookSecretSecretVersion	spec.gitlabConfig.webhookSecretSecretVersionRef	SecretManagerSecretVersionRef
+CloudDMSMigrationJob	clouddms	spec.cmekKeyName	spec.cmekKeyNameRef	KMSCryptoKeyRef
+CloudDMSMigrationJob	clouddms	spec.destination	spec.destinationRef	CloudDMSConnectionProfileRef
+CloudDMSMigrationJob	clouddms	spec.reverseSSHConnectivity.vm	spec.reverseSSHConnectivity.vmRef	InstanceRef
+CloudDMSMigrationJob	clouddms	spec.reverseSSHConnectivity.vpc	spec.reverseSSHConnectivity.vpcRef	ComputeNetworkRef
+CloudDMSMigrationJob	clouddms	spec.source	spec.sourceRef	CloudDMSConnectionProfileRef
+CloudDMSMigrationJob	clouddms	spec.vpcPeeringConnectivity.vpc	spec.vpcPeeringConnectivity.vpcRef	ComputeNetworkRef
+CloudDMSPrivateConnection	clouddms	spec.vpcPeeringConfig.vpcName	spec.vpcPeeringConfig.vpcNameRef	ComputeNetworkRef
+ConfigDeliveryFleetPackage	configdelivery	spec.resourceBundleSelector.cloudBuildRepository.serviceAccount	spec.resourceBundleSelector.cloudBuildRepository.serviceAccountRef	IAMServiceAccountRef
+ConfigDeliveryFleetPackage	configdelivery	spec.target.fleet.project	spec.target.fleet.projectRef	ProjectRef
+ConfigDeploymentGroup	configdeployment	spec.deploymentUnits[].deployment	spec.deploymentUnits[].deploymentRef	ConfigDeploymentRef
+ConnectorsConnection	connectors	spec.authConfig.additionalVariables[].secretValue	spec.authConfig.additionalVariables[].secretValueRef	SecretRef
+ConnectorsConnection	connectors	spec.authConfig.oauth2ClientCredentials.clientSecret	spec.authConfig.oauth2ClientCredentials.clientSecretRef	SecretRef
+ConnectorsConnection	connectors	spec.authConfig.oauth2JwtBearer.clientKey	spec.authConfig.oauth2JwtBearer.clientKeyRef	SecretRef
+ConnectorsConnection	connectors	spec.authConfig.sshPublicKey.sshClientCert	spec.authConfig.sshPublicKey.sshClientCertRef	SecretRef
+ConnectorsConnection	connectors	spec.authConfig.sshPublicKey.sshClientCertPass	spec.authConfig.sshPublicKey.sshClientCertPassRef	SecretRef
+ConnectorsConnection	connectors	spec.configVariables[].secretValue	spec.configVariables[].secretValueRef	SecretRef
+ConnectorsConnection	connectors	spec.connectorVersion	spec.connectorVersionRef	ConnectorsConnectorVersionRef
+ConnectorsConnection	connectors	spec.destinationConfigs[].destinations[].serviceAttachment	spec.destinationConfigs[].destinations[].serviceAttachmentRef	ComputeServiceAttachmentRef
+ConnectorsConnection	connectors	spec.serviceAccount	spec.serviceAccountRef	IAMServiceAccountRef
+ConnectorsConnection	connectors	spec.sslConfig.additionalVariables[].secretValue	spec.sslConfig.additionalVariables[].secretValueRef	SecretRef
+ConnectorsConnection	connectors	spec.sslConfig.clientCertificate	spec.sslConfig.clientCertificateRef	SecretRef
+ConnectorsConnection	connectors	spec.sslConfig.clientPrivateKey	spec.sslConfig.clientPrivateKeyRef	SecretRef
+ConnectorsConnection	connectors	spec.sslConfig.clientPrivateKeyPass	spec.sslConfig.clientPrivateKeyPassRef	SecretRef
+ConnectorsConnection	connectors	spec.sslConfig.privateServerCertificate	spec.sslConfig.privateServerCertificateRef	SecretRef
+DLPDiscoveryConfig	dlp	spec.actions[].pubSubNotification.topic	spec.actions[].pubSubNotification.topicRef	PubSubTopicRef
+DatabaseMigrationMigrationJob	datamigration	spec.cmekKeyName	spec.cmekKeyNameRef	KMSCryptoKeyRef
+DatabaseMigrationMigrationJob	datamigration	spec.destination	spec.destinationRef	DatabaseMigrationConnectionProfileRef
+DatabaseMigrationMigrationJob	datamigration	spec.reverseSSHConnectivity.vm	spec.reverseSSHConnectivity.vmRef	InstanceRef
+DatabaseMigrationMigrationJob	datamigration	spec.reverseSSHConnectivity.vpc	spec.reverseSSHConnectivity.vpcRef	ComputeNetworkRef
+DatabaseMigrationMigrationJob	datamigration	spec.source	spec.sourceRef	DatabaseMigrationConnectionProfileRef
+DatabaseMigrationMigrationJob	datamigration	spec.vpcPeeringConnectivity.vpc	spec.vpcPeeringConnectivity.vpcRef	ComputeNetworkRef
+DatabaseMigrationPrivateConnection	datamigration	spec.vpcPeeringConfig.vpcName	spec.vpcPeeringConfig.vpcNameRef	ComputeNetworkRef
+DataplexDataScan	dataplex	spec.data.entity	spec.data.entityRef	DataplexEntityRef
+DataplexDataScan	dataplex	spec.dataDiscoverySpec.bigqueryPublishingConfig.connection	spec.dataDiscoverySpec.bigqueryPublishingConfig.connectionRef	BigQueryConnectionRef
+DataplexDataScan	dataplex	spec.dataProfileSpec.postScanActions.bigqueryExport.resultsTable	spec.dataProfileSpec.postScanActions.bigqueryExport.resultsTableRef	BigQueryTableRef
+DataplexDataScan	dataplex	spec.dataQualitySpec.postScanActions.bigqueryExport.resultsTable	spec.dataQualitySpec.postScanActions.bigqueryExport.resultsTableRef	BigQueryTableRef
+DataplexEntryType	dataplex	spec.requiredAspects[].type	spec.requiredAspects[].typeRef	string
+DataplexLake	dataplex	spec.metastore.service	spec.metastore.serviceRef	ServiceRef
+DataplexMetadataJob	dataplex	spec.exportSpec.scope.aspectTypes	spec.exportSpec.scope.aspectTypeRefs[]	AspectTypeRef
+DataplexMetadataJob	dataplex	spec.exportSpec.scope.entryGroups	spec.exportSpec.scope.entryGroupRefs[]	EntryGroupRef
+DataplexMetadataJob	dataplex	spec.exportSpec.scope.entryTypes	spec.exportSpec.scope.entryTypeRefs[]	EntryTypeRef
+DataplexMetadataJob	dataplex	spec.exportSpec.scope.projects	spec.exportSpec.scope.projectRefs[]	ProjectRef
+DataplexMetadataJob	dataplex	spec.importSpec.scope.aspectTypes	spec.importSpec.scope.aspectTypeRefs[]	AspectTypeRef
+DataplexMetadataJob	dataplex	spec.importSpec.scope.entryGroups	spec.importSpec.scope.entryGroupRefs[]	EntryGroupRef
+DataplexMetadataJob	dataplex	spec.importSpec.scope.entryTypes	spec.importSpec.scope.entryTypeRefs[]	EntryTypeRef
+DataplexTask	dataplex	spec.executionSpec.kmsKey	spec.executionSpec.kmsKeyRef	KMSCryptoKeyRef
+DataplexTask	dataplex	spec.executionSpec.project	spec.executionSpec.projectRef	ProjectRef
+DataplexTask	dataplex	spec.executionSpec.serviceAccount	spec.executionSpec.serviceAccountRef	IAMServiceAccountRef
+DevConnectConnection	developerconnect	spec.bitbucketDataCenterConfig.serviceDirectoryConfig.service	spec.bitbucketDataCenterConfig.serviceDirectoryConfig.serviceRef	ServiceDirectoryServiceRef
+DevConnectConnection	developerconnect	spec.githubEnterpriseConfig.serviceDirectoryConfig.service	spec.githubEnterpriseConfig.serviceDirectoryConfig.serviceRef	ServiceDirectoryServiceRef
+DevConnectConnection	developerconnect	spec.gitlabEnterpriseConfig.serviceDirectoryConfig.service	spec.gitlabEnterpriseConfig.serviceDirectoryConfig.serviceRef	ServiceDirectoryServiceRef
+DevConnectInsightsConfig	developerconnect	spec.appHubApplication	spec.appHubApplicationRef	ApplicationRef
+EventarcChannel	eventarc	spec.provider	spec.providerRef	ProviderRef
+EventarcChannelConnection	eventarc	spec.channel	spec.channelRef	ChannelRef
+EventarcEnrollment	eventarc	spec.destination	spec.destinationRef	EventarcPipelineRef
+EventarcEnrollment	eventarc	spec.messageBus	spec.messageBusRef	EventarcMessageBusRef
+GKEHubFleet	gkehub	spec.defaultClusterConfig.binaryAuthorizationConfig.policyBindings	spec.defaultClusterConfig.binaryAuthorizationConfig.policyBindingsRefs[]	BinaryAuthorizationPlatformPolicyRef
+GKEMulticloudAttachedCluster	gkemulticloud	spec.fleet.project	spec.fleet.projectRef	ProjectRef
+GeminiDataAnalyticsConversation	geminidataanalytics	spec.agents	spec.agentRefs[]	GeminiDataAnalyticsDataAgentRef
+ModelArmorTemplate	modelarmor	spec.filterConfig.sdpSettings.advancedConfig.deidentifyTemplate	spec.filterConfig.sdpSettings.advancedConfig.deidentifyTemplateRef	DLPDeidentifyTemplateRef
+ModelArmorTemplate	modelarmor	spec.filterConfig.sdpSettings.advancedConfig.inspectTemplate	spec.filterConfig.sdpSettings.advancedConfig.inspectTemplateRef	DLPInspectTemplateRef
+NetworkManagementVPCFlowLogsConfig	networkmanagement	spec.interconnectAttachment	spec.interconnectAttachmentRef	ComputeInterconnectAttachmentRef
+NetworkManagementVPCFlowLogsConfig	networkmanagement	spec.vpnTunnel	spec.vpnTunnelRef	ComputeVPNTunnelRef
+NetworkServicesLBRouteExtension	networkservices	spec.forwardingRules	spec.forwardingRuleRefs[]	ForwardingRuleRef
+NetworkServicesLBTrafficExtension	networkservices	spec.forwardingRules	spec.forwardingRuleRefs[]	ForwardingRuleRef
+NetworkServicesServiceBinding	networkservices	spec.service	spec.serviceRef	ServiceDirectoryServiceRef
+NotebooksExecution	notebooks	spec.executionTemplate.dataprocParameters.cluster	spec.executionTemplate.dataprocParameters.clusterRef	DataprocClusterRef
+NotebooksExecution	notebooks	spec.executionTemplate.serviceAccount	spec.executionTemplate.serviceAccountRef	IAMServiceAccountRef
+NotebooksExecution	notebooks	spec.executionTemplate.tensorboard	spec.executionTemplate.tensorboardRef	VertexAITensorboardRef
+NotebooksExecution	notebooks	spec.executionTemplate.vertexAiParameters.network	spec.executionTemplate.vertexAiParameters.networkRef	ComputeNetworkRef
+NotebooksSchedule	notebooks	spec.executionTemplate.dataprocParameters.cluster	spec.executionTemplate.dataprocParameters.clusterRef	DataprocClusterRef
+NotebooksSchedule	notebooks	spec.executionTemplate.serviceAccount	spec.executionTemplate.serviceAccountRef	IAMServiceAccountRef
+NotebooksSchedule	notebooks	spec.executionTemplate.tensorboard	spec.executionTemplate.tensorboardRef	VertexAITensorboardRef
+NotebooksSchedule	notebooks	spec.executionTemplate.vertexAiParameters.network	spec.executionTemplate.vertexAiParameters.networkRef	ComputeNetworkRef
+RapidMigrationAssessmentCollector	rapidmigrationassessment	spec.serviceAccount	spec.serviceAccountRef	IAMServiceAccountRef
+RunWorkerPool	run	spec.template.containers[].env[].valueSource.secretKeyRef.secret	spec.template.containers[].env[].valueSource.secretKeyRef.secretRef	SecretRef
+RunWorkerPool	run	spec.template.containers[].env[].valueSource.secretKeyRef.version	spec.template.containers[].env[].valueSource.secretKeyRef.versionRef	SecretVersionRef
+RunWorkerPool	run	spec.template.encryptionKey	spec.template.encryptionKeyRef	KMSCryptoKeyRef
+RunWorkerPool	run	spec.template.serviceAccount	spec.template.serviceAccountRef	IAMServiceAccountRef
+RunWorkerPool	run	spec.template.serviceMesh.mesh	spec.template.serviceMesh.meshRef	NetworkServicesMeshRef
+RunWorkerPool	run	spec.template.volumes[].cloudSQLInstance.instances	spec.template.volumes[].cloudSQLInstance.instanceRefs[]	SQLInstanceRef
+RunWorkerPool	run	spec.template.volumes[].gcs.bucket	spec.template.volumes[].gcs.bucketRef	StorageBucketRef
+RunWorkerPool	run	spec.template.volumes[].secret.items[].version	spec.template.volumes[].secret.items[].versionRef	SecretVersionRef
+RunWorkerPool	run	spec.template.volumes[].secret.secret	spec.template.volumes[].secret.secretRef	SecretRef
+RunWorkerPool	run	spec.template.vpcAccess.connector	spec.template.vpcAccess.connectorRef	VPCAccessConnectorRef
+RunWorkerPool	run	spec.template.vpcAccess.networkInterfaces[].network	spec.template.vpcAccess.networkInterfaces[].networkRef	ComputeNetworkRef
+RunWorkerPool	run	spec.template.vpcAccess.networkInterfaces[].subnetwork	spec.template.vpcAccess.networkInterfaces[].subnetworkRef	ComputeSubnetworkRef
+WorkflowsWorkflow	workflows	spec.serviceAccount	spec.serviceAccountRef	IAMServiceAccountRef
+WorkloadManagerEvaluation	workloadmanager	spec.kmsKey	spec.kmsKeyRef	KMSCryptoKeyRef

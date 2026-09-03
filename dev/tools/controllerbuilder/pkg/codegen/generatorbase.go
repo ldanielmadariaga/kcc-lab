@@ -174,6 +174,50 @@ func (f *generatedFile) addImport(alias string, pkgName string) {
 	f.imports[pkgName] = alias
 }
 
+// usedImports drops imports the rendered body never references.
+//
+// The qualifier is the alias where one is set, otherwise the last path segment,
+// which is how Go resolves it. Matching on "<qualifier>." is deliberately
+// conservative: it can only ever keep an import that is genuinely unused if the
+// string appears in a comment, and keeping one costs nothing next to emitting an
+// import that breaks the build.
+func (f *generatedFile) usedImports() map[string]string {
+	body := f.body.String()
+
+	// Pick up any well-known qualifier the body uses but nothing registered.
+	//
+	// Imports are otherwise added per proto message name -- google.rpc.Status
+	// brings in "common", connectors' Secret brings in secretmanagerv1beta1 --
+	// which cannot cover a type chosen by shape rather than by name.
+	// google.protobuf.Value and friends become apiextensionsv1.JSON, and nothing
+	// added that import, so ces and visionai generated a file that would not
+	// compile. Registering from QualifierImports and letting the filter below
+	// drop the unused ones covers the whole class rather than one case.
+	for qualifier, pkgName := range QualifierImports {
+		if _, already := f.imports[pkgName]; already {
+			continue
+		}
+		if strings.Contains(body, qualifier+".") {
+			f.addImport(qualifier, pkgName)
+		}
+	}
+
+	if len(f.imports) == 0 {
+		return nil
+	}
+	used := make(map[string]string, len(f.imports))
+	for pkgName, alias := range f.imports {
+		qualifier := alias
+		if qualifier == "" {
+			qualifier = lastGoComponent(pkgName)
+		}
+		if strings.Contains(body, qualifier+".") {
+			used[pkgName] = alias
+		}
+	}
+	return used
+}
+
 func (f *generatedFile) Write(addCopyright bool, writeEmptyFiles bool) error {
 	if f.body.Len() == 0 && !writeEmptyFiles {
 		return nil
@@ -220,9 +264,15 @@ func (f *generatedFile) Write(addCopyright bool, writeEmptyFiles bool) error {
 		fmt.Fprintf(&w, "\n")
 	}
 
-	if len(f.imports) != 0 {
+	// Imports are added while walking a message's dependencies, before we know
+	// whether that message will actually be written: a hand-written type may
+	// claim it, or the scaffolder may take it. Either way the import is left
+	// behind with nothing referencing it, which does not compile. Decide from
+	// the rendered body instead of from the intent.
+	used := f.usedImports()
+	if len(used) != 0 {
 		w.WriteString("import (\n")
-		for pkgName, alias := range f.imports {
+		for pkgName, alias := range used {
 			if alias == "" {
 				w.WriteString(fmt.Sprintf("\t%q\n", pkgName))
 			} else {

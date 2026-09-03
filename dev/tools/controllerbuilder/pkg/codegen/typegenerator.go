@@ -36,11 +36,19 @@ import (
 
 type TypeGenerator struct {
 	generatorBase
-	api                     *protoapi.Proto
-	goPackage               string
-	visitedMessages         []protoreflect.MessageDescriptor
-	outputMessages          []*OutputMessageDetails
-	observedStateMessages   sets.String
+	api                   *protoapi.Proto
+	goPackage             string
+	visitedMessages       []protoreflect.MessageDescriptor
+	outputMessages        []*OutputMessageDetails
+	observedStateMessages sets.String
+	// unsupportedFields are fields the generator could not type, collected as
+	// they are written so the judgement queue can report them.
+	unsupportedFields []UnsupportedField
+
+	// siblingGuesses are nested-message fields the sibling rule flagged, so the
+	// queue can name them. Collected here rather than in the scaffolder because
+	// the scaffolder only ever sees the resource's own top-level fields.
+	siblingGuesses          []SiblingGuess
 	generatedFileAnnotation *codegenannotations.FileAnnotation
 	includeSkippedOutput    bool
 	writeOptions            WriteOptions
@@ -49,6 +57,22 @@ type TypeGenerator struct {
 	// the first message. See handWrittenTypes for why the decision to split a message and the
 	// decision to write it both have to read from here.
 	handWritten *handWrittenTypes
+
+	// reservedTypeNames are Go type names the scaffolder will declare later in
+	// this run, so the generator must not emit them into types.generated.go.
+	//
+	// findTypeDeclaration already skips a name the package declares by hand, but
+	// it cannot see a file that does not exist yet: a wipe-based regeneration
+	// removes <kind>_types.go, the generator runs, and the scaffolder writes the
+	// Kind's struct afterwards. Where the Kind's name equals the Go name of its
+	// own proto message -- billing's BillingAccount, apihub's APIHubInstance --
+	// that is a redeclaration.
+	reservedTypeNames map[string]bool
+
+	// rootMessageFQN is the resource's own message for the visit in progress.
+	// IsServerSetField may only be applied there: identifyOutputs recurses, and
+	// a nested message's "id" or "kind" is often genuine user input.
+	rootMessageFQN string
 }
 
 type OutputMessageDetails struct {
@@ -70,6 +94,24 @@ type OutputMessageDetails struct {
 type WriteOptions struct {
 	// EmitRequired writes "// +required" for fields the proto marks REQUIRED.
 	EmitRequired bool
+	// EmitPluralAcronyms cases a plural acronym as KRM conventions want, so
+	// related_uris becomes RelatedURIs rather than RelatedUris. See AcronymCasing
+	// for why this is opt-in.
+	EmitPluralAcronyms bool
+	// PlaceServerSetFields puts a small allowlist of server-computed fields into
+	// ObservedState when the proto never said where they belong. See
+	// IsServerSetField.
+	PlaceServerSetFields bool
+	// Siblings maps a lowercased Kind suffix to a Kind this service declares, so
+	// a string field naming one can be marked as a probable reference. See
+	// SiblingResource.
+	//
+	// Unlike the flags above this one cannot change a CRD: it only ever adds a
+	// +kcc:guess comment, which controller-gen strips before publishing. The
+	// shared-nested-message hazard in the doc comment above does not apply
+	// either, because the map is a property of the service and a nested message
+	// is shared only within one.
+	Siblings map[string]string
 }
 
 func NewTypeGenerator(goPackage string, outputBaseDir string, api *protoapi.Proto) *TypeGenerator {
@@ -91,6 +133,19 @@ func (g *TypeGenerator) WithGeneratedFileAnnotation(generatedFileAnnotation *cod
 // WithIncludeSkippedOutput sets whether to output skipped types as commented-out code
 func (g *TypeGenerator) WithIncludeSkippedOutput(includeSkippedOutput bool) *TypeGenerator {
 	g.includeSkippedOutput = includeSkippedOutput
+	return g
+}
+
+// WithReservedTypeNames names the Go types the scaffolder will write later, so
+// the generator leaves them alone.
+func (g *TypeGenerator) WithReservedTypeNames(names ...string) *TypeGenerator {
+	if g.reservedTypeNames == nil {
+		g.reservedTypeNames = map[string]bool{}
+	}
+	for _, n := range names {
+		g.reservedTypeNames[n] = true
+		g.reservedTypeNames[n+"ObservedState"] = true
+	}
 	return g
 }
 
@@ -129,6 +184,7 @@ func (g *TypeGenerator) typesOutputDir() string {
 func (g *TypeGenerator) visitMessage(message protoreflect.MessageDescriptor) error {
 	//klog.Infof("found message %q", messageDescriptor.FullName())
 
+	g.rootMessageFQN = string(message.FullName())
 	g.visitedMessages = append(g.visitedMessages, message)
 
 	msgs, err := FindDependenciesForMessage(message, nil) // TODO: explicitly set ignored fields when generating Go types
@@ -159,6 +215,42 @@ func (g *TypeGenerator) visitMessage(message protoreflect.MessageDescriptor) err
 	return nil
 }
 
+// ObservedStateMessages is the set of proto messages that got an ObservedState
+// struct of their own. A field whose message is in here must be referenced as
+// <Proto>ObservedState rather than the plain type.
+func (g *TypeGenerator) ObservedStateMessages() sets.String {
+	return g.observedStateMessages
+}
+
+// OutputFieldsFor returns the output-only fields of one message, as computed by
+// identifyOutputs during the visit. The scaffolder uses this to fill the
+// resource-level ObservedState struct rather than re-walking the proto: the rule
+// is transitive, since a field is output-only if it is reached through an
+// OUTPUT_ONLY parent, and a second implementation would drift from this one.
+//
+// Reports false when the message has no output-only content, which is the signal
+// to leave the scaffolded struct empty.
+func (g *TypeGenerator) OutputFieldsFor(fqn string) (*OutputMessageDetails, bool) {
+	for _, details := range g.outputMessages {
+		if string(details.Message.FullName()) == fqn {
+			return details, true
+		}
+	}
+	return nil, false
+}
+
+// isServerSet applies IsServerSetField, but only on the resource's own message.
+//
+// The restriction is why this is a method rather than a direct call:
+// identifyOutputs recurses through nested messages, where a field called "id"
+// or "kind" is frequently something the user sets.
+func (g *TypeGenerator) isServerSet(field protoreflect.FieldDescriptor, msg protoreflect.MessageDescriptor) bool {
+	if string(msg.FullName()) != g.rootMessageFQN {
+		return false
+	}
+	return IsServerSetField(field, msg, g.writeOptions)
+}
+
 // needsObservedState determines if a message requires a separate ObservedState struct.
 // If the regular Go struct and the ObservedState version are identical, we fall back
 // to using the regular Go struct to reduce redundancy.
@@ -187,6 +279,12 @@ func (g *TypeGenerator) needsObservedState(msg protoreflect.MessageDescriptor, s
 	for i := 0; i < msg.Fields().Len(); i++ {
 		f := msg.Fields().Get(i)
 		if IsFieldBehavior(f, annotations.FieldBehavior_OUTPUT_ONLY) {
+			seen[fqn] = true
+			return true
+		}
+		// Without this the struct is never created and the fields identifyOutputs
+		// collected below have nowhere to go.
+		if g.isServerSet(f, msg) {
 			seen[fqn] = true
 			return true
 		}
@@ -228,7 +326,7 @@ func (g *TypeGenerator) identifyOutputs(msg protoreflect.MessageDescriptor, seen
 
 	for i := 0; i < msg.Fields().Len(); i++ {
 		f := msg.Fields().Get(i)
-		isOut := IsFieldBehavior(f, annotations.FieldBehavior_OUTPUT_ONLY)
+		isOut := IsFieldBehavior(f, annotations.FieldBehavior_OUTPUT_ONLY) || g.isServerSet(f, msg)
 
 		if isPrimitive(f) {
 			// Primitive fields are only included if explicitly marked OUTPUT_ONLY.
@@ -308,6 +406,10 @@ func (g *TypeGenerator) WriteVisitedMessages() error {
 		out.fileAnnotation = g.generatedFileAnnotation
 
 		goTypeName := GoNameForProtoMessage(msg)
+		if g.reservedTypeNames[goTypeName] {
+			klog.V(1).Infof("go type %q is a Kind the scaffolder will declare, won't generate", goTypeName)
+			continue
+		}
 		skipGenerated := true
 		goType, err := g.findTypeDeclaration(goTypeName, out.OutputDir(), skipGenerated)
 		if err != nil {
@@ -333,7 +435,14 @@ func (g *TypeGenerator) WriteVisitedMessages() error {
 			continue
 		}
 
-		WriteMessage(&out.body, msg, g.writeOptions)
+		// Rendered to a scratch buffer first so the markers WriteField leaves for
+		// fields it could not type can be collected. Otherwise the field is absent
+		// from the CRD and the only trace is a comment nobody reads.
+		var body bytes.Buffer
+		WriteMessage(&body, msg, g.writeOptions)
+		g.unsupportedFields = append(g.unsupportedFields, scanUnsupported(string(msg.FullName()), body.String())...)
+		g.siblingGuesses = append(g.siblingGuesses, scanSiblingGuesses(string(msg.FullName()), body.String())...)
+		out.body.Write(body.Bytes())
 	}
 	return errors.Join(g.errors...)
 }
@@ -369,6 +478,10 @@ func (g *TypeGenerator) WriteOutputMessages() error {
 		out.fileAnnotation = g.generatedFileAnnotation
 
 		goTypeName := goNameForOutputProtoMessage(msg)
+		if g.reservedTypeNames[goTypeName] {
+			klog.V(1).Infof("go type %q is a Kind the scaffolder will declare, won't generate", goTypeName)
+			continue
+		}
 		skipGenerated := true
 		goType, err := g.findTypeDeclaration(goTypeName, out.OutputDir(), skipGenerated)
 		if err != nil {
@@ -401,6 +514,13 @@ func (g *TypeGenerator) WriteOutputMessages() error {
 
 func WriteMessageAsComment(out io.Writer, msg protoreflect.MessageDescriptor, reason string, opts WriteOptions) {
 	var b bytes.Buffer
+	// No sibling markers in here. This block is a dump of what the generator
+	// would have written for a type the package already declares by hand, so
+	// nothing in it reaches the CRD and there is no guess for anyone to review.
+	// Left on, it produced 63 of the 82 sibling markers in the tree and every one
+	// of them broke "a marker always has a queue entry", because the collector
+	// only scans messages that are really emitted.
+	opts.Siblings = nil
 	WriteMessage(&b, msg, opts)
 	fmt.Fprintf(out, "\n/* %s\n", reason)
 	fmt.Fprintf(out, "%s", strings.ReplaceAll(b.String(), "*/", "* /"))
@@ -425,7 +545,7 @@ func WriteMessage(out io.Writer, msg protoreflect.MessageDescriptor, opts WriteO
 		field := msg.Fields().Get(i)
 		if !IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
 			// Only write non-output fields.
-			WriteField(out, field, msg, i, false, opts)
+			WriteField(out, field, msg, i, false, opts, "")
 		}
 	}
 	fmt.Fprintf(out, "}\n")
@@ -438,7 +558,49 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 	fmt.Fprintf(out, "\n")
 	fmt.Fprintf(out, "// %s=%s\n", KCCProtoMessageAnnotationObservedState, msg.FullName())
 	fmt.Fprintf(out, "type %s struct {\n", goType)
-	for i, field := range msgDetails.OutputFields {
+	// No options: this writes the nested structs in types.generated.go, and a
+	// placement note belongs only on the resource's own ObservedState, which the
+	// scaffolder writes.
+	WriteObservedStateFields(out, msgDetails, observedStateMessages, nil, WriteOptions{})
+	fmt.Fprintf(out, "}\n")
+}
+
+// WriteObservedStateFields writes the body of an observed-state struct: one field
+// per output-only field, with no enclosing type declaration.
+//
+// The scaffolder calls this too, to fill the resource-level <Kind>ObservedState in
+// the hand-written types file. Both callers go through here so the plain-versus-
+// ObservedState choice below has exactly one implementation; a second copy in the
+// scaffolder would drift from this one the first time either changed.
+//
+// skip names proto fields to leave out, or nil to write all of them.
+// ObservedStateFieldNote records an output-only field that did not reach the
+// struct cleanly, so the caller can say so rather than dropping it in silence.
+//
+// Rendered carries the field's own output for the caller to inspect. The reason
+// a type was declined is spelled in the "// TODO:" comment WriteField leaves
+// behind, and parsing that belongs with the queue rather than here.
+type ObservedStateFieldNote struct {
+	// JSONName is the field as KRM spells it, e.g. "createTime".
+	JSONName string
+	// Skipped is true when the caller's skip map excluded the field outright.
+	Skipped bool
+	// Rendered is the field's output, non-empty only when it was not skipped.
+	Rendered string
+}
+
+func WriteObservedStateFields(out io.Writer, msgDetails *OutputMessageDetails, observedStateMessages sets.String, skip map[string]bool, opts WriteOptions) []ObservedStateFieldNote {
+	msg := msgDetails.Message
+	emitted := 0
+	var notes []ObservedStateFieldNote
+	for _, field := range msgDetails.OutputFields {
+		if skip[string(field.Name())] {
+			notes = append(notes, ObservedStateFieldNote{
+				JSONName: GetJSONForKRM(field),
+				Skipped:  true,
+			})
+			continue
+		}
 		isMessage := field.Kind() == protoreflect.MessageKind && !field.IsMap()
 		useObservedState := false
 		if isMessage {
@@ -446,25 +608,72 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 				useObservedState = true
 			}
 		}
+		// Rendered separately so the field's own output can be inspected before it
+		// is appended, the same way the Spec does it. A field whose type the
+		// generator declines becomes a "// TODO:" comment and never reaches the
+		// CRD, which is a silent drop unless somebody records it.
+		var field_ bytes.Buffer
 		// Never emit +required from here. An observed-state struct describes what GCP
 		// returned, and the API server validates status, so requiring a field GCP is
 		// free to omit would make it reject a status KCC itself wrote.
-		WriteField(out, field, msg, i, useObservedState, WriteOptions{})
+		WriteField(&field_, field, msg, emitted, useObservedState, WriteOptions{}, placementNote(field, msg, opts))
+		out.Write(field_.Bytes())
+		emitted++
+		notes = append(notes, ObservedStateFieldNote{
+			JSONName: GetJSONForKRM(field),
+			Rendered: field_.String(),
+		})
 	}
-	fmt.Fprintf(out, "}\n")
+	return notes
+}
+
+// placementNote explains a field that is here because of its name rather than
+// because the proto said so.
+//
+// Worth spelling out in the generated file and not only in the judgement queue.
+// The allowlist is right in general and will be wrong for some outlier, and the
+// person who meets that outlier is reading the type, not the queue.
+func placementNote(field protoreflect.FieldDescriptor, msg protoreflect.MessageDescriptor, opts WriteOptions) string {
+	if !IsServerSetField(field, msg, opts) {
+		return ""
+	}
+	// A +kcc: marker rather than prose: controller-gen strips these from the CRD
+	// description, so a reviewer reading the type sees the guess while a user
+	// running kubectl explain is not told about our TODO. The field keeps its
+	// own proto comment as the description.
+	return "+kcc:guess=placement reason=no-field-behavior-on-message"
 }
 
 func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool) (string, error) {
 	if field.IsMap() {
 		entryMsg := field.Message()
-		keyKind := entryMsg.Fields().ByName("key").Kind()
-		valueKind := entryMsg.Fields().ByName("value").Kind()
-		if keyKind == protoreflect.StringKind && valueKind == protoreflect.StringKind {
+		keyField := entryMsg.Fields().ByName("key")
+		valueField := entryMsg.Fields().ByName("value")
+		if keyField.Kind() != protoreflect.StringKind {
+			// A CRD keys additionalProperties by string; nothing else is expressible.
+			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyField.Kind(), valueField.Kind())
+		}
+		switch valueField.Kind() {
+		case protoreflect.StringKind:
 			return "map[string]string", nil
-		} else if keyKind == protoreflect.StringKind && valueKind == protoreflect.Int64Kind {
+		case protoreflect.Int64Kind:
 			return "map[string]int64", nil
-		} else {
-			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyKind, valueKind)
+		case protoreflect.MessageKind:
+			// The value struct is generated like any other nested message:
+			// FindDependenciesForField already recurses through the map entry into
+			// the value, so it is visited and written without new machinery here.
+			// A CRD expresses this as additionalProperties with an object schema.
+			// A message with a special-cased Go type takes that type here too,
+			// rather than the struct name it does not have. google.protobuf.Struct
+			// and Value both land on apiextensionsv1.JSON, which is what upstream
+			// writes by hand for Firestore's Document.fields, a map<string, Value>.
+			valueName := string(valueField.Message().FullName())
+			if goType, ok := protoMessagesNotMappedToGoStruct[valueName]; ok {
+				return "map[string]" + goType, nil
+			}
+			return "map[string]" + GoNameForProtoMessage(valueField.Message()), nil
+		default:
+			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyField.Kind(), valueField.Kind())
 		}
 	}
 
@@ -500,15 +709,31 @@ func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool)
 	return goType, nil
 }
 
-func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protoreflect.MessageDescriptor, fieldIndex int, isTransitiveOutput bool, opts WriteOptions) {
+// note, when set, is written into the generated struct above the field. It is
+// for a call the generator made that a reader would otherwise have no way to
+// question -- placing a field by name rather than by annotation, say. A queue
+// entry alone is not enough: the queue is a work list somebody clears, while
+// the generated type is what a reader actually opens.
+func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protoreflect.MessageDescriptor, fieldIndex int, isTransitiveOutput bool, opts WriteOptions, note string) {
 	sourceLocations := msg.ParentFile().SourceLocations().ByDescriptor(field)
 
-	jsonName := GetJSONForKRM(field)
-	GoFieldName := goFieldName(field)
+	jsonName := getJSONForKRM(field, opts)
+	GoFieldName := goFieldNameOpts(field, opts)
+
+	// The caller's own note wins: it knows something more specific than a name
+	// match, such as why a field was placed in ObservedState.
+	if note == "" {
+		if target, ok := SiblingResource(field, opts.Siblings); ok {
+			note = SiblingGuessMarker + target
+		}
+	}
 
 	goType, err := GoTypeForField(field, isTransitiveOutput)
 	if err != nil {
-		fmt.Fprintf(out, "\n\t// TODO: %v\n\n", err)
+		// Name the field. Without it the marker says only "unsupported map type"
+		// and neither a reader nor the judgement queue can tell which field went
+		// missing from the CRD.
+		fmt.Fprintf(out, "\n\t// TODO: %s: %v\n\n", jsonName, err)
 		return
 	}
 
@@ -525,6 +750,13 @@ func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protorefl
 			} else {
 				fmt.Fprintf(out, "\t// %s\n", line)
 			}
+		}
+	}
+	// After the proto's own comment: that describes the field, this describes
+	// what we did with it.
+	for _, line := range strings.Split(strings.TrimSpace(note), "\n") {
+		if line != "" {
+			fmt.Fprintf(out, "\t// %s\n", line)
 		}
 	}
 
@@ -677,14 +909,18 @@ func goTypeForProtoKind(kind protoreflect.Kind) string {
 // GetJSONForKRM returns the KRM JSON name for the field,
 // honoring KRM conventions
 func GetJSONForKRM(protoField protoreflect.FieldDescriptor) string {
+	return getJSONForKRM(protoField, WriteOptions{})
+}
+
+func getJSONForKRM(protoField protoreflect.FieldDescriptor, opts WriteOptions) string {
 	tokens := strings.Split(string(protoField.Name()), "_")
 	for i, token := range tokens {
 		if i == 0 {
 			// Do not capitalize first token
 			continue
 		}
-		if IsAcronym(token) {
-			token = strings.ToUpper(token)
+		if cased, ok := AcronymCasing(token, opts.EmitPluralAcronyms); ok {
+			token = cased
 		} else {
 			token = strings.Title(token)
 		}
@@ -696,10 +932,14 @@ func GetJSONForKRM(protoField protoreflect.FieldDescriptor) string {
 // goFieldName returns the KRM go name for the field,
 // honoring KRM conventions
 func goFieldName(protoField protoreflect.FieldDescriptor) string {
+	return goFieldNameOpts(protoField, WriteOptions{})
+}
+
+func goFieldNameOpts(protoField protoreflect.FieldDescriptor, opts WriteOptions) string {
 	tokens := strings.Split(string(protoField.Name()), "_")
 	for i, token := range tokens {
-		if IsAcronym(token) {
-			token = strings.ToUpper(token)
+		if cased, ok := AcronymCasing(token, opts.EmitPluralAcronyms); ok {
+			token = cased
 		} else {
 			token = strings.Title(token)
 		}
@@ -790,4 +1030,129 @@ func IsFieldBehavior(field protoreflect.FieldDescriptor, fieldBehavior annotatio
 		}
 	}
 	return false
+}
+
+// serverSetFieldNames are fields GCP computes, that a proto sometimes forgets
+// to mark OUTPUT_ONLY.
+//
+// Guessing placement from a field name is normally a bad idea, and this list is
+// narrow because each name was checked against how upstream actually uses it.
+// Every name here appears zero times in a resource-level Spec across the
+// baseline tree, with one exception:
+//
+// etag appears twice, on AlloyDBCluster and ContainerAttachedCluster, and both
+// are genuine optimistic-concurrency inputs -- "can be sent on update and
+// delete requests". Against that, 27 greenfield resources carry it status-side
+// and none carry it spec-side, so it is included and, like everything here,
+// queued for a human.
+//
+// Three names were considered and rejected, because reading how upstream uses
+// them gave a different answer from counting them:
+//
+//	state   7 upstream Specs, and they are desired state, not observed state.
+//	        ConfigDeliveryFleetPackage calls it "the desired state of the fleet
+//	        package"; DLPConnection marks it Required; VPCFlowLogsConfig is an
+//	        enable/disable toggle defaulting to ENABLED. Moving it would take a
+//	        settable field away.
+//	status  2 upstream Specs, both required input. DLPDiscoveryConfig marks it
+//	        Required. AccessContextManagerServicePerimeter is worse: in the GCP
+//	        API "status" names the enforced perimeter config as opposed to the
+//	        dry-run "spec", so it is user-authored configuration whose name
+//	        happens to collide with the CRD's own status.
+//	type    36 upstream Specs.
+//
+// "name" is absent deliberately. identityFields in the scaffold package already
+// skips it and files a queue entry, and a second policy here would fight it.
+var serverSetFieldNames = map[string]bool{
+	"createTime":        true,
+	"updateTime":        true,
+	"deleteTime":        true,
+	"creationTimestamp": true,
+	"uid":               true,
+	"selfLink":          true,
+	"selfLinkWithID":    true,
+	"id":                true,
+	"kind":              true,
+	"etag":              true,
+}
+
+// IsServerSetField reports whether a field should go to ObservedState even
+// though the proto does not say so.
+//
+// The guard is that msg carries no google.api.field_behavior on any field.
+// Where an author annotated something, their silence about the rest is a
+// decision and is respected; where nothing at all is annotated there is no
+// decision to respect. Every compute message is the second case -- they come
+// from a discovery document, carry no annotations, and so generate an empty
+// ObservedState while creationTimestamp and selfLink sit in the Spec inviting a
+// user to set values GCP will overwrite.
+//
+// Relaxing the guard to "this field is unannotated" would recover nine more
+// fields, almost all of them etag in protos that do annotate other fields,
+// which is exactly where silence is most likely deliberate.
+//
+// Callers must apply this only to the resource's own message. A nested
+// message's "id" or "kind" is often genuine user input.
+func IsServerSetField(field protoreflect.FieldDescriptor, msg protoreflect.MessageDescriptor, opts WriteOptions) bool {
+	if !opts.PlaceServerSetFields || msg == nil {
+		return false
+	}
+	if !serverSetFieldNames[getJSONForKRM(field, opts)] {
+		return false
+	}
+	return !hasAnyFieldBehavior(msg)
+}
+
+// hasAnyFieldBehavior reports whether any field of msg carries a
+// google.api.field_behavior annotation.
+func hasAnyFieldBehavior(msg protoreflect.MessageDescriptor) bool {
+	for i := 0; i < msg.Fields().Len(); i++ {
+		d := msg.Fields().Get(i).Options()
+		if len(proto.GetExtension(d, annotations.E_FieldBehavior).([]annotations.FieldBehavior)) > 0 {
+			return true
+		}
+	}
+	return false
+}
+
+// UnsupportedField is a proto field the generator could not produce a Go type
+// for. The field is omitted from the generated struct, so it never reaches the
+// CRD.
+type UnsupportedField struct {
+	// Message is the fully-qualified proto message that owns the field.
+	Message string
+	// Field is the KRM JSON name the field would have had.
+	Field string
+	// Reason is the generator's own explanation.
+	Reason string
+}
+
+// UnsupportedFields returns everything the generator could not type during this
+// run, for the judgement queue.
+func (g *TypeGenerator) UnsupportedFields() []UnsupportedField {
+	return g.unsupportedFields
+}
+
+// SiblingGuesses returns the nested-message fields the sibling rule flagged
+// during this run.
+func (g *TypeGenerator) SiblingGuesses() []SiblingGuess {
+	return g.siblingGuesses
+}
+
+// scanUnsupported pulls the "// TODO: <field>: <reason>" markers out of a
+// rendered message body.
+func scanUnsupported(msgName, body string) []UnsupportedField {
+	var out []UnsupportedField
+	for _, line := range strings.Split(body, "\n") {
+		after, ok := strings.CutPrefix(strings.TrimSpace(line), "// TODO: ")
+		if !ok {
+			continue
+		}
+		field, reason, found := strings.Cut(after, ": ")
+		if !found {
+			field, reason = "", after
+		}
+		out = append(out, UnsupportedField{Message: msgName, Field: field, Reason: reason})
+	}
+	return out
 }

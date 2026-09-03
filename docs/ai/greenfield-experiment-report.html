@@ -1,0 +1,822 @@
+<title>Bulk-Generating Greenfield Resources</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap">
+
+<style>
+  :root {
+    --ground:      #F3F5F7;
+    --surface:     #FFFFFF;
+    --surface-alt: #E9EDF1;
+    --ink:         #151E27;
+    --ink-soft:    #4A5866;
+    --ink-faint:   #7C8894;
+    --rule:        #D3DAE1;
+    --rule-soft:   #E3E8ED;
+    --accent:      #26706B;
+    --accent-soft: #DCEBE9;
+    --ok:          #3D7A50;
+    --warn:        #9C6C1B;
+    --bad:         #A34438;
+    --ok-soft:     #DFEBE1;
+    --warn-soft:   #F3E7CE;
+    --bad-soft:    #F2DFDC;
+    --shadow:      0 1px 2px rgba(21, 30, 39, .06), 0 8px 24px -12px rgba(21, 30, 39, .18);
+
+    --measure: 68ch;
+    --f-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --f-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #11171E;
+      --surface:     #18202A;
+      --surface-alt: #202A35;
+      --ink:         #E2E8EE;
+      --ink-soft:    #A4B0BD;
+      --ink-faint:   #78848F;
+      --rule:        #2C3843;
+      --rule-soft:   #232E39;
+      --accent:      #63B5AE;
+      --accent-soft: #1B2F32;
+      --ok:          #7CB98D;
+      --warn:        #D2A44E;
+      --bad:         #DE8C82;
+      --ok-soft:     #1D2B22;
+      --warn-soft:   #2E2617;
+      --bad-soft:    #2E1E1C;
+      --shadow:      0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -12px rgba(0, 0, 0, .6);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #11171E;
+    --surface:     #18202A;
+    --surface-alt: #202A35;
+    --ink:         #E2E8EE;
+    --ink-soft:    #A4B0BD;
+    --ink-faint:   #78848F;
+    --rule:        #2C3843;
+    --rule-soft:   #232E39;
+    --accent:      #63B5AE;
+    --accent-soft: #1B2F32;
+    --ok:          #7CB98D;
+    --warn:        #D2A44E;
+    --bad:         #DE8C82;
+    --ok-soft:     #1D2B22;
+    --warn-soft:   #2E2617;
+    --bad-soft:    #2E1E1C;
+    --shadow:      0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -12px rgba(0, 0, 0, .6);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 16.5px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 56px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px 96px;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    grid-column: 1 / -1;
+    border-bottom: 1px solid var(--rule);
+    padding: 64px 0 40px;
+    margin-bottom: 48px;
+  }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 20px;
+  }
+
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: clamp(2.1rem, 5vw, 3.1rem);
+    line-height: 1.08;
+    letter-spacing: -.018em;
+    text-wrap: balance;
+    margin: 0 0 20px;
+    max-width: 20ch;
+  }
+
+  .standfirst {
+    font-family: var(--f-display);
+    font-size: clamp(1.08rem, 2vw, 1.28rem);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  .headline-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 36px;
+  }
+
+  .stat {
+    flex: 1 1 150px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 16px 18px;
+  }
+
+  .stat b {
+    display: block;
+    font-family: var(--f-display);
+    font-size: 1.85rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat span {
+    display: block;
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: var(--ink-faint);
+    margin-top: 5px;
+  }
+
+  .stat.is-ok b   { color: var(--ok); }
+  .stat.is-bad b  { color: var(--bad); }
+
+  /* ---------- rail ---------- */
+
+  nav.rail {
+    align-self: start;
+    position: sticky;
+    top: 32px;
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
+
+  nav.rail p {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 12px;
+  }
+
+  nav.rail ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    border-left: 1px solid var(--rule);
+  }
+
+  nav.rail a {
+    display: block;
+    padding-left: 13px;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  nav.rail a:hover,
+  nav.rail a:focus-visible { color: var(--accent); border-left-color: var(--accent); }
+
+  /* ---------- prose ---------- */
+
+  main { max-width: var(--measure); }
+
+  section + section { margin-top: 56px; }
+
+  h2 {
+    font-family: var(--f-display);
+    font-size: 1.62rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -.012em;
+    text-wrap: balance;
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  h3 {
+    font-family: var(--f-body);
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: .002em;
+    text-wrap: balance;
+    margin: 32px 0 10px;
+  }
+
+  p { margin: 0 0 16px; }
+
+  main a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+  code {
+    font-family: var(--f-mono);
+    font-size: .855em;
+    background: var(--surface-alt);
+    border-radius: 2px;
+    padding: .12em .34em;
+  }
+
+  strong { font-weight: 600; }
+
+  ul { margin: 0 0 16px; padding-left: 1.15em; }
+  li { margin-bottom: 7px; }
+  li::marker { color: var(--ink-faint); }
+
+  /* ---------- accounting ---------- */
+
+  .ledger {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 22px 24px 24px;
+    margin: 0 0 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .ledger-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 16px;
+  }
+
+  .bar {
+    display: flex;
+    height: 13px;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background: var(--surface-alt);
+  }
+
+  .bar i { display: block; height: 100%; }
+  .bar .b-ok   { background: var(--ok); }
+  .bar .b-warn { background: var(--warn); }
+  .bar .b-bad  { background: var(--bad); }
+
+  table.acct { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+
+  table.acct th {
+    text-align: left;
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 400;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  table.acct th.num, table.acct td.num {
+    text-align: right;
+    font-family: var(--f-mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  table.acct td { padding: 7px 0; border-bottom: 1px solid var(--rule-soft); vertical-align: baseline; }
+  table.acct td.num { width: 5.5em; }
+  table.acct td.pct { width: 4.5em; color: var(--ink-faint); }
+  table.acct tr.sub td:first-child { padding-left: 20px; color: var(--ink-soft); }
+  table.acct tr.total td { border-bottom: none; font-weight: 600; padding-top: 11px; }
+  table.acct .gloss { display: block; font-size: 12.5px; color: var(--ink-faint); line-height: 1.35; }
+
+  .swatch {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 1px;
+    margin-right: 8px;
+    vertical-align: baseline;
+  }
+  .sw-ok { background: var(--ok); }
+  .sw-warn { background: var(--warn); }
+  .sw-bad { background: var(--bad); }
+
+  /* ---------- generic table ---------- */
+
+  .scroll { overflow-x: auto; margin: 0 0 20px; }
+
+  table.grid {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14.5px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+  }
+
+  table.grid th {
+    text-align: left;
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 400;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+
+  table.grid td { padding: 11px 16px; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+  table.grid tr:last-child td { border-bottom: none; }
+
+  table.grid th.num, table.grid td.num {
+    text-align: right;
+    font-family: var(--f-mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    width: 4em;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .tag.derive { background: var(--ok-soft); color: var(--ok); }
+  .tag.remember { background: var(--bad-soft); color: var(--bad); }
+  .tag.fact { background: var(--accent-soft); color: var(--accent); }
+
+  /* ---------- callouts ---------- */
+
+  .note {
+    border-left: 2px solid var(--accent);
+    background: var(--surface);
+    padding: 16px 20px;
+    margin: 0 0 20px;
+    border-radius: 0 3px 3px 0;
+  }
+  .note :last-child { margin-bottom: 0; }
+
+  .note.caution { border-left-color: var(--warn); }
+
+  .note-label {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 7px;
+  }
+  .note.caution .note-label { color: var(--warn); }
+
+  /* ---------- decisions ---------- */
+
+  ol.decisions { list-style: none; margin: 0; padding: 0; counter-reset: d; }
+
+  ol.decisions li {
+    counter-increment: d;
+    position: relative;
+    padding: 0 0 0 46px;
+    margin-bottom: 22px;
+  }
+
+  ol.decisions li::before {
+    content: counter(d);
+    position: absolute;
+    left: 0; top: 1px;
+    width: 28px; height: 28px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 50%;
+    font-family: var(--f-mono);
+    font-size: 12.5px;
+  }
+
+  ol.decisions p { margin: 0; }
+  ol.decisions .q { font-weight: 600; display: block; margin-bottom: 3px; }
+
+  /* ---------- appendix ---------- */
+
+  .appendix-rule {
+    margin: 72px 0 0;
+    border: 0;
+    border-top: 2px solid var(--rule);
+  }
+
+  .appendix-mark {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 18px 0 0;
+  }
+
+  .pr {
+    display: inline-block;
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    padding: 1px 6px;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    color: var(--ink-soft);
+    background: var(--surface);
+    white-space: nowrap;
+    margin-right: 3px;
+  }
+  .pr.open { border-color: var(--accent); color: var(--accent); }
+
+  .stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--surface);
+    margin: 0 0 20px;
+    overflow: hidden;
+  }
+
+  .stage > div {
+    padding: 15px 18px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .stage > div:last-child { border-bottom: none; }
+
+  .stage h4 {
+    font-family: var(--f-body);
+    font-size: 14.5px;
+    font-weight: 600;
+    margin: 0 0 5px;
+  }
+
+  .stage p { font-size: 14.5px; margin: 0 0 8px; color: var(--ink-soft); }
+  .stage .prs { margin: 0; line-height: 2; }
+
+  /* ---------- footer ---------- */
+
+  footer {
+    grid-column: 1 / -1;
+    margin-top: 72px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 13.5px;
+    color: var(--ink-faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+  }
+
+  footer code { background: none; padding: 0; }
+
+  @media (max-width: 860px) {
+    .wrap { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 0 22px 72px; }
+    nav.rail { display: none; }
+    .masthead { padding-top: 44px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Config Connector &middot; Experiment report</p>
+    <h1>Bulk-Generating Greenfield Resources</h1>
+    <p class="standfirst">We deleted 231 resources the team had written by hand, regenerated them from the proto, and compared the result field by field against the originals. This records the method and what it measured.</p>
+
+    <div class="headline-stats">
+      <div class="stat is-ok"><b>91.4%</b><span>of upstream's CRD fields reproduced at the same path</span></div>
+      <div class="stat is-bad"><b>5.0%</b><span>we generate nowhere, and have not chosen to leave out</span></div>
+      <div class="stat"><b>275</b><span>resources regenerated and scored</span></div>
+      <div class="stat"><b>76%</b><span>of discrepancies are flagged for a second pass</span></div>
+    </div>
+  </header>
+
+  <nav class="rail">
+    <p>Contents</p>
+    <ol>
+      <li><a href="#proposal">The question</a></li>
+      <li><a href="#method">Why delete first</a></li>
+      <li><a href="#coverage">Coverage</a></li>
+      <li><a href="#flagging">Flagging</a></li>
+      <li><a href="#finding">Detection over prescription</a></li>
+      <li><a href="#discipline">Keeping it honest</a></li>
+      <li><a href="#built">What's reusable</a></li>
+      <li><a href="#limits">Limitations</a></li>
+      <li><a href="#decisions">What it does not settle</a></li>
+      <li><a href="#prereqs">A. What had to be true</a></li>
+      <li><a href="#flagging-how">B. Flagging judgement</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="proposal">
+      <h2>What the experiment set out to measure</h2>
+      <p>KCC has direct controllers for 457 of 1,006 create-capable GCP resources, or 45.4%. Reaching 80% would mean implementing about 348 more. At the rate a hand-written resource takes, that is a multi-year queue, and the tail is made of resources nobody requests loudly enough to prioritise individually.</p>
+      <p>The open question was how much of that surface a generator can produce rather than a person. The experiment answers it with a number: a generator reproduces 91.4% of the CRD fields upstream wrote by hand at the same path. Of the rest, 3.1% is a field we do produce in a shape upstream does not have, and 5.0% is a gap we produce nothing for and have not chosen to leave out.</p>
+      <p>What follows is the method, the measurements it produced, and the questions it left open.</p>
+    </section>
+
+    <section id="method">
+      <h2>Why we deleted upstream's work to test this</h2>
+      <p>The obvious way to evaluate a generator is to run it on resources nobody has implemented and read the output. That does not work: there is nothing to check the output against, and &ldquo;looks plausible&rdquo; is not a measurement.</p>
+      <p>So we did the opposite. We took 231 resources the team had already implemented by hand, deleted our types files, regenerated them from the proto, and compared field by field against upstream's CRDs. Upstream's version is the known-good answer. Every place the generated CRD differs from it is a specific, countable way that mechanical generation falls short. A real engineer made each of those hand-written choices, so the diff is a list of the judgements a generator cannot make.</p>
+      <div class="note">
+        <span class="note-label">The general form</span>
+        <p>The hand-written <code>_identity.go</code> and <code>_reference.go</code> files were left in place while the types beneath them were regenerated, so <code>go build ./apis/...</code> fails wherever the generated types no longer satisfy upstream's own controller code, naming missing fields in seconds. That is a second oracle for free, and the general form is worth stealing: an existing implementation is a test oracle, and deleting it is how you use it.</p>
+      </div>
+    </section>
+
+    <section id="coverage">
+      <h2>Coverage against upstream</h2>
+      <p>All 275 in-scope resources generate both a types file and a published CRD. Every field in every baseline CRD lands in exactly one of three states, so the columns sum and no arithmetic can drift.</p>
+      <p>An earlier version of this page said 94.2%, measured over 231 resources. The corpus was hand-maintained and had drifted: 44 greenfield resources with an upstream CRD to compare against were missing from it. They score near 64% where the original set scored 94%, and almost all of the difference is fields we generate nowhere rather than fields we generate in the wrong shape. Nothing about the generator changed between the two runs, so 94.2% was a property of the corpus. The corpus is now derived from the criteria rather than listed by hand.</p>
+
+      <div class="ledger">
+        <div class="ledger-head">
+          <span>12,000 fields &middot; 275 resources</span>
+          <span>baseline c1df0b9326</span>
+        </div>
+        <div class="bar" role="img" aria-label="91.4 percent implemented, 3.1 percent discrepancy, 5.5 percent missing">
+          <i class="b-ok" style="width:91.4%"></i>
+          <i class="b-warn" style="width:3.1%"></i>
+          <i class="b-bad" style="width:5.5%"></i>
+        </div>
+        <table class="acct">
+          <thead>
+            <tr><th>State</th><th class="num">Fields</th><th class="num">Share</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="swatch sw-ok"></span>Implemented<span class="gloss">the same field at the same path</span></td>
+              <td class="num">10,966</td><td class="num pct">91.4%</td>
+            </tr>
+            <tr>
+              <td><span class="swatch sw-warn"></span>Discrepancy<span class="gloss">we produce it, but not as upstream has it</span></td>
+              <td class="num">369</td><td class="num pct">3.1%</td>
+            </tr>
+            <tr class="sub"><td>flagged for a second pass</td><td class="num">281</td><td class="num pct">76%</td></tr>
+            <tr class="sub"><td>nothing says so</td><td class="num">88</td><td class="num pct">24%</td></tr>
+            <tr>
+              <td><span class="swatch sw-bad"></span>Missing<span class="gloss">we produce nothing at all</span></td>
+              <td class="num">665</td><td class="num pct">5.5%</td>
+            </tr>
+            <tr class="sub"><td>a gap to close</td><td class="num">603</td><td class="num pct">5.0%</td></tr>
+            <tr class="sub"><td>we model it differently on purpose<span class="gloss">the google.protobuf.Value union arms, mapped whole to JSON</span></td><td class="num">62</td><td class="num pct">0.5%</td></tr>
+            <tr class="sub"><td>flagged for a second pass</td><td class="num">39</td><td class="num pct">6%</td></tr>
+            <tr class="total"><td>Fields in KCC master CRDs</td><td class="num">12,000</td><td class="num pct"></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The split is on what we produced, not on whether we mentioned it. A discrepancy is a field we do emit, in the other section or under a different name or as a plain string where upstream has a reference object. It breaks a user's YAML just as surely, but it needs detecting or moving rather than generating, and a report that files it under &ldquo;missed&rdquo; sends people to write generators for fields the types file already carries.</p>
+      <p>The two axes turn out to be close to independent, which is why the report stopped leading with &ldquo;flagged&rdquo;: three quarters of discrepancies carry a judgement-queue entry, against one in seventeen of the absences. A combined figure describes neither population. Within missing, the number to drive down is 603, since the other 62 are the <code>google.protobuf.Value</code> union arms we map whole to JSON on purpose.</p>
+      <p>Two thirds of what remains is nested fields, which is the shape of the work left: the detectors that generalise read a field's own description or its name against the service's resources, and both weaken with depth because there is less context around a deeply nested field.</p>
+    </section>
+
+    <section id="flagging">
+      <h2>Flagging what needs judgement</h2>
+      <p>Anything the generator could not justify from the proto gets a <code>+kcc:guess</code> marker in the types file and an entry in that service's judgement queue. There are 299 markers today, and a checker enforces that none of them lacks an entry.</p>
+      <p>That covers what the generator knows it guessed. Measured against upstream instead, 1,034 fields diverge in some way, and the flagging rate splits sharply by kind. Of the 369 discrepancies, 281 carry a queue entry. Of the 665 absences, only 39 do. A field we emit in the wrong shape is usually something the generator knew it was unsure about; a field we emit nowhere is usually something nothing looked for.</p>
+      <div class="note">
+        <span class="note-label">What the check has caught</span>
+        <p>The invariant broke three separate times during this work and the checker caught all three, in places code review would not have looked: a marker written on every generator invocation while the queue entry was written on only some; a merge that silently dropped every comment line of the existing queue file; and markers emitted into commented-out blocks describing code the generator did not actually produce. A rule nothing checks is a rule that regresses.</p>
+      </div>
+    </section>
+
+    <section id="finding">
+      <h2>Detection over prescription</h2>
+      <p>Early on the instinct was to fix each coverage gap directly: see a missing field, write a rule that produces it. That does not scale and it does not transfer, because you cannot enumerate the ways a thousand APIs differ, and a rule learned from one service usually misfires on another.</p>
+      <p>The rule we settled on is <strong>detection over prescription</strong>. It is more valuable to reliably <em>notice</em> that a field needs a human than to guess what the human would say. A flagged field is a fine outcome; a field nobody was told about is not.</p>
+      <p>That reframing gives a test for whether a new rule is worth having. Does it <em>derive</em> its answer from something the API supplies, or does it <em>remember</em> something a person once noticed?</p>
+
+      <div class="scroll">
+        <table class="grid">
+          <thead>
+            <tr><th>Signal</th><th>Source</th><th>Verdict</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>google.api.resource_reference</code></td><td>the proto states it</td><td><span class="tag fact">Fact</span></td></tr>
+            <tr><td>Description resource-name templates</td><td>the field's own docs</td><td><span class="tag derive">Derives</span></td></tr>
+            <tr><td>Sibling resource in the same service</td><td>the service's own resource list</td><td><span class="tag derive">Derives</span></td></tr>
+            <tr><td><code>refs.NameRules</code></td><td>a list of known spellings</td><td><span class="tag remember">Remembers</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The derived three work on a service nobody has looked at. The remembered one only ever finds references somebody has already seen, which is why a growing <code>NameRules</code> list is a signal that one of the other three is missing something, not a sign of progress.</p>
+
+      <h3>The sibling rule</h3>
+      <p>If a service declares a resource called <code>DataStore</code>, then a string field named <code>dataStore</code> is probably a reference to it. It needs no vocabulary at all, and it gets stronger as more resources are generated, because the service's own resource list is what it reads. Measured against what upstream actually did, it runs at 77% precision, and nobody maintains it.</p>
+
+      <h3>A spelling the detector did not know</h3>
+      <p>The output-only detector tested whether a proto comment opened with <code>Output only.</code> Compute writes <code>[Output Only]</code> instead, and that one unrecognised spelling covers 1,605 fields in <code>compute.proto</code> alone. Every one of <code>ComputeInterconnect</code>'s misplaced status fields, <code>googleIPAddress</code> and <code>circuitInfos</code> and <code>expectedOutages</code>, turned out to be nothing more exotic than that. Two strings in a list, for a signal that reaches services nobody has looked at.</p>
+    </section>
+
+    <section id="discipline">
+      <h2>Keeping the measurement honest</h2>
+      <p>A coverage report like this improves if you simply stop emitting a field and flag it instead. So the report prints <em>implemented</em> beside the gap, and any change that moves the gap without holding implemented steady is treated as suspect. One recent change took the not-generated count from 232 to 123 and implemented from 10,176 to 10,232. Both moving the right way is what separates a real improvement from a bookkeeping one.</p>
+      <p>Two further habits are worth keeping. The first is to measure a rule's precision before adding it and write the number next to it. Several plausible rules were rejected that way, including one for fields ending <code>Certificate</code> that scored 0 useful hits against 6 false ones, because <code>pemCertificate</code> is a blob rather than a reference. The second is to report differences you cannot prove in their own column. 34 fields are references upstream renamed so thoroughly that no name match bridges them, so they are counted as missed, which overstates our gap rather than flattering it. That is the right direction for a number being used to make a decision.</p>
+    </section>
+
+    <section id="built">
+      <h2>What is built and reusable</h2>
+      <ul>
+        <li><code>dev/tools/controllerbuilder</code> &mdash; the generator, extended with proto-derived required fields, parent identity, output-only placement and reference detection</li>
+        <li><code>dev/tasks/greenfield-regenerate</code> &mdash; end-to-end regeneration, including the queue re-seeding step that is easy to forget and silently discards findings when skipped</li>
+        <li><code>silence_report.py</code> &mdash; the field-by-field comparison against upstream</li>
+        <li><code>check_guess_entries.py</code> &mdash; the marker-implies-entry invariant</li>
+        <li><code>sibling_precision.py</code> &mdash; scores a detector against what upstream did</li>
+        <li><code>docs/ai/greenfield-*.md</code> &mdash; the runbook, the strategy, the measurements, and the approaches that were tried and abandoned with the reasons</li>
+      </ul>
+    </section>
+
+    <section id="limits">
+      <h2>Limitations</h2>
+
+      <div class="note caution">
+        <span class="note-label">Read 94.2% as a ceiling, not a forecast</span>
+        <p>The corpus is upstream's choices, not a random sample. These 275 are resources the team judged worth implementing. The unimplemented ones may be systematically harder: less documented, odder shapes, or unimplemented precisely because someone looked and found a problem. The rescope from 231 to 275 is direct evidence for that caution, since simply adding the resources we had missed moved the headline by nearly three points.</p>
+      </div>
+
+      <p>22 packages do not compile, and that is by design. The hand-written <code>_identity.go</code> and <code>_reference.go</code> files were left at upstream's version while the types beneath them were regenerated, so the failures are the oracle working rather than damage. About 16 are a measurement floor we chose not to chase.</p>
+      <p>First-pass output is not production quality. References are generated as plain strings and flagged rather than resolved into typed refs, and there are no test fixtures or MockGCP coverage for generated resources. The strategy is deliberately generate-first and retrofit in corpus-wide passes, which is only safe because the sandbox has no users. Upstream would need a different bar.</p>
+    </section>
+
+    <section id="decisions">
+      <h2>What the experiment does not settle</h2>
+      <p>Three things fall outside what a measurement of this kind can answer. They are recorded here because the experiment surfaced them, not because it resolved them.</p>
+      <ol class="decisions">
+        <li>
+          <p><span class="q">Whether a 1.1% gap is small enough to generate against.</span>The number is measured. What counts as acceptable is a policy question, and it depends on what happens to a resource after generation rather than on the generator itself.</p>
+        </li>
+        <li>
+          <p><span class="q">What a generated resource needs before it can merge.</span>The corpus here has references as plain strings, no fixtures and no MockGCP coverage. Whether those must land in the same change or can follow in corpus-wide passes was never tested, because the sandbox has no users to break.</p>
+        </li>
+        <li>
+          <p><span class="q">Whether the judgement queue scales as a hand-off.</span>It assumes a person reviews each resource before it graduates, which makes review the throughput limit on the whole approach. The experiment measured how much reaches the queue, not how fast it can be cleared.</p>
+        </li>
+      </ol>
+    </section>
+
+    <hr class="appendix-rule">
+    <p class="appendix-mark">Appendix</p>
+
+    <section id="prereqs">
+      <h2>A. What had to be true first</h2>
+      <p>The generator did not begin at 94.2%. Getting there took around twenty pull requests over three weeks, and most of them were not about generation at all. The order below is roughly the order the work happened in. Each stage was prompted by the one before it producing a measurement that turned out not to mean what it appeared to mean.</p>
+
+      <div class="stage">
+        <div>
+          <h4>1. Checks before generation</h4>
+          <p>The conformance checks landed first, along with a manifest scoping them to bulk-generated Kinds and tracking for proto fields dropped from KRM types. Running it the other way round would have left no way to tell a generator bug from a resource that had always been that way. The checkers got their own unit tests too, since a checker that silently passes reports the same thing as a clean run.</p>
+          <p class="prs"><span class="pr">#5</span><span class="pr">#6</span><span class="pr">#7</span><span class="pr">#11</span><span class="pr">#12</span></p>
+        </div>
+        <div>
+          <h4>2. A reference taxonomy to measure against</h4>
+          <p>Before a detector can be measured, someone has to write down which reference conventions are policy and which are ours. That taxonomy came first, then detector work ported from an earlier effort and tuned against a real review. Without it, whether a given field should be a reference stays a matter of opinion, and precision has nothing to be measured against.</p>
+          <p class="prs"><span class="pr">#9</span><span class="pr">#10</span><span class="pr open">#23</span></p>
+        </div>
+        <div>
+          <h4>3. The generator reading the proto instead of guessing</h4>
+          <p>Three guesses were replaced by facts the proto already carried. <code>+required</code> now comes from <code>field_behavior</code>. The collection segment and parent shape come from <code>google.api.resource</code> rather than from the message name, which had disagreed with the declared pattern for 752 of 1,417 annotated messages. And the Spec is filled from the proto instead of a three-field stub. Each was opt-in per service, so a wrong answer could not change a CRD people already depend on.</p>
+          <p class="prs"><span class="pr">#14</span><span class="pr">#15</span><span class="pr">#17</span><span class="pr open">#21</span></p>
+        </div>
+        <div>
+          <h4>4. Somewhere for the judgements to go</h4>
+          <p>The per-service judgement queue arrived with a rule attached: while a resource has entries in it, its <code>[refs]</code> findings are suppressed. Work in progress therefore does not trip a ratchet, and clearing the queue is what graduates a resource into being checked.</p>
+          <p class="prs"><span class="pr">#16</span><span class="pr open">#21</span></p>
+        </div>
+        <div>
+          <h4>5. Naming and identity correctness</h4>
+          <p>Collection segments GCP has never seen are now caught by a check rather than discovered against a live API. A resource whose identity is wrong still produces a CRD that reads as correct, which is what makes this class of error hard to spot by review.</p>
+          <p class="prs"><span class="pr">#18</span></p>
+        </div>
+        <div>
+          <h4>6. A build that reflects your changes</h4>
+          <p>The <code>controllerbuilder</code> binary was being reused when stale, and the symptom shows up a long way from the cause: output that does not reflect your change, or a tree-wide regeneration that breaks a service you never touched. Rebuilding one older than an hour removed a whole class of wasted measurement.</p>
+          <p class="prs"><span class="pr">#20</span></p>
+        </div>
+        <div>
+          <h4>7. Turning it on, and measuring it</h4>
+          <p>The flags now reach 95 of 131 services, and that step is its own pull request. It earned one. <code>--place-server-set-fields</code> was built, tested, and then wired into zero scripts for weeks, while the other four were on all 94. And <code>speech</code> had no <code>--prepopulate-spec</code> at all, which by itself accounted for 43 of the then-232 unflagged misses.</p>
+          <p class="prs"><span class="pr open">#26</span><span class="pr open">#21</span><span class="pr open">#22</span></p>
+        </div>
+      </div>
+
+      <div class="note">
+        <span class="note-label">What these have in common</span>
+        <p>Each of these went the same way round: make the behaviour opt-in, measure it against what upstream actually did, then turn it on. Nothing here was enabled because it seemed reasonable.</p>
+      </div>
+    </section>
+
+    <section id="flagging-how">
+      <h2>B. How non-deterministic behaviour is flagged</h2>
+      <p>Some decisions cannot be derived from a proto. Whether a plural noun in a resource pattern names a real KCC Kind, whether a field the proto never annotated is server-set, whether a string is a reference: each of those needs a person. The generator's job on them is not to guess better, but to make sure the guess is visible to whoever reviews it.</p>
+
+      <div class="note caution">
+        <span class="note-label">Why nothing is dropped silently</span>
+        <p>A field the generator cannot vouch for is still emitted, with the open question recorded separately. Omitting it instead would hide it from every other check in the system, because a field absent from the CRD cannot be reported as missing from it. A wrong field is a bug someone finds; a missing field is a bug nobody finds.</p>
+      </div>
+
+      <h3>A marker and a queue entry, for every guess</h3>
+      <p>Anything the generator cannot justify from the proto produces <em>both</em> a marker in the generated Go and an entry in that service's <code>needs_judgement_call.txt</code>. Neither alone is enough. The queue is a work list somebody clears; the types file is what a reader actually opens.</p>
+
+      <div class="scroll">
+        <table class="grid">
+          <thead>
+            <tr><th>Marker</th><th>What the generator could not justify</th><th class="num">Now</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>parent-location</code></td><td>a location segment read off the resource pattern &mdash; is the resource actually regional, and is this the name for it?</td><td class="num">193</td></tr>
+            <tr><td><code>placement</code></td><td>a field put in ObservedState by name, because the proto carries no <code>field_behavior</code> anywhere on the message</td><td class="num">41</td></tr>
+            <tr><td><code>parent-segment</code></td><td>a name segment emitted as a plain string; upstream may want a reference</td><td class="num">26</td></tr>
+            <tr><td><code>possible-reference</code></td><td>a field whose name matches a resource this service declares</td><td class="num">26</td></tr>
+            <tr><td><code>parent-ref</code></td><td>a typed reference whose target was assumed from a collection segment</td><td class="num">13</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>There are 299 markers in the tree today, and none of them lacks a queue entry. That is checked on every regeneration rather than assumed, which turned out to matter: the invariant broke three separate times during this work, each time somewhere review would not have looked.</p>
+      <ul>
+        <li>The marker was written on every generator invocation while the queue entry was gated on a flag only some invocations passed.</li>
+        <li>The queue merge dropped every comment line of the existing file, so only the last invocation's findings survived &mdash; and comment form is exactly what the shared-nested-message findings use.</li>
+        <li>Markers were emitted into commented-out blocks describing code the generator did not actually produce, which made 63 of 82 entry-less by construction.</li>
+      </ul>
+
+      <h3>Even a typed reference is queued</h3>
+      <p>An earlier version suppressed the queue entry whenever the generator emitted something concrete, on the reasoning that a typed ref needs no review. That traded detection for an unflagged guess: <code>BigtableCluster</code> got <code>Instance *string</code> where upstream has <code>spec.instanceRef</code>, and nothing said so. The compiler was proving 32 fields missing while the queue named 2.</p>
+      <p><em>Very sure</em> is not a state a generator can be in about a target it inferred from a plural noun. Anything marked as a guess belongs in the queue, typed references included.</p>
+
+      <h3>When a finding belongs to no Kind</h3>
+      <p>A nested message is shared by every resource that references it, so a finding against one cannot be attributed to a single Kind &mdash; and every non-comment line in the queue suppresses <code>[refs]</code> for the Kind it names, so inventing an owner would quietly switch off a real check. Those findings are written as comments instead, and the tooling reads them back:</p>
+      <div class="scroll">
+        <table class="grid">
+          <thead><tr><th>Queue line</th></tr></thead>
+          <tbody>
+            <tr><td><code># possible-reference-by-sibling: google.cloud.compute.v1.NetworkInterface.subnetwork target=ComputeSubnetwork</code></td></tr>
+            <tr><td><code># dropped: …TranslationTaskDetails.specialTokenMap reason=unsupported map type with key string and value enum</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>The queue is also the gate</h3>
+      <p>While a resource has entries, its <code>[refs]</code> findings are suppressed, so a half-generated resource does not trip a ratchet that can only shrink. Clearing the queue is what graduates it. That also makes the queue the throughput limit on the whole idea, which is why it appears among the three decisions above rather than as an implementation detail.</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Measured against KCC master at <code>c1df0b9326</code></span>
+    <span>275 resources &middot; 12,000 fields</span>
+    <span>Reproduce with <code>hack/tools/greenfield/silence_report.py</code></span>
+  </footer>
+
+</div>

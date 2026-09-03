@@ -15,18 +15,23 @@
 package prunetypes
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"go/ast"
+	"go/format"
+	"go/parser"
 	"go/token"
 	"go/types"
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/pkg/options"
 	"github.com/spf13/cobra"
+	"golang.org/x/tools/go/ast/astutil"
 	"golang.org/x/tools/go/packages"
 	"k8s.io/klog/v2"
 )
@@ -289,10 +294,93 @@ func PruneTypes(ctx context.Context, o *PruneTypesOptions) error {
 			klog.Infof("Commented out unreachable type %s in %s", item.typeName.Name(), targetFile)
 		}
 
+		content, err = dropUnusedImports(targetFile, content)
+		if err != nil {
+			return fmt.Errorf("dropping unused imports in %s: %w", targetFile, err)
+		}
+
 		if err := os.WriteFile(targetFile, content, 0644); err != nil {
 			return fmt.Errorf("writing %s: %w", targetFile, err)
 		}
 	}
 
 	return nil
+}
+
+// dropUnusedImports removes imports that nothing outside a comment references.
+//
+// Commenting a type out can orphan an import, because the decision to add one
+// is made while the type is still live. Go rejects an unused import outright,
+// so this is a build break rather than untidiness, and nothing catches it
+// later: goimports runs over pkg/controller/direct, never over apis.
+//
+// Parsing rather than string-matching is what makes this correct. The commented
+// out type is still in the file, and its body still spells the qualifier, so a
+// textual search cannot tell a live reference from a dead one.
+func dropUnusedImports(filename string, content []byte) ([]byte, error) {
+	fset := token.NewFileSet()
+	file, err := parser.ParseFile(fset, filename, content, parser.ParseComments)
+	if err != nil {
+		return nil, fmt.Errorf("parsing: %w", err)
+	}
+
+	used := make(map[string]bool)
+	ast.Inspect(file, func(n ast.Node) bool {
+		sel, ok := n.(*ast.SelectorExpr)
+		if !ok {
+			return true
+		}
+		if ident, ok := sel.X.(*ast.Ident); ok {
+			used[ident.Name] = true
+		}
+		return true
+	})
+
+	// Collect first, delete after. astutil.DeleteNamedImport mutates
+	// file.Imports, and deleting while ranging over that same slice walks off the
+	// end of it -- which panics on any file with more than one unused import.
+	type unusedImport struct{ name, path string }
+	var unused []unusedImport
+	for _, imp := range file.Imports {
+		if imp == nil || imp.Path == nil {
+			continue
+		}
+		path, err := strconv.Unquote(imp.Path.Value)
+		if err != nil {
+			continue
+		}
+		name := ""
+		if imp.Name != nil {
+			name = imp.Name.Name
+		}
+		// A blank or dot import is there for its side effects; leave it alone.
+		if name == "_" || name == "." {
+			continue
+		}
+		qualifier := name
+		if qualifier == "" {
+			qualifier = path[strings.LastIndex(path, "/")+1:]
+		}
+		if used[qualifier] {
+			continue
+		}
+		unused = append(unused, unusedImport{name: name, path: path})
+	}
+
+	changed := false
+	for _, u := range unused {
+		if astutil.DeleteNamedImport(fset, file, u.name, u.path) {
+			changed = true
+			klog.Infof("Dropped now-unused import %q from %s", u.path, filename)
+		}
+	}
+	if !changed {
+		return content, nil
+	}
+
+	var buf bytes.Buffer
+	if err := format.Node(&buf, fset, file); err != nil {
+		return nil, fmt.Errorf("formatting: %w", err)
+	}
+	return buf.Bytes(), nil
 }

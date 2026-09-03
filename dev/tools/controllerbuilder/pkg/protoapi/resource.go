@@ -133,6 +133,41 @@ func splitPattern(pattern string) (collection string, parentPath string) {
 	return literals[len(literals)-1], strings.Join(literals[:len(literals)-1], "/")
 }
 
+// ParentVariables returns the placeholder names in a pattern's parent, in the
+// order the pattern declares them.
+//
+//	"projects/{project}/locations/{location}/collections/{collection}/
+//	    dataStores/{data_store}"  ->  ["project", "location", "collection"]
+//
+// The final placeholder is the resource's own id, becoming spec.resourceID,
+// so it is excluded. Everything left is a value a user must supply to name the
+// resource, and upstream carries each one as a spec field.
+//
+// This exists because ParentStyle collapses every shape past project+location
+// into "other", which is enough to decide what the template renders but not
+// enough to say what was left out. A resource parented at
+// projects/locations/collections needs spec.collection as much as it needs
+// spec.location, and only the pattern knows that.
+func ParentVariables(pattern string) []string {
+	segs := strings.Split(pattern, "/")
+	var vars []string
+	for _, s := range segs {
+		if strings.HasPrefix(s, "{") && strings.HasSuffix(s, "}") {
+			vars = append(vars, strings.Trim(s, "{}"))
+		}
+	}
+	if len(vars) == 0 {
+		return nil
+	}
+	// A pattern ending in a literal ("projects/{project}/locations") names a
+	// collection rather than a resource, so no placeholder is the resource id.
+	last := segs[len(segs)-1]
+	if strings.HasPrefix(last, "{") {
+		vars = vars[:len(vars)-1]
+	}
+	return vars
+}
+
 func classifyParent(parentPath string) ParentStyle {
 	switch parentPath {
 	case "":

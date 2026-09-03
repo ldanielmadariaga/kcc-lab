@@ -8,6 +8,54 @@ normative and cite it in generated issues and PRs.
 
 ---
 
+## What the experiment is, and why the tree does not compile
+
+Read this first. Everything below assumes it, and it is the piece a fresh session loses.
+
+**We delete resources upstream implemented by hand, regenerate them from the proto, and compare.**
+The comparison is the whole point: upstream's version is a known-good answer produced by a person,
+so it tells us where mechanical generation falls short of what a human would write.
+
+The goal is to prove bulk generation is sound **before** pointing it at the ~550 greenfield resources
+that have no implementation at all. Three things have to hold first:
+
+1. **generation as mechanical as possible** — the less a human has to add, the more resources one
+   person can land;
+2. **everything needing a judgement call identified and flagged** — a field a human must decide is a
+   fine outcome; a field nobody was told about is not;
+3. **coverage roughly equal to upstream** — measured against their CRDs, not against the proto.
+
+So the sandbox tree **does not compile, by design**. 44 packages fail, because the hand-written
+`_identity.go` and `_reference.go` files were deliberately left at upstream's version while the types
+files underneath them were regenerated. That is not damage to repair. Those files are upstream's own
+controller code, and they are **the strictest oracle we have**: if our generated types do not satisfy
+them, generation is short exactly there, and `go build` says so in seconds and names the field.
+
+See [greenfield-detection-gaps.md](greenfield-detection-gaps.md#the-tree-does-not-build-and-that-is-the-measurement)
+for what that currently reports.
+
+---
+
+## 0. What changed: past ~80%, the goal is accounting, not generating
+
+This document was written when the useful question was "how do we generate more". It largely still
+holds, but the target has moved, and the sequencing below should be read with that in mind.
+
+Measured across all 189 scorable greenfield resources, spec generation reached 78.5% — and 95.7%
+once missing references are set aside. Pushing the generated fraction higher from there runs into
+fields that genuinely need a human: references the proto does not annotate, names upstream chose by
+judgement, shapes the proto cannot express.
+
+The problem is not that those fields need a person. It is that **nobody is told.** At the point the
+measurement was taken, 94% of everything the generator failed to produce was silent: no queue entry,
+no report, nothing. A resource could be missing sixty fields, look finished, and pass every check.
+
+So the goal is now the invariant in
+[greenfield-coverage-invariant.md](greenfield-coverage-invariant.md): every baseline field is either
+generated or named in the queue with a reason. Automation is still worth having, but a field that
+needs judgement and *says so* is a finished outcome, not a gap. Raising generated coverage while the
+silence stands just moves the problem somewhere harder to see.
+
 ## 1. The target, and its denominator
 
 Coverage is measured against **manageable** GCP resources — those with a `Create` or `Upsert` RPC.

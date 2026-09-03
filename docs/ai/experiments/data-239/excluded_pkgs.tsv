@@ -1,0 +1,36 @@
+apigeeregistry	apigeeregistryapi_identity.go:69:5: impossible type assertion: obj.(*ApigeeRegistryAPI)
+apihub	types.generated.go:121:6: APIHubInstance redeclared in this block
+apphub	apphubdiscoveredservice_identity.go:90:31: invalid operation: actualParent.Location != location (mismatched types string and *string)
+bigquerybiglake	biglakedatabase_identity.go:73:21: obj.Spec.ParentRef undefined (type BigLakeDatabaseSpec has no field or method ParentRef)
+bigqueryreservation	bigqueryreservationcapacitycommitment_identity.go:95:43: obj.Status.Name undefined (type BigQueryReservationCapacityCommitmentStatus has no field or m
+bigtable	bigtablecluster_types.go:41:2: Location redeclared
+billing	types.generated.go:25:6: BillingAccount redeclared in this block
+ces	types.generated.go:995:14: undefined: apiextensionsv1
+clouddeploy	clouddeployautomation_identity.go:91:36: obj.Spec.DeliveryPipelineRef undefined (type CloudDeployAutomationSpec has no field or method DeliveryPipelin
+cloudsecuritycompliance	cloudsecuritycompliancecloudcontrol_types.go:23:5: CloudSecurityComplianceCloudControlGVK redeclared in this block
+cloudtalentsolution	cloudtalentsolutioncompany_identity.go:79:14: obj.Spec.Tenant undefined (type CloudTalentSolutionCompanySpec has no field or method Tenant)
+contentwarehouse	types.generated.go:705:6: Document redeclared in this block
+datacatalog	datacatalogentry_identity.go:63:14: obj.Spec.EntryGroupRef undefined (type DataCatalogEntrySpec has no field or method EntryGroupRef)
+dataproc	dataprocbatch_identity.go:58:90: obj.Spec.Parent undefined (type DataprocBatchSpec has no field or method Parent)
+datastream	datastreamconnectionprofile_identity.go:66:23: obj.Spec.Location undefined (type DatastreamConnectionProfileSpec has no field or method Location)
+discoveryengine	discoveryenginesearchengine_types.go:23:5: DiscoveryEngineSearchEngineGVK redeclared in this block
+edgecontainer	edgecontainermachine_identity.go:58:90: obj.Spec.Parent undefined (type EdgeContainerMachineSpec has no field or method Parent)
+firestore	firestorebackupschedule_identity.go:79:7: impossible type switch case: *FirestoreBackupSchedule
+gkebackup	gkebackupbackup_identity.go:55:28: obj.Spec.BackupPlanRef undefined (type GKEBackupBackupSpec has no field or method BackupPlanRef)
+iam	iamdenypolicy_identity.go:85:21: obj.Spec.FolderRef undefined (type IAMDenyPolicySpec has no field or method FolderRef)
+kms	kmscryptokeyversion_identity.go:83:14: obj.Spec.CryptoKey undefined (type KMSCryptoKeyVersionSpec has no field or method CryptoKey)
+modelarmor	modelarmortemplate_identity.go:64:21: impossible type assertion: obj.(*ModelArmorTemplate)
+networkservices	networkservicesauthzextension_types.go:109:11: undefined: apiextensionsv1
+parametermanager	parametermanagerparameter_identity.go:71:21: obj.Spec.ProjectAndLocationRef undefined (type ParameterManagerParameterSpec has no field or method Proje
+securitycenter	securitycenterbigqueryexport_identity.go:83:25: impossible type assertion: obj.(*SecurityCenterBigQueryExport)
+securitycentermanagement	securitycentermanagementeventthreatdetectioncustommodule_types.go:40:9: undefined: apiextensionsv1
+sqladmin	sqladminbackup_types.go:98:2: Location redeclared
+storageinsights	types.generated.go:25:2: "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common" imported and not used
+testing	testingdevicesession_identity.go:67:11: impossible type assertion: obj.(*TestingDeviceSession)
+transcoder	types.generated.go:25:2: "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common" imported and not used
+vectorsearch	vectorsearchcollection_types.go:54:13: undefined: apiextensionsv1
+vertexai	types.generated.go:1209:14: undefined: apiextensionsv1
+visionai	types.generated.go:538:21: undefined: apiextensionsv1
+vmwareengine	vmwareengineexternalaccessrule_identity.go:55:31: obj.Spec.NetworkPolicyRef undefined (type VMwareEngineExternalAccessRuleSpec has no field or method 
+backupdr	v1beta1/backupdrbackupplan_types.go:31:11: invalid field type: invalid type
+networksecurity	v1alpha1/networksecurityauthzpolicy_types.go:51:2: invalid field type: invalid type
