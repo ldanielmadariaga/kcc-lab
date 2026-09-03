@@ -453,6 +453,28 @@ def _leaf_flagged(leaves, path):
                for c in queue_candidates(path))
 
 
+def we_emit_it(path, section, extra):
+    """Is this baseline field in our output at all, under any name we can pair?
+
+    This is the axis the report leads with, because it decides what kind of work
+    the difference needs. A field we emit in the wrong section or as a plain
+    string needs detecting or moving; a field we emit nowhere needs generating.
+    Rolling the two together made "missed" read as absence when over half of it
+    was neither.
+
+    Same-section pairing uses queue_candidates, which already knows the trailing
+    noun upstream drops when it makes a reference, so billingAccountRef finds our
+    billingAccount and dataStoreRefs finds our dataStoreIDs. The cross-section
+    case is what "moved" means: the same relative path in the other half.
+    """
+    cands = {c.rstrip("[]") for c in queue_candidates(path)}
+    if cands & {e.rstrip("[]") for e in extra.get(section, ())}:
+        return True
+    other = "spec" if section == "status.observedState" else "status.observedState"
+    rel = {strip_section(c).rstrip("[]") for c in cands}
+    return bool(rel & {strip_section(e).rstrip("[]") for e in extra.get(other, ())})
+
+
 def names_something_nearby(entries, path):
     """Does the queue name any field at or under this field's parent?
 
@@ -533,6 +555,11 @@ def main():
     # field that also carries a marker -- not a bucket of its own. Summing it
     # into the totals double-counted 16 fields and put "truly missed" 19 out.
     in_types_total = 0
+    # The primary axis: (do we emit it, did we say anything). Counted alongside
+    # gap rather than derived from it, because gap is keyed by *why* a field
+    # differs and that is a different question from *whether we produced it*.
+    shape = Counter()
+    shape_cls = defaultdict(Counter)
     unflagged_list = defaultdict(list)
     unsure_list = defaultdict(list)
     never_queued = []
@@ -567,6 +594,21 @@ def main():
             for p in roots(paths):
                 c = classify(p, section, extra, arrays)
                 entries = q.get(kind, ())
+                # Three classes are only ever returned when classify() already
+                # found our counterpart in extras: "moved" needs the same path in
+                # the other section, "renamed" needs a matching name at the same
+                # parent, "reference-not-detected" needs a plain field at the
+                # de-suffixed stem. Trusting the classifier there keeps the two
+                # from disagreeing -- name-pairing alone called 29 renamed fields
+                # unproduced, which put them in "missing" while the class column
+                # said we emit them.
+                emitted = (c in ("moved", "renamed", "reference-not-detected")
+                           or we_emit_it(p, section, extra))
+                told = bool(explained(entries, p)
+                            or section in qsections.get(kind, ())
+                            or _leaf_flagged(qleaves.get(kind, ()), p))
+                shape[(emitted, told)] += 1
+                shape_cls[c][(emitted, told)] += 1
                 if explained(entries, p):
                     gap[c]["field"] += 1
                     # Does the generated source say anything about it too?
@@ -587,7 +629,7 @@ def main():
                     unsure_list[c if where == "nested" else "weak"].append((kind, p))
                 else:
                     gap[c]["unflagged"] += 1
-                    unflagged_list[c].append((kind, p))
+                    unflagged_list[c].append((kind, p, emitted))
                     if kind not in queued_kinds:
                         never_queued.append((kind, p))
 
@@ -597,93 +639,97 @@ def main():
     missing_total = sum(sum(gap[c].values()) for c in CLASSES)
     surface = produced + missing_total
 
-    # The headline: three states, one field in exactly one of them.
-    flagged_q = sum(gap[c]["field"] + gap[c]["section"] for c in CLASSES)
+    # The headline splits on what we produced, not on whether we mentioned it.
+    # Those are close to independent -- 280 of the 339 discrepancies are flagged
+    # and only 39 of the 286 absences are -- so leading with "flagged" hid the
+    # distinction that decides what work a difference actually needs.
+    discrepancy = shape[(True, True)] + shape[(True, False)]
+    absent      = shape[(False, True)] + shape[(False, False)]
+    disc_told   = shape[(True, True)]
+    abs_told    = shape[(False, True)]
+    # Fields we decline to produce on purpose: the google.protobuf.Value union
+    # arms, which we map whole to apiextensionsv1.JSON so the individual arms
+    # cannot exist as fields, plus casing renames. Held out because a headline
+    # that counts them as absences overstates the gap.
+    by_design = sum(shape_cls[c][(False, True)] + shape_cls[c][(False, False)]
+                    for c in ACCEPTED_CLASSES)
+    real_gap  = absent - by_design
     flagged_both = in_types_total
-    missed = missing_total - flagged_q
 
-    # Counted, not derived. Every field lands in exactly one of these, so the
-    # five sum to what we miss and no arithmetic can drift.
-    emitted_elsewhere = sum(gap[c]["unflagged"] for c in ACCEPTED_CLASSES)
-    unpairable = sum(gap[c]["unsure"] + gap[c]["weak"] for c in CLASSES)
-    wrong_section = gap["moved"]["unflagged"]
-    undetected_ref = gap["reference-not-detected"]["unflagged"]
-    truly = sum(gap[c]["unflagged"] for c in TARGET_CLASSES
-                if c not in EMITTED_CLASSES)
-
-    print(f"Against KCC master at {args.ref}, every field in its CRDs is one of three things.\n")
-    print(f"  {'1. implemented':34s} {produced:6d}   ({100 * produced / surface:.1f}%)")
-    print("        in our types and CRD, at the same path")
-    print(f"  {'2. flagged':34s} {flagged_q:6d}   ({100 * flagged_q / surface:.1f}%)")
-    print(f"        named in needs_judgement_call.txt{'':12s}{flagged_q:6d}")
-    print(f"        ...and also in the types file{'':15s}{flagged_both:6d}")
-    print(f"  {'3. missed':34s} {missed:6d}   ({100 * missed / surface:.1f}%)")
     pct = lambda x: f"({100 * x / surface:.1f}%)"
-    print(f"        truly missed{'':22s}{truly:6d} {pct(truly):8s} we produce nothing at all")
-    print(f"        emitted, wrong section{'':12s}{wrong_section:6d} {pct(wrong_section):8s} spec vs status.observedState")
-    print(f"        emitted as a plain string{'':9s}{undetected_ref:6d} {pct(undetected_ref):8s} upstream references it, we did not")
-    print(f"        emitted, renamed or reshaped{'':6s}{emitted_elsewhere:6d} {pct(emitted_elsewhere):8s} present, different name or shape")
-    print(f"        reference, name unpairable{'':8s}{unpairable:6d} {pct(unpairable):8s} queue likely names it, unprovable")
+    print(f"Against KCC master at {args.ref}, every field in its CRDs is one of three things.\n")
+    print(f"  {'1. implemented':34s} {produced:6d}   {pct(produced)}")
+    print("        in our types and CRD, at the same path")
+    print(f"  {'2. discrepancy':34s} {discrepancy:6d}   {pct(discrepancy)}")
+    print("        we produce it, but not as upstream has it")
+    print(f"        flagged for a second pass{'':9s}{disc_told:6d}   ({100 * disc_told / discrepancy:.0f}% of them)")
+    print(f"        nothing says so{'':19s}{discrepancy - disc_told:6d}")
+    print(f"  {'3. missing':34s} {absent:6d}   {pct(absent)}")
+    print("        we produce nothing at all")
+    print(f"        a gap to close{'':20s}{real_gap:6d}")
+    print(f"        we model it differently on purpose{'':0s}{by_design:6d}")
+    print(f"        flagged for a second pass{'':9s}{abs_told:6d}   ({100 * abs_told / absent:.0f}% of them)")
     print(f"  {'':34s} {'-' * 6}")
     print(f"  {'fields in KCC master CRDs':34s} {surface:6d}")
 
-    if wrong_section or undetected_ref:
-        print(f"\n  The middle two are in our output already, so they need detecting or")
-        print("  moving, not generating. A field we emit in spec where upstream has it in")
-        print("  status.observedState, or emit as a plain string where upstream references")
-        print("  it, still breaks a user's YAML -- but sending someone to build generation")
-        print("  for a field the types file already carries wastes the trip.")
+    if flagged_both < disc_told + abs_told:
+        print(f"\nOf the {disc_told + abs_told} flagged, {flagged_both} also carry a marker in the types")
+        print("file. The rest are named in the queue and nowhere in the generated source, so a")
+        print("person reading the type sees a plain string with nothing to suggest it is")
+        print("unfinished. The queue is a work list somebody clears; the types file is what a")
+        print("reader opens.")
 
+    unpairable = sum(gap[c]["unsure"] + gap[c]["weak"] for c in CLASSES)
     if unpairable:
-        print(f"\n  The {unpairable} unpairable are references upstream renamed, not just suffixed:")
+        print(f"\n  {unpairable} of the above are references upstream renamed rather than suffixed:")
         print("  DatastreamPrivateConnection's vpc is upstream's networkRef, and no name")
-        print("  match bridges those. Counted as missed, which overstates the gap rather")
+        print("  match bridges those. Counted as unflagged, which overstates the gap rather")
         print("  than flattering it.")
 
-    if flagged_both < flagged_q:
-        print(f"\nThe second line of state 2 is the one to watch. {flagged_q - flagged_both} fields are named in")
-        print("the queue and nowhere in the generated source, so a person reading the type")
-        print("sees a plain string with nothing to suggest it is unfinished. The queue is a")
-        print("work list somebody clears; the types file is what a reader opens.")
-
+    wrong_section = gap["moved"]["unflagged"]
+    undetected_ref = gap["reference-not-detected"]["unflagged"]
     print(f"\n\nBelow: why each of the {missing_total} we did not implement differs, which routes the")
     print("fix rather than excusing it. Columns say how we know about it.\n")
 
-    def row(label, counters):
-        f, sec = counters["field"], counters["section"]
-        total = sum(counters.values()) - counters["in_types"]
-        print(f"  {label:24s} {total:8d} {f:9d} {sec:11d} {total - f - sec:9d}")
+    def row(label, classes):
+        d = Counter()
+        for c in classes:
+            d.update(shape_cls[c])
+        prod = d[(True, True)] + d[(True, False)]
+        gone = d[(False, True)] + d[(False, False)]
+        told = d[(True, True)] + d[(False, True)]
+        print(f"  {label:24s} {prod + gone:7d} {prod:10d} {gone:14d} {told:9d}")
 
-    print(f"  {'why it differs':24s} {'we miss':>8s} {'by field':>9s} "
-          f"{'by section':>11s} {'missed':>9s}")
+    print(f"  {'why it differs':24s} {'total':>7s} {'we emit it':>10s} "
+          f"{'we emit nothing':>14s} {'flagged':>9s}")
     for c in TARGET_CLASSES:
-        row(c, gap[c])
-    target = Counter()
-    for c in TARGET_CLASSES:
-        target.update(gap[c])
-    print("  " + "-" * 63)
-    row("subtotal, the target", target)
+        row(c, [c])
+    print("  " + "-" * 66)
+    row("subtotal, the target", TARGET_CLASSES)
 
-    accepted = Counter()
-    for c in ACCEPTED_CLASSES:
-        accepted.update(gap[c])
-    if sum(accepted.values()):
+    if any(sum(shape_cls[c].values()) for c in ACCEPTED_CLASSES):
         print("\n  differences we accept, not counted above:")
         for c in ACCEPTED_CLASSES:
-            row(c, gap[c])
+            row(c, [c])
 
-    print("\nThe target is state 3 at zero: a field a human must decide is a fine")
-    print("outcome, a field nobody was told about is not. Watch \"implemented\"")
-    print("alongside it -- flagging fields by no longer emitting them improves this")
-    print("report and takes working fields away.")
+    print("\nThe target is the second line of state 2 and the first of state 3: a field")
+    print("a human must decide is a fine outcome, a field nobody was told about is not.")
+    print("Watch \"implemented\" alongside them -- flagging fields by no longer emitting")
+    print("them improves this report and takes working fields away.")
 
     if args.list_silent:
-        for c in CLASSES:
-            if not unflagged_list[c]:
-                continue
-            print(f"\n### missed without flagging, {c} ({len(unflagged_list[c])})")
-            for kind, p in sorted(unflagged_list[c]):
-                print(f"  {kind}\t{p}")
+        # Grouped by whether we emit the field, because that is what decides the
+        # work: a discrepancy nobody flagged needs detecting or moving, a silent
+        # absence needs generating. The class is the second key.
+        for group, label in ((True, "discrepancy, nothing says so"),
+                             (False, "missing, nothing says so")):
+            for c in CLASSES:
+                rows = [(k, path) for k, path, em in unflagged_list[c] if em == group]
+                if not rows:
+                    continue
+                print(f"\n### {label}, {c} ({len(rows)})")
+                for kind, path in sorted(rows):
+                    print(f"  {kind}\t{path}")
         for c in list(CLASSES) + ["weak"]:
             if not unsure_list[c]:
                 continue

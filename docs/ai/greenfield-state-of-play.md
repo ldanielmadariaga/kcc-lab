@@ -22,23 +22,27 @@ All 231 in-scope resources generate both a types file and a CRD. Measured agains
 `c1df0b9326`:
 
 ```
-  1. implemented                      10232   (94.2%)
-  2. flagged                            319   (2.9%)
-        named in needs_judgement_call.txt               319
-        ...and also in the types file                    22
-  3. missed                             306   (2.8%)
-        truly missed                     123   (1.1%)   we produce nothing at all
-        emitted, wrong section            30   (0.3%)   spec vs status.observedState
-        emitted as a plain string         17   (0.2%)   upstream references it, we did not
-        emitted, renamed or reshaped     102   (0.9%)   present, different name or shape
-        reference, name unpairable        34   (0.3%)   queue likely names it, unprovable
+  1. implemented                      10232   (94.2%)   same field, same path
+  2. discrepancy                        368   (3.4%)    we produce it, but not as upstream has it
+        flagged for a second pass         280   (76%)
+        nothing says so                    88
+  3. missing                            257   (2.4%)    we produce nothing at all
+        a gap to close                    195
+        we model it differently on purpose 62
+        flagged for a second pass          39   (15%)
 ```
 
-**123 is the gap.** Everything else under `missed` is a field we do produce, in a different section,
-shape or name. Those still break a user's YAML and still need work, but the work is detection or
-placement, not generation — and a headline that lumps them together sends people to build generation
-for fields the types file already carries. It did exactly that until recently: `truly missed` read
-232, and about a third of it was fields sitting in the types file all along.
+The split is on what we produced, not on whether we mentioned it. Those turn out to be close to
+independent: three quarters of the discrepancies carry a judgement-queue entry, against one in seven
+of the absences. Leading with "flagged" hid that, and made a 306-field "missed" bucket read as
+absence when 88 of it was a field we do emit in a shape upstream does not have.
+
+The 62 we model differently on purpose are the `google.protobuf.Value` union arms. We map `Value`
+whole to `apiextensionsv1.JSON`, so the individual arms cannot exist as fields. Counting them as
+absences would overstate the gap.
+
+195 is the number to drive down. It is what we produce nowhere, less what we decline to produce
+deliberately.
 
 Run it with `hack/tools/greenfield/silence_report.py`; see
 [greenfield-coverage-invariant.md](greenfield-coverage-invariant.md) for what each state means, and

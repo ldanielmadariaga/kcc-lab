@@ -45,9 +45,9 @@ Two of those are measurement fixes rather than coverage improvements. They are i
 the number they corrected was published, and quietly restating it would be worse than showing the
 correction.
 
-## A third of "truly missed" was mislabelled
+## A third of what we called "missed" was mislabelled
 
-The report called 232 fields "truly missed — in neither our types nor the queue". That sentence was
+The report called 232 fields "truly missed", meaning in neither our types nor the queue. That was
 false for about a third of them, and the mislabelling mattered because it routed attention towards
 generation work for fields the types file already carried.
 
@@ -65,8 +65,10 @@ we emitted a *plain* field there. `moved` had the opposite problem: the classifi
 exists — it returns `moved` only when the same section-stripped path is in the other section's
 `extras` — and then the reporting threw that knowledge away.
 
-Both now get their own headline lines, `reference-not-detected` and `moved`, still under `missed`
-because a user's YAML still breaks either way.
+Both now sit under `discrepancy`, a top-level state for fields we produce in a shape upstream does
+not have. A user's YAML still breaks either way, so this is not an excuse; it is a statement about
+which kind of work closes it. The follow-on measurement made the case: of the 625 fields that are
+not an exact match, 368 are discrepancies and only 257 are absences.
 
 **The label was not the only problem.** Of the 19 plain-string references, **zero** had a
 field-level queue entry. We emit `spec.billingAccount`, upstream references it, and nothing anywhere
