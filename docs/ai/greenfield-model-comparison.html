@@ -553,7 +553,7 @@
     <div class="headline-stats">
       <div class="stat"><b>79.4%</b><span>Claude, on the 217 v1alpha1 kinds both produced</span></div>
       <div class="stat"><b>70.4%</b><span>Gemini, on those same kinds</span></div>
-      <div class="stat"><b>217</b><span>resources, one harness, one baseline, identical denominators</span></div>
+      <div class="stat is-bad"><b>11.2%</b><span>of the surface a reviewer is not told about, against 29.6% for Gemini</span></div>
       <div class="stat"><b>20&times;</b><span>difference in generator work: ~20 PRs against 1</span></div>
     </div>
   </header>
@@ -564,6 +564,7 @@
       <li><a href="#coi">Who wrote this</a></li>
       <li><a href="#sizes">Not the same size</a></li>
       <li><a href="#shared">Like for like</a></li>
+      <li><a href="#reports">What only we report</a></li>
       <li><a href="#scoping">Both mis-scoped</a></li>
       <li><a href="#gemini">Gemini ahead</a></li>
       <li><a href="#claude">Claude ahead</a></li>
@@ -622,9 +623,45 @@
       <p>12 of our resources are excluded from both arms. Their types regenerated but <code>controller-gen</code> then failed for the service, leaving the previously published CRD in place, so scoring them would have credited us with upstream's own output. Removing them costs about a third of a point.</p>
 
       <h3>The shape behind the aggregate</h3>
-      <p>The per-kind spread is enormous and the aggregate hides it. We reproduce 269 of <code>VertexAITrainingPipeline</code>'s 333 fields against Gemini's 64; on <code>GKEHubFleet</code> it gets 33 of 33 where we get 28.</p>
-      <p>The pattern is depth. Our generator walks the whole proto message tree and writes every nested message into <code>types.generated.go</code>. Gemini's single change populates the root Spec from the root message and does not recurse as far, so on a deeply nested resource the top-level fields appear and the subtrees under them do not. We win on deep resources and the wins are large; we lose on small flat ones and the losses are small. That asymmetry, not a uniform advantage, is what produces the nine points.</p>
-      <p>Some rows are identical on both sides — <code>APIHubAPI</code> scores 20 of 113 for each — which suggests a shared upstream limitation rather than anything either generator decided.</p>
+      <p>Nine points sounds modest against spot checks that showed us reproducing 269 of a resource's 333 fields where Gemini managed 64. Both are true, and the win/loss record explains why.</p>
+      <div class="ledger">
+        <table class="acct">
+          <thead><tr><th></th><th class="num">Kinds</th><th class="num">Fields</th><th class="num">Claude</th><th class="num">Gemini</th></tr></thead>
+          <tbody>
+            <tr><td>identical outcome</td><td class="num">141</td><td class="num">4,959</td><td class="num pct">73.8%</td><td class="num pct">73.8%</td></tr>
+            <tr><td>we produce more</td><td class="num">76</td><td class="num">6,442</td><td class="num pct">83.7%</td><td class="num pct">67.7%</td></tr>
+            <tr><td>Gemini produces more</td><td class="num">0</td><td class="num">&mdash;</td><td class="num pct">&mdash;</td><td class="num pct">&mdash;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>We do not lose a single kind. An earlier version of this page said we lose on small flat resources; that came from <code>GKEHubFleet</code> at 28/33 against 33/33, which turned out to be one of the 12 resources whose CRD had gone stale. With those excluded there are no losses at all.</p>
+      <p>The gap is concentrated rather than broad: the five largest wins account for 54% of the entire field advantage, and the top twenty for 81%. On 141 of 217 kinds the two generators produce the same outcome.</p>
+      <p>The mechanism is depth. Our generator walks the whole proto message tree and writes every nested message into <code>types.generated.go</code>. Gemini's single change populates the root Spec from the root message and does not recurse as far, so on a deeply nested resource the top-level fields appear and the subtrees under them do not.</p>
+
+      <h3>Why neither side reaches 100%</h3>
+      <p>On the 141 tied kinds both sit at exactly 73.8%, which means they are missing the same fields. Those are the domain decisions no proto-driven generator makes: a raw string that upstream models as a <code>*Ref</code>, a credential that becomes a <code>SecretRef</code>, a parent that is another resource rather than a project. Both experiments reached that conclusion independently, and the tie rate is the measurement of it.</p>
+      <p>So depth is why one generator beats the other, and the human-judgement layer is why neither gets close to the baseline.</p>
+    </section>
+
+    <section id="reports">
+      <h2>What only one side reports</h2>
+      <p>Coverage is not the only axis. A generator can also record what it could not decide, and that changes what a reviewer has to discover for themselves.</p>
+      <p>Same 217 kinds, same harness, same baseline, with our judgement queue switched off for Gemini's output because the queue is keyed by Kind and would otherwise credit its fields with our flagging.</p>
+      <div class="ledger">
+        <table class="acct">
+          <thead><tr><th></th><th class="num">Reproduced</th><th class="num">Flagged for a human</th><th class="num">Nobody is told</th></tr></thead>
+          <tbody>
+            <tr><td><span class="who c">Claude</span></td><td class="num pct">79.4%</td><td class="num pct">9.4%</td><td class="num pct">11.2%</td></tr>
+            <tr><td><span class="who g">Gemini</span></td><td class="num pct">70.4%</td><td class="num pct">0.0%</td><td class="num pct">29.6%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Denominators agree to 0.01%. A reviewer is left unaware of 11.2% of the surface with our approach against 29.6% with Gemini's, a factor of about 2.6. We reproduce nine points more, and of the divergence that remains we hand nearly half to a person: a <code>+kcc:guess</code> marker in the generated Go and an entry in the service's judgement queue naming the field, with a machine check that no marker exists without one.</p>
+      <div class="note">
+        <span class="note-label">Two things this does not say</span>
+        <p>Gemini's zero is a property of what it built, not a failure. It set out to generate, and its design proposes flagging ambiguous strings for agent review without building the artifact. Flagging is a separable capability neither model was asked for, and one of the two experiments built it.</p>
+        <p>And our 9.4% is a self-assessment: it says we told someone, not that what we told them was right. The sibling rule's measured 77% precision is the only evidence on that question, and it covers one detector out of four.</p>
+      </div>
     </section>
 
     <section id="scoping">

@@ -70,19 +70,65 @@ credited us with upstream's own output. Removing them costs about a third of a p
 
 ### The shape behind the aggregate
 
-The per-kind spread is enormous and the aggregate hides it. We reproduce 269 of
-`VertexAITrainingPipeline`'s 333 fields against Gemini's 64; on `GKEHubFleet` it gets 33 of 33 where
-we get 28.
+Nine points sounds modest against spot checks that showed us reproducing 269 of a resource's 333
+fields where Gemini managed 64. Both are true, and the win/loss record explains why.
 
-The pattern is depth. Our generator walks the whole proto message tree and writes every nested
+| | kinds | fields | Claude | Gemini |
+|---|---|---|---|---|
+| identical outcome | 141 | 4,959 | 73.8% | 73.8% |
+| we produce more | 76 | 6,442 | **83.7%** | 67.7% |
+| Gemini produces more | **0** | — | — | — |
+
+**We do not lose a single kind.** An earlier version of this document said we lose on small flat
+resources; that came from `GKEHubFleet` at 28/33 against 33/33, which turned out to be one of the 12
+resources whose CRD had gone stale. With those excluded there are no losses at all.
+
+The gap is concentrated rather than broad: the five largest wins account for 54% of the entire field
+advantage, and the top twenty for 81%. On 141 of 217 kinds the two generators produce the same
+outcome.
+
+The mechanism is depth. Our generator walks the whole proto message tree and writes every nested
 message into `types.generated.go`. Gemini's single change populates the root Spec from the root
 message and does not recurse as far, so on a deeply nested resource the top-level fields appear and
-the subtrees under them do not. **We win on deep resources and the wins are large; we lose on small
-flat ones and the losses are small.** That asymmetry, not a uniform advantage, is what produces the
-nine points.
+the subtrees under them do not.
 
-Some rows are identical on both sides — `APIHubAPI` scores 20 of 113 for each — which suggests a
-shared upstream limitation rather than anything either generator decided.
+### Why neither side reaches 100%
+
+On the 141 tied kinds both sit at exactly 73.8%, which means they are missing the same fields. Those
+are the domain decisions no proto-driven generator makes: a raw string that upstream models as a
+`*Ref`, a credential that becomes a `SecretRef`, a parent that is another resource rather than a
+project. Both experiments reached that conclusion independently, and the tie rate is the measurement
+of it.
+
+So depth is why one generator beats the other, and the human-judgement layer is why neither gets
+close to the baseline.
+
+## What only one side reports
+
+Coverage is not the only axis. A generator can also record what it could not decide, and that
+changes what a reviewer has to discover for themselves.
+
+Same 217 kinds, same harness, same baseline, with our judgement queue switched off for Gemini's
+output because the queue is keyed by Kind and would otherwise credit its fields with our flagging.
+
+| | reproduced exactly | diverges, flagged for a human | diverges, nobody is told |
+|---|---|---|---|
+| **Claude** | 79.4% | **9.4%** | **11.2%** |
+| **Gemini** | 70.4% | 0.0% | **29.6%** |
+
+Denominators agree to 0.01%.
+
+**A reviewer is left unaware of 11.2% of the surface with our approach against 29.6% with Gemini's**,
+a factor of about 2.6. We reproduce nine points more, and of the divergence that remains we hand
+nearly half to a person: a `+kcc:guess` marker in the generated Go and an entry in the service's
+judgement queue naming the field, with a machine check that no marker exists without one.
+
+Two things this does not say. **Gemini's zero is a property of what it built, not a failure.** It set
+out to generate, and its design proposes flagging ambiguous strings for agent review without building
+the artifact. Flagging is a separable capability that neither model was asked for, and one of the two
+experiments built it. And **our 9.4% is a self-assessment**: it says we told someone, not that what
+we told them was right. The sibling rule's measured 77% precision is the only evidence on that
+question, and it covers one detector out of four.
 
 ## Both experiments mis-scoped their corpus, in opposite directions
 
