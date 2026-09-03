@@ -1,0 +1,375 @@
+resources scored: 231
+baseline: c1df0b9326
+
+Against KCC master at c1df0b9326, every field in its CRDs is one of three things.
+
+  1. implemented                      10232   (94.2%)
+        in our types and CRD, at the same path
+  2. flagged                            319   (2.9%)
+        named in needs_judgement_call.txt               319
+        ...and also in the types file                   22
+  3. missed                             306   (2.8%)
+        truly missed                         123 (1.1%)   we produce nothing at all
+        emitted, wrong section                30 (0.3%)   spec vs status.observedState
+        emitted as a plain string             17 (0.2%)   upstream references it, we did not
+        emitted, renamed or reshaped         102 (0.9%)   present, different name or shape
+        reference, name unpairable            34 (0.3%)   queue likely names it, unprovable
+                                     ------
+  fields in KCC master CRDs           10857
+
+  The middle two are in our output already, so they need detecting or
+  moving, not generating. A field we emit in spec where upstream has it in
+  status.observedState, or emit as a plain string where upstream references
+  it, still breaks a user's YAML -- but sending someone to build generation
+  for a field the types file already carries wastes the trip.
+
+  The 34 unpairable are references upstream renamed, not just suffixed:
+  DatastreamPrivateConnection's vpc is upstream's networkRef, and no name
+  match bridges those. Counted as missed, which overstates the gap rather
+  than flattering it.
+
+The second line of state 2 is the one to watch. 297 fields are named in
+the queue and nowhere in the generated source, so a person reading the type
+sees a plain string with nothing to suggest it is unfinished. The queue is a
+work list somebody clears; the types file is what a reader opens.
+
+
+Below: why each of the 625 we did not implement differs, which routes the
+fix rather than excusing it. Columns say how we know about it.
+
+  why it differs            we miss  by field  by section    missed
+  reference-shape                82         9           0        73
+  moved                          64        32           2        30
+  absent                        114        29           1        84
+  reference-not-detected        263       246           0        17
+  ---------------------------------------------------------------
+  subtotal, the target          523       316           3       204
+
+  differences we accept, not counted above:
+  renamed                        40         0           0        40
+  intentionally-different        62         0           0        62
+
+The target is state 3 at zero: a field a human must decide is a fine
+outcome, a field nobody was told about is not. Watch "implemented"
+alongside it -- flagging fields by no longer emitting them improves this
+report and takes working fields away.
+
+### missed without flagging, reference-shape (39)
+  BatchJob	spec.taskGroups[].taskEnvironments[].encryptedVariables.kmsKeyRef
+  BatchJob	spec.taskGroups[].taskSpec.environment.encryptedVariables.kmsKeyRef
+  BatchJob	spec.taskGroups[].taskSpec.runnables[].environment.encryptedVariables.kmsKeyRef
+  BillingAccount	spec.parentRef
+  CloudDeployAutomation	spec.selector.targets[].targetRef
+  CloudDeployDeployPolicy	spec.selectors[].target.targetRef
+  CloudSecurityComplianceFramework	spec.cloudControlDetails[].cloudControlRef
+  CloudSecurityComplianceFramework	spec.cloudControlGroupDetails[].cloudControlGroup.cloudControlDetails[].cloudControlRef
+  CloudSecurityFramework	spec.cloudControlDetails[].cloudControlRef
+  CloudSecurityFramework	spec.projectRef
+  ComputeNetworkAttachment	spec.producerAcceptLists[]
+  ComputeNetworkAttachment	spec.producerRejectLists[]
+  ConfigDeliveryFleetPackage	spec.resourceBundleSelector.cloudBuildRepository.repositoryRef
+  ConfigDeliveryFleetPackage	spec.resourceBundleSelector.resourceBundle.resourceBundleRef
+  ConnectorsConnection	spec.authConfig.userPassword.secretRef
+  DatastreamConnectionProfile	spec.forwardSSHConnectivity.secretRef
+  DatastreamPrivateConnection	spec.vpcPeeringConfig.networkRef
+  DiscoveryEngineServingConfig	spec.engineRef
+  EventarcGoogleAPISource	spec.messageBusRef
+  FirestoreDocument	spec.databaseRef
+  IAMDenyPolicy	spec.folderRef
+  IAMDenyPolicy	spec.organizationRef
+  ManagedKafkaCluster	spec.gcpConfig.accessConfig.networkConfigs[].subnetworkRef
+  NetworkManagementConnectivityTest	spec.destination.cloudRunRevision.runRevisionRef
+  NetworkManagementConnectivityTest	spec.destination.computeInstanceRef
+  NetworkManagementConnectivityTest	spec.destination.containerClusterRef
+  NetworkManagementConnectivityTest	spec.relatedProjects[]
+  NetworkManagementConnectivityTest	spec.source.cloudRunRevision.runRevisionRef
+  NetworkManagementConnectivityTest	spec.source.computeInstanceRef
+  NetworkManagementConnectivityTest	spec.source.containerClusterRef
+  NetworkSecurityFirewallEndpoint	spec.projectRef
+  NetworkSecuritySecurityProfile	spec.projectRef
+  NetworkSecuritySecurityProfileGroup	spec.projectRef
+  NetworkServicesLBRouteExtension	spec.extensionChains[].extensions[].wasmPluginRef
+  NetworkServicesLBRouteExtension	spec.forwardingRuleRefs
+  RunWorkerPool	spec.template.volumes[].cloudSQLInstance.instanceRefs
+  ServiceNetworkingPeeredDNSDomain	spec.networkRef
+  VertexAITrainingPipeline	spec.modelRef
+  VertexAITrainingPipeline	spec.modelToUpload.projectRef
+
+### missed without flagging, moved (30)
+  BigQueryMigrationMigrationWorkflow	status.observedState.createTime
+  BigQueryMigrationMigrationWorkflow	status.observedState.lastUpdateTime
+  BillingAccount	status.observedState.masterBillingAccount
+  CloudBuildConnection	status.observedState.etag
+  CloudDeployAutomation	status.observedState.etag
+  CloudDeployTarget	status.observedState.etag
+  ComputeFutureReservation	status.observedState.status
+  ComputeInterconnect	status.observedState.availableFeatures
+  DataCatalogEntry	status.observedState.linkedResource
+  DatabaseMigrationMigrationJob	status.observedState.state
+  DataplexAspectType	status.observedState.etag
+  DataplexEntryType	status.observedState.etag
+  DevConnectInsightsConfig	status.observedState.state
+  DocumentAIProcessor	status.observedState.defaultProcessorVersion
+  EdgeContainerMachine	status.observedState.hostedNode
+  NetworkConnectivityMulticloudDataTransferConfig	status.observedState.services
+  NotebookInstanceV2	status.observedState.upgradeHistory
+  SQLAdminBackup	status.observedState.diskEncryptionStatus
+  SQLAdminBackup	status.observedState.endTime
+  SQLAdminBackup	status.observedState.enqueuedTime
+  SQLAdminBackup	status.observedState.error
+  SQLAdminBackup	status.observedState.id
+  SQLAdminBackup	status.observedState.startTime
+  SQLAdminBackup	status.observedState.status
+  SQLAdminBackup	status.observedState.timeZone
+  SQLAdminBackup	status.observedState.type
+  SQLAdminBackup	status.observedState.windowStartTime
+  TPUVirtualMachine	status.observedState.health
+  VertexAIExtension	status.observedState.etag
+  VertexAIFeatureOnlineStore	status.observedState.etag
+
+### missed without flagging, absent (84)
+  APIHubAPI	spec.apiFunctionalRequirements
+  APIHubAPI	spec.apiRequirements
+  APIHubAPI	spec.apiTechnicalRequirements
+  APIHubAPI	spec.fingerprint
+  APIHubAPI	status.observedState.sourceMetadata
+  APIHubInstance	spec.config.disableSearch
+  APIHubInstance	spec.config.encryptionType
+  APIHubInstance	spec.config.vertexLocation
+  AnalyticsAccount	spec.redirectURI
+  AnalyticsAccount	status.observedState.accountTicketID
+  BackupDRManagementServer	status.observedState.baProxyURIs
+  BillingAccount	status.observedState.currencyCode
+  CESApp	spec.evaluationPersonas[].instruction
+  CloudBatchResourceAllowance	status.observedState.usageResourceAllowance.status.report.latestPeriodConsumptions.KEY
+  CloudSecurityComplianceCloudControl	spec.parameterSpec[].subParameters[].defaultValue
+  CloudSecurityComplianceCloudControl	spec.parameterSpec[].subParameters[].description
+  CloudSecurityComplianceCloudControl	spec.parameterSpec[].subParameters[].displayName
+  CloudSecurityComplianceCloudControl	spec.parameterSpec[].subParameters[].isRequired
+  CloudSecurityComplianceCloudControl	spec.parameterSpec[].subParameters[].name
+  CloudSecurityComplianceCloudControl	spec.parameterSpec[].subParameters[].substitutionRules
+  CloudSecurityComplianceCloudControl	spec.parameterSpec[].subParameters[].validation
+  CloudSecurityComplianceCloudControl	spec.parameterSpec[].subParameters[].valueType
+  CloudSecurityFramework	spec.labels
+  CloudSecurityFramework	status.observedState.supportedEnforcementModes
+  ComputeFutureReservation	status.observedState.aggregateReservation
+  DataprocJob	spec.parent
+  DataprocNodeGroup	spec.location
+  DialogflowKnowledgeBase	spec.location
+  DiscoveryEngineDataStore	spec.collection
+  FirestoreDocument	spec.collection
+  FirestoreField	spec.collectionGroup
+  FirestoreField	spec.ttlConfig.enabled
+  FirestoreField	status.observedState.indexConfig
+  HypercomputeClusterCluster	spec.storageResources.KEY.filestore.filestore
+  HypercomputeClusterCluster	spec.storageResources.KEY.lustre.lustre
+  NetworkManagementConnectivityTest	spec.location
+  NetworkSecurityAuthzPolicy	spec.customProvider.authzExtension
+  NetworkSecurityAuthzPolicy	spec.customProvider.cloudIAP
+  NetworkSecurityAuthzPolicy	spec.httpRules[].from
+  NetworkSecurityAuthzPolicy	spec.httpRules[].to
+  NetworkSecurityAuthzPolicy	spec.httpRules[].when
+  NetworkSecurityAuthzPolicy	spec.networkRules[].from
+  NetworkSecurityAuthzPolicy	spec.networkRules[].to
+  NetworkSecurityAuthzPolicy	spec.networkRules[].when
+  NetworkSecurityAuthzPolicy	spec.target.loadBalancingScheme
+  NetworkSecurityAuthzPolicy	spec.target.resources
+  NetworkSecurityDNSThreatDetector	spec.description
+  NetworkSecurityFirewallEndpoint	spec.endpointSettings.jumboFramesEnabled
+  NetworkSecurityFirewallEndpoint	status.observedState.associations[].name
+  NetworkSecurityFirewallEndpoint	status.observedState.associations[].network
+  NetworkSecurityInterceptEndpointGroup	status.observedState.associations[].name
+  NetworkSecurityInterceptEndpointGroup	status.observedState.associations[].network
+  NetworkSecurityInterceptEndpointGroup	status.observedState.associations[].state
+  NetworkSecurityInterceptEndpointGroup	status.observedState.connectedDeploymentGroup.locations
+  NetworkSecurityInterceptEndpointGroup	status.observedState.connectedDeploymentGroup.name
+  NetworkSecurityMirroringEndpointGroup	status.observedState.associations[].name
+  NetworkSecurityMirroringEndpointGroup	status.observedState.associations[].network
+  NetworkSecurityMirroringEndpointGroup	status.observedState.associations[].state
+  NetworkSecurityMirroringEndpointGroup	status.observedState.connectedDeploymentGroups[].locations
+  NetworkSecurityMirroringEndpointGroup	status.observedState.connectedDeploymentGroups[].name
+  NetworkSecuritySACRealm	status.observedState.pairingKey.expireTime
+  NetworkSecuritySACRealm	status.observedState.pairingKey.key
+  NetworkSecuritySecurityProfile	spec.threatPreventionProfile.antivirusOverrides
+  NetworkSecuritySecurityProfile	spec.threatPreventionProfile.severityOverrides
+  NetworkSecuritySecurityProfile	spec.threatPreventionProfile.threatOverrides
+  NetworkSecuritySecurityProfile	spec.urlFilteringProfile.urlFilters
+  NetworkSecuritySecurityProfile	status.observedState.threatPreventionProfile.threatOverrides
+  NotebookInstanceV2	spec.disableProxyAccess
+  NotebookInstanceV2	spec.gceSetup
+  NotebookInstanceV2	status.observedState.gceSetup
+  NotebookInstanceV2	status.observedState.gcpID
+  NotebookInstanceV2	status.observedState.healthInfo
+  NotebookInstanceV2	status.observedState.healthState
+  ParameterManagerParameter	status.observedState.name
+  RunWorkerPool	status.observedState.customAudiences
+  RunWorkerPool	status.observedState.observedConditions
+  RunWorkerPool	status.observedState.template.revision
+  SecurityCenterBigQueryExport	spec.location
+  SpeechRecognizer	status.observedState.defaultRecognitionConfig.languageCodes
+  SpeechRecognizer	status.observedState.defaultRecognitionConfig.model
+  VertexAIMetadataStore	spec.region
+  VertexAISchedule	status.observedState.name
+  VertexAITrainingPipeline	spec.modelToUpload.location
+  VertexAITrainingPipeline	spec.modelToUpload.resourceID
+
+### missed without flagging, reference-not-detected (17)
+  AssuredWorkloadsWorkload	spec.billingAccountRef
+  CloudDMSMigrationJob	spec.reverseSSHConnectivity.vmRef
+  CloudDeployAutomation	spec.rules[].promoteReleaseRule.destinationTargetRef
+  CloudDeployAutomation	spec.rules[].timedPromoteReleaseRule.destinationTargetRef
+  CloudDeployTarget	spec.multiTarget.targetRefs
+  DatabaseMigrationMigrationJob	spec.reverseSSHConnectivity.vmRef
+  DataplexEntryType	spec.requiredAspects[].typeRef
+  GKEHubFleet	spec.defaultClusterConfig.binaryAuthorizationConfig.policyBindingsRefs
+  NetworkManagementConnectivityTest	spec.destination.projectRef
+  NetworkManagementConnectivityTest	spec.source.projectRef
+  RunWorkerPool	spec.template.containers[].env[].valueSource.secretKeyRef.versionRef
+  RunWorkerPool	spec.template.vpcAccess.networkInterfaces[].subnetworkRef
+  SQLAdminBackup	spec.instanceRef
+  VertexAIPipelineJob	spec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetworkRef
+  VertexAIPipelineJob	spec.pscInterfaceConfig.networkAttachmentRef
+  VertexAISchedule	spec.createNotebookExecutionJobRequest.notebookExecutionJob.gcsOutputURIRef
+  WorkflowsWorkflow	spec.serviceAccountRef
+
+### missed without flagging, renamed (40)
+  BackupDRManagementServer	status.observedState.managementURI.webUI
+  BackupDRManagementServer	status.observedState.workforceIdentityBasedOAuth2ClientID
+  BatchJob	spec.taskGroups[].taskSpec.computeResource.bootDiskMiB
+  BatchJob	spec.taskGroups[].taskSpec.computeResource.memoryMiB
+  BigtableCluster	spec.clusterConfig.clusterAutoscalingConfig.autoscalingTargets.storageUtilizationGiBPerNode
+  ConnectorsConnection	spec.authConfig.additionalVariables[].secretValueRef
+  ConnectorsConnection	spec.authConfig.oauth2ClientCredentials.clientSecretRef
+  ConnectorsConnection	spec.authConfig.oauth2JwtBearer.clientKeyRef
+  ConnectorsConnection	spec.authConfig.sshPublicKey.sshClientCertPassRef
+  ConnectorsConnection	spec.authConfig.sshPublicKey.sshClientCertRef
+  ConnectorsConnection	spec.configVariables[].secretValueRef
+  ConnectorsConnection	spec.sslConfig.additionalVariables[].secretValueRef
+  ConnectorsConnection	spec.sslConfig.clientCertificateRef
+  ConnectorsConnection	spec.sslConfig.clientPrivateKeyPassRef
+  ConnectorsConnection	spec.sslConfig.clientPrivateKeyRef
+  ConnectorsConnection	spec.sslConfig.privateServerCertificateRef
+  DataprocJob	status.observedState.jobUUid
+  DataprocNodeGroup	spec.nodeGroupConfig.diskConfig.bootDiskProvisionedIOPs
+  DataprocNodeGroup	spec.nodeGroupConfig.diskConfig.localSSDInterface
+  DataprocNodeGroup	spec.nodeGroupConfig.diskConfig.numLocalSSDs
+  DatastreamConnectionProfile	spec.bigQueryProfile
+  DatastreamConnectionProfile	spec.mySQLProfile
+  DatastreamConnectionProfile	spec.oracleProfile.oracleASMConfig
+  DatastreamConnectionProfile	status.observedState.mySQLProfile
+  DatastreamPrivateConnection	status.observedState.error.errorUUID
+  GKEBackupBackup	status.observedState.clusterMetadata.backupCRDVersions
+  GKEBackupBackupPlan	spec.backupSchedule.rpoConfig.targetRPOMinutes
+  GKEBackupRestore	spec.volumeDataRestorePolicyOverrides[].selectedPVCs
+  GKEBackupRestore	status.observedState.restoreConfig.substitutionRules[].targetJSONPath
+  GKEBackupRestorePlan	spec.restoreConfig.substitutionRules[].targetJSONPath
+  HypercomputeClusterCluster	spec.orchestrator.slurm.partitions[].nodeSetIds
+  NetworkManagementConnectivityTest	spec.destination.sqlInstance
+  NetworkManagementConnectivityTest	spec.source.sqlInstance
+  NetworkSecurityPartnerSSEGateway	status.observedState.partnerSSEEnvironment
+  NetworkSecurityPartnerSSEGateway	status.observedState.partnerSSERealm
+  NetworkSecurityPartnerSSEGateway	status.observedState.sseBGPIPs
+  VMwareEngineNetworkPeering	spec.peerMTU
+  VertexAICustomJob	status.observedState.webAccessURIs
+  VertexAIExtension	spec.runtimeConfig.vertexAISearchRuntimeConfig
+  WorkflowsWorkflow	status.observedState.revisionId
+
+### missed without flagging, intentionally-different (62)
+  AIPlatformModel	spec.explanationSpec.metadata.inputs.KEY.encodedBaselines[].boolValue
+  AIPlatformModel	spec.explanationSpec.metadata.inputs.KEY.encodedBaselines[].nullValue
+  AIPlatformModel	spec.explanationSpec.metadata.inputs.KEY.encodedBaselines[].numberValue
+  AIPlatformModel	spec.explanationSpec.metadata.inputs.KEY.encodedBaselines[].stringValue
+  AIPlatformModel	spec.explanationSpec.metadata.inputs.KEY.encodedBaselines[].structValue
+  AIPlatformModel	spec.explanationSpec.metadata.inputs.KEY.inputBaselines[].boolValue
+  AIPlatformModel	spec.explanationSpec.metadata.inputs.KEY.inputBaselines[].nullValue
+  AIPlatformModel	spec.explanationSpec.metadata.inputs.KEY.inputBaselines[].numberValue
+  AIPlatformModel	spec.explanationSpec.metadata.inputs.KEY.inputBaselines[].stringValue
+  AIPlatformModel	spec.explanationSpec.metadata.inputs.KEY.inputBaselines[].structValue
+  AIPlatformModel	spec.explanationSpec.metadata.outputs.KEY.indexDisplayNameMapping.boolValue
+  AIPlatformModel	spec.explanationSpec.metadata.outputs.KEY.indexDisplayNameMapping.nullValue
+  AIPlatformModel	spec.explanationSpec.metadata.outputs.KEY.indexDisplayNameMapping.numberValue
+  AIPlatformModel	spec.explanationSpec.metadata.outputs.KEY.indexDisplayNameMapping.stringValue
+  AIPlatformModel	spec.explanationSpec.metadata.outputs.KEY.indexDisplayNameMapping.structValue
+  AIPlatformModel	spec.explanationSpec.parameters.examples.nearestNeighborSearchConfig.boolValue
+  AIPlatformModel	spec.explanationSpec.parameters.examples.nearestNeighborSearchConfig.nullValue
+  AIPlatformModel	spec.explanationSpec.parameters.examples.nearestNeighborSearchConfig.numberValue
+  AIPlatformModel	spec.explanationSpec.parameters.examples.nearestNeighborSearchConfig.stringValue
+  AIPlatformModel	spec.explanationSpec.parameters.examples.nearestNeighborSearchConfig.structValue
+  AIPlatformModel	spec.metadata.boolValue
+  AIPlatformModel	spec.metadata.nullValue
+  AIPlatformModel	spec.metadata.numberValue
+  AIPlatformModel	spec.metadata.stringValue
+  AIPlatformModel	spec.metadata.structValue
+  ComputeFutureReservation	spec.shareSettings.projectMap[]
+  VMwareEnginePrivateCloud	spec.managementCluster.nodeTypeConfigs[]
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.inputs.KEY.encodedBaselines[].boolValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.inputs.KEY.encodedBaselines[].nullValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.inputs.KEY.encodedBaselines[].numberValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.inputs.KEY.encodedBaselines[].stringValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.inputs.KEY.encodedBaselines[].structValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.inputs.KEY.inputBaselines[].boolValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.inputs.KEY.inputBaselines[].nullValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.inputs.KEY.inputBaselines[].numberValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.inputs.KEY.inputBaselines[].stringValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.inputs.KEY.inputBaselines[].structValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.outputs.KEY.indexDisplayNameMapping.boolValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.outputs.KEY.indexDisplayNameMapping.nullValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.outputs.KEY.indexDisplayNameMapping.numberValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.outputs.KEY.indexDisplayNameMapping.stringValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.metadata.outputs.KEY.indexDisplayNameMapping.structValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.parameters.examples.nearestNeighborSearchConfig.boolValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.parameters.examples.nearestNeighborSearchConfig.nullValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.parameters.examples.nearestNeighborSearchConfig.numberValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.parameters.examples.nearestNeighborSearchConfig.stringValue
+  VertexAITrainingPipeline	spec.modelToUpload.explanationSpec.parameters.examples.nearestNeighborSearchConfig.structValue
+  VertexAITrainingPipeline	spec.modelToUpload.metadata.boolValue
+  VertexAITrainingPipeline	spec.modelToUpload.metadata.nullValue
+  VertexAITrainingPipeline	spec.modelToUpload.metadata.numberValue
+  VertexAITrainingPipeline	spec.modelToUpload.metadata.stringValue
+  VertexAITrainingPipeline	spec.modelToUpload.metadata.structValue
+  VertexAITrainingPipeline	spec.trainingTaskInputs.boolValue
+  VertexAITrainingPipeline	spec.trainingTaskInputs.nullValue
+  VertexAITrainingPipeline	spec.trainingTaskInputs.numberValue
+  VertexAITrainingPipeline	spec.trainingTaskInputs.stringValue
+  VertexAITrainingPipeline	spec.trainingTaskInputs.structValue
+  VertexAITrainingPipeline	status.observedState.trainingTaskMetadata.boolValue
+  VertexAITrainingPipeline	status.observedState.trainingTaskMetadata.nullValue
+  VertexAITrainingPipeline	status.observedState.trainingTaskMetadata.numberValue
+  VertexAITrainingPipeline	status.observedState.trainingTaskMetadata.stringValue
+  VertexAITrainingPipeline	status.observedState.trainingTaskMetadata.structValue
+
+### unsure, reference-shape (34)
+  APIHubAPI	spec.attributeRefs
+  APIHubExternalAPI	spec.attributeRefs
+  BigLakeDatabase	spec.parentCatalogRef
+  CESApp	spec.guardrailRefs
+  CloudSecurityComplianceFramework	spec.cloudControlGroupDetails[].cloudControlGroup.cloudControlGroupRef
+  DLPConnection	spec.cloudSQL.usernamePassword.secretRef
+  DataplexMetadataJob	spec.exportSpec.scope.aspectTypeRefs
+  DataplexMetadataJob	spec.exportSpec.scope.entryGroupRefs
+  DataplexMetadataJob	spec.exportSpec.scope.entryTypeRefs
+  DataplexMetadataJob	spec.exportSpec.scope.projectRefs
+  DataplexMetadataJob	spec.importSpec.scope.aspectTypeRefs
+  DataplexMetadataJob	spec.importSpec.scope.entryGroupRefs
+  DataplexMetadataJob	spec.importSpec.scope.entryTypeRefs
+  DatastreamConnectionProfile	spec.oracleProfile.secretManagerSecretRef
+  DatastreamConnectionProfile	spec.oracleProfile.secretRef
+  DatastreamConnectionProfile	spec.sqlServerProfile.secretRef
+  EventarcChannel	spec.kmsKeyRef
+  GeminiDataAnalyticsConversation	spec.agentRefs
+  ManagedKafkaConnectCluster	spec.clusterRef
+  ManagedKafkaConnectCluster	spec.gcpConfig.accessConfig.networkConfigs[].additionalSubnetRefs
+  NetworkConnectivityServiceConnectionPolicy	spec.pscConfig.subnetworkRefs
+  NetworkManagementConnectivityTest	spec.destination.computeForwardingRuleRef
+  NetworkManagementConnectivityTest	spec.destination.computeNetworkRef
+  NetworkManagementConnectivityTest	spec.source.computeForwardingRuleRef
+  NetworkManagementConnectivityTest	spec.source.computeNetworkRef
+  NetworkSecurityDNSThreatDetector	spec.excludedNetworkRefs
+  NetworkServicesAuthzExtension	spec.backendServiceRef
+  NetworkServicesLBRouteExtension	spec.extensionChains[].extensions[].backendServiceRef
+  VertexAICustomJob	spec.jobSpec.modelRefs
+  VertexAIDataLabelingJob	spec.datasetRefs
+  VertexAISchedule	spec.createNotebookExecutionJobRequest.notebookExecutionJob.dataformRepositorySource.dataformRepositoryRef
+  VertexAISchedule	spec.createNotebookExecutionJobRequest.notebookExecutionJob.scheduleRef
+  WorkflowsWorkflow	spec.kmsCryptoKeyRef
+  WorkloadManagerEvaluation	spec.resourceFilter.scopeRefs
