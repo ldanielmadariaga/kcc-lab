@@ -54,19 +54,19 @@ fields in seconds.
 `c1df0b9326`:
 
 ```
-  1. implemented                      10232   (94.2%)   the same field at the same path
-  2. discrepancy                        368   (3.4%)    we produce it, but not as upstream has it
-        flagged for a second pass         280   (76%)
+  1. implemented                      10966   (91.4%)   the same field at the same path
+  2. discrepancy                        369   (3.1%)    we produce it, but not as upstream has it
+        flagged for a second pass         281   (76%)
         nothing says so                    88
-  3. missing                            257   (2.4%)    we produce nothing at all
-        a gap to close                    195
+  3. missing                            665   (5.5%)    we produce nothing at all
+        a gap to close                    603
         we model it differently on purpose 62
-        flagged for a second pass          39   (15%)
+        flagged for a second pass          39   (6%)
                                      ------
-  fields in KCC master CRDs           10857
+  fields in KCC master CRDs           12000
 ```
 
-195 fields is the gap that needs generating, 1.8% of the surface. The 368 discrepancies are fields
+603 fields is the gap that needs generating, 5.0% of the surface. The 368 discrepancies are fields
 we do produce in a shape upstream does not have; they need detecting or moving. Reproduce with
 `hack/tools/greenfield/silence_report.py`.
 
