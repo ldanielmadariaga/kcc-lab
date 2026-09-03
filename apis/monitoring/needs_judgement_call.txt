@@ -11,3 +11,13 @@
 # per service rather than against one Kind.
 # possible-reference-by-sibling: google.monitoring.dashboard.v1.ErrorReportingPanel.services target=MonitoringService
 # possible-reference-by-sibling: google.monitoring.v3.Service.CloudEndpoints.service target=MonitoringService
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.columnLayout.columns[].widgets[].alertChart.name" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.columnLayout.columns[].widgets[].errorReportingPanel.projectNames" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.gridLayout.widgets[].alertChart.name" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.gridLayout.widgets[].errorReportingPanel.projectNames" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.mosaicLayout.tiles[].widget.alertChart.name" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.mosaicLayout.tiles[].widget.errorReportingPanel.projectNames" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.rowLayout.rows[].widgets[].alertChart.name" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: field ".spec.rowLayout.rows[].widgets[].errorReportingPanel.projectNames" reason=possible-reference-by-description
+kind=MonitoringDashboard group=monitoring.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)

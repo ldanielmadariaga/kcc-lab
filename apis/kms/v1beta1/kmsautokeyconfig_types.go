@@ -25,11 +25,31 @@ var KMSAutokeyConfigGVK = GroupVersion.WithKind("KMSAutokeyConfig")
 // KMSAutokeyConfigSpec defines the desired state of KMSAutokeyConfig
 // +kcc:spec:proto=google.cloud.kms.v1.AutokeyConfig
 type KMSAutokeyConfigSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	// The folder that this resource belongs to.
+	FolderRef *refsv1beta1.FolderRef `json:"folderRef"`
 
 	// The KMSAutokeyConfig name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. Name of the key project, e.g. `projects/{PROJECT_ID}` or
+	//  `projects/{PROJECT_NUMBER}`, where Cloud KMS Autokey will provision a new
+	//  [CryptoKey][google.cloud.kms.v1.CryptoKey] when a
+	//  [KeyHandle][google.cloud.kms.v1.KeyHandle] is created. On
+	//  [UpdateAutokeyConfig][google.cloud.kms.v1.AutokeyAdmin.UpdateAutokeyConfig],
+	//  the caller will require `cloudkms.cryptoKeys.setIamPolicy` permission on
+	//  this key project. Once configured, for Cloud KMS Autokey to function
+	//  properly, this key project must have the Cloud KMS API activated and the
+	//  Cloud KMS Service Agent for this key project must be granted the
+	//  `cloudkms.admin` role (or pertinent permissions). A request with an empty
+	//  key project field will clear the configuration.
+	// +kcc:proto:field=google.cloud.kms.v1.AutokeyConfig.key_project
+	KeyProject *string `json:"keyProject,omitempty"`
+
+	// Optional. A checksum computed by the server based on the value of other
+	//  fields. This may be sent on update requests to ensure that the client has
+	//  an up-to-date value before proceeding. The request will be rejected with an
+	//  ABORTED error on a mismatched etag.
+	// +kcc:proto:field=google.cloud.kms.v1.AutokeyConfig.etag
+	Etag *string `json:"etag,omitempty"`
 }
 
 // KMSAutokeyConfigStatus defines the config connector machine state of KMSAutokeyConfig
@@ -51,6 +71,9 @@ type KMSAutokeyConfigStatus struct {
 // KMSAutokeyConfigObservedState is the state of the KMSAutokeyConfig resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.kms.v1.AutokeyConfig
 type KMSAutokeyConfigObservedState struct {
+	// Output only. The state for the AutokeyConfig.
+	// +kcc:proto:field=google.cloud.kms.v1.AutokeyConfig.state
+	State *string `json:"state,omitempty"`
 }
 
 // +genclient

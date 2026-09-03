@@ -61,6 +61,87 @@ spec:
           spec:
             description: AppHubApplicationSpec defines the desired state of AppHubApplication
             properties:
+              attributes:
+                description: Optional. Consumer provided attributes.
+                properties:
+                  businessOwners:
+                    description: Optional. Business team that ensures user needs are
+                      met and value is delivered
+                    items:
+                      properties:
+                        displayName:
+                          description: Optional. Contact's name. Can have a maximum
+                            length of 63 characters.
+                          type: string
+                        email:
+                          description: Required. Email address of the contacts.
+                          type: string
+                      required:
+                      - email
+                      type: object
+                    type: array
+                  criticality:
+                    description: Optional. User-defined criticality information.
+                    properties:
+                      type:
+                        description: Required. Criticality Type.
+                        type: string
+                    required:
+                    - type
+                    type: object
+                  developerOwners:
+                    description: Optional. Developer team that owns development and
+                      coding.
+                    items:
+                      properties:
+                        displayName:
+                          description: Optional. Contact's name. Can have a maximum
+                            length of 63 characters.
+                          type: string
+                        email:
+                          description: Required. Email address of the contacts.
+                          type: string
+                      required:
+                      - email
+                      type: object
+                    type: array
+                  environment:
+                    description: Optional. User-defined environment information.
+                    properties:
+                      type:
+                        description: Required. Environment Type.
+                        type: string
+                    required:
+                    - type
+                    type: object
+                  operatorOwners:
+                    description: Optional. Operator team that ensures runtime and
+                      operations.
+                    items:
+                      properties:
+                        displayName:
+                          description: Optional. Contact's name. Can have a maximum
+                            length of 63 characters.
+                          type: string
+                        email:
+                          description: Required. Email address of the contacts.
+                          type: string
+                      required:
+                      - email
+                      type: object
+                    type: array
+                type: object
+              description:
+                description: Optional. User-defined description of an Application.
+                  Can have a maximum length of 2048 characters.
+                type: string
+              displayName:
+                description: Optional. User-defined name for the Application. Can
+                  have a maximum length of 63 characters.
+                type: string
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -97,8 +178,21 @@ spec:
                 description: The AppHubApplication name. If not given, the metadata.name
                   will be used.
                 type: string
+              scope:
+                description: Required. Immutable. Defines what data can be included
+                  into this Application. Limits which Services and Workloads can be
+                  registered.
+                properties:
+                  type:
+                    description: Required. Scope Type.
+                    type: string
+                required:
+                - type
+                type: object
             required:
+            - location
             - projectRef
+            - scope
             type: object
           status:
             description: AppHubApplicationStatus defines the config connector machine
@@ -145,6 +239,20 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. Create time.
+                    type: string
+                  state:
+                    description: Output only. Application state.
+                    type: string
+                  uid:
+                    description: Output only. A universally unique identifier (in
+                      UUID4 format) for the `Application`.
+                    type: string
+                  updateTime:
+                    description: Output only. Update time.
+                    type: string
                 type: object
             type: object
         required:

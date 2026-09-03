@@ -21,7 +21,6 @@
 
 package v1beta1
 
-/* unreachable type DocumentSchema
 // +kcc:proto=google.cloud.documentai.v1.DocumentSchema
 type DocumentSchema struct {
 	// Display name to show to users.
@@ -40,9 +39,7 @@ type DocumentSchema struct {
 	// +kcc:proto:field=google.cloud.documentai.v1.DocumentSchema.metadata
 	Metadata *DocumentSchema_Metadata `json:"metadata,omitempty"`
 }
-*/
 
-/* unreachable type DocumentSchema_EntityType
 // +kcc:proto=google.cloud.documentai.v1.DocumentSchema.EntityType
 type DocumentSchema_EntityType struct {
 	// If specified, lists all the possible values for this entity.  This
@@ -82,18 +79,14 @@ type DocumentSchema_EntityType struct {
 	// +kcc:proto:field=google.cloud.documentai.v1.DocumentSchema.EntityType.properties
 	Properties []DocumentSchema_EntityType_Property `json:"properties,omitempty"`
 }
-*/
 
-/* unreachable type DocumentSchema_EntityType_EnumValues
 // +kcc:proto=google.cloud.documentai.v1.DocumentSchema.EntityType.EnumValues
 type DocumentSchema_EntityType_EnumValues struct {
 	// The individual values that this enum values type can include.
 	// +kcc:proto:field=google.cloud.documentai.v1.DocumentSchema.EntityType.EnumValues.values
 	Values []string `json:"values,omitempty"`
 }
-*/
 
-/* unreachable type DocumentSchema_EntityType_Property
 // +kcc:proto=google.cloud.documentai.v1.DocumentSchema.EntityType.Property
 type DocumentSchema_EntityType_Property struct {
 	// The name of the property.  Follows the same guidelines as the
@@ -119,9 +112,7 @@ type DocumentSchema_EntityType_Property struct {
 	// +kcc:proto:field=google.cloud.documentai.v1.DocumentSchema.EntityType.Property.method
 	Method *string `json:"method,omitempty"`
 }
-*/
 
-/* unreachable type DocumentSchema_Metadata
 // +kcc:proto=google.cloud.documentai.v1.DocumentSchema.Metadata
 type DocumentSchema_Metadata struct {
 	// If true, a `document` entity type can be applied to subdocument
@@ -145,9 +136,7 @@ type DocumentSchema_Metadata struct {
 	// +kcc:proto:field=google.cloud.documentai.v1.DocumentSchema.Metadata.skip_naming_validation
 	SkipNamingValidation *bool `json:"skipNamingValidation,omitempty"`
 }
-*/
 
-/* unreachable type Evaluation_Metrics
 // +kcc:proto=google.cloud.documentai.v1.Evaluation.Metrics
 type Evaluation_Metrics struct {
 	// The calculated precision.
@@ -194,9 +183,7 @@ type Evaluation_Metrics struct {
 	// +kcc:proto:field=google.cloud.documentai.v1.Evaluation.Metrics.total_documents_count
 	TotalDocumentsCount *int32 `json:"totalDocumentsCount,omitempty"`
 }
-*/
 
-/* unreachable type EvaluationReference
 // +kcc:proto=google.cloud.documentai.v1.EvaluationReference
 type EvaluationReference struct {
 	// The resource name of the Long Running Operation for the evaluation.
@@ -215,7 +202,6 @@ type EvaluationReference struct {
 	// +kcc:proto:field=google.cloud.documentai.v1.EvaluationReference.aggregate_metrics_exact
 	AggregateMetricsExact *Evaluation_Metrics `json:"aggregateMetricsExact,omitempty"`
 }
-*/
 
 /* unreachable type ProcessorVersion
 // +kcc:proto=google.cloud.documentai.v1.ProcessorVersion
@@ -232,7 +218,6 @@ type ProcessorVersion struct {
 }
 */
 
-/* unreachable type ProcessorVersion_DeprecationInfo
 // +kcc:proto=google.cloud.documentai.v1.ProcessorVersion.DeprecationInfo
 type ProcessorVersion_DeprecationInfo struct {
 	// The time at which this processor version will be deprecated.
@@ -243,9 +228,7 @@ type ProcessorVersion_DeprecationInfo struct {
 	// +kcc:proto:field=google.cloud.documentai.v1.ProcessorVersion.DeprecationInfo.replacement_processor_version
 	ReplacementProcessorVersion *string `json:"replacementProcessorVersion,omitempty"`
 }
-*/
 
-/* unreachable type ProcessorVersion_GenAiModelInfo
 // +kcc:proto=google.cloud.documentai.v1.ProcessorVersion.GenAiModelInfo
 type ProcessorVersion_GenAiModelInfo struct {
 	// Information for a pretrained Google-managed foundation model.
@@ -256,9 +239,7 @@ type ProcessorVersion_GenAiModelInfo struct {
 	// +kcc:proto:field=google.cloud.documentai.v1.ProcessorVersion.GenAiModelInfo.custom_gen_ai_model_info
 	CustomGenAiModelInfo *ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo `json:"customGenAiModelInfo,omitempty"`
 }
-*/
 
-/* unreachable type ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo
 // +kcc:proto=google.cloud.documentai.v1.ProcessorVersion.GenAiModelInfo.CustomGenAiModelInfo
 type ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo struct {
 	// The type of custom model created by the user.
@@ -269,9 +250,7 @@ type ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo struct {
 	// +kcc:proto:field=google.cloud.documentai.v1.ProcessorVersion.GenAiModelInfo.CustomGenAiModelInfo.base_processor_version_id
 	BaseProcessorVersionID *string `json:"baseProcessorVersionID,omitempty"`
 }
-*/
 
-/* unreachable type ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo
 // +kcc:proto=google.cloud.documentai.v1.ProcessorVersion.GenAiModelInfo.FoundationGenAiModelInfo
 type ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo struct {
 	// Whether finetuning is allowed for this base processor version.
@@ -283,7 +262,6 @@ type ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo struct {
 	// +kcc:proto:field=google.cloud.documentai.v1.ProcessorVersion.GenAiModelInfo.FoundationGenAiModelInfo.min_train_labeled_documents
 	MinTrainLabeledDocuments *int32 `json:"minTrainLabeledDocuments,omitempty"`
 }
-*/
 
 /* unreachable type ProcessorVersionObservedState
 // +kcc:observedstate:proto=google.cloud.documentai.v1.ProcessorVersion

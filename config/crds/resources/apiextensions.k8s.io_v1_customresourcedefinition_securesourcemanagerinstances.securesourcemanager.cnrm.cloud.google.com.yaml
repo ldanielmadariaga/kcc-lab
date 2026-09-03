@@ -63,6 +63,38 @@ spec:
             description: SecureSourceManagerInstanceSpec defines the desired state
               of SecureSourceManagerInstance
             properties:
+              kmsKey:
+                description: Optional. Immutable. Customer-managed encryption key
+                  name, in the format projects/*/locations/*/keyRings/*/cryptoKeys/*.
+                type: string
+              labels:
+                additionalProperties:
+                  type: string
+                description: Optional. Labels as key value pairs.
+                type: object
+              location:
+                description: The location of this resource.
+                type: string
+              privateConfig:
+                description: Optional. Private settings for private instance.
+                properties:
+                  caPool:
+                    description: Optional. Immutable. CA pool resource, resource must
+                      in the format of `projects/{project}/locations/{location}/caPools/{ca_pool}`.
+                    type: string
+                  isPrivate:
+                    description: Required. Immutable. Indicate if it's private instance.
+                    type: boolean
+                  pscAllowedProjects:
+                    description: Optional. Additional allowed projects for setting
+                      up PSC connections. Instance host project is automatically allowed
+                      and does not need to be included in this list.
+                    items:
+                      type: string
+                    type: array
+                required:
+                - isPrivate
+                type: object
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -99,7 +131,18 @@ spec:
                 description: The SecureSourceManagerInstance name. If not given, the
                   metadata.name will be used.
                 type: string
+              workforceIdentityFederationConfig:
+                description: Optional. Configuration for Workforce Identity Federation
+                  to support third party identity provider. If unset, defaults to
+                  the Google OIDC IdP.
+                properties:
+                  enabled:
+                    description: Optional. Immutable. Whether Workforce Identity Federation
+                      is enabled.
+                    type: boolean
+                type: object
             required:
+            - location
             - projectRef
             type: object
           status:
@@ -147,6 +190,48 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. Create timestamp.
+                    type: string
+                  hostConfig:
+                    description: Output only. A list of hostnames for this instance.
+                    properties:
+                      api:
+                        description: Output only. API hostname.
+                        type: string
+                      gitHTTP:
+                        description: Output only. Git HTTP hostname.
+                        type: string
+                      gitSSH:
+                        description: Output only. Git SSH hostname.
+                        type: string
+                      html:
+                        description: Output only. HTML hostname.
+                        type: string
+                    type: object
+                  privateConfig:
+                    description: Optional. Private settings for private instance.
+                    properties:
+                      httpServiceAttachment:
+                        description: Output only. Service Attachment for HTTP, resource
+                          is in the format of `projects/{project}/regions/{region}/serviceAttachments/{service_attachment}`.
+                        type: string
+                      sshServiceAttachment:
+                        description: Output only. Service Attachment for SSH, resource
+                          is in the format of `projects/{project}/regions/{region}/serviceAttachments/{service_attachment}`.
+                        type: string
+                    type: object
+                  state:
+                    description: Output only. Current state of the instance.
+                    type: string
+                  stateNote:
+                    description: Output only. An optional field providing information
+                      about the current instance state.
+                    type: string
+                  updateTime:
+                    description: Output only. Update timestamp.
+                    type: string
                 type: object
             type: object
         required:

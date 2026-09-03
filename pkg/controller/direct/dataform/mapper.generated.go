@@ -32,6 +32,22 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
+func DataEncryptionStateObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *dataformpb.DataEncryptionState) *krmdataformv1beta1.DataEncryptionStateObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmdataformv1beta1.DataEncryptionStateObservedState{}
+	out.KMSKeyVersionName = direct.LazyPtr(in.GetKmsKeyVersionName())
+	return out
+}
+func DataEncryptionStateObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdataformv1beta1.DataEncryptionStateObservedState) *dataformpb.DataEncryptionState {
+	if in == nil {
+		return nil
+	}
+	out := &dataformpb.DataEncryptionState{}
+	out.KmsKeyVersionName = direct.ValueOf(in.KMSKeyVersionName)
+	return out
+}
 func DataformFolderObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *dataformpb.Folder) *krmdataformv1alpha1.DataformFolderObservedState {
 	if in == nil {
 		return nil
@@ -84,19 +100,11 @@ func DataformRepositoryObservedState_v1beta1_FromProto(mapCtx *direct.MapContext
 	}
 	out := &krmdataformv1beta1.DataformRepositoryObservedState{}
 	// MISSING: Name
-	// MISSING: ContainingFolder
-	// MISSING: TeamFolderName
-	// MISSING: CreateTime
-	// MISSING: DisplayName
-	// MISSING: GitRemoteSettings
-	// MISSING: NpmrcEnvironmentVariablesSecretVersion
-	// MISSING: WorkspaceCompilationOverrides
-	// MISSING: Labels
-	// MISSING: SetAuthenticatedUserAdmin
-	// MISSING: ServiceAccount
-	// MISSING: KMSKeyName
-	// MISSING: DataEncryptionState
-	// MISSING: InternalMetadata
+	out.TeamFolderName = in.TeamFolderName
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.GitRemoteSettings = Repository_GitRemoteSettingsObservedState_v1beta1_FromProto(mapCtx, in.GetGitRemoteSettings())
+	out.DataEncryptionState = DataEncryptionStateObservedState_v1beta1_FromProto(mapCtx, in.GetDataEncryptionState())
+	out.InternalMetadata = in.InternalMetadata
 	return out
 }
 func DataformRepositoryObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdataformv1beta1.DataformRepositoryObservedState) *dataformpb.Repository {
@@ -105,19 +113,11 @@ func DataformRepositoryObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, 
 	}
 	out := &dataformpb.Repository{}
 	// MISSING: Name
-	// MISSING: ContainingFolder
-	// MISSING: TeamFolderName
-	// MISSING: CreateTime
-	// MISSING: DisplayName
-	// MISSING: GitRemoteSettings
-	// MISSING: NpmrcEnvironmentVariablesSecretVersion
-	// MISSING: WorkspaceCompilationOverrides
-	// MISSING: Labels
-	// MISSING: SetAuthenticatedUserAdmin
-	// MISSING: ServiceAccount
-	// MISSING: KMSKeyName
-	// MISSING: DataEncryptionState
-	// MISSING: InternalMetadata
+	out.TeamFolderName = in.TeamFolderName
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.GitRemoteSettings = Repository_GitRemoteSettingsObservedState_v1beta1_ToProto(mapCtx, in.GitRemoteSettings)
+	out.DataEncryptionState = DataEncryptionStateObservedState_v1beta1_ToProto(mapCtx, in.DataEncryptionState)
+	out.InternalMetadata = in.InternalMetadata
 	return out
 }
 func DataformTeamFolderObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.TeamFolder) *krmdataformv1alpha1.DataformTeamFolderObservedState {
@@ -160,5 +160,91 @@ func DataformTeamFolderSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmd
 	out := &pb.TeamFolder{}
 	// MISSING: Name
 	out.DisplayName = direct.ValueOf(in.DisplayName)
+	return out
+}
+func Repository_GitRemoteSettings_v1beta1_FromProto(mapCtx *direct.MapContext, in *dataformpb.Repository_GitRemoteSettings) *krmdataformv1beta1.Repository_GitRemoteSettings {
+	if in == nil {
+		return nil
+	}
+	out := &krmdataformv1beta1.Repository_GitRemoteSettings{}
+	out.URL = direct.LazyPtr(in.GetUrl())
+	out.DefaultBranch = direct.LazyPtr(in.GetDefaultBranch())
+	out.AuthenticationTokenSecretVersion = direct.LazyPtr(in.GetAuthenticationTokenSecretVersion())
+	out.SSHAuthenticationConfig = Repository_GitRemoteSettings_SSHAuthenticationConfig_v1beta1_FromProto(mapCtx, in.GetSshAuthenticationConfig())
+	// MISSING: TokenStatus
+	return out
+}
+func Repository_GitRemoteSettings_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdataformv1beta1.Repository_GitRemoteSettings) *dataformpb.Repository_GitRemoteSettings {
+	if in == nil {
+		return nil
+	}
+	out := &dataformpb.Repository_GitRemoteSettings{}
+	out.Url = direct.ValueOf(in.URL)
+	out.DefaultBranch = direct.ValueOf(in.DefaultBranch)
+	out.AuthenticationTokenSecretVersion = direct.ValueOf(in.AuthenticationTokenSecretVersion)
+	out.SshAuthenticationConfig = Repository_GitRemoteSettings_SSHAuthenticationConfig_v1beta1_ToProto(mapCtx, in.SSHAuthenticationConfig)
+	// MISSING: TokenStatus
+	return out
+}
+func Repository_GitRemoteSettingsObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *dataformpb.Repository_GitRemoteSettings) *krmdataformv1beta1.Repository_GitRemoteSettingsObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmdataformv1beta1.Repository_GitRemoteSettingsObservedState{}
+	// MISSING: URL
+	// MISSING: DefaultBranch
+	// MISSING: AuthenticationTokenSecretVersion
+	// MISSING: SSHAuthenticationConfig
+	out.TokenStatus = direct.Enum_FromProto(mapCtx, in.GetTokenStatus())
+	return out
+}
+func Repository_GitRemoteSettingsObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdataformv1beta1.Repository_GitRemoteSettingsObservedState) *dataformpb.Repository_GitRemoteSettings {
+	if in == nil {
+		return nil
+	}
+	out := &dataformpb.Repository_GitRemoteSettings{}
+	// MISSING: URL
+	// MISSING: DefaultBranch
+	// MISSING: AuthenticationTokenSecretVersion
+	// MISSING: SSHAuthenticationConfig
+	out.TokenStatus = direct.Enum_ToProto[dataformpb.Repository_GitRemoteSettings_TokenStatus](mapCtx, in.TokenStatus)
+	return out
+}
+func Repository_GitRemoteSettings_SSHAuthenticationConfig_v1beta1_FromProto(mapCtx *direct.MapContext, in *dataformpb.Repository_GitRemoteSettings_SshAuthenticationConfig) *krmdataformv1beta1.Repository_GitRemoteSettings_SSHAuthenticationConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krmdataformv1beta1.Repository_GitRemoteSettings_SSHAuthenticationConfig{}
+	out.UserPrivateKeySecretVersion = direct.LazyPtr(in.GetUserPrivateKeySecretVersion())
+	out.HostPublicKey = direct.LazyPtr(in.GetHostPublicKey())
+	return out
+}
+func Repository_GitRemoteSettings_SSHAuthenticationConfig_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdataformv1beta1.Repository_GitRemoteSettings_SSHAuthenticationConfig) *dataformpb.Repository_GitRemoteSettings_SshAuthenticationConfig {
+	if in == nil {
+		return nil
+	}
+	out := &dataformpb.Repository_GitRemoteSettings_SshAuthenticationConfig{}
+	out.UserPrivateKeySecretVersion = direct.ValueOf(in.UserPrivateKeySecretVersion)
+	out.HostPublicKey = direct.ValueOf(in.HostPublicKey)
+	return out
+}
+func Repository_WorkspaceCompilationOverrides_v1beta1_FromProto(mapCtx *direct.MapContext, in *dataformpb.Repository_WorkspaceCompilationOverrides) *krmdataformv1beta1.Repository_WorkspaceCompilationOverrides {
+	if in == nil {
+		return nil
+	}
+	out := &krmdataformv1beta1.Repository_WorkspaceCompilationOverrides{}
+	out.DefaultDatabase = direct.LazyPtr(in.GetDefaultDatabase())
+	out.SchemaSuffix = direct.LazyPtr(in.GetSchemaSuffix())
+	out.TablePrefix = direct.LazyPtr(in.GetTablePrefix())
+	return out
+}
+func Repository_WorkspaceCompilationOverrides_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdataformv1beta1.Repository_WorkspaceCompilationOverrides) *dataformpb.Repository_WorkspaceCompilationOverrides {
+	if in == nil {
+		return nil
+	}
+	out := &dataformpb.Repository_WorkspaceCompilationOverrides{}
+	out.DefaultDatabase = direct.ValueOf(in.DefaultDatabase)
+	out.SchemaSuffix = direct.ValueOf(in.SchemaSuffix)
+	out.TablePrefix = direct.ValueOf(in.TablePrefix)
 	return out
 }

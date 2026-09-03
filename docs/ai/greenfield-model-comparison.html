@@ -551,9 +551,9 @@
     <p class="standfirst">Two independent attempts at generating KCC resource types from protos. One ran over roughly twenty pull requests, the other over one. This compares them on the 267 resources both measured.</p>
 
     <div class="headline-stats">
-      <div class="stat"><b>86.5%</b><span>Gemini, on the 197 kinds it generated successfully</span></div>
-      <div class="stat"><b>91.5%</b><span>Claude, on those same 197 kinds</span></div>
-      <div class="stat"><b>267</b><span>resources measured by both experiments</span></div>
+      <div class="stat"><b>79.4%</b><span>Claude, on the 217 v1alpha1 kinds both produced</span></div>
+      <div class="stat"><b>70.4%</b><span>Gemini, on those same kinds</span></div>
+      <div class="stat"><b>217</b><span>resources, one harness, one baseline, identical denominators</span></div>
       <div class="stat"><b>20&times;</b><span>difference in generator work: ~20 PRs against 1</span></div>
     </div>
   </header>
@@ -570,7 +570,6 @@
       <li><a href="#converge">Found independently</a></li>
       <li><a href="#faults">Shortcomings</a></li>
       <li><a href="#verdict">Verdict</a></li>
-      <li><a href="#pending">Pending work</a></li>
     </ol>
   </nav>
 
@@ -602,41 +601,30 @@
     </section>
 
     <section id="shared">
-      <h2>Like for like: the 267 kinds both measured</h2>
-      <p>267 of this side's 275 resources also appear in Gemini's 396, so the comparison does not have to rest on two headline numbers from different corpora.</p>
-      <p>The denominators do not match exactly. On the shared kinds Gemini counts 14,041 baseline properties against this side's 11,734, because our <code>roots()</code> collapses a missing parent's children into one defect rather than counting each. The percentages below are therefore indicative rather than exact. They are closest, within 7%, on the subset where both generated successfully, which is also the subset that matters most.</p>
-
-      <h3>Where both generated successfully &mdash; 197 kinds</h3>
-      <div class="ledger">
-        <table class="acct">
-          <thead><tr><th></th><th class="num">Surface</th><th class="num">Matched</th><th class="num">Rate</th></tr></thead>
-          <tbody>
-            <tr><td><span class="who g">Gemini</span></td><td class="num">8,985</td><td class="num">7,769</td><td class="num pct">86.5%</td></tr>
-            <tr><td><span class="who c">Claude</span></td><td class="num">8,389</td><td class="num">7,675</td><td class="num pct">91.5%</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>Five points apart, on denominators within 7% of each other. That is the fairest comparison currently available, and it is closer than either headline suggests.</p>
-      <div class="note caution">
-        <span class="note-label">Not a settled number</span>
-        <p>Gemini's <code>exact_matches</code> and our <code>implemented</code> are different definitions computed by different code, and the 20% denominator gap on the same kinds says the two harnesses do not count the same things. Its match test is documented as requiring name, type, format and description to agree, which is stricter than ours; if that is what it does, 86.5% understates it. Settling this means scoring its generated CRDs with our harness, which is pending.</p>
-      </div>
-
-      <h3>Where Gemini's build failed &mdash; 70 kinds</h3>
-      <div class="ledger">
-        <table class="acct">
-          <thead><tr><th></th><th class="num">Surface</th><th class="num">Matched</th><th class="num">Rate</th></tr></thead>
-          <tbody>
-            <tr><td><span class="who g">Gemini</span></td><td class="num">5,056</td><td class="num">0</td><td class="num pct">0%</td></tr>
-            <tr><td><span class="who c">Claude</span></td><td class="num">3,345</td><td class="num">3,048</td><td class="num pct">91.1%</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>This is where the twenty PRs show up. On resources Gemini could not generate at all, generation here runs at its ordinary rate. Gemini's benchmark scores those as zero, which is the honest choice, and it is what drags 86.5% down to 55.3% across the shared set.</p>
+      <h2>Like for like: one harness, one baseline, one denominator</h2>
+      <p>The first version of this page compared Gemini's self-reported match count against ours. Those are different definitions computed by different code, so the comparison was not worth much. Gemini has since published its generated CRDs in <a href="https://github.com/GoogleCloudPlatform/k8s-config-connector/pull/12737">PR 12737</a>, which lets our harness score both sides.</p>
+      <p>Everything below is controlled: the same scorer, the same baseline (<code>25aedf2f10ef</code>, Gemini's), the same kinds, and the judgement queue switched off so neither side is credited with our flagging.</p>
       <div class="note">
-        <span class="note-label">And its own doc says why</span>
-        <p>Of its 23 failing services, 7 fail on a missing <code>apiextensionsv1</code> import and 8 on unresolved slice types, and it estimates fixing both raises the build pass rate from 81.1% to 93.4%. The first is a bug this side had already fixed in <code>generatorbase.go</code>. Gemini's build failures partly measure bugs we had closed, not a difference in what the model could do.</p>
+        <span class="note-label">The denominator, and why it matters</span>
+        <p><code>matched + missing + mismatch</code>, the count of fields in upstream's CRD. It is a property of upstream rather than of either generator, so both sides must agree on it. Our own report uses a different one that collapses every child of a missing parent into a single defect: right for a work list, useless for comparing generators, because a side missing one fifty-field subtree scores one defect where a side missing twenty scattered leaves scores twenty. On this corpus that choice reverses the ordering.</p>
       </div>
+      <div class="ledger">
+        <table class="acct">
+          <thead><tr><th>Test</th><th class="num">Kinds</th><th class="num">Claude</th><th class="num">Gemini</th></tr></thead>
+          <tbody>
+            <tr><td>A. all versions</td><td class="num">255</td><td class="num pct">78.3%</td><td class="num pct">69.6%</td></tr>
+            <tr><td>B. v1alpha1 only</td><td class="num">217</td><td class="num pct">79.4%</td><td class="num pct">70.4%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Both arms have exactly matching denominators, and both put the gap at about nine points.</p>
+      <p>Test B exists because Gemini's corpus is 40% v1beta1 against our 15%, and beta resources are the mature hand-curated ones a generator does worst against, so Test A looked structurally unkind to it. Restricting to alpha moves each side by about half a point, so that hypothesis was wrong: composition is not what separates them.</p>
+      <p>12 of our resources are excluded from both arms. Their types regenerated but <code>controller-gen</code> then failed for the service, leaving the previously published CRD in place, so scoring them would have credited us with upstream's own output. Removing them costs about a third of a point.</p>
+
+      <h3>The shape behind the aggregate</h3>
+      <p>The per-kind spread is enormous and the aggregate hides it. We reproduce 269 of <code>VertexAITrainingPipeline</code>'s 333 fields against Gemini's 64; on <code>GKEHubFleet</code> it gets 33 of 33 where we get 28.</p>
+      <p>The pattern is depth. Our generator walks the whole proto message tree and writes every nested message into <code>types.generated.go</code>. Gemini's single change populates the root Spec from the root message and does not recurse as far, so on a deeply nested resource the top-level fields appear and the subtrees under them do not. We win on deep resources and the wins are large; we lose on small flat ones and the losses are small. That asymmetry, not a uniform advantage, is what produces the nine points.</p>
+      <p>Some rows are identical on both sides — <code>APIHubAPI</code> scores 20 of 113 for each — which suggests a shared upstream limitation rather than anything either generator decided.</p>
     </section>
 
     <section id="scoping">
@@ -725,11 +713,12 @@
 
     <section id="verdict">
       <h2>Verdict</h2>
-      <p>The two models look close on this task, and what separates the published numbers is mostly not the models. Where both generated successfully, 86.5% against 91.5% is five points, and even that is measured by two different harnesses whose denominators disagree by 20%. The larger headline gap is build failures that Gemini's own doc attributes to two named bugs, one of which was already fixed here.</p>
+      <p>Measured properly, our output reproduces about nine points more of upstream's CRD fields than Gemini's: 79.4% against 70.4% on v1alpha1 resources, with identical denominators. That is a real gap, and larger than the five points the first version of this page reported from Gemini's own harness.</p>
+      <p>It is also not a like-for-like measure of the two models. Ours had roughly twenty pull requests of generator work behind it against Gemini's one, and the mechanism behind most of the gap is a single structural difference: our generator recurses through the whole proto message tree while Gemini's change populates the root Spec. That is a scope difference in what was built, not evidence about what either model could build.</p>
       <p>What this comparison cannot tell you is which model is better at the task, and the reasons are worth being explicit about.</p>
       <ul>
         <li>Gemini's architectural conclusions were largely handed to it, by someone carrying results from this experiment. The two designs agreeing is therefore not evidence about either model.</li>
-        <li>The two harnesses count differently, and Gemini's numbers have not been reproduced by anything other than Gemini's own tooling.</li>
+        <li>Both sides have now been scored by one harness on one baseline, so the gap is real as measured. What it measures is one generator against another at a moment in time, not either model's ceiling.</li>
         <li>The effort differs by roughly twenty PRs, and the flagging mechanism and measured detection rules on this side are products of that time rather than of the model.</li>
         <li>Both corpora were mis-scoped, in opposite directions, and both were corrected only after the fact.</li>
       </ul>
@@ -737,13 +726,6 @@
         <span class="note-label">What would answer it</span>
         <p>The same corpus, the same harness, the same number of iterations, the same amount of human steering, and ideally a third party running both. Short of that, the defensible claim is narrow: both models produced designs a KCC engineer would recognise as sound, and nothing here argues for choosing one over the other.</p>
       </div>
-    </section>
-
-    <section id="pending">
-      <h2>Pending: scoring Gemini's output with our harness</h2>
-      <p>The largest source of doubt above is that each side's coverage number comes from its own measurement code. Gemini's benchmark writes generated CRDs to <code>.build/sandbox-crds/&lt;service&gt;/</code>; with that tree published, <code>silence_report.py</code> can score it directly, since it takes nothing but a TSV of kind, service, types path and CRD path.</p>
-      <p>That would put Gemini's output through the same three states this report uses for ours, on the kinds both corpora share. Any gap between that result and its self-reported 86.5% is a difference in measurement rather than in generation, which is exactly what is unresolved today.</p>
-      <p>Three things are needed: the post-processed CRD YAMLs rather than raw <code>controller-gen</code> output, the exact baseline SHA its benchmark diffed against (ours is <code>c1df0b9326</code>, roughly two weeks earlier, and proto drift between them is real), and optionally the generated Go so we can see whether anything was flagged for review.</p>
     </section>
 
   </main>

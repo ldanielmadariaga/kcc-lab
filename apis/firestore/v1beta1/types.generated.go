@@ -80,7 +80,6 @@ type Database struct {
 }
 */
 
-/* unreachable type Database_CmekConfig
 // +kcc:proto=google.firestore.admin.v1.Database.CmekConfig
 type Database_CmekConfig struct {
 	// Required. Only keys in the same location as this database are allowed to
@@ -94,11 +93,10 @@ type Database_CmekConfig struct {
 	//  The expected format is
 	//  `projects/{project_id}/locations/{kms_location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}`.
 	// +kcc:proto:field=google.firestore.admin.v1.Database.CmekConfig.kms_key_name
+	// +required
 	KMSKeyName *string `json:"kmsKeyName,omitempty"`
 }
-*/
 
-/* unreachable type Database_SourceInfo
 // +kcc:proto=google.firestore.admin.v1.Database.SourceInfo
 type Database_SourceInfo struct {
 	// If set, this database was restored from the specified backup (or a
@@ -112,9 +110,7 @@ type Database_SourceInfo struct {
 	// +kcc:proto:field=google.firestore.admin.v1.Database.SourceInfo.operation
 	Operation *string `json:"operation,omitempty"`
 }
-*/
 
-/* unreachable type Database_SourceInfo_BackupSource
 // +kcc:proto=google.firestore.admin.v1.Database.SourceInfo.BackupSource
 type Database_SourceInfo_BackupSource struct {
 	// The resource name of the backup that was used to restore this
@@ -123,7 +119,6 @@ type Database_SourceInfo_BackupSource struct {
 	// +kcc:proto:field=google.firestore.admin.v1.Database.SourceInfo.BackupSource.backup
 	Backup *string `json:"backup,omitempty"`
 }
-*/
 
 /* unreachable type Index_IndexField_VectorConfig
 // +kcc:proto=google.firestore.admin.v1.Index.IndexField.VectorConfig
@@ -133,6 +128,7 @@ type Index_IndexField_VectorConfig struct {
 	//  The resulting index will only include vectors of this dimension, and
 	//  can be used for vector search with the same dimension.
 	// +kcc:proto:field=google.firestore.admin.v1.Index.IndexField.VectorConfig.dimension
+	// +required
 	Dimension *int32 `json:"dimension,omitempty"`
 
 	// Indicates the vector index is a flat index.
@@ -233,7 +229,6 @@ type DatabaseObservedState struct {
 }
 */
 
-/* unreachable type Database_CmekConfigObservedState
 // +kcc:observedstate:proto=google.firestore.admin.v1.Database.CmekConfig
 type Database_CmekConfigObservedState struct {
 	// Output only. Currently in-use [KMS key
@@ -246,4 +241,3 @@ type Database_CmekConfigObservedState struct {
 	// +kcc:proto:field=google.firestore.admin.v1.Database.CmekConfig.active_key_version
 	ActiveKeyVersion []string `json:"activeKeyVersion,omitempty"`
 }
-*/

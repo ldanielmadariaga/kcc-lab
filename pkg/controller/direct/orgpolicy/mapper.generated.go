@@ -35,13 +35,7 @@ func OrgPolicyCustomConstraintObservedState_FromProto(mapCtx *direct.MapContext,
 	}
 	out := &krm.OrgPolicyCustomConstraintObservedState{}
 	// MISSING: Name
-	// MISSING: ResourceTypes
-	// MISSING: MethodTypes
-	// MISSING: Condition
-	// MISSING: ActionType
-	// MISSING: DisplayName
-	// MISSING: Description
-	// MISSING: UpdateTime
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
 	return out
 }
 func OrgPolicyCustomConstraintObservedState_ToProto(mapCtx *direct.MapContext, in *krm.OrgPolicyCustomConstraintObservedState) *pb.CustomConstraint {
@@ -50,13 +44,7 @@ func OrgPolicyCustomConstraintObservedState_ToProto(mapCtx *direct.MapContext, i
 	}
 	out := &pb.CustomConstraint{}
 	// MISSING: Name
-	// MISSING: ResourceTypes
-	// MISSING: MethodTypes
-	// MISSING: Condition
-	// MISSING: ActionType
-	// MISSING: DisplayName
-	// MISSING: Description
-	// MISSING: UpdateTime
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
 	return out
 }
 func OrgPolicyCustomConstraintSpec_FromProto(mapCtx *direct.MapContext, in *pb.CustomConstraint) *krm.OrgPolicyCustomConstraintSpec {
@@ -65,13 +53,12 @@ func OrgPolicyCustomConstraintSpec_FromProto(mapCtx *direct.MapContext, in *pb.C
 	}
 	out := &krm.OrgPolicyCustomConstraintSpec{}
 	// MISSING: Name
-	// MISSING: ResourceTypes
-	// MISSING: MethodTypes
-	// MISSING: Condition
-	// MISSING: ActionType
-	// MISSING: DisplayName
-	// MISSING: Description
-	// MISSING: UpdateTime
+	out.ResourceTypes = in.ResourceTypes
+	out.MethodTypes = direct.EnumSlice_FromProto(mapCtx, in.MethodTypes)
+	out.Condition = direct.LazyPtr(in.GetCondition())
+	out.ActionType = direct.Enum_FromProto(mapCtx, in.GetActionType())
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.Description = direct.LazyPtr(in.GetDescription())
 	return out
 }
 func OrgPolicyCustomConstraintSpec_ToProto(mapCtx *direct.MapContext, in *krm.OrgPolicyCustomConstraintSpec) *pb.CustomConstraint {
@@ -80,13 +67,12 @@ func OrgPolicyCustomConstraintSpec_ToProto(mapCtx *direct.MapContext, in *krm.Or
 	}
 	out := &pb.CustomConstraint{}
 	// MISSING: Name
-	// MISSING: ResourceTypes
-	// MISSING: MethodTypes
-	// MISSING: Condition
-	// MISSING: ActionType
-	// MISSING: DisplayName
-	// MISSING: Description
-	// MISSING: UpdateTime
+	out.ResourceTypes = in.ResourceTypes
+	out.MethodTypes = direct.EnumSlice_ToProto[pb.CustomConstraint_MethodType](mapCtx, in.MethodTypes)
+	out.Condition = direct.ValueOf(in.Condition)
+	out.ActionType = direct.Enum_ToProto[pb.CustomConstraint_ActionType](mapCtx, in.ActionType)
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Description = direct.ValueOf(in.Description)
 	return out
 }
 func OrgPolicyPolicyObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Policy) *krm.OrgPolicyPolicyObservedState {

@@ -28,8 +28,49 @@ type BigQueryConnectionConnectionSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/connections/{connection}
+	Location *string `json:"location"`
+
 	// The BigQueryConnectionConnection name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// User provided display name for the connection.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.friendly_name
+	FriendlyName *string `json:"friendlyName,omitempty"`
+
+	// User provided description.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.description
+	Description *string `json:"description,omitempty"`
+
+	// Cloud SQL properties.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.cloud_sql
+	CloudSQL *CloudSQLProperties `json:"cloudSQL,omitempty"`
+
+	// Amazon Web Services (AWS) properties.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.aws
+	Aws *AwsProperties `json:"aws,omitempty"`
+
+	// Azure properties.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.azure
+	Azure *AzureProperties `json:"azure,omitempty"`
+
+	// Cloud Spanner properties.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.cloud_spanner
+	CloudSpanner *CloudSpannerProperties `json:"cloudSpanner,omitempty"`
+
+	// Cloud Resource properties.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.cloud_resource
+	CloudResource *CloudResourceProperties `json:"cloudResource,omitempty"`
+
+	// Spark properties.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.spark
+	Spark *SparkProperties `json:"spark,omitempty"`
+
+	// Optional. Salesforce DataCloud properties. This field is intended for
+	//  use only by Salesforce partner projects. This field contains properties
+	//  for your Salesforce DataCloud connection.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.salesforce_data_cloud
+	SalesforceDataCloud *SalesforceDataCloudProperties `json:"salesforceDataCloud,omitempty"`
 }
 
 // BigQueryConnectionConnectionStatus defines the config connector machine state of BigQueryConnectionConnection
@@ -51,6 +92,43 @@ type BigQueryConnectionConnectionStatus struct {
 // BigQueryConnectionConnectionObservedState is the state of the BigQueryConnectionConnection resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.Connection
 type BigQueryConnectionConnectionObservedState struct {
+	// Cloud SQL properties.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.cloud_sql
+	CloudSQL *CloudSQLPropertiesObservedState `json:"cloudSQL,omitempty"`
+
+	// Amazon Web Services (AWS) properties.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.aws
+	Aws *AwsPropertiesObservedState `json:"aws,omitempty"`
+
+	// Azure properties.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.azure
+	Azure *AzurePropertiesObservedState `json:"azure,omitempty"`
+
+	// Cloud Resource properties.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.cloud_resource
+	CloudResource *CloudResourcePropertiesObservedState `json:"cloudResource,omitempty"`
+
+	// Spark properties.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.spark
+	Spark *SparkPropertiesObservedState `json:"spark,omitempty"`
+
+	// Optional. Salesforce DataCloud properties. This field is intended for
+	//  use only by Salesforce partner projects. This field contains properties
+	//  for your Salesforce DataCloud connection.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.salesforce_data_cloud
+	SalesforceDataCloud *SalesforceDataCloudPropertiesObservedState `json:"salesforceDataCloud,omitempty"`
+
+	// Output only. The creation timestamp of the connection.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.creation_time
+	CreationTime *int64 `json:"creationTime,omitempty"`
+
+	// Output only. The last update timestamp of the connection.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.last_modified_time
+	LastModifiedTime *int64 `json:"lastModifiedTime,omitempty"`
+
+	// Output only. True, if credential is configured for this connection.
+	// +kcc:proto:field=google.cloud.bigquery.connection.v1.Connection.has_credential
+	HasCredential *bool `json:"hasCredential,omitempty"`
 }
 
 // +genclient

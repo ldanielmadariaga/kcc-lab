@@ -64,6 +64,78 @@ func DailyRecurrence_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmfirestor
 	out := &pb.DailyRecurrence{}
 	return out
 }
+func Database_CmekConfig_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Database_CmekConfig) *krmfirestorev1beta1.Database_CmekConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krmfirestorev1beta1.Database_CmekConfig{}
+	out.KMSKeyName = direct.LazyPtr(in.GetKmsKeyName())
+	// MISSING: ActiveKeyVersion
+	return out
+}
+func Database_CmekConfig_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmfirestorev1beta1.Database_CmekConfig) *pb.Database_CmekConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Database_CmekConfig{}
+	out.KmsKeyName = direct.ValueOf(in.KMSKeyName)
+	// MISSING: ActiveKeyVersion
+	return out
+}
+func Database_CmekConfigObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Database_CmekConfig) *krmfirestorev1beta1.Database_CmekConfigObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmfirestorev1beta1.Database_CmekConfigObservedState{}
+	// MISSING: KMSKeyName
+	out.ActiveKeyVersion = in.ActiveKeyVersion
+	return out
+}
+func Database_CmekConfigObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmfirestorev1beta1.Database_CmekConfigObservedState) *pb.Database_CmekConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Database_CmekConfig{}
+	// MISSING: KMSKeyName
+	out.ActiveKeyVersion = in.ActiveKeyVersion
+	return out
+}
+func Database_SourceInfo_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Database_SourceInfo) *krmfirestorev1beta1.Database_SourceInfo {
+	if in == nil {
+		return nil
+	}
+	out := &krmfirestorev1beta1.Database_SourceInfo{}
+	out.Backup = Database_SourceInfo_BackupSource_v1beta1_FromProto(mapCtx, in.GetBackup())
+	out.Operation = direct.LazyPtr(in.GetOperation())
+	return out
+}
+func Database_SourceInfo_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmfirestorev1beta1.Database_SourceInfo) *pb.Database_SourceInfo {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Database_SourceInfo{}
+	if oneof := Database_SourceInfo_BackupSource_v1beta1_ToProto(mapCtx, in.Backup); oneof != nil {
+		out.Source = &pb.Database_SourceInfo_Backup{Backup: oneof}
+	}
+	out.Operation = direct.ValueOf(in.Operation)
+	return out
+}
+func Database_SourceInfo_BackupSource_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Database_SourceInfo_BackupSource) *krmfirestorev1beta1.Database_SourceInfo_BackupSource {
+	if in == nil {
+		return nil
+	}
+	out := &krmfirestorev1beta1.Database_SourceInfo_BackupSource{}
+	out.Backup = direct.LazyPtr(in.GetBackup())
+	return out
+}
+func Database_SourceInfo_BackupSource_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmfirestorev1beta1.Database_SourceInfo_BackupSource) *pb.Database_SourceInfo_BackupSource {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Database_SourceInfo_BackupSource{}
+	out.Backup = direct.ValueOf(in.Backup)
+	return out
+}
 func Field_IndexConfig_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.Field_IndexConfig) *krmfirestorev1alpha1.Field_IndexConfig {
 	if in == nil {
 		return nil
@@ -170,26 +242,17 @@ func FirestoreDatabaseObservedState_v1beta1_FromProto(mapCtx *direct.MapContext,
 	}
 	out := &krmfirestorev1beta1.FirestoreDatabaseObservedState{}
 	// MISSING: Name
-	// MISSING: Uid
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: DeleteTime
-	// MISSING: LocationID
-	// MISSING: Type
-	// MISSING: ConcurrencyMode
-	// MISSING: VersionRetentionPeriod
-	// MISSING: EarliestVersionTime
-	// MISSING: PointInTimeRecoveryEnablement
-	// MISSING: AppEngineIntegrationMode
-	// MISSING: KeyPrefix
-	// MISSING: DeleteProtectionState
-	// MISSING: CmekConfig
-	// MISSING: PreviousID
-	// MISSING: SourceInfo
-	// MISSING: Tags
-	// MISSING: FreeTier
-	// MISSING: Etag
-	// MISSING: DatabaseEdition
+	out.Uid = direct.LazyPtr(in.GetUid())
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.DeleteTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeleteTime())
+	out.VersionRetentionPeriod = direct.StringDuration_FromProto(mapCtx, in.GetVersionRetentionPeriod())
+	out.EarliestVersionTime = direct.StringTimestamp_FromProto(mapCtx, in.GetEarliestVersionTime())
+	out.KeyPrefix = direct.LazyPtr(in.GetKeyPrefix())
+	out.CmekConfig = Database_CmekConfigObservedState_v1beta1_FromProto(mapCtx, in.GetCmekConfig())
+	out.PreviousID = direct.LazyPtr(in.GetPreviousId())
+	out.SourceInfo = Database_SourceInfo_v1beta1_FromProto(mapCtx, in.GetSourceInfo())
+	out.FreeTier = in.FreeTier
 	return out
 }
 func FirestoreDatabaseObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmfirestorev1beta1.FirestoreDatabaseObservedState) *pb.Database {
@@ -198,26 +261,17 @@ func FirestoreDatabaseObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, i
 	}
 	out := &pb.Database{}
 	// MISSING: Name
-	// MISSING: Uid
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: DeleteTime
-	// MISSING: LocationID
-	// MISSING: Type
-	// MISSING: ConcurrencyMode
-	// MISSING: VersionRetentionPeriod
-	// MISSING: EarliestVersionTime
-	// MISSING: PointInTimeRecoveryEnablement
-	// MISSING: AppEngineIntegrationMode
-	// MISSING: KeyPrefix
-	// MISSING: DeleteProtectionState
-	// MISSING: CmekConfig
-	// MISSING: PreviousID
-	// MISSING: SourceInfo
-	// MISSING: Tags
-	// MISSING: FreeTier
-	// MISSING: Etag
-	// MISSING: DatabaseEdition
+	out.Uid = direct.ValueOf(in.Uid)
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.DeleteTime = direct.StringTimestamp_ToProto(mapCtx, in.DeleteTime)
+	out.VersionRetentionPeriod = direct.StringDuration_ToProto(mapCtx, in.VersionRetentionPeriod)
+	out.EarliestVersionTime = direct.StringTimestamp_ToProto(mapCtx, in.EarliestVersionTime)
+	out.KeyPrefix = direct.ValueOf(in.KeyPrefix)
+	out.CmekConfig = Database_CmekConfigObservedState_v1beta1_ToProto(mapCtx, in.CmekConfig)
+	out.PreviousId = direct.ValueOf(in.PreviousID)
+	out.SourceInfo = Database_SourceInfo_v1beta1_ToProto(mapCtx, in.SourceInfo)
+	out.FreeTier = in.FreeTier
 	return out
 }
 func FirestoreDatabaseSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Database) *krmfirestorev1beta1.FirestoreDatabaseSpec {
@@ -226,26 +280,16 @@ func FirestoreDatabaseSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.D
 	}
 	out := &krmfirestorev1beta1.FirestoreDatabaseSpec{}
 	// MISSING: Name
-	// MISSING: Uid
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: DeleteTime
-	// MISSING: LocationID
-	// MISSING: Type
-	// MISSING: ConcurrencyMode
-	// MISSING: VersionRetentionPeriod
-	// MISSING: EarliestVersionTime
-	// MISSING: PointInTimeRecoveryEnablement
-	// MISSING: AppEngineIntegrationMode
-	// MISSING: KeyPrefix
-	// MISSING: DeleteProtectionState
-	// MISSING: CmekConfig
-	// MISSING: PreviousID
-	// MISSING: SourceInfo
-	// MISSING: Tags
-	// MISSING: FreeTier
-	// MISSING: Etag
-	// MISSING: DatabaseEdition
+	out.LocationID = direct.LazyPtr(in.GetLocationId())
+	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
+	out.ConcurrencyMode = direct.Enum_FromProto(mapCtx, in.GetConcurrencyMode())
+	out.PointInTimeRecoveryEnablement = direct.Enum_FromProto(mapCtx, in.GetPointInTimeRecoveryEnablement())
+	out.AppEngineIntegrationMode = direct.Enum_FromProto(mapCtx, in.GetAppEngineIntegrationMode())
+	out.DeleteProtectionState = direct.Enum_FromProto(mapCtx, in.GetDeleteProtectionState())
+	out.CmekConfig = Database_CmekConfig_v1beta1_FromProto(mapCtx, in.GetCmekConfig())
+	out.Tags = in.Tags
+	out.Etag = direct.LazyPtr(in.GetEtag())
+	out.DatabaseEdition = direct.Enum_FromProto(mapCtx, in.GetDatabaseEdition())
 	return out
 }
 func FirestoreDatabaseSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmfirestorev1beta1.FirestoreDatabaseSpec) *pb.Database {
@@ -254,26 +298,16 @@ func FirestoreDatabaseSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmfir
 	}
 	out := &pb.Database{}
 	// MISSING: Name
-	// MISSING: Uid
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: DeleteTime
-	// MISSING: LocationID
-	// MISSING: Type
-	// MISSING: ConcurrencyMode
-	// MISSING: VersionRetentionPeriod
-	// MISSING: EarliestVersionTime
-	// MISSING: PointInTimeRecoveryEnablement
-	// MISSING: AppEngineIntegrationMode
-	// MISSING: KeyPrefix
-	// MISSING: DeleteProtectionState
-	// MISSING: CmekConfig
-	// MISSING: PreviousID
-	// MISSING: SourceInfo
-	// MISSING: Tags
-	// MISSING: FreeTier
-	// MISSING: Etag
-	// MISSING: DatabaseEdition
+	out.LocationId = direct.ValueOf(in.LocationID)
+	out.Type = direct.Enum_ToProto[pb.Database_DatabaseType](mapCtx, in.Type)
+	out.ConcurrencyMode = direct.Enum_ToProto[pb.Database_ConcurrencyMode](mapCtx, in.ConcurrencyMode)
+	out.PointInTimeRecoveryEnablement = direct.Enum_ToProto[pb.Database_PointInTimeRecoveryEnablement](mapCtx, in.PointInTimeRecoveryEnablement)
+	out.AppEngineIntegrationMode = direct.Enum_ToProto[pb.Database_AppEngineIntegrationMode](mapCtx, in.AppEngineIntegrationMode)
+	out.DeleteProtectionState = direct.Enum_ToProto[pb.Database_DeleteProtectionState](mapCtx, in.DeleteProtectionState)
+	out.CmekConfig = Database_CmekConfig_v1beta1_ToProto(mapCtx, in.CmekConfig)
+	out.Tags = in.Tags
+	out.Etag = direct.ValueOf(in.Etag)
+	out.DatabaseEdition = direct.Enum_ToProto[pb.Database_DatabaseEdition](mapCtx, in.DatabaseEdition)
 	return out
 }
 func FirestoreDocumentObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *firestorepb.Document) *krmfirestorev1alpha1.FirestoreDocumentObservedState {

@@ -28,8 +28,23 @@ type VMwareEngineExternalAddressSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/privateClouds/{private_cloud}/externalAddresses/{external_address}
+	Location *string `json:"location,omitempty"`
+
+	// The PrivateCloud that this resource belongs to.
+	// +kcc:guess=parent-ref target=PrivateCloudRef pattern=projects/{project}/locations/{location}/privateClouds/{private_cloud}/externalAddresses/{external_address}
+	PrivateCloudRef *PrivateCloudRef `json:"privateCloudRef,omitempty"`
+
 	// The VMwareEngineExternalAddress name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// The internal IP address of a workload VM.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAddress.internal_ip
+	InternalIP *string `json:"internalIP,omitempty"`
+
+	// User-provided description for this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAddress.description
+	Description *string `json:"description,omitempty"`
 }
 
 // VMwareEngineExternalAddressStatus defines the config connector machine state of VMwareEngineExternalAddress
@@ -51,6 +66,25 @@ type VMwareEngineExternalAddressStatus struct {
 // VMwareEngineExternalAddressObservedState is the state of the VMwareEngineExternalAddress resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.vmwareengine.v1.ExternalAddress
 type VMwareEngineExternalAddressObservedState struct {
+	// Output only. Creation time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAddress.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Last update time of this resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAddress.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The external IP address of a workload VM.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAddress.external_ip
+	ExternalIP *string `json:"externalIP,omitempty"`
+
+	// Output only. The state of the resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAddress.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. System-generated unique identifier for the resource.
+	// +kcc:proto:field=google.cloud.vmwareengine.v1.ExternalAddress.uid
+	Uid *string `json:"uid,omitempty"`
 }
 
 // +genclient

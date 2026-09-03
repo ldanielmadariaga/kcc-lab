@@ -46,11 +46,11 @@ type Application struct {
 	// Required. Immutable. Defines what data can be included into this
 	//  Application. Limits which Services and Workloads can be registered.
 	// +kcc:proto:field=google.cloud.apphub.v1.Application.scope
+	// +required
 	Scope *Scope `json:"scope,omitempty"`
 }
 */
 
-/* unreachable type Attributes
 // +kcc:proto=google.cloud.apphub.v1.Attributes
 type Attributes struct {
 	// Optional. User-defined criticality information.
@@ -74,9 +74,7 @@ type Attributes struct {
 	// +kcc:proto:field=google.cloud.apphub.v1.Attributes.business_owners
 	BusinessOwners []ContactInfo `json:"businessOwners,omitempty"`
 }
-*/
 
-/* unreachable type ContactInfo
 // +kcc:proto=google.cloud.apphub.v1.ContactInfo
 type ContactInfo struct {
 	// Optional. Contact's name.
@@ -86,36 +84,33 @@ type ContactInfo struct {
 
 	// Required. Email address of the contacts.
 	// +kcc:proto:field=google.cloud.apphub.v1.ContactInfo.email
+	// +required
 	Email *string `json:"email,omitempty"`
 }
-*/
 
-/* unreachable type Criticality
 // +kcc:proto=google.cloud.apphub.v1.Criticality
 type Criticality struct {
 	// Required. Criticality Type.
 	// +kcc:proto:field=google.cloud.apphub.v1.Criticality.type
+	// +required
 	Type *string `json:"type,omitempty"`
 }
-*/
 
-/* unreachable type Environment
 // +kcc:proto=google.cloud.apphub.v1.Environment
 type Environment struct {
 	// Required. Environment Type.
 	// +kcc:proto:field=google.cloud.apphub.v1.Environment.type
+	// +required
 	Type *string `json:"type,omitempty"`
 }
-*/
 
-/* unreachable type Scope
 // +kcc:proto=google.cloud.apphub.v1.Scope
 type Scope struct {
 	// Required. Scope Type.
 	// +kcc:proto:field=google.cloud.apphub.v1.Scope.type
+	// +required
 	Type *string `json:"type,omitempty"`
 }
-*/
 
 /* unreachable type ApplicationObservedState
 // +kcc:observedstate:proto=google.cloud.apphub.v1.Application

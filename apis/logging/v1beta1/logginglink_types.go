@@ -26,8 +26,28 @@ type LoggingLinkSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/buckets/{bucket}/links/{link}
+	Location *string `json:"location,omitempty"`
+
+	// The Bucket that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/buckets/{bucket}/links/{link}
+	Bucket *string `json:"bucket,omitempty"`
+
 	// The LoggingLink name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Describes this link.
+	//
+	//  The maximum length of the description is 8000 characters.
+	// +kcc:proto:field=google.logging.v2.Link.description
+	Description *string `json:"description,omitempty"`
+
+	// The information of a BigQuery Dataset. When a link is created, a BigQuery
+	//  dataset is created along with it, in the same project as the LogBucket it's
+	//  linked to. This dataset will also have BigQuery Views corresponding to the
+	//  LogViews in the bucket.
+	// +kcc:proto:field=google.logging.v2.Link.bigquery_dataset
+	BigqueryDataset *BigQueryDataset `json:"bigqueryDataset,omitempty"`
 }
 
 // LoggingLinkStatus defines the config connector machine state of LoggingLink
@@ -49,6 +69,20 @@ type LoggingLinkStatus struct {
 // LoggingLinkObservedState is the state of the LoggingLink resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.logging.v2.Link
 type LoggingLinkObservedState struct {
+	// Output only. The creation timestamp of the link.
+	// +kcc:proto:field=google.logging.v2.Link.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The resource lifecycle state.
+	// +kcc:proto:field=google.logging.v2.Link.lifecycle_state
+	LifecycleState *string `json:"lifecycleState,omitempty"`
+
+	// The information of a BigQuery Dataset. When a link is created, a BigQuery
+	//  dataset is created along with it, in the same project as the LogBucket it's
+	//  linked to. This dataset will also have BigQuery Views corresponding to the
+	//  LogViews in the bucket.
+	// +kcc:proto:field=google.logging.v2.Link.bigquery_dataset
+	BigqueryDataset *BigQueryDatasetObservedState `json:"bigqueryDataset,omitempty"`
 }
 
 // +genclient

@@ -26,7 +26,6 @@
 
 package v1beta1
 
-/* unreachable type Distribution_BucketOptions
 // +kcc:proto=google.api.Distribution.BucketOptions
 type Distribution_BucketOptions struct {
 	// The linear bucket.
@@ -41,18 +40,14 @@ type Distribution_BucketOptions struct {
 	// +kcc:proto:field=google.api.Distribution.BucketOptions.explicit_buckets
 	ExplicitBuckets *Distribution_BucketOptions_Explicit `json:"explicitBuckets,omitempty"`
 }
-*/
 
-/* unreachable type Distribution_BucketOptions_Explicit
 // +kcc:proto=google.api.Distribution.BucketOptions.Explicit
 type Distribution_BucketOptions_Explicit struct {
 	// The values must be monotonically increasing.
 	// +kcc:proto:field=google.api.Distribution.BucketOptions.Explicit.bounds
 	Bounds []float64 `json:"bounds,omitempty"`
 }
-*/
 
-/* unreachable type Distribution_BucketOptions_Exponential
 // +kcc:proto=google.api.Distribution.BucketOptions.Exponential
 type Distribution_BucketOptions_Exponential struct {
 	// Must be greater than 0.
@@ -67,9 +62,7 @@ type Distribution_BucketOptions_Exponential struct {
 	// +kcc:proto:field=google.api.Distribution.BucketOptions.Exponential.scale
 	Scale *float64 `json:"scale,omitempty"`
 }
-*/
 
-/* unreachable type Distribution_BucketOptions_Linear
 // +kcc:proto=google.api.Distribution.BucketOptions.Linear
 type Distribution_BucketOptions_Linear struct {
 	// Must be greater than 0.
@@ -84,9 +77,7 @@ type Distribution_BucketOptions_Linear struct {
 	// +kcc:proto:field=google.api.Distribution.BucketOptions.Linear.offset
 	Offset *float64 `json:"offset,omitempty"`
 }
-*/
 
-/* unreachable type LabelDescriptor
 // +kcc:proto=google.api.LabelDescriptor
 type LabelDescriptor struct {
 	// The label key.
@@ -101,9 +92,7 @@ type LabelDescriptor struct {
 	// +kcc:proto:field=google.api.LabelDescriptor.description
 	Description *string `json:"description,omitempty"`
 }
-*/
 
-/* unreachable type MetricDescriptor
 // +kcc:proto=google.api.MetricDescriptor
 type MetricDescriptor struct {
 	// The resource name of the metric descriptor.
@@ -273,9 +262,7 @@ type MetricDescriptor struct {
 	// +kcc:proto:field=google.api.MetricDescriptor.monitored_resource_types
 	MonitoredResourceTypes []string `json:"monitoredResourceTypes,omitempty"`
 }
-*/
 
-/* unreachable type MetricDescriptor_MetricDescriptorMetadata
 // +kcc:proto=google.api.MetricDescriptor.MetricDescriptorMetadata
 type MetricDescriptor_MetricDescriptorMetadata struct {
 	// Deprecated. Must use the
@@ -301,13 +288,10 @@ type MetricDescriptor_MetricDescriptorMetadata struct {
 	// +kcc:proto:field=google.api.MetricDescriptor.MetricDescriptorMetadata.time_series_resource_hierarchy_level
 	TimeSeriesResourceHierarchyLevel []string `json:"timeSeriesResourceHierarchyLevel,omitempty"`
 }
-*/
 
-/* unreachable type BigQueryDataset
 // +kcc:proto=google.logging.v2.BigQueryDataset
 type BigQueryDataset struct {
 }
-*/
 
 /* unreachable type BigQueryOptions
 // +kcc:proto=google.logging.v2.BigQueryOptions
@@ -394,10 +378,12 @@ type IndexConfig struct {
 	//
 	//  For example: `jsonPayload.request.status`
 	// +kcc:proto:field=google.logging.v2.IndexConfig.field_path
+	// +required
 	FieldPath *string `json:"fieldPath,omitempty"`
 
 	// Required. The type of data in this index.
 	// +kcc:proto:field=google.logging.v2.IndexConfig.type
+	// +required
 	Type *string `json:"type,omitempty"`
 }
 */
@@ -497,6 +483,7 @@ type LogExclusion struct {
 	//  can include only letters, digits, underscores, hyphens, and periods. First
 	//  character has to be alphanumeric.
 	// +kcc:proto:field=google.logging.v2.LogExclusion.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. A description of this exclusion.
@@ -514,6 +501,7 @@ type LogExclusion struct {
 	//
 	//    `resource.type=gcs_bucket severity<ERROR sample(insertId, 0.99)`
 	// +kcc:proto:field=google.logging.v2.LogExclusion.filter
+	// +required
 	Filter *string `json:"filter,omitempty"`
 
 	// Optional. If set to True, then this exclusion is disabled and it does not
@@ -542,6 +530,7 @@ type LogMetric struct {
 	//  `"projects/my-project/metrics/nginx%2Frequests"`, this field's value is
 	//  `"nginx/requests"`.
 	// +kcc:proto:field=google.logging.v2.LogMetric.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Optional. A description of this metric, which is used in documentation.
@@ -557,6 +546,7 @@ type LogMetric struct {
 	//
 	//  The maximum length of the filter is 20000 characters.
 	// +kcc:proto:field=google.logging.v2.LogMetric.filter
+	// +required
 	Filter *string `json:"filter,omitempty"`
 
 	// Optional. The resource name of the Log Bucket that owns the Log Metric.
@@ -664,6 +654,7 @@ type LogSink struct {
 	//  lower-case alphanumeric characters, underscores, hyphens, and periods.
 	//  First character has to be alphanumeric.
 	// +kcc:proto:field=google.logging.v2.LogSink.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// Required. The export destination:
@@ -678,6 +669,7 @@ type LogSink struct {
 	//  [Exporting Logs with
 	//  Sinks](https://cloud.google.com/logging/docs/api/tasks/exporting-logs).
 	// +kcc:proto:field=google.logging.v2.LogSink.destination
+	// +required
 	Destination *string `json:"destination,omitempty"`
 
 	// Optional. An [advanced logs
@@ -775,7 +767,6 @@ type LogView struct {
 }
 */
 
-/* unreachable type BigQueryDatasetObservedState
 // +kcc:observedstate:proto=google.logging.v2.BigQueryDataset
 type BigQueryDatasetObservedState struct {
 	// Output only. The full resource name of the BigQuery dataset. The DATASET_ID
@@ -788,7 +779,6 @@ type BigQueryDatasetObservedState struct {
 	// +kcc:proto:field=google.logging.v2.BigQueryDataset.dataset_id
 	DatasetID *string `json:"datasetID,omitempty"`
 }
-*/
 
 /* unreachable type BigQueryOptionsObservedState
 // +kcc:observedstate:proto=google.logging.v2.BigQueryOptions

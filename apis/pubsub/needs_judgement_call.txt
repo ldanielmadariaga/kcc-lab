@@ -13,3 +13,7 @@
 # possible-reference-by-sibling: google.pubsub.v1.IngestionDataSourceSettings.ConfluentCloud.topic target=PubSubTopic
 # possible-reference-by-sibling: google.pubsub.v1.Snapshot.topic target=PubSubTopic
 # possible-reference-by-sibling: google.pubsub.v1.Subscription.AnalyticsHubSubscriptionInfo.subscription target=PubSubSubscription
+kind=PubSubSnapshot group=pubsub.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=PubSubSnapshot group=pubsub.cnrm.cloud.google.com: field ".spec.topic" reason=possible-reference-by-sibling (the name matches PubSubTopic, a resource this service declares; confirm whether it should be a reference)
+kind=PubSubSnapshot group=pubsub.cnrm.cloud.google.com: field ".spec.topic" reason=possible-reference (target=pubsub.googleapis.com/Topic)
+kind=PubSubSnapshot group=pubsub.cnrm.cloud.google.com: resource reason=empty-observedstate (nothing was generated into status.observedState; the proto probably carries no google.api.field_behavior, so output fields landed in the Spec. Decide what belongs in status)

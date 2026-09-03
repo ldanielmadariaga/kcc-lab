@@ -61,8 +61,15 @@ spec:
           spec:
             description: KMSAutokeyConfigSpec defines the desired state of KMSAutokeyConfig
             properties:
-              projectRef:
-                description: The project that this resource belongs to.
+              etag:
+                description: Optional. A checksum computed by the server based on
+                  the value of other fields. This may be sent on update requests to
+                  ensure that the client has an up-to-date value before proceeding.
+                  The request will be rejected with an ABORTED error on a mismatched
+                  etag.
+                type: string
+              folderRef:
+                description: The folder that this resource belongs to.
                 oneOf:
                 - not:
                     required:
@@ -79,26 +86,38 @@ spec:
                   - external
                 properties:
                   external:
-                    description: The `projectID` field of a project, when not managed
-                      by Config Connector.
-                    type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
+                    description: The 'name' field of a folder, when not managed by
+                      Config Connector. This field must be set when 'name' field is
+                      not set.
                     type: string
                   name:
-                    description: The `name` field of a `Project` resource.
+                    description: The 'name' field of a 'Folder' resource. This field
+                      must be set when 'external' field is not set.
                     type: string
                   namespace:
-                    description: The `namespace` field of a `Project` resource.
+                    description: The 'namespace' field of a 'Folder' resource. If
+                      unset, the namespace is defaulted to the namespace of the referencer
+                      resource.
                     type: string
                 type: object
+              keyProject:
+                description: Optional. Name of the key project, e.g. `projects/{PROJECT_ID}`
+                  or `projects/{PROJECT_NUMBER}`, where Cloud KMS Autokey will provision
+                  a new [CryptoKey][google.cloud.kms.v1.CryptoKey] when a [KeyHandle][google.cloud.kms.v1.KeyHandle]
+                  is created. On [UpdateAutokeyConfig][google.cloud.kms.v1.AutokeyAdmin.UpdateAutokeyConfig],
+                  the caller will require `cloudkms.cryptoKeys.setIamPolicy` permission
+                  on this key project. Once configured, for Cloud KMS Autokey to function
+                  properly, this key project must have the Cloud KMS API activated
+                  and the Cloud KMS Service Agent for this key project must be granted
+                  the `cloudkms.admin` role (or pertinent permissions). A request
+                  with an empty key project field will clear the configuration.
+                type: string
               resourceID:
                 description: The KMSAutokeyConfig name. If not given, the metadata.name
                   will be used.
                 type: string
             required:
-            - projectRef
+            - folderRef
             type: object
           status:
             description: KMSAutokeyConfigStatus defines the config connector machine
@@ -145,6 +164,10 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  state:
+                    description: Output only. The state for the AutokeyConfig.
+                    type: string
                 type: object
             type: object
         required:

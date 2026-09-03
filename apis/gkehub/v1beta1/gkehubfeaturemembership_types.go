@@ -30,6 +30,17 @@ type GKEHubFeatureMembershipSpec struct {
 
 	// The GKEHubFeatureMembership name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Config Management-specific spec.
+	// +kcc:proto:field=google.cloud.gkehub.v1beta.MembershipFeatureSpec.configmanagement
+	Configmanagement *MembershipSpec `json:"configmanagement,omitempty"`
+
+	// Anthos Service Mesh-specific spec
+	// +kcc:proto:field=google.cloud.gkehub.v1beta.MembershipFeatureSpec.mesh
+	Mesh *MembershipSpec `json:"mesh,omitempty"`
+
+	// Policy Controller spec.
+	// +kcc:proto:field=google.cloud.gkehub.v1beta.MembershipFeatureSpec.policycontroller
+	Policycontroller *MembershipSpec `json:"policycontroller,omitempty"`
 }
 
 // GKEHubFeatureMembershipStatus defines the config connector machine state of GKEHubFeatureMembership
@@ -51,6 +62,9 @@ type GKEHubFeatureMembershipStatus struct {
 // GKEHubFeatureMembershipObservedState is the state of the GKEHubFeatureMembership resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.gkehub.v1beta.MembershipFeatureSpec
 type GKEHubFeatureMembershipObservedState struct {
+	// Config Management-specific spec.
+	// +kcc:proto:field=google.cloud.gkehub.v1beta.MembershipFeatureSpec.configmanagement
+	Configmanagement *MembershipSpecObservedState `json:"configmanagement,omitempty"`
 }
 
 // +genclient

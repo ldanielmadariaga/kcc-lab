@@ -22,32 +22,37 @@ The corpus is 275 resources, derived by `hack/tools/greenfield/build_inscope.py`
 maintained by hand. Measured against baseline `c1df0b9326`:
 
 ```
-  1. implemented                      10966   (91.4%)   same field, same path
-  2. discrepancy                        369   (3.1%)    we produce it, but not as upstream has it
-        flagged for a second pass         281   (76%)
-        nothing says so                    88
-  3. missing                            665   (5.5%)    we produce nothing at all
-        a gap to close                    603
+  1. implemented                      13195   (94.3%)   same field, same path
+  2. discrepancy                        445   (3.2%)    we produce it, but not as upstream has it
+        flagged for a second pass         315   (71%)
+        nothing says so                   130
+  3. missing                            357   (2.6%)    we produce nothing at all
+        a gap to close                    295
         we model it differently on purpose 62
-        flagged for a second pass          39   (6%)
+        flagged for a second pass          48   (13%)
 ```
 
-The split is on what we produced, not on whether we mentioned it. Those turn out to be close to
-independent: three quarters of the discrepancies carry a judgement-queue entry, against one in
-seventeen of the absences.
+The split is on what we produced, not on whether we mentioned it, and the two are close to
+independent: seven in ten discrepancies carry a judgement-queue entry against one in eight of the
+absences.
 
-**603 is the number to drive down**, and it is roughly three times what this document claimed a day
-earlier. The corpus had been hand-maintained and was missing 44 greenfield resources that had an
-upstream CRD to compare against. Those 44 score near 64% where the original 231 scored 94%, and
-almost all of the difference is `absent`: fields we generate nowhere, not fields we generate in the
-wrong shape. Discrepancy did not move at all, 368 to 369.
+295 is the number to drive down. It was 603 a day earlier, and the difference was configuration
+rather than generation: 42 of the 275 were emitting 13-field scaffolds because the `generate-types`
+invocation declaring them never passed `--prepopulate-spec`. The flag is set per invocation, and a
+`generate.sh` can hold several — `compute` had it on one and not on the one declaring 47 kinds — so
+a per-service check found only 22 of the 42. Enabling it on 31 invocations moved `implemented` by
+2,229 fields.
 
-The lesson is worth keeping separately from the number. **94.2% was a property of the corpus rather
-than of the generator**, and nothing about the generator changed between the two runs. See
-[experiments/measurements/](experiments/measurements/) for both runs and the diff between them.
+The baseline count moves with it, 12,000 to 13,997, which is worth understanding rather than
+glossing. A resource that generates real fields exposes more of the baseline to comparison than a
+stub does, because with a stub most of upstream's tree collapses into a handful of missing-parent
+defects.
 
-The 62 we model differently on purpose are the `google.protobuf.Value` union arms. We map `Value`
-whole to `apiextensionsv1.JSON`, so the individual arms cannot exist as fields.
+**Two health warnings on this number.** 12 resources have stale CRDs: their types regenerated but
+`controller-gen` then failed for the service, so the published CRD is the previous one. And this
+counts a missing subtree as one defect rather than as its fields, which is the right unit for a work
+list but is not field coverage — see
+[greenfield-coverage-invariant.md](greenfield-coverage-invariant.md).
 
 Run it with `hack/tools/greenfield/silence_report.py`; see
 [greenfield-coverage-invariant.md](greenfield-coverage-invariant.md) for what each state means, and
@@ -58,7 +63,7 @@ than 231, because 42 generated nothing at all; every absolute number moved with 
 
 ## 2. Flagging — met, and enforced
 
-295 `+kcc:guess` markers, **every one with a judgement-queue entry**, checked by
+348 `+kcc:guess` markers, **every one with a judgement-queue entry**, checked by
 `hack/tools/greenfield/check_guess_entries.py` as the last step of `dev/tasks/greenfield-regenerate`.
 
 The rule is: anything the generator marks as a guess needs a human, so it belongs in the queue —

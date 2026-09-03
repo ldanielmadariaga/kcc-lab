@@ -61,6 +61,29 @@ spec:
           spec:
             description: WorkstationSpec defines the desired state of Workstation
             properties:
+              annotations:
+                additionalProperties:
+                  type: string
+                description: Optional. Client-specified annotations.
+                type: object
+              displayName:
+                description: Optional. Human-readable name for this workstation.
+                type: string
+              etag:
+                description: Optional. Checksum computed by the server. May be sent
+                  on update and delete requests to make sure that the client has an
+                  up-to-date value before proceeding.
+                type: string
+              labels:
+                additionalProperties:
+                  type: string
+                description: Optional. [Labels](https://cloud.google.com/workstations/docs/label-resources)
+                  that are applied to the workstation and that are also propagated
+                  to the underlying Compute Engine resources.
+                type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -97,6 +120,62 @@ spec:
                 description: The Workstation name. If not given, the metadata.name
                   will be used.
                 type: string
+              workstationClusterRef:
+                description: The WorkstationCluster that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed WorkstationCluster
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/workstationClusters/{{workstationclusterID}}".
+                    type: string
+                  name:
+                    description: The name of a WorkstationCluster resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a WorkstationCluster resource.
+                    type: string
+                type: object
+              workstationConfigRef:
+                description: The WorkstationConfig that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed WorkstationConfig
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/workstationClusters/{{workstationclusterID}}/workstationConfigs/{{workstationconfigID}}".
+                    type: string
+                  name:
+                    description: The name of a WorkstationConfig resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a WorkstationConfig resource.
+                    type: string
+                type: object
             required:
             - projectRef
             type: object
@@ -144,6 +223,40 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. Time when this workstation was created.
+                    type: string
+                  deleteTime:
+                    description: Output only. Time when this workstation was soft-deleted.
+                    type: string
+                  host:
+                    description: Output only. Host to which clients can send HTTPS
+                      traffic that will be received by the workstation. Authorized
+                      traffic will be received to the workstation as HTTP on port
+                      80. To send traffic to a different port, clients may prefix
+                      the host with the destination port in the format `{port}-{host}`.
+                    type: string
+                  reconciling:
+                    description: Output only. Indicates whether this workstation is
+                      currently being updated to match its intended state.
+                    type: boolean
+                  startTime:
+                    description: Output only. Time when this workstation was most
+                      recently successfully started, regardless of the workstation's
+                      initial state.
+                    type: string
+                  state:
+                    description: Output only. Current state of the workstation.
+                    type: string
+                  uid:
+                    description: Output only. A system-assigned unique identifier
+                      for this workstation.
+                    type: string
+                  updateTime:
+                    description: Output only. Time when this workstation was most
+                      recently updated.
+                    type: string
                 type: object
             type: object
         required:

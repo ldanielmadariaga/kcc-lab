@@ -35,12 +35,9 @@ func APIGatewayAPIObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Api)
 	}
 	out := &krm.APIGatewayAPIObservedState{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Labels
-	// MISSING: DisplayName
-	// MISSING: ManagedService
-	// MISSING: State
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	return out
 }
 func APIGatewayAPIObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIGatewayAPIObservedState) *pb.Api {
@@ -49,12 +46,9 @@ func APIGatewayAPIObservedState_ToProto(mapCtx *direct.MapContext, in *krm.APIGa
 	}
 	out := &pb.Api{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Labels
-	// MISSING: DisplayName
-	// MISSING: ManagedService
-	// MISSING: State
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.State = direct.Enum_ToProto[pb.Api_State](mapCtx, in.State)
 	return out
 }
 func APIGatewayAPISpec_FromProto(mapCtx *direct.MapContext, in *pb.Api) *krm.APIGatewayAPISpec {
@@ -63,12 +57,9 @@ func APIGatewayAPISpec_FromProto(mapCtx *direct.MapContext, in *pb.Api) *krm.API
 	}
 	out := &krm.APIGatewayAPISpec{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Labels
-	// MISSING: DisplayName
-	// MISSING: ManagedService
-	// MISSING: State
+	out.Labels = in.Labels
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.ManagedService = direct.LazyPtr(in.GetManagedService())
 	return out
 }
 func APIGatewayAPISpec_ToProto(mapCtx *direct.MapContext, in *krm.APIGatewayAPISpec) *pb.Api {
@@ -77,11 +68,8 @@ func APIGatewayAPISpec_ToProto(mapCtx *direct.MapContext, in *krm.APIGatewayAPIS
 	}
 	out := &pb.Api{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Labels
-	// MISSING: DisplayName
-	// MISSING: ManagedService
-	// MISSING: State
+	out.Labels = in.Labels
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.ManagedService = direct.ValueOf(in.ManagedService)
 	return out
 }

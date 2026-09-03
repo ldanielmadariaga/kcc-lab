@@ -196,7 +196,7 @@ type GcipSettings struct {
 	//  agent flow is used, `tenant_ids` should only contain one single element,
 	//  while for tenant flow, `tenant_ids` can contain multiple elements.
 	// +kcc:proto:field=google.cloud.iap.v1.GcipSettings.tenant_ids
-	TenantIds []string `json:"tenantIds,omitempty"`
+	TenantIDs []string `json:"tenantIDs,omitempty"`
 
 	// Login page URI associated with the GCIP tenants.
 	//  Typically, all resources within the same project share the same login page,

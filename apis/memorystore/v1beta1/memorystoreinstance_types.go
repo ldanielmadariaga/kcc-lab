@@ -28,8 +28,107 @@ type MemorystoreInstanceSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/instances/{instance}
+	Location *string `json:"location"`
+
 	// The MemorystoreInstance name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. Immutable. Backups that stored in Cloud Storage buckets.
+	//  The Cloud Storage buckets need to be the same region as the instances.
+	//  Read permission is required to import from the provided Cloud Storage
+	//  Objects.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.gcs_source
+	GCSSource *Instance_GCSBackupSource `json:"gcsSource,omitempty"`
+
+	// Optional. Immutable. Backups that generated and managed by memorystore
+	//  service.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.managed_backup_source
+	ManagedBackupSource *Instance_ManagedBackupSource `json:"managedBackupSource,omitempty"`
+
+	// Optional. Labels to represent user-provided metadata.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. Number of replica nodes per shard. If omitted the default is 0
+	//  replicas.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.replica_count
+	ReplicaCount *int32 `json:"replicaCount,omitempty"`
+
+	// Optional. Immutable. Authorization mode of the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.authorization_mode
+	AuthorizationMode *string `json:"authorizationMode,omitempty"`
+
+	// Optional. Immutable. In-transit encryption mode of the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.transit_encryption_mode
+	TransitEncryptionMode *string `json:"transitEncryptionMode,omitempty"`
+
+	// Optional. Number of shards for the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.shard_count
+	ShardCount *int32 `json:"shardCount,omitempty"`
+
+	// Optional. Machine type for individual nodes of the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.node_type
+	NodeType *string `json:"nodeType,omitempty"`
+
+	// Optional. Persistence configuration of the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.persistence_config
+	PersistenceConfig *PersistenceConfig `json:"persistenceConfig,omitempty"`
+
+	// Optional. Engine version of the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.engine_version
+	EngineVersion *string `json:"engineVersion,omitempty"`
+
+	// Optional. User-provided engine configurations for the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.engine_configs
+	EngineConfigs map[string]string `json:"engineConfigs,omitempty"`
+
+	// Optional. Immutable. Zone distribution configuration of the instance for
+	//  node allocation.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.zone_distribution_config
+	ZoneDistributionConfig *ZoneDistributionConfig `json:"zoneDistributionConfig,omitempty"`
+
+	// Optional. If set to true deletion of the instance will fail.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.deletion_protection_enabled
+	DeletionProtectionEnabled *bool `json:"deletionProtectionEnabled,omitempty"`
+
+	// Optional. Immutable. Deprecated: Use the
+	//  endpoints.connections.psc_auto_connection value instead.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.psc_auto_connections
+	PSCAutoConnections []PSCAutoConnection `json:"pscAutoConnections,omitempty"`
+
+	// Optional. Endpoints for the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.endpoints
+	Endpoints []Instance_InstanceEndpoint `json:"endpoints,omitempty"`
+
+	// Optional. The mode config for the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.mode
+	Mode *string `json:"mode,omitempty"`
+
+	// Optional. Input only. Ondemand maintenance for the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.ondemand_maintenance
+	OndemandMaintenance *bool `json:"ondemandMaintenance,omitempty"`
+
+	// Optional. The maintenance policy for the instance. If not provided,
+	//  the maintenance event will be performed based on Memorystore
+	//  internal rollout schedule.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.maintenance_policy
+	MaintenancePolicy *MaintenancePolicy `json:"maintenancePolicy,omitempty"`
+
+	// Optional. The config for cross instance replication.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.cross_instance_replication_config
+	CrossInstanceReplicationConfig *CrossInstanceReplicationConfig `json:"crossInstanceReplicationConfig,omitempty"`
+
+	// Optional. If true, instance endpoints that are created and registered by
+	//  customers can be deleted asynchronously. That is, such an instance endpoint
+	//  can be de-registered before the forwarding rules in the instance endpoint
+	//  are deleted.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.async_instance_endpoints_deletion_enabled
+	AsyncInstanceEndpointsDeletionEnabled *bool `json:"asyncInstanceEndpointsDeletionEnabled,omitempty"`
+
+	// Optional. The automated backup config for the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.automated_backup_config
+	AutomatedBackupConfig *AutomatedBackupConfig `json:"automatedBackupConfig,omitempty"`
 }
 
 // MemorystoreInstanceStatus defines the config connector machine state of MemorystoreInstance
@@ -51,6 +150,66 @@ type MemorystoreInstanceStatus struct {
 // MemorystoreInstanceObservedState is the state of the MemorystoreInstance resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.memorystore.v1.Instance
 type MemorystoreInstanceObservedState struct {
+	// Output only. Creation timestamp of the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Latest update timestamp of the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Current state of the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. Additional information about the state of the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.state_info
+	StateInfo *Instance_StateInfoObservedState `json:"stateInfo,omitempty"`
+
+	// Output only. System assigned, unique identifier for the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. Deprecated: Use the endpoints.connections.psc_auto_connection
+	//  or endpoints.connections.psc_connection values instead.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.discovery_endpoints
+	DiscoveryEndpoints []DiscoveryEndpointObservedState `json:"discoveryEndpoints,omitempty"`
+
+	// Output only. Configuration of individual nodes of the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.node_config
+	NodeConfig *NodeConfigObservedState `json:"nodeConfig,omitempty"`
+
+	// Optional. Immutable. Deprecated: Use the
+	//  endpoints.connections.psc_auto_connection value instead.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.psc_auto_connections
+	PSCAutoConnections []PSCAutoConnectionObservedState `json:"pscAutoConnections,omitempty"`
+
+	// Output only. Service attachment details to configure PSC connections.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.psc_attachment_details
+	PSCAttachmentDetails []PSCAttachmentDetailObservedState `json:"pscAttachmentDetails,omitempty"`
+
+	// Optional. Endpoints for the instance.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.endpoints
+	Endpoints []Instance_InstanceEndpointObservedState `json:"endpoints,omitempty"`
+
+	// Optional. The maintenance policy for the instance. If not provided,
+	//  the maintenance event will be performed based on Memorystore
+	//  internal rollout schedule.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.maintenance_policy
+	MaintenancePolicy *MaintenancePolicyObservedState `json:"maintenancePolicy,omitempty"`
+
+	// Output only. Published maintenance schedule.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.maintenance_schedule
+	MaintenanceSchedule *MaintenanceScheduleObservedState `json:"maintenanceSchedule,omitempty"`
+
+	// Optional. The config for cross instance replication.
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.cross_instance_replication_config
+	CrossInstanceReplicationConfig *CrossInstanceReplicationConfigObservedState `json:"crossInstanceReplicationConfig,omitempty"`
+
+	// Output only. The backup collection full resource name. Example:
+	//  projects/{project}/locations/{location}/backupCollections/{collection}
+	// +kcc:proto:field=google.cloud.memorystore.v1.Instance.backup_collection
+	BackupCollection *string `json:"backupCollection,omitempty"`
 }
 
 // +genclient

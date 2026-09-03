@@ -66,11 +66,11 @@ type Instance_HostConfig struct {
 }
 */
 
-/* unreachable type Instance_PrivateConfig
 // +kcc:proto=google.cloud.securesourcemanager.v1.Instance.PrivateConfig
 type Instance_PrivateConfig struct {
 	// Required. Immutable. Indicate if it's private instance.
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.PrivateConfig.is_private
+	// +required
 	IsPrivate *bool `json:"isPrivate,omitempty"`
 
 	// Optional. Immutable. CA pool resource, resource must in the format of
@@ -84,16 +84,13 @@ type Instance_PrivateConfig struct {
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.PrivateConfig.psc_allowed_projects
 	PSCAllowedProjects []string `json:"pscAllowedProjects,omitempty"`
 }
-*/
 
-/* unreachable type Instance_WorkforceIdentityFederationConfig
 // +kcc:proto=google.cloud.securesourcemanager.v1.Instance.WorkforceIdentityFederationConfig
 type Instance_WorkforceIdentityFederationConfig struct {
 	// Optional. Immutable. Whether Workforce Identity Federation is enabled.
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.WorkforceIdentityFederationConfig.enabled
 	Enabled *bool `json:"enabled,omitempty"`
 }
-*/
 
 /* unreachable type Repository
 // +kcc:proto=google.cloud.securesourcemanager.v1.Repository
@@ -131,7 +128,6 @@ type Repository struct {
 }
 */
 
-/* unreachable type Repository_InitialConfig
 // +kcc:proto=google.cloud.securesourcemanager.v1.Repository.InitialConfig
 type Repository_InitialConfig struct {
 	// Default branch name of the repository.
@@ -274,7 +270,6 @@ type Repository_InitialConfig struct {
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.InitialConfig.readme
 	Readme *string `json:"readme,omitempty"`
 }
-*/
 
 /* unreachable type Repository_UrIs
 // +kcc:proto=google.cloud.securesourcemanager.v1.Repository.URIs
@@ -312,7 +307,6 @@ type InstanceObservedState struct {
 }
 */
 
-/* unreachable type Instance_HostConfigObservedState
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Instance.HostConfig
 type Instance_HostConfigObservedState struct {
 	// Output only. HTML hostname.
@@ -331,9 +325,7 @@ type Instance_HostConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.HostConfig.git_ssh
 	GitSSH *string `json:"gitSSH,omitempty"`
 }
-*/
 
-/* unreachable type Instance_PrivateConfigObservedState
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Instance.PrivateConfig
 type Instance_PrivateConfigObservedState struct {
 	// Output only. Service Attachment for HTTP, resource is in the format of
@@ -346,7 +338,6 @@ type Instance_PrivateConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.PrivateConfig.ssh_service_attachment
 	SSHServiceAttachment *string `json:"sshServiceAttachment,omitempty"`
 }
-*/
 
 /* unreachable type RepositoryObservedState
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Repository
@@ -369,7 +360,6 @@ type RepositoryObservedState struct {
 }
 */
 
-/* unreachable type Repository_UrIsObservedState
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Repository.URIs
 type Repository_UrIsObservedState struct {
 	// Output only. HTML is the URI for user to view the repository in a
@@ -385,4 +375,3 @@ type Repository_UrIsObservedState struct {
 	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.URIs.api
 	API *string `json:"api,omitempty"`
 }
-*/

@@ -30,6 +30,48 @@ type MonitoringDashboardSpec struct {
 
 	// The MonitoringDashboard name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Required. The mutable, human-readable name.
+	// +kcc:proto:field=google.monitoring.dashboard.v1.Dashboard.display_name
+	// +required
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// `etag` is used for optimistic concurrency control as a way to help
+	//  prevent simultaneous updates of a policy from overwriting each other.
+	//  An `etag` is returned in the response to `GetDashboard`, and
+	//  users are expected to put that etag in the request to `UpdateDashboard` to
+	//  ensure that their change will be applied to the same version of the
+	//  Dashboard configuration. The field should not be passed during
+	//  dashboard creation.
+	// +kcc:proto:field=google.monitoring.dashboard.v1.Dashboard.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Content is arranged with a basic layout that re-flows a simple list of
+	//  informational elements like widgets or tiles.
+	// +kcc:proto:field=google.monitoring.dashboard.v1.Dashboard.grid_layout
+	GridLayout *GridLayout `json:"gridLayout,omitempty"`
+
+	// The content is arranged as a grid of tiles, with each content widget
+	//  occupying one or more grid blocks.
+	// +kcc:proto:field=google.monitoring.dashboard.v1.Dashboard.mosaic_layout
+	MosaicLayout *MosaicLayout `json:"mosaicLayout,omitempty"`
+
+	// The content is divided into equally spaced rows and the widgets are
+	//  arranged horizontally.
+	// +kcc:proto:field=google.monitoring.dashboard.v1.Dashboard.row_layout
+	RowLayout *RowLayout `json:"rowLayout,omitempty"`
+
+	// The content is divided into equally spaced columns and the widgets are
+	//  arranged vertically.
+	// +kcc:proto:field=google.monitoring.dashboard.v1.Dashboard.column_layout
+	ColumnLayout *ColumnLayout `json:"columnLayout,omitempty"`
+
+	// Filters to reduce the amount of data charted based on the filter criteria.
+	// +kcc:proto:field=google.monitoring.dashboard.v1.Dashboard.dashboard_filters
+	DashboardFilters []DashboardFilter `json:"dashboardFilters,omitempty"`
+
+	// Labels applied to the dashboard
+	// +kcc:proto:field=google.monitoring.dashboard.v1.Dashboard.labels
+	Labels map[string]string `json:"labels,omitempty"`
 }
 
 // MonitoringDashboardStatus defines the config connector machine state of MonitoringDashboard

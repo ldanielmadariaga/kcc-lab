@@ -1,0 +1,18 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: field ".status.observedState.uuid" reason=output-only-in-comment-only (proto comment says output only but no field_behavior annotation, so it was generated into the Spec instead. Move it if the comment is right: Output only. The UUID (Universally Unique IDentifier) associated with this environment. This value is generated when the environment is created.)
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: field ".status.observedState.createTime" reason=output-only-in-comment-only (proto comment says output only but no field_behavior annotation, so it was generated into the Spec instead. Move it if the comment is right: Output only. The time at which this environment was created.)
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: field ".status.observedState.updateTime" reason=output-only-in-comment-only (proto comment says output only but no field_behavior annotation, so it was generated into the Spec instead. Move it if the comment is right: Output only. The time at which this environment was last modified.)
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/environments/{environment}; confirm the resource is regional and that this is the name for it)
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: field ".spec.config.encryptionConfig.kmsKeyName" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: field ".spec.config.nodeConfig.composerNetworkAttachment" reason=possible-reference-by-description
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: field ".spec.config.nodeConfig.network" reason=possible-reference-by-description
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: field ".spec.config.nodeConfig.serviceAccount" reason=possible-reference-by-description
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: field ".spec.config.nodeConfig.subnetwork" reason=possible-reference-by-description
+kind=ComposerEnvironment group=composer.cnrm.cloud.google.com: field ".spec.storageConfig.bucket" reason=possible-reference-by-description

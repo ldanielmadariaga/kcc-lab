@@ -61,6 +61,57 @@ spec:
           spec:
             description: BigLakeTableSpec defines the desired state of BigLakeTable
             properties:
+              catalog:
+                description: The Catalog that this resource belongs to.
+                type: string
+              database:
+                description: The Database that this resource belongs to.
+                type: string
+              etag:
+                description: The checksum of a table object computed by the server
+                  based on the value of other fields. It may be sent on update requests
+                  to ensure the client has an up-to-date value before proceeding.
+                  It is only checked for update table operations.
+                type: string
+              hiveOptions:
+                description: Options of a Hive table.
+                properties:
+                  parameters:
+                    additionalProperties:
+                      type: string
+                    description: Stores user supplied Hive table parameters.
+                    type: object
+                  storageDescriptor:
+                    description: Stores physical storage information of the data.
+                    properties:
+                      inputFormat:
+                        description: The fully qualified Java class name of the input
+                          format.
+                        type: string
+                      locationURI:
+                        description: Cloud Storage folder URI where the table data
+                          is stored, starting with "gs://".
+                        type: string
+                      outputFormat:
+                        description: The fully qualified Java class name of the output
+                          format.
+                        type: string
+                      serdeInfo:
+                        description: Serializer and deserializer information.
+                        properties:
+                          serializationLib:
+                            description: The fully qualified Java class name of the
+                              serialization library.
+                            type: string
+                        type: object
+                    type: object
+                  tableType:
+                    description: Hive table type. For example, MANAGED_TABLE, EXTERNAL_TABLE.
+                    type: string
+                type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -96,6 +147,9 @@ spec:
               resourceID:
                 description: The BigLakeTable name. If not given, the metadata.name
                   will be used.
+                type: string
+              type:
+                description: The table type.
                 type: string
             required:
             - projectRef
@@ -144,6 +198,21 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. The creation time of the table.
+                    type: string
+                  deleteTime:
+                    description: Output only. The deletion time of the table. Only
+                      set after the table is deleted.
+                    type: string
+                  expireTime:
+                    description: Output only. The time when this table is considered
+                      expired. Only set after the table is deleted.
+                    type: string
+                  updateTime:
+                    description: Output only. The last modification time of the table.
+                    type: string
                 type: object
             type: object
         required:

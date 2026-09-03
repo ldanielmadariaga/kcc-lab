@@ -27,6 +27,7 @@ type DataEncryptionState struct {
 	// Required. The KMS key version name with which data of a resource is
 	//  encrypted.
 	// +kcc:proto:field=google.cloud.dataform.v1beta1.DataEncryptionState.kms_key_version_name
+	// +required
 	KMSKeyVersionName *string `json:"kmsKeyVersionName,omitempty"`
 }
 */
@@ -93,20 +94,21 @@ type Repository struct {
 }
 */
 
-/* unreachable type Repository_GitRemoteSettings
 // +kcc:proto=google.cloud.dataform.v1beta1.Repository.GitRemoteSettings
 type Repository_GitRemoteSettings struct {
 	// Required. The Git remote's URL.
 	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.GitRemoteSettings.url
+	// +required
 	URL *string `json:"url,omitempty"`
 
 	// Required. The Git remote's default branch name.
 	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.GitRemoteSettings.default_branch
+	// +required
 	DefaultBranch *string `json:"defaultBranch,omitempty"`
 
 	// Optional. The name of the Secret Manager secret version to use as an
 	//  authentication token for Git operations. Must be in the format
-	//  `projects/-*-/secrets/-*-/versions/-*`.
+	//  `projects/*/secrets/*/versions/*`.
 	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.GitRemoteSettings.authentication_token_secret_version
 	AuthenticationTokenSecretVersion *string `json:"authenticationTokenSecretVersion,omitempty"`
 
@@ -114,25 +116,23 @@ type Repository_GitRemoteSettings struct {
 	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.GitRemoteSettings.ssh_authentication_config
 	SSHAuthenticationConfig *Repository_GitRemoteSettings_SSHAuthenticationConfig `json:"sshAuthenticationConfig,omitempty"`
 }
-*/
 
-/* unreachable type Repository_GitRemoteSettings_SSHAuthenticationConfig
 // +kcc:proto=google.cloud.dataform.v1beta1.Repository.GitRemoteSettings.SshAuthenticationConfig
 type Repository_GitRemoteSettings_SSHAuthenticationConfig struct {
 	// Required. The name of the Secret Manager secret version to use as a
 	//  ssh private key for Git operations.
-	//  Must be in the format `projects/-*-/secrets/-*-/versions/-*`.
+	//  Must be in the format `projects/*/secrets/*/versions/*`.
 	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.GitRemoteSettings.SshAuthenticationConfig.user_private_key_secret_version
+	// +required
 	UserPrivateKeySecretVersion *string `json:"userPrivateKeySecretVersion,omitempty"`
 
 	// Required. Content of a public SSH key to verify an identity of a remote
 	//  Git host.
 	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.GitRemoteSettings.SshAuthenticationConfig.host_public_key
+	// +required
 	HostPublicKey *string `json:"hostPublicKey,omitempty"`
 }
-*/
 
-/* unreachable type Repository_WorkspaceCompilationOverrides
 // +kcc:proto=google.cloud.dataform.v1beta1.Repository.WorkspaceCompilationOverrides
 type Repository_WorkspaceCompilationOverrides struct {
 	// Optional. The default database (Google Cloud project ID).
@@ -148,7 +148,14 @@ type Repository_WorkspaceCompilationOverrides struct {
 	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.WorkspaceCompilationOverrides.table_prefix
 	TablePrefix *string `json:"tablePrefix,omitempty"`
 }
-*/
+
+// +kcc:observedstate:proto=google.cloud.dataform.v1beta1.DataEncryptionState
+type DataEncryptionStateObservedState struct {
+	// Required. The KMS key version name with which data of a resource is
+	//  encrypted.
+	// +kcc:proto:field=google.cloud.dataform.v1beta1.DataEncryptionState.kms_key_version_name
+	KMSKeyVersionName *string `json:"kmsKeyVersionName,omitempty"`
+}
 
 /* unreachable type RepositoryObservedState
 // +kcc:observedstate:proto=google.cloud.dataform.v1beta1.Repository
@@ -171,7 +178,7 @@ type RepositoryObservedState struct {
 	// Output only. A data encryption state of a Git repository if this Repository
 	//  is protected by a KMS key.
 	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.data_encryption_state
-	DataEncryptionState *DataEncryptionState `json:"dataEncryptionState,omitempty"`
+	DataEncryptionState *DataEncryptionStateObservedState `json:"dataEncryptionState,omitempty"`
 
 	// Output only. All the metadata information that is used internally to serve
 	//  the resource. For example: timestamps, flags, status fields, etc. The
@@ -181,7 +188,6 @@ type RepositoryObservedState struct {
 }
 */
 
-/* unreachable type Repository_GitRemoteSettingsObservedState
 // +kcc:observedstate:proto=google.cloud.dataform.v1beta1.Repository.GitRemoteSettings
 type Repository_GitRemoteSettingsObservedState struct {
 	// Output only. Deprecated: The field does not contain any token status
@@ -190,4 +196,3 @@ type Repository_GitRemoteSettingsObservedState struct {
 	// +kcc:proto:field=google.cloud.dataform.v1beta1.Repository.GitRemoteSettings.token_status
 	TokenStatus *string `json:"tokenStatus,omitempty"`
 }
-*/

@@ -28,8 +28,33 @@ type CertificateManagerDNSAuthorizationSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/dnsAuthorizations/{dns_authorization}
+	Location *string `json:"location"`
+
 	// The CertificateManagerDNSAuthorization name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Set of labels associated with a DnsAuthorization.
+	// +kcc:proto:field=google.cloud.certificatemanager.v1.DnsAuthorization.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// One or more paragraphs of text description of a DnsAuthorization.
+	// +kcc:proto:field=google.cloud.certificatemanager.v1.DnsAuthorization.description
+	Description *string `json:"description,omitempty"`
+
+	// Required. Immutable. A domain that is being authorized. A DnsAuthorization
+	//  resource covers a single domain and its wildcard, e.g. authorization for
+	//  `example.com` can be used to issue certificates for `example.com` and
+	//  `*.example.com`.
+	// +kcc:proto:field=google.cloud.certificatemanager.v1.DnsAuthorization.domain
+	// +required
+	Domain *string `json:"domain,omitempty"`
+
+	// Immutable. Type of DnsAuthorization. If unset during resource creation the
+	//  following default will be used:
+	//  - in location global: FIXED_RECORD.
+	// +kcc:proto:field=google.cloud.certificatemanager.v1.DnsAuthorization.type
+	Type *string `json:"type,omitempty"`
 }
 
 // CertificateManagerDNSAuthorizationStatus defines the config connector machine state of CertificateManagerDNSAuthorization
@@ -51,6 +76,18 @@ type CertificateManagerDNSAuthorizationStatus struct {
 // CertificateManagerDNSAuthorizationObservedState is the state of the CertificateManagerDNSAuthorization resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.certificatemanager.v1.DnsAuthorization
 type CertificateManagerDNSAuthorizationObservedState struct {
+	// Output only. The creation timestamp of a DnsAuthorization.
+	// +kcc:proto:field=google.cloud.certificatemanager.v1.DnsAuthorization.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The last update timestamp of a DnsAuthorization.
+	// +kcc:proto:field=google.cloud.certificatemanager.v1.DnsAuthorization.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. DNS Resource Record that needs to be added to DNS
+	//  configuration.
+	// +kcc:proto:field=google.cloud.certificatemanager.v1.DnsAuthorization.dns_resource_record
+	DNSResourceRecord *DNSAuthorization_DNSResourceRecordObservedState `json:"dnsResourceRecord,omitempty"`
 }
 
 // +genclient

@@ -53,6 +53,11 @@ go run . generate-types \
 # --- v1beta1 ---
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.gkehub.v1beta --api-version gkehub.cnrm.cloud.google.com/v1beta1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource GKEHubFeatureMembership:MembershipFeatureSpec
 
 # NOTYET - not yet using proto

@@ -22,6 +22,10 @@
 
 package v1beta1
 
+import (
+	common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"
+)
+
 /* unreachable type Assignment
 // +kcc:proto=google.cloud.bigquery.reservation.v1.Assignment
 type Assignment struct {
@@ -172,7 +176,6 @@ type Reservation struct {
 }
 */
 
-/* unreachable type Reservation_Autoscale
 // +kcc:proto=google.cloud.bigquery.reservation.v1.Reservation.Autoscale
 type Reservation_Autoscale struct {
 
@@ -180,7 +183,6 @@ type Reservation_Autoscale struct {
 	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.Autoscale.max_slots
 	MaxSlots *int64 `json:"maxSlots,omitempty"`
 }
-*/
 
 /* unreachable type Reservation_ReplicationStatus
 // +kcc:proto=google.cloud.bigquery.reservation.v1.Reservation.ReplicationStatus
@@ -244,7 +246,6 @@ type ReservationObservedState struct {
 }
 */
 
-/* unreachable type Reservation_AutoscaleObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.reservation.v1.Reservation.Autoscale
 type Reservation_AutoscaleObservedState struct {
 	// Output only. The slot capacity added to this reservation when autoscale
@@ -255,9 +256,7 @@ type Reservation_AutoscaleObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.Autoscale.current_slots
 	CurrentSlots *int64 `json:"currentSlots,omitempty"`
 }
-*/
 
-/* unreachable type Reservation_ReplicationStatusObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.reservation.v1.Reservation.ReplicationStatus
 type Reservation_ReplicationStatusObservedState struct {
 	// Output only. The last error encountered while trying to replicate changes
@@ -277,4 +276,3 @@ type Reservation_ReplicationStatusObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Reservation.ReplicationStatus.last_replication_time
 	LastReplicationTime *string `json:"lastReplicationTime,omitempty"`
 }
-*/

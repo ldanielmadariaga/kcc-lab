@@ -36,6 +36,11 @@ ${CONTROLLERBUILDER} generate-types \
   --service google.monitoring.v3,google.monitoring.metricsscope.v1,google.monitoring.dashboard.v1 \
   --api-version monitoring.cnrm.cloud.google.com/v1beta1  \
   --include-skipped-output \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource MonitoringGroup:Group \
   --resource MonitoringMetricDescriptor:google.api.MetricDescriptor \
   --resource MonitoringNotificationChannel:NotificationChannel \

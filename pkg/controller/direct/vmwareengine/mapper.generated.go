@@ -218,13 +218,11 @@ func VMwareEngineExternalAddressObservedState_v1beta1_FromProto(mapCtx *direct.M
 	}
 	out := &krmvmwareenginev1beta1.VMwareEngineExternalAddressObservedState{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: InternalIP
-	// MISSING: ExternalIP
-	// MISSING: State
-	// MISSING: Uid
-	// MISSING: Description
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.ExternalIP = direct.LazyPtr(in.GetExternalIp())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.Uid = direct.LazyPtr(in.GetUid())
 	return out
 }
 func VMwareEngineExternalAddressObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmvmwareenginev1beta1.VMwareEngineExternalAddressObservedState) *pb.ExternalAddress {
@@ -233,13 +231,11 @@ func VMwareEngineExternalAddressObservedState_v1beta1_ToProto(mapCtx *direct.Map
 	}
 	out := &pb.ExternalAddress{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: InternalIP
-	// MISSING: ExternalIP
-	// MISSING: State
-	// MISSING: Uid
-	// MISSING: Description
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.ExternalIp = direct.ValueOf(in.ExternalIP)
+	out.State = direct.Enum_ToProto[pb.ExternalAddress_State](mapCtx, in.State)
+	out.Uid = direct.ValueOf(in.Uid)
 	return out
 }
 func VMwareEngineExternalAddressSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.ExternalAddress) *krmvmwareenginev1beta1.VMwareEngineExternalAddressSpec {
@@ -248,13 +244,8 @@ func VMwareEngineExternalAddressSpec_v1beta1_FromProto(mapCtx *direct.MapContext
 	}
 	out := &krmvmwareenginev1beta1.VMwareEngineExternalAddressSpec{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: InternalIP
-	// MISSING: ExternalIP
-	// MISSING: State
-	// MISSING: Uid
-	// MISSING: Description
+	out.InternalIP = direct.LazyPtr(in.GetInternalIp())
+	out.Description = direct.LazyPtr(in.GetDescription())
 	return out
 }
 func VMwareEngineExternalAddressSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmvmwareenginev1beta1.VMwareEngineExternalAddressSpec) *pb.ExternalAddress {
@@ -263,13 +254,8 @@ func VMwareEngineExternalAddressSpec_v1beta1_ToProto(mapCtx *direct.MapContext, 
 	}
 	out := &pb.ExternalAddress{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: InternalIP
-	// MISSING: ExternalIP
-	// MISSING: State
-	// MISSING: Uid
-	// MISSING: Description
+	out.InternalIp = direct.ValueOf(in.InternalIP)
+	out.Description = direct.ValueOf(in.Description)
 	return out
 }
 func VMwareEngineNetworkObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.VmwareEngineNetwork) *krmvmwareenginev1alpha1.VMwareEngineNetworkObservedState {

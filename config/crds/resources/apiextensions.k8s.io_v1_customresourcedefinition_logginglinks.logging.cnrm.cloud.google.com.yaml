@@ -61,6 +61,24 @@ spec:
           spec:
             description: LoggingLinkSpec defines the desired state of LoggingLink
             properties:
+              bigqueryDataset:
+                description: The information of a BigQuery Dataset. When a link is
+                  created, a BigQuery dataset is created along with it, in the same
+                  project as the LogBucket it's linked to. This dataset will also
+                  have BigQuery Views corresponding to the LogViews in the bucket.
+                type: object
+              bucket:
+                description: The Bucket that this resource belongs to.
+                type: string
+              description:
+                description: |-
+                  Describes this link.
+
+                   The maximum length of the description is 8000 characters.
+                type: string
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -144,6 +162,31 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  bigqueryDataset:
+                    description: The information of a BigQuery Dataset. When a link
+                      is created, a BigQuery dataset is created along with it, in
+                      the same project as the LogBucket it's linked to. This dataset
+                      will also have BigQuery Views corresponding to the LogViews
+                      in the bucket.
+                    properties:
+                      datasetID:
+                        description: |-
+                          Output only. The full resource name of the BigQuery dataset. The DATASET_ID
+                           will match the ID of the link, so the link must match the naming
+                           restrictions of BigQuery datasets (alphanumeric characters and underscores
+                           only).
+
+                           The dataset will have a resource path of
+                             "bigquery.googleapis.com/projects/[PROJECT_ID]/datasets/[DATASET_ID]"
+                        type: string
+                    type: object
+                  createTime:
+                    description: Output only. The creation timestamp of the link.
+                    type: string
+                  lifecycleState:
+                    description: Output only. The resource lifecycle state.
+                    type: string
                 type: object
             type: object
         required:

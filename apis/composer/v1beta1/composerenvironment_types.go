@@ -28,8 +28,47 @@ type ComposerEnvironmentSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/environments/{environment}
+	Location *string `json:"location"`
+
 	// The ComposerEnvironment name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. Configuration parameters for this environment.
+	// +kcc:proto:field=google.cloud.orchestration.airflow.service.v1.Environment.config
+	Config *EnvironmentConfig `json:"config,omitempty"`
+
+	// Output only. The UUID (Universally Unique IDentifier) associated with this
+	//  environment. This value is generated when the environment is created.
+	// +kcc:proto:field=google.cloud.orchestration.airflow.service.v1.Environment.uuid
+	Uuid *string `json:"uuid,omitempty"`
+
+	// The current state of the environment.
+	// +kcc:proto:field=google.cloud.orchestration.airflow.service.v1.Environment.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. The time at which this environment was created.
+	// +kcc:proto:field=google.cloud.orchestration.airflow.service.v1.Environment.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time at which this environment was last modified.
+	// +kcc:proto:field=google.cloud.orchestration.airflow.service.v1.Environment.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Optional. User-defined labels for this environment.
+	//  The labels map can contain no more than 64 entries. Entries of the labels
+	//  map are UTF8 strings that comply with the following restrictions:
+	//
+	//  * Keys must conform to regexp: [\p{Ll}\p{Lo}][\p{Ll}\p{Lo}\p{N}_-]{0,62}
+	//  * Values must conform to regexp:  [\p{Ll}\p{Lo}\p{N}_-]{0,63}
+	//  * Both keys and values are additionally constrained to be <= 128 bytes in
+	//  size.
+	// +kcc:proto:field=google.cloud.orchestration.airflow.service.v1.Environment.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. Storage configuration for this environment.
+	// +kcc:proto:field=google.cloud.orchestration.airflow.service.v1.Environment.storage_config
+	StorageConfig *StorageConfig `json:"storageConfig,omitempty"`
 }
 
 // ComposerEnvironmentStatus defines the config connector machine state of ComposerEnvironment
@@ -51,6 +90,17 @@ type ComposerEnvironmentStatus struct {
 // ComposerEnvironmentObservedState is the state of the ComposerEnvironment resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.orchestration.airflow.service.v1.Environment
 type ComposerEnvironmentObservedState struct {
+	// Optional. Configuration parameters for this environment.
+	// +kcc:proto:field=google.cloud.orchestration.airflow.service.v1.Environment.config
+	Config *EnvironmentConfigObservedState `json:"config,omitempty"`
+
+	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.orchestration.airflow.service.v1.Environment.satisfies_pzs
+	SatisfiesPzs *bool `json:"satisfiesPzs,omitempty"`
+
+	// Output only. Reserved for future use.
+	// +kcc:proto:field=google.cloud.orchestration.airflow.service.v1.Environment.satisfies_pzi
+	SatisfiesPzi *bool `json:"satisfiesPzi,omitempty"`
 }
 
 // +genclient

@@ -28,8 +28,31 @@ type KMSImportJobSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/keyRings/{key_ring}/importJobs/{import_job}
+	Location *string `json:"location,omitempty"`
+
+	// The KeyRing that this resource belongs to.
+	// +kcc:guess=parent-segment target=KMSKeyRing
+	KeyRing *string `json:"keyRing,omitempty"`
+
 	// The KMSImportJob name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Required. Immutable. The wrapping method to be used for incoming key
+	//  material.
+	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.import_method
+	// +required
+	ImportMethod *string `json:"importMethod,omitempty"`
+
+	// Required. Immutable. The protection level of the
+	//  [ImportJob][google.cloud.kms.v1.ImportJob]. This must match the
+	//  [protection_level][google.cloud.kms.v1.CryptoKeyVersionTemplate.protection_level]
+	//  of the [version_template][google.cloud.kms.v1.CryptoKey.version_template]
+	//  on the [CryptoKey][google.cloud.kms.v1.CryptoKey] you attempt to import
+	//  into.
+	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.protection_level
+	// +required
+	ProtectionLevel *string `json:"protectionLevel,omitempty"`
 }
 
 // KMSImportJobStatus defines the config connector machine state of KMSImportJob
@@ -51,6 +74,47 @@ type KMSImportJobStatus struct {
 // KMSImportJobObservedState is the state of the KMSImportJob resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.kms.v1.ImportJob
 type KMSImportJobObservedState struct {
+	// Output only. The time at which this
+	//  [ImportJob][google.cloud.kms.v1.ImportJob] was created.
+	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The time this [ImportJob][google.cloud.kms.v1.ImportJob]'s key
+	//  material was generated.
+	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.generate_time
+	GenerateTime *string `json:"generateTime,omitempty"`
+
+	// Output only. The time at which this
+	//  [ImportJob][google.cloud.kms.v1.ImportJob] is scheduled for expiration and
+	//  can no longer be used to import key material.
+	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.expire_time
+	ExpireTime *string `json:"expireTime,omitempty"`
+
+	// Output only. The time this [ImportJob][google.cloud.kms.v1.ImportJob]
+	//  expired. Only present if [state][google.cloud.kms.v1.ImportJob.state] is
+	//  [EXPIRED][google.cloud.kms.v1.ImportJob.ImportJobState.EXPIRED].
+	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.expire_event_time
+	ExpireEventTime *string `json:"expireEventTime,omitempty"`
+
+	// Output only. The current state of the
+	//  [ImportJob][google.cloud.kms.v1.ImportJob], indicating if it can be used.
+	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. The public key with which to wrap key material prior to
+	//  import. Only returned if [state][google.cloud.kms.v1.ImportJob.state] is
+	//  [ACTIVE][google.cloud.kms.v1.ImportJob.ImportJobState.ACTIVE].
+	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.public_key
+	PublicKey *ImportJob_WrappingPublicKey `json:"publicKey,omitempty"`
+
+	// Output only. Statement that was generated and signed by the key creator
+	//  (for example, an HSM) at key creation time. Use this statement to verify
+	//  attributes of the key as stored on the HSM, independently of Google.
+	//  Only present if the chosen
+	//  [ImportMethod][google.cloud.kms.v1.ImportJob.ImportMethod] is one with a
+	//  protection level of [HSM][google.cloud.kms.v1.ProtectionLevel.HSM].
+	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.attestation
+	Attestation *KeyOperationAttestationObservedState `json:"attestation,omitempty"`
 }
 
 // +genclient

@@ -10,3 +10,15 @@
 # marker in types.generated.go. Shared nested messages, so they are listed
 # per service rather than against one Kind.
 # possible-reference-by-sibling: google.cloud.redis.cluster.v1.CrossClusterReplicationConfig.RemoteCluster.cluster target=RedisCluster
+kind=RedisCluster group=redis.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=RedisCluster group=redis.cnrm.cloud.google.com: field ".spec.kmsKey" reason=possible-reference (target=cloudkms.googleapis.com/CryptoKey)
+kind=RedisCluster group=redis.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/clusters/{cluster}; confirm the resource is regional and that this is the name for it)
+kind=RedisCluster group=redis.cnrm.cloud.google.com: field ".spec.clusterEndpoints[].connections[].pscAutoConnection.network" reason=possible-reference-by-description
+kind=RedisCluster group=redis.cnrm.cloud.google.com: field ".spec.clusterEndpoints[].connections[].pscConnection.forwardingRule" reason=possible-reference-by-description
+kind=RedisCluster group=redis.cnrm.cloud.google.com: field ".spec.clusterEndpoints[].connections[].pscConnection.network" reason=possible-reference-by-description
+kind=RedisCluster group=redis.cnrm.cloud.google.com: field ".spec.clusterEndpoints[].connections[].pscConnection.serviceAttachment" reason=possible-reference-by-description
+kind=RedisCluster group=redis.cnrm.cloud.google.com: field ".spec.crossClusterReplicationConfig.primaryCluster.cluster" reason=possible-reference-by-description
+kind=RedisCluster group=redis.cnrm.cloud.google.com: field ".spec.crossClusterReplicationConfig.secondaryClusters[].cluster" reason=possible-reference-by-description
+kind=RedisCluster group=redis.cnrm.cloud.google.com: field ".spec.kmsKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=RedisCluster group=redis.cnrm.cloud.google.com: field ".spec.managedBackupSource.backup" reason=possible-reference-by-description
+kind=RedisCluster group=redis.cnrm.cloud.google.com: field ".spec.pscConfigs[].network" reason=possible-reference-by-description

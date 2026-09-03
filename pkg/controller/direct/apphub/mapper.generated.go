@@ -36,14 +36,10 @@ func AppHubApplicationObservedState_v1beta1_FromProto(mapCtx *direct.MapContext,
 	}
 	out := &krmapphubv1beta1.AppHubApplicationObservedState{}
 	// MISSING: Name
-	// MISSING: DisplayName
-	// MISSING: Description
-	// MISSING: Attributes
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Scope
-	// MISSING: Uid
-	// MISSING: State
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.Uid = direct.LazyPtr(in.GetUid())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	return out
 }
 func AppHubApplicationObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmapphubv1beta1.AppHubApplicationObservedState) *pb.Application {
@@ -52,14 +48,10 @@ func AppHubApplicationObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, i
 	}
 	out := &pb.Application{}
 	// MISSING: Name
-	// MISSING: DisplayName
-	// MISSING: Description
-	// MISSING: Attributes
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Scope
-	// MISSING: Uid
-	// MISSING: State
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.Uid = direct.ValueOf(in.Uid)
+	out.State = direct.Enum_ToProto[pb.Application_State](mapCtx, in.State)
 	return out
 }
 func AppHubApplicationSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Application) *krmapphubv1beta1.AppHubApplicationSpec {
@@ -68,14 +60,10 @@ func AppHubApplicationSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.A
 	}
 	out := &krmapphubv1beta1.AppHubApplicationSpec{}
 	// MISSING: Name
-	// MISSING: DisplayName
-	// MISSING: Description
-	// MISSING: Attributes
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Scope
-	// MISSING: Uid
-	// MISSING: State
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.Attributes = Attributes_v1beta1_FromProto(mapCtx, in.GetAttributes())
+	out.Scope = Scope_v1beta1_FromProto(mapCtx, in.GetScope())
 	return out
 }
 func AppHubApplicationSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmapphubv1beta1.AppHubApplicationSpec) *pb.Application {
@@ -84,14 +72,10 @@ func AppHubApplicationSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmapp
 	}
 	out := &pb.Application{}
 	// MISSING: Name
-	// MISSING: DisplayName
-	// MISSING: Description
-	// MISSING: Attributes
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Scope
-	// MISSING: Uid
-	// MISSING: State
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Description = direct.ValueOf(in.Description)
+	out.Attributes = Attributes_v1beta1_ToProto(mapCtx, in.Attributes)
+	out.Scope = Scope_v1beta1_ToProto(mapCtx, in.Scope)
 	return out
 }
 func AppHubDiscoveredServiceObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.DiscoveredService) *krmapphubv1alpha1.AppHubDiscoveredServiceObservedState {
@@ -204,6 +188,96 @@ func AppHubServiceProjectAttachmentSpec_v1alpha1_ToProto(mapCtx *direct.MapConte
 	out := &pb.ServiceProjectAttachment{}
 	// MISSING: Name
 	out.ServiceProject = direct.ValueOf(in.ServiceProject)
+	return out
+}
+func Attributes_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Attributes) *krmapphubv1beta1.Attributes {
+	if in == nil {
+		return nil
+	}
+	out := &krmapphubv1beta1.Attributes{}
+	out.Criticality = Criticality_v1beta1_FromProto(mapCtx, in.GetCriticality())
+	out.Environment = Environment_v1beta1_FromProto(mapCtx, in.GetEnvironment())
+	out.DeveloperOwners = direct.Slice_FromProto(mapCtx, in.DeveloperOwners, ContactInfo_v1beta1_FromProto)
+	out.OperatorOwners = direct.Slice_FromProto(mapCtx, in.OperatorOwners, ContactInfo_v1beta1_FromProto)
+	out.BusinessOwners = direct.Slice_FromProto(mapCtx, in.BusinessOwners, ContactInfo_v1beta1_FromProto)
+	return out
+}
+func Attributes_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmapphubv1beta1.Attributes) *pb.Attributes {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Attributes{}
+	out.Criticality = Criticality_v1beta1_ToProto(mapCtx, in.Criticality)
+	out.Environment = Environment_v1beta1_ToProto(mapCtx, in.Environment)
+	out.DeveloperOwners = direct.Slice_ToProto(mapCtx, in.DeveloperOwners, ContactInfo_v1beta1_ToProto)
+	out.OperatorOwners = direct.Slice_ToProto(mapCtx, in.OperatorOwners, ContactInfo_v1beta1_ToProto)
+	out.BusinessOwners = direct.Slice_ToProto(mapCtx, in.BusinessOwners, ContactInfo_v1beta1_ToProto)
+	return out
+}
+func ContactInfo_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.ContactInfo) *krmapphubv1beta1.ContactInfo {
+	if in == nil {
+		return nil
+	}
+	out := &krmapphubv1beta1.ContactInfo{}
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.Email = direct.LazyPtr(in.GetEmail())
+	return out
+}
+func ContactInfo_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmapphubv1beta1.ContactInfo) *pb.ContactInfo {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ContactInfo{}
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Email = direct.ValueOf(in.Email)
+	return out
+}
+func Criticality_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Criticality) *krmapphubv1beta1.Criticality {
+	if in == nil {
+		return nil
+	}
+	out := &krmapphubv1beta1.Criticality{}
+	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
+	return out
+}
+func Criticality_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmapphubv1beta1.Criticality) *pb.Criticality {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Criticality{}
+	out.Type = direct.Enum_ToProto[pb.Criticality_Type](mapCtx, in.Type)
+	return out
+}
+func Environment_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Environment) *krmapphubv1beta1.Environment {
+	if in == nil {
+		return nil
+	}
+	out := &krmapphubv1beta1.Environment{}
+	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
+	return out
+}
+func Environment_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmapphubv1beta1.Environment) *pb.Environment {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Environment{}
+	out.Type = direct.Enum_ToProto[pb.Environment_Type](mapCtx, in.Type)
+	return out
+}
+func Scope_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Scope) *krmapphubv1beta1.Scope {
+	if in == nil {
+		return nil
+	}
+	out := &krmapphubv1beta1.Scope{}
+	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
+	return out
+}
+func Scope_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmapphubv1beta1.Scope) *pb.Scope {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Scope{}
+	out.Type = direct.Enum_ToProto[pb.Scope_Type](mapCtx, in.Type)
 	return out
 }
 func ServicePropertiesObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ServiceProperties) *krmapphubv1alpha1.ServicePropertiesObservedState {

@@ -1,0 +1,21 @@
+# Fields the generator emitted mechanically but cannot vouch for.
+# Each entry needs a human decision: is it a reference, should it be omitted,
+# should it be renamed for KRM conventions?
+#
+# While a resource has entries here, TestMissingRefs suppresses its [refs]
+# findings. Clearing them graduates the resource and the ratchet applies.
+
+kind=WorkstationCluster group=workstations.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=WorkstationCluster group=workstations.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/workstationClusters/{workstation_cluster}; confirm the resource is regional and that this is the name for it)
+kind=WorkstationConfig group=workstations.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=WorkstationConfig group=workstations.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/workstationClusters/{workstation_cluster}/workstationConfigs/{workstation_config}; confirm the resource is regional and that this is the name for it)
+kind=WorkstationConfig group=workstations.cnrm.cloud.google.com: field ".spec.workstationClusterRef" reason=parent-ref-guessed (emitted as a reference to WorkstationClusterRef, assumed from the collection segment of projects/{project}/locations/{location}/workstationClusters/{workstation_cluster}/workstationConfigs/{workstation_config}; confirm the target type)
+kind=Workstation group=workstations.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=Workstation group=workstations.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/workstationClusters/{workstation_cluster}/workstationConfigs/{workstation_config}/workstations/{workstation}; confirm the resource is regional and that this is the name for it)
+kind=Workstation group=workstations.cnrm.cloud.google.com: field ".spec.workstationClusterRef" reason=parent-ref-guessed (emitted as a reference to WorkstationClusterRef, assumed from the collection segment of projects/{project}/locations/{location}/workstationClusters/{workstation_cluster}/workstationConfigs/{workstation_config}/workstations/{workstation}; confirm the target type)
+kind=Workstation group=workstations.cnrm.cloud.google.com: field ".spec.workstationConfigRef" reason=parent-ref-guessed (emitted as a reference to WorkstationConfigRef, assumed from the collection segment of projects/{project}/locations/{location}/workstationClusters/{workstation_cluster}/workstationConfigs/{workstation_config}/workstations/{workstation}; confirm the target type)
+kind=WorkstationCluster group=workstations.cnrm.cloud.google.com: field ".spec.network" reason=possible-reference-by-name (ComputeNetworkRef)
+kind=WorkstationConfig group=workstations.cnrm.cloud.google.com: field ".spec.encryptionKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=WorkstationConfig group=workstations.cnrm.cloud.google.com: field ".spec.encryptionKey.kmsKey" reason=possible-reference-by-name (KMSCryptoKeyRef)
+kind=WorkstationConfig group=workstations.cnrm.cloud.google.com: field ".spec.encryptionKey.kmsKeyServiceAccount" reason=possible-reference-by-description
+kind=WorkstationConfig group=workstations.cnrm.cloud.google.com: field ".spec.host.gceInstance.serviceAccount" reason=possible-reference-by-description

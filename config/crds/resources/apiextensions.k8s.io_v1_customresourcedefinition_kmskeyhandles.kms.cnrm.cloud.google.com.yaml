@@ -61,6 +61,9 @@ spec:
           spec:
             description: KMSKeyHandleSpec defines the desired state of KMSKeyHandle
             properties:
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -97,8 +100,16 @@ spec:
                 description: The KMSKeyHandle name. If not given, the metadata.name
                   will be used.
                 type: string
+              resourceTypeSelector:
+                description: Required. Indicates the resource type that the resulting
+                  [CryptoKey][google.cloud.kms.v1.CryptoKey] is meant to protect,
+                  e.g. `{SERVICE}.googleapis.com/{TYPE}`. See documentation for supported
+                  resource types.
+                type: string
             required:
+            - location
             - projectRef
+            - resourceTypeSelector
             type: object
           status:
             description: KMSKeyHandleStatus defines the config connector machine state
@@ -144,6 +155,18 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  kmsKey:
+                    description: Output only. Name of a [CryptoKey][google.cloud.kms.v1.CryptoKey]
+                      that has been provisioned for Customer Managed Encryption Key
+                      (CMEK) use in the [KeyHandle][google.cloud.kms.v1.KeyHandle]
+                      project and location for the requested resource type. The [CryptoKey][google.cloud.kms.v1.CryptoKey]
+                      project will reflect the value configured in the [AutokeyConfig][google.cloud.kms.v1.AutokeyConfig]
+                      on the resource project's ancestor folder at the time of the
+                      [KeyHandle][google.cloud.kms.v1.KeyHandle] creation. If more
+                      than one ancestor folder has a configured [AutokeyConfig][google.cloud.kms.v1.AutokeyConfig],
+                      the nearest of these configurations is used.
+                    type: string
                 type: object
             type: object
         required:

@@ -540,6 +540,11 @@ def main():
     ap.add_argument("--only", help="file of kinds to restrict to, one per line")
     ap.add_argument("--binary", default="./bin/crd-mcp-server")
     ap.add_argument("--list-silent", action="store_true", help="print every field missed without a flag")
+    ap.add_argument("--no-queue", action="store_true",
+                    help="ignore the judgement queue and generator markers, reporting everything "
+                         "as unflagged. Required when scoring a CRD set produced by other tooling: "
+                         "the queue is keyed by Kind, so a foreign CRD would otherwise be credited "
+                         "with our flagging for a resource of the same name")
     args = ap.parse_args()
 
     only = None
@@ -549,6 +554,8 @@ def main():
         os.makedirs(args.verbose_dir, exist_ok=True)
 
     q, qsections, queued_kinds, qleaves = queue_entries()
+    if args.no_queue:
+        q, qsections, queued_kinds, qleaves = defaultdict(set), defaultdict(set), set(), defaultdict(set)
     matched = Counter()
     gap = {c: Counter() for c in CLASSES}   # field / section / unsure / weak / unflagged
     # Tracked apart from gap because it is a SUB-count of "field" -- a flagged
@@ -586,7 +593,7 @@ def main():
             if cached:
                 open(cached, "w").write(text)
         n += 1
-        markers = types_markers(types_path)
+        markers = set() if args.no_queue else types_markers(types_path)
         m, missing, extra = parse_score(text)
         matched.update(m)
         for section, paths in missing.items():

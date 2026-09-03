@@ -194,6 +194,7 @@ type CryptoKeyVersionTemplate struct {
 	//  [CryptoKey.purpose][google.cloud.kms.v1.CryptoKey.purpose] is
 	//  [ENCRYPT_DECRYPT][google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose.ENCRYPT_DECRYPT].
 	// +kcc:proto:field=google.cloud.kms.v1.CryptoKeyVersionTemplate.algorithm
+	// +required
 	Algorithm *string `json:"algorithm,omitempty"`
 }
 */
@@ -222,6 +223,7 @@ type ImportJob struct {
 	// Required. Immutable. The wrapping method to be used for incoming key
 	//  material.
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.import_method
+	// +required
 	ImportMethod *string `json:"importMethod,omitempty"`
 
 	// Required. Immutable. The protection level of the
@@ -231,11 +233,11 @@ type ImportJob struct {
 	//  on the [CryptoKey][google.cloud.kms.v1.CryptoKey] you attempt to import
 	//  into.
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.protection_level
+	// +required
 	ProtectionLevel *string `json:"protectionLevel,omitempty"`
 }
 */
 
-/* unreachable type ImportJob_WrappingPublicKey
 // +kcc:proto=google.cloud.kms.v1.ImportJob.WrappingPublicKey
 type ImportJob_WrappingPublicKey struct {
 	// The public key, encoded in PEM format. For more information, see the [RFC
@@ -246,7 +248,6 @@ type ImportJob_WrappingPublicKey struct {
 	// +kcc:proto:field=google.cloud.kms.v1.ImportJob.WrappingPublicKey.pem
 	Pem *string `json:"pem,omitempty"`
 }
-*/
 
 /* unreachable type KeyAccessJustificationsPolicy
 // +kcc:proto=google.cloud.kms.v1.KeyAccessJustificationsPolicy
@@ -275,6 +276,7 @@ type KeyHandle struct {
 	//  `{SERVICE}.googleapis.com/{TYPE}`. See documentation for supported resource
 	//  types.
 	// +kcc:proto:field=google.cloud.kms.v1.KeyHandle.resource_type_selector
+	// +required
 	ResourceTypeSelector *string `json:"resourceTypeSelector,omitempty"`
 }
 */
@@ -285,7 +287,6 @@ type KeyOperationAttestation struct {
 }
 */
 
-/* unreachable type KeyOperationAttestation_CertificateChains
 // +kcc:proto=google.cloud.kms.v1.KeyOperationAttestation.CertificateChains
 type KeyOperationAttestation_CertificateChains struct {
 	// Cavium certificate chain corresponding to the attestation.
@@ -300,7 +301,6 @@ type KeyOperationAttestation_CertificateChains struct {
 	// +kcc:proto:field=google.cloud.kms.v1.KeyOperationAttestation.CertificateChains.google_partition_certs
 	GooglePartitionCerts []string `json:"googlePartitionCerts,omitempty"`
 }
-*/
 
 /* found existing non-generated go type with proto tag "google.cloud.kms.v1.KeyRing", skipping
 
@@ -533,7 +533,6 @@ type KeyHandleObservedState struct {
 }
 */
 
-/* unreachable type KeyOperationAttestationObservedState
 // +kcc:observedstate:proto=google.cloud.kms.v1.KeyOperationAttestation
 type KeyOperationAttestationObservedState struct {
 	// Output only. The format of the attestation data.
@@ -549,7 +548,6 @@ type KeyOperationAttestationObservedState struct {
 	// +kcc:proto:field=google.cloud.kms.v1.KeyOperationAttestation.cert_chains
 	CertChains *KeyOperationAttestation_CertificateChains `json:"certChains,omitempty"`
 }
-*/
 
 /* found existing non-generated go type with proto tag "google.cloud.kms.v1.KeyRing", skipping
 

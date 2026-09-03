@@ -61,6 +61,51 @@ spec:
           spec:
             description: APIQuotaPreferenceSpec defines the desired state of APIQuotaPreference
             properties:
+              contactEmail:
+                description: |-
+                  Input only. An email address that can be used to contact the user, in case
+                   Google Cloud needs more information to make a decision before additional
+                   quota can be granted.
+
+                   When requesting a quota increase, the email address is required.
+                   When requesting a quota decrease, the email address is optional.
+                   For example, the email address is optional when the
+                   `QuotaConfig.preferred_value` is smaller than the
+                   `QuotaDetails.reset_value`.
+                type: string
+              dimensions:
+                additionalProperties:
+                  type: string
+                description: |-
+                  Immutable. The dimensions that this quota preference applies to. The key of
+                   the map entry is the name of a dimension, such as `region`, `zone`,
+                   `network_id`, and the value of the map entry is the dimension value.
+
+                   If a dimension is missing from the map of dimensions, the quota preference
+                   applies to all the dimension values except for those that have other quota
+                   preferences configured for the specific value.
+
+                   Note: QuotaPreferences can only be applied across all values of `user` and
+                   `resource` dimension. Do not set values for `user` or `resource` in the
+                   dimension map.
+
+                   For example: `{"provider" : "Example Organization"}` where `provider` is a
+                   service-specific quota dimension and `Example Organization` is the provider
+                   name.
+                type: object
+              etag:
+                description: Optional. The current etag of the quota preference. If
+                  an etag is provided on update and does not match the current server's
+                  etag of the quota preference, the request will be blocked and an
+                  ABORTED error will be returned. See https://google.aip.dev/134#etags
+                  for more details on etags.
+                type: string
+              justification:
+                description: The reason / justification for this quota preference.
+                type: string
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -93,12 +138,43 @@ spec:
                     description: The `namespace` field of a `Project` resource.
                     type: string
                 type: object
+              quotaConfig:
+                description: Required. Preferred quota configuration.
+                properties:
+                  annotations:
+                    additionalProperties:
+                      type: string
+                    description: Optional. The annotations map for clients to store
+                      small amounts of arbitrary data. Do not put PII or other sensitive
+                      information here. See https://google.aip.dev/128#annotations
+                    type: object
+                  preferredValue:
+                    description: Required. The preferred value. Must be greater than
+                      or equal to -1. If set to -1, it means the value is "unlimited".
+                    format: int64
+                    type: integer
+                required:
+                - preferredValue
+                type: object
+              quotaID:
+                description: Required. The id of the quota to which the quota preference
+                  is applied. A quota name is unique in the service. For example,
+                  `CpusPerProjectPerRegion`
+                type: string
               resourceID:
                 description: The APIQuotaPreference name. If not given, the metadata.name
                   will be used.
                 type: string
+              service:
+                description: Required. The name of the service to which the quota
+                  preference is applied.
+                type: string
             required:
+            - location
             - projectRef
+            - quotaConfig
+            - quotaID
+            - service
             type: object
           status:
             description: APIQuotaPreferenceStatus defines the config connector machine
@@ -145,6 +221,42 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. Create time stamp
+                    type: string
+                  quotaConfig:
+                    description: Required. Preferred quota configuration.
+                    properties:
+                      grantedValue:
+                        description: Output only. Granted quota value.
+                        format: int64
+                        type: integer
+                      requestOrigin:
+                        description: Output only. The origin of the quota preference
+                          request.
+                        type: string
+                      stateDetail:
+                        description: Output only. Optional details about the state
+                          of this quota preference.
+                        type: string
+                      traceID:
+                        description: Output only. The trace id that the Google Cloud
+                          uses to provision the requested quota. This trace id may
+                          be used by the client to contact Cloud support to track
+                          the state of a quota preference request. The trace id is
+                          only produced for increase requests and is unique for each
+                          request. The quota decrease requests do not have a trace
+                          id.
+                        type: string
+                    type: object
+                  reconciling:
+                    description: Output only. Is the quota preference pending Google
+                      Cloud approval and fulfillment.
+                    type: boolean
+                  updateTime:
+                    description: Output only. Update time stamp
+                    type: string
                 type: object
             type: object
         required:

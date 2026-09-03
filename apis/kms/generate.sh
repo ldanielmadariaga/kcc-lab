@@ -51,6 +51,11 @@ ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.kms.v1 \
   --api-version kms.cnrm.cloud.google.com/v1beta1 \
   --include-skipped-output \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource KMSAutokeyConfig:AutokeyConfig \
   --resource KMSCryptoKey:CryptoKey \
   --resource KMSImportJob:ImportJob \

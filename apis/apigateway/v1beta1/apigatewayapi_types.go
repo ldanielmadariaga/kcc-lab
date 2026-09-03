@@ -30,6 +30,22 @@ type APIGatewayAPISpec struct {
 
 	// The APIGatewayAPI name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. Resource labels to represent user-provided metadata.
+	//  Refer to cloud documentation on labels for more details.
+	//  https://cloud.google.com/compute/docs/labeling-resources
+	// +kcc:proto:field=google.cloud.apigateway.v1.Api.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. Display name.
+	// +kcc:proto:field=google.cloud.apigateway.v1.Api.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. Immutable. The name of a Google Managed Service (
+	//  https://cloud.google.com/service-infrastructure/docs/glossary#managed). If
+	//  not specified, a new Service will automatically be created in the same
+	//  project as this API.
+	// +kcc:proto:field=google.cloud.apigateway.v1.Api.managed_service
+	ManagedService *string `json:"managedService,omitempty"`
 }
 
 // APIGatewayAPIStatus defines the config connector machine state of APIGatewayAPI
@@ -51,6 +67,17 @@ type APIGatewayAPIStatus struct {
 // APIGatewayAPIObservedState is the state of the APIGatewayAPI resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.apigateway.v1.Api
 type APIGatewayAPIObservedState struct {
+	// Output only. Created time.
+	// +kcc:proto:field=google.cloud.apigateway.v1.Api.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Updated time.
+	// +kcc:proto:field=google.cloud.apigateway.v1.Api.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. State of the API.
+	// +kcc:proto:field=google.cloud.apigateway.v1.Api.state
+	State *string `json:"state,omitempty"`
 }
 
 // +genclient

@@ -88,19 +88,18 @@ func DocumentAIProcessorVersionObservedState_v1beta1_FromProto(mapCtx *direct.Ma
 	}
 	out := &krmdocumentaiv1beta1.DocumentAIProcessorVersionObservedState{}
 	// MISSING: Name
-	// MISSING: DisplayName
-	// MISSING: DocumentSchema
-	// MISSING: State
-	// MISSING: CreateTime
-	// MISSING: LatestEvaluation
-	// MISSING: KMSKeyName
-	// MISSING: KMSKeyVersionName
-	// MISSING: GoogleManaged
-	// MISSING: DeprecationInfo
-	// MISSING: ModelType
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
-	// MISSING: GenAiModelInfo
+	out.DocumentSchema = DocumentSchema_v1beta1_FromProto(mapCtx, in.GetDocumentSchema())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.LatestEvaluation = EvaluationReference_v1beta1_FromProto(mapCtx, in.GetLatestEvaluation())
+	out.KMSKeyName = direct.LazyPtr(in.GetKmsKeyName())
+	out.KMSKeyVersionName = direct.LazyPtr(in.GetKmsKeyVersionName())
+	out.GoogleManaged = direct.LazyPtr(in.GetGoogleManaged())
+	out.DeprecationInfo = ProcessorVersion_DeprecationInfo_v1beta1_FromProto(mapCtx, in.GetDeprecationInfo())
+	out.ModelType = direct.Enum_FromProto(mapCtx, in.GetModelType())
+	out.SatisfiesPzs = direct.LazyPtr(in.GetSatisfiesPzs())
+	out.SatisfiesPzi = direct.LazyPtr(in.GetSatisfiesPzi())
+	out.GenAiModelInfo = ProcessorVersion_GenAiModelInfo_v1beta1_FromProto(mapCtx, in.GetGenAiModelInfo())
 	return out
 }
 func DocumentAIProcessorVersionObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1beta1.DocumentAIProcessorVersionObservedState) *pb.ProcessorVersion {
@@ -109,19 +108,18 @@ func DocumentAIProcessorVersionObservedState_v1beta1_ToProto(mapCtx *direct.MapC
 	}
 	out := &pb.ProcessorVersion{}
 	// MISSING: Name
-	// MISSING: DisplayName
-	// MISSING: DocumentSchema
-	// MISSING: State
-	// MISSING: CreateTime
-	// MISSING: LatestEvaluation
-	// MISSING: KMSKeyName
-	// MISSING: KMSKeyVersionName
-	// MISSING: GoogleManaged
-	// MISSING: DeprecationInfo
-	// MISSING: ModelType
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
-	// MISSING: GenAiModelInfo
+	out.DocumentSchema = DocumentSchema_v1beta1_ToProto(mapCtx, in.DocumentSchema)
+	out.State = direct.Enum_ToProto[pb.ProcessorVersion_State](mapCtx, in.State)
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.LatestEvaluation = EvaluationReference_v1beta1_ToProto(mapCtx, in.LatestEvaluation)
+	out.KmsKeyName = direct.ValueOf(in.KMSKeyName)
+	out.KmsKeyVersionName = direct.ValueOf(in.KMSKeyVersionName)
+	out.GoogleManaged = direct.ValueOf(in.GoogleManaged)
+	out.DeprecationInfo = ProcessorVersion_DeprecationInfo_v1beta1_ToProto(mapCtx, in.DeprecationInfo)
+	out.ModelType = direct.Enum_ToProto[pb.ProcessorVersion_ModelType](mapCtx, in.ModelType)
+	out.SatisfiesPzs = direct.ValueOf(in.SatisfiesPzs)
+	out.SatisfiesPzi = direct.ValueOf(in.SatisfiesPzi)
+	out.GenAiModelInfo = ProcessorVersion_GenAiModelInfo_v1beta1_ToProto(mapCtx, in.GenAiModelInfo)
 	return out
 }
 func DocumentAIProcessorVersionSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.ProcessorVersion) *krmdocumentaiv1beta1.DocumentAIProcessorVersionSpec {
@@ -130,19 +128,7 @@ func DocumentAIProcessorVersionSpec_v1beta1_FromProto(mapCtx *direct.MapContext,
 	}
 	out := &krmdocumentaiv1beta1.DocumentAIProcessorVersionSpec{}
 	// MISSING: Name
-	// MISSING: DisplayName
-	// MISSING: DocumentSchema
-	// MISSING: State
-	// MISSING: CreateTime
-	// MISSING: LatestEvaluation
-	// MISSING: KMSKeyName
-	// MISSING: KMSKeyVersionName
-	// MISSING: GoogleManaged
-	// MISSING: DeprecationInfo
-	// MISSING: ModelType
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
-	// MISSING: GenAiModelInfo
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
 	return out
 }
 func DocumentAIProcessorVersionSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1beta1.DocumentAIProcessorVersionSpec) *pb.ProcessorVersion {
@@ -151,19 +137,117 @@ func DocumentAIProcessorVersionSpec_v1beta1_ToProto(mapCtx *direct.MapContext, i
 	}
 	out := &pb.ProcessorVersion{}
 	// MISSING: Name
-	// MISSING: DisplayName
-	// MISSING: DocumentSchema
-	// MISSING: State
-	// MISSING: CreateTime
-	// MISSING: LatestEvaluation
-	// MISSING: KMSKeyName
-	// MISSING: KMSKeyVersionName
-	// MISSING: GoogleManaged
-	// MISSING: DeprecationInfo
-	// MISSING: ModelType
-	// MISSING: SatisfiesPzs
-	// MISSING: SatisfiesPzi
-	// MISSING: GenAiModelInfo
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	return out
+}
+func DocumentSchema_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.DocumentSchema) *krmdocumentaiv1beta1.DocumentSchema {
+	if in == nil {
+		return nil
+	}
+	out := &krmdocumentaiv1beta1.DocumentSchema{}
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.EntityTypes = direct.Slice_FromProto(mapCtx, in.EntityTypes, DocumentSchema_EntityType_v1beta1_FromProto)
+	out.Metadata = DocumentSchema_Metadata_v1beta1_FromProto(mapCtx, in.GetMetadata())
+	return out
+}
+func DocumentSchema_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1beta1.DocumentSchema) *pb.DocumentSchema {
+	if in == nil {
+		return nil
+	}
+	out := &pb.DocumentSchema{}
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Description = direct.ValueOf(in.Description)
+	out.EntityTypes = direct.Slice_ToProto(mapCtx, in.EntityTypes, DocumentSchema_EntityType_v1beta1_ToProto)
+	out.Metadata = DocumentSchema_Metadata_v1beta1_ToProto(mapCtx, in.Metadata)
+	return out
+}
+func DocumentSchema_EntityType_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.DocumentSchema_EntityType) *krmdocumentaiv1beta1.DocumentSchema_EntityType {
+	if in == nil {
+		return nil
+	}
+	out := &krmdocumentaiv1beta1.DocumentSchema_EntityType{}
+	out.EnumValues = DocumentSchema_EntityType_EnumValues_v1beta1_FromProto(mapCtx, in.GetEnumValues())
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.Name = direct.LazyPtr(in.GetName())
+	out.BaseTypes = in.BaseTypes
+	out.Properties = direct.Slice_FromProto(mapCtx, in.Properties, DocumentSchema_EntityType_Property_v1beta1_FromProto)
+	return out
+}
+func DocumentSchema_EntityType_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1beta1.DocumentSchema_EntityType) *pb.DocumentSchema_EntityType {
+	if in == nil {
+		return nil
+	}
+	out := &pb.DocumentSchema_EntityType{}
+	if oneof := DocumentSchema_EntityType_EnumValues_v1beta1_ToProto(mapCtx, in.EnumValues); oneof != nil {
+		out.ValueSource = &pb.DocumentSchema_EntityType_EnumValues_{EnumValues: oneof}
+	}
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.Name = direct.ValueOf(in.Name)
+	out.BaseTypes = in.BaseTypes
+	out.Properties = direct.Slice_ToProto(mapCtx, in.Properties, DocumentSchema_EntityType_Property_v1beta1_ToProto)
+	return out
+}
+func DocumentSchema_EntityType_EnumValues_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.DocumentSchema_EntityType_EnumValues) *krmdocumentaiv1beta1.DocumentSchema_EntityType_EnumValues {
+	if in == nil {
+		return nil
+	}
+	out := &krmdocumentaiv1beta1.DocumentSchema_EntityType_EnumValues{}
+	out.Values = in.Values
+	return out
+}
+func DocumentSchema_EntityType_EnumValues_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1beta1.DocumentSchema_EntityType_EnumValues) *pb.DocumentSchema_EntityType_EnumValues {
+	if in == nil {
+		return nil
+	}
+	out := &pb.DocumentSchema_EntityType_EnumValues{}
+	out.Values = in.Values
+	return out
+}
+func DocumentSchema_EntityType_Property_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.DocumentSchema_EntityType_Property) *krmdocumentaiv1beta1.DocumentSchema_EntityType_Property {
+	if in == nil {
+		return nil
+	}
+	out := &krmdocumentaiv1beta1.DocumentSchema_EntityType_Property{}
+	out.Name = direct.LazyPtr(in.GetName())
+	out.DisplayName = direct.LazyPtr(in.GetDisplayName())
+	out.ValueType = direct.LazyPtr(in.GetValueType())
+	out.OccurrenceType = direct.Enum_FromProto(mapCtx, in.GetOccurrenceType())
+	out.Method = direct.Enum_FromProto(mapCtx, in.GetMethod())
+	return out
+}
+func DocumentSchema_EntityType_Property_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1beta1.DocumentSchema_EntityType_Property) *pb.DocumentSchema_EntityType_Property {
+	if in == nil {
+		return nil
+	}
+	out := &pb.DocumentSchema_EntityType_Property{}
+	out.Name = direct.ValueOf(in.Name)
+	out.DisplayName = direct.ValueOf(in.DisplayName)
+	out.ValueType = direct.ValueOf(in.ValueType)
+	out.OccurrenceType = direct.Enum_ToProto[pb.DocumentSchema_EntityType_Property_OccurrenceType](mapCtx, in.OccurrenceType)
+	out.Method = direct.Enum_ToProto[pb.DocumentSchema_EntityType_Property_Method](mapCtx, in.Method)
+	return out
+}
+func EvaluationReference_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.EvaluationReference) *krmdocumentaiv1beta1.EvaluationReference {
+	if in == nil {
+		return nil
+	}
+	out := &krmdocumentaiv1beta1.EvaluationReference{}
+	out.Operation = direct.LazyPtr(in.GetOperation())
+	out.Evaluation = direct.LazyPtr(in.GetEvaluation())
+	out.AggregateMetrics = Evaluation_Metrics_v1beta1_FromProto(mapCtx, in.GetAggregateMetrics())
+	out.AggregateMetricsExact = Evaluation_Metrics_v1beta1_FromProto(mapCtx, in.GetAggregateMetricsExact())
+	return out
+}
+func EvaluationReference_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1beta1.EvaluationReference) *pb.EvaluationReference {
+	if in == nil {
+		return nil
+	}
+	out := &pb.EvaluationReference{}
+	out.Operation = direct.ValueOf(in.Operation)
+	out.Evaluation = direct.ValueOf(in.Evaluation)
+	out.AggregateMetrics = Evaluation_Metrics_v1beta1_ToProto(mapCtx, in.AggregateMetrics)
+	out.AggregateMetricsExact = Evaluation_Metrics_v1beta1_ToProto(mapCtx, in.AggregateMetricsExact)
 	return out
 }
 func ProcessorVersionAlias_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ProcessorVersionAlias) *krmdocumentaiv1alpha1.ProcessorVersionAlias {
@@ -182,5 +266,81 @@ func ProcessorVersionAlias_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmdo
 	out := &pb.ProcessorVersionAlias{}
 	out.Alias = direct.ValueOf(in.Alias)
 	out.ProcessorVersion = direct.ValueOf(in.ProcessorVersion)
+	return out
+}
+func ProcessorVersion_DeprecationInfo_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.ProcessorVersion_DeprecationInfo) *krmdocumentaiv1beta1.ProcessorVersion_DeprecationInfo {
+	if in == nil {
+		return nil
+	}
+	out := &krmdocumentaiv1beta1.ProcessorVersion_DeprecationInfo{}
+	out.DeprecationTime = direct.StringTimestamp_FromProto(mapCtx, in.GetDeprecationTime())
+	out.ReplacementProcessorVersion = direct.LazyPtr(in.GetReplacementProcessorVersion())
+	return out
+}
+func ProcessorVersion_DeprecationInfo_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1beta1.ProcessorVersion_DeprecationInfo) *pb.ProcessorVersion_DeprecationInfo {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ProcessorVersion_DeprecationInfo{}
+	out.DeprecationTime = direct.StringTimestamp_ToProto(mapCtx, in.DeprecationTime)
+	out.ReplacementProcessorVersion = direct.ValueOf(in.ReplacementProcessorVersion)
+	return out
+}
+func ProcessorVersion_GenAiModelInfo_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.ProcessorVersion_GenAiModelInfo) *krmdocumentaiv1beta1.ProcessorVersion_GenAiModelInfo {
+	if in == nil {
+		return nil
+	}
+	out := &krmdocumentaiv1beta1.ProcessorVersion_GenAiModelInfo{}
+	out.FoundationGenAiModelInfo = ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo_v1beta1_FromProto(mapCtx, in.GetFoundationGenAiModelInfo())
+	out.CustomGenAiModelInfo = ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo_v1beta1_FromProto(mapCtx, in.GetCustomGenAiModelInfo())
+	return out
+}
+func ProcessorVersion_GenAiModelInfo_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1beta1.ProcessorVersion_GenAiModelInfo) *pb.ProcessorVersion_GenAiModelInfo {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ProcessorVersion_GenAiModelInfo{}
+	if oneof := ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo_v1beta1_ToProto(mapCtx, in.FoundationGenAiModelInfo); oneof != nil {
+		out.ModelInfo = &pb.ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo_{FoundationGenAiModelInfo: oneof}
+	}
+	if oneof := ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo_v1beta1_ToProto(mapCtx, in.CustomGenAiModelInfo); oneof != nil {
+		out.ModelInfo = &pb.ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo_{CustomGenAiModelInfo: oneof}
+	}
+	return out
+}
+func ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo) *krmdocumentaiv1beta1.ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo {
+	if in == nil {
+		return nil
+	}
+	out := &krmdocumentaiv1beta1.ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo{}
+	out.CustomModelType = direct.Enum_FromProto(mapCtx, in.GetCustomModelType())
+	out.BaseProcessorVersionID = direct.LazyPtr(in.GetBaseProcessorVersionId())
+	return out
+}
+func ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1beta1.ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo) *pb.ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo{}
+	out.CustomModelType = direct.Enum_ToProto[pb.ProcessorVersion_GenAiModelInfo_CustomGenAiModelInfo_CustomModelType](mapCtx, in.CustomModelType)
+	out.BaseProcessorVersionId = direct.ValueOf(in.BaseProcessorVersionID)
+	return out
+}
+func ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo) *krmdocumentaiv1beta1.ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo {
+	if in == nil {
+		return nil
+	}
+	out := &krmdocumentaiv1beta1.ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo{}
+	out.FinetuningAllowed = direct.LazyPtr(in.GetFinetuningAllowed())
+	out.MinTrainLabeledDocuments = direct.LazyPtr(in.GetMinTrainLabeledDocuments())
+	return out
+}
+func ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmdocumentaiv1beta1.ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo) *pb.ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo {
+	if in == nil {
+		return nil
+	}
+	out := &pb.ProcessorVersion_GenAiModelInfo_FoundationGenAiModelInfo{}
+	out.FinetuningAllowed = direct.ValueOf(in.FinetuningAllowed)
+	out.MinTrainLabeledDocuments = direct.ValueOf(in.MinTrainLabeledDocuments)
 	return out
 }

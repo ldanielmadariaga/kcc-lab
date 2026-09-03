@@ -63,6 +63,24 @@ spec:
             description: APIQuotaAdjusterSettingsSpec defines the desired state of
               APIQuotaAdjusterSettings
             properties:
+              enablement:
+                description: Optional. The configured value of the enablement at the
+                  given resource.
+                type: string
+              etag:
+                description: Optional. The current ETag of the QuotaAdjusterSettings.
+                  If an ETag is provided on update and does not match the current
+                  server's ETag in the QuotaAdjusterSettings, the request is blocked
+                  and returns an ABORTED error. See https://google.aip.dev/134#etags
+                  for more details on ETags.
+                type: string
+              inherited:
+                description: Optional. Indicates whether the setting is inherited
+                  or explicitly specified.
+                type: boolean
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -147,6 +165,20 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  inheritedFrom:
+                    description: Output only. The resource container from which the
+                      setting is inherited. This refers to the  nearest ancestor with
+                      enablement set (either ENABLED or DISABLED). The value can be
+                      an organizations/{organization_id}, folders/{folder_id}, or
+                      can be 'default' if no ancestor exists with enablement set.
+                      The value will be empty when enablement is directly set on this
+                      container.
+                    type: string
+                  updateTime:
+                    description: Output only. The timestamp when the QuotaAdjusterSettings
+                      resource was last updated.
+                    type: string
                 type: object
             type: object
         required:

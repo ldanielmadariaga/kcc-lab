@@ -28,8 +28,31 @@ type AppHubApplicationSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/applications/{application}
+	Location *string `json:"location"`
+
 	// The AppHubApplication name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. User-defined name for the Application.
+	//  Can have a maximum length of 63 characters.
+	// +kcc:proto:field=google.cloud.apphub.v1.Application.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Optional. User-defined description of an Application.
+	//  Can have a maximum length of 2048 characters.
+	// +kcc:proto:field=google.cloud.apphub.v1.Application.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. Consumer provided attributes.
+	// +kcc:proto:field=google.cloud.apphub.v1.Application.attributes
+	Attributes *Attributes `json:"attributes,omitempty"`
+
+	// Required. Immutable. Defines what data can be included into this
+	//  Application. Limits which Services and Workloads can be registered.
+	// +kcc:proto:field=google.cloud.apphub.v1.Application.scope
+	// +required
+	Scope *Scope `json:"scope,omitempty"`
 }
 
 // AppHubApplicationStatus defines the config connector machine state of AppHubApplication
@@ -51,6 +74,22 @@ type AppHubApplicationStatus struct {
 // AppHubApplicationObservedState is the state of the AppHubApplication resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.apphub.v1.Application
 type AppHubApplicationObservedState struct {
+	// Output only. Create time.
+	// +kcc:proto:field=google.cloud.apphub.v1.Application.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Update time.
+	// +kcc:proto:field=google.cloud.apphub.v1.Application.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. A universally unique identifier (in UUID4 format) for the
+	//  `Application`.
+	// +kcc:proto:field=google.cloud.apphub.v1.Application.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. Application state.
+	// +kcc:proto:field=google.cloud.apphub.v1.Application.state
+	State *string `json:"state,omitempty"`
 }
 
 // +genclient

@@ -63,44 +63,56 @@ spec:
             description: OrgPolicyCustomConstraintSpec defines the desired state of
               OrgPolicyCustomConstraint
             properties:
-              projectRef:
-                description: The project that this resource belongs to.
-                oneOf:
-                - not:
-                    required:
-                    - external
-                  required:
-                  - name
-                - not:
-                    anyOf:
-                    - required:
-                      - name
-                    - required:
-                      - namespace
-                  required:
-                  - external
+              actionType:
+                description: Allow or deny type.
+                type: string
+              condition:
+                description: |-
+                  A Common Expression Language (CEL) condition which is used in the
+                   evaluation of the constraint. For example:
+                   `resource.instanceName.matches("[production|test]_.*_(\d)+")` or,
+                   `resource.management.auto_upgrade == true`
+
+                   The max length of the condition is 1000 characters.
+                type: string
+              description:
+                description: Detailed information about this custom policy constraint.
+                  The max length of the description is 2000 characters.
+                type: string
+              displayName:
+                description: One line display name for the UI. The max length of the
+                  display_name is 200 characters.
+                type: string
+              methodTypes:
+                description: All the operations being applied for this constraint.
+                items:
+                  type: string
+                type: array
+              organizationRef:
+                description: The organization that this resource belongs to.
                 properties:
                   external:
-                    description: The `projectID` field of a project, when not managed
+                    description: The 'name' field of an organization, when not managed
                       by Config Connector.
                     type: string
-                  kind:
-                    description: The kind of the Project resource; optional but must
-                      be `Project` if provided.
-                    type: string
-                  name:
-                    description: The `name` field of a `Project` resource.
-                    type: string
-                  namespace:
-                    description: The `namespace` field of a `Project` resource.
-                    type: string
+                required:
+                - external
                 type: object
               resourceID:
                 description: The OrgPolicyCustomConstraint name. If not given, the
                   metadata.name will be used.
                 type: string
+              resourceTypes:
+                description: |-
+                  Immutable. The resource instance type on which this policy applies. Format
+                   will be of the form : `<service name>/<type>` Example:
+
+                    * `compute.googleapis.com/Instance`.
+                items:
+                  type: string
+                type: array
             required:
-            - projectRef
+            - organizationRef
             type: object
           status:
             description: OrgPolicyCustomConstraintStatus defines the config connector
@@ -147,6 +159,12 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  updateTime:
+                    description: Output only. The last time this custom constraint
+                      was updated. This represents the last time that the `CreateCustomConstraint`
+                      or `UpdateCustomConstraint` methods were called.
+                    type: string
                 type: object
             type: object
         required:

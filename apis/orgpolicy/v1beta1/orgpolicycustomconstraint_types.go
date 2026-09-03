@@ -25,11 +25,44 @@ var OrgPolicyCustomConstraintGVK = GroupVersion.WithKind("OrgPolicyCustomConstra
 // OrgPolicyCustomConstraintSpec defines the desired state of OrgPolicyCustomConstraint
 // +kcc:spec:proto=google.cloud.orgpolicy.v2.CustomConstraint
 type OrgPolicyCustomConstraintSpec struct {
-	// The project that this resource belongs to.
-	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
+	// The organization that this resource belongs to.
+	OrganizationRef *refsv1beta1.OrganizationRef `json:"organizationRef"`
 
 	// The OrgPolicyCustomConstraint name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Immutable. The resource instance type on which this policy applies. Format
+	//  will be of the form : `<service name>/<type>` Example:
+	//
+	//   * `compute.googleapis.com/Instance`.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.resource_types
+	ResourceTypes []string `json:"resourceTypes,omitempty"`
+
+	// All the operations being applied for this constraint.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.method_types
+	MethodTypes []string `json:"methodTypes,omitempty"`
+
+	// A Common Expression Language (CEL) condition which is used in the
+	//  evaluation of the constraint. For example:
+	//  `resource.instanceName.matches("[production|test]_.*_(\d)+")` or,
+	//  `resource.management.auto_upgrade == true`
+	//
+	//  The max length of the condition is 1000 characters.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.condition
+	Condition *string `json:"condition,omitempty"`
+
+	// Allow or deny type.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.action_type
+	ActionType *string `json:"actionType,omitempty"`
+
+	// One line display name for the UI.
+	//  The max length of the display_name is 200 characters.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.display_name
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Detailed information about this custom policy constraint.
+	//  The max length of the description is 2000 characters.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.description
+	Description *string `json:"description,omitempty"`
 }
 
 // OrgPolicyCustomConstraintStatus defines the config connector machine state of OrgPolicyCustomConstraint
@@ -51,6 +84,11 @@ type OrgPolicyCustomConstraintStatus struct {
 // OrgPolicyCustomConstraintObservedState is the state of the OrgPolicyCustomConstraint resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.orgpolicy.v2.CustomConstraint
 type OrgPolicyCustomConstraintObservedState struct {
+	// Output only. The last time this custom constraint was updated. This
+	//  represents the last time that the `CreateCustomConstraint` or
+	//  `UpdateCustomConstraint` methods were called.
+	// +kcc:proto:field=google.cloud.orgpolicy.v2.CustomConstraint.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
 }
 
 // +genclient

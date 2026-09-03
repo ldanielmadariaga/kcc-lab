@@ -63,6 +63,23 @@ spec:
             description: CertificateManagerDNSAuthorizationSpec defines the desired
               state of CertificateManagerDNSAuthorization
             properties:
+              description:
+                description: One or more paragraphs of text description of a DnsAuthorization.
+                type: string
+              domain:
+                description: Required. Immutable. A domain that is being authorized.
+                  A DnsAuthorization resource covers a single domain and its wildcard,
+                  e.g. authorization for `example.com` can be used to issue certificates
+                  for `example.com` and `*.example.com`.
+                type: string
+              labels:
+                additionalProperties:
+                  type: string
+                description: Set of labels associated with a DnsAuthorization.
+                type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -99,7 +116,14 @@ spec:
                 description: The CertificateManagerDNSAuthorization name. If not given,
                   the metadata.name will be used.
                 type: string
+              type:
+                description: 'Immutable. Type of DnsAuthorization. If unset during
+                  resource creation the following default will be used: - in location
+                  global: FIXED_RECORD.'
+                type: string
             required:
+            - domain
+            - location
             - projectRef
             type: object
           status:
@@ -147,6 +171,29 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. The creation timestamp of a DnsAuthorization.
+                    type: string
+                  dnsResourceRecord:
+                    description: Output only. DNS Resource Record that needs to be
+                      added to DNS configuration.
+                    properties:
+                      data:
+                        description: Output only. Data of the DNS Resource Record.
+                        type: string
+                      name:
+                        description: Output only. Fully qualified name of the DNS
+                          Resource Record. e.g. `_acme-challenge.example.com`
+                        type: string
+                      type:
+                        description: Output only. Type of the DNS Resource Record.
+                          Currently always set to "CNAME".
+                        type: string
+                    type: object
+                  updateTime:
+                    description: Output only. The last update timestamp of a DnsAuthorization.
+                    type: string
                 type: object
             type: object
         required:

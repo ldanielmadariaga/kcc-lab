@@ -63,6 +63,43 @@ spec:
             description: VMwareEngineExternalAddressSpec defines the desired state
               of VMwareEngineExternalAddress
             properties:
+              description:
+                description: User-provided description for this resource.
+                type: string
+              internalIP:
+                description: The internal IP address of a workload VM.
+                type: string
+              location:
+                description: The location of this resource.
+                type: string
+              privateCloudRef:
+                description: The PrivateCloud that this resource belongs to.
+                oneOf:
+                - not:
+                    required:
+                    - external
+                  required:
+                  - name
+                - not:
+                    anyOf:
+                    - required:
+                      - name
+                    - required:
+                      - namespace
+                  required:
+                  - external
+                properties:
+                  external:
+                    description: A reference to an externally managed VMwareEnginePrivateCloud
+                      resource. Should be in the format "projects/{{projectID}}/locations/{{location}}/privateClouds/{{privatecloudID}}".
+                    type: string
+                  name:
+                    description: The name of a VMwareEnginePrivateCloud resource.
+                    type: string
+                  namespace:
+                    description: The namespace of a VMwareEnginePrivateCloud resource.
+                    type: string
+                type: object
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -147,6 +184,24 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  createTime:
+                    description: Output only. Creation time of this resource.
+                    type: string
+                  externalIP:
+                    description: Output only. The external IP address of a workload
+                      VM.
+                    type: string
+                  state:
+                    description: Output only. The state of the resource.
+                    type: string
+                  uid:
+                    description: Output only. System-generated unique identifier for
+                      the resource.
+                    type: string
+                  updateTime:
+                    description: Output only. Last update time of this resource.
+                    type: string
                 type: object
             type: object
         required:

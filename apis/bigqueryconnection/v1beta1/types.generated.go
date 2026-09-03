@@ -21,7 +21,6 @@
 
 package v1beta1
 
-/* unreachable type AwsAccessRole
 // +kcc:proto=google.cloud.bigquery.connection.v1.AwsAccessRole
 type AwsAccessRole struct {
 	// The user’s AWS IAM Role that trusts the Google-owned AWS IAM user
@@ -34,9 +33,7 @@ type AwsAccessRole struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AwsAccessRole.identity
 	Identity *string `json:"identity,omitempty"`
 }
-*/
 
-/* unreachable type AwsCrossAccountRole
 // +kcc:proto=google.cloud.bigquery.connection.v1.AwsCrossAccountRole
 type AwsCrossAccountRole struct {
 	// The user’s AWS IAM Role that trusts the Google-owned AWS IAM user
@@ -44,9 +41,7 @@ type AwsCrossAccountRole struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AwsCrossAccountRole.iam_role_id
 	IAMRoleID *string `json:"iamRoleID,omitempty"`
 }
-*/
 
-/* unreachable type AwsProperties
 // +kcc:proto=google.cloud.bigquery.connection.v1.AwsProperties
 type AwsProperties struct {
 	// Authentication using Google owned AWS IAM user's access key to assume
@@ -60,9 +55,7 @@ type AwsProperties struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AwsProperties.access_role
 	AccessRole *AwsAccessRole `json:"accessRole,omitempty"`
 }
-*/
 
-/* unreachable type AzureProperties
 // +kcc:proto=google.cloud.bigquery.connection.v1.AzureProperties
 type AzureProperties struct {
 
@@ -80,15 +73,11 @@ type AzureProperties struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AzureProperties.federated_application_client_id
 	FederatedApplicationClientID *string `json:"federatedApplicationClientID,omitempty"`
 }
-*/
 
-/* unreachable type CloudResourceProperties
 // +kcc:proto=google.cloud.bigquery.connection.v1.CloudResourceProperties
 type CloudResourceProperties struct {
 }
-*/
 
-/* unreachable type CloudSpannerProperties
 // +kcc:proto=google.cloud.bigquery.connection.v1.CloudSpannerProperties
 type CloudSpannerProperties struct {
 	// Cloud Spanner database in the form `project/instance/database'
@@ -138,9 +127,7 @@ type CloudSpannerProperties struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.CloudSpannerProperties.database_role
 	DatabaseRole *string `json:"databaseRole,omitempty"`
 }
-*/
 
-/* unreachable type CloudSQLCredential
 // +kcc:proto=google.cloud.bigquery.connection.v1.CloudSqlCredential
 type CloudSQLCredential struct {
 	// The username for the credential.
@@ -151,9 +138,7 @@ type CloudSQLCredential struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.CloudSqlCredential.password
 	Password *string `json:"password,omitempty"`
 }
-*/
 
-/* unreachable type CloudSQLProperties
 // +kcc:proto=google.cloud.bigquery.connection.v1.CloudSqlProperties
 type CloudSQLProperties struct {
 	// Cloud SQL instance ID in the form `project:location:instance`.
@@ -172,7 +157,6 @@ type CloudSQLProperties struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.CloudSqlProperties.credential
 	Credential *CloudSQLCredential `json:"credential,omitempty"`
 }
-*/
 
 /* unreachable type Connection
 // +kcc:proto=google.cloud.bigquery.connection.v1.Connection
@@ -222,7 +206,6 @@ type Connection struct {
 }
 */
 
-/* unreachable type MetastoreServiceConfig
 // +kcc:proto=google.cloud.bigquery.connection.v1.MetastoreServiceConfig
 type MetastoreServiceConfig struct {
 	// Optional. Resource name of an existing Dataproc Metastore service.
@@ -233,9 +216,7 @@ type MetastoreServiceConfig struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.MetastoreServiceConfig.metastore_service
 	MetastoreService *string `json:"metastoreService,omitempty"`
 }
-*/
 
-/* unreachable type SalesforceDataCloudProperties
 // +kcc:proto=google.cloud.bigquery.connection.v1.SalesforceDataCloudProperties
 type SalesforceDataCloudProperties struct {
 	// The URL to the user's Salesforce DataCloud instance.
@@ -246,9 +227,7 @@ type SalesforceDataCloudProperties struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.SalesforceDataCloudProperties.tenant_id
 	TenantID *string `json:"tenantID,omitempty"`
 }
-*/
 
-/* unreachable type SparkHistoryServerConfig
 // +kcc:proto=google.cloud.bigquery.connection.v1.SparkHistoryServerConfig
 type SparkHistoryServerConfig struct {
 	// Optional. Resource name of an existing Dataproc Cluster to act as a Spark
@@ -260,9 +239,7 @@ type SparkHistoryServerConfig struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.SparkHistoryServerConfig.dataproc_cluster
 	DataprocCluster *string `json:"dataprocCluster,omitempty"`
 }
-*/
 
-/* unreachable type SparkProperties
 // +kcc:proto=google.cloud.bigquery.connection.v1.SparkProperties
 type SparkProperties struct {
 
@@ -274,9 +251,7 @@ type SparkProperties struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.SparkProperties.spark_history_server_config
 	SparkHistoryServerConfig *SparkHistoryServerConfig `json:"sparkHistoryServerConfig,omitempty"`
 }
-*/
 
-/* unreachable type AwsCrossAccountRoleObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.AwsCrossAccountRole
 type AwsCrossAccountRoleObservedState struct {
 	// Output only. Google-owned AWS IAM User for a Connection.
@@ -290,9 +265,7 @@ type AwsCrossAccountRoleObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AwsCrossAccountRole.external_id
 	ExternalID *string `json:"externalID,omitempty"`
 }
-*/
 
-/* unreachable type AwsPropertiesObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.AwsProperties
 type AwsPropertiesObservedState struct {
 	// Authentication using Google owned AWS IAM user's access key to assume
@@ -301,9 +274,7 @@ type AwsPropertiesObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AwsProperties.cross_account_role
 	CrossAccountRole *AwsCrossAccountRoleObservedState `json:"crossAccountRole,omitempty"`
 }
-*/
 
-/* unreachable type AzurePropertiesObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.AzureProperties
 type AzurePropertiesObservedState struct {
 	// Output only. The name of the Azure Active Directory Application.
@@ -324,9 +295,7 @@ type AzurePropertiesObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.AzureProperties.identity
 	Identity *string `json:"identity,omitempty"`
 }
-*/
 
-/* unreachable type CloudResourcePropertiesObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.CloudResourceProperties
 type CloudResourcePropertiesObservedState struct {
 	// Output only. The account ID of the service created for the purpose of this
@@ -343,9 +312,7 @@ type CloudResourcePropertiesObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.CloudResourceProperties.service_account_id
 	ServiceAccountID *string `json:"serviceAccountID,omitempty"`
 }
-*/
 
-/* unreachable type CloudSQLPropertiesObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.CloudSqlProperties
 type CloudSQLPropertiesObservedState struct {
 	// Output only. The account ID of the service used for the purpose of this
@@ -357,7 +324,6 @@ type CloudSQLPropertiesObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.CloudSqlProperties.service_account_id
 	ServiceAccountID *string `json:"serviceAccountID,omitempty"`
 }
-*/
 
 /* unreachable type ConnectionObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.Connection
@@ -402,7 +368,6 @@ type ConnectionObservedState struct {
 }
 */
 
-/* unreachable type SalesforceDataCloudPropertiesObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.SalesforceDataCloudProperties
 type SalesforceDataCloudPropertiesObservedState struct {
 	// Output only. A unique Google-owned and Google-generated service account
@@ -410,9 +375,7 @@ type SalesforceDataCloudPropertiesObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.SalesforceDataCloudProperties.identity
 	Identity *string `json:"identity,omitempty"`
 }
-*/
 
-/* unreachable type SparkPropertiesObservedState
 // +kcc:observedstate:proto=google.cloud.bigquery.connection.v1.SparkProperties
 type SparkPropertiesObservedState struct {
 	// Output only. The account ID of the service created for the purpose of this
@@ -429,4 +392,3 @@ type SparkPropertiesObservedState struct {
 	// +kcc:proto:field=google.cloud.bigquery.connection.v1.SparkProperties.service_account_id
 	ServiceAccountID *string `json:"serviceAccountID,omitempty"`
 }
-*/

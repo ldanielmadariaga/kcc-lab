@@ -50,6 +50,11 @@ ${CONTROLLERBUILDER} generate-types \
 ${CONTROLLERBUILDER} generate-types \
     --service google.cloud.bigquery.biglake.v1 \
     --api-version "bigquerybiglake.cnrm.cloud.google.com/v1beta1" \
+    --prepopulate-spec \
+    --emit-required-from-proto \
+    --emit-plural-acronyms \
+    --detect-output-only-in-comments \
+    --place-server-set-fields \
     --resource BigLakeTable:Table
 
 ${CONTROLLERBUILDER} generate-mapper \

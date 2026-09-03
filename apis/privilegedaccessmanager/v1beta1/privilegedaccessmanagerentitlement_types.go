@@ -28,8 +28,50 @@ type PrivilegedAccessManagerEntitlementSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/entitlements/{entitlement}
+	Location *string `json:"location"`
+
 	// The PrivilegedAccessManagerEntitlement name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. Who can create grants using this entitlement. This list should
+	//  contain at most one entry.
+	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.Entitlement.eligible_users
+	EligibleUsers []AccessControlEntry `json:"eligibleUsers,omitempty"`
+
+	// Optional. The approvals needed before access are granted to a requester. No
+	//  approvals are needed if this field is null.
+	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.Entitlement.approval_workflow
+	ApprovalWorkflow *ApprovalWorkflow `json:"approvalWorkflow,omitempty"`
+
+	// The access granted to a requester on successful approval.
+	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.Entitlement.privileged_access
+	PrivilegedAccess *PrivilegedAccess `json:"privilegedAccess,omitempty"`
+
+	// Required. The maximum amount of time that access is granted for a request.
+	//  A requester can ask for a duration less than this, but never more.
+	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.Entitlement.max_request_duration
+	// +required
+	MaxRequestDuration *string `json:"maxRequestDuration,omitempty"`
+
+	// Required. The manner in which the requester should provide a justification
+	//  for requesting access.
+	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.Entitlement.requester_justification_config
+	// +required
+	RequesterJustificationConfig *Entitlement_RequesterJustificationConfig `json:"requesterJustificationConfig,omitempty"`
+
+	// Optional. Additional email addresses to be notified based on actions taken.
+	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.Entitlement.additional_notification_targets
+	AdditionalNotificationTargets *Entitlement_AdditionalNotificationTargets `json:"additionalNotificationTargets,omitempty"`
+
+	// An `etag` is used for optimistic concurrency control as a way to prevent
+	//  simultaneous updates to the same entitlement. An `etag` is returned in the
+	//  response to `GetEntitlement` and the caller should put the `etag` in the
+	//  request to `UpdateEntitlement` so that their change is applied on
+	//  the same version. If this field is omitted or if there is a mismatch while
+	//  updating an entitlement, then the server rejects the request.
+	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.Entitlement.etag
+	Etag *string `json:"etag,omitempty"`
 }
 
 // PrivilegedAccessManagerEntitlementStatus defines the config connector machine state of PrivilegedAccessManagerEntitlement
@@ -51,6 +93,17 @@ type PrivilegedAccessManagerEntitlementStatus struct {
 // PrivilegedAccessManagerEntitlementObservedState is the state of the PrivilegedAccessManagerEntitlement resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.privilegedaccessmanager.v1.Entitlement
 type PrivilegedAccessManagerEntitlementObservedState struct {
+	// Output only. Create time stamp.
+	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.Entitlement.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Update time stamp.
+	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.Entitlement.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Current state of this entitlement.
+	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.Entitlement.state
+	State *string `json:"state,omitempty"`
 }
 
 // +genclient

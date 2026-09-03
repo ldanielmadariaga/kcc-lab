@@ -201,9 +201,6 @@ func PubSubSnapshotObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Sna
 	}
 	out := &krm.PubSubSnapshotObservedState{}
 	// MISSING: Name
-	// MISSING: Topic
-	// MISSING: ExpireTime
-	// MISSING: Labels
 	return out
 }
 func PubSubSnapshotObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PubSubSnapshotObservedState) *pb.Snapshot {
@@ -212,9 +209,6 @@ func PubSubSnapshotObservedState_ToProto(mapCtx *direct.MapContext, in *krm.PubS
 	}
 	out := &pb.Snapshot{}
 	// MISSING: Name
-	// MISSING: Topic
-	// MISSING: ExpireTime
-	// MISSING: Labels
 	return out
 }
 
@@ -225,9 +219,9 @@ func PubSubSnapshotSpec_FromProto(mapCtx *direct.MapContext, in *pb.Snapshot) *k
 	}
 	out := &krm.PubSubSnapshotSpec{}
 	// MISSING: Name
-	// MISSING: Topic
-	// MISSING: ExpireTime
-	// MISSING: Labels
+	out.Topic = direct.LazyPtr(in.GetTopic())
+	out.ExpireTime = direct.StringTimestamp_FromProto(mapCtx, in.GetExpireTime())
+	out.Labels = in.Labels
 	return out
 }
 */
@@ -241,9 +235,9 @@ found existing non-generated mapping function "PubSubSnapshotSpec_ToProto", skip
 		}
 		out := &pb.Snapshot{}
 		// MISSING: Name
-		// MISSING: Topic
-		// MISSING: ExpireTime
-		// MISSING: Labels
+		out.Topic = direct.ValueOf(in.Topic)
+		out.ExpireTime = direct.StringTimestamp_ToProto(mapCtx, in.ExpireTime)
+		out.Labels = in.Labels
 		return out
 	}
 */

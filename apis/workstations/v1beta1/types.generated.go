@@ -23,7 +23,6 @@
 
 package v1beta1
 
-/* unreachable type WorkstationCluster_PrivateClusterConfig
 // +kcc:proto=google.cloud.workstations.v1.WorkstationCluster.PrivateClusterConfig
 type WorkstationCluster_PrivateClusterConfig struct {
 	// Immutable. Whether Workstations endpoint is private.
@@ -36,9 +35,7 @@ type WorkstationCluster_PrivateClusterConfig struct {
 	// +kcc:proto:field=google.cloud.workstations.v1.WorkstationCluster.PrivateClusterConfig.allowed_projects
 	AllowedProjects []string `json:"allowedProjects,omitempty"`
 }
-*/
 
-/* unreachable type WorkstationConfig_Container
 // +kcc:proto=google.cloud.workstations.v1.WorkstationConfig.Container
 type WorkstationConfig_Container struct {
 	// Optional. A Docker container image that defines a custom environment.
@@ -78,9 +75,7 @@ type WorkstationConfig_Container struct {
 	// +kcc:proto:field=google.cloud.workstations.v1.WorkstationConfig.Container.run_as_user
 	RunAsUser *int32 `json:"runAsUser,omitempty"`
 }
-*/
 
-/* unreachable type WorkstationConfig_CustomerEncryptionKey
 // +kcc:proto=google.cloud.workstations.v1.WorkstationConfig.CustomerEncryptionKey
 type WorkstationConfig_CustomerEncryptionKey struct {
 	// Immutable. The name of the Google Cloud KMS encryption key. For example,
@@ -99,18 +94,14 @@ type WorkstationConfig_CustomerEncryptionKey struct {
 	// +kcc:proto:field=google.cloud.workstations.v1.WorkstationConfig.CustomerEncryptionKey.kms_key_service_account
 	KMSKeyServiceAccount *string `json:"kmsKeyServiceAccount,omitempty"`
 }
-*/
 
-/* unreachable type WorkstationConfig_Host
 // +kcc:proto=google.cloud.workstations.v1.WorkstationConfig.Host
 type WorkstationConfig_Host struct {
 	// Specifies a Compute Engine instance as the host.
 	// +kcc:proto:field=google.cloud.workstations.v1.WorkstationConfig.Host.gce_instance
 	GCEInstance *WorkstationConfig_Host_GCEInstance `json:"gceInstance,omitempty"`
 }
-*/
 
-/* unreachable type WorkstationConfig_Host_GCEInstance
 // +kcc:proto=google.cloud.workstations.v1.WorkstationConfig.Host.GceInstance
 type WorkstationConfig_Host_GCEInstance struct {
 	// Optional. The type of machine to use for VM instances—for example,
@@ -225,18 +216,14 @@ type WorkstationConfig_Host_GCEInstance struct {
 	// +kcc:proto:field=google.cloud.workstations.v1.WorkstationConfig.Host.GceInstance.boot_disk_size_gb
 	BootDiskSizeGB *int32 `json:"bootDiskSizeGB,omitempty"`
 }
-*/
 
-/* unreachable type WorkstationConfig_Host_GCEInstance_GCEConfidentialInstanceConfig
 // +kcc:proto=google.cloud.workstations.v1.WorkstationConfig.Host.GceInstance.GceConfidentialInstanceConfig
 type WorkstationConfig_Host_GCEInstance_GCEConfidentialInstanceConfig struct {
 	// Optional. Whether the instance has confidential compute enabled.
 	// +kcc:proto:field=google.cloud.workstations.v1.WorkstationConfig.Host.GceInstance.GceConfidentialInstanceConfig.enable_confidential_compute
 	EnableConfidentialCompute *bool `json:"enableConfidentialCompute,omitempty"`
 }
-*/
 
-/* unreachable type WorkstationConfig_Host_GCEInstance_GCEShieldedInstanceConfig
 // +kcc:proto=google.cloud.workstations.v1.WorkstationConfig.Host.GceInstance.GceShieldedInstanceConfig
 type WorkstationConfig_Host_GCEInstance_GCEShieldedInstanceConfig struct {
 	// Optional. Whether the instance has Secure Boot enabled.
@@ -251,9 +238,7 @@ type WorkstationConfig_Host_GCEInstance_GCEShieldedInstanceConfig struct {
 	// +kcc:proto:field=google.cloud.workstations.v1.WorkstationConfig.Host.GceInstance.GceShieldedInstanceConfig.enable_integrity_monitoring
 	EnableIntegrityMonitoring *bool `json:"enableIntegrityMonitoring,omitempty"`
 }
-*/
 
-/* unreachable type WorkstationConfig_PersistentDirectory
 // +kcc:proto=google.cloud.workstations.v1.WorkstationConfig.PersistentDirectory
 type WorkstationConfig_PersistentDirectory struct {
 	// A PersistentDirectory backed by a Compute Engine persistent disk.
@@ -264,9 +249,7 @@ type WorkstationConfig_PersistentDirectory struct {
 	// +kcc:proto:field=google.cloud.workstations.v1.WorkstationConfig.PersistentDirectory.mount_path
 	MountPath *string `json:"mountPath,omitempty"`
 }
-*/
 
-/* unreachable type WorkstationConfig_PersistentDirectory_GCERegionalPersistentDisk
 // +kcc:proto=google.cloud.workstations.v1.WorkstationConfig.PersistentDirectory.GceRegionalPersistentDisk
 type WorkstationConfig_PersistentDirectory_GCERegionalPersistentDisk struct {
 	// Optional. The GB capacity of a persistent home directory for each
@@ -311,9 +294,7 @@ type WorkstationConfig_PersistentDirectory_GCERegionalPersistentDisk struct {
 	// +kcc:proto:field=google.cloud.workstations.v1.WorkstationConfig.PersistentDirectory.GceRegionalPersistentDisk.reclaim_policy
 	ReclaimPolicy *string `json:"reclaimPolicy,omitempty"`
 }
-*/
 
-/* unreachable type WorkstationConfig_ReadinessCheck
 // +kcc:proto=google.cloud.workstations.v1.WorkstationConfig.ReadinessCheck
 type WorkstationConfig_ReadinessCheck struct {
 	// Optional. Path to which the request should be sent.
@@ -324,9 +305,7 @@ type WorkstationConfig_ReadinessCheck struct {
 	// +kcc:proto:field=google.cloud.workstations.v1.WorkstationConfig.ReadinessCheck.port
 	Port *int32 `json:"port,omitempty"`
 }
-*/
 
-/* unreachable type WorkstationCluster_PrivateClusterConfigObservedState
 // +kcc:observedstate:proto=google.cloud.workstations.v1.WorkstationCluster.PrivateClusterConfig
 type WorkstationCluster_PrivateClusterConfigObservedState struct {
 	// Output only. Hostname for the workstation cluster. This field will be
@@ -345,18 +324,14 @@ type WorkstationCluster_PrivateClusterConfigObservedState struct {
 	// +kcc:proto:field=google.cloud.workstations.v1.WorkstationCluster.PrivateClusterConfig.service_attachment_uri
 	ServiceAttachmentURI *string `json:"serviceAttachmentURI,omitempty"`
 }
-*/
 
-/* unreachable type WorkstationConfig_HostObservedState
 // +kcc:observedstate:proto=google.cloud.workstations.v1.WorkstationConfig.Host
 type WorkstationConfig_HostObservedState struct {
 	// Specifies a Compute Engine instance as the host.
 	// +kcc:proto:field=google.cloud.workstations.v1.WorkstationConfig.Host.gce_instance
 	GCEInstance *WorkstationConfig_Host_GCEInstanceObservedState `json:"gceInstance,omitempty"`
 }
-*/
 
-/* unreachable type WorkstationConfig_Host_GCEInstanceObservedState
 // +kcc:observedstate:proto=google.cloud.workstations.v1.WorkstationConfig.Host.GceInstance
 type WorkstationConfig_Host_GCEInstanceObservedState struct {
 	// Output only. Number of instances currently available in the pool for
@@ -364,4 +339,3 @@ type WorkstationConfig_Host_GCEInstanceObservedState struct {
 	// +kcc:proto:field=google.cloud.workstations.v1.WorkstationConfig.Host.GceInstance.pooled_instances
 	PooledInstances *int32 `json:"pooledInstances,omitempty"`
 }
-*/

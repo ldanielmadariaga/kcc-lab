@@ -29,24 +29,177 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
 )
 
+func AwsAccessRole_FromProto(mapCtx *direct.MapContext, in *pb.AwsAccessRole) *krm.AwsAccessRole {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AwsAccessRole{}
+	out.IAMRoleID = direct.LazyPtr(in.GetIamRoleId())
+	out.Identity = direct.LazyPtr(in.GetIdentity())
+	return out
+}
+func AwsAccessRole_ToProto(mapCtx *direct.MapContext, in *krm.AwsAccessRole) *pb.AwsAccessRole {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AwsAccessRole{}
+	out.IamRoleId = direct.ValueOf(in.IAMRoleID)
+	out.Identity = direct.ValueOf(in.Identity)
+	return out
+}
+func AwsCrossAccountRole_FromProto(mapCtx *direct.MapContext, in *pb.AwsCrossAccountRole) *krm.AwsCrossAccountRole {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AwsCrossAccountRole{}
+	out.IAMRoleID = direct.LazyPtr(in.GetIamRoleId())
+	// MISSING: IAMUserID
+	// MISSING: ExternalID
+	return out
+}
+func AwsCrossAccountRole_ToProto(mapCtx *direct.MapContext, in *krm.AwsCrossAccountRole) *pb.AwsCrossAccountRole {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AwsCrossAccountRole{}
+	out.IamRoleId = direct.ValueOf(in.IAMRoleID)
+	// MISSING: IAMUserID
+	// MISSING: ExternalID
+	return out
+}
+func AwsCrossAccountRoleObservedState_FromProto(mapCtx *direct.MapContext, in *pb.AwsCrossAccountRole) *krm.AwsCrossAccountRoleObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AwsCrossAccountRoleObservedState{}
+	// MISSING: IAMRoleID
+	out.IAMUserID = direct.LazyPtr(in.GetIamUserId())
+	out.ExternalID = direct.LazyPtr(in.GetExternalId())
+	return out
+}
+func AwsCrossAccountRoleObservedState_ToProto(mapCtx *direct.MapContext, in *krm.AwsCrossAccountRoleObservedState) *pb.AwsCrossAccountRole {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AwsCrossAccountRole{}
+	// MISSING: IAMRoleID
+	out.IamUserId = direct.ValueOf(in.IAMUserID)
+	out.ExternalId = direct.ValueOf(in.ExternalID)
+	return out
+}
+func AwsProperties_FromProto(mapCtx *direct.MapContext, in *pb.AwsProperties) *krm.AwsProperties {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AwsProperties{}
+	out.CrossAccountRole = AwsCrossAccountRole_FromProto(mapCtx, in.GetCrossAccountRole())
+	out.AccessRole = AwsAccessRole_FromProto(mapCtx, in.GetAccessRole())
+	return out
+}
+func AwsProperties_ToProto(mapCtx *direct.MapContext, in *krm.AwsProperties) *pb.AwsProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AwsProperties{}
+	if oneof := AwsCrossAccountRole_ToProto(mapCtx, in.CrossAccountRole); oneof != nil {
+		out.AuthenticationMethod = &pb.AwsProperties_CrossAccountRole{CrossAccountRole: oneof}
+	}
+	if oneof := AwsAccessRole_ToProto(mapCtx, in.AccessRole); oneof != nil {
+		out.AuthenticationMethod = &pb.AwsProperties_AccessRole{AccessRole: oneof}
+	}
+	return out
+}
+func AwsPropertiesObservedState_FromProto(mapCtx *direct.MapContext, in *pb.AwsProperties) *krm.AwsPropertiesObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AwsPropertiesObservedState{}
+	out.CrossAccountRole = AwsCrossAccountRoleObservedState_FromProto(mapCtx, in.GetCrossAccountRole())
+	// MISSING: AccessRole
+	return out
+}
+func AwsPropertiesObservedState_ToProto(mapCtx *direct.MapContext, in *krm.AwsPropertiesObservedState) *pb.AwsProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AwsProperties{}
+	if oneof := AwsCrossAccountRoleObservedState_ToProto(mapCtx, in.CrossAccountRole); oneof != nil {
+		out.AuthenticationMethod = &pb.AwsProperties_CrossAccountRole{CrossAccountRole: oneof}
+	}
+	// MISSING: AccessRole
+	return out
+}
+func AzureProperties_FromProto(mapCtx *direct.MapContext, in *pb.AzureProperties) *krm.AzureProperties {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AzureProperties{}
+	// MISSING: Application
+	// MISSING: ClientID
+	// MISSING: ObjectID
+	out.CustomerTenantID = direct.LazyPtr(in.GetCustomerTenantId())
+	out.RedirectURI = direct.LazyPtr(in.GetRedirectUri())
+	out.FederatedApplicationClientID = direct.LazyPtr(in.GetFederatedApplicationClientId())
+	// MISSING: Identity
+	return out
+}
+func AzureProperties_ToProto(mapCtx *direct.MapContext, in *krm.AzureProperties) *pb.AzureProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AzureProperties{}
+	// MISSING: Application
+	// MISSING: ClientID
+	// MISSING: ObjectID
+	out.CustomerTenantId = direct.ValueOf(in.CustomerTenantID)
+	out.RedirectUri = direct.ValueOf(in.RedirectURI)
+	out.FederatedApplicationClientId = direct.ValueOf(in.FederatedApplicationClientID)
+	// MISSING: Identity
+	return out
+}
+func AzurePropertiesObservedState_FromProto(mapCtx *direct.MapContext, in *pb.AzureProperties) *krm.AzurePropertiesObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.AzurePropertiesObservedState{}
+	out.Application = direct.LazyPtr(in.GetApplication())
+	out.ClientID = direct.LazyPtr(in.GetClientId())
+	out.ObjectID = direct.LazyPtr(in.GetObjectId())
+	// MISSING: CustomerTenantID
+	// MISSING: RedirectURI
+	// MISSING: FederatedApplicationClientID
+	out.Identity = direct.LazyPtr(in.GetIdentity())
+	return out
+}
+func AzurePropertiesObservedState_ToProto(mapCtx *direct.MapContext, in *krm.AzurePropertiesObservedState) *pb.AzureProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.AzureProperties{}
+	out.Application = direct.ValueOf(in.Application)
+	out.ClientId = direct.ValueOf(in.ClientID)
+	out.ObjectId = direct.ValueOf(in.ObjectID)
+	// MISSING: CustomerTenantID
+	// MISSING: RedirectURI
+	// MISSING: FederatedApplicationClientID
+	out.Identity = direct.ValueOf(in.Identity)
+	return out
+}
 func BigQueryConnectionConnectionObservedState_FromProto(mapCtx *direct.MapContext, in *pb.Connection) *krm.BigQueryConnectionConnectionObservedState {
 	if in == nil {
 		return nil
 	}
 	out := &krm.BigQueryConnectionConnectionObservedState{}
 	// MISSING: Name
-	// MISSING: FriendlyName
-	// MISSING: Description
-	// MISSING: CloudSQL
-	// MISSING: Aws
-	// MISSING: Azure
-	// MISSING: CloudSpanner
-	// MISSING: CloudResource
-	// MISSING: Spark
-	// MISSING: SalesforceDataCloud
-	// MISSING: CreationTime
-	// MISSING: LastModifiedTime
-	// MISSING: HasCredential
+	out.CloudSQL = CloudSQLPropertiesObservedState_FromProto(mapCtx, in.GetCloudSql())
+	out.Aws = AwsPropertiesObservedState_FromProto(mapCtx, in.GetAws())
+	out.Azure = AzurePropertiesObservedState_FromProto(mapCtx, in.GetAzure())
+	out.CloudResource = CloudResourcePropertiesObservedState_FromProto(mapCtx, in.GetCloudResource())
+	out.Spark = SparkPropertiesObservedState_FromProto(mapCtx, in.GetSpark())
+	out.SalesforceDataCloud = SalesforceDataCloudPropertiesObservedState_FromProto(mapCtx, in.GetSalesforceDataCloud())
+	out.CreationTime = direct.LazyPtr(in.GetCreationTime())
+	out.LastModifiedTime = direct.LazyPtr(in.GetLastModifiedTime())
+	out.HasCredential = direct.LazyPtr(in.GetHasCredential())
 	return out
 }
 func BigQueryConnectionConnectionObservedState_ToProto(mapCtx *direct.MapContext, in *krm.BigQueryConnectionConnectionObservedState) *pb.Connection {
@@ -55,18 +208,27 @@ func BigQueryConnectionConnectionObservedState_ToProto(mapCtx *direct.MapContext
 	}
 	out := &pb.Connection{}
 	// MISSING: Name
-	// MISSING: FriendlyName
-	// MISSING: Description
-	// MISSING: CloudSQL
-	// MISSING: Aws
-	// MISSING: Azure
-	// MISSING: CloudSpanner
-	// MISSING: CloudResource
-	// MISSING: Spark
-	// MISSING: SalesforceDataCloud
-	// MISSING: CreationTime
-	// MISSING: LastModifiedTime
-	// MISSING: HasCredential
+	if oneof := CloudSQLPropertiesObservedState_ToProto(mapCtx, in.CloudSQL); oneof != nil {
+		out.Properties = &pb.Connection_CloudSql{CloudSql: oneof}
+	}
+	if oneof := AwsPropertiesObservedState_ToProto(mapCtx, in.Aws); oneof != nil {
+		out.Properties = &pb.Connection_Aws{Aws: oneof}
+	}
+	if oneof := AzurePropertiesObservedState_ToProto(mapCtx, in.Azure); oneof != nil {
+		out.Properties = &pb.Connection_Azure{Azure: oneof}
+	}
+	if oneof := CloudResourcePropertiesObservedState_ToProto(mapCtx, in.CloudResource); oneof != nil {
+		out.Properties = &pb.Connection_CloudResource{CloudResource: oneof}
+	}
+	if oneof := SparkPropertiesObservedState_ToProto(mapCtx, in.Spark); oneof != nil {
+		out.Properties = &pb.Connection_Spark{Spark: oneof}
+	}
+	if oneof := SalesforceDataCloudPropertiesObservedState_ToProto(mapCtx, in.SalesforceDataCloud); oneof != nil {
+		out.Properties = &pb.Connection_SalesforceDataCloud{SalesforceDataCloud: oneof}
+	}
+	out.CreationTime = direct.ValueOf(in.CreationTime)
+	out.LastModifiedTime = direct.ValueOf(in.LastModifiedTime)
+	out.HasCredential = direct.ValueOf(in.HasCredential)
 	return out
 }
 
@@ -77,41 +239,287 @@ func BigQueryConnectionConnectionSpec_FromProto(mapCtx *direct.MapContext, in *p
 	}
 	out := &krm.BigQueryConnectionConnectionSpec{}
 	// MISSING: Name
-	// MISSING: FriendlyName
-	// MISSING: Description
-	// MISSING: CloudSQL
-	// MISSING: Aws
-	// MISSING: Azure
-	// MISSING: CloudSpanner
-	// MISSING: CloudResource
-	// MISSING: Spark
-	// MISSING: SalesforceDataCloud
-	// MISSING: CreationTime
-	// MISSING: LastModifiedTime
-	// MISSING: HasCredential
+	out.FriendlyName = direct.LazyPtr(in.GetFriendlyName())
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.CloudSQL = CloudSQLProperties_FromProto(mapCtx, in.GetCloudSql())
+	out.Aws = AwsProperties_FromProto(mapCtx, in.GetAws())
+	out.Azure = AzureProperties_FromProto(mapCtx, in.GetAzure())
+	out.CloudSpanner = CloudSpannerProperties_FromProto(mapCtx, in.GetCloudSpanner())
+	out.CloudResource = CloudResourceProperties_FromProto(mapCtx, in.GetCloudResource())
+	out.Spark = SparkProperties_FromProto(mapCtx, in.GetSpark())
+	out.SalesforceDataCloud = SalesforceDataCloudProperties_FromProto(mapCtx, in.GetSalesforceDataCloud())
 	return out
 }
 */
 
-/* found existing non-generated mapping function "BigQueryConnectionConnectionSpec_ToProto", skipping
-func BigQueryConnectionConnectionSpec_ToProto(mapCtx *direct.MapContext, in *krm.BigQueryConnectionConnectionSpec) *pb.Connection {
+/*
+found existing non-generated mapping function "BigQueryConnectionConnectionSpec_ToProto", skipping
+
+	func BigQueryConnectionConnectionSpec_ToProto(mapCtx *direct.MapContext, in *krm.BigQueryConnectionConnectionSpec) *pb.Connection {
+		if in == nil {
+			return nil
+		}
+		out := &pb.Connection{}
+		// MISSING: Name
+		out.FriendlyName = direct.ValueOf(in.FriendlyName)
+		out.Description = direct.ValueOf(in.Description)
+		if oneof := CloudSQLProperties_ToProto(mapCtx, in.CloudSQL); oneof != nil {
+			out.Properties = &pb.Connection_CloudSql{CloudSql: oneof}
+		}
+		if oneof := AwsProperties_ToProto(mapCtx, in.Aws); oneof != nil {
+			out.Properties = &pb.Connection_Aws{Aws: oneof}
+		}
+		if oneof := AzureProperties_ToProto(mapCtx, in.Azure); oneof != nil {
+			out.Properties = &pb.Connection_Azure{Azure: oneof}
+		}
+		if oneof := CloudSpannerProperties_ToProto(mapCtx, in.CloudSpanner); oneof != nil {
+			out.Properties = &pb.Connection_CloudSpanner{CloudSpanner: oneof}
+		}
+		if oneof := CloudResourceProperties_ToProto(mapCtx, in.CloudResource); oneof != nil {
+			out.Properties = &pb.Connection_CloudResource{CloudResource: oneof}
+		}
+		if oneof := SparkProperties_ToProto(mapCtx, in.Spark); oneof != nil {
+			out.Properties = &pb.Connection_Spark{Spark: oneof}
+		}
+		if oneof := SalesforceDataCloudProperties_ToProto(mapCtx, in.SalesforceDataCloud); oneof != nil {
+			out.Properties = &pb.Connection_SalesforceDataCloud{SalesforceDataCloud: oneof}
+		}
+		return out
+	}
+*/
+func CloudResourceProperties_FromProto(mapCtx *direct.MapContext, in *pb.CloudResourceProperties) *krm.CloudResourceProperties {
 	if in == nil {
 		return nil
 	}
-	out := &pb.Connection{}
-	// MISSING: Name
-	// MISSING: FriendlyName
-	// MISSING: Description
-	// MISSING: CloudSQL
-	// MISSING: Aws
-	// MISSING: Azure
-	// MISSING: CloudSpanner
-	// MISSING: CloudResource
-	// MISSING: Spark
-	// MISSING: SalesforceDataCloud
-	// MISSING: CreationTime
-	// MISSING: LastModifiedTime
-	// MISSING: HasCredential
+	out := &krm.CloudResourceProperties{}
+	// MISSING: ServiceAccountID
 	return out
 }
-*/
+func CloudResourceProperties_ToProto(mapCtx *direct.MapContext, in *krm.CloudResourceProperties) *pb.CloudResourceProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.CloudResourceProperties{}
+	// MISSING: ServiceAccountID
+	return out
+}
+func CloudResourcePropertiesObservedState_FromProto(mapCtx *direct.MapContext, in *pb.CloudResourceProperties) *krm.CloudResourcePropertiesObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.CloudResourcePropertiesObservedState{}
+	out.ServiceAccountID = direct.LazyPtr(in.GetServiceAccountId())
+	return out
+}
+func CloudResourcePropertiesObservedState_ToProto(mapCtx *direct.MapContext, in *krm.CloudResourcePropertiesObservedState) *pb.CloudResourceProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.CloudResourceProperties{}
+	out.ServiceAccountId = direct.ValueOf(in.ServiceAccountID)
+	return out
+}
+func CloudSQLCredential_FromProto(mapCtx *direct.MapContext, in *pb.CloudSqlCredential) *krm.CloudSQLCredential {
+	if in == nil {
+		return nil
+	}
+	out := &krm.CloudSQLCredential{}
+	out.Username = direct.LazyPtr(in.GetUsername())
+	out.Password = direct.LazyPtr(in.GetPassword())
+	return out
+}
+func CloudSQLCredential_ToProto(mapCtx *direct.MapContext, in *krm.CloudSQLCredential) *pb.CloudSqlCredential {
+	if in == nil {
+		return nil
+	}
+	out := &pb.CloudSqlCredential{}
+	out.Username = direct.ValueOf(in.Username)
+	out.Password = direct.ValueOf(in.Password)
+	return out
+}
+func CloudSQLProperties_FromProto(mapCtx *direct.MapContext, in *pb.CloudSqlProperties) *krm.CloudSQLProperties {
+	if in == nil {
+		return nil
+	}
+	out := &krm.CloudSQLProperties{}
+	out.InstanceID = direct.LazyPtr(in.GetInstanceId())
+	out.Database = direct.LazyPtr(in.GetDatabase())
+	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
+	out.Credential = CloudSQLCredential_FromProto(mapCtx, in.GetCredential())
+	// MISSING: ServiceAccountID
+	return out
+}
+func CloudSQLProperties_ToProto(mapCtx *direct.MapContext, in *krm.CloudSQLProperties) *pb.CloudSqlProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.CloudSqlProperties{}
+	out.InstanceId = direct.ValueOf(in.InstanceID)
+	out.Database = direct.ValueOf(in.Database)
+	out.Type = direct.Enum_ToProto[pb.CloudSqlProperties_DatabaseType](mapCtx, in.Type)
+	out.Credential = CloudSQLCredential_ToProto(mapCtx, in.Credential)
+	// MISSING: ServiceAccountID
+	return out
+}
+func CloudSQLPropertiesObservedState_FromProto(mapCtx *direct.MapContext, in *pb.CloudSqlProperties) *krm.CloudSQLPropertiesObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.CloudSQLPropertiesObservedState{}
+	// MISSING: InstanceID
+	// MISSING: Database
+	// MISSING: Type
+	// MISSING: Credential
+	out.ServiceAccountID = direct.LazyPtr(in.GetServiceAccountId())
+	return out
+}
+func CloudSQLPropertiesObservedState_ToProto(mapCtx *direct.MapContext, in *krm.CloudSQLPropertiesObservedState) *pb.CloudSqlProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.CloudSqlProperties{}
+	// MISSING: InstanceID
+	// MISSING: Database
+	// MISSING: Type
+	// MISSING: Credential
+	out.ServiceAccountId = direct.ValueOf(in.ServiceAccountID)
+	return out
+}
+func CloudSpannerProperties_FromProto(mapCtx *direct.MapContext, in *pb.CloudSpannerProperties) *krm.CloudSpannerProperties {
+	if in == nil {
+		return nil
+	}
+	out := &krm.CloudSpannerProperties{}
+	out.Database = direct.LazyPtr(in.GetDatabase())
+	out.UseParallelism = direct.LazyPtr(in.GetUseParallelism())
+	out.MaxParallelism = direct.LazyPtr(in.GetMaxParallelism())
+	out.UseServerlessAnalytics = direct.LazyPtr(in.GetUseServerlessAnalytics())
+	out.UseDataBoost = direct.LazyPtr(in.GetUseDataBoost())
+	out.DatabaseRole = direct.LazyPtr(in.GetDatabaseRole())
+	return out
+}
+func CloudSpannerProperties_ToProto(mapCtx *direct.MapContext, in *krm.CloudSpannerProperties) *pb.CloudSpannerProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.CloudSpannerProperties{}
+	out.Database = direct.ValueOf(in.Database)
+	out.UseParallelism = direct.ValueOf(in.UseParallelism)
+	out.MaxParallelism = direct.ValueOf(in.MaxParallelism)
+	out.UseServerlessAnalytics = direct.ValueOf(in.UseServerlessAnalytics)
+	out.UseDataBoost = direct.ValueOf(in.UseDataBoost)
+	out.DatabaseRole = direct.ValueOf(in.DatabaseRole)
+	return out
+}
+func MetastoreServiceConfig_FromProto(mapCtx *direct.MapContext, in *pb.MetastoreServiceConfig) *krm.MetastoreServiceConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.MetastoreServiceConfig{}
+	out.MetastoreService = direct.LazyPtr(in.GetMetastoreService())
+	return out
+}
+func MetastoreServiceConfig_ToProto(mapCtx *direct.MapContext, in *krm.MetastoreServiceConfig) *pb.MetastoreServiceConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.MetastoreServiceConfig{}
+	out.MetastoreService = direct.ValueOf(in.MetastoreService)
+	return out
+}
+func SalesforceDataCloudProperties_FromProto(mapCtx *direct.MapContext, in *pb.SalesforceDataCloudProperties) *krm.SalesforceDataCloudProperties {
+	if in == nil {
+		return nil
+	}
+	out := &krm.SalesforceDataCloudProperties{}
+	out.InstanceURI = direct.LazyPtr(in.GetInstanceUri())
+	// MISSING: Identity
+	out.TenantID = direct.LazyPtr(in.GetTenantId())
+	return out
+}
+func SalesforceDataCloudProperties_ToProto(mapCtx *direct.MapContext, in *krm.SalesforceDataCloudProperties) *pb.SalesforceDataCloudProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.SalesforceDataCloudProperties{}
+	out.InstanceUri = direct.ValueOf(in.InstanceURI)
+	// MISSING: Identity
+	out.TenantId = direct.ValueOf(in.TenantID)
+	return out
+}
+func SalesforceDataCloudPropertiesObservedState_FromProto(mapCtx *direct.MapContext, in *pb.SalesforceDataCloudProperties) *krm.SalesforceDataCloudPropertiesObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.SalesforceDataCloudPropertiesObservedState{}
+	// MISSING: InstanceURI
+	out.Identity = direct.LazyPtr(in.GetIdentity())
+	// MISSING: TenantID
+	return out
+}
+func SalesforceDataCloudPropertiesObservedState_ToProto(mapCtx *direct.MapContext, in *krm.SalesforceDataCloudPropertiesObservedState) *pb.SalesforceDataCloudProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.SalesforceDataCloudProperties{}
+	// MISSING: InstanceURI
+	out.Identity = direct.ValueOf(in.Identity)
+	// MISSING: TenantID
+	return out
+}
+func SparkHistoryServerConfig_FromProto(mapCtx *direct.MapContext, in *pb.SparkHistoryServerConfig) *krm.SparkHistoryServerConfig {
+	if in == nil {
+		return nil
+	}
+	out := &krm.SparkHistoryServerConfig{}
+	out.DataprocCluster = direct.LazyPtr(in.GetDataprocCluster())
+	return out
+}
+func SparkHistoryServerConfig_ToProto(mapCtx *direct.MapContext, in *krm.SparkHistoryServerConfig) *pb.SparkHistoryServerConfig {
+	if in == nil {
+		return nil
+	}
+	out := &pb.SparkHistoryServerConfig{}
+	out.DataprocCluster = direct.ValueOf(in.DataprocCluster)
+	return out
+}
+func SparkProperties_FromProto(mapCtx *direct.MapContext, in *pb.SparkProperties) *krm.SparkProperties {
+	if in == nil {
+		return nil
+	}
+	out := &krm.SparkProperties{}
+	// MISSING: ServiceAccountID
+	out.MetastoreServiceConfig = MetastoreServiceConfig_FromProto(mapCtx, in.GetMetastoreServiceConfig())
+	out.SparkHistoryServerConfig = SparkHistoryServerConfig_FromProto(mapCtx, in.GetSparkHistoryServerConfig())
+	return out
+}
+func SparkProperties_ToProto(mapCtx *direct.MapContext, in *krm.SparkProperties) *pb.SparkProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.SparkProperties{}
+	// MISSING: ServiceAccountID
+	out.MetastoreServiceConfig = MetastoreServiceConfig_ToProto(mapCtx, in.MetastoreServiceConfig)
+	out.SparkHistoryServerConfig = SparkHistoryServerConfig_ToProto(mapCtx, in.SparkHistoryServerConfig)
+	return out
+}
+func SparkPropertiesObservedState_FromProto(mapCtx *direct.MapContext, in *pb.SparkProperties) *krm.SparkPropertiesObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krm.SparkPropertiesObservedState{}
+	out.ServiceAccountID = direct.LazyPtr(in.GetServiceAccountId())
+	// MISSING: MetastoreServiceConfig
+	// MISSING: SparkHistoryServerConfig
+	return out
+}
+func SparkPropertiesObservedState_ToProto(mapCtx *direct.MapContext, in *krm.SparkPropertiesObservedState) *pb.SparkProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.SparkProperties{}
+	out.ServiceAccountId = direct.ValueOf(in.ServiceAccountID)
+	// MISSING: MetastoreServiceConfig
+	// MISSING: SparkHistoryServerConfig
+	return out
+}

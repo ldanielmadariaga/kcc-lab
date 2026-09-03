@@ -206,6 +206,7 @@ type DNSAuthorization struct {
 	//  `example.com` can be used to issue certificates for `example.com` and
 	//  `*.example.com`.
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.DnsAuthorization.domain
+	// +required
 	Domain *string `json:"domain,omitempty"`
 
 	// Immutable. Type of DnsAuthorization. If unset during resource creation the
@@ -409,7 +410,6 @@ type DNSAuthorizationObservedState struct {
 }
 */
 
-/* unreachable type DNSAuthorization_DNSResourceRecordObservedState
 // +kcc:observedstate:proto=google.cloud.certificatemanager.v1.DnsAuthorization.DnsResourceRecord
 type DNSAuthorization_DNSResourceRecordObservedState struct {
 	// Output only. Fully qualified name of the DNS Resource Record.
@@ -426,4 +426,3 @@ type DNSAuthorization_DNSResourceRecordObservedState struct {
 	// +kcc:proto:field=google.cloud.certificatemanager.v1.DnsAuthorization.DnsResourceRecord.data
 	Data *string `json:"data,omitempty"`
 }
-*/

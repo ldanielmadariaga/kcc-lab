@@ -30,6 +30,31 @@ type EssentialContactsContactSpec struct {
 
 	// The EssentialContactsContact name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Required. The email address to send notifications to. The email address
+	//  does not need to be a Google Account.
+	// +kcc:proto:field=google.cloud.essentialcontacts.v1.Contact.email
+	// +required
+	Email *string `json:"email,omitempty"`
+
+	// Required. The categories of notifications that the contact will receive
+	//  communications for.
+	// +kcc:proto:field=google.cloud.essentialcontacts.v1.Contact.notification_category_subscriptions
+	// +required
+	NotificationCategorySubscriptions []string `json:"notificationCategorySubscriptions,omitempty"`
+
+	// Required. The preferred language for notifications, as a ISO 639-1 language
+	//  code. See [Supported
+	//  languages](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#supported-languages)
+	//  for a list of supported languages.
+	// +kcc:proto:field=google.cloud.essentialcontacts.v1.Contact.language_tag
+	// +required
+	LanguageTag *string `json:"languageTag,omitempty"`
+
+	// The last time the validation_state was updated, either manually or
+	//  automatically. A contact is considered stale if its validation state was
+	//  updated more than 1 year ago.
+	// +kcc:proto:field=google.cloud.essentialcontacts.v1.Contact.validate_time
+	ValidateTime *string `json:"validateTime,omitempty"`
 }
 
 // EssentialContactsContactStatus defines the config connector machine state of EssentialContactsContact
@@ -51,6 +76,10 @@ type EssentialContactsContactStatus struct {
 // EssentialContactsContactObservedState is the state of the EssentialContactsContact resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.essentialcontacts.v1.Contact
 type EssentialContactsContactObservedState struct {
+	// Output only. The validity of the contact. A contact is considered valid if
+	//  it is the correct recipient for notifications for a particular resource.
+	// +kcc:proto:field=google.cloud.essentialcontacts.v1.Contact.validation_state
+	ValidationState *string `json:"validationState,omitempty"`
 }
 
 // +genclient

@@ -28,8 +28,27 @@ type APIQuotaAdjusterSettingsSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/quotaAdjusterSettings
+	Location *string `json:"location,omitempty"`
+
 	// The APIQuotaAdjusterSettings name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. The configured value of the enablement at the given resource.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.enablement
+	Enablement *string `json:"enablement,omitempty"`
+
+	// Optional. The current ETag of the QuotaAdjusterSettings. If an ETag is
+	//  provided on update and does not match the current server's ETag in the
+	//  QuotaAdjusterSettings, the request is blocked and returns an ABORTED error.
+	//  See https://google.aip.dev/134#etags for more details on ETags.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Optional. Indicates whether the setting is inherited or explicitly
+	//  specified.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.inherited
+	Inherited *bool `json:"inherited,omitempty"`
 }
 
 // APIQuotaAdjusterSettingsStatus defines the config connector machine state of APIQuotaAdjusterSettings
@@ -51,6 +70,19 @@ type APIQuotaAdjusterSettingsStatus struct {
 // APIQuotaAdjusterSettingsObservedState is the state of the APIQuotaAdjusterSettings resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.api.cloudquotas.v1beta.QuotaAdjusterSettings
 type APIQuotaAdjusterSettingsObservedState struct {
+	// Output only. The timestamp when the QuotaAdjusterSettings resource was last
+	//  updated.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The resource container from which the setting is inherited.
+	//  This refers to the  nearest ancestor with enablement set (either ENABLED or
+	//  DISABLED). The value can be an organizations/{organization_id},
+	//  folders/{folder_id}, or can be 'default' if no ancestor exists with
+	//  enablement set. The value will be empty when enablement is directly set on
+	//  this container.
+	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaAdjusterSettings.inherited_from
+	InheritedFrom *string `json:"inheritedFrom,omitempty"`
 }
 
 // +genclient

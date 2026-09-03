@@ -21,7 +21,6 @@
 
 package v1beta1
 
-/* unreachable type HiveTableOptions
 // +kcc:proto=google.cloud.bigquery.biglake.v1.HiveTableOptions
 type HiveTableOptions struct {
 	// Stores user supplied Hive table parameters.
@@ -36,18 +35,14 @@ type HiveTableOptions struct {
 	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.HiveTableOptions.storage_descriptor
 	StorageDescriptor *HiveTableOptions_StorageDescriptor `json:"storageDescriptor,omitempty"`
 }
-*/
 
-/* unreachable type HiveTableOptions_SerDeInfo
 // +kcc:proto=google.cloud.bigquery.biglake.v1.HiveTableOptions.SerDeInfo
 type HiveTableOptions_SerDeInfo struct {
 	// The fully qualified Java class name of the serialization library.
 	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.HiveTableOptions.SerDeInfo.serialization_lib
 	SerializationLib *string `json:"serializationLib,omitempty"`
 }
-*/
 
-/* unreachable type HiveTableOptions_StorageDescriptor
 // +kcc:proto=google.cloud.bigquery.biglake.v1.HiveTableOptions.StorageDescriptor
 type HiveTableOptions_StorageDescriptor struct {
 	// Cloud Storage folder URI where the table data is stored, starting with
@@ -67,7 +62,6 @@ type HiveTableOptions_StorageDescriptor struct {
 	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.HiveTableOptions.StorageDescriptor.serde_info
 	SerdeInfo *HiveTableOptions_SerDeInfo `json:"serdeInfo,omitempty"`
 }
-*/
 
 /* unreachable type Table
 // +kcc:proto=google.cloud.bigquery.biglake.v1.Table

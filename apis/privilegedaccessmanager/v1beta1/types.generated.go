@@ -73,11 +73,13 @@ type Entitlement struct {
 	// Required. The maximum amount of time that access is granted for a request.
 	//  A requester can ask for a duration less than this, but never more.
 	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.Entitlement.max_request_duration
+	// +required
 	MaxRequestDuration *string `json:"maxRequestDuration,omitempty"`
 
 	// Required. The manner in which the requester should provide a justification
 	//  for requesting access.
 	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.Entitlement.requester_justification_config
+	// +required
 	RequesterJustificationConfig *Entitlement_RequesterJustificationConfig `json:"requesterJustificationConfig,omitempty"`
 
 	// Optional. Additional email addresses to be notified based on actions taken.
@@ -169,6 +171,7 @@ type ManualApprovals_Step struct {
 	//  aren't enough distinct users in the list, then the workflow indefinitely
 	//  blocks. Should always be greater than 0. 1 is the only supported value.
 	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.ManualApprovals.Step.approvals_needed
+	// +required
 	ApprovalsNeeded *int32 `json:"approvalsNeeded,omitempty"`
 
 	// Optional. Additional email addresses to be notified when a grant is
@@ -194,14 +197,17 @@ type PrivilegedAccess struct {
 type PrivilegedAccess_GcpIAMAccess struct {
 	// Required. The type of this resource.
 	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.PrivilegedAccess.GcpIamAccess.resource_type
+	// +required
 	ResourceType *string `json:"resourceType,omitempty"`
 
 	// Required. Name of the resource.
 	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.PrivilegedAccess.GcpIamAccess.resource
+	// +required
 	Resource *string `json:"resource,omitempty"`
 
 	// Required. Role bindings that are created on successful grant.
 	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.PrivilegedAccess.GcpIamAccess.role_bindings
+	// +required
 	RoleBindings []PrivilegedAccess_GcpIAMAccess_RoleBinding `json:"roleBindings,omitempty"`
 }
 */
@@ -213,6 +219,7 @@ type PrivilegedAccess_GcpIAMAccess_RoleBinding struct {
 	// Required. IAM role to be granted.
 	//  https://cloud.google.com/iam/docs/roles-overview.
 	// +kcc:proto:field=google.cloud.privilegedaccessmanager.v1.PrivilegedAccess.GcpIamAccess.RoleBinding.role
+	// +required
 	Role *string `json:"role,omitempty"`
 
 	// Optional. The expression field of the IAM condition to be associated

@@ -16,7 +16,23 @@ python3 hack/tools/greenfield/silence_report.py \
 | run | corpus | implemented | discrepancy | missing | notes |
 |---|---|---|---|---|---|
 | `2026-09-02-231-resources.txt` | 231 | 10232 (94.2%) | 368 | 257 | **Superseded.** The corpus was under-scoped: 44 greenfield kinds with an upstream baseline were absent from `inscope.tsv`. |
-| `2026-09-03-275-resources.txt` | 275 | 10966 (91.4%) | 369 | 665 | First run on the derived corpus (`build_inscope.py`). The gap to close goes 195 → 603. |
+| `2026-09-03-275-resources.txt` | 275 | 10966 (91.4%) | 369 | 665 | First run on the derived corpus (`build_inscope.py`). **Superseded**: 42 resources were generating stubs. |
+| `2026-09-03-275-resources-flags-on.txt` | 275 | 13195 (94.3%) | 445 | 357 | After enabling the five generator flags on 31 invocations that lacked them. Gap to close 603 → 295. |
+
+## The stub finding
+
+42 of the 275 were generating 13-field scaffolds because the `generate-types` invocation that
+declares them never passed `--prepopulate-spec`. The flag is set per invocation and a `generate.sh`
+can have several: `compute` had it on one and not on the one declaring 47 kinds. A per-service check
+found only 22 of the 42.
+
+Enabling it moved `implemented` by 2,229 fields and halved the gap. The baseline count rises too,
+12,000 → 13,997, because a resource that generates real fields exposes more of the baseline to
+comparison than a stub does, where most of it collapses into a few missing-parent defects.
+
+**12 resources have stale CRDs** in this run: their types regenerated but `controller-gen` then
+failed for the service, so the published CRD is the previous one. They are excluded from the model
+comparison. `contentwarehouse`, `gkehub`, `iap` and `notebooks` are the affected services.
 
 ## What the rescope changed
 

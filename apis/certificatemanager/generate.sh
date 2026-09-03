@@ -54,6 +54,11 @@ sed -i 's/Slice_ToProto(mapCtx, in.IntermediateCas,/Slice_ToProto(mapCtx, in.Int
 ${CONTROLLERBUILDER} generate-types \
     --service google.cloud.certificatemanager.v1 \
     --api-version "certificatemanager.cnrm.cloud.google.com/v1beta1" \
+    --prepopulate-spec \
+    --emit-required-from-proto \
+    --emit-plural-acronyms \
+    --detect-output-only-in-comments \
+    --place-server-set-fields \
     --include-skipped-output \
     --resource CertificateManagerDNSAuthorization:DnsAuthorization \
     --resource CertificateManagerCertificate:Certificate \

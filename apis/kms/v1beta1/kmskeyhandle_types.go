@@ -28,8 +28,19 @@ type KMSKeyHandleSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/keyHandles/{key_handle}
+	Location *string `json:"location"`
+
 	// The KMSKeyHandle name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Required. Indicates the resource type that the resulting
+	//  [CryptoKey][google.cloud.kms.v1.CryptoKey] is meant to protect, e.g.
+	//  `{SERVICE}.googleapis.com/{TYPE}`. See documentation for supported resource
+	//  types.
+	// +kcc:proto:field=google.cloud.kms.v1.KeyHandle.resource_type_selector
+	// +required
+	ResourceTypeSelector *string `json:"resourceTypeSelector,omitempty"`
 }
 
 // KMSKeyHandleStatus defines the config connector machine state of KMSKeyHandle
@@ -51,6 +62,19 @@ type KMSKeyHandleStatus struct {
 // KMSKeyHandleObservedState is the state of the KMSKeyHandle resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.kms.v1.KeyHandle
 type KMSKeyHandleObservedState struct {
+	// Output only. Name of a [CryptoKey][google.cloud.kms.v1.CryptoKey] that has
+	//  been provisioned for Customer Managed Encryption Key (CMEK) use in the
+	//  [KeyHandle][google.cloud.kms.v1.KeyHandle] project and location for the
+	//  requested resource type. The [CryptoKey][google.cloud.kms.v1.CryptoKey]
+	//  project will reflect the value configured in the
+	//  [AutokeyConfig][google.cloud.kms.v1.AutokeyConfig] on the resource
+	//  project's ancestor folder at the time of the
+	//  [KeyHandle][google.cloud.kms.v1.KeyHandle] creation. If more than one
+	//  ancestor folder has a configured
+	//  [AutokeyConfig][google.cloud.kms.v1.AutokeyConfig], the nearest of these
+	//  configurations is used.
+	// +kcc:proto:field=google.cloud.kms.v1.KeyHandle.kms_key
+	KMSKey *string `json:"kmsKey,omitempty"`
 }
 
 // +genclient

@@ -28,8 +28,35 @@ type BigQueryReservationAssignmentSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/reservations/{reservation}/assignments/{assignment}
+	Location *string `json:"location,omitempty"`
+
+	// The Reservation that this resource belongs to.
+	// +kcc:guess=parent-ref target=ReservationRef pattern=projects/{project}/locations/{location}/reservations/{reservation}/assignments/{assignment}
+	ReservationRef *ReservationRef `json:"reservationRef,omitempty"`
+
 	// The BigQueryReservationAssignment name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// The resource which will use the reservation. E.g.
+	//  `projects/myproject`, `folders/123`, or `organizations/456`.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Assignment.assignee
+	Assignee *string `json:"assignee,omitempty"`
+
+	// Which type of jobs will use the reservation.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Assignment.job_type
+	JobType *string `json:"jobType,omitempty"`
+
+	// Optional. This field controls if "Gemini in BigQuery"
+	//  (https://cloud.google.com/gemini/docs/bigquery/overview) features should be
+	//  enabled for this reservation assignment, which is not on by default.
+	//  "Gemini in BigQuery" has a distinct compliance posture from BigQuery.  If
+	//  this field is set to true, the assignment job type is QUERY, and
+	//  the parent reservation edition is ENTERPRISE_PLUS, then the assignment will
+	//  give the grantee project/organization access to "Gemini in BigQuery"
+	//  features.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Assignment.enable_gemini_in_bigquery
+	EnableGeminiInBigquery *bool `json:"enableGeminiInBigquery,omitempty"`
 }
 
 // BigQueryReservationAssignmentStatus defines the config connector machine state of BigQueryReservationAssignment
@@ -51,6 +78,9 @@ type BigQueryReservationAssignmentStatus struct {
 // BigQueryReservationAssignmentObservedState is the state of the BigQueryReservationAssignment resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.bigquery.reservation.v1.Assignment
 type BigQueryReservationAssignmentObservedState struct {
+	// Output only. State of the assignment.
+	// +kcc:proto:field=google.cloud.bigquery.reservation.v1.Assignment.state
+	State *string `json:"state,omitempty"`
 }
 
 // +genclient

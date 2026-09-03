@@ -33,6 +33,7 @@ type Feed struct {
 	//  The client-assigned feed identifier must be unique within the parent
 	//  project/folder/organization.
 	// +kcc:proto:field=google.cloud.asset.v1.Feed.name
+	// +required
 	Name *string `json:"name,omitempty"`
 
 	// A list of the full names of the assets to receive updates. You must specify
@@ -63,6 +64,7 @@ type Feed struct {
 	// Required. Feed output configuration defining where the asset updates are
 	//  published to.
 	// +kcc:proto:field=google.cloud.asset.v1.Feed.feed_output_config
+	// +required
 	FeedOutputConfig *FeedOutputConfig `json:"feedOutputConfig,omitempty"`
 
 	// A condition which determines whether an asset update should be published.
@@ -101,16 +103,13 @@ type Feed struct {
 }
 */
 
-/* unreachable type FeedOutputConfig
 // +kcc:proto=google.cloud.asset.v1.FeedOutputConfig
 type FeedOutputConfig struct {
 	// Destination on Pub/Sub.
 	// +kcc:proto:field=google.cloud.asset.v1.FeedOutputConfig.pubsub_destination
 	PubsubDestination *PubsubDestination `json:"pubsubDestination,omitempty"`
 }
-*/
 
-/* unreachable type IAMPolicyAnalysisQuery
 // +kcc:proto=google.cloud.asset.v1.IamPolicyAnalysisQuery
 type IAMPolicyAnalysisQuery struct {
 	// Required. The relative name of the root asset. Only resources and IAM
@@ -126,6 +125,7 @@ type IAMPolicyAnalysisQuery struct {
 	//  To know how to get folder or project ID, visit [here
 	//  ](https://cloud.google.com/resource-manager/docs/creating-managing-folders#viewing_or_listing_folders_and_projects).
 	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.scope
+	// +required
 	Scope *string `json:"scope,omitempty"`
 
 	// Optional. Specifies a resource for analysis.
@@ -148,9 +148,7 @@ type IAMPolicyAnalysisQuery struct {
 	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.condition_context
 	ConditionContext *IAMPolicyAnalysisQuery_ConditionContext `json:"conditionContext,omitempty"`
 }
-*/
 
-/* unreachable type IAMPolicyAnalysisQuery_AccessSelector
 // +kcc:proto=google.cloud.asset.v1.IamPolicyAnalysisQuery.AccessSelector
 type IAMPolicyAnalysisQuery_AccessSelector struct {
 	// Optional. The roles to appear in result.
@@ -161,9 +159,7 @@ type IAMPolicyAnalysisQuery_AccessSelector struct {
 	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.AccessSelector.permissions
 	Permissions []string `json:"permissions,omitempty"`
 }
-*/
 
-/* unreachable type IAMPolicyAnalysisQuery_ConditionContext
 // +kcc:proto=google.cloud.asset.v1.IamPolicyAnalysisQuery.ConditionContext
 type IAMPolicyAnalysisQuery_ConditionContext struct {
 	// The hypothetical access timestamp to evaluate IAM conditions. Note that
@@ -172,9 +168,7 @@ type IAMPolicyAnalysisQuery_ConditionContext struct {
 	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.ConditionContext.access_time
 	AccessTime *string `json:"accessTime,omitempty"`
 }
-*/
 
-/* unreachable type IAMPolicyAnalysisQuery_IdentitySelector
 // +kcc:proto=google.cloud.asset.v1.IamPolicyAnalysisQuery.IdentitySelector
 type IAMPolicyAnalysisQuery_IdentitySelector struct {
 	// Required. The identity appear in the form of principals in
@@ -190,11 +184,10 @@ type IAMPolicyAnalysisQuery_IdentitySelector struct {
 	//  Notice that wildcard characters (such as * and ?) are not supported.
 	//  You must give a specific identity.
 	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.IdentitySelector.identity
+	// +required
 	Identity *string `json:"identity,omitempty"`
 }
-*/
 
-/* unreachable type IAMPolicyAnalysisQuery_Options
 // +kcc:proto=google.cloud.asset.v1.IamPolicyAnalysisQuery.Options
 type IAMPolicyAnalysisQuery_Options struct {
 	// Optional. If true, the identities section of the result will expand any
@@ -303,9 +296,7 @@ type IAMPolicyAnalysisQuery_Options struct {
 	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.Options.analyze_service_account_impersonation
 	AnalyzeServiceAccountImpersonation *bool `json:"analyzeServiceAccountImpersonation,omitempty"`
 }
-*/
 
-/* unreachable type IAMPolicyAnalysisQuery_ResourceSelector
 // +kcc:proto=google.cloud.asset.v1.IamPolicyAnalysisQuery.ResourceSelector
 type IAMPolicyAnalysisQuery_ResourceSelector struct {
 	// Required. The [full resource name]
@@ -313,11 +304,10 @@ type IAMPolicyAnalysisQuery_ResourceSelector struct {
 	//  of a resource of [supported resource
 	//  types](https://cloud.google.com/asset-inventory/docs/supported-asset-types#analyzable_asset_types).
 	// +kcc:proto:field=google.cloud.asset.v1.IamPolicyAnalysisQuery.ResourceSelector.full_resource_name
+	// +required
 	FullResourceName *string `json:"fullResourceName,omitempty"`
 }
-*/
 
-/* unreachable type PubsubDestination
 // +kcc:proto=google.cloud.asset.v1.PubsubDestination
 type PubsubDestination struct {
 	// The name of the Pub/Sub topic to publish to.
@@ -325,7 +315,6 @@ type PubsubDestination struct {
 	// +kcc:proto:field=google.cloud.asset.v1.PubsubDestination.topic
 	Topic *string `json:"topic,omitempty"`
 }
-*/
 
 /* unreachable type SavedQuery
 // +kcc:proto=google.cloud.asset.v1.SavedQuery
@@ -355,7 +344,6 @@ type SavedQuery struct {
 }
 */
 
-/* unreachable type SavedQuery_QueryContent
 // +kcc:proto=google.cloud.asset.v1.SavedQuery.QueryContent
 type SavedQuery_QueryContent struct {
 	// An IAM Policy Analysis query, which could be used in
@@ -367,9 +355,7 @@ type SavedQuery_QueryContent struct {
 	// +kcc:proto:field=google.cloud.asset.v1.SavedQuery.QueryContent.iam_policy_analysis_query
 	IAMPolicyAnalysisQuery *IAMPolicyAnalysisQuery `json:"iamPolicyAnalysisQuery,omitempty"`
 }
-*/
 
-/* unreachable type Expr
 // +kcc:proto=google.type.Expr
 type Expr struct {
 	// Textual representation of an expression in Common Expression Language
@@ -393,7 +379,6 @@ type Expr struct {
 	// +kcc:proto:field=google.type.Expr.location
 	Location *string `json:"location,omitempty"`
 }
-*/
 
 /* unreachable type SavedQueryObservedState
 // +kcc:observedstate:proto=google.cloud.asset.v1.SavedQuery

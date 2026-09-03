@@ -28,8 +28,51 @@ type CloudDeployDeliveryPipelineSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}
+	Location *string `json:"location"`
+
 	// The CloudDeployDeliveryPipeline name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. Description of the `DeliveryPipeline`. Max length is 255
+	//  characters.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. User annotations. These attributes can only be set and used by
+	//  the user, and not by Cloud Deploy.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.annotations
+	Annotations map[string]string `json:"annotations,omitempty"`
+
+	// Labels are attributes that can be set and used by both the
+	//  user and by Cloud Deploy. Labels must meet the following constraints:
+	//
+	//  * Keys and values can contain only lowercase letters, numeric characters,
+	//  underscores, and dashes.
+	//  * All characters must use UTF-8 encoding, and international characters are
+	//  allowed.
+	//  * Keys must start with a lowercase letter or international character.
+	//  * Each resource is limited to a maximum of 64 labels.
+	//
+	//  Both keys and values are additionally constrained to be <= 128 bytes.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. SerialPipeline defines a sequential set of stages for a
+	//  `DeliveryPipeline`.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.serial_pipeline
+	SerialPipeline *SerialPipeline `json:"serialPipeline,omitempty"`
+
+	// This checksum is computed by the server based on the value of other
+	//  fields, and may be sent on update and delete requests to ensure the
+	//  client has an up-to-date value before proceeding.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Optional. When suspended, no new releases or rollouts can be created,
+	//  but in-progress ones will complete.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.suspended
+	Suspended *bool `json:"suspended,omitempty"`
 }
 
 // CloudDeployDeliveryPipelineStatus defines the config connector machine state of CloudDeployDeliveryPipeline
@@ -51,6 +94,21 @@ type CloudDeployDeliveryPipelineStatus struct {
 // CloudDeployDeliveryPipelineObservedState is the state of the CloudDeployDeliveryPipeline resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.deploy.v1.DeliveryPipeline
 type CloudDeployDeliveryPipelineObservedState struct {
+	// Output only. Unique identifier of the `DeliveryPipeline`.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. Time at which the pipeline was created.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Most recent time at which the pipeline was updated.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. Information around the state of the Delivery Pipeline.
+	// +kcc:proto:field=google.cloud.deploy.v1.DeliveryPipeline.condition
+	Condition *PipelineCondition `json:"condition,omitempty"`
 }
 
 // +genclient

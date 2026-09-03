@@ -36,6 +36,11 @@ ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.redis.cluster.v1,google.cloud.redis.v1 \
   --api-version redis.cnrm.cloud.google.com/v1beta1 \
   --include-skipped-output \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource RedisCluster:Cluster \
   --resource RedisInstance:Instance
 

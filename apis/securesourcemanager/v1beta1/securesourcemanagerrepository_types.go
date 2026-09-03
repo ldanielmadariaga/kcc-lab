@@ -28,8 +28,36 @@ type SecureSourceManagerRepositorySpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/repositories/{repository}
+	Location *string `json:"location"`
+
 	// The SecureSourceManagerRepository name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. Description of the repository, which cannot exceed 500
+	//  characters.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.description
+	Description *string `json:"description,omitempty"`
+
+	// Optional. The name of the instance in which the repository is hosted,
+	//  formatted as
+	//  `projects/{project_number}/locations/{location_id}/instances/{instance_id}`
+	//  When creating repository via securesourcemanager.googleapis.com, this field
+	//  is used as input. When creating repository via *.sourcemanager.dev, this
+	//  field is output only.
+	// +kcc:guess=possible-reference target=SecureSourceManagerInstance
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.instance
+	Instance *string `json:"instance,omitempty"`
+
+	// Optional. This checksum is computed by the server based on the value of
+	//  other fields, and may be sent on update and delete requests to ensure the
+	//  client has an up-to-date value before proceeding.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.etag
+	Etag *string `json:"etag,omitempty"`
+
+	// Input only. Initial configurations for the repository.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.initial_config
+	InitialConfig *Repository_InitialConfig `json:"initialConfig,omitempty"`
 }
 
 // SecureSourceManagerRepositoryStatus defines the config connector machine state of SecureSourceManagerRepository
@@ -51,6 +79,21 @@ type SecureSourceManagerRepositoryStatus struct {
 // SecureSourceManagerRepositoryObservedState is the state of the SecureSourceManagerRepository resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Repository
 type SecureSourceManagerRepositoryObservedState struct {
+	// Output only. Unique identifier of the repository.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.uid
+	Uid *string `json:"uid,omitempty"`
+
+	// Output only. Create timestamp.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Update timestamp.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. URIs for the repository.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Repository.uris
+	Uris *Repository_UrIsObservedState `json:"uris,omitempty"`
 }
 
 // +genclient

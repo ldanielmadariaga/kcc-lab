@@ -368,13 +368,9 @@ func CertificateManagerDNSAuthorizationObservedState_v1beta1_FromProto(mapCtx *d
 	}
 	out := &krmcertificatemanagerv1beta1.CertificateManagerDNSAuthorizationObservedState{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Labels
-	// MISSING: Description
-	// MISSING: Domain
-	// MISSING: DNSResourceRecord
-	// MISSING: Type
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.DNSResourceRecord = DNSAuthorization_DNSResourceRecordObservedState_v1beta1_FromProto(mapCtx, in.GetDnsResourceRecord())
 	return out
 }
 func CertificateManagerDNSAuthorizationObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmcertificatemanagerv1beta1.CertificateManagerDNSAuthorizationObservedState) *pb.DnsAuthorization {
@@ -383,13 +379,9 @@ func CertificateManagerDNSAuthorizationObservedState_v1beta1_ToProto(mapCtx *dir
 	}
 	out := &pb.DnsAuthorization{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Labels
-	// MISSING: Description
-	// MISSING: Domain
-	// MISSING: DNSResourceRecord
-	// MISSING: Type
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.DnsResourceRecord = DNSAuthorization_DNSResourceRecordObservedState_v1beta1_ToProto(mapCtx, in.DNSResourceRecord)
 	return out
 }
 func CertificateManagerDNSAuthorizationSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.DnsAuthorization) *krmcertificatemanagerv1beta1.CertificateManagerDNSAuthorizationSpec {
@@ -398,13 +390,10 @@ func CertificateManagerDNSAuthorizationSpec_v1beta1_FromProto(mapCtx *direct.Map
 	}
 	out := &krmcertificatemanagerv1beta1.CertificateManagerDNSAuthorizationSpec{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Labels
-	// MISSING: Description
-	// MISSING: Domain
-	// MISSING: DNSResourceRecord
-	// MISSING: Type
+	out.Labels = in.Labels
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.Domain = direct.LazyPtr(in.GetDomain())
+	out.Type = direct.Enum_FromProto(mapCtx, in.GetType())
 	return out
 }
 func CertificateManagerDNSAuthorizationSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmcertificatemanagerv1beta1.CertificateManagerDNSAuthorizationSpec) *pb.DnsAuthorization {
@@ -413,13 +402,10 @@ func CertificateManagerDNSAuthorizationSpec_v1beta1_ToProto(mapCtx *direct.MapCo
 	}
 	out := &pb.DnsAuthorization{}
 	// MISSING: Name
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: Labels
-	// MISSING: Description
-	// MISSING: Domain
-	// MISSING: DNSResourceRecord
-	// MISSING: Type
+	out.Labels = in.Labels
+	out.Description = direct.ValueOf(in.Description)
+	out.Domain = direct.ValueOf(in.Domain)
+	out.Type = direct.Enum_ToProto[pb.DnsAuthorization_Type](mapCtx, in.Type)
 	return out
 }
 func CertificateManagerTrustConfigObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.TrustConfig) *krmcertificatemanagerv1alpha1.CertificateManagerTrustConfigObservedState {
@@ -628,6 +614,26 @@ found existing non-generated mapping function "CertificateSelfManaged_v1beta1_To
 		return out
 	}
 */
+func DNSAuthorization_DNSResourceRecordObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.DnsAuthorization_DnsResourceRecord) *krmcertificatemanagerv1beta1.DNSAuthorization_DNSResourceRecordObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmcertificatemanagerv1beta1.DNSAuthorization_DNSResourceRecordObservedState{}
+	out.Name = direct.LazyPtr(in.GetName())
+	out.Type = direct.LazyPtr(in.GetType())
+	out.Data = direct.LazyPtr(in.GetData())
+	return out
+}
+func DNSAuthorization_DNSResourceRecordObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmcertificatemanagerv1beta1.DNSAuthorization_DNSResourceRecordObservedState) *pb.DnsAuthorization_DnsResourceRecord {
+	if in == nil {
+		return nil
+	}
+	out := &pb.DnsAuthorization_DnsResourceRecord{}
+	out.Name = direct.ValueOf(in.Name)
+	out.Type = direct.ValueOf(in.Type)
+	out.Data = direct.ValueOf(in.Data)
+	return out
+}
 func TrustConfig_IntermediateCA_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.TrustConfig_IntermediateCA) *krmcertificatemanagerv1alpha1.TrustConfig_IntermediateCA {
 	if in == nil {
 		return nil

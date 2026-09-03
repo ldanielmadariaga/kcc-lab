@@ -28,6 +28,8 @@ import (
 	krmbackupdrv1alpha1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/backupdr/v1alpha1"
 	krmbackupdrv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/backupdr/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/controller/direct"
+	dayofweekpb "google.golang.org/genproto/googleapis/type/dayofweek"
+	monthpb "google.golang.org/genproto/googleapis/type/month"
 )
 
 func BackupDRBackupPlanAssociationObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.BackupPlanAssociation) *krmbackupdrv1beta1.BackupDRBackupPlanAssociationObservedState {
@@ -36,17 +38,14 @@ func BackupDRBackupPlanAssociationObservedState_v1beta1_FromProto(mapCtx *direct
 	}
 	out := &krmbackupdrv1beta1.BackupDRBackupPlanAssociationObservedState{}
 	// MISSING: Name
-	// MISSING: ResourceType
-	// MISSING: Resource
-	// MISSING: BackupPlan
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: State
-	// MISSING: RulesConfigInfo
-	// MISSING: DataSource
-	// MISSING: CloudSQLInstanceBackupPlanAssociationProperties
-	// MISSING: BackupPlanRevisionID
-	// MISSING: BackupPlanRevisionName
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.RulesConfigInfo = direct.Slice_FromProto(mapCtx, in.RulesConfigInfo, RuleConfigInfoObservedState_v1beta1_FromProto)
+	out.DataSource = direct.LazyPtr(in.GetDataSource())
+	out.CloudSQLInstanceBackupPlanAssociationProperties = CloudSQLInstanceBackupPlanAssociationPropertiesObservedState_v1beta1_FromProto(mapCtx, in.GetCloudSqlInstanceBackupPlanAssociationProperties())
+	out.BackupPlanRevisionID = direct.LazyPtr(in.GetBackupPlanRevisionId())
+	out.BackupPlanRevisionName = direct.LazyPtr(in.GetBackupPlanRevisionName())
 	return out
 }
 func BackupDRBackupPlanAssociationObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbackupdrv1beta1.BackupDRBackupPlanAssociationObservedState) *pb.BackupPlanAssociation {
@@ -55,17 +54,16 @@ func BackupDRBackupPlanAssociationObservedState_v1beta1_ToProto(mapCtx *direct.M
 	}
 	out := &pb.BackupPlanAssociation{}
 	// MISSING: Name
-	// MISSING: ResourceType
-	// MISSING: Resource
-	// MISSING: BackupPlan
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: State
-	// MISSING: RulesConfigInfo
-	// MISSING: DataSource
-	// MISSING: CloudSQLInstanceBackupPlanAssociationProperties
-	// MISSING: BackupPlanRevisionID
-	// MISSING: BackupPlanRevisionName
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.State = direct.Enum_ToProto[pb.BackupPlanAssociation_State](mapCtx, in.State)
+	out.RulesConfigInfo = direct.Slice_ToProto(mapCtx, in.RulesConfigInfo, RuleConfigInfoObservedState_v1beta1_ToProto)
+	out.DataSource = direct.ValueOf(in.DataSource)
+	if oneof := CloudSQLInstanceBackupPlanAssociationPropertiesObservedState_v1beta1_ToProto(mapCtx, in.CloudSQLInstanceBackupPlanAssociationProperties); oneof != nil {
+		out.ResourceProperties = &pb.BackupPlanAssociation_CloudSqlInstanceBackupPlanAssociationProperties{CloudSqlInstanceBackupPlanAssociationProperties: oneof}
+	}
+	out.BackupPlanRevisionId = direct.ValueOf(in.BackupPlanRevisionID)
+	out.BackupPlanRevisionName = direct.ValueOf(in.BackupPlanRevisionName)
 	return out
 }
 
@@ -76,17 +74,9 @@ func BackupDRBackupPlanAssociationSpec_v1beta1_FromProto(mapCtx *direct.MapConte
 	}
 	out := &krmbackupdrv1beta1.BackupDRBackupPlanAssociationSpec{}
 	// MISSING: Name
-	// MISSING: ResourceType
-	// MISSING: Resource
-	// MISSING: BackupPlan
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: State
-	// MISSING: RulesConfigInfo
-	// MISSING: DataSource
-	// MISSING: CloudSQLInstanceBackupPlanAssociationProperties
-	// MISSING: BackupPlanRevisionID
-	// MISSING: BackupPlanRevisionName
+	out.ResourceType = direct.LazyPtr(in.GetResourceType())
+	out.Resource = direct.LazyPtr(in.GetResource())
+	out.BackupPlan = direct.LazyPtr(in.GetBackupPlan())
 	return out
 }
 */
@@ -100,17 +90,9 @@ found existing non-generated mapping function "BackupDRBackupPlanAssociationSpec
 		}
 		out := &pb.BackupPlanAssociation{}
 		// MISSING: Name
-		// MISSING: ResourceType
-		// MISSING: Resource
-		// MISSING: BackupPlan
-		// MISSING: CreateTime
-		// MISSING: UpdateTime
-		// MISSING: State
-		// MISSING: RulesConfigInfo
-		// MISSING: DataSource
-		// MISSING: CloudSQLInstanceBackupPlanAssociationProperties
-		// MISSING: BackupPlanRevisionID
-		// MISSING: BackupPlanRevisionName
+		out.ResourceType = direct.ValueOf(in.ResourceType)
+		out.Resource = direct.ValueOf(in.Resource)
+		out.BackupPlan = direct.ValueOf(in.BackupPlan)
 		return out
 	}
 */
@@ -120,20 +102,13 @@ func BackupDRBackupPlanObservedState_v1beta1_FromProto(mapCtx *direct.MapContext
 	}
 	out := &krmbackupdrv1beta1.BackupDRBackupPlanObservedState{}
 	// MISSING: Name
-	// MISSING: Description
-	// MISSING: Labels
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: BackupRules
-	// MISSING: State
-	// MISSING: ResourceType
-	// MISSING: Etag
-	// MISSING: BackupVault
-	// MISSING: BackupVaultServiceAccount
-	// MISSING: LogRetentionDays
-	// MISSING: SupportedResourceTypes
-	// MISSING: RevisionID
-	// MISSING: RevisionName
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.BackupVaultServiceAccount = direct.LazyPtr(in.GetBackupVaultServiceAccount())
+	out.SupportedResourceTypes = in.SupportedResourceTypes
+	out.RevisionID = direct.LazyPtr(in.GetRevisionId())
+	out.RevisionName = direct.LazyPtr(in.GetRevisionName())
 	return out
 }
 func BackupDRBackupPlanObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbackupdrv1beta1.BackupDRBackupPlanObservedState) *pb.BackupPlan {
@@ -142,20 +117,13 @@ func BackupDRBackupPlanObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, 
 	}
 	out := &pb.BackupPlan{}
 	// MISSING: Name
-	// MISSING: Description
-	// MISSING: Labels
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: BackupRules
-	// MISSING: State
-	// MISSING: ResourceType
-	// MISSING: Etag
-	// MISSING: BackupVault
-	// MISSING: BackupVaultServiceAccount
-	// MISSING: LogRetentionDays
-	// MISSING: SupportedResourceTypes
-	// MISSING: RevisionID
-	// MISSING: RevisionName
+	out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.State = direct.Enum_ToProto[pb.BackupPlan_State](mapCtx, in.State)
+	out.BackupVaultServiceAccount = direct.ValueOf(in.BackupVaultServiceAccount)
+	out.SupportedResourceTypes = in.SupportedResourceTypes
+	out.RevisionId = direct.ValueOf(in.RevisionID)
+	out.RevisionName = direct.ValueOf(in.RevisionName)
 	return out
 }
 
@@ -166,20 +134,13 @@ func BackupDRBackupPlanSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.
 	}
 	out := &krmbackupdrv1beta1.BackupDRBackupPlanSpec{}
 	// MISSING: Name
-	// MISSING: Description
-	// MISSING: Labels
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: BackupRules
-	// MISSING: State
-	// MISSING: ResourceType
-	// MISSING: Etag
-	// MISSING: BackupVault
-	// MISSING: BackupVaultServiceAccount
-	// MISSING: LogRetentionDays
-	// MISSING: SupportedResourceTypes
-	// MISSING: RevisionID
-	// MISSING: RevisionName
+	out.Description = direct.LazyPtr(in.GetDescription())
+	out.Labels = in.Labels
+	out.BackupRules = direct.Slice_FromProto(mapCtx, in.BackupRules, BackupRule_v1beta1_FromProto)
+	out.ResourceType = direct.LazyPtr(in.GetResourceType())
+	out.Etag = direct.LazyPtr(in.GetEtag())
+	out.BackupVault = direct.LazyPtr(in.GetBackupVault())
+	out.LogRetentionDays = direct.LazyPtr(in.GetLogRetentionDays())
 	return out
 }
 */
@@ -191,20 +152,13 @@ func BackupDRBackupPlanSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmba
 	}
 	out := &pb.BackupPlan{}
 	// MISSING: Name
-	// MISSING: Description
-	// MISSING: Labels
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: BackupRules
-	// MISSING: State
-	// MISSING: ResourceType
-	// MISSING: Etag
-	// MISSING: BackupVault
-	// MISSING: BackupVaultServiceAccount
-	// MISSING: LogRetentionDays
-	// MISSING: SupportedResourceTypes
-	// MISSING: RevisionID
-	// MISSING: RevisionName
+	out.Description = direct.ValueOf(in.Description)
+	out.Labels = in.Labels
+	out.BackupRules = direct.Slice_ToProto(mapCtx, in.BackupRules, BackupRule_v1beta1_ToProto)
+	out.ResourceType = direct.ValueOf(in.ResourceType)
+	out.Etag = direct.ValueOf(in.Etag)
+	out.BackupVault = direct.ValueOf(in.BackupVault)
+	out.LogRetentionDays = direct.ValueOf(in.LogRetentionDays)
 	return out
 }
 */
@@ -216,21 +170,14 @@ func BackupDRBackupVaultObservedState_v1beta1_FromProto(mapCtx *direct.MapContex
 	}
 	out := &krmbackupdrv1beta1.BackupDRBackupVaultObservedState{}
 	// MISSING: Name
-	// MISSING: Description
-	// MISSING: Labels
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: BackupMinimumEnforcedRetentionDuration
-	// MISSING: Deletable
-	// MISSING: Etag
-	// MISSING: State
-	// MISSING: EffectiveTime
-	// MISSING: BackupCount
-	// MISSING: ServiceAccount
-	// MISSING: TotalStoredBytes
-	// MISSING: Uid
-	// MISSING: Annotations
-	// MISSING: AccessRestriction
+	out.CreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreateTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.Deletable = in.Deletable
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
+	out.BackupCount = direct.LazyPtr(in.GetBackupCount())
+	out.ServiceAccount = direct.LazyPtr(in.GetServiceAccount())
+	out.TotalStoredBytes = direct.LazyPtr(in.GetTotalStoredBytes())
+	out.Uid = direct.LazyPtr(in.GetUid())
 	return out
 }
 */
@@ -244,21 +191,14 @@ found existing non-generated mapping function "BackupDRBackupVaultObservedState_
 		}
 		out := &pb.BackupVault{}
 		// MISSING: Name
-		// MISSING: Description
-		// MISSING: Labels
-		// MISSING: CreateTime
-		// MISSING: UpdateTime
-		// MISSING: BackupMinimumEnforcedRetentionDuration
-		// MISSING: Deletable
-		// MISSING: Etag
-		// MISSING: State
-		// MISSING: EffectiveTime
-		// MISSING: BackupCount
-		// MISSING: ServiceAccount
-		// MISSING: TotalStoredBytes
-		// MISSING: Uid
-		// MISSING: Annotations
-		// MISSING: AccessRestriction
+		out.CreateTime = direct.StringTimestamp_ToProto(mapCtx, in.CreateTime)
+		out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+		out.Deletable = in.Deletable
+		out.State = direct.Enum_ToProto[pb.BackupVault_State](mapCtx, in.State)
+		out.BackupCount = direct.ValueOf(in.BackupCount)
+		out.ServiceAccount = direct.ValueOf(in.ServiceAccount)
+		out.TotalStoredBytes = direct.ValueOf(in.TotalStoredBytes)
+		out.Uid = direct.ValueOf(in.Uid)
 		return out
 	}
 */
@@ -268,21 +208,13 @@ func BackupDRBackupVaultSpec_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb
 	}
 	out := &krmbackupdrv1beta1.BackupDRBackupVaultSpec{}
 	// MISSING: Name
-	// MISSING: Description
-	// MISSING: Labels
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: BackupMinimumEnforcedRetentionDuration
-	// MISSING: Deletable
-	// MISSING: Etag
-	// MISSING: State
-	// MISSING: EffectiveTime
-	// MISSING: BackupCount
-	// MISSING: ServiceAccount
-	// MISSING: TotalStoredBytes
-	// MISSING: Uid
-	// MISSING: Annotations
-	// MISSING: AccessRestriction
+	out.Description = in.Description
+	out.Labels = in.Labels
+	out.BackupMinimumEnforcedRetentionDuration = direct.StringDuration_FromProto(mapCtx, in.GetBackupMinimumEnforcedRetentionDuration())
+	out.Etag = in.Etag
+	out.EffectiveTime = direct.StringTimestamp_FromProto(mapCtx, in.GetEffectiveTime())
+	out.Annotations = in.Annotations
+	out.AccessRestriction = direct.Enum_FromProto(mapCtx, in.GetAccessRestriction())
 	return out
 }
 
@@ -293,21 +225,13 @@ func BackupDRBackupVaultSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmb
 	}
 	out := &pb.BackupVault{}
 	// MISSING: Name
-	// MISSING: Description
-	// MISSING: Labels
-	// MISSING: CreateTime
-	// MISSING: UpdateTime
-	// MISSING: BackupMinimumEnforcedRetentionDuration
-	// MISSING: Deletable
-	// MISSING: Etag
-	// MISSING: State
-	// MISSING: EffectiveTime
-	// MISSING: BackupCount
-	// MISSING: ServiceAccount
-	// MISSING: TotalStoredBytes
-	// MISSING: Uid
-	// MISSING: Annotations
-	// MISSING: AccessRestriction
+	out.Description = in.Description
+	out.Labels = in.Labels
+	out.BackupMinimumEnforcedRetentionDuration = direct.StringDuration_ToProto(mapCtx, in.BackupMinimumEnforcedRetentionDuration)
+	out.Etag = in.Etag
+	out.EffectiveTime = direct.StringTimestamp_ToProto(mapCtx, in.EffectiveTime)
+	out.Annotations = in.Annotations
+	out.AccessRestriction = direct.Enum_ToProto[pb.BackupVault_AccessRestriction](mapCtx, in.AccessRestriction)
 	return out
 }
 */
@@ -381,6 +305,62 @@ func BackupDRManagementServerSpec_v1alpha1_ToProto(mapCtx *direct.MapContext, in
 	out.Etag = direct.ValueOf(in.Etag)
 	return out
 }
+func BackupRule_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.BackupRule) *krmbackupdrv1beta1.BackupRule {
+	if in == nil {
+		return nil
+	}
+	out := &krmbackupdrv1beta1.BackupRule{}
+	out.RuleID = direct.LazyPtr(in.GetRuleId())
+	out.BackupRetentionDays = direct.LazyPtr(in.GetBackupRetentionDays())
+	out.StandardSchedule = StandardSchedule_v1beta1_FromProto(mapCtx, in.GetStandardSchedule())
+	return out
+}
+func BackupRule_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbackupdrv1beta1.BackupRule) *pb.BackupRule {
+	if in == nil {
+		return nil
+	}
+	out := &pb.BackupRule{}
+	out.RuleId = direct.ValueOf(in.RuleID)
+	out.BackupRetentionDays = direct.ValueOf(in.BackupRetentionDays)
+	if oneof := StandardSchedule_v1beta1_ToProto(mapCtx, in.StandardSchedule); oneof != nil {
+		out.BackupScheduleOneof = &pb.BackupRule_StandardSchedule{StandardSchedule: oneof}
+	}
+	return out
+}
+func BackupWindow_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.BackupWindow) *krmbackupdrv1beta1.BackupWindow {
+	if in == nil {
+		return nil
+	}
+	out := &krmbackupdrv1beta1.BackupWindow{}
+	out.StartHourOfDay = direct.LazyPtr(in.GetStartHourOfDay())
+	out.EndHourOfDay = direct.LazyPtr(in.GetEndHourOfDay())
+	return out
+}
+func BackupWindow_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbackupdrv1beta1.BackupWindow) *pb.BackupWindow {
+	if in == nil {
+		return nil
+	}
+	out := &pb.BackupWindow{}
+	out.StartHourOfDay = direct.ValueOf(in.StartHourOfDay)
+	out.EndHourOfDay = direct.ValueOf(in.EndHourOfDay)
+	return out
+}
+func CloudSQLInstanceBackupPlanAssociationPropertiesObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.CloudSqlInstanceBackupPlanAssociationProperties) *krmbackupdrv1beta1.CloudSQLInstanceBackupPlanAssociationPropertiesObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmbackupdrv1beta1.CloudSQLInstanceBackupPlanAssociationPropertiesObservedState{}
+	out.InstanceCreateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetInstanceCreateTime())
+	return out
+}
+func CloudSQLInstanceBackupPlanAssociationPropertiesObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbackupdrv1beta1.CloudSQLInstanceBackupPlanAssociationPropertiesObservedState) *pb.CloudSqlInstanceBackupPlanAssociationProperties {
+	if in == nil {
+		return nil
+	}
+	out := &pb.CloudSqlInstanceBackupPlanAssociationProperties{}
+	out.InstanceCreateTime = direct.StringTimestamp_ToProto(mapCtx, in.InstanceCreateTime)
+	return out
+}
 
 /* found existing non-generated mapping function "ManagementURIObservedState_v1alpha1_FromProto", skipping
 func ManagementURIObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.ManagementURI) *krmbackupdrv1alpha1.ManagementURIObservedState {
@@ -426,6 +406,84 @@ func NetworkConfig_v1alpha1_ToProto(mapCtx *direct.MapContext, in *krmbackupdrv1
 	out := &pb.NetworkConfig{}
 	out.Network = direct.ValueOf(in.Network)
 	out.PeeringMode = direct.Enum_ToProto[pb.NetworkConfig_PeeringMode](mapCtx, in.PeeringMode)
+	return out
+}
+
+/* found existing non-generated mapping function "RuleConfigInfoObservedState_v1beta1_FromProto", skipping
+func RuleConfigInfoObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.RuleConfigInfo) *krmbackupdrv1beta1.RuleConfigInfoObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmbackupdrv1beta1.RuleConfigInfoObservedState{}
+	out.RuleID = direct.LazyPtr(in.GetRuleId())
+	out.LastBackupState = direct.Enum_FromProto(mapCtx, in.GetLastBackupState())
+	out.LastBackupError = direct.Status_FromProto(mapCtx, in.GetLastBackupError())
+	out.LastSuccessfulBackupConsistencyTime = direct.StringTimestamp_FromProto(mapCtx, in.GetLastSuccessfulBackupConsistencyTime())
+	return out
+}
+*/
+
+/*
+found existing non-generated mapping function "RuleConfigInfoObservedState_v1beta1_ToProto", skipping
+
+	func RuleConfigInfoObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbackupdrv1beta1.RuleConfigInfoObservedState) *pb.RuleConfigInfo {
+		if in == nil {
+			return nil
+		}
+		out := &pb.RuleConfigInfo{}
+		out.RuleId = direct.ValueOf(in.RuleID)
+		out.LastBackupState = direct.Enum_ToProto[pb.RuleConfigInfo_LastBackupState](mapCtx, in.LastBackupState)
+		out.LastBackupError = direct.Status_ToProto(mapCtx, in.LastBackupError)
+		out.LastSuccessfulBackupConsistencyTime = direct.StringTimestamp_ToProto(mapCtx, in.LastSuccessfulBackupConsistencyTime)
+		return out
+	}
+*/
+func StandardSchedule_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.StandardSchedule) *krmbackupdrv1beta1.StandardSchedule {
+	if in == nil {
+		return nil
+	}
+	out := &krmbackupdrv1beta1.StandardSchedule{}
+	out.RecurrenceType = direct.Enum_FromProto(mapCtx, in.GetRecurrenceType())
+	out.HourlyFrequency = direct.LazyPtr(in.GetHourlyFrequency())
+	out.DaysOfWeek = direct.EnumSlice_FromProto(mapCtx, in.DaysOfWeek)
+	out.DaysOfMonth = in.DaysOfMonth
+	out.WeekDayOfMonth = WeekDayOfMonth_v1beta1_FromProto(mapCtx, in.GetWeekDayOfMonth())
+	out.Months = direct.EnumSlice_FromProto(mapCtx, in.Months)
+	out.BackupWindow = BackupWindow_v1beta1_FromProto(mapCtx, in.GetBackupWindow())
+	out.TimeZone = direct.LazyPtr(in.GetTimeZone())
+	return out
+}
+func StandardSchedule_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbackupdrv1beta1.StandardSchedule) *pb.StandardSchedule {
+	if in == nil {
+		return nil
+	}
+	out := &pb.StandardSchedule{}
+	out.RecurrenceType = direct.Enum_ToProto[pb.StandardSchedule_RecurrenceType](mapCtx, in.RecurrenceType)
+	out.HourlyFrequency = direct.ValueOf(in.HourlyFrequency)
+	out.DaysOfWeek = direct.EnumSlice_ToProto[dayofweekpb.DayOfWeek](mapCtx, in.DaysOfWeek)
+	out.DaysOfMonth = in.DaysOfMonth
+	out.WeekDayOfMonth = WeekDayOfMonth_v1beta1_ToProto(mapCtx, in.WeekDayOfMonth)
+	out.Months = direct.EnumSlice_ToProto[monthpb.Month](mapCtx, in.Months)
+	out.BackupWindow = BackupWindow_v1beta1_ToProto(mapCtx, in.BackupWindow)
+	out.TimeZone = direct.ValueOf(in.TimeZone)
+	return out
+}
+func WeekDayOfMonth_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.WeekDayOfMonth) *krmbackupdrv1beta1.WeekDayOfMonth {
+	if in == nil {
+		return nil
+	}
+	out := &krmbackupdrv1beta1.WeekDayOfMonth{}
+	out.WeekOfMonth = direct.Enum_FromProto(mapCtx, in.GetWeekOfMonth())
+	out.DayOfWeek = direct.Enum_FromProto(mapCtx, in.GetDayOfWeek())
+	return out
+}
+func WeekDayOfMonth_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbackupdrv1beta1.WeekDayOfMonth) *pb.WeekDayOfMonth {
+	if in == nil {
+		return nil
+	}
+	out := &pb.WeekDayOfMonth{}
+	out.WeekOfMonth = direct.Enum_ToProto[pb.WeekDayOfMonth_WeekOfMonth](mapCtx, in.WeekOfMonth)
+	out.DayOfWeek = direct.Enum_ToProto[dayofweekpb.DayOfWeek](mapCtx, in.DayOfWeek)
 	return out
 }
 func WorkforceIdentityBasedManagementURIObservedState_v1alpha1_FromProto(mapCtx *direct.MapContext, in *pb.WorkforceIdentityBasedManagementURI) *krmbackupdrv1alpha1.WorkforceIdentityBasedManagementURIObservedState {

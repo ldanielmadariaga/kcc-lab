@@ -15,3 +15,19 @@ kind=BackupDRManagementServer group=backupdr.cnrm.cloud.google.com: field ".spec
 # per service rather than against one Kind.
 # possible-reference-by-sibling: google.cloud.backupdr.v1.BackupPlan.backupVault target=BackupDRBackupVault
 # possible-reference-by-sibling: google.cloud.backupdr.v1.BackupPlanAssociation.backupPlan target=BackupDRBackupPlan
+kind=BackupDRBackupPlanAssociation group=backupdr.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=BackupDRBackupPlanAssociation group=backupdr.cnrm.cloud.google.com: field ".spec.backupPlan" reason=possible-reference-by-sibling (the name matches BackupDRBackupPlan, a resource this service declares; confirm whether it should be a reference)
+kind=BackupDRBackupPlanAssociation group=backupdr.cnrm.cloud.google.com: field ".spec.backupPlan" reason=possible-reference (target=backupdr.googleapis.com/BackupPlan)
+kind=BackupDRBackupPlanAssociation group=backupdr.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=BackupDRBackupPlanAssociation group=backupdr.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/backupPlanAssociations/{backup_plan_association}; confirm the resource is regional and that this is the name for it)
+kind=BackupDRBackupPlan group=backupdr.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=BackupDRBackupPlan group=backupdr.cnrm.cloud.google.com: field ".spec.backupVault" reason=possible-reference-by-sibling (the name matches BackupDRBackupVault, a resource this service declares; confirm whether it should be a reference)
+kind=BackupDRBackupPlan group=backupdr.cnrm.cloud.google.com: field ".spec.backupVault" reason=possible-reference (target=backupdr.googleapis.com/BackupVault)
+kind=BackupDRBackupPlan group=backupdr.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=BackupDRBackupPlan group=backupdr.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/backupPlans/{backup_plan}; confirm the resource is regional and that this is the name for it)
+kind=BackupDRBackupVault group=backupdr.cnrm.cloud.google.com: resource reason=untriaged-bulk-generation (spec was generated mechanically; confirm refs, omissions and KRM names)
+kind=BackupDRBackupVault group=backupdr.cnrm.cloud.google.com: field ".status.observedState.name" reason=observedstate-identity-field-omitted (proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource)
+kind=BackupDRBackupVault group=backupdr.cnrm.cloud.google.com: field ".spec.location" reason=parent-location-guessed (emitted from the location segment of projects/{project}/locations/{location}/backupVaults/{backupvault}; confirm the resource is regional and that this is the name for it)
+kind=BackupDRBackupPlan group=backupdr.cnrm.cloud.google.com: field ".spec.backupVault" reason=possible-reference-by-description
+kind=BackupDRBackupPlanAssociation group=backupdr.cnrm.cloud.google.com: field ".spec.backupPlan" reason=possible-reference-by-description
+kind=BackupDRBackupPlanAssociation group=backupdr.cnrm.cloud.google.com: field ".spec.resource" reason=possible-reference-by-description-loose

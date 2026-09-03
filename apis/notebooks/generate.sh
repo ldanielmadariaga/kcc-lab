@@ -55,6 +55,11 @@ ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.notebooks.v1 \
   --api-version notebooks.cnrm.cloud.google.com/v1beta1 \
   --include-skipped-output \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource NotebookInstance:Instance
 
 ${CONTROLLERBUILDER} generate-mapper \

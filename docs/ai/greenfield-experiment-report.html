@@ -531,8 +531,8 @@
     <p class="standfirst">We deleted 231 resources the team had written by hand, regenerated them from the proto, and compared the result field by field against the originals. This records the method and what it measured.</p>
 
     <div class="headline-stats">
-      <div class="stat is-ok"><b>91.4%</b><span>of upstream's CRD fields reproduced at the same path</span></div>
-      <div class="stat is-bad"><b>5.0%</b><span>we generate nowhere, and have not chosen to leave out</span></div>
+      <div class="stat is-ok"><b>94.3%</b><span>of upstream's CRD fields reproduced at the same path</span></div>
+      <div class="stat is-bad"><b>2.1%</b><span>we generate nowhere, and have not chosen to leave out</span></div>
       <div class="stat"><b>275</b><span>resources regenerated and scored</span></div>
       <div class="stat"><b>76%</b><span>of discrepancies are flagged for a second pass</span></div>
     </div>
@@ -581,37 +581,28 @@
 
       <div class="ledger">
         <div class="ledger-head">
-          <span>12,000 fields &middot; 275 resources</span>
+          <span>13,997 fields &middot; 275 resources</span>
           <span>baseline c1df0b9326</span>
         </div>
-        <div class="bar" role="img" aria-label="91.4 percent implemented, 3.1 percent discrepancy, 5.5 percent missing">
-          <i class="b-ok" style="width:91.4%"></i>
-          <i class="b-warn" style="width:3.1%"></i>
-          <i class="b-bad" style="width:5.5%"></i>
+        <div class="bar" role="img" aria-label="94.3 percent implemented, 3.2 percent discrepancy, 2.6 percent missing">
+          <i class="b-ok" style="width:94.3%"></i>
+          <i class="b-warn" style="width:3.2%"></i>
+          <i class="b-bad" style="width:2.6%"></i>
         </div>
         <table class="acct">
           <thead>
             <tr><th>State</th><th class="num">Fields</th><th class="num">Share</th></tr>
           </thead>
           <tbody>
-            <tr>
-              <td><span class="swatch sw-ok"></span>Implemented<span class="gloss">the same field at the same path</span></td>
-              <td class="num">10,966</td><td class="num pct">91.4%</td>
-            </tr>
-            <tr>
-              <td><span class="swatch sw-warn"></span>Discrepancy<span class="gloss">we produce it, but not as upstream has it</span></td>
-              <td class="num">369</td><td class="num pct">3.1%</td>
-            </tr>
-            <tr class="sub"><td>flagged for a second pass</td><td class="num">281</td><td class="num pct">76%</td></tr>
-            <tr class="sub"><td>nothing says so</td><td class="num">88</td><td class="num pct">24%</td></tr>
-            <tr>
-              <td><span class="swatch sw-bad"></span>Missing<span class="gloss">we produce nothing at all</span></td>
-              <td class="num">665</td><td class="num pct">5.5%</td>
-            </tr>
-            <tr class="sub"><td>a gap to close</td><td class="num">603</td><td class="num pct">5.0%</td></tr>
-            <tr class="sub"><td>we model it differently on purpose<span class="gloss">the google.protobuf.Value union arms, mapped whole to JSON</span></td><td class="num">62</td><td class="num pct">0.5%</td></tr>
-            <tr class="sub"><td>flagged for a second pass</td><td class="num">39</td><td class="num pct">6%</td></tr>
-            <tr class="total"><td>Fields in KCC master CRDs</td><td class="num">12,000</td><td class="num pct"></td></tr>
+            <tr><td><span class="swatch sw-ok"></span>Implemented<span class="gloss">the same field at the same path</span></td><td class="num">13,195</td><td class="num pct">94.3%</td></tr>
+            <tr><td><span class="swatch sw-warn"></span>Discrepancy<span class="gloss">we produce it, but not as upstream has it</span></td><td class="num">445</td><td class="num pct">3.2%</td></tr>
+            <tr class="sub"><td>flagged for a second pass</td><td class="num">315</td><td class="num pct">71%</td></tr>
+            <tr class="sub"><td>nothing says so</td><td class="num">130</td><td class="num pct">29%</td></tr>
+            <tr><td><span class="swatch sw-bad"></span>Missing<span class="gloss">we produce nothing at all</span></td><td class="num">357</td><td class="num pct">2.6%</td></tr>
+            <tr class="sub"><td>a gap to close</td><td class="num">295</td><td class="num pct">2.1%</td></tr>
+            <tr class="sub"><td>we model it differently on purpose<span class="gloss">the google.protobuf.Value union arms, mapped whole to JSON</span></td><td class="num">62</td><td class="num pct">0.4%</td></tr>
+            <tr class="sub"><td>flagged for a second pass</td><td class="num">48</td><td class="num pct">13%</td></tr>
+            <tr class="total"><td>Fields in KCC master CRDs</td><td class="num">13,997</td><td class="num pct"></td></tr>
           </tbody>
         </table>
       </div>
@@ -815,7 +806,7 @@
 
   <footer>
     <span>Measured against KCC master at <code>c1df0b9326</code></span>
-    <span>275 resources &middot; 12,000 fields</span>
+    <span>275 resources &middot; 13,997 fields</span>
     <span>Reproduce with <code>hack/tools/greenfield/silence_report.py</code></span>
   </footer>
 

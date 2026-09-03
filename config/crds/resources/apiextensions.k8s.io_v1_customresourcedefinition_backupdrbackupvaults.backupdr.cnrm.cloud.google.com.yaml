@@ -62,6 +62,46 @@ spec:
           spec:
             description: BackupDRBackupVaultSpec defines the desired state of BackupDRBackupVault
             properties:
+              accessRestriction:
+                description: |-
+                  Optional. Note: This field is added for future use case and will not be
+                   supported in the current release.
+
+                   Access restriction for the backup vault.
+                   Default value is WITHIN_ORGANIZATION if not provided during creation.
+                type: string
+              annotations:
+                additionalProperties:
+                  type: string
+                description: Optional. User annotations. See https://google.aip.dev/128#annotations
+                  Stores small amounts of arbitrary data.
+                type: object
+              backupMinimumEnforcedRetentionDuration:
+                description: Required. The default and minimum enforced retention
+                  for each backup within the backup vault.  The enforced retention
+                  for each backup can be extended.
+                type: string
+              description:
+                description: Optional. The description of the BackupVault instance
+                  (2048 characters or less).
+                type: string
+              effectiveTime:
+                description: Optional. Time after which the BackupVault resource is
+                  locked.
+                type: string
+              etag:
+                description: Optional. Server specified ETag for the backup vault
+                  resource to prevent simultaneous updates from overwiting each other.
+                type: string
+              labels:
+                additionalProperties:
+                  type: string
+                description: 'Optional. Resource labels to represent user provided
+                  metadata. No labels currently defined:'
+                type: object
+              location:
+                description: The location of this resource.
+                type: string
               projectRef:
                 description: The project that this resource belongs to.
                 oneOf:
@@ -99,6 +139,8 @@ spec:
                   will be used.
                 type: string
             required:
+            - backupMinimumEnforcedRetentionDuration
+            - location
             - projectRef
             type: object
           status:
@@ -146,6 +188,40 @@ spec:
               observedState:
                 description: ObservedState is the state of the resource as most recently
                   observed in GCP.
+                properties:
+                  backupCount:
+                    description: Output only. The number of backups in this backup
+                      vault.
+                    format: int64
+                    type: integer
+                  createTime:
+                    description: Output only. The time when the instance was created.
+                    type: string
+                  deletable:
+                    description: Output only. Set to true when there are no backups
+                      nested under this resource.
+                    type: boolean
+                  serviceAccount:
+                    description: Output only. Service account used by the BackupVault
+                      Service for this BackupVault.  The user should grant this account
+                      permissions in their workload project to enable the service
+                      to run backups and restores there.
+                    type: string
+                  state:
+                    description: Output only. The BackupVault resource instance state.
+                    type: string
+                  totalStoredBytes:
+                    description: Output only. Total size of the storage used by all
+                      backup resources.
+                    format: int64
+                    type: integer
+                  uid:
+                    description: Output only. Immutable after resource creation until
+                      resource deletion.
+                    type: string
+                  updateTime:
+                    description: Output only. The time when the instance was updated.
+                    type: string
                 type: object
             type: object
         required:

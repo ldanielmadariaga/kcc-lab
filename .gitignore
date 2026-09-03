@@ -195,3 +195,4 @@ apis/config/
 
 # Compiled helper binary, 12MB, committed by accident in 669a8dfc.
 dev/tools/crd-mcp-server/crd-mcp-server
+.gemini-crds/

@@ -50,12 +50,12 @@ type QuotaAdjusterSettings struct {
 }
 */
 
-/* unreachable type QuotaConfig
 // +kcc:proto=google.api.cloudquotas.v1beta.QuotaConfig
 type QuotaConfig struct {
 	// Required. The preferred value. Must be greater than or equal to -1. If set
 	//  to -1, it means the value is "unlimited".
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaConfig.preferred_value
+	// +required
 	PreferredValue *int64 `json:"preferredValue,omitempty"`
 
 	// Optional. The annotations map for clients to store small amounts of
@@ -64,7 +64,6 @@ type QuotaConfig struct {
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaConfig.annotations
 	Annotations map[string]string `json:"annotations,omitempty"`
 }
-*/
 
 /* unreachable type QuotaPreference
 // +kcc:proto=google.api.cloudquotas.v1beta.QuotaPreference
@@ -97,6 +96,7 @@ type QuotaPreference struct {
 
 	// Required. Preferred quota configuration.
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.quota_config
+	// +required
 	QuotaConfig *QuotaConfig `json:"quotaConfig,omitempty"`
 
 	// Optional. The current etag of the quota preference. If an etag is provided
@@ -108,11 +108,13 @@ type QuotaPreference struct {
 
 	// Required. The name of the service to which the quota preference is applied.
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.service
+	// +required
 	Service *string `json:"service,omitempty"`
 
 	// Required. The id of the quota to which the quota preference is applied. A
 	//  quota name is unique in the service. For example, `CpusPerProjectPerRegion`
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaPreference.quota_id
+	// +required
 	QuotaID *string `json:"quotaID,omitempty"`
 
 	// The reason / justification for this quota preference.
@@ -152,7 +154,6 @@ type QuotaAdjusterSettingsObservedState struct {
 }
 */
 
-/* unreachable type QuotaConfigObservedState
 // +kcc:observedstate:proto=google.api.cloudquotas.v1beta.QuotaConfig
 type QuotaConfigObservedState struct {
 	// Output only. Optional details about the state of this quota preference.
@@ -175,7 +176,6 @@ type QuotaConfigObservedState struct {
 	// +kcc:proto:field=google.api.cloudquotas.v1beta.QuotaConfig.request_origin
 	RequestOrigin *string `json:"requestOrigin,omitempty"`
 }
-*/
 
 /* unreachable type QuotaPreferenceObservedState
 // +kcc:observedstate:proto=google.api.cloudquotas.v1beta.QuotaPreference

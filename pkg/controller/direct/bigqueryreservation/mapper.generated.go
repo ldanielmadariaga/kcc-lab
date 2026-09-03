@@ -36,10 +36,7 @@ func BigQueryReservationAssignmentObservedState_v1beta1_FromProto(mapCtx *direct
 	}
 	out := &krmbigqueryreservationv1beta1.BigQueryReservationAssignmentObservedState{}
 	// MISSING: Name
-	// MISSING: Assignee
-	// MISSING: JobType
-	// MISSING: State
-	// MISSING: EnableGeminiInBigquery
+	out.State = direct.Enum_FromProto(mapCtx, in.GetState())
 	return out
 }
 func BigQueryReservationAssignmentObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigqueryreservationv1beta1.BigQueryReservationAssignmentObservedState) *pb.Assignment {
@@ -48,10 +45,7 @@ func BigQueryReservationAssignmentObservedState_v1beta1_ToProto(mapCtx *direct.M
 	}
 	out := &pb.Assignment{}
 	// MISSING: Name
-	// MISSING: Assignee
-	// MISSING: JobType
-	// MISSING: State
-	// MISSING: EnableGeminiInBigquery
+	out.State = direct.Enum_ToProto[pb.Assignment_State](mapCtx, in.State)
 	return out
 }
 
@@ -62,10 +56,9 @@ func BigQueryReservationAssignmentSpec_v1beta1_FromProto(mapCtx *direct.MapConte
 	}
 	out := &krmbigqueryreservationv1beta1.BigQueryReservationAssignmentSpec{}
 	// MISSING: Name
-	// MISSING: Assignee
-	// MISSING: JobType
-	// MISSING: State
-	// MISSING: EnableGeminiInBigquery
+	out.Assignee = direct.LazyPtr(in.GetAssignee())
+	out.JobType = direct.Enum_FromProto(mapCtx, in.GetJobType())
+	out.EnableGeminiInBigquery = direct.LazyPtr(in.GetEnableGeminiInBigquery())
 	return out
 }
 */
@@ -79,10 +72,9 @@ found existing non-generated mapping function "BigQueryReservationAssignmentSpec
 		}
 		out := &pb.Assignment{}
 		// MISSING: Name
-		// MISSING: Assignee
-		// MISSING: JobType
-		// MISSING: State
-		// MISSING: EnableGeminiInBigquery
+		out.Assignee = direct.ValueOf(in.Assignee)
+		out.JobType = direct.Enum_ToProto[pb.Assignment_JobType](mapCtx, in.JobType)
+		out.EnableGeminiInBigquery = direct.ValueOf(in.EnableGeminiInBigquery)
 		return out
 	}
 */
@@ -146,20 +138,12 @@ func BigQueryReservationReservationObservedState_v1beta1_FromProto(mapCtx *direc
 	}
 	out := &krmbigqueryreservationv1beta1.BigQueryReservationReservationObservedState{}
 	// MISSING: Name
-	// MISSING: SlotCapacity
-	// MISSING: IgnoreIdleSlots
-	// MISSING: Autoscale
-	// MISSING: Concurrency
-	// MISSING: CreationTime
-	// MISSING: UpdateTime
-	// MISSING: MultiRegionAuxiliary
-	// MISSING: Edition
-	// MISSING: PrimaryLocation
-	// MISSING: SecondaryLocation
-	// MISSING: OriginalPrimaryLocation
-	// MISSING: MaxSlots
-	// MISSING: ScalingMode
-	// MISSING: ReplicationStatus
+	out.Autoscale = Reservation_AutoscaleObservedState_v1beta1_FromProto(mapCtx, in.GetAutoscale())
+	out.CreationTime = direct.StringTimestamp_FromProto(mapCtx, in.GetCreationTime())
+	out.UpdateTime = direct.StringTimestamp_FromProto(mapCtx, in.GetUpdateTime())
+	out.PrimaryLocation = direct.LazyPtr(in.GetPrimaryLocation())
+	out.OriginalPrimaryLocation = direct.LazyPtr(in.GetOriginalPrimaryLocation())
+	out.ReplicationStatus = Reservation_ReplicationStatusObservedState_v1beta1_FromProto(mapCtx, in.GetReplicationStatus())
 	return out
 }
 */
@@ -171,20 +155,12 @@ func BigQueryReservationReservationObservedState_v1beta1_ToProto(mapCtx *direct.
 	}
 	out := &pb.Reservation{}
 	// MISSING: Name
-	// MISSING: SlotCapacity
-	// MISSING: IgnoreIdleSlots
-	// MISSING: Autoscale
-	// MISSING: Concurrency
-	// MISSING: CreationTime
-	// MISSING: UpdateTime
-	// MISSING: MultiRegionAuxiliary
-	// MISSING: Edition
-	// MISSING: PrimaryLocation
-	// MISSING: SecondaryLocation
-	// MISSING: OriginalPrimaryLocation
-	// MISSING: MaxSlots
-	// MISSING: ScalingMode
-	// MISSING: ReplicationStatus
+	out.Autoscale = Reservation_AutoscaleObservedState_v1beta1_ToProto(mapCtx, in.Autoscale)
+	out.CreationTime = direct.StringTimestamp_ToProto(mapCtx, in.CreationTime)
+	out.UpdateTime = direct.StringTimestamp_ToProto(mapCtx, in.UpdateTime)
+	out.PrimaryLocation = direct.ValueOf(in.PrimaryLocation)
+	out.OriginalPrimaryLocation = direct.ValueOf(in.OriginalPrimaryLocation)
+	out.ReplicationStatus = Reservation_ReplicationStatusObservedState_v1beta1_ToProto(mapCtx, in.ReplicationStatus)
 	return out
 }
 */
@@ -196,45 +172,93 @@ func BigQueryReservationReservationSpec_v1beta1_FromProto(mapCtx *direct.MapCont
 	}
 	out := &krmbigqueryreservationv1beta1.BigQueryReservationReservationSpec{}
 	// MISSING: Name
-	// MISSING: SlotCapacity
-	// MISSING: IgnoreIdleSlots
-	// MISSING: Autoscale
-	// MISSING: Concurrency
-	// MISSING: CreationTime
-	// MISSING: UpdateTime
-	// MISSING: MultiRegionAuxiliary
-	// MISSING: Edition
-	// MISSING: PrimaryLocation
-	// MISSING: SecondaryLocation
-	// MISSING: OriginalPrimaryLocation
-	// MISSING: MaxSlots
-	// MISSING: ScalingMode
-	// MISSING: ReplicationStatus
+	out.SlotCapacity = direct.LazyPtr(in.GetSlotCapacity())
+	out.IgnoreIdleSlots = direct.LazyPtr(in.GetIgnoreIdleSlots())
+	out.Autoscale = Reservation_Autoscale_v1beta1_FromProto(mapCtx, in.GetAutoscale())
+	out.Concurrency = direct.LazyPtr(in.GetConcurrency())
+	out.MultiRegionAuxiliary = direct.LazyPtr(in.GetMultiRegionAuxiliary())
+	out.Edition = direct.Enum_FromProto(mapCtx, in.GetEdition())
+	out.SecondaryLocation = direct.LazyPtr(in.GetSecondaryLocation())
+	out.MaxSlots = in.MaxSlots
+	out.ScalingMode = direct.Enum_FromProto(mapCtx, in.GetScalingMode())
 	return out
 }
 */
 
-/* found existing non-generated mapping function "BigQueryReservationReservationSpec_v1beta1_ToProto", skipping
-func BigQueryReservationReservationSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigqueryreservationv1beta1.BigQueryReservationReservationSpec) *pb.Reservation {
+/*
+found existing non-generated mapping function "BigQueryReservationReservationSpec_v1beta1_ToProto", skipping
+
+	func BigQueryReservationReservationSpec_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigqueryreservationv1beta1.BigQueryReservationReservationSpec) *pb.Reservation {
+		if in == nil {
+			return nil
+		}
+		out := &pb.Reservation{}
+		// MISSING: Name
+		out.SlotCapacity = direct.ValueOf(in.SlotCapacity)
+		out.IgnoreIdleSlots = direct.ValueOf(in.IgnoreIdleSlots)
+		out.Autoscale = Reservation_Autoscale_v1beta1_ToProto(mapCtx, in.Autoscale)
+		out.Concurrency = direct.ValueOf(in.Concurrency)
+		out.MultiRegionAuxiliary = direct.ValueOf(in.MultiRegionAuxiliary)
+		out.Edition = direct.Enum_ToProto[pb.Edition](mapCtx, in.Edition)
+		out.SecondaryLocation = direct.ValueOf(in.SecondaryLocation)
+		out.MaxSlots = in.MaxSlots
+		out.ScalingMode = direct.Enum_ToProto[pb.Reservation_ScalingMode](mapCtx, in.ScalingMode)
+		return out
+	}
+*/
+func Reservation_Autoscale_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Reservation_Autoscale) *krmbigqueryreservationv1beta1.Reservation_Autoscale {
 	if in == nil {
 		return nil
 	}
-	out := &pb.Reservation{}
-	// MISSING: Name
-	// MISSING: SlotCapacity
-	// MISSING: IgnoreIdleSlots
-	// MISSING: Autoscale
-	// MISSING: Concurrency
-	// MISSING: CreationTime
-	// MISSING: UpdateTime
-	// MISSING: MultiRegionAuxiliary
-	// MISSING: Edition
-	// MISSING: PrimaryLocation
-	// MISSING: SecondaryLocation
-	// MISSING: OriginalPrimaryLocation
-	// MISSING: MaxSlots
-	// MISSING: ScalingMode
-	// MISSING: ReplicationStatus
+	out := &krmbigqueryreservationv1beta1.Reservation_Autoscale{}
+	// MISSING: CurrentSlots
+	out.MaxSlots = direct.LazyPtr(in.GetMaxSlots())
 	return out
 }
-*/
+func Reservation_Autoscale_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigqueryreservationv1beta1.Reservation_Autoscale) *pb.Reservation_Autoscale {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Reservation_Autoscale{}
+	// MISSING: CurrentSlots
+	out.MaxSlots = direct.ValueOf(in.MaxSlots)
+	return out
+}
+func Reservation_AutoscaleObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Reservation_Autoscale) *krmbigqueryreservationv1beta1.Reservation_AutoscaleObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmbigqueryreservationv1beta1.Reservation_AutoscaleObservedState{}
+	out.CurrentSlots = direct.LazyPtr(in.GetCurrentSlots())
+	// MISSING: MaxSlots
+	return out
+}
+func Reservation_AutoscaleObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigqueryreservationv1beta1.Reservation_AutoscaleObservedState) *pb.Reservation_Autoscale {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Reservation_Autoscale{}
+	out.CurrentSlots = direct.ValueOf(in.CurrentSlots)
+	// MISSING: MaxSlots
+	return out
+}
+func Reservation_ReplicationStatusObservedState_v1beta1_FromProto(mapCtx *direct.MapContext, in *pb.Reservation_ReplicationStatus) *krmbigqueryreservationv1beta1.Reservation_ReplicationStatusObservedState {
+	if in == nil {
+		return nil
+	}
+	out := &krmbigqueryreservationv1beta1.Reservation_ReplicationStatusObservedState{}
+	out.Error = direct.Status_FromProto(mapCtx, in.GetError())
+	out.LastErrorTime = direct.StringTimestamp_FromProto(mapCtx, in.GetLastErrorTime())
+	out.LastReplicationTime = direct.StringTimestamp_FromProto(mapCtx, in.GetLastReplicationTime())
+	return out
+}
+func Reservation_ReplicationStatusObservedState_v1beta1_ToProto(mapCtx *direct.MapContext, in *krmbigqueryreservationv1beta1.Reservation_ReplicationStatusObservedState) *pb.Reservation_ReplicationStatus {
+	if in == nil {
+		return nil
+	}
+	out := &pb.Reservation_ReplicationStatus{}
+	out.Error = direct.Status_ToProto(mapCtx, in.Error)
+	out.LastErrorTime = direct.StringTimestamp_ToProto(mapCtx, in.LastErrorTime)
+	out.LastReplicationTime = direct.StringTimestamp_ToProto(mapCtx, in.LastReplicationTime)
+	return out
+}

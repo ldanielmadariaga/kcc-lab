@@ -28,8 +28,34 @@ type BigLakeTableSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/catalogs/{catalog}/databases/{database}/tables/{table}
+	Location *string `json:"location,omitempty"`
+
+	// The Catalog that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/catalogs/{catalog}/databases/{database}/tables/{table}
+	Catalog *string `json:"catalog,omitempty"`
+
+	// The Database that this resource belongs to.
+	// +kcc:guess=parent-segment pattern=projects/{project}/locations/{location}/catalogs/{catalog}/databases/{database}/tables/{table}
+	Database *string `json:"database,omitempty"`
+
 	// The BigLakeTable name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Options of a Hive table.
+	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.hive_options
+	HiveOptions *HiveTableOptions `json:"hiveOptions,omitempty"`
+
+	// The table type.
+	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.type
+	Type *string `json:"type,omitempty"`
+
+	// The checksum of a table object computed by the server based on the value of
+	//  other fields. It may be sent on update requests to ensure the client has an
+	//  up-to-date value before proceeding. It is only checked for update table
+	//  operations.
+	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.etag
+	Etag *string `json:"etag,omitempty"`
 }
 
 // BigLakeTableStatus defines the config connector machine state of BigLakeTable
@@ -51,6 +77,23 @@ type BigLakeTableStatus struct {
 // BigLakeTableObservedState is the state of the BigLakeTable resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.bigquery.biglake.v1.Table
 type BigLakeTableObservedState struct {
+	// Output only. The creation time of the table.
+	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. The last modification time of the table.
+	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Output only. The deletion time of the table. Only set after the table is
+	//  deleted.
+	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.delete_time
+	DeleteTime *string `json:"deleteTime,omitempty"`
+
+	// Output only. The time when this table is considered expired. Only set after
+	//  the table is deleted.
+	// +kcc:proto:field=google.cloud.bigquery.biglake.v1.Table.expire_time
+	ExpireTime *string `json:"expireTime,omitempty"`
 }
 
 // +genclient

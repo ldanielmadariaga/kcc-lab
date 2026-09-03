@@ -28,8 +28,29 @@ type SecureSourceManagerInstanceSpec struct {
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef `json:"projectRef"`
 
+	// The location of this resource.
+	// +kcc:guess=parent-location pattern=projects/{project}/locations/{location}/instances/{instance}
+	Location *string `json:"location"`
+
 	// The SecureSourceManagerInstance name. If not given, the metadata.name will be used.
 	ResourceID *string `json:"resourceID,omitempty"`
+	// Optional. Labels as key value pairs.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.labels
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// Optional. Private settings for private instance.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.private_config
+	PrivateConfig *Instance_PrivateConfig `json:"privateConfig,omitempty"`
+
+	// Optional. Immutable. Customer-managed encryption key name, in the format
+	//  projects/*/locations/*/keyRings/*/cryptoKeys/*.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.kms_key
+	KMSKey *string `json:"kmsKey,omitempty"`
+
+	// Optional. Configuration for Workforce Identity Federation to support
+	//  third party identity provider. If unset, defaults to the Google OIDC IdP.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.workforce_identity_federation_config
+	WorkforceIdentityFederationConfig *Instance_WorkforceIdentityFederationConfig `json:"workforceIdentityFederationConfig,omitempty"`
 }
 
 // SecureSourceManagerInstanceStatus defines the config connector machine state of SecureSourceManagerInstance
@@ -51,6 +72,30 @@ type SecureSourceManagerInstanceStatus struct {
 // SecureSourceManagerInstanceObservedState is the state of the SecureSourceManagerInstance resource as most recently observed in GCP.
 // +kcc:observedstate:proto=google.cloud.securesourcemanager.v1.Instance
 type SecureSourceManagerInstanceObservedState struct {
+	// Output only. Create timestamp.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.create_time
+	CreateTime *string `json:"createTime,omitempty"`
+
+	// Output only. Update timestamp.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.update_time
+	UpdateTime *string `json:"updateTime,omitempty"`
+
+	// Optional. Private settings for private instance.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.private_config
+	PrivateConfig *Instance_PrivateConfigObservedState `json:"privateConfig,omitempty"`
+
+	// Output only. Current state of the instance.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.state
+	State *string `json:"state,omitempty"`
+
+	// Output only. An optional field providing information about the current
+	//  instance state.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.state_note
+	StateNote *string `json:"stateNote,omitempty"`
+
+	// Output only. A list of hostnames for this instance.
+	// +kcc:proto:field=google.cloud.securesourcemanager.v1.Instance.host_config
+	HostConfig *Instance_HostConfigObservedState `json:"hostConfig,omitempty"`
 }
 
 // +genclient
