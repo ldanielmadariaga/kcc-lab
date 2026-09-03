@@ -18,31 +18,36 @@ Three things had to hold first, and this page reports on each:
 
 ## 1. Coverage — met
 
-All 231 in-scope resources generate both a types file and a CRD. Measured against baseline
-`c1df0b9326`:
+The corpus is 275 resources, derived by `hack/tools/greenfield/build_inscope.py` rather than
+maintained by hand. Measured against baseline `c1df0b9326`:
 
 ```
-  1. implemented                      10232   (94.2%)   same field, same path
-  2. discrepancy                        368   (3.4%)    we produce it, but not as upstream has it
-        flagged for a second pass         280   (76%)
+  1. implemented                      10966   (91.4%)   same field, same path
+  2. discrepancy                        369   (3.1%)    we produce it, but not as upstream has it
+        flagged for a second pass         281   (76%)
         nothing says so                    88
-  3. missing                            257   (2.4%)    we produce nothing at all
-        a gap to close                    195
+  3. missing                            665   (5.5%)    we produce nothing at all
+        a gap to close                    603
         we model it differently on purpose 62
-        flagged for a second pass          39   (15%)
+        flagged for a second pass          39   (6%)
 ```
 
 The split is on what we produced, not on whether we mentioned it. Those turn out to be close to
-independent: three quarters of the discrepancies carry a judgement-queue entry, against one in seven
-of the absences. Leading with "flagged" hid that, and made a 306-field "missed" bucket read as
-absence when 88 of it was a field we do emit in a shape upstream does not have.
+independent: three quarters of the discrepancies carry a judgement-queue entry, against one in
+seventeen of the absences.
+
+**603 is the number to drive down**, and it is roughly three times what this document claimed a day
+earlier. The corpus had been hand-maintained and was missing 44 greenfield resources that had an
+upstream CRD to compare against. Those 44 score near 64% where the original 231 scored 94%, and
+almost all of the difference is `absent`: fields we generate nowhere, not fields we generate in the
+wrong shape. Discrepancy did not move at all, 368 to 369.
+
+The lesson is worth keeping separately from the number. **94.2% was a property of the corpus rather
+than of the generator**, and nothing about the generator changed between the two runs. See
+[experiments/measurements/](experiments/measurements/) for both runs and the diff between them.
 
 The 62 we model differently on purpose are the `google.protobuf.Value` union arms. We map `Value`
-whole to `apiextensionsv1.JSON`, so the individual arms cannot exist as fields. Counting them as
-absences would overstate the gap.
-
-195 is the number to drive down. It is what we produce nowhere, less what we decline to produce
-deliberately.
+whole to `apiextensionsv1.JSON`, so the individual arms cannot exist as fields.
 
 Run it with `hack/tools/greenfield/silence_report.py`; see
 [greenfield-coverage-invariant.md](greenfield-coverage-invariant.md) for what each state means, and
@@ -147,6 +152,8 @@ comparison is the method that transfers.
 
 ## Related
 
+* [greenfield-branch-inventory.md](greenfield-branch-inventory.md) — what every branch and PR
+  is, what is superseded, and the one branch waiting on a decision
 * [greenfield-experiment-report.md](greenfield-experiment-report.md) — the write-up for leads: what
   the experiment proves, what it does not, and the decisions we want made
 * [greenfield-coverage-strategy.md](greenfield-coverage-strategy.md) — the acceptance bar and sequencing

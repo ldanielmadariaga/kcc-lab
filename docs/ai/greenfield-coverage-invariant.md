@@ -89,11 +89,11 @@ Current state, with the produced axis alongside the class:
 
 | why it differs | total | we emit it | we emit nothing | flagged |
 |---|---|---|---|---|
-| `reference-shape` | 82 | 1 | 81 | 9 |
+| `reference-shape` | 123 | 1 | 122 | 9 |
 | `moved` | 64 | 64 | 0 | 34 |
-| `absent` | 114 | 0 | 114 | 30 |
-| `reference-not-detected` | 263 | 263 | 0 | 246 |
-| **subtotal, the target** | **523** | **328** | **195** | **319** |
+| `absent` | 481 | 0 | 481 | 30 |
+| `reference-not-detected` | 264 | 264 | 0 | 247 |
+| **subtotal, the target** | **932** | **329** | **603** | **320** |
 | `renamed` | 40 | 40 | 0 | 0 |
 | `intentionally-different` | 62 | 0 | 62 | 0 |
 

@@ -15,7 +15,23 @@ python3 hack/tools/greenfield/silence_report.py \
 
 | run | corpus | implemented | discrepancy | missing | notes |
 |---|---|---|---|---|---|
-| `2026-09-02-231-resources.txt` | 231 | 10232 (94.2%) | 368 | 257 | The corpus was later found to be under-scoped: 39 greenfield kinds with an upstream baseline were absent from `inscope.tsv`. Numbers in `greenfield-experiment-report.*` and PRs #21/#22 come from this run. |
+| `2026-09-02-231-resources.txt` | 231 | 10232 (94.2%) | 368 | 257 | **Superseded.** The corpus was under-scoped: 44 greenfield kinds with an upstream baseline were absent from `inscope.tsv`. |
+| `2026-09-03-275-resources.txt` | 275 | 10966 (91.4%) | 369 | 665 | First run on the derived corpus (`build_inscope.py`). The gap to close goes 195 → 603. |
+
+## What the rescope changed
+
+The 44 added resources brought 1,143 baseline fields and about 734 implemented ones, so they score
+near 64% where the original set scored 94%. Nearly all of the cost is `absent`, which went 114 → 481:
+fields we generate nowhere, rather than fields we generate in the wrong shape. `discrepancy` barely
+moved, 368 → 369.
+
+407 of the newly silent fields come from the added resources, concentrated in a handful of large,
+mature ones: `MemorystoreInstance` (33), `RedisCluster` (28), `WorkstationConfig` (20),
+`WorkstationCluster` (18), `BigQueryConnectionConnection` (17), `AlloyDBInstance` (16),
+`BackupDRBackupVault` (16).
+
+**94.2% was a property of the corpus, not of the generator.** The remaining work is roughly three
+times what the earlier number implied, and it is generation work rather than detection work.
 
 **Do not compare totals across rows with different corpus sizes.** Every absolute number moves with
 the denominator; only the percentages are even loosely comparable, and not those either when the

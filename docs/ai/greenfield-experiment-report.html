@@ -531,9 +531,9 @@
     <p class="standfirst">We deleted 231 resources the team had written by hand, regenerated them from the proto, and compared the result field by field against the originals. This records the method and what it measured.</p>
 
     <div class="headline-stats">
-      <div class="stat is-ok"><b>94.2%</b><span>of upstream's CRD fields reproduced at the same path</span></div>
-      <div class="stat is-bad"><b>1.8%</b><span>we generate nowhere, and have not chosen to leave out</span></div>
-      <div class="stat"><b>231</b><span>resources regenerated and scored</span></div>
+      <div class="stat is-ok"><b>91.4%</b><span>of upstream's CRD fields reproduced at the same path</span></div>
+      <div class="stat is-bad"><b>5.0%</b><span>we generate nowhere, and have not chosen to leave out</span></div>
+      <div class="stat"><b>275</b><span>resources regenerated and scored</span></div>
       <div class="stat"><b>76%</b><span>of discrepancies are flagged for a second pass</span></div>
     </div>
   </header>
@@ -560,7 +560,7 @@
     <section id="proposal">
       <h2>What the experiment set out to measure</h2>
       <p>KCC has direct controllers for 457 of 1,006 create-capable GCP resources, or 45.4%. Reaching 80% would mean implementing about 348 more. At the rate a hand-written resource takes, that is a multi-year queue, and the tail is made of resources nobody requests loudly enough to prioritise individually.</p>
-      <p>The open question was how much of that surface a generator can produce rather than a person. The experiment answers it with a number: a generator reproduces 94.2% of the CRD fields upstream wrote by hand at the same path. Of the 5.8% left, more than half is a field we do produce in a shape upstream does not have, and 1.8% is a gap we produce nothing for and have not chosen to leave out.</p>
+      <p>The open question was how much of that surface a generator can produce rather than a person. The experiment answers it with a number: a generator reproduces 91.4% of the CRD fields upstream wrote by hand at the same path. Of the rest, 3.1% is a field we do produce in a shape upstream does not have, and 5.0% is a gap we produce nothing for and have not chosen to leave out.</p>
       <p>What follows is the method, the measurements it produced, and the questions it left open.</p>
     </section>
 
@@ -576,17 +576,18 @@
 
     <section id="coverage">
       <h2>Coverage against upstream</h2>
-      <p>All 231 in-scope resources generate both a types file and a published CRD. Every field in every baseline CRD lands in exactly one of three states, so the columns sum and no arithmetic can drift.</p>
+      <p>All 275 in-scope resources generate both a types file and a published CRD. Every field in every baseline CRD lands in exactly one of three states, so the columns sum and no arithmetic can drift.</p>
+      <p>An earlier version of this page said 94.2%, measured over 231 resources. The corpus was hand-maintained and had drifted: 44 greenfield resources with an upstream CRD to compare against were missing from it. They score near 64% where the original set scored 94%, and almost all of the difference is fields we generate nowhere rather than fields we generate in the wrong shape. Nothing about the generator changed between the two runs, so 94.2% was a property of the corpus. The corpus is now derived from the criteria rather than listed by hand.</p>
 
       <div class="ledger">
         <div class="ledger-head">
-          <span>10,857 fields &middot; 231 resources</span>
+          <span>12,000 fields &middot; 275 resources</span>
           <span>baseline c1df0b9326</span>
         </div>
-        <div class="bar" role="img" aria-label="94.2 percent implemented, 3.4 percent discrepancy, 2.4 percent missing">
-          <i class="b-ok" style="width:94.2%"></i>
-          <i class="b-warn" style="width:3.4%"></i>
-          <i class="b-bad" style="width:2.4%"></i>
+        <div class="bar" role="img" aria-label="91.4 percent implemented, 3.1 percent discrepancy, 5.5 percent missing">
+          <i class="b-ok" style="width:91.4%"></i>
+          <i class="b-warn" style="width:3.1%"></i>
+          <i class="b-bad" style="width:5.5%"></i>
         </div>
         <table class="acct">
           <thead>
@@ -595,35 +596,35 @@
           <tbody>
             <tr>
               <td><span class="swatch sw-ok"></span>Implemented<span class="gloss">the same field at the same path</span></td>
-              <td class="num">10,232</td><td class="num pct">94.2%</td>
+              <td class="num">10,966</td><td class="num pct">91.4%</td>
             </tr>
             <tr>
               <td><span class="swatch sw-warn"></span>Discrepancy<span class="gloss">we produce it, but not as upstream has it</span></td>
-              <td class="num">368</td><td class="num pct">3.4%</td>
+              <td class="num">369</td><td class="num pct">3.1%</td>
             </tr>
-            <tr class="sub"><td>flagged for a second pass</td><td class="num">280</td><td class="num pct">76%</td></tr>
+            <tr class="sub"><td>flagged for a second pass</td><td class="num">281</td><td class="num pct">76%</td></tr>
             <tr class="sub"><td>nothing says so</td><td class="num">88</td><td class="num pct">24%</td></tr>
             <tr>
               <td><span class="swatch sw-bad"></span>Missing<span class="gloss">we produce nothing at all</span></td>
-              <td class="num">257</td><td class="num pct">2.4%</td>
+              <td class="num">665</td><td class="num pct">5.5%</td>
             </tr>
-            <tr class="sub"><td>a gap to close</td><td class="num">195</td><td class="num pct">1.8%</td></tr>
-            <tr class="sub"><td>we model it differently on purpose<span class="gloss">the google.protobuf.Value union arms, mapped whole to JSON</span></td><td class="num">62</td><td class="num pct">0.6%</td></tr>
-            <tr class="sub"><td>flagged for a second pass</td><td class="num">39</td><td class="num pct">15%</td></tr>
-            <tr class="total"><td>Fields in KCC master CRDs</td><td class="num">10,857</td><td class="num pct"></td></tr>
+            <tr class="sub"><td>a gap to close</td><td class="num">603</td><td class="num pct">5.0%</td></tr>
+            <tr class="sub"><td>we model it differently on purpose<span class="gloss">the google.protobuf.Value union arms, mapped whole to JSON</span></td><td class="num">62</td><td class="num pct">0.5%</td></tr>
+            <tr class="sub"><td>flagged for a second pass</td><td class="num">39</td><td class="num pct">6%</td></tr>
+            <tr class="total"><td>Fields in KCC master CRDs</td><td class="num">12,000</td><td class="num pct"></td></tr>
           </tbody>
         </table>
       </div>
 
       <p>The split is on what we produced, not on whether we mentioned it. A discrepancy is a field we do emit, in the other section or under a different name or as a plain string where upstream has a reference object. It breaks a user's YAML just as surely, but it needs detecting or moving rather than generating, and a report that files it under &ldquo;missed&rdquo; sends people to write generators for fields the types file already carries.</p>
-      <p>The two axes turn out to be close to independent, which is why the report stopped leading with &ldquo;flagged&rdquo;: three quarters of discrepancies carry a judgement-queue entry, against one in seven of the absences. A combined figure describes neither population. Within missing, the number to drive down is 195, since the other 62 are the <code>google.protobuf.Value</code> union arms we map whole to JSON on purpose.</p>
+      <p>The two axes turn out to be close to independent, which is why the report stopped leading with &ldquo;flagged&rdquo;: three quarters of discrepancies carry a judgement-queue entry, against one in seventeen of the absences. A combined figure describes neither population. Within missing, the number to drive down is 603, since the other 62 are the <code>google.protobuf.Value</code> union arms we map whole to JSON on purpose.</p>
       <p>Two thirds of what remains is nested fields, which is the shape of the work left: the detectors that generalise read a field's own description or its name against the service's resources, and both weaken with depth because there is less context around a deeply nested field.</p>
     </section>
 
     <section id="flagging">
       <h2>Flagging what needs judgement</h2>
       <p>Anything the generator could not justify from the proto gets a <code>+kcc:guess</code> marker in the types file and an entry in that service's judgement queue. There are 299 markers today, and a checker enforces that none of them lacks an entry.</p>
-      <p>That covers what the generator knows it guessed. Measured against upstream instead, 625 fields diverge in some way, and the flagging rate splits sharply by kind. Of the 368 discrepancies, 280 carry a queue entry. Of the 257 absences, only 39 do. A field we emit in the wrong shape is usually something the generator knew it was unsure about; a field we emit nowhere is usually something nothing looked for.</p>
+      <p>That covers what the generator knows it guessed. Measured against upstream instead, 1,034 fields diverge in some way, and the flagging rate splits sharply by kind. Of the 369 discrepancies, 281 carry a queue entry. Of the 665 absences, only 39 do. A field we emit in the wrong shape is usually something the generator knew it was unsure about; a field we emit nowhere is usually something nothing looked for.</p>
       <div class="note">
         <span class="note-label">What the check has caught</span>
         <p>The invariant broke three separate times during this work and the checker caught all three, in places code review would not have looked: a marker written on every generator invocation while the queue entry was written on only some; a merge that silently dropped every comment line of the existing queue file; and markers emitted into commented-out blocks describing code the generator did not actually produce. A rule nothing checks is a rule that regresses.</p>
@@ -682,7 +683,7 @@
 
       <div class="note caution">
         <span class="note-label">Read 94.2% as a ceiling, not a forecast</span>
-        <p>The corpus is upstream's choices, not a random sample. These 231 are resources the team judged worth implementing. The ~550 unimplemented ones may be systematically harder: less documented, odder shapes, or unimplemented precisely because someone looked and found a problem.</p>
+        <p>The corpus is upstream's choices, not a random sample. These 275 are resources the team judged worth implementing. The unimplemented ones may be systematically harder: less documented, odder shapes, or unimplemented precisely because someone looked and found a problem. The rescope from 231 to 275 is direct evidence for that caution, since simply adding the resources we had missed moved the headline by nearly three points.</p>
       </div>
 
       <p>22 packages do not compile, and that is by design. The hand-written <code>_identity.go</code> and <code>_reference.go</code> files were left at upstream's version while the types beneath them were regenerated, so the failures are the oracle working rather than damage. About 16 are a measurement floor we chose not to chase.</p>
@@ -814,7 +815,7 @@
 
   <footer>
     <span>Measured against KCC master at <code>c1df0b9326</code></span>
-    <span>231 resources &middot; 10,857 fields</span>
+    <span>275 resources &middot; 12,000 fields</span>
     <span>Reproduce with <code>hack/tools/greenfield/silence_report.py</code></span>
   </footer>
 
