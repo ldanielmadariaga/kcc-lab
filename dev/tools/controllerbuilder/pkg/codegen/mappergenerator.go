@@ -16,7 +16,6 @@ package codegen
 
 import (
 	"fmt"
-	"go/types"
 	"io"
 	"path/filepath"
 	"sort"
@@ -479,23 +478,6 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 						useSliceFromProtoFunction = ""
 					} else if keyKind == protoreflect.StringKind && valueKind == protoreflect.Int64Kind {
 						useSliceFromProtoFunction = ""
-					} else if fromProto, _, elemType, ok := mapValueConverters(protoField, krmField.Type, versionSpecifier); ok && keyKind == protoreflect.StringKind {
-						useSliceFromProtoFunction = ""
-						useCustomMethod = ""
-						krmValueGoType, krmValueIsPointer := krmMapValueType(elemType, krmField.Type, krmImportName)
-						fmt.Fprintf(out, "\tif in.%s != nil {\n", protoFieldName)
-						fmt.Fprintf(out, "\t\tout.%s = make(map[string]%s, len(in.%s))\n",
-							krmFieldName, krmValueGoType, protoFieldName)
-						fmt.Fprintf(out, "\t\tfor k, v := range in.%s {\n", protoFieldName)
-						if krmValueIsPointer {
-							fmt.Fprintf(out, "\t\t\tout.%s[k] = %s(mapCtx, v)\n", krmFieldName, fromProto)
-							fmt.Fprintf(out, "\t\t}\n\t}\n")
-						} else {
-							fmt.Fprintf(out, "\t\t\tif c := %s(mapCtx, v); c != nil {\n", fromProto)
-							fmt.Fprintf(out, "\t\t\t\tout.%s[k] = *c\n", krmFieldName)
-							fmt.Fprintf(out, "\t\t\t}\n\t\t}\n\t}\n")
-						}
-						continue
 					} else {
 						useSliceFromProtoFunction = ""
 						useCustomMethod = krmFieldName + "_FromProto"
@@ -806,21 +788,6 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 						useSliceToProtoFunction = ""
 					} else if keyKind == protoreflect.StringKind && valueKind == protoreflect.Int64Kind {
 						useSliceToProtoFunction = ""
-					} else if _, toProto, elemType, ok := mapValueConverters(protoField, krmField.Type, versionSpecifier); ok && keyKind == protoreflect.StringKind {
-						useSliceToProtoFunction = ""
-						useCustomMethod = ""
-						protoValueType := "pb." + protoNameForType(entryMsg.Fields().ByName("value").Message())
-						fmt.Fprintf(out, "\tif in.%s != nil {\n", krmFieldName)
-						fmt.Fprintf(out, "\t\tout.%s = make(map[string]*%s, len(in.%s))\n", protoFieldName, protoValueType, krmFieldName)
-						fmt.Fprintf(out, "\t\tfor k, v := range in.%s {\n", krmFieldName)
-						_, krmValueIsPointer := krmMapValueType(elemType, krmField.Type, krmImportName)
-						valueArg := "&v"
-						if krmValueIsPointer {
-							valueArg = "v"
-						}
-						fmt.Fprintf(out, "\t\t\tout.%s[k] = %s(mapCtx, %s)\n", protoFieldName, toProto, valueArg)
-						fmt.Fprintf(out, "\t\t}\n\t}\n")
-						continue
 					} else {
 						useSliceToProtoFunction = ""
 						useCustomMethod = krmFieldName + "_ToProto"
@@ -1155,69 +1122,6 @@ func sortIntoMessageSlice(messages protoreflect.MessageDescriptors) []protorefle
 		return out[i].FullName() < out[j].FullName()
 	})
 	return out
-}
-
-// mapValueConverters returns the functions that convert a map's values from
-// and to proto, and the Go type of those values. It reports false when the
-// mapper should keep using the existing custom-method path instead.
-//
-// Before this, a map whose value is a message called a "<Field>_FromProto"
-// helper that does not exist, so the generated mapper did not compile. A value
-// whose message has a special-cased Go type uses that type's converter, and
-// any other message uses the converter generated for its struct.
-func mapValueConverters(protoField protoreflect.FieldDescriptor, krmFieldType, versionSpecifier string) (fromProto, toProto, elemType string, ok bool) {
-	// Some hand-written types declare a proto map as a slice, such as
-	// artifactregistry's Repository.cleanup_policies, which is a
-	// []CleanupPolicy. A map loop does not compile against a slice, so those
-	// keep the custom-method path.
-	if !strings.HasPrefix(krmFieldType, "map[string]") {
-		return "", "", "", false
-	}
-	entryMsg := protoField.Message()
-	valueField := entryMsg.Fields().ByName("value")
-	if valueField.Kind() != protoreflect.MessageKind {
-		return "", "", "", false
-	}
-	valueMsg := valueField.Message()
-	// A message in protoMessagesNotMappedToGoStruct has no generated struct.
-	// Its values take the Go type the message maps to instead, such as string
-	// for google.protobuf.Timestamp, and the converters the direct package
-	// provides for that type.
-	if goType, unmapped := protoMessagesNotMappedToGoStruct[string(valueMsg.FullName())]; unmapped {
-		return krmFromProtoFunctionName(valueField, ""), krmToProtoFunctionName(valueField, ""), goType, true
-	}
-	// Generated converters carry the version suffix, as in
-	// CommonUsageStats_v1alpha1_FromProto, and the non-map path appends it the
-	// same way. The special-cased converters live in the direct package and
-	// have no suffix.
-	name := GoNameForProtoMessage(valueMsg)
-	return name + versionSpecifier + "_FromProto", name + versionSpecifier + "_ToProto", name, true
-}
-
-// krmMapValueType returns the Go type of a KRM map's values as the mapper
-// package writes it, and whether that type is a pointer.
-//
-// The value type comes from the proto, through elemType, rather than from
-// krmFieldType. The Go source can be out of date, for example when
-// types.generated.go has not been regenerated since the type generator
-// changed, and a mapper written from it names a type the field no longer has.
-//
-// Whether the value is a pointer can only be read from the Go type. The corpus
-// has 16 message maps that hold values and 7 that hold pointers, and the
-// converters always take and return a pointer, so the loop dereferences only
-// for values. A generated struct needs the krm import alias. A built-in type
-// such as string does not, and neither does a type that already has a
-// qualifier, such as apiextensionsv1.JSON.
-func krmMapValueType(elemType, krmFieldType, krmImportName string) (goType string, isPointer bool) {
-	isPointer = strings.HasPrefix(strings.TrimPrefix(krmFieldType, "map[string]"), "*")
-	elem := elemType
-	if !strings.Contains(elem, ".") && types.Universe.Lookup(elem) == nil {
-		elem = krmImportName + "." + elem
-	}
-	if isPointer {
-		return "*" + elem, true
-	}
-	return elem, false
 }
 
 func krmFromProtoFunctionName(protoField protoreflect.FieldDescriptor, krmFieldName string) string {
