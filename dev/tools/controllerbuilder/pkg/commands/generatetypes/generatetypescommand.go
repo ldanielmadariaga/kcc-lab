@@ -51,6 +51,7 @@ type GenerateCRDOptions struct {
 	PrepopulateSpec       bool
 	DetectOutputOnly      bool
 	EmitPluralAcronyms    bool
+	EmitMessageMaps       bool
 }
 
 func (o *GenerateCRDOptions) InitDefaults() error {
@@ -72,6 +73,7 @@ func (o *GenerateCRDOptions) BindFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&o.PruneUnusedTypes, "prune-unused-types", o.PruneUnusedTypes, "prune unreachable types from generated files")
 	cmd.Flags().BoolVar(&o.PrepopulateSpec, "prepopulate-spec", false, "fill the scaffolded Spec from the proto message instead of emitting a three-field stub, and record what still needs a human in apis/<service>/needs_judgement_call.txt. Opt in one service at a time")
 	cmd.Flags().BoolVar(&o.EmitPluralAcronyms, "emit-plural-acronyms", false, "case plural acronyms as KRM conventions want, so related_uris becomes relatedURIs rather than relatedUris. Opt in one service at a time: it renames fields, which is a breaking change for a resource people already use")
+	cmd.Flags().BoolVar(&o.EmitMessageMaps, "emit-message-maps", false, "generate map<string, Message> fields as a map of the value's Go type instead of leaving them out. Opt in one service at a time: it adds fields to the CRD of a resource people already use, and generate-mapper needs the same flag")
 	cmd.Flags().BoolVar(&o.DetectOutputOnly, "detect-output-only-in-comments", false, "report spec fields whose proto comment says \"Output only.\" while carrying no field_behavior annotation, to apis/<service>/detected_output_only_in_comments.txt. Reports only; moving them is a hand edit")
 	cmd.Flags().BoolVar(&o.EmitRequiredFromProto, "emit-required-from-proto", false, "emit // +required for fields the proto marks REQUIRED. Opt in one service at a time: turning it on for a resource people already use can tighten its CRD schema, because nested types are shared between spec and status")
 }
@@ -145,6 +147,7 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 	writeOptions := codegen.WriteOptions{
 		EmitRequired:       o.EmitRequiredFromProto,
 		EmitPluralAcronyms: o.EmitPluralAcronyms,
+		EmitMessageMaps:    o.EmitMessageMaps,
 	}
 
 	typeGenerator := codegen.NewTypeGenerator(goPackage, o.OutputAPIDirectory, api)

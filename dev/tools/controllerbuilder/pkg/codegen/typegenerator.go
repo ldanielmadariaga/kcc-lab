@@ -89,6 +89,10 @@ type WriteOptions struct {
 	// related_uris becomes RelatedURIs rather than RelatedUris. See AcronymCasing
 	// for why this is opt-in.
 	EmitPluralAcronyms bool
+	// EmitMessageMaps generates map<string, Message> fields as a map of the
+	// value's Go type. Without it they are left out, with a "// TODO:" marker
+	// in their place.
+	EmitMessageMaps bool
 }
 
 func NewTypeGenerator(goPackage string, outputBaseDir string, api *protoapi.Proto) *TypeGenerator {
@@ -501,17 +505,39 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 	fmt.Fprintf(out, "}\n")
 }
 
-func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool) (string, error) {
+func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool, opts WriteOptions) (string, error) {
 	if field.IsMap() {
 		entryMsg := field.Message()
-		keyKind := entryMsg.Fields().ByName("key").Kind()
-		valueKind := entryMsg.Fields().ByName("value").Kind()
-		if keyKind == protoreflect.StringKind && valueKind == protoreflect.StringKind {
+		keyField := entryMsg.Fields().ByName("key")
+		valueField := entryMsg.Fields().ByName("value")
+		if keyField.Kind() != protoreflect.StringKind {
+			// A CRD keys additionalProperties by string, so no other key type
+			// can be expressed.
+			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyField.Kind(), valueField.Kind())
+		}
+		switch valueField.Kind() {
+		case protoreflect.StringKind:
 			return "map[string]string", nil
-		} else if keyKind == protoreflect.StringKind && valueKind == protoreflect.Int64Kind {
+		case protoreflect.Int64Kind:
 			return "map[string]int64", nil
-		} else {
-			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyKind, valueKind)
+		case protoreflect.MessageKind:
+			// Off by default: generating these adds fields to the CRD of a
+			// resource people already use.
+			if !opts.EmitMessageMaps {
+				return "", fmt.Errorf("unsupported map type with key %v and value %v", keyField.Kind(), valueField.Kind())
+			}
+			// FindDependenciesForField already follows the map entry to the
+			// value's message, so its struct is generated like any other nested
+			// message. A message with a special-cased Go type uses that type
+			// instead, so a google.protobuf.Struct value becomes
+			// apiextensionsv1.JSON.
+			valueName := string(valueField.Message().FullName())
+			if goType, ok := protoMessagesNotMappedToGoStruct[valueName]; ok {
+				return "map[string]" + goType, nil
+			}
+			return "map[string]" + GoNameForProtoMessage(valueField.Message()), nil
+		default:
+			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyField.Kind(), valueField.Kind())
 		}
 	}
 
@@ -553,7 +579,7 @@ func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protorefl
 	jsonName := getJSONForKRM(field, opts)
 	GoFieldName := goFieldNameOpts(field, opts)
 
-	goType, err := GoTypeForField(field, isTransitiveOutput)
+	goType, err := GoTypeForField(field, isTransitiveOutput, opts)
 	if err != nil {
 		// Name the field. Without it the marker says only "unsupported map type"
 		// and neither a reader nor the judgement queue can tell which field went
