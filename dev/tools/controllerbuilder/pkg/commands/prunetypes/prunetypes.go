@@ -354,13 +354,22 @@ func dropUnusedImports(filename string, content []byte) ([]byte, error) {
 		if imp.Name != nil {
 			name = imp.Name.Name
 		}
-		// A blank or dot import is there for its side effects; leave it alone.
+		// A blank import is there for its side effects, and a dot import has
+		// no qualifier to look for, so leave both alone.
 		if name == "_" || name == "." {
 			continue
 		}
 		qualifier := name
 		if qualifier == "" {
+			// Without an alias the qualifier is the package name, which only
+			// the imported package declares. The last path segment is that
+			// name by convention, but not in paths like gopkg.in/yaml.v3 or
+			// example.com/mod/v2. Keep those imports: dropping a live import
+			// breaks the build as surely as keeping a dead one.
 			qualifier = path[strings.LastIndex(path, "/")+1:]
+			if !token.IsIdentifier(qualifier) || isMajorVersion(qualifier) {
+				continue
+			}
 		}
 		if used[qualifier] {
 			continue
@@ -384,4 +393,10 @@ func dropUnusedImports(filename string, content []byte) ([]byte, error) {
 		return nil, fmt.Errorf("formatting: %w", err)
 	}
 	return buf.Bytes(), nil
+}
+
+// isMajorVersion reports whether a path segment is a module major-version
+// suffix such as v2, which is never the package name.
+func isMajorVersion(s string) bool {
+	return len(s) > 1 && s[0] == 'v' && strings.TrimLeft(s[1:], "0123456789") == ""
 }
