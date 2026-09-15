@@ -29,18 +29,14 @@ const SiblingGuessMarker = "+kcc:guess=possible-reference target="
 // the field's, if any.
 //
 // siblings maps a lowercased Kind suffix to the Kind: DiscoveryEngineDataStore
-// is keyed "datastore", so a field called dataStore matches it. The rule is
-// derivable rather than learned -- it needs no vocabulary of names anyone has
-// seen before, so it works on a service nobody has looked at, which is the
-// property refs.NameRules lacks.
+// is keyed "datastore", so a field called dataStore matches it. Needing no
+// vocabulary of known names is the point; it works on a service nobody has
+// looked at, which refs.NameRules cannot.
 //
-// The match is exact on the leaf, after singularising, rather than a suffix:
-// loosening it to endswith buys seven more at 68% precision instead of 75%, and
-// picks up spec.pipelineJob and localSsds[].interface.
-//
-// Known false positives, both DataLabeling: annotationSpecSet and instruction
-// match sibling Kinds and upstream keeps them plain. That is the trade for a
-// hint a person confirms.
+// The leaf match is exact, after singularising. Loosening it to endswith was
+// measured at 68% precision against 75%, and pulled in spec.pipelineJob and
+// localSsds[].interface. Known false positives, both DataLabeling:
+// annotationSpecSet and instruction, which upstream keeps plain.
 func SiblingResource(field protoreflect.FieldDescriptor, siblings map[string]string) (string, bool) {
 	if len(siblings) == 0 || field.Kind() != protoreflect.StringKind {
 		return "", false
@@ -48,18 +44,17 @@ func SiblingResource(field protoreflect.FieldDescriptor, siblings map[string]str
 	return SiblingResourceByName(GetJSONForKRM(field), siblings)
 }
 
-// SiblingResourceByName is SiblingResource for a name the generator synthesised
-// rather than read off a proto field, which is where the parent segments come
-// from: DiscoveryEngineDataStoreTargetSite's spec.dataStore is built from the
-// resource pattern, not from any field of the message.
+// SiblingResourceByName is SiblingResource for a synthesised name rather than a
+// proto field: DiscoveryEngineDataStoreTargetSite's spec.dataStore comes from
+// the resource pattern, not from any field of the message.
 func SiblingResourceByName(name string, siblings map[string]string) (string, bool) {
 	leaf := strings.ToLower(name)
 	if target, ok := siblings[leaf]; ok {
 		return target, true
 	}
 	// A repeated field is named for what it holds: ComputeNetworkAttachment's
-	// subnetworks are each a ComputeSubnetwork. Six of the fifteen matches on
-	// this corpus are plural, so skipping this halves the rule's reach.
+	// subnetworks are each a ComputeSubnetwork. Six of fifteen matches are
+	// plural, so skipping this halves the rule's reach.
 	if s := singular(leaf); s != leaf {
 		if target, ok := siblings[s]; ok {
 			return target, true
@@ -69,10 +64,8 @@ func SiblingResourceByName(name string, siblings map[string]string) (string, boo
 }
 
 // singular strips a regular English plural, and gives up on anything else.
-//
-// Deliberately narrow. This decides whether to ask a person a question, so an
-// over-eager rule costs a reviewer's attention, and no irregular plural appears
-// among GCP resource names to justify a real inflection library.
+// Deliberately narrow: this decides whether to ask a person a question, and no
+// irregular plural appears among GCP resource names.
 func singular(s string) string {
 	switch {
 	case strings.HasSuffix(s, "ies") && len(s) > 4:
@@ -107,11 +100,9 @@ type SiblingGuess struct {
 }
 
 // scanSiblingGuesses recovers the sibling markers WriteMessage left in a
-// rendered body.
-//
-// Scanned back out of the output rather than returned from WriteField, which
-// writes to an io.Writer and has nowhere to accumulate. This mirrors
-// scanUnsupported, which recovers the "// TODO:" markers the same way.
+// rendered body. Scanned out of the output rather than returned from
+// WriteField, which writes to an io.Writer and has nowhere to accumulate;
+// scanUnsupported recovers the "// TODO:" markers the same way.
 func scanSiblingGuesses(msgName, body string) []SiblingGuess {
 	var out []SiblingGuess
 	pending := ""
