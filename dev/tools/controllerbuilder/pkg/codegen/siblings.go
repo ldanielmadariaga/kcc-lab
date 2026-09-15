@@ -29,14 +29,16 @@ const SiblingGuessMarker = "+kcc:guess=possible-reference target="
 // the field's, if any.
 //
 // siblings maps a lowercased Kind suffix to the Kind: DiscoveryEngineDataStore
-// is keyed "datastore", so a field called dataStore matches it. Needing no
-// vocabulary of known names is the point; it works on a service nobody has
-// looked at, which refs.NameRules cannot.
+// is keyed "datastore", so a field called dataStore matches it. The rule keeps
+// no list of known names, so it works on a service nobody has looked at.
+// refs.NameRules cannot do that, because it only recognises spellings someone
+// has already written down.
 //
-// The leaf match is exact, after singularising. Loosening it to endswith was
-// measured at 68% precision against 75%, and pulled in spec.pipelineJob and
-// localSsds[].interface. Known false positives, both DataLabeling:
-// annotationSpecSet and instruction, which upstream keeps plain.
+// The leaf match is exact, after singularising. We measured a looser endswith
+// match at 68% precision, against 75% for this one, and it wrongly matched
+// spec.pipelineJob and localSsds[].interface. Two fields match a sibling Kind
+// but stay plain upstream, both in DataLabeling: annotationSpecSet and
+// instruction.
 func SiblingResource(field protoreflect.FieldDescriptor, siblings map[string]string) (string, bool) {
 	if len(siblings) == 0 || field.Kind() != protoreflect.StringKind {
 		return "", false
@@ -44,17 +46,18 @@ func SiblingResource(field protoreflect.FieldDescriptor, siblings map[string]str
 	return SiblingResourceByName(GetJSONForKRM(field), siblings)
 }
 
-// SiblingResourceByName is SiblingResource for a synthesised name rather than a
-// proto field: DiscoveryEngineDataStoreTargetSite's spec.dataStore comes from
-// the resource pattern, not from any field of the message.
+// SiblingResourceByName matches a name the generator synthesised, where
+// SiblingResource takes a proto field. Parent segments arrive this way:
+// DiscoveryEngineDataStoreTargetSite's spec.dataStore comes from the resource
+// pattern, not from any field of the message.
 func SiblingResourceByName(name string, siblings map[string]string) (string, bool) {
 	leaf := strings.ToLower(name)
 	if target, ok := siblings[leaf]; ok {
 		return target, true
 	}
 	// A repeated field is named for what it holds: ComputeNetworkAttachment's
-	// subnetworks are each a ComputeSubnetwork. Six of fifteen matches are
-	// plural, so skipping this halves the rule's reach.
+	// subnetworks are each a ComputeSubnetwork. Six of the fifteen matches in the
+	// corpus are plural. Without this the rule finds half as many.
 	if s := singular(leaf); s != leaf {
 		if target, ok := siblings[s]; ok {
 			return target, true
@@ -63,9 +66,9 @@ func SiblingResourceByName(name string, siblings map[string]string) (string, boo
 	return "", false
 }
 
-// singular strips a regular English plural, and gives up on anything else.
-// Deliberately narrow: this decides whether to ask a person a question, and no
-// irregular plural appears among GCP resource names.
+// singular strips a regular English plural and gives up on anything else. It
+// stays narrow on purpose. A match here puts a question in front of a reviewer,
+// and no GCP resource name uses an irregular plural.
 func singular(s string) string {
 	switch {
 	case strings.HasSuffix(s, "ies") && len(s) > 4:
