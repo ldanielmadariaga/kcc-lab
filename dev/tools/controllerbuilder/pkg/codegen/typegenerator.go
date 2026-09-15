@@ -504,14 +504,31 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool) (string, error) {
 	if field.IsMap() {
 		entryMsg := field.Message()
-		keyKind := entryMsg.Fields().ByName("key").Kind()
-		valueKind := entryMsg.Fields().ByName("value").Kind()
-		if keyKind == protoreflect.StringKind && valueKind == protoreflect.StringKind {
+		keyField := entryMsg.Fields().ByName("key")
+		valueField := entryMsg.Fields().ByName("value")
+		if keyField.Kind() != protoreflect.StringKind {
+			// A CRD keys additionalProperties by string, so no other key type
+			// can be expressed.
+			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyField.Kind(), valueField.Kind())
+		}
+		switch valueField.Kind() {
+		case protoreflect.StringKind:
 			return "map[string]string", nil
-		} else if keyKind == protoreflect.StringKind && valueKind == protoreflect.Int64Kind {
+		case protoreflect.Int64Kind:
 			return "map[string]int64", nil
-		} else {
-			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyKind, valueKind)
+		case protoreflect.MessageKind:
+			// FindDependenciesForField already follows the map entry to the
+			// value's message, so its struct is generated like any other nested
+			// message. A message with a special-cased Go type uses that type
+			// instead, so a google.protobuf.Struct value becomes
+			// apiextensionsv1.JSON.
+			valueName := string(valueField.Message().FullName())
+			if goType, ok := protoMessagesNotMappedToGoStruct[valueName]; ok {
+				return "map[string]" + goType, nil
+			}
+			return "map[string]" + GoNameForProtoMessage(valueField.Message()), nil
+		default:
+			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyField.Kind(), valueField.Kind())
 		}
 	}
 
