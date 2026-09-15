@@ -504,14 +504,32 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool) (string, error) {
 	if field.IsMap() {
 		entryMsg := field.Message()
-		keyKind := entryMsg.Fields().ByName("key").Kind()
-		valueKind := entryMsg.Fields().ByName("value").Kind()
-		if keyKind == protoreflect.StringKind && valueKind == protoreflect.StringKind {
+		keyField := entryMsg.Fields().ByName("key")
+		valueField := entryMsg.Fields().ByName("value")
+		if keyField.Kind() != protoreflect.StringKind {
+			// A CRD keys additionalProperties by string; nothing else is expressible.
+			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyField.Kind(), valueField.Kind())
+		}
+		switch valueField.Kind() {
+		case protoreflect.StringKind:
 			return "map[string]string", nil
-		} else if keyKind == protoreflect.StringKind && valueKind == protoreflect.Int64Kind {
+		case protoreflect.Int64Kind:
 			return "map[string]int64", nil
-		} else {
-			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyKind, valueKind)
+		case protoreflect.MessageKind:
+			// The value struct is generated like any other nested message:
+			// FindDependenciesForField already recurses through the map entry into
+			// the value, so it is visited and written without new machinery here.
+			// A CRD expresses this as additionalProperties with an object schema.
+			// A message with a special-cased Go type takes that type here too,
+			// rather than the struct name it does not have, so a
+			// google.protobuf.Struct value lands on apiextensionsv1.JSON.
+			valueName := string(valueField.Message().FullName())
+			if goType, ok := protoMessagesNotMappedToGoStruct[valueName]; ok {
+				return "map[string]" + goType, nil
+			}
+			return "map[string]" + GoNameForProtoMessage(valueField.Message()), nil
+		default:
+			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyField.Kind(), valueField.Kind())
 		}
 	}
 
