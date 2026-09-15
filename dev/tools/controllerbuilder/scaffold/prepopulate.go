@@ -95,7 +95,7 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 		buf.Write(field_.Bytes())
 		emitted++
 
-		if reason, ok := unsupportedFieldReason(field_.String()); ok {
+		if _, reason, ok := codegen.UnsupportedFieldMarker(field_.String()); ok {
 			out.Judgement = append(out.Judgement, JudgementItem{
 				FieldPath: ".spec." + codegen.GetJSONForKRM(field),
 				Reason:    "unsupported-field-type",
@@ -265,27 +265,4 @@ func FormatOutputOnlyCandidates(kind, group string, items []OutputOnlyCandidate)
 			kind, group, it.FieldPath, it.Comment))
 	}
 	return sb.String()
-}
-
-// unsupportedFieldReason reports the generator's own explanation when it could
-// not produce a Go type for a field.
-//
-// WriteField emits "// TODO: <err>" in place of the field and carries on, so
-// the field is absent from the CRD with nothing but a comment in generated
-// source to say why. The 239-resource run had 15 such markers in scaffolded
-// type files and 37 more in types.generated.go. Between them they lost 124
-// CRD field paths, and neither the judgement queue nor any report listed
-// them.
-func unsupportedFieldReason(rendered string) (string, bool) {
-	for _, line := range strings.Split(rendered, "\n") {
-		line = strings.TrimSpace(line)
-		if after, ok := strings.CutPrefix(line, "// TODO: "); ok {
-			// WriteField prefixes the field name; FieldPath already carries it.
-			if _, reason, found := strings.Cut(after, ": "); found {
-				return reason, true
-			}
-			return after, true
-		}
-	}
-	return "", false
 }
