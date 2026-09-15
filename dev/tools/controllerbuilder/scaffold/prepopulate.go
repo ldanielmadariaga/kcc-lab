@@ -89,9 +89,9 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 		if codegen.IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
 			continue
 		}
-		// Same, for a field GCP computes whose proto never said so. This must
-		// agree with the type generator exactly: it puts the field into
-		// ObservedState, and leaving it here as well would emit it twice.
+		// A server-set field goes to ObservedState too. This check has to agree
+		// with the type generator's, or the field would be declared in both
+		// structs.
 		if codegen.IsServerSetField(field, msg, opts) {
 			out.Judgement = append(out.Judgement, JudgementItem{
 				FieldPath: ".status.observedState." + codegen.GetJSONForKRM(field),

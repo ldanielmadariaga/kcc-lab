@@ -26,7 +26,7 @@ import (
 
 // serverSetTestFile builds two messages:
 //
-//	Discovery  no field_behavior anywhere, the compute shape
+//	Discovery  no field_behavior anywhere, like compute's protos
 //	Annotated  one field marked OUTPUT_ONLY, the rest bare
 //
 // Both carry the same field names, so a test can isolate the guard from the
@@ -99,7 +99,7 @@ func TestIsServerSetField(t *testing.T) {
 		{"an ordinary field is untouched", discovery, "description", on, false},
 
 		// This is the guard. One annotation anywhere on the message means the
-		// author made a decision, so their silence about the rest is respected.
+		// author placed the other fields on purpose.
 		{"annotated message, allowlisted field", annotated, "creation_timestamp", on, false},
 		{"annotated message, etag", annotated, "etag", on, false},
 
@@ -118,9 +118,8 @@ func TestIsServerSetField(t *testing.T) {
 	}
 }
 
-// A nested message's "id" or "kind" is often genuine user input, so the rule is
-// restricted to the resource's own message. identifyOutputs recurses, which is
-// what makes the restriction necessary rather than decorative.
+// isServerSet applies the rule only to the resource's own message, and not to
+// a nested message that has a field of the same name.
 func TestIsServerSetFieldOnlyAppliesToTheRootMessage(t *testing.T) {
 	fd := serverSetTestFile(t)
 	discovery := fd.Messages().ByName("Discovery")
