@@ -1041,3 +1041,82 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 		t.Errorf("GoTypeForField(%q) with EmitMessageMaps off = %q, %v, want map[string]string", "string_map", got, err)
 	}
 }
+
+// TestWriteObservedStateFieldsNotes checks that the notes tell apart the two
+// ways a field can be missing from the struct: the caller's skip map left it
+// out, which is a decision, or WriteField could not type it, which is a gap.
+// Only the "// TODO:" marker in Rendered shows the second.
+func TestWriteObservedStateFieldsNotes(t *testing.T) {
+	fdp := &descriptorpb.FileDescriptorProto{
+		Name:    protoPtr("obs.proto"),
+		Package: protoPtr("google.cloud.test.v1"),
+		MessageType: []*descriptorpb.DescriptorProto{
+			{
+				Name: protoPtr("TestMessage"),
+				NestedType: []*descriptorpb.DescriptorProto{
+					{
+						Name: protoPtr("ByIndexEntry"),
+						Field: []*descriptorpb.FieldDescriptorProto{
+							{Name: protoPtr("key"), Number: protoPtr(int32(1)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_INT32)},
+							{Name: protoPtr("value"), Number: protoPtr(int32(2)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+						},
+						Options: &descriptorpb.MessageOptions{MapEntry: protoPtr(true)},
+					},
+				},
+				Field: []*descriptorpb.FieldDescriptorProto{
+					{Name: protoPtr("name"), Number: protoPtr(int32(1)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+					{Name: protoPtr("create_time"), Number: protoPtr(int32(2)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+					{
+						Name: protoPtr("by_index"), Number: protoPtr(int32(3)),
+						Type:     typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE),
+						TypeName: protoPtr(".google.cloud.test.v1.TestMessage.ByIndexEntry"),
+						Label:    labelDescriptor(descriptorpb.FieldDescriptorProto_LABEL_REPEATED),
+					},
+				},
+			},
+		},
+	}
+	fd, err := protodesc.NewFile(fdp, nil)
+	if err != nil {
+		t.Fatalf("failed to create file descriptor: %v", err)
+	}
+	msg := fd.Messages().ByName("TestMessage")
+	details := &OutputMessageDetails{Message: msg}
+	for i := 0; i < msg.Fields().Len(); i++ {
+		details.OutputFields = append(details.OutputFields, msg.Fields().Get(i))
+	}
+
+	var buf bytes.Buffer
+	notes := WriteObservedStateFields(&buf, details, sets.NewString(), map[string]bool{"name": true}, WriteOptions{})
+
+	byName := map[string]ObservedStateFieldNote{}
+	for _, n := range notes {
+		byName[n.JSONName] = n
+	}
+	if len(notes) != 3 {
+		t.Fatalf("got %d notes, want one per output field", len(notes))
+	}
+
+	// The caller skipped name, which is a decision, so it is not in the output.
+	if n := byName["name"]; !n.Skipped {
+		t.Errorf("name: Skipped = false, want true")
+	} else if n.Rendered != "" {
+		t.Errorf("name: Rendered = %q, want empty for a skipped field", n.Rendered)
+	}
+	if strings.Contains(buf.String(), `json:"name`) {
+		t.Error("a skipped field was written to the struct anyway")
+	}
+
+	// createTime is written normally, so its note is neither skipped nor a marker.
+	if n := byName["createTime"]; n.Skipped {
+		t.Errorf("createTime: Skipped = true, want false")
+	} else if !strings.Contains(n.Rendered, `json:"createTime`) {
+		t.Errorf("createTime: Rendered = %q, want the field declaration", n.Rendered)
+	}
+
+	// byIndex has a declined type, and its TODO marker is the only trace the
+	// caller has.
+	if n := byName["byIndex"]; !strings.Contains(n.Rendered, "// TODO:") {
+		t.Errorf("byIndex: Rendered = %q, want a TODO marker the caller can report", n.Rendered)
+	}
+}

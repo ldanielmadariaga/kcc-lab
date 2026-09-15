@@ -195,6 +195,27 @@ func (g *TypeGenerator) visitMessage(message protoreflect.MessageDescriptor) err
 	return nil
 }
 
+// ObservedStateMessages returns the proto messages that have their own
+// ObservedState struct. A field of one of these message types must use
+// <Proto>ObservedState rather than the plain type.
+func (g *TypeGenerator) ObservedStateMessages() sets.String {
+	return g.observedStateMessages
+}
+
+// OutputFieldsFor returns the output-only fields that identifyOutputs found for
+// one message during the visit, and false when the message has none. The
+// scaffolder fills the resource-level ObservedState struct from this rather
+// than walking the proto again, so the rule that a field reached through an
+// OUTPUT_ONLY parent is also output-only lives in one place.
+func (g *TypeGenerator) OutputFieldsFor(fqn string) (*OutputMessageDetails, bool) {
+	for _, details := range g.outputMessages {
+		if string(details.Message.FullName()) == fqn {
+			return details, true
+		}
+	}
+	return nil, false
+}
+
 // needsObservedState determines if a message requires a separate ObservedState struct.
 // If the regular Go struct and the ObservedState version are identical, we fall back
 // to using the regular Go struct to reduce redundancy.
@@ -489,7 +510,46 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 	fmt.Fprintf(out, "\n")
 	fmt.Fprintf(out, "// %s=%s\n", KCCProtoMessageAnnotationObservedState, msg.FullName())
 	fmt.Fprintf(out, "type %s struct {\n", goType)
-	for i, field := range msgDetails.OutputFields {
+	WriteObservedStateFields(out, msgDetails, observedStateMessages, nil, WriteOptions{})
+	fmt.Fprintf(out, "}\n")
+}
+
+// ObservedStateFieldNote describes what WriteObservedStateFields did with one
+// output-only field, so the caller can file a queue entry for a field that did
+// not reach the struct.
+//
+// Rendered holds the field's output, so a caller can pass it to
+// UnsupportedFieldMarker to find a field WriteField could not type.
+type ObservedStateFieldNote struct {
+	// JSONName is the field as KRM spells it, e.g. "createTime".
+	JSONName string
+	// Skipped is true when the caller's skip map excluded the field outright.
+	Skipped bool
+	// Rendered is the field's output, non-empty only when it was not skipped.
+	Rendered string
+}
+
+// WriteObservedStateFields writes the body of an observed-state struct: one
+// field per output-only field, with no enclosing type declaration. It returns
+// a note for each field.
+//
+// The scaffolder calls this too, for the resource-level <Kind>ObservedState, so
+// the choice between a plain type and its ObservedState variant lives in one
+// place.
+//
+// skip names proto fields to leave out, or nil to write all of them.
+func WriteObservedStateFields(out io.Writer, msgDetails *OutputMessageDetails, observedStateMessages sets.String, skip map[string]bool, opts WriteOptions) []ObservedStateFieldNote {
+	msg := msgDetails.Message
+	emitted := 0
+	var notes []ObservedStateFieldNote
+	for _, field := range msgDetails.OutputFields {
+		if skip[string(field.Name())] {
+			notes = append(notes, ObservedStateFieldNote{
+				JSONName: GetJSONForKRM(field),
+				Skipped:  true,
+			})
+			continue
+		}
 		isMessage := field.Kind() == protoreflect.MessageKind && !field.IsMap()
 		useObservedState := false
 		if isMessage {
@@ -497,12 +557,22 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 				useObservedState = true
 			}
 		}
+		// Each field renders into its own buffer so its note can carry the output.
+		// A field WriteField cannot type becomes a "// TODO:" marker and never
+		// reaches the CRD.
+		var field_ bytes.Buffer
 		// Never emit +required from here. An observed-state struct describes what GCP
 		// returned, and the API server validates status, so requiring a field GCP is
 		// free to omit would make it reject a status KCC itself wrote.
-		WriteField(out, field, msg, i, useObservedState, WriteOptions{})
+		WriteField(&field_, field, msg, emitted, useObservedState, WriteOptions{})
+		out.Write(field_.Bytes())
+		emitted++
+		notes = append(notes, ObservedStateFieldNote{
+			JSONName: GetJSONForKRM(field),
+			Rendered: field_.String(),
+		})
 	}
-	fmt.Fprintf(out, "}\n")
+	return notes
 }
 
 func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool, opts WriteOptions) (string, error) {
