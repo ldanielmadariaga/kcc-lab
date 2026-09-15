@@ -89,6 +89,19 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 		if codegen.IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
 			continue
 		}
+		// Same, for a field GCP computes whose proto never said so. This must
+		// agree with the type generator exactly: it puts the field into
+		// ObservedState, and leaving it here as well would emit it twice.
+		if codegen.IsServerSetField(field, msg, opts) {
+			out.Judgement = append(out.Judgement, JudgementItem{
+				FieldPath: ".status.observedState." + codegen.GetJSONForKRM(field),
+				Reason:    "server-set-field-placed",
+				Detail: "GCP computes this, but the proto carries no field_behavior " +
+					"anywhere on the message, so it was placed by name. Confirm it is " +
+					"not something a user sets",
+			})
+			continue
+		}
 		if identityFields[string(field.Name())] {
 			// Dropped with no queue entry. KCC carries the resource name in
 			// status.externalRef, and an entry here would fire on 219 resources
@@ -105,7 +118,7 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 		// for a field it cannot type can be read back. Such a field never reaches
 		// the CRD, and the queue entry below is the only record of it.
 		var field_ bytes.Buffer
-		codegen.WriteField(&field_, field, msg, emitted, false, opts)
+		codegen.WriteField(&field_, field, msg, emitted, false, opts, "")
 		buf.Write(field_.Bytes())
 		emitted++
 
