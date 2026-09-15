@@ -206,24 +206,6 @@ type GcipSettings struct {
 }
 */
 
-/* found existing non-generated go type "IAPSettings", skipping
-
-// +kcc:proto=google.cloud.iap.v1.IapSettings
-type IAPSettings struct {
-	// Required. The resource name of the IAP protected resource.
-	// +kcc:proto:field=google.cloud.iap.v1.IapSettings.name
-	Name *string `json:"name,omitempty"`
-
-	// Optional. Top level wrapper for all access related setting in IAP
-	// +kcc:proto:field=google.cloud.iap.v1.IapSettings.access_settings
-	AccessSettings *AccessSettings `json:"accessSettings,omitempty"`
-
-	// Optional. Top level wrapper for all application related settings in IAP
-	// +kcc:proto:field=google.cloud.iap.v1.IapSettings.application_settings
-	ApplicationSettings *ApplicationSettings `json:"applicationSettings,omitempty"`
-}
-*/
-
 /* unreachable type OAuth2
 // +kcc:proto=google.cloud.iap.v1.OAuth2
 type OAuth2 struct {
@@ -311,16 +293,6 @@ type BrandObservedState struct {
 	//  G Suite organization only.
 	// +kcc:proto:field=google.cloud.iap.v1.Brand.org_internal_only
 	OrgInternalOnly *bool `json:"orgInternalOnly,omitempty"`
-}
-*/
-
-/* found existing non-generated go type with proto tag "google.cloud.iap.v1.IapSettings", skipping
-
-// +kcc:observedstate:proto=google.cloud.iap.v1.IapSettings
-type IAPSettingsObservedState struct {
-	// Optional. Top level wrapper for all access related setting in IAP
-	// +kcc:proto:field=google.cloud.iap.v1.IapSettings.access_settings
-	AccessSettings *AccessSettingsObservedState `json:"accessSettings,omitempty"`
 }
 */
 

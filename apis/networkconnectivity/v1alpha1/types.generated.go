@@ -252,7 +252,7 @@ type MulticloudDataTransferConfig struct {
 	// +kcc:proto:field=mockgcp.cloud.networkconnectivity.v1.MulticloudDataTransferConfig.name
 	Name *string `json:"name,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: services: unsupported map type with key string and value message
 
 
 	// Output only. The Google-generated unique ID for the `MulticloudDataTransferConfig` resource. This value is unique across all `MulticloudDataTransferConfig` resources. If a resource is deleted and another with the same name is created, the new resource is assigned a different and unique ID.

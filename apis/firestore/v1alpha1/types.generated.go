@@ -96,7 +96,7 @@ type ArrayValue struct {
 // +kcc:proto=google.firestore.v1.MapValue
 type MapValue struct {
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: fields: unsupported map type with key string and value message
 
 }
 */

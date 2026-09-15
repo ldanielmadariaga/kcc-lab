@@ -157,7 +157,7 @@ type Filter struct {
 	// +kcc:proto:field=google.cloud.billing.budgets.v1.Filter.subaccounts
 	Subaccounts []string `json:"subaccounts,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: labels: unsupported map type with key string and value message
 
 
 	// Optional. Specifies to track usage for recurring calendar period.

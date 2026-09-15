@@ -3532,7 +3532,7 @@ type InstanceGroupManagerAutoHealingPolicy struct {
 // +kcc:proto=google.cloud.compute.v1.InstanceGroupManagerInstanceFlexibilityPolicy
 type InstanceGroupManagerInstanceFlexibilityPolicy struct {
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: instanceSelections: unsupported map type with key string and value message
 
 }
 */
@@ -6993,7 +6993,7 @@ type ServiceAttachmentConsumerProjectLimit struct {
 // +kcc:proto=google.cloud.compute.v1.ShareSettings
 type ShareSettings struct {
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: projectMap: unsupported map type with key string and value message
 
 
 	// Type of sharing for this shared-reservation
@@ -7363,11 +7363,11 @@ type StatefulPolicy struct {
 // +kcc:proto=google.cloud.compute.v1.StatefulPolicyPreservedState
 type StatefulPolicyPreservedState struct {
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: disks: unsupported map type with key string and value message
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: externalIPs: unsupported map type with key string and value message
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: internalIPs: unsupported map type with key string and value message
 
 }
 */

@@ -389,7 +389,7 @@ type Repository struct {
 	// +kcc:proto:field=google.devtools.artifactregistry.v1.Repository.mode
 	Mode *string `json:"mode,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: cleanupPolicies: unsupported map type with key string and value message
 
 
 	// Optional. If true, the cleanup pipeline is prevented from deleting versions

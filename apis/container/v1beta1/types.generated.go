@@ -1884,7 +1884,7 @@ type MaintenanceWindow struct {
 	// +kcc:proto:field=google.container.v1.MaintenanceWindow.recurring_window
 	RecurringWindow *RecurringTimeWindow `json:"recurringWindow,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: maintenanceExclusions: unsupported map type with key string and value message
 
 }
 */
