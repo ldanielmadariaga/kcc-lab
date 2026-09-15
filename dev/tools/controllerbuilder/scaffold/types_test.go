@@ -1,0 +1,75 @@
+// Copyright 2026 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package scaffold
+
+import (
+	"bytes"
+	"go/parser"
+	"go/token"
+	"testing"
+	"text/template"
+
+	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/template/apis"
+)
+
+// No other test renders the types template, so a field it reads that nothing
+// sets goes unnoticed until someone runs generate-types. This parses the output
+// for a resource with and without prepopulated fields.
+func TestTypesTemplateRendersValidGo(t *testing.T) {
+	base := apis.APIArgs{
+		Group:                "networkservices.cnrm.cloud.google.com",
+		Version:              "v1alpha1",
+		Kind:                 "NetworkServicesLBTrafficExtension",
+		ProtoResource:        "LbTrafficExtension",
+		PackageProtoTag:      "google.cloud.networkservices.v1",
+		KindProtoTag:         "google.cloud.networkservices.v1.LbTrafficExtension",
+		ProtoMessageName:     "LbTrafficExtension",
+		ProtoMessageFullName: "google.cloud.networkservices.v1.LbTrafficExtension",
+	}
+	prepopulated := base
+	prepopulated.SpecFields = "\t// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.description\n" +
+		"\tDescription *string `json:\"description,omitempty\"`\n"
+	prepopulated.ObservedStateFields = "\t// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.create_time\n" +
+		"\tCreateTime *string `json:\"createTime,omitempty\"`\n"
+	prepopulated.ExtraImports = []string{`common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"`}
+
+	for _, tc := range []struct {
+		name string
+		args apis.APIArgs
+	}{
+		{name: "stub", args: base},
+		{name: "prepopulated", args: prepopulated},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			// Arrange
+			tmpl, err := template.New(tc.args.Kind).Funcs(funcMap).Parse(apis.TypesTemplate)
+			if err != nil {
+				t.Fatalf("parsing types template: %v", err)
+			}
+
+			// Act
+			var buf bytes.Buffer
+			execErr := tmpl.Execute(&buf, &tc.args)
+
+			// Assert
+			if execErr != nil {
+				t.Fatalf("executing types template: %v", execErr)
+			}
+			if _, err := parser.ParseFile(token.NewFileSet(), "types.go", buf.Bytes(), parser.AllErrors); err != nil {
+				t.Errorf("rendered types file is not valid Go: %v\n%s", err, buf.String())
+			}
+		})
+	}
+}

@@ -195,6 +195,30 @@ func (g *TypeGenerator) visitMessage(message protoreflect.MessageDescriptor) err
 	return nil
 }
 
+// ObservedStateMessages is the set of proto messages that got an ObservedState
+// struct of their own. A field whose message is in here must be referenced as
+// <Proto>ObservedState rather than the plain type.
+func (g *TypeGenerator) ObservedStateMessages() sets.String {
+	return g.observedStateMessages
+}
+
+// OutputFieldsFor returns the output-only fields of one message, as computed by
+// identifyOutputs during the visit. The scaffolder uses this to fill the
+// resource-level ObservedState struct rather than re-walking the proto: the
+// rule is transitive, since a field is output-only if it is reached through an
+// OUTPUT_ONLY parent, and a second implementation would drift from this one.
+//
+// Reports false when the message has no output-only content, which is the
+// signal to leave the scaffolded struct empty.
+func (g *TypeGenerator) OutputFieldsFor(fqn string) (*OutputMessageDetails, bool) {
+	for _, details := range g.outputMessages {
+		if string(details.Message.FullName()) == fqn {
+			return details, true
+		}
+	}
+	return nil, false
+}
+
 // needsObservedState determines if a message requires a separate ObservedState struct.
 // If the regular Go struct and the ObservedState version are identical, we fall back
 // to using the regular Go struct to reduce redundancy.
@@ -489,7 +513,50 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 	fmt.Fprintf(out, "\n")
 	fmt.Fprintf(out, "// %s=%s\n", KCCProtoMessageAnnotationObservedState, msg.FullName())
 	fmt.Fprintf(out, "type %s struct {\n", goType)
-	for i, field := range msgDetails.OutputFields {
+	// WriteOptions stays empty on purpose. This writes the nested structs in
+	// types.generated.go, and a placement note belongs only on the resource's
+	// own ObservedState, which the scaffolder writes.
+	WriteObservedStateFields(out, msgDetails, observedStateMessages, nil, WriteOptions{})
+	fmt.Fprintf(out, "}\n")
+}
+
+// ObservedStateFieldNote records an output-only field that did not reach the
+// struct cleanly, so the caller can say so rather than dropping it in silence.
+//
+// Rendered carries the field's own output for the caller to inspect. The reason
+// a type was declined is spelled in the "// TODO:" comment WriteField leaves
+// behind, and parsing that belongs with the queue rather than here.
+type ObservedStateFieldNote struct {
+	// JSONName is the field as KRM spells it, e.g. "createTime".
+	JSONName string
+	// Skipped is true when the caller's skip map excluded the field outright.
+	Skipped bool
+	// Rendered is the field's output, non-empty only when it was not skipped.
+	Rendered string
+}
+
+// WriteObservedStateFields writes the body of an observed-state struct: one
+// field per output-only field, with no enclosing type declaration.
+//
+// The scaffolder calls this too, to fill the resource-level <Kind>ObservedState
+// in the hand-written types file. Both callers go through here so the
+// plain-versus-ObservedState choice below has exactly one implementation; a
+// second copy in the scaffolder would drift from this one the first time either
+// changed.
+//
+// skip names proto fields to leave out, or nil to write all of them.
+func WriteObservedStateFields(out io.Writer, msgDetails *OutputMessageDetails, observedStateMessages sets.String, skip map[string]bool, opts WriteOptions) []ObservedStateFieldNote {
+	msg := msgDetails.Message
+	emitted := 0
+	var notes []ObservedStateFieldNote
+	for _, field := range msgDetails.OutputFields {
+		if skip[string(field.Name())] {
+			notes = append(notes, ObservedStateFieldNote{
+				JSONName: GetJSONForKRM(field),
+				Skipped:  true,
+			})
+			continue
+		}
 		isMessage := field.Kind() == protoreflect.MessageKind && !field.IsMap()
 		useObservedState := false
 		if isMessage {
@@ -497,12 +564,23 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 				useObservedState = true
 			}
 		}
+		// We render each field on its own so we can inspect its output before
+		// appending it, the same way the Spec does. A field whose type the
+		// generator declines becomes a "// TODO:" comment and never reaches the
+		// CRD. That is a silent drop unless somebody records it.
+		var field_ bytes.Buffer
 		// Never emit +required from here. An observed-state struct describes what GCP
 		// returned, and the API server validates status, so requiring a field GCP is
 		// free to omit would make it reject a status KCC itself wrote.
-		WriteField(out, field, msg, i, useObservedState, WriteOptions{})
+		WriteField(&field_, field, msg, emitted, useObservedState, WriteOptions{})
+		out.Write(field_.Bytes())
+		emitted++
+		notes = append(notes, ObservedStateFieldNote{
+			JSONName: GetJSONForKRM(field),
+			Rendered: field_.String(),
+		})
 	}
-	fmt.Fprintf(out, "}\n")
+	return notes
 }
 
 func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool, opts WriteOptions) (string, error) {
