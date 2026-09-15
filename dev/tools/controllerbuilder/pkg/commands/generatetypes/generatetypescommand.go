@@ -397,47 +397,53 @@ func writeJudgementQueue(apiDir, goPackage string, entries []string) error {
 	// outright meant the last call silently discarded every earlier call's
 	// entries. That left 34 fields carrying a +kcc:guess marker in the types file
 	// with nothing about them in the queue.
-	//
-	// Lines are keyed whole, so re-running is idempotent, and existing lines
-	// come first so a hand-edited queue keeps its order.
-	//
-	// Comment lines are kept, except the header, which is rewritten. Dropping
-	// every "#" line was simpler and wrong: the findings that cannot be
-	// attributed to a single Kind are written as comments precisely so they do
-	// not suppress [refs], and discarding them meant only the last invocation's
-	// survived. compute kept 6 of its 56 sibling matches that way, and backupdr
-	// none of its 2.
-	existing := ""
-	if prior, err := os.ReadFile(path); err == nil {
-		existing = string(prior)
-	}
+	merged := mergeQueueLines(header, readFileOrEmpty(path), body.String())
+	return os.WriteFile(path, []byte(header+strings.Join(merged, "\n")+"\n"), 0644)
+}
+
+// mergeQueueLines returns the queue's lines without its header: every line of
+// existing first, so a hand-edited queue keeps its order, then each line of
+// added that existing does not already have. Lines are compared whole, so
+// merging the same entries again changes nothing. Blank lines are dropped.
+//
+// Only the header's own lines are removed from existing, because the header is
+// rewritten on every call. Other comment lines stay: findings that cannot be
+// attributed to a single Kind are written as comments precisely so they do not
+// suppress [refs], and dropping every "#" line kept only the last invocation's.
+// compute kept 6 of its 56 sibling matches that way, and backupdr none of its
+// 2.
+func mergeQueueLines(header, existing, added string) []string {
 	isHeader := map[string]bool{}
 	for _, line := range strings.Split(header, "\n") {
-		if line != "" {
-			isHeader[line] = true
-		}
+		isHeader[line] = true
 	}
 	seen := map[string]bool{}
 	var out []string
+	keep := func(line string) {
+		if line != "" && !seen[line] {
+			seen[line] = true
+			out = append(out, line)
+		}
+	}
 	for _, line := range strings.Split(existing, "\n") {
-		if line == "" || isHeader[line] {
-			continue
-		}
-		if !seen[line] {
-			seen[line] = true
-			out = append(out, line)
+		if !isHeader[line] {
+			keep(line)
 		}
 	}
-	for _, line := range strings.Split(body.String(), "\n") {
-		if line == "" {
-			continue
-		}
-		if !seen[line] {
-			seen[line] = true
-			out = append(out, line)
-		}
+	for _, line := range strings.Split(added, "\n") {
+		keep(line)
 	}
-	return os.WriteFile(path, []byte(header+strings.Join(out, "\n")+"\n"), 0644)
+	return out
+}
+
+// readFileOrEmpty returns the file's contents, or "" if it cannot be read. A
+// queue that does not exist yet is the normal first-run case.
+func readFileOrEmpty(path string) string {
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return ""
+	}
+	return string(b)
 }
 
 // writeOutputOnlyReport records fields the proto documents as output-only in
