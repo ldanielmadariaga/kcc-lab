@@ -563,7 +563,7 @@ type JobStatus struct {
 	// +kcc:proto:field=google.cloud.batch.v1.JobStatus.status_events
 	StatusEvents []StatusEvent `json:"statusEvents,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: taskGroups: unsupported map type with key string and value message
 
 	// The duration of time that the Job spent in status RUNNING.
 	// +kcc:proto:field=google.cloud.batch.v1.JobStatus.run_duration

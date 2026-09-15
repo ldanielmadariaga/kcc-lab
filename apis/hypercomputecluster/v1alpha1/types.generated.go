@@ -62,13 +62,13 @@ type Cluster struct {
 	// +kcc:proto:field=google.cloud.hypercomputecluster.v1.Cluster.labels
 	Labels map[string]string `json:"labels,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: networkResources: unsupported map type with key string and value message
 
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: storageResources: unsupported map type with key string and value message
 
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: computeResources: unsupported map type with key string and value message
 
 
 	// Optional. Orchestrator that is responsible for scheduling and running jobs

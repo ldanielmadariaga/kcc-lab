@@ -195,7 +195,7 @@ type ConsumerGroup struct {
 	// +kcc:proto:field=google.cloud.managedkafka.v1.ConsumerGroup.name
 	Name *string `json:"name,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: topics: unsupported map type with key string and value message
 
 }
 */
@@ -221,7 +221,7 @@ type ConsumerPartitionMetadata struct {
 // +kcc:proto=google.cloud.managedkafka.v1.ConsumerTopicMetadata
 type ConsumerTopicMetadata struct {
 
-	// TODO: unsupported map type with key int32 and value message
+	// TODO: partitions: unsupported map type with key int32 and value message
 
 }
 */

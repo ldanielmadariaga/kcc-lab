@@ -189,7 +189,7 @@ type TranslationTaskDetails struct {
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.TranslationTaskDetails.identifier_settings
 	IdentifierSettings *IdentifierSettings `json:"identifierSettings,omitempty"`
 
-	// TODO: unsupported map type with key string and value enum
+	// TODO: specialTokenMap: unsupported map type with key string and value enum
 
 	// The filter applied to translation details.
 	// +kcc:proto:field=google.cloud.bigquery.migration.v2alpha.TranslationTaskDetails.filter

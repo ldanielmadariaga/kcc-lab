@@ -754,7 +754,7 @@ type JupyterConfig struct {
 // +kcc:proto=google.cloud.dataproc.v1.LoggingConfig
 type LoggingConfig struct {
 
-	// TODO: unsupported map type with key string and value enum
+	// TODO: driverLogLevels: unsupported map type with key string and value enum
 
 }
 */

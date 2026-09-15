@@ -811,7 +811,7 @@ type Job struct {
 // +kcc:proto=google.dataflow.v1beta3.JobExecutionInfo
 type JobExecutionInfo struct {
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: stages: unsupported map type with key string and value message
 
 }
 */

@@ -236,7 +236,7 @@ type MonitoringConfig struct {
 // +kcc:proto=google.cloud.gkehub.policycontroller.v1beta.PolicyContentSpec
 type PolicyContentSpec struct {
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: bundles: unsupported map type with key string and value message
 
 	// Configures the installation of the Template Library.
 	// +kcc:proto:field=google.cloud.gkehub.policycontroller.v1beta.PolicyContentSpec.template_library

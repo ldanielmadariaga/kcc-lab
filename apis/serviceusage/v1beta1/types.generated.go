@@ -648,37 +648,6 @@ type UsageRule struct {
 }
 */
 
-/* found existing non-generated go type "Service", skipping
-
-// +kcc:proto=google.api.serviceusage.v1beta1.Service
-type Service struct {
-	// The resource name of the consumer and service.
-	//
-	//  A valid name would be:
-	//  - `projects/123/services/serviceusage.googleapis.com`
-	// +kcc:proto:field=google.api.serviceusage.v1beta1.Service.name
-	Name *string `json:"name,omitempty"`
-
-	// The resource name of the consumer.
-	//
-	//  A valid name would be:
-	//  - `projects/123`
-	// +kcc:proto:field=google.api.serviceusage.v1beta1.Service.parent
-	Parent *string `json:"parent,omitempty"`
-
-	// The service configuration of the available service.
-	//  Some fields may be filtered out of the configuration in responses to
-	//  the `ListServices` method. These fields are present only in responses to
-	//  the `GetService` method.
-	// +kcc:proto:field=google.api.serviceusage.v1beta1.Service.config
-	Config *ServiceConfig `json:"config,omitempty"`
-
-	// Whether or not the service has been enabled for use by the consumer.
-	// +kcc:proto:field=google.api.serviceusage.v1beta1.Service.state
-	State *string `json:"state,omitempty"`
-}
-*/
-
 /* unreachable type ServiceConfig
 // +kcc:proto=google.api.serviceusage.v1beta1.ServiceConfig
 type ServiceConfig struct {
@@ -730,22 +699,6 @@ type ServiceConfig struct {
 	//  This should not include the 'producer_destinations' field.
 	// +kcc:proto:field=google.api.serviceusage.v1beta1.ServiceConfig.monitoring
 	Monitoring *Monitoring `json:"monitoring,omitempty"`
-}
-*/
-
-/* found existing non-generated go type "ServiceIdentity", skipping
-
-// +kcc:proto=google.api.serviceusage.v1beta1.ServiceIdentity
-type ServiceIdentity struct {
-	// The email address of the service account that a service producer would use
-	//  to access consumer resources.
-	// +kcc:proto:field=google.api.serviceusage.v1beta1.ServiceIdentity.email
-	Email *string `json:"email,omitempty"`
-
-	// The unique and stable id of the service account.
-	//  https://cloud.google.com/iam/reference/rest/v1/projects.serviceAccounts#ServiceAccount
-	// +kcc:proto:field=google.api.serviceusage.v1beta1.ServiceIdentity.unique_id
-	UniqueID *string `json:"uniqueID,omitempty"`
 }
 */
 

@@ -204,7 +204,7 @@ type App_VariableDeclaration struct {
 // +kcc:proto=google.cloud.ces.v1beta.AudioProcessingConfig
 type AudioProcessingConfig struct {
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: synthesizeSpeechConfigs: unsupported map type with key string and value message
 
 	// Optional. Configures the agent behavior for the user barge-in activities.
 	// +kcc:proto:field=google.cloud.ces.v1beta.AudioProcessingConfig.barge_in_config
@@ -836,7 +836,7 @@ type Schema struct {
 	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.type
 	Type *string `json:"type,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: properties: unsupported map type with key string and value message
 
 
 	// Optional. Required properties of Type.OBJECT.
@@ -913,7 +913,7 @@ type Schema struct {
 	// +kcc:proto:field=google.cloud.ces.v1beta.Schema.ref
 	Ref *string `json:"ref,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: defs: unsupported map type with key string and value message
 
 
 	// Optional. The title of the schema.

@@ -337,7 +337,7 @@ type Autoscaler struct {
 	// +kcc:proto:field=google.cloud.compute.v1.Autoscaler.region
 	Region *string `json:"region,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: scalingScheduleStatus: unsupported map type with key string and value message
 
 
 	// [Output Only] Server-defined URL for the resource.
@@ -413,7 +413,7 @@ type AutoscalingPolicy struct {
 	// +kcc:proto:field=google.cloud.compute.v1.AutoscalingPolicy.scale_in_control
 	ScaleInControl *AutoscalingPolicyScaleInControl `json:"scaleInControl,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: scalingSchedules: unsupported map type with key string and value message
 
 }
 */
@@ -1441,11 +1441,11 @@ type PerInstanceConfig struct {
 // +kcc:proto=google.cloud.compute.v1.PreservedState
 type PreservedState struct {
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: disks: unsupported map type with key string and value message
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: externalIPs: unsupported map type with key string and value message
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: internalIPs: unsupported map type with key string and value message
 
 	// Preserved metadata defined for this instance.
 	// +kcc:proto:field=google.cloud.compute.v1.PreservedState.metadata
@@ -2874,7 +2874,7 @@ type FutureReservationTimeWindow struct {
 // +kcc:proto=google.cloud.compute.v1beta.ShareSettings
 type ShareSettings struct {
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: projectMap: unsupported map type with key string and value message
 
 
 	// A List of Project names to specify consumer projects for this shared-reservation. This is only valid when share_type's value is SPECIFIC_PROJECTS.

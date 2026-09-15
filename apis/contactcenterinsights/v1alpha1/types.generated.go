@@ -56,7 +56,7 @@ type AnalysisResult_CallAnalysisMetadata struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.annotations
 	Annotations []CallAnnotation `json:"annotations,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: entities: unsupported map type with key string and value message
 
 	// Overall conversation-level sentiment for each channel of the call.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.sentiments
@@ -66,9 +66,9 @@ type AnalysisResult_CallAnalysisMetadata struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.silence
 	Silence *ConversationLevelSilence `json:"silence,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: intents: unsupported map type with key string and value message
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: phraseMatchers: unsupported map type with key string and value message
 
 	// Overall conversation-level issue modeling result.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.issue_model_result
@@ -815,7 +815,7 @@ type IssueModelLabelStats struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.IssueModelLabelStats.unclassified_conversations_count
 	UnclassifiedConversationsCount *int64 `json:"unclassifiedConversationsCount,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: issueStats: unsupported map type with key string and value message
 
 }
 
@@ -1316,7 +1316,7 @@ type AnalysisResult_CallAnalysisMetadataObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.annotations
 	Annotations []CallAnnotation `json:"annotations,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: entities: unsupported map type with key string and value message
 
 	// Overall conversation-level sentiment for each channel of the call.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.sentiments
@@ -1326,9 +1326,9 @@ type AnalysisResult_CallAnalysisMetadataObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.silence
 	Silence *ConversationLevelSilence `json:"silence,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: intents: unsupported map type with key string and value message
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: phraseMatchers: unsupported map type with key string and value message
 
 	// Overall conversation-level issue modeling result.
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.AnalysisResult.CallAnalysisMetadata.issue_model_result
@@ -1380,7 +1380,7 @@ type ConversationObservedState struct {
 	// +kcc:proto:field=google.cloud.contactcenterinsights.v1.Conversation.runtime_annotations
 	RuntimeAnnotations []RuntimeAnnotation `json:"runtimeAnnotations,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: dialogflowIntents: unsupported map type with key string and value message
 
 }
 */

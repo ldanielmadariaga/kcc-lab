@@ -965,7 +965,7 @@ type Tag struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.Tag.column
 	Column *string `json:"column,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: fields: unsupported map type with key string and value message
 
 }
 */
@@ -1041,7 +1041,7 @@ type TagTemplate struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.TagTemplate.is_publicly_readable
 	IsPubliclyReadable *bool `json:"isPubliclyReadable,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: fields: unsupported map type with key string and value message
 
 
 	// Optional. Transfer status of the TagTemplate
@@ -1102,7 +1102,7 @@ type UsageSignal struct {
 	// +kcc:proto:field=google.cloud.datacatalog.v1.UsageSignal.update_time
 	UpdateTime *string `json:"updateTime,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: commonUsageWithinTimeRange: unsupported map type with key string and value message
 
 	// Favorite count in the source system.
 	// +kcc:proto:field=google.cloud.datacatalog.v1.UsageSignal.favorite_count
@@ -1422,7 +1422,7 @@ type TagObservedState struct {
 // +kcc:observedstate:proto=google.cloud.datacatalog.v1.UsageSignal
 type UsageSignalObservedState struct {
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: usageWithinTimeRange: unsupported map type with key string and value message
 
 }
 

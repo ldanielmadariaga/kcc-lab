@@ -1019,7 +1019,7 @@ type InlineSecret struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v1.InlineSecret.kms_key_name
 	KMSKeyName *string `json:"kmsKeyName,omitempty"`
 
-	// TODO: unsupported map type with key string and value bytes
+	// TODO: envMap: unsupported map type with key string and value bytes
 
 }
 */
@@ -1224,7 +1224,7 @@ type Secret struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v1.Secret.kms_key_name
 	KMSKeyName *string `json:"kmsKeyName,omitempty"`
 
-	// TODO: unsupported map type with key string and value bytes
+	// TODO: secretEnv: unsupported map type with key string and value bytes
 
 }
 */
@@ -1574,7 +1574,7 @@ type BuildObservedState struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v1.Build.log_url
 	LogURL *string `json:"logURL,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: timing: unsupported map type with key string and value message
 
 	// Output only. Describes this build's approval configuration, status,
 	//  and result.
@@ -1773,7 +1773,7 @@ type SourceProvenanceObservedState struct {
 	// +kcc:proto:field=google.devtools.cloudbuild.v1.SourceProvenance.resolved_storage_source_manifest
 	ResolvedStorageSourceManifest *StorageSourceManifest `json:"resolvedStorageSourceManifest,omitempty"`
 
-	// TODO: unsupported map type with key string and value message
+	// TODO: fileHashes: unsupported map type with key string and value message
 
 }
 */
