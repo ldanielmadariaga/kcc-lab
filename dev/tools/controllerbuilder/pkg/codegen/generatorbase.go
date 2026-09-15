@@ -174,51 +174,6 @@ func (f *generatedFile) addImport(alias string, pkgName string) {
 	f.imports[pkgName] = alias
 }
 
-// usedImports drops imports the rendered body never references.
-//
-// The qualifier is the alias where one is set, otherwise the last path segment,
-// which is how Go resolves it. Matching on "<qualifier>." is deliberately
-// conservative: it can only ever keep an import that is genuinely unused if the
-// string appears in a comment, and keeping one costs nothing next to emitting
-// an import that breaks the build.
-func (f *generatedFile) usedImports() map[string]string {
-	body := f.body.String()
-
-	// Pick up any well-known qualifier the body uses but nothing registered.
-	//
-	// Imports are otherwise added per proto message name: google.rpc.Status
-	// brings in "common", and connectors' Secret brings in secretmanagerv1beta1.
-	// That cannot cover a type chosen by shape rather than by name.
-	// google.protobuf.Struct becomes apiextensionsv1.JSON, and nothing
-	// added that import, so ces and visionai generated a file that would not
-	// compile. We register every qualifier in QualifierImports and let the
-	// filter below drop the unused ones, which covers the whole class rather
-	// than one case.
-	for qualifier, pkgName := range QualifierImports {
-		if _, already := f.imports[pkgName]; already {
-			continue
-		}
-		if strings.Contains(body, qualifier+".") {
-			f.addImport(qualifier, pkgName)
-		}
-	}
-
-	if len(f.imports) == 0 {
-		return nil
-	}
-	used := make(map[string]string, len(f.imports))
-	for pkgName, alias := range f.imports {
-		qualifier := alias
-		if qualifier == "" {
-			qualifier = lastGoComponent(pkgName)
-		}
-		if strings.Contains(body, qualifier+".") {
-			used[pkgName] = alias
-		}
-	}
-	return used
-}
-
 func (f *generatedFile) Write(addCopyright bool, writeEmptyFiles bool) error {
 	if f.body.Len() == 0 && !writeEmptyFiles {
 		return nil
@@ -265,11 +220,10 @@ func (f *generatedFile) Write(addCopyright bool, writeEmptyFiles bool) error {
 		fmt.Fprintf(&w, "\n")
 	}
 
-	// Imports are added while walking a message's dependencies, before we know
-	// whether that message will actually be written: a hand-written type may
-	// claim it, or the scaffolder may take it. Either way the import is left
-	// behind with nothing referencing it, which does not compile. Decide from
-	// the rendered body instead of from the intent.
+	// The generator adds an import while it walks a message's dependencies,
+	// before it knows whether it will write that message. When a hand-written
+	// type or the scaffolder claims the message, nothing references the import
+	// and the file does not compile, so only imports the body uses are written.
 	used := f.usedImports()
 	if len(used) != 0 {
 		w.WriteString("import (\n")
@@ -296,6 +250,47 @@ func (f *generatedFile) Write(addCopyright bool, writeEmptyFiles bool) error {
 	}
 
 	return nil
+}
+
+// usedImports returns the imports that the rendered body references, adding any
+// qualifier from QualifierImports that the body uses but nothing registered.
+//
+// An import counts as used when the body contains its qualifier followed by a
+// dot. The qualifier is the alias if one is set, and otherwise the last element
+// of the import path, which is how Go resolves it. Matching text rather than
+// parsing the body means a qualifier followed by a dot inside a comment also
+// counts, which keeps an unused import and the file does not compile.
+func (f *generatedFile) usedImports() map[string]string {
+	body := f.body.String()
+
+	// The type generator adds imports for google.rpc.Status and connectors'
+	// Secret, but not for google.protobuf.Struct, which becomes
+	// apiextensionsv1.JSON. Checking the body for every qualifier in
+	// QualifierImports covers each type in protoMessagesNotMappedToGoStruct,
+	// including any added later.
+	for qualifier, pkgName := range QualifierImports {
+		if _, already := f.imports[pkgName]; already {
+			continue
+		}
+		if strings.Contains(body, qualifier+".") {
+			f.addImport(qualifier, pkgName)
+		}
+	}
+
+	if len(f.imports) == 0 {
+		return nil
+	}
+	used := make(map[string]string, len(f.imports))
+	for pkgName, alias := range f.imports {
+		qualifier := alias
+		if qualifier == "" {
+			qualifier = lastGoComponent(pkgName)
+		}
+		if strings.Contains(body, qualifier+".") {
+			used[pkgName] = alias
+		}
+	}
+	return used
 }
 
 // extractCopyrightYear extracts the copyright year from the given file bytes

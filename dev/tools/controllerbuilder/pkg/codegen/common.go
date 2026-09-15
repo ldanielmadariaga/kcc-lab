@@ -75,13 +75,9 @@ var protoMessagesNotMappedToGoStruct = map[string]string{
 	"google.cloud.connectors.v1.Secret": "secretmanagerv1beta1.SecretRef",
 }
 
-// QualifierImports maps the package qualifier of every Go type in
-// protoMessagesNotMappedToGoStruct to the import that supplies it.
-//
-// The scaffolder needs this because it renders fields into a hand-written file
-// whose import block the type generator does not control. Keeping it beside the
-// type map is what stops the two drifting: a new special-cased proto type that
-// needs an import is one entry in each, side by side.
+// QualifierImports maps the qualifier of each Go type in
+// protoMessagesNotMappedToGoStruct to the package it is imported from. When a
+// new entry in that map needs an import, add the import here too.
 var QualifierImports = map[string]string{
 	"apiextensionsv1":      "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1",
 	"common":               "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common",
