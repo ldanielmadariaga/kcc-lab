@@ -46,6 +46,10 @@ type MapperGenerator struct {
 	importedPackages map[string]importedPackage
 
 	includeSkippedOutput bool
+
+	// emitPluralAcronyms matches KRM field names that case a plural acronym as
+	// KRM conventions want. See resolveKRMFieldName.
+	emitPluralAcronyms bool
 }
 
 type importedPackage struct {
@@ -68,6 +72,14 @@ func NewMapperGenerator(goPathForMessage OutputFunc, outputBaseDir string, gener
 // WithIncludeSkippedOutput sets whether to output skipped mappers as commented-out code
 func (g *MapperGenerator) WithIncludeSkippedOutput(includeSkippedOutput bool) *MapperGenerator {
 	g.includeSkippedOutput = includeSkippedOutput
+	return g
+}
+
+// WithEmitPluralAcronyms matches KRM field names that case a plural acronym as
+// KRM conventions want, such as RelatedURIs for related_uris. Pass the value
+// generate-types used for the same service.
+func (g *MapperGenerator) WithEmitPluralAcronyms(emitPluralAcronyms bool) *MapperGenerator {
+	g.emitPluralAcronyms = emitPluralAcronyms
 	return g
 }
 
@@ -283,7 +295,7 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 			protoAccessor := "Get" + protoFieldName + "()"
 
 			krmFieldName := goFieldName(protoField)
-			krmFieldName = resolveKRMFieldName(protoField, krmFieldName, goFields)
+			krmFieldName = resolveKRMFieldName(protoField, krmFieldName, goFields, v.emitPluralAcronyms)
 			krmField := goFields[krmFieldName]
 			if krmField == nil {
 				// Support refs
@@ -609,7 +621,7 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 			protoFieldPackage := v.goPackageForProto(protoField.ParentFile())
 
 			krmFieldName := goFieldName(protoField)
-			krmFieldName = resolveKRMFieldName(protoField, krmFieldName, goFields)
+			krmFieldName = resolveKRMFieldName(protoField, krmFieldName, goFields, v.emitPluralAcronyms)
 			krmField := goFields[krmFieldName]
 			if krmField == nil {
 				// Support refs
@@ -978,7 +990,7 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 		}
 
 		krmFieldName := goFieldName(protoField)
-		krmFieldName = resolveKRMFieldName(protoField, krmFieldName, goFields)
+		krmFieldName = resolveKRMFieldName(protoField, krmFieldName, goFields, v.emitPluralAcronyms)
 		krmField, ok := goFields[krmFieldName]
 		if !ok {
 			// This can happen if the field is not in the KRM struct (e.g. output-only).
@@ -1315,16 +1327,16 @@ func usesPointersInProtoBinding(msg protoreflect.MessageDescriptor) bool {
 // with the name the KRM struct actually uses.
 //
 // The two can disagree on plural acronyms. A type generated with
-// EmitPluralAcronyms has RelatedURIs where goFieldName produces RelatedUris,
-// and the lookup would miss and report the field as MISSING even though it is
-// mapped perfectly well. Rather than give generate-mapper a matching flag, and
-// rely on every generate.sh keeping the two in step, look for the other
-// spelling.
+// EmitPluralAcronyms has RelatedURIs where goFieldName produces RelatedUris, so
+// the lookup misses and the mapper reports the field as MISSING. When
+// pluralAcronyms is set, the other spelling is tried as well. It is off unless
+// a service opts in, because the other spelling also matches fields that
+// existing mappers leave out, and mapping them changes those controllers.
 //
 // Returns the computed name unchanged when nothing better is found, so the
 // caller's own not-found handling still runs.
-func resolveKRMFieldName(protoField protoreflect.FieldDescriptor, computed string, goFields map[string]*gocode.StructField) string {
-	if _, ok := goFields[computed]; ok {
+func resolveKRMFieldName(protoField protoreflect.FieldDescriptor, computed string, goFields map[string]*gocode.StructField, pluralAcronyms bool) string {
+	if _, ok := goFields[computed]; ok || !pluralAcronyms {
 		return computed
 	}
 	if alt := goFieldNameOpts(protoField, WriteOptions{EmitPluralAcronyms: true}); alt != computed {
