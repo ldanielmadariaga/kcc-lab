@@ -16,6 +16,7 @@ package codegen
 
 import (
 	"fmt"
+	"go/types"
 	"io"
 	"path/filepath"
 	"sort"
@@ -1178,7 +1179,11 @@ func mapValueConverters(protoField protoreflect.FieldDescriptor, krmFieldType, v
 		return "", "", "", false
 	}
 	valueMsg := valueField.Message()
-	if goType, mapped := protoMessagesNotMappedToGoStruct[string(valueMsg.FullName())]; mapped {
+	// A message in protoMessagesNotMappedToGoStruct has no generated struct.
+	// Its values take the Go type the message maps to instead, such as string
+	// for google.protobuf.Timestamp, and the converters the direct package
+	// provides for that type.
+	if goType, unmapped := protoMessagesNotMappedToGoStruct[string(valueMsg.FullName())]; unmapped {
 		return krmFromProtoFunctionName(valueField, ""), krmToProtoFunctionName(valueField, ""), goType, true
 	}
 	// Generated converters carry the version suffix, as in
@@ -1200,12 +1205,13 @@ func mapValueConverters(protoField protoreflect.FieldDescriptor, krmFieldType, v
 // Whether the value is a pointer can only be read from the Go type. The corpus
 // has 16 message maps that hold values and 7 that hold pointers, and the
 // converters always take and return a pointer, so the loop dereferences only
-// for values. A generated struct needs the krm import alias, and a type that
-// already has a qualifier, such as apiextensionsv1.JSON, does not.
+// for values. A generated struct needs the krm import alias. A built-in type
+// such as string does not, and neither does a type that already has a
+// qualifier, such as apiextensionsv1.JSON.
 func krmMapValueType(elemType, krmFieldType, krmImportName string) (goType string, isPointer bool) {
 	isPointer = strings.HasPrefix(strings.TrimPrefix(krmFieldType, "map[string]"), "*")
 	elem := elemType
-	if !strings.Contains(elem, ".") {
+	if !strings.Contains(elem, ".") && types.Universe.Lookup(elem) == nil {
 		elem = krmImportName + "." + elem
 	}
 	if isPointer {
