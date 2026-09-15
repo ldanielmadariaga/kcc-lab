@@ -543,11 +543,10 @@ func TestWriteFieldRequiredMarker(t *testing.T) {
 	}
 }
 
-// TestWriteMessage pins the rendered output, which is what distinguishes a
-// field that is typed wrongly from one that is not there at all. GoTypeForField
-// returning an error does not fail generation: WriteField swallows it, leaves a
-// "// TODO:" comment in place of the field, and the CRD comes out short by one
-// field with nothing reporting a problem. Both outcomes appear below.
+// TestWriteMessage checks the rendered output rather than type strings,
+// because a field GoTypeForField cannot type does not fail generation.
+// WriteField writes a "// TODO:" comment in its place and the field is missing
+// from the CRD. The expected output below has both kinds of field.
 func TestWriteMessage(t *testing.T) {
 	mapEntry := func(name string, value *descriptorpb.FieldDescriptorProto) *descriptorpb.DescriptorProto {
 		return &descriptorpb.DescriptorProto{
@@ -629,12 +628,10 @@ func TestWriteMessage(t *testing.T) {
 	WriteMessage(&buf, msg, WriteOptions{})
 
 	got := buf.String()
-	// labels, tasks and seen are the three supported map shapes: a scalar value, a
-	// message value, and a value whose message has a special-cased Go type.
-	// by_index is the one still declined, because a CRD keys additionalProperties
-	// by string and an int32 key has no spelling. Its TODO line is the field's
-	// only trace, which is the point of asserting on rendered output rather than
-	// on the type string.
+	// labels, tasks and seen cover the supported map values: a scalar, a
+	// message, and a message with a special-cased Go type. by_index is still
+	// left out, because a CRD keys additionalProperties by string, and its
+	// TODO line is the only sign of it.
 	expected := strings.Join([]string{
 		"",
 		"// +kcc:proto=google.cloud.test.v1.TestMessage",
@@ -887,10 +884,10 @@ func TestAcronymCasing(t *testing.T) {
 	}
 }
 
-// Maps had no coverage at all before this, including the two forms that already
-// worked. That matters more than usual here: when GoTypeForField declines a
-// type, WriteField replaces the field with a "// TODO:" comment and carries on,
-// so a regression removes fields from the CRD without failing anything.
+// Maps had no tests before this, including the two value types that already
+// worked. A regression here would not fail generation: WriteField replaces a
+// field it cannot type with a "// TODO:" comment, and the field is missing
+// from the CRD.
 func TestGoTypeForFieldMaps(t *testing.T) {
 	mapEntry := func(name string, key, value *descriptorpb.FieldDescriptorProto) *descriptorpb.DescriptorProto {
 		return &descriptorpb.DescriptorProto{
@@ -948,10 +945,9 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 		},
 	}
 
-	// struct_map refers to google.protobuf.Struct, so the file needs struct.proto
-	// resolvable. Take the descriptor from the generated structpb package rather
-	// than looking it up by path in the global registry, which only holds files
-	// some package has already linked in.
+	// struct_map refers to google.protobuf.Struct, so struct.proto has to
+	// resolve. The descriptor comes from the structpb package, because the
+	// global registry only holds files that some linked package registered.
 	deps := new(protoregistry.Files)
 	for _, f := range []protoreflect.FileDescriptor{
 		(&structpb.Struct{}).ProtoReflect().Descriptor().ParentFile(),
@@ -973,27 +969,24 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 		wantErr bool
 		why     string
 	}{
-		{field: "string_map", want: "map[string]string", why: "worked before and was untested"},
-		{field: "int64_map", want: "map[string]int64", why: "worked before and was untested"},
+		{field: "string_map", want: "map[string]string", why: "worked before this change, without a test"},
+		{field: "int64_map", want: "map[string]int64", why: "worked before this change, without a test"},
 		{
 			field: "message_map", want: "map[string]TargetMessage",
-			why: "the value struct generates like any other nested message; the value form " +
-				"rather than a pointer, which the corpus prefers 16 to 7",
+			why: "the value's message generates as a struct, and the map holds values " +
+				"rather than pointers, as 16 of the 23 message maps in the corpus do",
 		},
 		{
 			field: "int_key_map", wantErr: true,
-			why: "a CRD keys additionalProperties by string, so nothing else is expressible",
+			why: "a CRD keys additionalProperties by string",
 		},
 		{
 			field: "struct_map", want: "map[string]apiextensionsv1.JSON",
-			why: "a value type with a special-cased Go type takes that type, not the " +
-				"struct name it does not have",
+			why: "a message with a special-cased Go type uses that type",
 		},
 		{
 			field: "timestamp_map", want: "map[string]string",
-			why: "the same rule for a scalar-valued special case, which used to be " +
-				"declined for no reason other than that the branch checked only " +
-				"whether the type was special-cased, not what it mapped to",
+			why: "the same holds when the special-cased type is a scalar",
 		},
 	}
 

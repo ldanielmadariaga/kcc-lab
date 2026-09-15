@@ -507,7 +507,8 @@ func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool)
 		keyField := entryMsg.Fields().ByName("key")
 		valueField := entryMsg.Fields().ByName("value")
 		if keyField.Kind() != protoreflect.StringKind {
-			// A CRD keys additionalProperties by string; nothing else is expressible.
+			// A CRD keys additionalProperties by string, so no other key type
+			// can be expressed.
 			return "", fmt.Errorf("unsupported map type with key %v and value %v", keyField.Kind(), valueField.Kind())
 		}
 		switch valueField.Kind() {
@@ -516,13 +517,11 @@ func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool)
 		case protoreflect.Int64Kind:
 			return "map[string]int64", nil
 		case protoreflect.MessageKind:
-			// The value struct is generated like any other nested message:
-			// FindDependenciesForField already recurses through the map entry into
-			// the value, so it is visited and written without new machinery here.
-			// A CRD expresses this as additionalProperties with an object schema.
-			// A message with a special-cased Go type takes that type here too,
-			// rather than the struct name it does not have, so a
-			// google.protobuf.Struct value lands on apiextensionsv1.JSON.
+			// FindDependenciesForField already follows the map entry to the
+			// value's message, so its struct is generated like any other nested
+			// message. A message with a special-cased Go type uses that type
+			// instead, so a google.protobuf.Struct value becomes
+			// apiextensionsv1.JSON.
 			valueName := string(valueField.Message().FullName())
 			if goType, ok := protoMessagesNotMappedToGoStruct[valueName]; ok {
 				return "map[string]" + goType, nil
