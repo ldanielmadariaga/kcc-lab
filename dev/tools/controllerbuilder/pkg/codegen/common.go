@@ -75,6 +75,19 @@ var protoMessagesNotMappedToGoStruct = map[string]string{
 	"google.cloud.connectors.v1.Secret": "secretmanagerv1beta1.SecretRef",
 }
 
+// QualifierImports maps the package qualifier of every Go type in
+// protoMessagesNotMappedToGoStruct to the import that supplies it.
+//
+// The scaffolder needs this because it renders fields into a hand-written file
+// whose import block the type generator does not control. Keeping it beside the
+// type map is what stops the two drifting: a new special-cased proto type that
+// needs an import is one entry in each, side by side.
+var QualifierImports = map[string]string{
+	"apiextensionsv1":      "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1",
+	"common":               "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common",
+	"secretmanagerv1beta1": "github.com/GoogleCloudPlatform/k8s-config-connector/apis/secretmanager/v1beta1",
+}
+
 // This acronym list contains both acronym (including initialism) and abbreviation.
 // - acronyms use all-cap case as Kubernetes API convention suggested. https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#naming-conventions
 // - abbreviations use its most known form with upper letters reflecting how it is pronounced.
