@@ -1168,19 +1168,19 @@ func sortIntoMessageSlice(messages protoreflect.MessageDescriptors) []protorefle
 	return out
 }
 
-// mapValueConverters names the two functions that convert a map's value type,
-// and reports whether the generator can write the loop itself.
+// mapValueConverters returns the functions that convert a map's values from
+// and to proto, and the Go type of those values. It reports false when the
+// mapper should keep using the existing custom-method path instead.
 //
-// A map whose value is a message used to fall through to a hand-written
-// "<Field>_FromProto" helper that in practice nobody wrote, so the generated
-// mapper simply did not compile. Both shapes are expressible directly: a value
-// with a special-cased Go type uses that type's converter, and any other
-// message uses the converter for its own generated struct.
+// Before this, a map whose value is a message called a "<Field>_FromProto"
+// helper that does not exist, so the generated mapper did not compile. A value
+// whose message has a special-cased Go type uses that type's converter, and
+// any other message uses the converter generated for its struct.
 func mapValueConverters(protoField protoreflect.FieldDescriptor, krmFieldType, versionSpecifier string) (fromProto, toProto, elemType string, ok bool) {
-	// The KRM side is not always a map. Some hand-written types model a proto map
-	// as a slice, as artifactregistry's Repository.cleanup_policies is a
-	// []CleanupPolicy, and emitting a map loop for one of those does not
-	// compile. Leave those to the existing custom-method path.
+	// Some hand-written types declare a proto map as a slice, such as
+	// artifactregistry's Repository.cleanup_policies, which is a
+	// []CleanupPolicy. A map loop does not compile against a slice, so those
+	// keep the custom-method path.
 	if !strings.HasPrefix(krmFieldType, "map[string]") {
 		return "", "", "", false
 	}
@@ -1193,30 +1193,27 @@ func mapValueConverters(protoField protoreflect.FieldDescriptor, krmFieldType, v
 	if goType, mapped := protoMessagesNotMappedToGoStruct[string(valueMsg.FullName())]; mapped {
 		return krmFromProtoFunctionName(valueField, ""), krmToProtoFunctionName(valueField, ""), goType, true
 	}
-	// The suffix matters: generated converters carry the version, as in
-	// CommonUsageStats_v1alpha1_FromProto, and the non-map path already appends
-	// it. The special-cased converters above live in the direct package and take
-	// no suffix.
+	// Generated converters carry the version suffix, as in
+	// CommonUsageStats_v1alpha1_FromProto, and the non-map path appends it the
+	// same way. The special-cased converters live in the direct package and
+	// have no suffix.
 	name := GoNameForProtoMessage(valueMsg)
 	return name + versionSpecifier + "_FromProto", name + versionSpecifier + "_ToProto", name, true
 }
 
-// krmMapValueType renders a KRM map's value type as the mapper package must
-// spell it, and reports whether that value is a pointer.
+// krmMapValueType returns the Go type of a KRM map's values as the mapper
+// package writes it, and whether that type is a pointer.
 //
-// The element type comes from the proto, via elemType, not from parsing
-// krmFieldType. Both describe the same field, but the Go source can be a
-// generation behind. billingbudgets' Filter.labels read as a stale
-// FilterLabels while the type generator was emitting apiextensionsv1.JSON for
-// it, which produced a mapper that named a type the loop never assigns. The
-// proto is the side both generators agree on.
+// The value type comes from the proto, through elemType, rather than from
+// krmFieldType. The Go source can be out of date, for example when
+// types.generated.go has not been regenerated since the type generator
+// changed, and a mapper written from it names a type the field no longer has.
 //
-// Pointer-ness is the one thing the proto cannot say, so that is still read
-// from the Go type. Both forms occur, at 16 value-form to 7 pointer in the
-// corpus, and the converters always take and return a pointer, so the loop
-// dereferences for one and not the other. A generated struct name needs the
-// krm import alias; a type that already carries a qualifier, such as
-// apiextensionsv1.JSON, does not.
+// Whether the value is a pointer can only be read from the Go type. The corpus
+// has 16 message maps that hold values and 7 that hold pointers, and the
+// converters always take and return a pointer, so the loop dereferences only
+// for values. A generated struct needs the krm import alias, and a type that
+// already has a qualifier, such as apiextensionsv1.JSON, does not.
 func krmMapValueType(elemType, krmFieldType, krmImportName string) (goType string, isPointer bool) {
 	isPointer = strings.HasPrefix(strings.TrimPrefix(krmFieldType, "map[string]"), "*")
 	elem := elemType
