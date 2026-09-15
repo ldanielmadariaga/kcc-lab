@@ -359,7 +359,7 @@ func TestGoTypeForField(t *testing.T) {
 			t.Fatalf("could not find field %q", tt.fieldName)
 		}
 
-		got, err := GoTypeForField(field, tt.isTransitiveOutput)
+		got, err := GoTypeForField(field, tt.isTransitiveOutput, WriteOptions{})
 		if err != nil {
 			t.Errorf("GoTypeForField(%q, %v) returned error: %v", tt.fieldName, tt.isTransitiveOutput, err)
 			continue
@@ -625,7 +625,7 @@ func TestWriteMessage(t *testing.T) {
 
 	msg := fd.Messages().ByName("TestMessage")
 	var buf bytes.Buffer
-	WriteMessage(&buf, msg, WriteOptions{})
+	WriteMessage(&buf, msg, WriteOptions{EmitMessageMaps: true})
 
 	got := buf.String()
 	// labels, tasks and seen cover the supported map values: a scalar, a
@@ -656,6 +656,22 @@ func TestWriteMessage(t *testing.T) {
 
 	if got != expected {
 		t.Errorf("WriteMessage output mismatch.\nGot:\n%q\nWant:\n%q", got, expected)
+	}
+
+	// With EmitMessageMaps off, message-valued maps are left out as they were
+	// before the flag existed, and a "// TODO:" marker names each one.
+	var off bytes.Buffer
+	WriteMessage(&off, msg, WriteOptions{})
+	for _, want := range []string{
+		"\t// TODO: tasks: unsupported map type with key string and value message",
+		"\t// TODO: seen: unsupported map type with key string and value message",
+	} {
+		if !strings.Contains(off.String(), want) {
+			t.Errorf("with EmitMessageMaps off, want %q in:\n%s", want, off.String())
+		}
+	}
+	if strings.Contains(off.String(), "Tasks map[string]") {
+		t.Errorf("with EmitMessageMaps off, Tasks should not be generated:\n%s", off.String())
 	}
 }
 
@@ -998,7 +1014,7 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 		if !f.IsMap() {
 			t.Fatalf("%q is not a map field; the fixture is wrong", tt.field)
 		}
-		got, err := GoTypeForField(f, false)
+		got, err := GoTypeForField(f, false, WriteOptions{EmitMessageMaps: true})
 		if tt.wantErr {
 			if err == nil {
 				t.Errorf("GoTypeForField(%q) = %q, want an error (%s)", tt.field, got, tt.why)
@@ -1012,5 +1028,16 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 		if got != tt.want {
 			t.Errorf("GoTypeForField(%q) = %q, want %q (%s)", tt.field, got, tt.want, tt.why)
 		}
+	}
+
+	// With EmitMessageMaps off, every message-valued map is declined, as before
+	// the flag existed. Scalar-valued maps are unaffected.
+	for _, name := range []string{"message_map", "struct_map", "timestamp_map"} {
+		if got, err := GoTypeForField(fields.ByName(protoreflect.Name(name)), false, WriteOptions{}); err == nil {
+			t.Errorf("GoTypeForField(%q) with EmitMessageMaps off = %q, want an error", name, got)
+		}
+	}
+	if got, err := GoTypeForField(fields.ByName("string_map"), false, WriteOptions{}); err != nil || got != "map[string]string" {
+		t.Errorf("GoTypeForField(%q) with EmitMessageMaps off = %q, %v, want map[string]string", "string_map", got, err)
 	}
 }
