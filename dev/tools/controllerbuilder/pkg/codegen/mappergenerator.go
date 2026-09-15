@@ -51,6 +51,10 @@ type MapperGenerator struct {
 	// emitPluralAcronyms matches KRM field names that case a plural acronym as
 	// KRM conventions want. See resolveKRMFieldName.
 	emitPluralAcronyms bool
+
+	// emitMessageMaps writes the conversion loop for map<string, Message>
+	// fields. See WithEmitMessageMaps.
+	emitMessageMaps bool
 }
 
 type importedPackage struct {
@@ -81,6 +85,15 @@ func (g *MapperGenerator) WithIncludeSkippedOutput(includeSkippedOutput bool) *M
 // generate-types used for the same service.
 func (g *MapperGenerator) WithEmitPluralAcronyms(emitPluralAcronyms bool) *MapperGenerator {
 	g.emitPluralAcronyms = emitPluralAcronyms
+	return g
+}
+
+// WithEmitMessageMaps writes the conversion loop for map<string, Message>
+// fields instead of calling a "<Field>_FromProto" helper. It also applies to
+// hand-written map fields, so pass the value generate-types used for the same
+// service.
+func (g *MapperGenerator) WithEmitMessageMaps(emitMessageMaps bool) *MapperGenerator {
+	g.emitMessageMaps = emitMessageMaps
 	return g
 }
 
@@ -491,7 +504,7 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 						useSliceFromProtoFunction = ""
 					} else if keyKind == protoreflect.StringKind && valueKind == protoreflect.Int64Kind {
 						useSliceFromProtoFunction = ""
-					} else if fromProto, _, elemType, ok := mapValueConverters(protoField, krmField.Type, versionSpecifier); ok && keyKind == protoreflect.StringKind {
+					} else if fromProto, _, elemType, ok := mapValueConverters(protoField, krmField.Type, versionSpecifier); ok && v.emitMessageMaps && keyKind == protoreflect.StringKind {
 						useSliceFromProtoFunction = ""
 						useCustomMethod = ""
 						krmValueGoType, krmValueIsPointer := krmMapValueType(elemType, krmField.Type, krmImportName)
@@ -818,7 +831,7 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 						useSliceToProtoFunction = ""
 					} else if keyKind == protoreflect.StringKind && valueKind == protoreflect.Int64Kind {
 						useSliceToProtoFunction = ""
-					} else if _, toProto, elemType, ok := mapValueConverters(protoField, krmField.Type, versionSpecifier); ok && keyKind == protoreflect.StringKind {
+					} else if _, toProto, elemType, ok := mapValueConverters(protoField, krmField.Type, versionSpecifier); ok && v.emitMessageMaps && keyKind == protoreflect.StringKind {
 						useSliceToProtoFunction = ""
 						useCustomMethod = ""
 						protoValueType := "pb." + protoNameForType(entryMsg.Fields().ByName("value").Message())
