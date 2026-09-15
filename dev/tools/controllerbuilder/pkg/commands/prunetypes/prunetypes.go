@@ -325,63 +325,11 @@ func dropUnusedImports(filename string, content []byte) ([]byte, error) {
 		return nil, fmt.Errorf("parsing: %w", err)
 	}
 
-	used := make(map[string]bool)
-	ast.Inspect(file, func(n ast.Node) bool {
-		sel, ok := n.(*ast.SelectorExpr)
-		if !ok {
-			return true
-		}
-		if ident, ok := sel.X.(*ast.Ident); ok {
-			used[ident.Name] = true
-		}
-		return true
-	})
-
-	// Collect first, delete after. astutil.DeleteNamedImport mutates
-	// file.Imports, so a loop that deletes while ranging over that same slice
-	// walks off the end of it and panics on any file with two unused imports.
-	type unusedImport struct{ name, path string }
-	var unused []unusedImport
-	for _, imp := range file.Imports {
-		if imp == nil || imp.Path == nil {
-			continue
-		}
-		path, err := strconv.Unquote(imp.Path.Value)
-		if err != nil {
-			continue
-		}
-		name := ""
-		if imp.Name != nil {
-			name = imp.Name.Name
-		}
-		// A blank import is there for its side effects, and a dot import has
-		// no qualifier to look for, so leave both alone.
-		if name == "_" || name == "." {
-			continue
-		}
-		qualifier := name
-		if qualifier == "" {
-			// Without an alias the qualifier is the package name, which only
-			// the imported package declares. The last path segment is that
-			// name by convention, but not in paths like gopkg.in/yaml.v3 or
-			// example.com/mod/v2. Keep those imports: dropping a live import
-			// breaks the build as surely as keeping a dead one.
-			qualifier = path[strings.LastIndex(path, "/")+1:]
-			if !token.IsIdentifier(qualifier) || isMajorVersion(qualifier) {
-				continue
-			}
-		}
-		if used[qualifier] {
-			continue
-		}
-		unused = append(unused, unusedImport{name: name, path: path})
-	}
-
 	changed := false
-	for _, u := range unused {
-		if astutil.DeleteNamedImport(fset, file, u.name, u.path) {
+	for _, imp := range unusedImports(file) {
+		if astutil.DeleteNamedImport(fset, file, imp.name, imp.path) {
 			changed = true
-			klog.Infof("Dropped now-unused import %q from %s", u.path, filename)
+			klog.Infof("Dropped now-unused import %q from %s", imp.path, filename)
 		}
 	}
 	if !changed {
@@ -393,6 +341,81 @@ func dropUnusedImports(filename string, content []byte) ([]byte, error) {
 		return nil, fmt.Errorf("formatting: %w", err)
 	}
 	return buf.Bytes(), nil
+}
+
+// importRef names an import the way astutil.DeleteNamedImport expects: the
+// alias, or "" for none, and the unquoted path.
+type importRef struct{ name, path string }
+
+// unusedImports lists the imports in file that no selector expression refers
+// to.
+//
+// It returns a list rather than deleting as it goes, because
+// astutil.DeleteNamedImport mutates file.Imports. A loop that deletes while
+// ranging over that same slice walks off the end of it and panics on any file
+// with two unused imports.
+func unusedImports(file *ast.File) []importRef {
+	used := selectorQualifiers(file)
+	var unused []importRef
+	for _, imp := range file.Imports {
+		ref, qualifier, ok := importQualifier(imp)
+		if ok && !used[qualifier] {
+			unused = append(unused, ref)
+		}
+	}
+	return unused
+}
+
+// selectorQualifiers returns every identifier used on the left of a selector,
+// such as krm in krm.Bar. Comment text is never parsed into expressions, so a
+// commented-out type contributes nothing. A local variable that shares a name
+// with an import keeps that import, which errs on the side of keeping.
+func selectorQualifiers(file *ast.File) map[string]bool {
+	used := make(map[string]bool)
+	ast.Inspect(file, func(n ast.Node) bool {
+		if sel, ok := n.(*ast.SelectorExpr); ok {
+			if ident, ok := sel.X.(*ast.Ident); ok {
+				used[ident.Name] = true
+			}
+		}
+		return true
+	})
+	return used
+}
+
+// importQualifier returns the identifier a file uses to refer to an import,
+// and reports false for an import that must be kept whatever the file uses.
+//
+// A blank import is there for its side effects, and a dot import has no
+// qualifier to look for. Without an alias the qualifier is the package name,
+// which only the imported package declares. The last path segment is that
+// name by convention, but not in paths like gopkg.in/yaml.v3 or
+// example.com/mod/v2, so those are kept too: dropping a live import breaks
+// the build as surely as keeping a dead one.
+func importQualifier(imp *ast.ImportSpec) (ref importRef, qualifier string, ok bool) {
+	if imp == nil || imp.Path == nil {
+		return importRef{}, "", false
+	}
+	path, err := strconv.Unquote(imp.Path.Value)
+	if err != nil {
+		return importRef{}, "", false
+	}
+	ref = importRef{path: path}
+	if imp.Name != nil {
+		ref.name = imp.Name.Name
+	}
+	switch ref.name {
+	case "_", ".":
+		return ref, "", false
+	case "":
+		qualifier = path[strings.LastIndex(path, "/")+1:]
+		if !token.IsIdentifier(qualifier) || isMajorVersion(qualifier) {
+			return ref, "", false
+		}
+		return ref, qualifier, true
+	default:
+		return ref, ref.name, true
+	}
 }
 
 // isMajorVersion reports whether a path segment is a module major-version
