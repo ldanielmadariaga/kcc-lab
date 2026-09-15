@@ -19,9 +19,8 @@ import (
 	"testing"
 )
 
-// Both bodies are scanned because a special-cased type can land in either:
-// securitycentermanagement puts an apiextensionsv1.JSON in the Spec, transcoder
-// a common.Status in the ObservedState. Each was a separate compile failure.
+// TestExtraImportsFor covers a special-cased type in each body, since
+// ExtraImportsFor scans both.
 func TestExtraImportsFor(t *testing.T) {
 	tests := []struct {
 		name       string
@@ -47,8 +46,7 @@ func TestExtraImportsFor(t *testing.T) {
 		if len(got) != 1 || !strings.Contains(got[0], tt.wantSubstr) {
 			t.Errorf("%s: got %v, want one line containing %q", tt.name, got, tt.wantSubstr)
 		}
-		// The alias must be emitted: without it the qualifier does not resolve and
-		// goimports strips the import as unused.
+		// An import line without an alias leaves the qualifier unresolved.
 		if !strings.Contains(got[0], " \"") {
 			t.Errorf("%s: import line %q has no alias", tt.name, got[0])
 		}

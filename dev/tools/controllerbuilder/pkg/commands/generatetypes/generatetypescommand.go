@@ -214,10 +214,6 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 					if err != nil {
 						return fmt.Errorf("prepopulating spec for %s: %w", resource.Kind, err)
 					}
-					// The observed-state body needs what the type generator worked
-					// out during the visit above, so it is filled here rather than
-					// inside PrepopulateSpec. No entry means the proto marks nothing
-					// OUTPUT_ONLY, and the struct is left empty.
 					if o.DetectOutputOnly {
 						if c := scaffold.DetectOutputOnlyInComments(msg); len(c) > 0 {
 							outputOnly = append(outputOnly, scaffold.FormatOutputOnlyCandidates(resource.Kind, gv.Group, c))
@@ -241,12 +237,14 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 							}
 						}
 					}
+					// The type generator worked out the output fields during the visit above,
+					// so ObservedState is filled here rather than in PrepopulateSpec.
 					if details, ok := typeGenerator.OutputFieldsFor(string(msg.FullName())); ok {
 						var obsJudgement []scaffold.JudgementItem
 						prepopulated.ObservedStateFields, prepopulated.ExtraImports, obsJudgement =
 							scaffold.PrepopulateObservedState(details, typeGenerator.ObservedStateMessages(), writeOptions)
-						// These join the spec's items so one queue file covers the
-						// whole resource, spec and status alike.
+						// The ObservedState entries join the Spec's, so one queue file covers the
+						// whole resource.
 						prepopulated.Judgement = append(prepopulated.Judgement, obsJudgement...)
 					}
 				}

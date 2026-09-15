@@ -1042,15 +1042,10 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 	}
 }
 
-// WriteObservedStateFields reports what it did not emit, which is the whole
-// point of its return value: before it existed, ObservedState was the one part
-// of the generator that dropped fields without saying so, and a resource with a
-// half-empty status looked identical to a complete one.
-//
-// Two things get dropped, and they need distinguishing because only one is a
-// defect: a field the caller's skip map excludes (a decision), and a field
-// whose type WriteField declined (a gap). The second is recognisable only from
-// the "// TODO:" comment left in its place, which is why Rendered comes back.
+// TestWriteObservedStateFieldsNotes checks that the notes tell apart the two
+// ways a field can be missing from the struct: the caller's skip map left it
+// out, which is a decision, or WriteField could not type it, which is a gap.
+// Only the "// TODO:" marker in Rendered shows the second.
 func TestWriteObservedStateFieldsNotes(t *testing.T) {
 	fdp := &descriptorpb.FileDescriptorProto{
 		Name:    protoPtr("obs.proto"),
@@ -1112,7 +1107,7 @@ func TestWriteObservedStateFieldsNotes(t *testing.T) {
 		t.Error("a skipped field was written to the struct anyway")
 	}
 
-	// createTime is emitted normally, so its note has nothing to complain about.
+	// createTime is written normally, so its note is neither skipped nor a marker.
 	if n := byName["createTime"]; n.Skipped {
 		t.Errorf("createTime: Skipped = true, want false")
 	} else if !strings.Contains(n.Rendered, `json:"createTime`) {

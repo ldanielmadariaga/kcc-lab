@@ -51,9 +51,8 @@ type PrepopulateResult struct {
 	// SpecFields is Go source for the body of the Spec struct: one field per
 	// proto field, already indented, ready to paste between the braces.
 	SpecFields string
-	// ObservedStateFields is the same thing for the resource-level
-	// <Kind>ObservedState struct. Empty when the proto marks nothing OUTPUT_ONLY,
-	// which leaves the scaffolded struct empty as before.
+	// ObservedStateFields is Go source for the body of the resource-level
+	// <Kind>ObservedState struct, empty when the proto marks nothing OUTPUT_ONLY.
 	ObservedStateFields string
 	// ExtraImports are import paths the rendered fields need beyond the three the
 	// template always writes.
@@ -94,22 +93,15 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 			// We drop the field here and file no entry, deliberately.
 			//
 			// PrepopulateObservedState files observedstate-identity-field-omitted
-			// for a skipped identity field, but only ever reaches one that is
-			// OUTPUT_ONLY, since that is what puts a field in OutputFields. Where the
-			// proto does not mark "name" output-only it is dropped here, never seen
-			// there, and recorded nowhere. ParameterManagerParameter is the clearest
-			// case, its ObservedState carrying createTime and no name.
+			// only for an identity field the proto marks OUTPUT_ONLY. A "name"
+			// without that annotation is dropped here and recorded nowhere, as in
+			// ParameterManagerParameter, whose ObservedState has createTime and no
+			// name.
 			//
-			// We built the flag for this, measured it, and took it out again. The
-			// rule fires on every resource whose proto leaves "name" unannotated,
-			// which is most of them: 219 entries tree-wide and 81 inside the
-			// measured corpus, and upstream carries status.observedState.name for
-			// only two of those 81. KCC already carries the resource name in
-			// status.externalRef, so "should name also be in ObservedState" is the
-			// same judgement call every time, and the answer is nearly always no.
-			//
-			// We leave it as a known silent drop rather than pay for it with 219
-			// queue entries. See docs/ai/greenfield-detection-gaps.md.
+			// A queue entry for this case would fire on 219 resources tree-wide and
+			// 81 in the measured corpus, and upstream keeps status.observedState.name
+			// on only two of those 81. KCC carries the resource name in
+			// status.externalRef, so the answer is nearly always to leave it out.
 			continue
 		}
 
@@ -141,11 +133,11 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 	// TestMissingRefs suppresses a resource's [refs] findings while the resource
 	// has any entry in the queue, so this one cannot depend on finding an
 	// annotation. The pilot shows why: LbTrafficExtension carries no
-	// google.api.resource_reference on any field, not even forwarding_rules,
+	// google.api.resource_reference on any field, including forwarding_rules,
 	// which is the field that has to become a ref. A queue built from
 	// annotations alone would come out empty, so no file would be written,
 	// nothing would be suppressed, and the resource would go straight into the
-	// missingrefs ratchet and fail. The queue exists to prevent exactly that.
+	// missingrefs ratchet and fail. The queue exists to prevent that.
 	out.Judgement = append([]JudgementItem{{
 		Reason: "untriaged-bulk-generation",
 		Detail: "spec was generated mechanically; confirm refs, omissions and KRM names",
@@ -155,31 +147,25 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 }
 
 // PrepopulateObservedState renders the body of the resource-level
-// <Kind>ObservedState struct, and reports any import the rendered fields need.
+// <Kind>ObservedState struct from details, and returns the imports the
+// rendered fields need and a queue entry for each field that did not make
+// it. details comes from OutputFieldsFor.
 //
-// This is mechanical, not a judgement call. On the pilot resources,
-// NetworkSecurityURLList and TranscoderJob, the proto alone gave the complete
-// and correct answer, and writing it by hand meant copying what the generator
-// had already worked out.
-//
-// details comes from the type generator's identifyOutputs, so the transitive
-// rule, that a field is output-only if reached through an OUTPUT_ONLY parent,
-// is applied once, in one place.
+// On the pilot resources, NetworkSecurityURLList and TranscoderJob, the
+// proto alone gave the same struct that was written by hand.
 func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedStateMessages sets.String, opts codegen.WriteOptions) (fields string, extraImports []string, judgement []JudgementItem) {
 	if details == nil {
 		return "", nil, nil
 	}
 
 	var buf bytes.Buffer
-	// identityFields is skipped here for the same reason as in the Spec: "name" is
-	// the resource's own resource name, which KCC carries in status.externalRef
-	// rather than as an observed field, even where the proto marks it OUTPUT_ONLY.
+	// identityFields leaves out "name", which KCC carries in status.externalRef,
+	// even where the proto marks it OUTPUT_ONLY.
 	notes := codegen.WriteObservedStateFields(&buf, details, observedStateMessages, identityFields, opts)
 	fields = buf.String()
 
-	// Report what did not make it. Until this existed, ObservedState was the only
-	// part of the generator that dropped fields without saying so, which made a
-	// resource with a half-empty status indistinguishable from a complete one.
+	// Every field WriteObservedStateFields skipped or could not type gets a
+	// queue entry.
 	for _, n := range notes {
 		switch {
 		case n.Skipped:

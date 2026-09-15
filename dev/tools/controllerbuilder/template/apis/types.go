@@ -41,13 +41,12 @@ type APIArgs struct {
 	// field per proto field. Empty means the old three-field stub, which is what
 	// every service gets until it opts in.
 	SpecFields string
-	// ObservedStateFields is the same for the ObservedState struct. Empty leaves
-	// it empty, which is what a proto with no OUTPUT_ONLY field should produce.
+	// ObservedStateFields is the same for the ObservedState struct, and is empty
+	// when the proto marks no field OUTPUT_ONLY.
 	ObservedStateFields string
 	// ExtraImports are complete aliased import lines the rendered fields need
-	// beyond the three below, e.g. common "github.com/.../apis/common" when a
-	// field is a google.rpc.Status. Aliased because the qualifier a field uses
-	// is often not the import path's last segment.
+	// beyond the three below, such as common "github.com/.../apis/common" for a
+	// google.rpc.Status field. ExtraImportsFor explains the alias.
 	ExtraImports []string
 }
 

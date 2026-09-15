@@ -24,9 +24,10 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/template/apis"
 )
 
-// No other test renders the types template, so a field it reads that nothing
-// sets goes unnoticed until someone runs generate-types. This parses the output
-// for a resource with and without prepopulated fields.
+// TestTypesTemplateRendersValidGo renders the types template with and without
+// prepopulated fields and checks that the result parses. Nothing else renders
+// the template, so a broken one would otherwise surface only when someone runs
+// generate-types.
 func TestTypesTemplateRendersValidGo(t *testing.T) {
 	base := apis.APIArgs{
 		Group:                "networkservices.cnrm.cloud.google.com",
