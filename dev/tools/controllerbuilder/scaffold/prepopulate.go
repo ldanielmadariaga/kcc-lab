@@ -86,9 +86,22 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 			continue
 		}
 
-		codegen.WriteField(&buf, field, msg, emitted, false, opts)
+		// We render each field on its own so we can inspect its output before
+		// appending it. When the generator cannot type a field it writes a
+		// "// TODO:" comment and moves on, and the field never reaches the CRD.
+		// That is a silent drop unless somebody records it.
+		var field_ bytes.Buffer
+		codegen.WriteField(&field_, field, msg, emitted, false, opts)
+		buf.Write(field_.Bytes())
 		emitted++
 
+		if _, reason, ok := codegen.UnsupportedFieldMarker(field_.String()); ok {
+			out.Judgement = append(out.Judgement, JudgementItem{
+				FieldPath: ".spec." + codegen.GetJSONForKRM(field),
+				Reason:    "unsupported-field-type",
+				Detail:    reason,
+			})
+		}
 		if item, ok := judgementFor(field); ok {
 			out.Judgement = append(out.Judgement, item)
 		}
