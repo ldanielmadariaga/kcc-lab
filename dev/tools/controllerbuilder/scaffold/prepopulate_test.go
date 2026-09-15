@@ -15,6 +15,7 @@
 package scaffold
 
 import (
+	"fmt"
 	"go/parser"
 	"go/token"
 	"strings"
@@ -186,5 +187,73 @@ func TestFormatJudgementEntries(t *testing.T) {
 	}
 	if !strings.Contains(lines[1], `: field ".spec.network" reason=`) {
 		t.Errorf("field-level entry has the wrong shape: %s", lines[1])
+	}
+}
+
+// commentedMessage builds a message whose fields carry leading comments, which
+// is what DetectOutputOnlyInComments reads. SourceCodeInfo paths are
+// [4=message_type, msgIndex, 2=field, fieldIndex].
+func commentedMessage(t *testing.T, comments ...string) protoreflect.MessageDescriptor {
+	t.Helper()
+	var fields []*descriptorpb.FieldDescriptorProto
+	var locs []*descriptorpb.SourceCodeInfo_Location
+	for i, c := range comments {
+		fields = append(fields, &descriptorpb.FieldDescriptorProto{
+			Name:   strPtr(fmt.Sprintf("field_%d", i)),
+			Number: i32Ptr(int32(i + 1)),
+			Type:   fieldType(descriptorpb.FieldDescriptorProto_TYPE_STRING),
+		})
+		locs = append(locs, &descriptorpb.SourceCodeInfo_Location{
+			Path:            []int32{4, 0, 2, int32(i)},
+			Span:            []int32{int32(i), 0, 1},
+			LeadingComments: strPtr(" " + c + "\n"),
+		})
+	}
+	fdp := &descriptorpb.FileDescriptorProto{
+		Name:           strPtr("commented.proto"),
+		Package:        strPtr("google.cloud.test.v1"),
+		MessageType:    []*descriptorpb.DescriptorProto{{Name: strPtr("Widget"), Field: fields}},
+		SourceCodeInfo: &descriptorpb.SourceCodeInfo{Location: locs},
+	}
+	fd, err := protodesc.NewFile(fdp, nil)
+	if err != nil {
+		t.Fatalf("building file descriptor: %v", err)
+	}
+	return fd.Messages().ByName("Widget")
+}
+
+func TestDetectOutputOnlyInComments(t *testing.T) {
+	msg := commentedMessage(t,
+		"Output only. Set by the server.",                   // field_0, the long-standing spelling
+		"[Output Only] IP address on the Google side.",      // field_1, how Compute writes it
+		"The display name of the widget.",                   // field_2, no signal
+		"Set by the user. Output only in some other sense.", // field_3, marker not at the front
+	)
+	got := DetectOutputOnlyInComments(msg)
+
+	var paths []string
+	for _, c := range got {
+		paths = append(paths, c.FieldPath)
+	}
+	want := []string{".spec.field0", ".spec.field1"}
+	if len(paths) != len(want) {
+		t.Fatalf("got %v, want %v", paths, want)
+	}
+	for i := range want {
+		if paths[i] != want[i] {
+			t.Errorf("got %v, want %v", paths, want)
+		}
+	}
+}
+
+// A field the proto already annotates needs no prose detection. Reporting it
+// would queue a field the generator has already placed correctly.
+func TestDetectOutputOnlySkipsAnnotatedFields(t *testing.T) {
+	msg := commentedMessage(t, "[Output Only] Set by the server.")
+	if got := DetectOutputOnlyInComments(msg); len(got) != 1 {
+		t.Fatalf("unannotated field should be reported, got %d", len(got))
+	}
+	if got := DetectOutputOnlyInComments(testMessage(t)); len(got) != 0 {
+		t.Errorf("annotated fields should not be reported, got %v", got)
 	}
 }
