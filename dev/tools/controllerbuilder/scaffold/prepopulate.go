@@ -216,29 +216,32 @@ func DetectOutputOnlyInComments(msg protoreflect.MessageDescriptor) []OutputOnly
 	var out []OutputOnlyCandidate
 	for i := 0; i < msg.Fields().Len(); i++ {
 		field := msg.Fields().Get(i)
-		if codegen.IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) {
+		if codegen.IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) || identityFields[string(field.Name())] {
 			continue
 		}
-		if identityFields[string(field.Name())] {
-			continue
-		}
-		comment := strings.TrimSpace(msg.ParentFile().SourceLocations().ByDescriptor(field).LeadingComments)
-		said := false
-		for _, prefix := range outputOnlyPrefixes {
-			if strings.HasPrefix(comment, prefix) {
-				said = true
-				break
-			}
-		}
-		if !said {
+		comment, ok := outputOnlyComment(field)
+		if !ok {
 			continue
 		}
 		out = append(out, OutputOnlyCandidate{
 			FieldPath: ".spec." + codegen.GetJSONForKRM(field),
-			Comment:   strings.Join(strings.Fields(comment), " "),
+			Comment:   comment,
 		})
 	}
 	return out
+}
+
+// outputOnlyComment returns a field's leading comment, collapsed onto one line,
+// when the comment opens with one of outputOnlyPrefixes.
+func outputOnlyComment(field protoreflect.FieldDescriptor) (string, bool) {
+	loc := field.ParentFile().SourceLocations().ByDescriptor(field)
+	comment := strings.TrimSpace(loc.LeadingComments)
+	for _, prefix := range outputOnlyPrefixes {
+		if strings.HasPrefix(comment, prefix) {
+			return strings.Join(strings.Fields(comment), " "), true
+		}
+	}
+	return "", false
 }
 
 // FormatOutputOnlyCandidates renders detector output for the report file.
