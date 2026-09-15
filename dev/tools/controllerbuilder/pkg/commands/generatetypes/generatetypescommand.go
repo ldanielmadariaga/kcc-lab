@@ -49,6 +49,7 @@ type GenerateCRDOptions struct {
 
 	EmitRequiredFromProto bool
 	PrepopulateSpec       bool
+	DetectOutputOnly      bool
 	EmitPluralAcronyms    bool
 }
 
@@ -71,6 +72,7 @@ func (o *GenerateCRDOptions) BindFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&o.PruneUnusedTypes, "prune-unused-types", o.PruneUnusedTypes, "prune unreachable types from generated files")
 	cmd.Flags().BoolVar(&o.PrepopulateSpec, "prepopulate-spec", false, "fill the scaffolded Spec from the proto message instead of emitting a three-field stub, and record what still needs a human in apis/<service>/needs_judgement_call.txt. Opt in one service at a time")
 	cmd.Flags().BoolVar(&o.EmitPluralAcronyms, "emit-plural-acronyms", false, "case plural acronyms as KRM conventions want, so related_uris becomes relatedURIs rather than relatedUris. Opt in one service at a time: it renames fields, which is a breaking change for a resource people already use")
+	cmd.Flags().BoolVar(&o.DetectOutputOnly, "detect-output-only-in-comments", false, "report spec fields whose proto comment says \"Output only.\" while carrying no field_behavior annotation, to apis/<service>/detected_output_only_in_comments.txt. Reports only; moving them is a hand edit")
 	cmd.Flags().BoolVar(&o.EmitRequiredFromProto, "emit-required-from-proto", false, "emit // +required for fields the proto marks REQUIRED. Opt in one service at a time: turning it on for a resource people already use can tighten its CRD schema, because nested types are shared between spec and status")
 }
 
@@ -153,6 +155,8 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 	// written once at the end, so a service's file is replaced wholesale rather
 	// than appended to.
 	var judgement []string
+	// Candidates are collected per service and written once, like the queue above.
+	var outputOnly []string
 
 	resourceAnnotations := make([]string, 0, len(o.Resources))
 	for _, resource := range o.Resources {
@@ -201,10 +205,37 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 					if err != nil {
 						return fmt.Errorf("prepopulating spec for %s: %w", resource.Kind, err)
 					}
-					judgement = append(judgement, scaffold.FormatJudgementEntries(resource.Kind, gv.Group, prepopulated.Judgement))
+					if o.DetectOutputOnly {
+						if c := scaffold.DetectOutputOnlyInComments(msg); len(c) > 0 {
+							outputOnly = append(outputOnly, scaffold.FormatOutputOnlyCandidates(resource.Kind, gv.Group, c))
+							// Each candidate also goes into the queue. The report
+							// file alone is easy to miss: the field is in the
+							// Spec, looks generated, and nothing says it is in the
+							// wrong struct. The queue is where a resource's
+							// outstanding decisions are counted, so a finding that
+							// never reaches it is indistinguishable from no
+							// finding at all.
+							for _, cand := range c {
+								// The entry names where the field belongs, not where
+								// it currently sits. It accounts for a field absent
+								// from ObservedState, so a path under .spec would
+								// never line up with what is missing.
+								prepopulated.Judgement = append(prepopulated.Judgement, scaffold.JudgementItem{
+									FieldPath: ".status.observedState." + strings.TrimPrefix(cand.FieldPath, ".spec."),
+									Reason:    "output-only-in-comment-only",
+									Detail:    "proto comment says output only but no field_behavior annotation, so it was generated into the Spec instead. Move it if the comment is right: " + cand.Comment,
+								})
+							}
+						}
+					}
 				}
 				if err := scaffolder.AddTypeFile(resource, prepopulated); err != nil {
 					return fmt.Errorf("add type file %s: %w", scaffolder.PathToTypeFile(resource), err)
+				}
+				// This runs after AddTypeFile, which is where decisions that
+				// depend on the parent shape are recorded.
+				if prepopulated != nil {
+					judgement = append(judgement, scaffold.FormatJudgementEntries(resource.Kind, gv.Group, prepopulated.Judgement))
 				}
 			}
 		}
@@ -213,6 +244,12 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 	if o.PrepopulateSpec {
 		if err := writeJudgementQueue(o.OutputAPIDirectory, goPackage, judgement); err != nil {
 			return fmt.Errorf("writing judgement queue: %w", err)
+		}
+	}
+
+	if o.DetectOutputOnly {
+		if err := writeOutputOnlyReport(o.OutputAPIDirectory, goPackage, outputOnly); err != nil {
+			return fmt.Errorf("writing output-only report: %w", err)
 		}
 	}
 
@@ -333,6 +370,40 @@ func writeJudgementQueue(apiDir, goPackage string, entries []string) error {
 		"#\n" +
 		"# While a resource has entries here, TestMissingRefs suppresses its [refs]\n" +
 		"# findings. Clearing them graduates the resource and the ratchet applies.\n" +
+		"\n"
+
+	if err := os.MkdirAll(serviceDir, 0755); err != nil {
+		return err
+	}
+	return os.WriteFile(path, []byte(header+body.String()), 0644)
+}
+
+// writeOutputOnlyReport records fields the proto documents as output-only in
+// prose while carrying no annotation to say so.
+//
+// The report is deliberately separate from needs_judgement_call.txt. That
+// file drives [refs] suppression, and loadJudgementQueue keys off any
+// non-comment line in it, so these entries would quietly stop TestMissingRefs
+// reporting on resources whose references are perfectly fine.
+func writeOutputOnlyReport(apiDir, goPackage string, entries []string) error {
+	var body strings.Builder
+	for _, e := range entries {
+		body.WriteString(e)
+	}
+	if body.Len() == 0 {
+		return nil
+	}
+
+	serviceDir := filepath.Dir(filepath.Join(apiDir, goPackage))
+	path := filepath.Join(serviceDir, "detected_output_only_in_comments.txt")
+
+	header := "# Spec fields whose proto comment says \"Output only.\" but which carry no\n" +
+		"# google.api.field_behavior annotation, so the generator could not place them\n" +
+		"# in ObservedState by itself.\n" +
+		"#\n" +
+		"# This file reports; it changes nothing. To act on an entry, move the field\n" +
+		"# out of the Spec struct and into the ObservedState struct in\n" +
+		"# <kind>_types.go by hand.\n" +
 		"\n"
 
 	if err := os.MkdirAll(serviceDir, 0755); err != nil {

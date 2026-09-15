@@ -170,3 +170,86 @@ func FormatJudgementEntries(kind, group string, items []JudgementItem) string {
 	}
 	return sb.String()
 }
+
+// OutputOnlyCandidate is a field the proto documents as output-only in prose
+// while carrying no google.api.field_behavior annotation to say so.
+type OutputOnlyCandidate struct {
+	// FieldPath is the KRM path the field was emitted at, e.g. ".spec.createTime".
+	FieldPath string
+	// Comment is the proto's leading comment, so a reviewer can decide without
+	// opening the proto.
+	Comment string
+}
+
+// outputOnlyPrefixes are the ways a proto says "GCP sets this" in prose rather
+// than in a google.api.field_behavior annotation.
+//
+// There are two spellings, because two families of API write it differently.
+// Most protos open the comment "Output only."; Compute opens it "[Output
+// Only]". For a long time only the first was recognised, so every Compute
+// resource lost the signal entirely: 1,605 fields in compute.proto alone, and
+// all ten of ComputeInterconnect's misplaced observed-state fields
+// (googleIPAddress, circuitInfos, expectedOutages and the rest).
+//
+// Both are matched as a prefix rather than anywhere in the comment. That is the
+// convention in practice: of the Compute fields carrying the marker, 1,600 open
+// with it and 5 mention it mid-sentence. Those 5 are left, because an anchored
+// test is the one whose false-positive rate was measured.
+var outputOnlyPrefixes = []string{"Output only.", "[Output Only]"}
+
+// DetectOutputOnlyInComments finds spec fields whose proto comment says the
+// field is output-only while its field_behavior does not.
+//
+// It reports rather than acts. If the generator acted on the inference, it
+// would move 90 fields across 13 services, 29 of them in v1beta1, and a field
+// moved from spec to status breaks a schema people already depend on. Someone
+// moves the reported fields by hand, in <kind>_types.go, once it is agreed.
+//
+// The signal itself is trustworthy: across 4,673 fields in hand-written Spec
+// structs in the baseline tree, not one carries either spelling in its comment,
+// so there are no measured false positives for either. What is missing is the
+// review, not the accuracy.
+func DetectOutputOnlyInComments(msg protoreflect.MessageDescriptor) []OutputOnlyCandidate {
+	if msg == nil {
+		return nil
+	}
+	var out []OutputOnlyCandidate
+	for i := 0; i < msg.Fields().Len(); i++ {
+		field := msg.Fields().Get(i)
+		if codegen.IsFieldBehavior(field, annotations.FieldBehavior_OUTPUT_ONLY) || identityFields[string(field.Name())] {
+			continue
+		}
+		comment, ok := outputOnlyComment(field)
+		if !ok {
+			continue
+		}
+		out = append(out, OutputOnlyCandidate{
+			FieldPath: ".spec." + codegen.GetJSONForKRM(field),
+			Comment:   comment,
+		})
+	}
+	return out
+}
+
+// outputOnlyComment returns a field's leading comment, collapsed onto one line,
+// when the comment opens with one of outputOnlyPrefixes.
+func outputOnlyComment(field protoreflect.FieldDescriptor) (string, bool) {
+	loc := field.ParentFile().SourceLocations().ByDescriptor(field)
+	comment := strings.TrimSpace(loc.LeadingComments)
+	for _, prefix := range outputOnlyPrefixes {
+		if strings.HasPrefix(comment, prefix) {
+			return strings.Join(strings.Fields(comment), " "), true
+		}
+	}
+	return "", false
+}
+
+// FormatOutputOnlyCandidates renders detector output for the report file.
+func FormatOutputOnlyCandidates(kind, group string, items []OutputOnlyCandidate) string {
+	var sb strings.Builder
+	for _, it := range items {
+		sb.WriteString(fmt.Sprintf("kind=%s group=%s: field %q comment=%q\n",
+			kind, group, it.FieldPath, it.Comment))
+	}
+	return sb.String()
+}
