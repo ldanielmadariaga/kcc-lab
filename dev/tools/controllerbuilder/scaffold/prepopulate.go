@@ -98,13 +98,14 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 
 	// Every resource gets this entry, whatever judgementFor turned up.
 	//
-	// Suppression hangs off the resource-level entry, so it cannot be conditional
-	// on finding an annotation. The pilot shows why: LbTrafficExtension carries no
-	// google.api.resource_reference on any field, including forwarding_rules, which
-	// is precisely the field that has to become a ref. Build the queue from
-	// annotations alone and it comes out empty, so no file is written, nothing is
-	// suppressed, and the resource goes straight into the missingrefs ratchet and
-	// fails. Preventing exactly that is why the queue exists.
+	// TestMissingRefs suppresses a resource's [refs] findings while the resource
+	// has any entry in the queue, so this one cannot depend on finding an
+	// annotation. The pilot shows why: LbTrafficExtension carries no
+	// google.api.resource_reference on any field, not even forwarding_rules,
+	// which is the field that has to become a ref. A queue built from
+	// annotations alone would come out empty, so no file would be written,
+	// nothing would be suppressed, and the resource would go straight into the
+	// missingrefs ratchet and fail. The queue exists to prevent exactly that.
 	out.Judgement = append([]JudgementItem{{
 		Reason: "untriaged-bulk-generation",
 		Detail: "spec was generated mechanically; confirm refs, omissions and KRM names",
