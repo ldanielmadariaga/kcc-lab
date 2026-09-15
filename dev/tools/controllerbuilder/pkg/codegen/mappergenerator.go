@@ -1397,6 +1397,12 @@ func GoPackageForProto(parentFile protoreflect.FileDescriptor) string {
 		return "github.com/GoogleCloudPlatform/k8s-config-connector/mockgcp/generated/mockgcp/cloud/bigquery/v2"
 	case "cloud.google.com/go/sql/apiv1beta4/sqlpb":
 		return "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/gcpclients/generated/google/cloud/sql/v1beta4"
+	case "cloud.google.com/go/tpu/apiv2/tpupb":
+		// The proto declares a go_package that is not a published package:
+		// cloud.google.com/go/tpu v1.14.0 has no apiv2. A mapper that trusted it
+		// did not compile, and each regeneration reverted the fix until it was
+		// recorded here.
+		return "github.com/GoogleCloudPlatform/k8s-config-connector/pkg/gcpclients/generated/google/cloud/tpu/v2"
 	}
 
 	return protoGoPackage
