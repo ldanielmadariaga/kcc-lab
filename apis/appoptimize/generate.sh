@@ -39,6 +39,11 @@ PROTO_OUT="${REPO_ROOT}/.build/googleapis-${PROTO_SHA}.pb"
 ${CONTROLLERBUILDER} generate-types \
     --service google.cloud.appoptimize.v1beta \
     --api-version appoptimize.cnrm.cloud.google.com/v1alpha1 \
+    --prepopulate-spec \
+    --emit-required-from-proto \
+    --emit-plural-acronyms \
+    --detect-output-only-in-comments \
+    --place-server-set-fields \
     --resource AppOptimizeReport:Report \
     --proto-source-path ${PROTO_OUT}
 

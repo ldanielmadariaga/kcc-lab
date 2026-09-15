@@ -35,6 +35,11 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.video.transcoder.v1 \
   --api-version transcoder.cnrm.cloud.google.com/v1alpha1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource TranscoderJob:Job
 
 # Note: We do not run generate-mapper here as this PR is for types/CRD/Identity only.

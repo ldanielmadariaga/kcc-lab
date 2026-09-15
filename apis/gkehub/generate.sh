@@ -43,6 +43,11 @@ go run . generate-types \
   --proto-source-path "${REPO_ROOT}/.build/googleapis-gkehub.pb" \
   --service google.cloud.gkehub.v1 \
   --api-version gkehub.cnrm.cloud.google.com/v1alpha1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource GKEHubFleet:Fleet
 
 # --- v1beta1 ---

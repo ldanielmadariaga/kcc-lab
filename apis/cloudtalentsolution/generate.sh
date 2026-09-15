@@ -35,6 +35,11 @@ cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.talent.v4 \
   --api-version cloudtalentsolution.cnrm.cloud.google.com/v1alpha1 \
+  --prepopulate-spec \
+  --emit-required-from-proto \
+  --emit-plural-acronyms \
+  --detect-output-only-in-comments \
+  --place-server-set-fields \
   --resource CloudTalentSolutionCompany:Company
 
 ${CONTROLLERBUILDER} generate-mapper \
