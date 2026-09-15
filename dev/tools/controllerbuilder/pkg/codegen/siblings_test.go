@@ -58,18 +58,42 @@ func TestSiblingResourceByName(t *testing.T) {
 	}
 }
 
-func TestSingularLeavesNonPluralsAlone(t *testing.T) {
-	// A word ending in s that is not a plural must not be mangled into a
-	// spurious match: "status" is on nearly every resource in the tree.
-	//
-	// Not exhaustive, and not meant to be. An acronym like "https" does become
-	// "http", which the ss/us/is guards do not catch. It costs nothing here
-	// because no service declares a Kind ending in Http, and a rule that only
-	// decides whether to ask a person a question does not need to be right about
-	// English, only about GCP resource names.
-	for _, s := range []string{"status", "access", "analysis", "as"} {
-		if got := singular(s); got != s {
-			t.Errorf("singular(%q) = %q, want it left alone", s, got)
+func TestSingular(t *testing.T) {
+	// One case per branch of the switch, so deleting a branch names itself
+	// rather than surfacing as a missed match somewhere downstream.
+	for _, tc := range []struct {
+		branch string
+		in     string
+		want   string
+	}{
+		{"ies, longer than four", "policies", "policy"},
+		{"ies, too short for that branch, falls to trailing s", "ies", "ie"},
+		{"sses", "addresses", "address"},
+		{"ches", "batches", "batch"},
+		{"shes", "dishes", "dish"},
+		{"xes", "indexes", "index"},
+		{"ss is not a plural", "access", "access"},
+		{"us is not a plural", "status", "status"},
+		{"is is not a plural", "analysis", "analysis"},
+		{"trailing s", "subnetworks", "subnetwork"},
+		{"trailing s, too short", "as", "as"},
+		{"no plural to strip", "policy", "policy"},
+
+		// Two known-wrong answers, pinned so a change to them is deliberate.
+		// Neither costs anything today, because no Kind in the tree ends in
+		// Http, Cache or Size, and a rule that only decides whether to ask a
+		// person a question need not be right about English.
+		//
+		// The ss/us/is guards do not catch an acronym, so "https" loses its s.
+		// The ches/shes/xes/zes branch assumes the stem ends in a consonant,
+		// which holds for batches and boxes but not for a stem already ending
+		// in e: caches and sizes lose that e as well.
+		{"acronym, mangled", "https", "http"},
+		{"stem ends in e, mangled", "caches", "cach"},
+		{"stem ends in e, mangled", "sizes", "siz"},
+	} {
+		if got := singular(tc.in); got != tc.want {
+			t.Errorf("%s: singular(%q) = %q, want %q", tc.branch, tc.in, got, tc.want)
 		}
 	}
 }

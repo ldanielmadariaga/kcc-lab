@@ -30,15 +30,14 @@ const SiblingGuessMarker = "+kcc:guess=possible-reference target="
 //
 // siblings maps a lowercased Kind suffix to the Kind: DiscoveryEngineDataStore
 // is keyed "datastore", so a field called dataStore matches it. The rule keeps
-// no list of known names, so it works on a service nobody has looked at.
-// refs.NameRules cannot do that, because it only recognises spellings someone
-// has already written down.
+// no list of known names, so it works on new services. refs.NameRules cannot do
+// that, because it only recognises spellings someone has already written down.
 //
-// The leaf match is exact, after singularising. We measured a looser endswith
-// match at 68% precision, against 75% for this one, and it wrongly matched
-// spec.pipelineJob and localSsds[].interface. Two fields match a sibling Kind
-// but stay plain upstream, both in DataLabeling: annotationSpecSet and
-// instruction.
+// The field name must equal the key exactly, or equal it once a trailing plural
+// is removed. Matching on a suffix instead was right 68% of the time where this
+// exact match is right 75%, and it wrongly matched spec.pipelineJob and
+// localSsds[].interface. Two names match a sibling Kind that upstream still
+// keeps plain, both in DataLabeling: annotationSpecSet and instruction.
 func SiblingResource(field protoreflect.FieldDescriptor, siblings map[string]string) (string, bool) {
 	if len(siblings) == 0 || field.Kind() != protoreflect.StringKind {
 		return "", false
@@ -46,10 +45,10 @@ func SiblingResource(field protoreflect.FieldDescriptor, siblings map[string]str
 	return SiblingResourceByName(GetJSONForKRM(field), siblings)
 }
 
-// SiblingResourceByName matches a name the generator synthesised, where
-// SiblingResource takes a proto field. Parent segments arrive this way:
-// DiscoveryEngineDataStoreTargetSite's spec.dataStore comes from the resource
-// pattern, not from any field of the message.
+// SiblingResourceByName takes the name directly, for callers with no proto
+// field to read it from. Parent segments are the case that needs it:
+// DiscoveryEngineDataStoreTargetSite's spec.dataStore is built from the
+// resource pattern, and no field of the message carries it.
 func SiblingResourceByName(name string, siblings map[string]string) (string, bool) {
 	leaf := strings.ToLower(name)
 	if target, ok := siblings[leaf]; ok {
@@ -103,8 +102,9 @@ type SiblingGuess struct {
 }
 
 // scanSiblingGuesses recovers the sibling markers WriteMessage left in a
-// rendered body. Scanned out of the output rather than returned from
-// WriteField, which writes to an io.Writer and has nowhere to accumulate;
+// rendered body. WriteField writes to an io.Writer, so it has nowhere to
+// collect the markers it emits, and we read them back out of the finished text
+// instead.
 // scanUnsupported recovers the "// TODO:" markers the same way.
 func scanSiblingGuesses(msgName, body string) []SiblingGuess {
 	var out []SiblingGuess
