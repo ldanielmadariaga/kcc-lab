@@ -109,6 +109,9 @@ func TestClassifyParent(t *testing.T) {
 	}
 }
 
+// TestParentVariables pins which placeholders count as the parent: every one
+// the pattern declares except the resource's own id, which becomes
+// spec.resourceID.
 func TestParentVariables(t *testing.T) {
 	grid := []struct {
 		name    string

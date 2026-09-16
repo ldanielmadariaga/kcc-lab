@@ -145,7 +145,7 @@ func splitPattern(pattern string) (collection string, parentPath string) {
 //
 // ParentStyle collapses every shape past project and location into "other",
 // which is enough to decide what the template renders and not enough to say
-// which segments it left out. Only the pattern names them.
+// which segments it left out.
 func ParentVariables(pattern string) []string {
 	segs := strings.Split(pattern, "/")
 	var vars []string
