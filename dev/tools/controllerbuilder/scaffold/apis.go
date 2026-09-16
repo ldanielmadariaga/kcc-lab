@@ -283,12 +283,11 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 				siblings = append(siblings, name+" matches "+sibling)
 			}
 		}
-		// One entry for the whole parent, not one per segment. Every hand-written
-		// resource with a segment below project and location names its direct
-		// parent once: containernodepool has clusterRef, alloydbinstance and
-		// dataplextask theirs, dataplexzone inlines a Parent holding lakeRef.
-		// Nothing carries a field per segment, so a reader triaging per segment
-		// would be answering a question the API does not ask.
+		// One entry names the whole parent. Of the 44 hand-written kinds whose
+		// pattern has a segment below project and location, about 32 name the
+		// direct parent with a typed ref and five inline a Parent struct holding
+		// one. None carries a field per segment, so the decision a reader makes
+		// is about the shape of the parent, not about each segment in turn.
 		if len(emitted) > 0 {
 			detail := "emitted from the pattern " + cArgs.ResourcePattern + ": " +
 				strings.Join(emitted, ", ") + ". Upstream usually names the direct " +
@@ -424,12 +423,11 @@ const sharedRefsPackage = "apis/refs/v1beta1"
 // refTypesInPackage lists the <X>Ref types available to the target package,
 // mapping each to the qualifier it must be written with.
 //
-// Two directories, because a ref type can live in either. scaffoldRefsFile
-// writes one per resource into the service package, so a resource whose parent
-// has been generated has a local type to point at. The shared package holds the
-// ones every service needs. Missing the shared package was the single biggest
-// hole this scanner had: OrganizationRef accounts for 14 of the compile errors
-// and has existed all along.
+// Both directories are scanned, because a ref type can live in either.
+// scaffoldRefsFile writes one per resource into the service package, so a
+// resource whose parent is already generated has a local type to name. The
+// shared package holds the ones every service needs, OrganizationRef among
+// them, which 14 resources reach for.
 func refTypesInPackage(repoRoot, serviceDir string) map[string]string {
 	out := map[string]string{}
 	scan := func(dir, qualifier string) {
@@ -463,10 +461,9 @@ func refTypesInPackage(repoRoot, serviceDir string) map[string]string {
 // packageDeclaresGVK reports whether the target package already declares
 // <Kind>GVK.
 //
-// scaffoldRefsFile writes the GVK into <kind>_reference.go, which is where
-// upstream keeps it, and the types template writes one too. For the handful of
-// resources that have both files that is a redeclaration, and it only shows
-// up for those, which is why it went unnoticed.
+// scaffoldRefsFile writes the GVK into <kind>_reference.go, where upstream
+// keeps it, and the types template writes one as well. A resource with both
+// files would declare it twice, and the package would not compile.
 func packageDeclaresGVK(dir, kind string) bool {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
@@ -538,34 +535,24 @@ var locationFieldNames = map[string]string{
 	"zones":     "zone",
 }
 
-// parentRefField renders a spec field pointing at part of the resource's
-// parent.
+// parentRefField returns a spec field naming one segment of the resource's
+// parent: a typed ref when goType is set, a plain string when it is empty.
 //
-// The types template used to emit projectRef and resourceID and nothing else,
-// so a resource nested under another resource -- a Bigtable Cluster under an
-// Instance, a Firestore Field under a Database -- had no way to say which
-// parent it belongs to. Upstream carries these for exactly that.
+// A plain string is what upstream uses where no ref type exists. BigtableTable
+// carries Spec.Instance and KMSCryptoKeyVersion Spec.CryptoKey by those names.
 //
-// goType empty means no ref type resolved, and the segment is emitted as a
-// plain string: the compiler asks for Spec.Tenant and Spec.KeyRing by those
-// names, not as refs, so that is how upstream models them.
-//
-// The first line is prose and becomes the CRD description, so it says what the
-// field is for. The rest is a +kcc: marker, which controller-gen strips from
-// the description -- a reviewer reading the type sees the guess, a user running
-// kubectl explain is not told our TODO.
+// The first line becomes the CRD description, so it says what the field is
+// for. The +kcc: marker below it records that the generator chose the field
+// from the pattern; controller-gen strips markers, so a reviewer reading the
+// type sees the guess while kubectl explain shows only the description.
 func parentRefField(segment, goType, qualifier, pattern, sibling string) string {
 	name := strings.ToUpper(segment[:1]) + segment[1:]
 	if goType == "" {
-		// Naming the sibling in the marker, not only in the queue: the queue is a
-		// work list somebody clears, the types file is what a reader opens, and
-		// "this is probably a ref to FirestoreDatabase" is the whole finding.
-		//
-		// It replaces the pattern rather than joining it. A marker cannot be
-		// wrapped, patterns run long -- 44 of these lines already pass 80 columns
-		// on the pattern alone -- and the target is both shorter and the more
-		// actionable half. Nothing parses pattern=, and the queue entry still
-		// carries it.
+		// The marker names the sibling when there is one, because that is the
+		// finding: this string is probably a ref to FirestoreDatabase. It
+		// replaces the pattern rather than joining it, since a marker cannot be
+		// wrapped and a long pattern pushes the line past 80 columns on its own.
+		// The queue entry carries the pattern.
 		detail := "pattern=" + pattern
 		if sibling != "" {
 			detail = "target=" + sibling
@@ -631,9 +618,9 @@ func parentSegmentJudgement(pattern, parentStyle string) []JudgementItem {
 				"; upstream carries each part of the name as a spec field",
 		}
 		if v == "location" {
-			// Keep the more specific advice for the case that has it: upstream is
-			// split 8 to 7 on whether a nested resource repeats its parent's
-			// location, so there is no convention to copy.
+			// Location gets the more specific advice, because upstream is split
+			// 8 to 7 on whether a nested resource repeats its parent's location.
+			// There is no convention to copy, so the reader has to decide.
 			item.Reason = "location-omitted-nested-parent"
 			item.Detail = "parent is " + pattern +
 				"; location is implied by the parent, add it only if the API needs it stated"
@@ -646,10 +633,10 @@ func parentSegmentJudgement(pattern, parentStyle string) []JudgementItem {
 // lowerCamel converts a pattern placeholder to the JSON name upstream uses:
 // "collection_group" -> "collectionGroup".
 //
-// Deliberately not the type generator's field-name casing, which also applies
-// the acronym table. Pattern placeholders are plain words -- collection,
-// tenant, data_store -- and borrowing the acronym rules here would couple this
-// to a setting that is opt-in per service.
+// This is not the type generator's field-name casing, which also applies the
+// acronym table. Pattern placeholders are plain words, such as collection,
+// tenant and data_store, and reusing the acronym rules would tie this to a
+// setting each service opts into separately.
 func lowerCamel(s string) string {
 	parts := strings.Split(s, "_")
 	for i := 1; i < len(parts); i++ {

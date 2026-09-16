@@ -40,8 +40,9 @@ func TestParentSegmentJudgement(t *testing.T) {
 			wantPaths:   nil,
 		},
 		{
-			// DiscoveryEngineDataStore. Upstream carries both spec.location and
-			// spec.collection; we emitted neither and named only location.
+			// A collection between the location and the resource. Upstream
+			// carries spec.location and spec.collection; the template emits
+			// neither, so both belong in the entry.
 			name:        "nested collection is named",
 			pattern:     "projects/{project}/locations/{location}/collections/{collection}/dataStores/{data_store}",
 			parentStyle: protoapi.ParentOther,
