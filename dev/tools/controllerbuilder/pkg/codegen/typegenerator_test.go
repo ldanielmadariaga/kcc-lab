@@ -1124,9 +1124,6 @@ func TestWriteObservedStateFieldsSkips(t *testing.T) {
 	}
 }
 
-// observedStateTestMessage returns a message with one field of each kind the
-// tests above need: name and create_time have Go types, and by_index is a map
-// keyed by int32, which GoTypeForField declines.
 // TestWriteObservedStateFieldsHonoursWriteOptions pins that an observed-state
 // field is written with the caller's WriteOptions, EmitRequired excepted.
 // PrepopulateObservedState hands it the options the Spec was generated with, so
@@ -1199,8 +1196,8 @@ func TestWriteObservedStateFieldsHonoursWriteOptions(t *testing.T) {
 			if notes[0].JSONName != tc.wantJSONName {
 				t.Errorf("note JSONName = %q, want %q", notes[0].JSONName, tc.wantJSONName)
 			}
-			// The API server validates status, so a required marker here would
-			// make it reject a status KCC itself wrote.
+			// A required marker here would make the API server reject a status
+			// KCC itself wrote.
 			if strings.Contains(buf.String(), "+required") {
 				t.Errorf("struct body = %q, want no +required marker", buf.String())
 			}
@@ -1258,11 +1255,11 @@ func TestWriteObservedStateMessageHonoursWriteOptions(t *testing.T) {
 // TestWriteObservedStateMessageOmitsPlacementNote pins the one flag a nested
 // struct does not inherit. A placement note names a field the server-set
 // allowlist moved, and only the resource's own ObservedState, which the
-// scaffolder writes, is entitled to one; a note on a nested struct would claim
-// a decision nobody recorded in the judgement queue.
+// scaffolder writes, carries one. A note on a nested struct would point at a
+// decision that has no entry in the judgement queue.
 func TestWriteObservedStateMessageOmitsPlacementNote(t *testing.T) {
 	// Arrange. Discovery carries no field_behavior on any field, which is the
-	// condition IsServerSetField needs before it moves anything at all.
+	// condition IsServerSetField needs before it moves anything.
 	discovery := serverSetTestFile(t).Messages().ByName("Discovery")
 	details := &OutputMessageDetails{
 		Message:      discovery,
@@ -1285,6 +1282,11 @@ func TestWriteObservedStateMessageOmitsPlacementNote(t *testing.T) {
 	}
 }
 
+// observedStateTestMessage returns a message with one field of each kind the
+// tests above need: name and create_time have Go types, by_index is a map
+// keyed by int32 that GoTypeForField declines, related_uris exercises plural
+// acronym casing, resources is a message-valued map, and required_field is
+// marked REQUIRED.
 func observedStateTestMessage(t *testing.T) protoreflect.MessageDescriptor {
 	t.Helper()
 	requiredOpts := &descriptorpb.FieldOptions{}

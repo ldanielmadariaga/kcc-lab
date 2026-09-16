@@ -564,8 +564,8 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 	fmt.Fprintf(out, "type %s struct {\n", goType)
 	// Clear PlaceServerSetFields to keep placement notes out of the nested
 	// structs in types.generated.go; only the resource's own ObservedState,
-	// which the scaffolder writes, carries one. Every other flag has to carry
-	// over, or a nested observed field is named and typed differently from the
+	// which the scaffolder writes, carries one. Every other flag
+	// carries over, or a nested observed field is named and typed differently
 	// same proto field in the spec struct beside it.
 	nestedOpts := opts
 	nestedOpts.PlaceServerSetFields = false
@@ -607,9 +607,9 @@ func WriteObservedStateFields(out io.Writer, msgDetails *OutputMessageDetails, o
 	// GCP is free to omit would make it reject a status KCC itself wrote.
 	//
 	// Clear that one flag rather than passing a blank WriteOptions. A blank
-	// struct switches off every other flag too, including any added to
-	// WriteOptions later: that cases an observed field relatedUris beside the
-	// spec's relatedURIs, and declines a message-valued map the spec generates.
+	// struct switches off every other flag too, and every flag added later:
+	// the observed field comes out relatedUris beside the spec's relatedURIs,
+	// and a message-valued map the spec types becomes a "// TODO:" marker.
 	observedOpts := opts
 	observedOpts.EmitRequired = false
 
