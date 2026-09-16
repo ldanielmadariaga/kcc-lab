@@ -23,6 +23,8 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/pkg/protoapi"
 )
 
+// TestParentSegmentJudgement pins which parts of a resource's name get a queue
+// entry: the ones the types template does not emit itself.
 func TestParentSegmentJudgement(t *testing.T) {
 	grid := []struct {
 		name        string
@@ -32,8 +34,8 @@ func TestParentSegmentJudgement(t *testing.T) {
 		wantReasons []string
 	}{
 		{
-			// The template emits projectRef and location itself, so there is
-			// nothing left to say.
+			// The template emits projectRef and location itself, so the entry
+			// has nothing to add.
 			name:        "projects and locations is fully covered",
 			pattern:     "projects/{project}/locations/{location}/foos/{foo}",
 			parentStyle: protoapi.ParentProjectLocation,
@@ -103,6 +105,9 @@ func reasons(items []JudgementItem) []string {
 	return out
 }
 
+// TestParentSegments pins the collection and placeholder pairs read from a
+// pattern, and which pair names the resource's location. AddTypeFile emits one
+// spec field per pair.
 func TestParentSegments(t *testing.T) {
 	grid := []struct {
 		name     string
@@ -160,6 +165,8 @@ func TestParentSegments(t *testing.T) {
 	}
 }
 
+// TestSiblingResourceKeying pins how a service's own Kinds are keyed, because
+// AddTypeFile matches a parent segment's name against those keys.
 func TestSiblingResourceKeying(t *testing.T) {
 	// Arrange
 	dir := t.TempDir()
@@ -171,7 +178,7 @@ func TestSiblingResourceKeying(t *testing.T) {
 	}
 	write("discoveryenginedatastore_types.go", "package v1alpha1\n\ntype DiscoveryEngineDataStoreSpec struct{}\n")
 	write("discoveryenginecontrol_types.go", "package v1alpha1\n\ntype DiscoveryEngineControlSpec struct{}\n")
-	// Not a _types.go file, so not a resource.
+	// A type outside a _types.go file is not a resource.
 	write("helpers.go", "package v1alpha1\n\ntype NotAResourceSpec struct{}\n")
 
 	// Act
@@ -187,7 +194,7 @@ func TestSiblingResourceKeying(t *testing.T) {
 	if _, ok := got["notaresource"]; ok {
 		t.Error("a type outside a _types.go file must not count as a resource")
 	}
-	// A Kind that is only the service name leaves nothing to key on.
+	// helpers.go contributes nothing, so the two _types.go files remain.
 	if len(got) != 2 {
 		t.Errorf("got %d siblings, want 2: %v", len(got), got)
 	}

@@ -71,10 +71,9 @@ type APIArgs struct {
 // hand-written identity files that dereference it. It carries no omitempty, so
 // the field stays required, as upstream has it.
 //
-// Its comment in the template is the one-line "The location of this resource."
-// and nothing more. Whatever is written there becomes the field's CRD
-// description, which users read, and the generator's own reasoning does not
-// belong in a published API schema.
+// The template gives it the one-line comment "The location of this resource."
+// Whatever is written there becomes the field's CRD description, which users
+// read, so the generator's own reasoning stays out of it.
 const TypesTemplate = `
 // Copyright 2025 Google LLC
 //

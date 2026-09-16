@@ -49,8 +49,8 @@ type APIScaffolder struct {
 	Proto *protoapi.Proto
 
 	// Siblings maps a lowercased Kind suffix to a Kind this service declares, so
-	// a parent segment naming one can be flagged as a probable reference. See
-	// codegen.SiblingResourceByName.
+	// the scaffolder can flag a parent segment that names one as a probable
+	// reference. See codegen.SiblingResourceByName.
 	Siblings map[string]string
 }
 
@@ -180,8 +180,8 @@ func (a *APIScaffolder) buildAPIArgs(resource *options.Resource) *apis.APIArgs {
 			args.ParentStyle = string(protoapi.ParentUnknown)
 		}
 	}
-	// The default for every path, including the stub with no proto at all:
-	// nearly every resource is project-rooted, and AddTypeFile overrides this
+	// This is the default for every path, including the stub with no proto at
+	// all. Nearly every resource is project-rooted, and AddTypeFile overrides it
 	// where the pattern says otherwise.
 	if args.RootRefType == "" {
 		args.RootRefType, args.RootRefField = "ProjectRef", "projectRef"
@@ -256,10 +256,10 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 				continue
 			}
 			if field, ok := locationFieldNames[collection]; ok {
-				// Required only for the projects/locations shape, which the
-				// template renders the same way, so that output is unchanged.
-				// Elsewhere the parent already fixes a location, and requiring
-				// one would add a constraint upstream does not have.
+				// The field is required only for the projects/locations shape,
+				// which the template renders the same way, so that output is
+				// unchanged. Elsewhere the parent already fixes a location, and
+				// requiring one would add a constraint upstream does not have.
 				required := cArgs.ParentStyle == string(protoapi.ParentProjectLocation)
 				parentRefs.WriteString(locationField(field, cArgs.ResourcePattern, required))
 				emitted = append(emitted, ".spec."+field)
@@ -268,14 +268,14 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 			name := lowerCamel(variable)
 			goType := strings.ToUpper(name[:1]) + name[1:] + "Ref"
 			qualifier, ok := known[goType]
-			// A parent segment is synthesised from the resource pattern, so no
-			// proto field carries its name and the sibling rule has to be asked
-			// about the name directly.
+			// A parent segment comes from the resource pattern rather than from
+			// a proto field, so we ask the sibling rule about the segment's own
+			// name.
 			sibling, _ := codegen.SiblingResourceByName(name, a.Siblings)
 			suffix := "Ref"
 			if !ok {
-				// No ref type anywhere, so a plain string. Still better than
-				// nothing, and upstream may well want a reference here.
+				// No ref type exists for this segment, so the field is a plain
+				// string, and the entry below asks whether a reference belongs here.
 				goType, suffix = "", ""
 			}
 			parentRefs.WriteString(parentRefField(name, goType, qualifier, cArgs.ResourcePattern, sibling))
@@ -306,9 +306,9 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 
 		cArgs.ParentRefFields = parentRefs.String()
 
-		// An organization- or folder-rooted resource has no project, and emitting
-		// projectRef for one gives it a field upstream does not have while leaving
-		// out the one it does.
+		// An organization- or folder-rooted resource has no project, so projectRef
+		// would give it a field upstream does not have while leaving out the one it
+		// does.
 		if len(segments) > 0 {
 			switch segments[0][0] {
 			case "organizations":
@@ -320,9 +320,7 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 			}
 		}
 
-		// parentSegmentJudgement covers the remaining case: a proto with no
-		// google.api.resource, where there is no pattern to walk and so no
-		// segment to emit or to name.
+		// No pattern to walk means the loop above emitted nothing.
 		if len(segments) == 0 {
 			prepopulated.Judgement = append(prepopulated.Judgement,
 				parentSegmentJudgement(cArgs.ResourcePattern, cArgs.ParentStyle)...)
@@ -424,7 +422,7 @@ const sharedRefsPackage = "apis/refs/v1beta1"
 // refTypesInPackage lists the <X>Ref types available to the target package,
 // mapping each to the qualifier it must be written with.
 //
-// Both directories are scanned, because a ref type can live in either.
+// It scans both directories, because a ref type can live in either.
 // scaffoldRefsFile writes one per resource into the service package, so a
 // resource whose parent is already generated has a local type to name. The
 // shared package holds the ones every service needs, OrganizationRef among
@@ -549,11 +547,11 @@ var locationFieldNames = map[string]string{
 func parentRefField(segment, goType, qualifier, pattern, sibling string) string {
 	name := strings.ToUpper(segment[:1]) + segment[1:]
 	if goType == "" {
-		// The marker names the sibling when there is one, because that is the
-		// finding: this string is probably a ref to FirestoreDatabase. It
-		// replaces the pattern rather than joining it, since a marker cannot be
-		// wrapped and a long pattern pushes the line past 80 columns on its own.
-		// The queue entry carries the pattern.
+		// The marker names the sibling when there is one: this string is
+		// probably a ref to FirestoreDatabase. It replaces the pattern rather
+		// than joining it, because a marker cannot be wrapped and a long
+		// pattern runs past 80 columns on its own. The queue entry carries
+		// the pattern.
 		detail := "pattern=" + pattern
 		if sibling != "" {
 			detail = "target=" + sibling
@@ -588,11 +586,13 @@ func locationField(name, pattern string, required bool) string {
 `, pattern, strings.ToUpper(name[:1])+name[1:], tag)
 }
 
+// parentSegmentJudgement returns a queue entry for each part of the resource's
+// name that the types template does not emit, and a single entry for a proto
+// that declares no google.api.resource at all.
 func parentSegmentJudgement(pattern, parentStyle string) []JudgementItem {
 	if parentStyle == string(protoapi.ParentUnknown) || pattern == "" {
-		// No google.api.resource, so there is no pattern to walk. The entry says
-		// that, and names location, because a regional resource whose location
-		// is missing cannot be addressed at all.
+		// The entry names location, because a regional resource that does not
+		// state one cannot be addressed at all.
 		return []JudgementItem{{
 			FieldPath: ".spec.location",
 			Reason:    "location-omitted-unknown-parent",
@@ -602,7 +602,7 @@ func parentSegmentJudgement(pattern, parentStyle string) []JudgementItem {
 	}
 
 	// projectRef and resourceID are always emitted; location as well, but only
-	// when the parent is exactly projects/locations.
+	// when the parent is projects/locations.
 	produced := map[string]bool{"project": true}
 	if parentStyle == string(protoapi.ParentProjectLocation) {
 		produced["location"] = true
