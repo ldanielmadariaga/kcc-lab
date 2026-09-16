@@ -132,9 +132,9 @@ func TestParentRef(t *testing.T) {
 	}
 }
 
-// TestRootRef pins which Spec field names the root of a resource's name. A
-// resource under an organization or folder has no project, so a projectRef
-// there is a field its API does not accept.
+// TestRootRef pins which patterns get organizationRef or folderRef in place of
+// projectRef. AddTypeFile hands the result to the types template, so a wrong
+// answer puts the wrong root field in a scaffolded Spec.
 func TestRootRef(t *testing.T) {
 	for _, tc := range []struct {
 		pattern   string

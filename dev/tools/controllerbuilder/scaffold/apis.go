@@ -231,9 +231,10 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 	return scaffoldTypeFile(typeFilePath, cArgs)
 }
 
-// rootRef returns the reference type, JSON name and description for the Spec
-// field naming the root of pattern, and empty strings when that root is a
-// project or pattern is empty, so the template keeps projectRef.
+// rootRef returns the reference type, JSON name and description of the Spec
+// field for a pattern rooted at an organization or folder. For any other root,
+// a project included, and for an empty pattern it returns empty strings, and
+// the template keeps projectRef.
 //
 // It reads the first segment rather than protoapi.ParentStyle, which calls
 // "organizations/{organization}/locations/{location}/..." ParentOther. That

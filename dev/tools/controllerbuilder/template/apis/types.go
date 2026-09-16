@@ -55,7 +55,7 @@ type APIArgs struct {
 	ParentRefField string
 	// RootRefType, RootRefField and RootRefDescription replace the Spec's
 	// projectRef for a resource whose name starts with organizations/ or
-	// folders/. Empty keeps projectRef, which is right for everything else.
+	// folders/. Empty keeps projectRef.
 	RootRefType        string
 	RootRefField       string
 	RootRefDescription string
