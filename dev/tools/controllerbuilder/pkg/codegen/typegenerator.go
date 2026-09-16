@@ -494,7 +494,7 @@ func (g *TypeGenerator) WriteOutputMessages() error {
 		if goType != nil {
 			klog.V(1).Infof("found existing non-generated go type %q, won't generate", goTypeName)
 			if g.includeSkippedOutput {
-				WriteObservedStateMessageAsComment(&out.body, msgDetails, fmt.Sprintf("found existing non-generated go type %q, skipping", goTypeName), g.observedStateMessages)
+				WriteObservedStateMessageAsComment(&out.body, msgDetails, fmt.Sprintf("found existing non-generated go type %q, skipping", goTypeName), g.observedStateMessages, g.writeOptions)
 			}
 			continue
 		}
@@ -506,12 +506,12 @@ func (g *TypeGenerator) WriteOutputMessages() error {
 		if goType != nil {
 			klog.V(1).Infof("found existing non-generated go type with proto tag %q, won't generate", msg.FullName())
 			if g.includeSkippedOutput {
-				WriteObservedStateMessageAsComment(&out.body, msgDetails, fmt.Sprintf("found existing non-generated go type with proto tag %q, skipping", msg.FullName()), g.observedStateMessages)
+				WriteObservedStateMessageAsComment(&out.body, msgDetails, fmt.Sprintf("found existing non-generated go type with proto tag %q, skipping", msg.FullName()), g.observedStateMessages, g.writeOptions)
 			}
 			continue
 		}
 
-		WriteObservedStateMessage(&out.body, msgDetails, g.observedStateMessages)
+		WriteObservedStateMessage(&out.body, msgDetails, g.observedStateMessages, g.writeOptions)
 	}
 	return errors.Join(g.errors...)
 }
@@ -531,9 +531,9 @@ func WriteMessageAsComment(out io.Writer, msg protoreflect.MessageDescriptor, re
 	fmt.Fprintf(out, "*/\n")
 }
 
-func WriteObservedStateMessageAsComment(out io.Writer, msgDetails *OutputMessageDetails, reason string, observedStateMessages sets.String) {
+func WriteObservedStateMessageAsComment(out io.Writer, msgDetails *OutputMessageDetails, reason string, observedStateMessages sets.String, opts WriteOptions) {
 	var b bytes.Buffer
-	WriteObservedStateMessage(&b, msgDetails, observedStateMessages)
+	WriteObservedStateMessage(&b, msgDetails, observedStateMessages, opts)
 	fmt.Fprintf(out, "\n/* %s\n", reason)
 	fmt.Fprintf(out, "%s", strings.ReplaceAll(b.String(), "*/", "* /"))
 	fmt.Fprintf(out, "*/\n")
@@ -555,17 +555,21 @@ func WriteMessage(out io.Writer, msg protoreflect.MessageDescriptor, opts WriteO
 	fmt.Fprintf(out, "}\n")
 }
 
-func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, observedStateMessages sets.String) {
+func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, observedStateMessages sets.String, opts WriteOptions) {
 	msg := msgDetails.Message
 	goType := goNameForOutputProtoMessage(msg)
 
 	fmt.Fprintf(out, "\n")
 	fmt.Fprintf(out, "// %s=%s\n", KCCProtoMessageAnnotationObservedState, msg.FullName())
 	fmt.Fprintf(out, "type %s struct {\n", goType)
-	// The empty WriteOptions keeps placement notes out of the nested structs in
-	// types.generated.go. Only the resource's own ObservedState, which the
-	// scaffolder writes, carries one.
-	WriteObservedStateFields(out, msgDetails, observedStateMessages, nil, WriteOptions{})
+	// Clear PlaceServerSetFields to keep placement notes out of the nested
+	// structs in types.generated.go; only the resource's own ObservedState,
+	// which the scaffolder writes, carries one. Every other flag
+	// carries over, or a nested observed field is named and typed differently
+	// same proto field in the spec struct beside it.
+	nestedOpts := opts
+	nestedOpts.PlaceServerSetFields = false
+	WriteObservedStateFields(out, msgDetails, observedStateMessages, nil, nestedOpts)
 	fmt.Fprintf(out, "}\n")
 }
 
@@ -597,10 +601,22 @@ func WriteObservedStateFields(out io.Writer, msgDetails *OutputMessageDetails, o
 	msg := msgDetails.Message
 	emitted := 0
 	var notes []ObservedStateFieldNote
+
+	// Never emit +required from here. An observed-state struct describes what
+	// GCP returned, and the API server validates status, so requiring a field
+	// GCP is free to omit would make it reject a status KCC itself wrote.
+	//
+	// Clear that one flag rather than passing a blank WriteOptions. A blank
+	// struct switches off every other flag too, and every flag added later:
+	// the observed field comes out relatedUris beside the spec's relatedURIs,
+	// and a message-valued map the spec types becomes a "// TODO:" marker.
+	observedOpts := opts
+	observedOpts.EmitRequired = false
+
 	for _, field := range msgDetails.OutputFields {
 		if skip[string(field.Name())] {
 			notes = append(notes, ObservedStateFieldNote{
-				JSONName: GetJSONForKRM(field),
+				JSONName: getJSONForKRM(field, observedOpts),
 				Skipped:  true,
 			})
 			continue
@@ -616,14 +632,11 @@ func WriteObservedStateFields(out io.Writer, msgDetails *OutputMessageDetails, o
 		// A field WriteField cannot type becomes a "// TODO:" marker and never
 		// reaches the CRD.
 		var field_ bytes.Buffer
-		// Never emit +required from here. An observed-state struct describes what GCP
-		// returned, and the API server validates status, so requiring a field GCP is
-		// free to omit would make it reject a status KCC itself wrote.
-		WriteField(&field_, field, msg, emitted, useObservedState, WriteOptions{}, placementNote(field, msg, opts))
+		WriteField(&field_, field, msg, emitted, useObservedState, observedOpts, placementNote(field, msg, opts))
 		out.Write(field_.Bytes())
 		emitted++
 		notes = append(notes, ObservedStateFieldNote{
-			JSONName: GetJSONForKRM(field),
+			JSONName: getJSONForKRM(field, observedOpts),
 			Rendered: field_.String(),
 		})
 	}
