@@ -54,7 +54,8 @@ func ReferenceHints(msg protoreflect.MessageDescriptor, opts codegen.WriteOption
 // It skips what the generator leaves out of the Spec: OUTPUT_ONLY fields at any
 // depth, and at the top level the identity fields and server-set fields that
 // PrepopulateSpec drops. A field the generator cannot type is absent from the
-// CRD too, so it is skipped with its subtree.
+// CRD too, so it is skipped with its subtree. So is a field the generator
+// already writes as a reference, which needs no hint.
 //
 // onPath holds the messages between msg and the root. Proto messages can
 // contain themselves, and the generated struct breaks the cycle with a
@@ -74,7 +75,11 @@ func walkSpecFields(msg protoreflect.MessageDescriptor, prefix string, opts code
 		if top && (identityFields[string(field.Name())] || codegen.IsServerSetField(field, msg, opts)) {
 			continue
 		}
-		if _, err := codegen.GoTypeForField(field, false, opts); err != nil {
+		goType, err := codegen.GoTypeForField(field, false, opts)
+		if err != nil {
+			continue
+		}
+		if generatesAsReference(goType) {
 			continue
 		}
 
@@ -93,6 +98,13 @@ func walkSpecFields(msg protoreflect.MessageDescriptor, prefix string, opts code
 			walkSpecFields(field.Message(), path, opts, false, onPath, visit)
 		}
 	}
+}
+
+// generatesAsReference reports whether goType, as GoTypeForField returns it,
+// is a KCC reference type, such as *secretmanagerv1beta1.SecretRef for
+// google.cloud.connectors.v1.Secret.
+func generatesAsReference(goType string) bool {
+	return strings.HasSuffix(goType, "Ref")
 }
 
 // fieldComment returns a field's leading proto comment on one line, which is

@@ -146,3 +146,44 @@ func referenceHintsMessage(t *testing.T) protoreflect.MessageDescriptor {
 	}
 	return fd.Messages().ByName("Widget")
 }
+
+// TestReferenceHintsSkipsGeneratedReferences pins that a field the generator
+// already writes as a KCC reference gets no hint. connectors' Secret becomes a
+// SecretRef, so a queue entry asking whether clientSecret should be a
+// reference would ask about something already done.
+func TestReferenceHintsSkipsGeneratedReferences(t *testing.T) {
+	// Arrange
+	secret := fieldType(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE)
+	fd, err := protodesc.NewFile(&descriptorpb.FileDescriptorProto{
+		Name:    strPtr("connectors.proto"),
+		Package: strPtr("google.cloud.connectors.v1"),
+		MessageType: []*descriptorpb.DescriptorProto{
+			{
+				Name:  strPtr("Secret"),
+				Field: []*descriptorpb.FieldDescriptorProto{{Name: strPtr("secret_version"), Number: i32Ptr(1), Type: fieldType(descriptorpb.FieldDescriptorProto_TYPE_STRING)}},
+			},
+			{
+				Name: strPtr("Connection"),
+				Field: []*descriptorpb.FieldDescriptorProto{
+					{Name: strPtr("client_secret"), Number: i32Ptr(1), Type: secret, TypeName: strPtr(".google.cloud.connectors.v1.Secret")},
+					{Name: strPtr("api_secret"), Number: i32Ptr(2), Type: fieldType(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+				},
+			},
+		},
+	}, nil)
+	if err != nil {
+		t.Fatalf("building file descriptor: %v", err)
+	}
+
+	// Act
+	items := ReferenceHints(fd.Messages().ByName("Connection"), codegen.WriteOptions{})
+
+	// Assert
+	var got []string
+	for _, it := range items {
+		got = append(got, it.FieldPath)
+	}
+	if want := []string{".spec.apiSecret"}; !slices.Equal(got, want) {
+		t.Errorf("hinted paths = %q, want %q", got, want)
+	}
+}
