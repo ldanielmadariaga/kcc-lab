@@ -111,13 +111,13 @@ func TestAddTypeFileWritesPrepopulatedBodies(t *testing.T) {
 		t.Fatalf("reading scaffolded file: %v", err)
 	}
 	got := string(b)
-	for _, want := range []string{
-		"Description *string `json:\"description,omitempty\"`",
-		"Error *common.Status `json:\"error,omitempty\"`",
-		`common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"`,
-	} {
-		if !strings.Contains(got, want) {
-			t.Errorf("scaffolded file is missing %s\n%s", want, got)
-		}
+	if !strings.Contains(got, "Description *string `json:\"description,omitempty\"`") {
+		t.Errorf("the Spec body is missing from the scaffolded file:\n%s", got)
+	}
+	if !strings.Contains(got, "Error *common.Status `json:\"error,omitempty\"`") {
+		t.Errorf("the ObservedState body is missing from the scaffolded file:\n%s", got)
+	}
+	if !strings.Contains(got, `common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"`) {
+		t.Errorf("the import the ObservedState body needs is missing from the scaffolded file:\n%s", got)
 	}
 }

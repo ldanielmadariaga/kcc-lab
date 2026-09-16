@@ -1047,8 +1047,88 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 // queue entry, and for one WriteField could not type it files
 // unsupported-field-type.
 func TestWriteObservedStateFieldsNotes(t *testing.T) {
-	// Arrange: name is skipped by the caller, create_time renders normally, and
-	// by_index is a map keyed by int32, which GoTypeForField declines.
+	msg := observedStateTestMessage(t)
+
+	for _, tc := range []struct {
+		name         string
+		field        string
+		wantRendered string
+	}{
+		{
+			name:         "a field with a Go type renders into the struct",
+			field:        "create_time",
+			wantRendered: `json:"createTime`,
+		},
+		{
+			name:         "a field WriteField cannot type leaves a marker",
+			field:        "by_index",
+			wantRendered: "// TODO:",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			// Arrange
+			details := &OutputMessageDetails{
+				Message:      msg,
+				OutputFields: []protoreflect.FieldDescriptor{msg.Fields().ByName(protoreflect.Name(tc.field))},
+			}
+
+			// Act
+			var buf bytes.Buffer
+			notes := WriteObservedStateFields(&buf, details, sets.NewString(), nil, WriteOptions{})
+
+			// Assert
+			if len(notes) != 1 {
+				t.Fatalf("got %d notes, want one", len(notes))
+			}
+			if notes[0].Skipped {
+				t.Errorf("Skipped = true, want false for a field the skip map does not name")
+			}
+			if !strings.Contains(notes[0].Rendered, tc.wantRendered) {
+				t.Errorf("Rendered = %q, want it to contain %q", notes[0].Rendered, tc.wantRendered)
+			}
+			if !strings.Contains(buf.String(), tc.wantRendered) {
+				t.Errorf("struct body = %q, want it to contain %q", buf.String(), tc.wantRendered)
+			}
+		})
+	}
+}
+
+// TestWriteObservedStateFieldsSkips pins the other note
+// PrepopulateObservedState reads, for a field the skip map names: no output,
+// and a note saying the field was left out by decision rather than for want of
+// a Go type.
+func TestWriteObservedStateFieldsSkips(t *testing.T) {
+	// Arrange
+	msg := observedStateTestMessage(t)
+	details := &OutputMessageDetails{
+		Message:      msg,
+		OutputFields: []protoreflect.FieldDescriptor{msg.Fields().ByName("name")},
+	}
+
+	// Act
+	var buf bytes.Buffer
+	notes := WriteObservedStateFields(&buf, details, sets.NewString(), map[string]bool{"name": true}, WriteOptions{})
+
+	// Assert
+	if len(notes) != 1 {
+		t.Fatalf("got %d notes, want one", len(notes))
+	}
+	if !notes[0].Skipped {
+		t.Errorf("Skipped = false, want true")
+	}
+	if notes[0].Rendered != "" {
+		t.Errorf("Rendered = %q, want empty", notes[0].Rendered)
+	}
+	if buf.String() != "" {
+		t.Errorf("struct body = %q, want empty", buf.String())
+	}
+}
+
+// observedStateTestMessage returns a message with one field of each kind the
+// tests above need: name and create_time have Go types, and by_index is a map
+// keyed by int32, which GoTypeForField declines.
+func observedStateTestMessage(t *testing.T) protoreflect.MessageDescriptor {
+	t.Helper()
 	fdp := &descriptorpb.FileDescriptorProto{
 		Name:    protoPtr("obs.proto"),
 		Package: protoPtr("google.cloud.test.v1"),
@@ -1082,48 +1162,5 @@ func TestWriteObservedStateFieldsNotes(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create file descriptor: %v", err)
 	}
-	msg := fd.Messages().ByName("TestMessage")
-	details := &OutputMessageDetails{Message: msg}
-	for i := 0; i < msg.Fields().Len(); i++ {
-		details.OutputFields = append(details.OutputFields, msg.Fields().Get(i))
-	}
-
-	// Act
-	var buf bytes.Buffer
-	notes := WriteObservedStateFields(&buf, details, sets.NewString(), map[string]bool{"name": true}, WriteOptions{})
-
-	// Assert
-	byName := map[string]ObservedStateFieldNote{}
-	for _, n := range notes {
-		byName[n.JSONName] = n
-	}
-	if len(notes) != 3 {
-		t.Fatalf("got %d notes, want one per output field", len(notes))
-	}
-	for _, tc := range []struct {
-		field        string
-		wantSkipped  bool
-		wantRendered string
-	}{
-		{field: "name", wantSkipped: true, wantRendered: ""},
-		{field: "createTime", wantRendered: `json:"createTime`},
-		{field: "byIndex", wantRendered: "// TODO:"},
-	} {
-		n := byName[tc.field]
-		if n.Skipped != tc.wantSkipped {
-			t.Errorf("%s: Skipped = %v, want %v", tc.field, n.Skipped, tc.wantSkipped)
-		}
-		if tc.wantRendered == "" {
-			if n.Rendered != "" {
-				t.Errorf("%s: Rendered = %q, want empty", tc.field, n.Rendered)
-			}
-			continue
-		}
-		if !strings.Contains(n.Rendered, tc.wantRendered) {
-			t.Errorf("%s: Rendered = %q, want it to contain %q", tc.field, n.Rendered, tc.wantRendered)
-		}
-	}
-	if strings.Contains(buf.String(), `json:"name`) {
-		t.Error("a skipped field reached the struct")
-	}
+	return fd.Messages().ByName("TestMessage")
 }
