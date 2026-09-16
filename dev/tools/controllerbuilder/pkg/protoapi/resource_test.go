@@ -110,9 +110,7 @@ func TestClassifyParent(t *testing.T) {
 
 // TestParentPair pins which segment ParentPair calls the parent. The scaffolder
 // names a reference field from the collection it returns, so a pattern read one
-// pair off puts the wrong resource in somebody's CRD. The cases easy to get
-// wrong are the patterns that do not end in collection/{id}: there the last
-// pair is already the parent rather than the resource itself.
+// pair off puts the wrong resource in somebody's CRD.
 func TestParentPair(t *testing.T) {
 	grid := []struct {
 		name            string

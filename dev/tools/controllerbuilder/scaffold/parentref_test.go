@@ -21,12 +21,11 @@ import (
 	"testing"
 )
 
-// TestParentRef pins the rule that decides whether a resource gets a parent
-// reference field or only a queue entry. A field emitted here lands in a CRD,
-// so the cases that matter are the ones where the generator must decline: no
-// reference type to point at, or several that match equally well. The queue
-// entry is what TestMissingRefs reads, so an emitted field without one would be
-// an unflagged guess.
+// TestParentRef pins when a resource gets a parent reference field and when it
+// gets only a queue entry. The cases that matter are the ones where the
+// generator must decline: no reference type to point at, or several that match
+// equally well. TestMissingRefs reads the entry, so a field without one is an
+// unflagged guess.
 func TestParentRef(t *testing.T) {
 	grid := []struct {
 		name       string

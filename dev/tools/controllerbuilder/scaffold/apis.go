@@ -217,9 +217,8 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 		cArgs.ExtraImports = prepopulated.ExtraImports
 
 		// The parent field rides on prepopulated because that is the only way its
-		// queue entry reaches the caller. Emitting the field without the entry
-		// would put a +kcc:guess in the Spec that nothing flags, which is the one
-		// outcome worse than not emitting it.
+		// queue entry reaches the caller. A field emitted without its entry would
+		// leave a +kcc:guess in the Spec that nothing flags.
 		if a.EmitParentRefs {
 			field, item := a.parentRef(cArgs.ResourcePattern)
 			cArgs.ParentRefField = field

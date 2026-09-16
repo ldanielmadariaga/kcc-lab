@@ -31,22 +31,17 @@ import (
 const sharedRefsPackage = "apis/refs/v1beta1"
 
 // parentRef renders the Spec field naming a resource's direct parent, together
-// with the queue entry that goes with it. Both are empty where the pattern
-// names no parent below project and location, which is most resources: of the
-// 308 in the measured corpus, 199 are parented at projects/locations and 51 at
-// projects, and only 51 have a parent this emits anything for.
+// with its queue entry. Both are empty where the pattern names no parent below
+// project and location, which is most resources.
 //
 // The field is written only where a reference type for the parent already
 // exists. Where none does, or where several match, the entry says so and no
-// field is written. A plain string would become a CRD field that is painful to
-// change once somebody depends on it, and a wrong reference is harder for a
-// reviewer to catch than an absent one, because it compiles and reads as
-// deliberate.
+// field is written: a wrong reference is harder for a reviewer to catch than an
+// absent one, because it compiles and reads as deliberate.
 //
-// Both halves are measured against the 46 hand-written kinds whose pattern has
-// a parent below project and location. Upstream models that parent in 45 of
-// them, names it as the collection segment predicts in 40, and a reference type
-// for it resolves inside the service in 39.
+// Measured against the 46 hand-written kinds with such a parent, upstream
+// models it in 45, names it as the collection segment predicts in 40, and has
+// a reference type for it inside the service in 39.
 func (a *APIScaffolder) parentRef(pattern string) (field string, item *JudgementItem) {
 	collection, placeholder := protoapi.ParentPair(pattern)
 	switch collection {
@@ -56,11 +51,9 @@ func (a *APIScaffolder) parentRef(pattern string) (field string, item *Judgement
 		return "", nil
 	}
 
-	// The collection segment names the field, not the placeholder beside it.
-	// Placeholders run their words together, so "{keyring}" would yield keyring
-	// where upstream calls it keyRing, and "{datastore}" would yield datastore
-	// for dataStore. Reading the collection instead is right 32 times out of 46
-	// against 28 for the placeholder.
+	// The collection segment names the field, not the placeholder beside it. See
+	// ParentPair. Reading the collection is right 32 times out of 46, against 28
+	// for the placeholder.
 	name := codegen.Singular(collection)
 	path := parentPath(pattern, collection, placeholder)
 
@@ -99,15 +92,12 @@ func (a *APIScaffolder) parentRef(pattern string) (field string, item *Judgement
 // parentRefTypes returns the reference types that could name a parent whose
 // collection singularises to name, as a map of type name to import qualifier.
 //
-// A KCC reference type is named for its Kind, which services spell either as a
-// bare noun, ClusterRef in alloydb, or with the Kind's own prefix, as in
-// DNSManagedZoneRef and PrivateCACAPoolRef. Matching on the suffix finds both,
-// where matching the whole name finds only the first.
-//
-// The service's own package wins over the shared one, so a service that
-// declares its own type needs no import. Unexported types are skipped:
-// apis/kms/v1beta1 declares an unexported kmsCryptoKeyRef beside the real
-// KMSCryptoKeyRef, and counting it makes a single match look ambiguous.
+// Services spell a reference type either as a bare noun, ClusterRef in alloydb,
+// or with the Kind's own prefix, as in DNSManagedZoneRef, so the match is on
+// the suffix. The service's own package wins over the shared one, and
+// unexported types are skipped: apis/kms/v1beta1 declares kmsCryptoKeyRef
+// beside the real KMSCryptoKeyRef, which would make a single match look
+// ambiguous.
 func parentRefTypes(repoRoot, serviceDir, name string) map[string]string {
 	want := strings.ToLower(name) + "ref"
 	re := regexp.MustCompile(`(?m)^type ([A-Z]\w*Ref) struct`)
