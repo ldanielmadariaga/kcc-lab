@@ -43,6 +43,7 @@ func TestTypesTemplateRendersValidGo(t *testing.T) {
 		ProtoMessageName:     "LbTrafficExtension",
 		ProtoMessageFullName: "google.cloud.networkservices.v1.LbTrafficExtension",
 	}
+	base.RootRefField = fixedRootField("ProjectRef", "projectRef", "project")
 	prepopulated := base
 	prepopulated.SpecFields = "\t// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.description\n" +
 		"\tDescription *string `json:\"description,omitempty\"`\n"
@@ -50,8 +51,9 @@ func TestTypesTemplateRendersValidGo(t *testing.T) {
 		"\tCreateTime *string `json:\"createTime,omitempty\"`\n"
 	prepopulated.ExtraImports = []string{`common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"`}
 	organizationRooted := prepopulated
-	organizationRooted.RootRefType, organizationRooted.RootRefField, organizationRooted.RootRefDescription =
-		rootRef("organizations/{organization}/locations/{location}/widgets/{widget}")
+	organizationRooted.RootRefField = fixedRootField("OrganizationRef", "organizationRef", "organization")
+	selfRooted := base
+	selfRooted.RootRefField = ""
 
 	for _, tc := range []struct {
 		name string
@@ -60,6 +62,7 @@ func TestTypesTemplateRendersValidGo(t *testing.T) {
 		{name: "stub", args: base},
 		{name: "prepopulated", args: prepopulated},
 		{name: "organization-rooted", args: organizationRooted},
+		{name: "a resource that is its own root", args: selfRooted},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			// Arrange

@@ -31,38 +31,84 @@ import (
 const sharedRefsPackage = "apis/refs/v1beta1"
 
 // parentRef renders the Spec field naming a resource's direct parent and the
-// queue entry that goes with it. Both are empty where the pattern names no
-// parent below project and location.
-//
-// The field is written only where a reference type for the parent exists.
-// Where none does, or several match, the entry names the parent path and no
-// field is written, because a wrong reference is harder to catch in review
-// than an absent one.
+// queue entry that goes with it, as referenceTo describes. Both are empty where
+// the parent is a location or the root of the name, which the location field
+// and rootRef already carry.
 func (a *APIScaffolder) parentRef(pattern string) (field string, item *JudgementItem) {
 	collection, placeholder := protoapi.ParentPair(pattern)
 	switch collection {
-	case "", "projects", "locations", "regions", "zones", "global",
-		"organizations", "folders":
-		// projectRef and location already carry these shapes.
+	case "", "locations", "regions", "zones", "global":
+		return "", nil
+	}
+	path := parentPath(pattern, collection, placeholder)
+	if strings.Count(path, "/") == 1 {
 		return "", nil
 	}
 
 	// The collection segment names the field, not the placeholder beside it. See
 	// ParentPair. Reading the collection is right 32 times out of 46, against 28
 	// for the placeholder.
-	name := codegen.Singular(collection)
-	path := parentPath(pattern, collection, placeholder)
+	return a.referenceTo("parent", collection, path, pattern)
+}
 
+// rootRef renders the Spec field naming the root of a resource's name, and the
+// queue entry that goes with it when the root is one KCC has no fixed field
+// for.
+//
+// A project, and a resource with no pattern, get projectRef; an organization
+// or folder gets organizationRef or folderRef. Any other root, such as
+// properties/{property} in Analytics, is looked up the way parentRef looks up
+// a parent. A pattern that is only the root itself, such as
+// billingAccounts/{billing_account}, names no root to point at, so it gets no
+// field.
+//
+// It reads the first segment rather than protoapi.ParentStyle, which calls
+// "organizations/{organization}/locations/{location}/..." ParentOther.
+func (a *APIScaffolder) rootRef(pattern string) (field string, item *JudgementItem) {
+	segs := strings.Split(pattern, "/")
+	switch {
+	case pattern == "":
+		return fixedRootField("ProjectRef", "projectRef", "project"), nil
+	case len(segs) < 3:
+		return "", nil
+	}
+	switch segs[0] {
+	case "projects":
+		return fixedRootField("ProjectRef", "projectRef", "project"), nil
+	case "organizations":
+		return fixedRootField("OrganizationRef", "organizationRef", "organization"), nil
+	case "folders":
+		return fixedRootField("FolderRef", "folderRef", "folder"), nil
+	}
+	return a.referenceTo("root", segs[0], strings.Join(segs[:2], "/"), pattern)
+}
+
+// fixedRootField renders a required reference to one of the roots every KCC
+// resource can point at, using the shared type of that name.
+func fixedRootField(refType, jsonName, noun string) string {
+	return fmt.Sprintf("\t// The %s that this resource belongs to.\n"+
+		"\t%s *refsv1beta1.%s `json:%q`", noun, refType, refType, jsonName)
+}
+
+// referenceTo renders a Spec field pointing at the resource at path, whose
+// collection segment is collection, and the queue entry for it. role says
+// which ancestor this is, "parent" or "root", in the entry.
+//
+// The field is written only where exactly one reference type matches. Where
+// none does, or several do, the entry names the path and no field is written,
+// because a wrong reference is harder to catch in review than an absent one.
+func (a *APIScaffolder) referenceTo(role, collection, path, pattern string) (field string, item *JudgementItem) {
+	name := codegen.Singular(collection)
 	candidates := parentRefTypes(a.repoRoot(), filepath.Join(a.BaseDir, a.GoPackage), name)
 	if len(candidates) != 1 {
-		detail := fmt.Sprintf("the parent is %s, and no %sRef type exists to point at; "+
-			"add the parent resource first, then model this as a reference", path, exportedName(name))
+		detail := fmt.Sprintf("the %s is %s, and no %sRef type exists to point at; "+
+			"add the %s resource first, then model this as a reference", role, path, exportedName(name), role)
 		if len(candidates) > 1 {
-			detail = fmt.Sprintf("the parent is %s, and several reference types match it (%s); "+
-				"pick one and add the field by hand", path, strings.Join(sortedNames(candidates), ", "))
+			detail = fmt.Sprintf("the %s is %s, and several reference types match it (%s); "+
+				"pick one and add the field by hand", role, path, strings.Join(sortedNames(candidates), ", "))
 		}
 		return "", &JudgementItem{
-			Reason: "parent-ref-not-modelled",
+			Reason: role + "-ref-not-modelled",
 			Detail: detail,
 		}
 	}
@@ -78,7 +124,7 @@ func (a *APIScaffolder) parentRef(pattern string) (field string, item *Judgement
 		"\t%sRef *%s `json:%q`", path, exportedName(name), goType, name+"Ref,omitempty")
 	return field, &JudgementItem{
 		FieldPath: ".spec." + name + "Ref",
-		Reason:    "parent-ref-guessed",
+		Reason:    role + "-ref-guessed",
 		Detail: fmt.Sprintf("emitted as a reference to %s, read from the %s segment of %s; "+
 			"the field name comes from the pattern rather than the proto, so confirm both the name and the target",
 			typeName, collection, pattern),

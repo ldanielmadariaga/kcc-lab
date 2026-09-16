@@ -133,6 +133,9 @@ func (a *APIScaffolder) buildAPIArgs(resource *options.Resource) *apis.APIArgs {
 		Version:         a.Version,
 		PackageProtoTag: a.PackageProtoTag,
 	}
+	// Without a pattern to read, every resource gets projectRef, as it always
+	// has. AddTypeFile replaces it from the pattern when prepopulating.
+	args.RootRefField, _ = a.rootRef("")
 
 	if resource != nil {
 		args.Kind = resource.Kind
@@ -215,7 +218,11 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 		cArgs.SpecFields = prepopulated.SpecFields
 		cArgs.ObservedStateFields = prepopulated.ObservedStateFields
 		cArgs.ExtraImports = prepopulated.ExtraImports
-		cArgs.RootRefType, cArgs.RootRefField, cArgs.RootRefDescription = rootRef(cArgs.ResourcePattern)
+		root, item := a.rootRef(cArgs.ResourcePattern)
+		cArgs.RootRefField = root
+		if item != nil {
+			prepopulated.Judgement = append(prepopulated.Judgement, *item)
+		}
 
 		// The parent field rides on prepopulated because that is the only way its
 		// queue entry reaches the caller. A field emitted without its entry would
@@ -229,26 +236,6 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 		}
 	}
 	return scaffoldTypeFile(typeFilePath, cArgs)
-}
-
-// rootRef returns the reference type, JSON name and description of the Spec
-// field for a pattern rooted at an organization or folder. For any other root,
-// a project included, and for an empty pattern it returns empty strings, and
-// the template keeps projectRef.
-//
-// It reads the first segment rather than protoapi.ParentStyle, which calls
-// "organizations/{organization}/locations/{location}/..." ParentOther. That
-// resource has no project either, and a projectRef would give it a field
-// upstream lacks while leaving out the one it has.
-func rootRef(pattern string) (refType, field, description string) {
-	root, _, _ := strings.Cut(pattern, "/")
-	switch root {
-	case "organizations":
-		return "OrganizationRef", "organizationRef", "The organization that this resource belongs to."
-	case "folders":
-		return "FolderRef", "folderRef", "The folder that this resource belongs to."
-	}
-	return "", "", ""
 }
 
 func scaffoldTypeFile(path string, cArgs *apis.APIArgs) error {
