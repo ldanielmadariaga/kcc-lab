@@ -147,14 +147,14 @@ func referenceHintsMessage(t *testing.T) protoreflect.MessageDescriptor {
 	return fd.Messages().ByName("Widget")
 }
 
-// TestReferenceHintsSkipsGeneratedReferences pins which fields the walk treats
-// as already generated as references. connectors' Secret becomes a SecretRef,
-// so clientSecret gets no hint. A proto message that is merely named ModelRef
-// is an ordinary struct, so the walk still descends into it and hints its
-// network field.
+// TestReferenceHintsSkipsGeneratedReferences pins which fields the walk skips
+// because the generator writes them as references. connectors' Secret becomes
+// a SecretRef, so clientSecret gets no hint. A proto message that is merely
+// named ModelRef is an ordinary struct, so the walk still descends into it and
+// hints its network field.
 func TestReferenceHintsSkipsGeneratedReferences(t *testing.T) {
 	// Arrange
-	secret := fieldType(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE)
+	message := fieldType(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE)
 	fd, err := protodesc.NewFile(&descriptorpb.FileDescriptorProto{
 		Name:    strPtr("connectors.proto"),
 		Package: strPtr("google.cloud.connectors.v1"),
@@ -170,9 +170,9 @@ func TestReferenceHintsSkipsGeneratedReferences(t *testing.T) {
 			{
 				Name: strPtr("Connection"),
 				Field: []*descriptorpb.FieldDescriptorProto{
-					{Name: strPtr("client_secret"), Number: i32Ptr(1), Type: secret, TypeName: strPtr(".google.cloud.connectors.v1.Secret")},
+					{Name: strPtr("client_secret"), Number: i32Ptr(1), Type: message, TypeName: strPtr(".google.cloud.connectors.v1.Secret")},
 					{Name: strPtr("api_secret"), Number: i32Ptr(2), Type: fieldType(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
-					{Name: strPtr("model_ref"), Number: i32Ptr(3), Type: secret, TypeName: strPtr(".google.cloud.connectors.v1.ModelRef")},
+					{Name: strPtr("model_ref"), Number: i32Ptr(3), Type: message, TypeName: strPtr(".google.cloud.connectors.v1.ModelRef")},
 				},
 			},
 		},
