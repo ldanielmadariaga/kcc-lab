@@ -15,6 +15,7 @@
 package protoapi
 
 import (
+	"slices"
 	"testing"
 )
 
@@ -103,6 +104,62 @@ func TestClassifyParent(t *testing.T) {
 		t.Run(g.parentPath, func(t *testing.T) {
 			if got := classifyParent(g.parentPath); got != g.want {
 				t.Errorf("classifyParent(%q) = %q, want %q", g.parentPath, got, g.want)
+			}
+		})
+	}
+}
+
+func TestParentVariables(t *testing.T) {
+	grid := []struct {
+		name    string
+		pattern string
+		want    []string
+	}{
+		{
+			name:    "project and location",
+			pattern: "projects/{project}/locations/{location}/foos/{foo}",
+			want:    []string{"project", "location"},
+		},
+		{
+			// The case this was written for. ParentStyle collapses this to
+			// "other", which tells the template what to render but not that
+			// spec.collection is missing.
+			name:    "collection between location and the resource",
+			pattern: "projects/{project}/locations/{location}/collections/{collection}/dataStores/{data_store}",
+			want:    []string{"project", "location", "collection"},
+		},
+		{
+			name:    "organization parent",
+			pattern: "organizations/{organization}/bars/{bar}",
+			want:    []string{"organization"},
+		},
+		{
+			name:    "no parent at all",
+			pattern: "foos/{foo}",
+			want:    nil,
+		},
+		{
+			// A collection pattern names no resource, so nothing is the id and
+			// every placeholder belongs to the parent.
+			name:    "pattern ending in a literal",
+			pattern: "projects/{project}/locations",
+			want:    []string{"project"},
+		},
+		{
+			name:    "no placeholders",
+			pattern: "projects/locations",
+			want:    nil,
+		},
+	}
+
+	for _, g := range grid {
+		t.Run(g.name, func(t *testing.T) {
+			// Act
+			got := ParentVariables(g.pattern)
+
+			// Assert
+			if !slices.Equal(got, g.want) {
+				t.Errorf("ParentVariables(%q) = %v, want %v", g.pattern, got, g.want)
 			}
 		})
 	}
