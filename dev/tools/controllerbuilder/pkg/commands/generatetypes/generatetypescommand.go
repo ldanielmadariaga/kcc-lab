@@ -276,17 +276,18 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 						// whole resource.
 						prepopulated.Judgement = append(prepopulated.Judgement, obsJudgement...)
 					}
-					// The rendered body is the whole condition. The template
-					// writes the ObservedState struct whether or not it has
-					// fields, so there is no "absent" case to tell apart, and
-					// reading the body rather than the proto's annotations also
+					// The template writes the ObservedState struct whether or not
+					// it has fields, so an empty body is the only signal there is.
+					// Reading the body rather than the proto's annotations also
 					// catches a resource whose output fields were all dropped, as
 					// identity fields or as types the generator cannot write.
 					//
-					// The entry is per resource, because there is no field to hang
-					// one on. TestCRDObjectTypes allowlists dozens of CRDs for this
-					// shape in knownInvalidCRDs: that gates the schema, this names
-					// the work.
+					// A CRD with an empty status.observedState fails
+					// TestCRDObjectTypes, which rejects an object type with no
+					// properties; the ones that exist today sit in its
+					// knownInvalidCRDs allowlist. This entry names the resource as
+					// it is generated, so the gap reaches a person before it
+					// reaches that allowlist.
 					if o.DetectEmptyObservedState && prepopulated.ObservedStateFields == "" {
 						prepopulated.Judgement = append(prepopulated.Judgement, scaffold.JudgementItem{
 							Reason: "empty-observedstate",
