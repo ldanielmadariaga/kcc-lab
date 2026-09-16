@@ -65,8 +65,8 @@ type TypeGenerator struct {
 	// APIHubInstance, that is a redeclaration.
 	reservedTypeNames map[string]bool
 
-	// rootMessageFQN is the resource's own message for the visit in progress.
-	// See isServerSet.
+	// rootMessageFQN is the full name of the message VisitProto is visiting.
+	// isServerSet uses it to tell that message from the nested ones below it.
 	rootMessageFQN string
 }
 
@@ -97,9 +97,9 @@ type WriteOptions struct {
 	// value's Go type. Without it they are left out, with a "// TODO:" marker
 	// in their place.
 	EmitMessageMaps bool
-	// PlaceServerSetFields puts a small allowlist of server-computed fields into
-	// ObservedState when the proto never said where they belong. See
-	// IsServerSetField.
+	// PlaceServerSetFields puts a small allowlist of server-computed fields in
+	// ObservedState when no field of the message carries field_behavior. See
+	// IsServerSetField for the allowlist and the guard.
 	PlaceServerSetFields bool
 }
 
@@ -225,10 +225,10 @@ func (g *TypeGenerator) OutputFieldsFor(fqn string) (*OutputMessageDetails, bool
 	return nil, false
 }
 
-// isServerSet reports IsServerSetField for a field of the resource's own
-// message, and false for any other message. identifyOutputs recurses through
-// nested messages, where a field called "id" or "kind" is often set by the
-// user.
+// isServerSet reports what IsServerSetField says for a field of the resource's
+// own message, and false for a field of any other message. identifyOutputs
+// recurses into nested messages, where a field called "id" or "kind" is often
+// the user's to set.
 func (g *TypeGenerator) isServerSet(field protoreflect.FieldDescriptor, msg protoreflect.MessageDescriptor) bool {
 	if string(msg.FullName()) != g.rootMessageFQN {
 		return false
@@ -267,9 +267,9 @@ func (g *TypeGenerator) needsObservedState(msg protoreflect.MessageDescriptor, s
 			seen[fqn] = true
 			return true
 		}
-		// A server-set field needs the ObservedState struct just as an OUTPUT_ONLY
-		// field does, or identifyOutputs collects it for a struct that is never
-		// written.
+		// A server-set field needs the ObservedState struct as much as an
+		// OUTPUT_ONLY field does. Without this, identifyOutputs collects it for a
+		// struct nothing writes.
 		if g.isServerSet(f, msg) {
 			seen[fqn] = true
 			return true
@@ -537,9 +537,9 @@ func WriteObservedStateMessage(out io.Writer, msgDetails *OutputMessageDetails, 
 	fmt.Fprintf(out, "\n")
 	fmt.Fprintf(out, "// %s=%s\n", KCCProtoMessageAnnotationObservedState, msg.FullName())
 	fmt.Fprintf(out, "type %s struct {\n", goType)
-	// WriteOptions stays empty, so the nested structs in types.generated.go get no
-	// placement note. Only the resource's own ObservedState, which the scaffolder
-	// writes, carries one.
+	// The empty WriteOptions keeps placement notes out of the nested structs in
+	// types.generated.go. Only the resource's own ObservedState, which the
+	// scaffolder writes, carries one.
 	WriteObservedStateFields(out, msgDetails, observedStateMessages, nil, WriteOptions{})
 	fmt.Fprintf(out, "}\n")
 }
@@ -689,13 +689,6 @@ func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool,
 	return goType, nil
 }
 
-// WriteField writes one struct field for a proto field: its proto comment, its
-// annotations and markers, and the Go declaration. A field GoTypeForField
-// cannot type becomes a "// TODO:" marker instead.
-//
-// note, when set, is written after the proto comment. It records a choice the
-// generated type does not otherwise show, such as a field placed in
-// ObservedState by name rather than by annotation.
 func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protoreflect.MessageDescriptor, fieldIndex int, isTransitiveOutput bool, opts WriteOptions, note string) {
 	sourceLocations := msg.ParentFile().SourceLocations().ByDescriptor(field)
 
@@ -726,8 +719,9 @@ func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protorefl
 			}
 		}
 	}
-	// The note goes after the proto's own comment: the proto comment describes
-	// the field, and the note describes the generator's choice.
+	// note records a choice the generated type does not otherwise show, such as
+	// a field placed in ObservedState by name. It follows the proto's own
+	// comment, which describes the field rather than what the generator did.
 	for _, line := range strings.Split(strings.TrimSpace(note), "\n") {
 		if line != "" {
 			fmt.Fprintf(out, "\t// %s\n", line)
@@ -1013,11 +1007,10 @@ func IsFieldBehavior(field protoreflect.FieldDescriptor, fieldBehavior annotatio
 // narrow. Every name here appears zero times in a resource-level Spec across
 // the baseline tree, with one exception:
 //
-// etag appears twice, on AlloyDBCluster and ContainerAttachedCluster, and both
-// are optimistic-concurrency inputs, "can be sent on update and
-// delete requests". Against that, 27 greenfield resources carry it status-side
-// and none carry it spec-side, so it is included and, like everything here,
-// queued for a human.
+// etag appears twice, on AlloyDBCluster and ContainerAttachedCluster, where it
+// is an optimistic-concurrency input that "can be sent on update and delete
+// requests". Against that, 27 greenfield resources carry it status-side and
+// none spec-side, so the list keeps it and the queue asks a human.
 //
 // Three names stay out of the list, because how upstream uses them differs
 // from what their counts suggest:
@@ -1052,12 +1045,11 @@ var serverSetFieldNames = map[string]bool{
 // IsServerSetField reports whether a field should go to ObservedState even
 // though the proto does not say so.
 //
-// The guard is that msg carries no google.api.field_behavior on any field. A
-// message with any annotation is taken to have placed its other fields on
-// purpose. Compute messages carry none, because they come from a discovery
-// document, so without this rule their ObservedState is empty and
-// creationTimestamp and selfLink sit in the Spec for a user to set, only for
-// GCP to overwrite them.
+// The guard is that msg carries no google.api.field_behavior on any field.
+// Where one field carries it, the proto's author placed the others on purpose.
+// Compute messages carry none, because they come from a discovery document, so
+// without this rule their ObservedState is empty while creationTimestamp and
+// selfLink sit in the Spec for a user to set and GCP to overwrite.
 //
 // A guard that only required this field to be unannotated would recover nine
 // more fields, almost all of them etag in protos that do annotate other
