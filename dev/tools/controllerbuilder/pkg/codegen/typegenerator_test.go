@@ -1127,12 +1127,180 @@ func TestWriteObservedStateFieldsSkips(t *testing.T) {
 // observedStateTestMessage returns a message with one field of each kind the
 // tests above need: name and create_time have Go types, and by_index is a map
 // keyed by int32, which GoTypeForField declines.
+// TestWriteObservedStateFieldsHonoursWriteOptions pins that an observed-state
+// field is written with the caller's WriteOptions, EmitRequired excepted.
+// PrepopulateObservedState hands it the options the Spec was generated with, so
+// a flag honoured in the Spec and dropped here puts two spellings of one proto
+// field in the same generated file, and files a queue path matching neither.
+func TestWriteObservedStateFieldsHonoursWriteOptions(t *testing.T) {
+	msg := observedStateTestMessage(t)
+
+	for _, tc := range []struct {
+		name         string
+		field        string
+		opts         WriteOptions
+		wantRendered string
+		wantJSONName string
+	}{
+		{
+			name:         "a plural acronym is cased as the spec cases it",
+			field:        "related_uris",
+			opts:         WriteOptions{EmitPluralAcronyms: true},
+			wantRendered: `json:"relatedURIs,omitempty"`,
+			wantJSONName: "relatedURIs",
+		},
+		{
+			name:         "with that flag off the name is unchanged",
+			field:        "related_uris",
+			opts:         WriteOptions{},
+			wantRendered: `json:"relatedUris,omitempty"`,
+			wantJSONName: "relatedUris",
+		},
+		{
+			name:         "a message-valued map is typed rather than dropped",
+			field:        "resources",
+			opts:         WriteOptions{EmitMessageMaps: true},
+			wantRendered: "map[string]Payload",
+			wantJSONName: "resources",
+		},
+		{
+			name:         "with that flag off the same map leaves a marker",
+			field:        "resources",
+			opts:         WriteOptions{},
+			wantRendered: "// TODO:",
+			wantJSONName: "resources",
+		},
+		{
+			name:         "EmitRequired is the one flag that does not carry over",
+			field:        "required_field",
+			opts:         WriteOptions{EmitRequired: true},
+			wantRendered: `json:"requiredField,omitempty"`,
+			wantJSONName: "requiredField",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			// Arrange
+			details := &OutputMessageDetails{
+				Message:      msg,
+				OutputFields: []protoreflect.FieldDescriptor{msg.Fields().ByName(protoreflect.Name(tc.field))},
+			}
+
+			// Act
+			var buf bytes.Buffer
+			notes := WriteObservedStateFields(&buf, details, sets.NewString(), nil, tc.opts)
+
+			// Assert
+			if len(notes) != 1 {
+				t.Fatalf("got %d notes, want one", len(notes))
+			}
+			if !strings.Contains(buf.String(), tc.wantRendered) {
+				t.Errorf("struct body = %q, want it to contain %q", buf.String(), tc.wantRendered)
+			}
+			if notes[0].JSONName != tc.wantJSONName {
+				t.Errorf("note JSONName = %q, want %q", notes[0].JSONName, tc.wantJSONName)
+			}
+			// The API server validates status, so a required marker here would
+			// make it reject a status KCC itself wrote.
+			if strings.Contains(buf.String(), "+required") {
+				t.Errorf("struct body = %q, want no +required marker", buf.String())
+			}
+		})
+	}
+}
+
+// TestWriteObservedStateMessageHonoursWriteOptions pins that a nested
+// ObservedState struct is written with the caller's WriteOptions.
+// WriteOutputMessages writes every nested observed-state struct in
+// types.generated.go through this, so a flag dropped here spells a nested
+// observed field differently from the same proto field in the spec struct
+// beside it, in one file.
+func TestWriteObservedStateMessageHonoursWriteOptions(t *testing.T) {
+	msg := observedStateTestMessage(t)
+
+	for _, tc := range []struct {
+		name  string
+		field string
+		opts  WriteOptions
+		want  string
+	}{
+		{
+			name:  "a plural acronym is cased as the spec cases it",
+			field: "related_uris",
+			opts:  WriteOptions{EmitPluralAcronyms: true},
+			want:  `json:"relatedURIs,omitempty"`,
+		},
+		{
+			name:  "a message-valued map is typed rather than dropped",
+			field: "resources",
+			opts:  WriteOptions{EmitMessageMaps: true},
+			want:  "map[string]Payload",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			// Arrange
+			details := &OutputMessageDetails{
+				Message:      msg,
+				OutputFields: []protoreflect.FieldDescriptor{msg.Fields().ByName(protoreflect.Name(tc.field))},
+			}
+
+			// Act
+			var buf bytes.Buffer
+			WriteObservedStateMessage(&buf, details, sets.NewString(), tc.opts)
+
+			// Assert
+			if !strings.Contains(buf.String(), tc.want) {
+				t.Errorf("struct = %q, want it to contain %q", buf.String(), tc.want)
+			}
+		})
+	}
+}
+
+// TestWriteObservedStateMessageOmitsPlacementNote pins the one flag a nested
+// struct does not inherit. A placement note names a field the server-set
+// allowlist moved, and only the resource's own ObservedState, which the
+// scaffolder writes, is entitled to one; a note on a nested struct would claim
+// a decision nobody recorded in the judgement queue.
+func TestWriteObservedStateMessageOmitsPlacementNote(t *testing.T) {
+	// Arrange. Discovery carries no field_behavior on any field, which is the
+	// condition IsServerSetField needs before it moves anything at all.
+	discovery := serverSetTestFile(t).Messages().ByName("Discovery")
+	details := &OutputMessageDetails{
+		Message:      discovery,
+		OutputFields: []protoreflect.FieldDescriptor{discovery.Fields().ByName("creation_timestamp")},
+	}
+	opts := WriteOptions{PlaceServerSetFields: true}
+
+	// Act
+	var nested, resourceLevel bytes.Buffer
+	WriteObservedStateMessage(&nested, details, sets.NewString(), opts)
+	WriteObservedStateFields(&resourceLevel, details, sets.NewString(), nil, opts)
+
+	// Assert
+	if strings.Contains(nested.String(), "+kcc:guess=placement") {
+		t.Errorf("nested struct = %q, want no placement note", nested.String())
+	}
+	// Without this the test cannot tell suppression from the rule never firing.
+	if !strings.Contains(resourceLevel.String(), "+kcc:guess=placement") {
+		t.Errorf("resource-level body = %q, want a placement note", resourceLevel.String())
+	}
+}
+
 func observedStateTestMessage(t *testing.T) protoreflect.MessageDescriptor {
 	t.Helper()
+	requiredOpts := &descriptorpb.FieldOptions{}
+	proto.SetExtension(requiredOpts, annotations.E_FieldBehavior,
+		[]annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED})
+
 	fdp := &descriptorpb.FileDescriptorProto{
 		Name:    protoPtr("obs.proto"),
 		Package: protoPtr("google.cloud.test.v1"),
 		MessageType: []*descriptorpb.DescriptorProto{
+			{
+				Name: protoPtr("Payload"),
+				Field: []*descriptorpb.FieldDescriptorProto{
+					{Name: protoPtr("v"), Number: protoPtr(int32(1)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+				},
+			},
 			{
 				Name: protoPtr("TestMessage"),
 				NestedType: []*descriptorpb.DescriptorProto{
@@ -1141,6 +1309,18 @@ func observedStateTestMessage(t *testing.T) protoreflect.MessageDescriptor {
 						Field: []*descriptorpb.FieldDescriptorProto{
 							{Name: protoPtr("key"), Number: protoPtr(int32(1)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_INT32)},
 							{Name: protoPtr("value"), Number: protoPtr(int32(2)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+						},
+						Options: &descriptorpb.MessageOptions{MapEntry: protoPtr(true)},
+					},
+					{
+						Name: protoPtr("ResourcesEntry"),
+						Field: []*descriptorpb.FieldDescriptorProto{
+							{Name: protoPtr("key"), Number: protoPtr(int32(1)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+							{
+								Name: protoPtr("value"), Number: protoPtr(int32(2)),
+								Type:     typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE),
+								TypeName: protoPtr(".google.cloud.test.v1.Payload"),
+							},
 						},
 						Options: &descriptorpb.MessageOptions{MapEntry: protoPtr(true)},
 					},
@@ -1153,6 +1333,22 @@ func observedStateTestMessage(t *testing.T) protoreflect.MessageDescriptor {
 						Type:     typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE),
 						TypeName: protoPtr(".google.cloud.test.v1.TestMessage.ByIndexEntry"),
 						Label:    labelDescriptor(descriptorpb.FieldDescriptorProto_LABEL_REPEATED),
+					},
+					{
+						Name: protoPtr("related_uris"), Number: protoPtr(int32(4)),
+						Type:  typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING),
+						Label: labelDescriptor(descriptorpb.FieldDescriptorProto_LABEL_REPEATED),
+					},
+					{
+						Name: protoPtr("resources"), Number: protoPtr(int32(5)),
+						Type:     typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE),
+						TypeName: protoPtr(".google.cloud.test.v1.TestMessage.ResourcesEntry"),
+						Label:    labelDescriptor(descriptorpb.FieldDescriptorProto_LABEL_REPEATED),
+					},
+					{
+						Name: protoPtr("required_field"), Number: protoPtr(int32(6)),
+						Type:    typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING),
+						Options: requiredOpts,
 					},
 				},
 			},
