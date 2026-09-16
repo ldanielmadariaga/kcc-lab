@@ -244,7 +244,7 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 						return fmt.Errorf("prepopulating spec for %s: %w", resource.Kind, err)
 					}
 					if o.DetectOutputOnly {
-						if c := scaffold.DetectOutputOnlyInComments(msg); len(c) > 0 {
+						if c := scaffold.DetectOutputOnlyInComments(msg, writeOptions); len(c) > 0 {
 							outputOnly = append(outputOnly, scaffold.FormatOutputOnlyCandidates(resource.Kind, gv.Group, c))
 							// Each candidate also goes into the queue. The report
 							// file alone is easy to miss: the field is in the

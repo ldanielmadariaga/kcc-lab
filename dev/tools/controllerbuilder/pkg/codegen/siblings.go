@@ -31,21 +31,22 @@ const SiblingGuessMarker = "+kcc:guess=possible-reference target="
 // SiblingResource reports the resource this service declares whose name matches
 // the field's, if any.
 //
-// siblings maps a lowercased Kind suffix to the Kind: DiscoveryEngineDataStore
-// is keyed "datastore", so a field called dataStore matches it. The rule keeps
-// no list of known names, so it works on new services. refs.NameRules cannot do
-// that, because it only recognises spellings someone has already written down.
+// opts.Siblings maps a lowercased Kind suffix to the Kind:
+// DiscoveryEngineDataStore is keyed "datastore", so a field called dataStore
+// matches it. The rule keeps no list of known names, so it works on new
+// services. refs.NameRules cannot do that, because it only recognises
+// spellings someone has already written down.
 //
 // The field name must equal the key exactly, or equal it once a trailing plural
 // is removed. Matching on a suffix instead was right 68% of the time where this
 // exact match is right 75%, and it wrongly matched spec.pipelineJob and
 // localSsds[].interface. Two names match a sibling Kind that upstream still
 // keeps plain, both in DataLabeling: annotationSpecSet and instruction.
-func SiblingResource(field protoreflect.FieldDescriptor, siblings map[string]string) (string, bool) {
-	if len(siblings) == 0 || field.Kind() != protoreflect.StringKind {
+func SiblingResource(field protoreflect.FieldDescriptor, opts WriteOptions) (string, bool) {
+	if len(opts.Siblings) == 0 || field.Kind() != protoreflect.StringKind {
 		return "", false
 	}
-	return SiblingResourceByName(GetJSONForKRM(field), siblings)
+	return SiblingResourceByName(GetJSONForKRM(field, opts), opts.Siblings)
 }
 
 // SiblingResourceByName takes the name directly, for callers with no proto
