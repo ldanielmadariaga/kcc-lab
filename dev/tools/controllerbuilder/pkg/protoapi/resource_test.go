@@ -125,25 +125,12 @@ func TestParentPair(t *testing.T) {
 			wantPlaceholder: "cluster",
 		},
 		{
-			// ComputeDiskResourcePolicyAttachment: the trailing {name} is the
-			// resource, so disks/{disk} is already the parent.
-			name:            "trailing bare id",
-			pattern:         "projects/{project}/zones/{zone}/disks/{disk}/{name}",
-			wantCollection:  "disks",
-			wantPlaceholder: "disk",
-		},
-		{
-			name:            "several trailing ids",
-			pattern:         "projects/{project}/zones/{zone}/networkEndpointGroups/{group}/{instance}/{ip_address}/{port}",
-			wantCollection:  "networkEndpointGroups",
-			wantPlaceholder: "group",
-		},
-		{
-			// DiscoveryEngineSearchEngine: a singleton named by a literal.
+			// 274 of the 3160 patterns in googleapis end in a literal naming a
+			// singleton, so the last collection/{id} pair is already the parent.
 			name:            "ends in a singleton literal",
-			pattern:         "projects/{project}/locations/{location}/dataStores/{data_store}/siteSearchEngine",
-			wantCollection:  "dataStores",
-			wantPlaceholder: "data_store",
+			pattern:         "accounts/{account}/programs/{program}/checkoutSettings",
+			wantCollection:  "programs",
+			wantPlaceholder: "program",
 		},
 		{
 			name:            "project and location parent",

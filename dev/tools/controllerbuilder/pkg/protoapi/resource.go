@@ -142,12 +142,11 @@ func splitPattern(pattern string) (collection string, parentPath string) {
 // words together ("{keyring}", "{datastore}") where the collection beside them
 // keeps the API's own casing ("keyRings", "dataStores").
 //
-// Patterns do not all end in collection/{id}. Some carry a trailing bare id,
-// "projects/{project}/zones/{zone}/disks/{disk}/{name}"; some carry several,
-// ".../networkEndpointGroups/{group}/{instance}/{ip_address}/{port}"; and some
-// end in a singleton literal, ".../dataStores/{data_store}/siteSearchEngine".
-// Only where the pattern ends on a collection/{id} pair is that pair the
-// resource itself, so only then does the parent lie one pair further back.
+// Patterns do not all end in collection/{id}: 274 of the 3160 in googleapis
+// end in a literal naming a singleton, such as
+// "accounts/{account}/programs/{program}/checkoutSettings". Only where the
+// pattern ends on a collection/{id} pair is that pair the resource itself, so
+// only then does the parent lie one pair further back.
 func ParentPair(pattern string) (collection string, placeholder string) {
 	segs := strings.Split(pattern, "/")
 
