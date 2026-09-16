@@ -96,9 +96,10 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 			out.Judgement = append(out.Judgement, JudgementItem{
 				FieldPath: ".status.observedState." + codegen.GetJSONForKRM(field),
 				Reason:    "server-set-field-placed",
-				Detail: "GCP computes this, but the proto carries no field_behavior " +
-					"anywhere on the message, so the generator placed it by name. " +
-					"Confirm a user does not set it",
+				Detail: "moved to ObservedState because its name is on the " +
+					"server-set allowlist, not because the proto says so: no " +
+					"field on this message carries field_behavior. Confirm GCP " +
+					"sets this field and a user never does",
 			})
 			continue
 		}

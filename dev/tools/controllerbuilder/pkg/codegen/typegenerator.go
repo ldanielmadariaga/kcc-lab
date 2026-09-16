@@ -1062,10 +1062,10 @@ func IsServerSetField(field protoreflect.FieldDescriptor, msg protoreflect.Messa
 	if !opts.PlaceServerSetFields || msg == nil {
 		return false
 	}
-	if !serverSetFieldNames[getJSONForKRM(field, opts)] {
+	if hasAnyFieldBehavior(msg) {
 		return false
 	}
-	return !hasAnyFieldBehavior(msg)
+	return serverSetFieldNames[getJSONForKRM(field, opts)]
 }
 
 // hasAnyFieldBehavior reports whether any field of msg carries a
