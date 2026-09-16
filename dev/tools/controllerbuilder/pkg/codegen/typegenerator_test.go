@@ -1042,10 +1042,10 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 	}
 }
 
-// TestWriteObservedStateFieldsNotes checks the note each output-only field
-// comes back with. A field can be missing from the struct two ways, and the
-// caller treats them differently: the skip map left it out, or WriteField could
-// not type it and wrote a "// TODO:" marker instead.
+// TestWriteObservedStateFieldsNotes pins the two notes
+// PrepopulateObservedState reads: for a field the skip map left out it files no
+// queue entry, and for one WriteField could not type it files
+// unsupported-field-type.
 func TestWriteObservedStateFieldsNotes(t *testing.T) {
 	// Arrange: name is skipped by the caller, create_time renders normally, and
 	// by_index is a map keyed by int32, which GoTypeForField declines.
