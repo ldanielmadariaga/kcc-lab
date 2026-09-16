@@ -56,6 +56,7 @@ type GenerateCRDOptions struct {
 	EmitParentRefs           bool
 	EmitSiblingRefs          bool
 	DetectEmptyObservedState bool
+	EmitReferenceHints       bool
 }
 
 func (o *GenerateCRDOptions) InitDefaults() error {
@@ -84,6 +85,7 @@ func (o *GenerateCRDOptions) BindFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&o.EmitParentRefs, "emit-parent-refs", false, "emit one spec field referencing the resource's direct parent, where google.api.resource declares a parent below project and location and a reference type for it already exists. Each field is marked +kcc:guess and recorded in apis/<service>/needs_judgement_call.txt, and a parent with no reference type is recorded there rather than guessed. Opt in one service at a time: it adds a field to the CRD of a resource people already use")
 	cmd.Flags().BoolVar(&o.EmitSiblingRefs, "emit-sibling-refs", false, "mark a string field whose name matches a resource this service declares as a probable reference to it, with a +kcc:guess comment and an entry in apis/<service>/needs_judgement_call.txt. The field stays a string: this reports a candidate rather than generating a reference. Opt in one service at a time, though controller-gen strips the comment, so this cannot change a CRD")
 	cmd.Flags().BoolVar(&o.DetectEmptyObservedState, "detect-empty-observedstate", false, "record a resource whose status.observedState came out with no fields at all, in apis/<service>/needs_judgement_call.txt. The usual cause is a proto that marks no field OUTPUT_ONLY, so the generator cannot tell an output field from an input and they all land in the Spec. Reports only: the generated types are unchanged either way")
+	cmd.Flags().BoolVar(&o.EmitReferenceHints, "emit-reference-hints", false, "record a spec field, at any depth, whose description or name suggests it points at another resource, in apis/<service>/needs_judgement_call.txt. Uses the rules TestMissingRefs applies, plus looser description and name rules that only hint. Needs --prepopulate-spec. Reports only: the field is still generated as a string")
 }
 
 func BuildCommand(baseOptions *options.GenerateOptions) *cobra.Command {
@@ -242,6 +244,9 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 					prepopulated, err = scaffold.PrepopulateSpec(msg, writeOptions)
 					if err != nil {
 						return fmt.Errorf("prepopulating spec for %s: %w", resource.Kind, err)
+					}
+					if o.EmitReferenceHints {
+						prepopulated.Judgement = append(prepopulated.Judgement, scaffold.ReferenceHints(msg, writeOptions)...)
 					}
 					if o.DetectOutputOnly {
 						if c := scaffold.DetectOutputOnlyInComments(msg, writeOptions); len(c) > 0 {
