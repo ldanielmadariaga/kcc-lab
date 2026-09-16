@@ -155,15 +155,15 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 	}
 
 	// The map is built here rather than beside the scaffolding loop because
-	// WriteVisitedMessages needs it too, and that runs first. SiblingResources
-	// says why it reads two sources.
+	// WriteVisitedMessages needs it too, and that runs first. SiblingKinds says
+	// why it reads two sources.
 	var siblings map[string]string
 	if o.EmitSiblingRefs {
 		var thisRun []string
 		for _, resource := range o.Resources {
 			thisRun = append(thisRun, resource.Kind)
 		}
-		siblings = scaffold.SiblingResources(
+		siblings = codegen.SiblingKinds(
 			filepath.Join(o.OutputAPIDirectory, goPackage),
 			strings.TrimSuffix(gv.Group, ".cnrm.cloud.google.com"),
 			thisRun...)
