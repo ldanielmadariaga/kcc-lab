@@ -47,14 +47,15 @@ type GenerateCRDOptions struct {
 
 	PruneUnusedTypes bool
 
-	EmitRequiredFromProto bool
-	PrepopulateSpec       bool
-	DetectOutputOnly      bool
-	EmitPluralAcronyms    bool
-	EmitMessageMaps       bool
-	PlaceServerSetFields  bool
-	EmitParentRefs        bool
-	EmitSiblingRefs       bool
+	EmitRequiredFromProto    bool
+	PrepopulateSpec          bool
+	DetectOutputOnly         bool
+	EmitPluralAcronyms       bool
+	EmitMessageMaps          bool
+	PlaceServerSetFields     bool
+	EmitParentRefs           bool
+	EmitSiblingRefs          bool
+	DetectEmptyObservedState bool
 }
 
 func (o *GenerateCRDOptions) InitDefaults() error {
@@ -82,6 +83,7 @@ func (o *GenerateCRDOptions) BindFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&o.EmitRequiredFromProto, "emit-required-from-proto", false, "emit // +required for fields the proto marks REQUIRED. Opt in one service at a time: turning it on for a resource people already use can tighten its CRD schema, because nested types are shared between spec and status")
 	cmd.Flags().BoolVar(&o.EmitParentRefs, "emit-parent-refs", false, "emit one spec field referencing the resource's direct parent, where google.api.resource declares a parent below project and location and a reference type for it already exists. Each field is marked +kcc:guess and recorded in apis/<service>/needs_judgement_call.txt, and a parent with no reference type is recorded there rather than guessed. Opt in one service at a time: it adds a field to the CRD of a resource people already use")
 	cmd.Flags().BoolVar(&o.EmitSiblingRefs, "emit-sibling-refs", false, "mark a string field whose name matches a resource this service declares as a probable reference to it, with a +kcc:guess comment and an entry in apis/<service>/needs_judgement_call.txt. The field stays a string: this reports a candidate rather than generating a reference. Opt in one service at a time, though controller-gen strips the comment, so this cannot change a CRD")
+	cmd.Flags().BoolVar(&o.DetectEmptyObservedState, "detect-empty-observedstate", false, "record a resource whose status.observedState came out with no fields at all, in apis/<service>/needs_judgement_call.txt. The usual cause is a proto that marks no field OUTPUT_ONLY, which leaves nothing to identify an output field by, so they all land in the Spec. Reports only: the generated types are unchanged either way")
 }
 
 func BuildCommand(baseOptions *options.GenerateOptions) *cobra.Command {
@@ -273,6 +275,25 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 						// The ObservedState entries join the Spec's, so one queue file covers the
 						// whole resource.
 						prepopulated.Judgement = append(prepopulated.Judgement, obsJudgement...)
+					}
+					// An empty body is the whole condition. The template writes the
+					// ObservedState struct either way, so there is no "absent"
+					// case to tell apart, and testing the body rather than details
+					// also catches a resource whose output fields were all dropped
+					// as identity fields or as types the generator cannot write.
+					//
+					// One entry for the resource beats one per field it should
+					// have had, and unlike those it needs nothing inferred.
+					// TestCRDObjectTypes allowlists dozens of CRDs for this same
+					// shape, in knownInvalidCRDs; that gates the schema, this
+					// names the work.
+					if o.DetectEmptyObservedState && prepopulated.ObservedStateFields == "" {
+						prepopulated.Judgement = append(prepopulated.Judgement, scaffold.JudgementItem{
+							Reason: "empty-observedstate",
+							Detail: "nothing was generated into status.observedState; the proto " +
+								"probably marks no field OUTPUT_ONLY, so output fields landed " +
+								"in the Spec. Decide what belongs in status",
+						})
 					}
 					prepopulated.ExtraImports = scaffold.ExtraImportsFor(prepopulated.SpecFields, prepopulated.ObservedStateFields)
 				}
