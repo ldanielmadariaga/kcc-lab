@@ -246,7 +246,7 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 	if prepopulated != nil {
 		known := refTypesInPackage(a.repoRoot(), filepath.Join(a.BaseDir, a.GoPackage))
 		var parentRefs bytes.Buffer
-		var guesses []JudgementItem
+		var emitted, siblings []string
 		segments := parentSegments(cArgs.ResourcePattern)
 		for i, seg := range segments {
 			collection, variable := seg[0], seg[1]
@@ -261,12 +261,7 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 				// parent already fixes a location, so requiring it would be new.
 				required := cArgs.ParentStyle == string(protoapi.ParentProjectLocation)
 				parentRefs.WriteString(locationField(field, cArgs.ResourcePattern, required))
-				guesses = append(guesses, JudgementItem{
-					FieldPath: ".spec." + field,
-					Reason:    "parent-location-guessed",
-					Detail: "emitted from the location segment of " + cArgs.ResourcePattern +
-						"; confirm the resource is regional and that this is the name for it",
-				})
+				emitted = append(emitted, ".spec."+field)
 				continue
 			}
 			name := lowerCamel(variable)
@@ -275,45 +270,39 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 			// A parent segment is synthesised from the resource pattern, so no
 			// proto field carries its name and the sibling rule has to be asked
 			// about the name directly.
-			sibling, isSibling := codegen.SiblingResourceByName(name, a.Siblings)
-			reason, detail := "parent-ref-guessed",
-				"emitted as a reference to "+goType+", assumed from the collection segment of "+
-					cArgs.ResourcePattern+"; confirm the target type"
-			if ok && isSibling {
-				// Two independent signals agreeing. Worth saying so: it tells a
-				// reviewer the target was not merely read off a plural noun.
-				detail += " (" + sibling + ", a resource this service declares, matches the name)"
-			}
+			sibling, _ := codegen.SiblingResourceByName(name, a.Siblings)
+			suffix := "Ref"
 			if !ok {
 				// No ref type anywhere, so a plain string. Still better than
 				// nothing, and upstream may well want a reference here.
-				goType = ""
-				reason, detail = "parent-segment-guessed",
-					"emitted as a plain string from the pattern "+cArgs.ResourcePattern+
-						"; upstream may model this as a reference instead"
-				if isSibling {
-					// The strongest case for a reference that this path produces:
-					// a segment of the resource's own name that is also a resource
-					// this service manages. FirestoreDocument's database and
-					// DiscoveryEngineDataStoreTargetSite's dataStore are both this.
-					reason = "parent-segment-matches-sibling"
-					detail = "emitted as a plain string from the pattern " + cArgs.ResourcePattern +
-						", but the name matches " + sibling + ", a resource this service " +
-						"declares; confirm whether it should be a reference to it"
-				}
+				goType, suffix = "", ""
 			}
 			parentRefs.WriteString(parentRefField(name, goType, qualifier, cArgs.ResourcePattern, sibling))
-			suffix := ""
-			if goType != "" {
-				suffix = "Ref"
+			emitted = append(emitted, ".spec."+name+suffix)
+			if sibling != "" {
+				siblings = append(siblings, name+" matches "+sibling)
 			}
-			guesses = append(guesses, JudgementItem{
-				FieldPath: ".spec." + name + suffix,
-				Reason:    reason,
-				Detail:    detail,
+		}
+		// One entry for the whole parent, not one per segment. Every hand-written
+		// resource with a segment below project and location names its direct
+		// parent once: containernodepool has clusterRef, alloydbinstance and
+		// dataplextask theirs, dataplexzone inlines a Parent holding lakeRef.
+		// Nothing carries a field per segment, so a reader triaging per segment
+		// would be answering a question the API does not ask.
+		if len(emitted) > 0 {
+			detail := "emitted from the pattern " + cArgs.ResourcePattern + ": " +
+				strings.Join(emitted, ", ") + ". Upstream usually names the direct " +
+				"parent as a reference and carries project and location as plain " +
+				"fields; confirm the shape, and whether other references in the API " +
+				"tree belong here"
+			if len(siblings) > 0 {
+				detail += " (" + strings.Join(siblings, "; ") + ", declared by this service)"
+			}
+			prepopulated.Judgement = append(prepopulated.Judgement, JudgementItem{
+				Reason: "parent-fields-guessed",
+				Detail: detail,
 			})
 		}
-		prepopulated.Judgement = append(prepopulated.Judgement, guesses...)
 
 		cArgs.ParentRefFields = parentRefs.String()
 
