@@ -121,9 +121,8 @@ func TestParentVariables(t *testing.T) {
 			want:    []string{"project", "location"},
 		},
 		{
-			// The case this was written for. ParentStyle collapses this to
-			// "other", which tells the template what to render but not that
-			// spec.collection is missing.
+			// ParentStyle calls this "other", which tells the template what to
+			// render and not that the collection segment exists.
 			name:    "collection between location and the resource",
 			pattern: "projects/{project}/locations/{location}/collections/{collection}/dataStores/{data_store}",
 			want:    []string{"project", "location", "collection"},

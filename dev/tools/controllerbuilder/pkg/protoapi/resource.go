@@ -139,15 +139,13 @@ func splitPattern(pattern string) (collection string, parentPath string) {
 //	"projects/{project}/locations/{location}/collections/{collection}/
 //	    dataStores/{data_store}"  ->  ["project", "location", "collection"]
 //
-// The final placeholder is the resource's own id, becoming spec.resourceID,
-// so it is excluded. Everything left is a value a user must supply to name the
-// resource, and upstream carries each one as a spec field.
+// The final placeholder is the resource's own id, which becomes
+// spec.resourceID, so it is excluded. The rest are the values a user supplies
+// to address the resource.
 //
-// This exists because ParentStyle collapses every shape past project+location
-// into "other", which is enough to decide what the template renders but not
-// enough to say what was left out. A resource parented at
-// projects/locations/collections needs spec.collection as much as it needs
-// spec.location, and only the pattern knows that.
+// ParentStyle collapses every shape past project and location into "other",
+// which is enough to decide what the template renders and not enough to say
+// which segments it left out. Only the pattern names them.
 func ParentVariables(pattern string) []string {
 	segs := strings.Split(pattern, "/")
 	var vars []string
