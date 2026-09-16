@@ -15,6 +15,9 @@
 package codegen
 
 import (
+	"os"
+	"path/filepath"
+	"regexp"
 	"strings"
 
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -127,6 +130,53 @@ func scanSiblingGuesses(msgName, body string) []SiblingGuess {
 			name, _, _ := strings.Cut(after, ",")
 			out = append(out, SiblingGuess{Message: msgName, Field: name, Target: pending})
 			pending = ""
+		}
+	}
+	return out
+}
+
+// kindDeclaration matches the Spec struct each Kind's types file declares,
+// which is how a package states which Kinds it holds.
+var kindDeclaration = regexp.MustCompile(`(?m)^type (\w+)Spec struct`)
+
+// SiblingKinds maps a lowercased field-name candidate to the Kind of a resource
+// the target package declares. It builds the map SiblingResource reads.
+//
+// It reads two sources, because neither is complete on its own. The
+// invocation's own resource list covers only its slice of a service generated
+// by several generate-types calls: discoveryengine runs twice, dialogflow four
+// times. The package scan covers the whole service, but finds nothing after a
+// wipe-based regeneration, which deletes every _types.go before the generator
+// runs. The map is the union of the two.
+//
+// The key strips the service prefix, so DiscoveryEngineDataStore is keyed
+// "datastore" and a field called dataStore matches it.
+func SiblingKinds(dir, service string, alsoKnown ...string) map[string]string {
+	out := map[string]string{}
+	add := func(kind string) {
+		trimmed := strings.TrimPrefix(strings.ToLower(kind), strings.ToLower(service))
+		if trimmed != "" && trimmed != strings.ToLower(kind) {
+			out[trimmed] = kind
+		}
+	}
+	for _, kind := range alsoKnown {
+		add(kind)
+	}
+
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return out
+	}
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), "_types.go") {
+			continue
+		}
+		body, err := os.ReadFile(filepath.Join(dir, e.Name()))
+		if err != nil {
+			continue
+		}
+		for _, m := range kindDeclaration.FindAllStringSubmatch(string(body), -1) {
+			add(m[1])
 		}
 	}
 	return out

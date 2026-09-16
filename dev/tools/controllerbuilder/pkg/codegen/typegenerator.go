@@ -45,6 +45,12 @@ type TypeGenerator struct {
 	// they are written so the judgement queue can report them.
 	unsupportedFields []UnsupportedField
 
+	// siblingGuesses are fields of a nested message that the sibling rule
+	// flagged. PrepopulateSpec records the resource's own fields; this generator
+	// writes the nested messages, so their markers are read back out of the
+	// rendered body.
+	siblingGuesses []SiblingGuess
+
 	generatedFileAnnotation *codegenannotations.FileAnnotation
 	includeSkippedOutput    bool
 	writeOptions            WriteOptions
@@ -101,6 +107,15 @@ type WriteOptions struct {
 	// ObservedState when no field of the message carries field_behavior. See
 	// IsServerSetField for the allowlist and the guard.
 	PlaceServerSetFields bool
+	// Siblings maps a lowercased Kind suffix to a Kind this service declares, so
+	// a string field naming one can be marked as a probable reference. See
+	// SiblingResource.
+	//
+	// Unlike the flags above, this one cannot change a CRD: it only adds a
+	// +kcc:guess comment, which controller-gen strips before publishing. A shared
+	// nested message is no trouble either, since the map holds one service's
+	// Kinds and a nested message is shared only within a service.
+	Siblings map[string]string
 }
 
 func NewTypeGenerator(goPackage string, outputBaseDir string, api *protoapi.Proto) *TypeGenerator {
@@ -422,12 +437,15 @@ func (g *TypeGenerator) WriteVisitedMessages() error {
 		}
 
 		// The message renders into its own buffer so we can collect the markers
-		// WriteField leaves for fields it could not type. Otherwise the field is
-		// absent from the CRD and the only trace is a "// TODO:" comment in the
-		// generated source.
+		// WriteField leaves behind: one for a field it could not type, and one
+		// for a field the sibling rule flagged. WriteField takes an io.Writer and
+		// has nowhere to collect them, so they are read back out of the finished
+		// text. Otherwise an untypeable field is absent from the CRD and the only
+		// trace is a "// TODO:" comment in the generated source.
 		var rendered bytes.Buffer
 		WriteMessage(&rendered, msg, g.writeOptions)
 		g.unsupportedFields = append(g.unsupportedFields, scanUnsupported(string(msg.FullName()), rendered.String())...)
+		g.siblingGuesses = append(g.siblingGuesses, scanSiblingGuesses(string(msg.FullName()), rendered.String())...)
 		out.body.Write(rendered.Bytes())
 	}
 	return errors.Join(g.errors...)
@@ -500,6 +518,13 @@ func (g *TypeGenerator) WriteOutputMessages() error {
 
 func WriteMessageAsComment(out io.Writer, msg protoreflect.MessageDescriptor, reason string, opts WriteOptions) {
 	var b bytes.Buffer
+	// Clear the map for this block: it dumps what the generator would have written
+	// for a type the package already declares by hand, so nothing in it reaches
+	// the CRD and there is no guess for anyone to review. With the map left in
+	// place it produced 63 of the 82 markers in the tree, and every one of them
+	// broke "a marker always has a queue entry", because the collector scans only
+	// the messages that are emitted.
+	opts.Siblings = nil
 	WriteMessage(&b, msg, opts)
 	fmt.Fprintf(out, "\n/* %s\n", reason)
 	fmt.Fprintf(out, "%s", strings.ReplaceAll(b.String(), "*/", "* /"))
@@ -694,6 +719,14 @@ func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protorefl
 
 	jsonName := getJSONForKRM(field, opts)
 	GoFieldName := goFieldNameOpts(field, opts)
+
+	// The caller's own note wins: it knows something more specific than a name
+	// match, such as why a field was placed in ObservedState.
+	if note == "" {
+		if target, ok := SiblingResource(field, opts.Siblings); ok {
+			note = SiblingGuessMarker + target
+		}
+	}
 
 	goType, err := GoTypeForField(field, isTransitiveOutput, opts)
 	if err != nil {
@@ -1096,6 +1129,13 @@ type UnsupportedField struct {
 // run, for the judgement queue.
 func (g *TypeGenerator) UnsupportedFields() []UnsupportedField {
 	return g.unsupportedFields
+}
+
+// SiblingGuesses returns the nested-message fields the sibling rule flagged
+// during the visit, so the caller can record them in the judgement queue.
+// PrepopulateSpec cannot: it sees only the resource's own fields.
+func (g *TypeGenerator) SiblingGuesses() []SiblingGuess {
+	return g.siblingGuesses
 }
 
 // scanUnsupported returns every unsupported-field marker in a rendered
