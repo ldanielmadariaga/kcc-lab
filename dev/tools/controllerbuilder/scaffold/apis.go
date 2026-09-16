@@ -256,9 +256,10 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 				continue
 			}
 			if field, ok := locationFieldNames[collection]; ok {
-				// Required only for the projects/locations shape the template used
-				// to render, so that case stays byte-identical. Everywhere else the
-				// parent already fixes a location, so requiring it would be new.
+				// Required only for the projects/locations shape, which the
+				// template renders the same way, so that output is unchanged.
+				// Elsewhere the parent already fixes a location, and requiring
+				// one would add a constraint upstream does not have.
 				required := cArgs.ParentStyle == string(protoapi.ParentProjectLocation)
 				parentRefs.WriteString(locationField(field, cArgs.ResourcePattern, required))
 				emitted = append(emitted, ".spec."+field)
@@ -319,9 +320,9 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 			}
 		}
 
-		// Only the nothing-was-emitted case is left for parentSegmentJudgement:
-		// a proto with no google.api.resource, where there is no pattern to walk
-		// and so nothing to emit or to name precisely.
+		// parentSegmentJudgement covers the remaining case: a proto with no
+		// google.api.resource, where there is no pattern to walk and so no
+		// segment to emit or to name.
 		if len(segments) == 0 {
 			prepopulated.Judgement = append(prepopulated.Judgement,
 				parentSegmentJudgement(cArgs.ResourcePattern, cArgs.ParentStyle)...)
@@ -427,7 +428,7 @@ const sharedRefsPackage = "apis/refs/v1beta1"
 // scaffoldRefsFile writes one per resource into the service package, so a
 // resource whose parent is already generated has a local type to name. The
 // shared package holds the ones every service needs, OrganizationRef among
-// them, which 14 resources reach for.
+// them, which 14 resources use.
 func refTypesInPackage(repoRoot, serviceDir string) map[string]string {
 	out := map[string]string{}
 	scan := func(dir, qualifier string) {
@@ -589,8 +590,9 @@ func locationField(name, pattern string, required bool) string {
 
 func parentSegmentJudgement(pattern, parentStyle string) []JudgementItem {
 	if parentStyle == string(protoapi.ParentUnknown) || pattern == "" {
-		// No google.api.resource, so there is no pattern to walk. Say that much,
-		// naming location because a regional resource is the case that bites.
+		// No google.api.resource, so there is no pattern to walk. The entry says
+		// that, and names location, because a regional resource whose location
+		// is missing cannot be addressed at all.
 		return []JudgementItem{{
 			FieldPath: ".spec.location",
 			Reason:    "location-omitted-unknown-parent",
