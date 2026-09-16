@@ -92,8 +92,8 @@ func TestSingular(t *testing.T) {
 		{"stem ends in e, mangled", "caches", "cach"},
 		{"stem ends in e, mangled", "sizes", "siz"},
 	} {
-		if got := singular(tc.in); got != tc.want {
-			t.Errorf("%s: singular(%q) = %q, want %q", tc.branch, tc.in, got, tc.want)
+		if got := Singular(tc.in); got != tc.want {
+			t.Errorf("%s: Singular(%q) = %q, want %q", tc.branch, tc.in, got, tc.want)
 		}
 	}
 }

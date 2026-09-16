@@ -133,6 +133,46 @@ func splitPattern(pattern string) (collection string, parentPath string) {
 	return literals[len(literals)-1], strings.Join(literals[:len(literals)-1], "/")
 }
 
+// ParentPair returns the collection segment and placeholder naming a resource's
+// direct parent, or two empty strings when the pattern declares no parent.
+//
+// Per AIP-122 a parent is the whole path down to that segment, so the
+// collection is what identifies the parent's type; the placeholder only hints
+// at what to call the field, and hints badly, because placeholders run their
+// words together ("{keyring}", "{datastore}") where the collection beside them
+// keeps the API's own casing ("keyRings", "dataStores").
+//
+// Patterns do not all end in collection/{id}. Some carry a trailing bare id,
+// "projects/{project}/zones/{zone}/disks/{disk}/{name}"; some carry several,
+// ".../networkEndpointGroups/{group}/{instance}/{ip_address}/{port}"; and some
+// end in a singleton literal, ".../dataStores/{data_store}/siteSearchEngine".
+// Only where the pattern ends on a collection/{id} pair is that pair the
+// resource itself, so only then does the parent lie one pair further back.
+func ParentPair(pattern string) (collection string, placeholder string) {
+	segs := strings.Split(pattern, "/")
+
+	type pair struct{ collection, placeholder string }
+	var pairs []pair
+	for i := 0; i+1 < len(segs); i++ {
+		if !strings.HasPrefix(segs[i], "{") && strings.HasPrefix(segs[i+1], "{") {
+			pairs = append(pairs, pair{segs[i], strings.Trim(segs[i+1], "{}")})
+		}
+	}
+	// One pair is the resource's own, leaving nothing for a parent.
+	if len(pairs) < 2 {
+		return "", ""
+	}
+
+	last := pairs[len(pairs)-1]
+	endsOnPair := segs[len(segs)-2] == last.collection &&
+		segs[len(segs)-1] == "{"+last.placeholder+"}"
+	if endsOnPair {
+		parent := pairs[len(pairs)-2]
+		return parent.collection, parent.placeholder
+	}
+	return last.collection, last.placeholder
+}
+
 func classifyParent(parentPath string) ParentStyle {
 	switch parentPath {
 	case "":

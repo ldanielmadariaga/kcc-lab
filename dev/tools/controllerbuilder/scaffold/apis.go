@@ -45,6 +45,12 @@ type APIScaffolder struct {
 	// the declared pattern for 752 of 1417 annotated messages, and the assumed
 	// projects/locations parent holds for about a third.
 	Proto *protoapi.Proto
+
+	// EmitParentRefs adds one Spec field naming the resource's direct parent,
+	// where the pattern declares one below project and location and a reference
+	// type for it already exists. Off by default: it adds a field to the CRD of a
+	// resource people already use, so a service opts in one at a time.
+	EmitParentRefs bool
 }
 
 // resourceMetadata looks up what the proto states about a resource, or nil if we
@@ -209,6 +215,18 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 		cArgs.SpecFields = prepopulated.SpecFields
 		cArgs.ObservedStateFields = prepopulated.ObservedStateFields
 		cArgs.ExtraImports = prepopulated.ExtraImports
+
+		// The parent field rides on prepopulated because that is the only way its
+		// queue entry reaches the caller. Emitting the field without the entry
+		// would put a +kcc:guess in the Spec that nothing flags, which is the one
+		// outcome worse than not emitting it.
+		if a.EmitParentRefs {
+			field, item := a.parentRef(cArgs.ResourcePattern)
+			cArgs.ParentRefField = field
+			if item != nil {
+				prepopulated.Judgement = append(prepopulated.Judgement, *item)
+			}
+		}
 	}
 	return scaffoldTypeFile(typeFilePath, cArgs)
 }

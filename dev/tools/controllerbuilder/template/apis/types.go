@@ -48,6 +48,11 @@ type APIArgs struct {
 	// beyond the three below, such as common "github.com/.../apis/common" for a
 	// google.rpc.Status field. ExtraImportsFor explains the alias.
 	ExtraImports []string
+	// ParentRefField is pre-rendered Go source for one Spec field naming the
+	// resource's direct parent, such as a clusterRef on a ContainerNodePool.
+	// Empty unless --emit-parent-refs is on and a reference type for the parent
+	// already exists, which leaves every other resource rendering as before.
+	ParentRefField string
 }
 
 const TypesTemplate = `
@@ -88,6 +93,10 @@ type {{ .Kind }}Spec struct {
 
 	// The location of this resource.
 	Location string ` + "`" + `json:"location"` + "`" + `
+{{- if .ParentRefField }}
+
+{{ .ParentRefField }}
+{{- end }}
 
 	// The {{ .Kind }} name. If not given, the metadata.name will be used.
 	ResourceID *string ` + "`" + `json:"resourceID,omitempty"` + "`" + `

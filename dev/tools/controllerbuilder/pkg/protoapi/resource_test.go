@@ -107,3 +107,74 @@ func TestClassifyParent(t *testing.T) {
 		})
 	}
 }
+
+// TestParentPair pins which segment ParentPair calls the parent. The scaffolder
+// names a reference field from the collection it returns, so a pattern read one
+// pair off puts the wrong resource in somebody's CRD. The cases easy to get
+// wrong are the patterns that do not end in collection/{id}: there the last
+// pair is already the parent rather than the resource itself.
+func TestParentPair(t *testing.T) {
+	grid := []struct {
+		name            string
+		pattern         string
+		wantCollection  string
+		wantPlaceholder string
+	}{
+		{
+			name:            "ends on its own collection and id",
+			pattern:         "projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{node_pool}",
+			wantCollection:  "clusters",
+			wantPlaceholder: "cluster",
+		},
+		{
+			// ComputeDiskResourcePolicyAttachment: the trailing {name} is the
+			// resource, so disks/{disk} is already the parent.
+			name:            "trailing bare id",
+			pattern:         "projects/{project}/zones/{zone}/disks/{disk}/{name}",
+			wantCollection:  "disks",
+			wantPlaceholder: "disk",
+		},
+		{
+			name:            "several trailing ids",
+			pattern:         "projects/{project}/zones/{zone}/networkEndpointGroups/{group}/{instance}/{ip_address}/{port}",
+			wantCollection:  "networkEndpointGroups",
+			wantPlaceholder: "group",
+		},
+		{
+			// DiscoveryEngineSearchEngine: a singleton named by a literal.
+			name:            "ends in a singleton literal",
+			pattern:         "projects/{project}/locations/{location}/dataStores/{data_store}/siteSearchEngine",
+			wantCollection:  "dataStores",
+			wantPlaceholder: "data_store",
+		},
+		{
+			name:            "project and location parent",
+			pattern:         "projects/{project}/locations/{location}/foos/{foo}",
+			wantCollection:  "locations",
+			wantPlaceholder: "location",
+		},
+		{
+			name:    "no parent at all",
+			pattern: "foos/{foo}",
+		},
+		{
+			name:    "pattern ending in a literal names no parent",
+			pattern: "projects/{project}/locations",
+		},
+	}
+
+	for _, g := range grid {
+		t.Run(g.name, func(t *testing.T) {
+			// Act
+			collection, placeholder := ParentPair(g.pattern)
+
+			// Assert
+			if collection != g.wantCollection {
+				t.Errorf("ParentPair(%q) collection = %q, want %q", g.pattern, collection, g.wantCollection)
+			}
+			if placeholder != g.wantPlaceholder {
+				t.Errorf("ParentPair(%q) placeholder = %q, want %q", g.pattern, placeholder, g.wantPlaceholder)
+			}
+		})
+	}
+}

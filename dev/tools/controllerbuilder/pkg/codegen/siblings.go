@@ -57,7 +57,7 @@ func SiblingResourceByName(name string, siblings map[string]string) (string, boo
 	// A repeated field is named for what it holds: ComputeNetworkAttachment's
 	// subnetworks are each a ComputeSubnetwork. Six of the fifteen matches in the
 	// corpus are plural. Without this the rule finds half as many.
-	if s := singular(leaf); s != leaf {
+	if s := Singular(leaf); s != leaf {
 		if target, ok := siblings[s]; ok {
 			return target, true
 		}
@@ -65,10 +65,13 @@ func SiblingResourceByName(name string, siblings map[string]string) (string, boo
 	return "", false
 }
 
-// singular strips a regular English plural and gives up on anything else. It
+// Singular strips a regular English plural and gives up on anything else. It
 // stays narrow on purpose. A match here puts a question in front of a reviewer,
 // and no GCP resource name uses an irregular plural.
-func singular(s string) string {
+//
+// The scaffolder shares it to name a parent reference from the pattern's
+// collection segment, so the two cannot disagree about what "keyRings" is.
+func Singular(s string) string {
 	switch {
 	case strings.HasSuffix(s, "ies") && len(s) > 4:
 		// policies -> policy
