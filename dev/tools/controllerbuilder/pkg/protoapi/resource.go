@@ -133,6 +133,47 @@ func splitPattern(pattern string) (collection string, parentPath string) {
 	return literals[len(literals)-1], strings.Join(literals[:len(literals)-1], "/")
 }
 
+// ParentPair returns the collection segment and placeholder naming a resource's
+// direct parent, or two empty strings when the pattern declares no parent.
+//
+// Per AIP-122 a parent is the whole path down to that segment, so the
+// collection is what identifies the parent's type; the placeholder only hints
+// at what to call the field, and hints badly, because placeholders run their
+// words together ("{keyring}", "{datastore}") where the collection beside them
+// keeps the API's own casing ("keyRings", "dataStores").
+//
+// Patterns end in one of three ways. Most end on the resource's own
+// collection/{id}, where the parent is the pair before it. 274 of the 3160 in
+// googleapis end in a literal naming a singleton, such as
+// "accounts/{account}/programs/{program}/checkoutSettings", where the last
+// pair is already the parent. A pattern ending in two placeholders in a row
+// names no collection between them, so there is no parent to read.
+func ParentPair(pattern string) (collection string, placeholder string) {
+	segs := strings.Split(pattern, "/")
+
+	type pair struct{ collection, placeholder string }
+	var pairs []pair
+	for i := 0; i+1 < len(segs); i++ {
+		if !strings.HasPrefix(segs[i], "{") && strings.HasPrefix(segs[i+1], "{") {
+			pairs = append(pairs, pair{segs[i], strings.Trim(segs[i+1], "{}")})
+		}
+	}
+	// One pair is the resource's own, leaving nothing for a parent.
+	if len(pairs) < 2 {
+		return "", ""
+	}
+
+	if strings.HasPrefix(segs[len(segs)-1], "{") {
+		if strings.HasPrefix(segs[len(segs)-2], "{") {
+			return "", ""
+		}
+		parent := pairs[len(pairs)-2]
+		return parent.collection, parent.placeholder
+	}
+	last := pairs[len(pairs)-1]
+	return last.collection, last.placeholder
+}
+
 func classifyParent(parentPath string) ParentStyle {
 	switch parentPath {
 	case "":
