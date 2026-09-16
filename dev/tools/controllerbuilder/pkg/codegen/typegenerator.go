@@ -693,9 +693,9 @@ func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool,
 // annotations and markers, and the Go declaration. A field GoTypeForField
 // cannot type becomes a "// TODO:" marker instead.
 //
-// note, when set, is written after the proto comment. It records a call the
-// generator made that a reader of the type could not otherwise see, such as
-// placing a field by name rather than by annotation.
+// note, when set, is written after the proto comment. It records a choice the
+// generated type does not otherwise show, such as a field placed in
+// ObservedState by name rather than by annotation.
 func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protoreflect.MessageDescriptor, fieldIndex int, isTransitiveOutput bool, opts WriteOptions, note string) {
 	sourceLocations := msg.ParentFile().SourceLocations().ByDescriptor(field)
 
@@ -726,8 +726,8 @@ func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protorefl
 			}
 		}
 	}
-	// The note goes after the proto's own comment, because that one describes
-	// the field and the note describes what we did with it.
+	// The note goes after the proto's own comment: the proto comment describes
+	// the field, and the note describes the generator's choice.
 	for _, line := range strings.Split(strings.TrimSpace(note), "\n") {
 		if line != "" {
 			fmt.Fprintf(out, "\t// %s\n", line)
@@ -1009,10 +1009,9 @@ func IsFieldBehavior(field protoreflect.FieldDescriptor, fieldBehavior annotatio
 // serverSetFieldNames are fields GCP computes that some protos do not mark
 // OUTPUT_ONLY.
 //
-// A field's name is normally a poor guide to where it belongs, so this list is
-// narrow: each name was checked against how upstream uses it.
-// Every name here appears zero times in a resource-level Spec across the
-// baseline tree, with one exception:
+// A field's name is normally a poor guide to where it belongs, so the list is
+// narrow. Every name here appears zero times in a resource-level Spec across
+// the baseline tree, with one exception:
 //
 // etag appears twice, on AlloyDBCluster and ContainerAttachedCluster, and both
 // are optimistic-concurrency inputs, "can be sent on update and
@@ -1020,8 +1019,8 @@ func IsFieldBehavior(field protoreflect.FieldDescriptor, fieldBehavior annotatio
 // and none carry it spec-side, so it is included and, like everything here,
 // queued for a human.
 //
-// Three names were considered and rejected, because reading how upstream uses
-// them gave a different answer from counting them:
+// Three names stay out of the list, because how upstream uses them differs
+// from what their counts suggest:
 //
 //	state   7 upstream Specs, and they are desired state, not observed state.
 //	        ConfigDeliveryFleetPackage calls it "the desired state of the fleet

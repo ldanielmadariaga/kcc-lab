@@ -78,7 +78,7 @@ func TestIsServerSetField(t *testing.T) {
 	annotated := fd.Messages().ByName("Annotated")
 	on := WriteOptions{PlaceServerSetFields: true}
 
-	grid := []struct {
+	tests := []struct {
 		name  string
 		msg   protoreflect.MessageDescriptor
 		field string
@@ -105,39 +105,47 @@ func TestIsServerSetField(t *testing.T) {
 
 		{"off by default", discovery, "creation_timestamp", WriteOptions{}, false},
 	}
-	for _, g := range grid {
+	for _, g := range tests {
 		t.Run(g.name+"/"+g.field, func(t *testing.T) {
+			// Arrange
 			f := g.msg.Fields().ByName(protoreflect.Name(g.field))
 			if f == nil {
 				t.Fatalf("no field %q on %s", g.field, g.msg.Name())
 			}
-			if got := IsServerSetField(f, g.msg, g.opts); got != g.want {
+
+			// Act
+			got := IsServerSetField(f, g.msg, g.opts)
+
+			// Assert
+			if got != g.want {
 				t.Errorf("IsServerSetField(%s.%s) = %v, want %v", g.msg.Name(), g.field, got, g.want)
 			}
 		})
 	}
 }
 
-// isServerSet applies the rule only to the resource's own message, and not to
-// a nested message that has a field of the same name.
+// TestIsServerSetFieldOnlyAppliesToTheRootMessage pins where the rule stops:
+// the same field name answers true on the resource's own message and false on
+// a nested one, where the user often sets it.
 func TestIsServerSetFieldOnlyAppliesToTheRootMessage(t *testing.T) {
+	// Arrange
 	fd := serverSetTestFile(t)
 	discovery := fd.Messages().ByName("Discovery")
 	nested := fd.Messages().ByName("Annotated")
-
 	g := &TypeGenerator{
 		writeOptions:   WriteOptions{PlaceServerSetFields: true},
 		rootMessageFQN: string(discovery.FullName()),
 	}
 
-	rootField := discovery.Fields().ByName("creation_timestamp")
-	if !g.isServerSet(rootField, discovery) {
-		t.Error("expected the root message's creationTimestamp to be server-set")
+	// Act
+	root := g.isServerSet(discovery.Fields().ByName("creation_timestamp"), discovery)
+	child := g.isServerSet(nested.Fields().ByName("creation_timestamp"), nested)
+
+	// Assert
+	if !root {
+		t.Error("the root message's creationTimestamp is not server-set, want server-set")
 	}
-	// The nested message has a field of the same name, but it is not the
-	// resource's own message.
-	nestedField := nested.Fields().ByName("creation_timestamp")
-	if g.isServerSet(nestedField, nested) {
-		t.Error("a nested message's creationTimestamp must not be treated as server-set")
+	if child {
+		t.Error("a nested message's creationTimestamp is server-set, want not server-set")
 	}
 }
