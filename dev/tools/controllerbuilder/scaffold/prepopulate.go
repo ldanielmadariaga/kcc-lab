@@ -17,6 +17,7 @@ package scaffold
 import (
 	"bytes"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/pkg/codegen"
@@ -24,6 +25,7 @@ import (
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"k8s.io/apimachinery/pkg/util/sets"
 )
 
 // identityFields are proto fields that the KRM object expresses through its own
@@ -49,6 +51,12 @@ type PrepopulateResult struct {
 	// SpecFields is Go source for the body of the Spec struct: one field per
 	// proto field, already indented, ready to paste between the braces.
 	SpecFields string
+	// ObservedStateFields is Go source for the body of the resource-level
+	// <Kind>ObservedState struct, empty when the proto marks nothing OUTPUT_ONLY.
+	ObservedStateFields string
+	// ExtraImports are import paths the rendered fields need beyond the three the
+	// template always writes.
+	ExtraImports []string
 	// Judgement lists fields the generator emitted mechanically but cannot
 	// vouch for.
 	Judgement []JudgementItem
@@ -62,9 +70,8 @@ type PrepopulateResult struct {
 // every other check: a field absent from the CRD cannot be reported as missing
 // from it.
 //
-// ObservedState is not pre-populated. Output fields reached through nested
-// messages need the generated <Proto>ObservedState variants rather than the
-// plain structs, and picking the right one per field is its own problem.
+// ObservedState is filled separately, by PrepopulateObservedState, because it
+// needs data only the type generator has.
 func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptions) (*PrepopulateResult, error) {
 	if msg == nil {
 		return nil, fmt.Errorf("no message descriptor")
@@ -83,13 +90,20 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 			continue
 		}
 		if identityFields[string(field.Name())] {
+			// Dropped with no queue entry. KCC carries the resource name in
+			// status.externalRef, and an entry here would fire on 219 resources
+			// tree-wide and 81 in the measured corpus, where upstream keeps
+			// status.observedState.name on two of those 81.
+			//
+			// PrepopulateObservedState does file an entry for a "name" the proto
+			// marks OUTPUT_ONLY. One without that annotation is recorded nowhere,
+			// as in ParameterManagerParameter.
 			continue
 		}
 
-		// We render each field on its own so we can inspect its output before
-		// appending it. When the generator cannot type a field it writes a
-		// "// TODO:" comment and moves on, and the field never reaches the CRD.
-		// That is a silent drop unless somebody records it.
+		// Each field renders into its own buffer so the marker WriteField leaves
+		// for a field it cannot type can be read back. Such a field never reaches
+		// the CRD, and the queue entry below is the only record of it.
 		var field_ bytes.Buffer
 		codegen.WriteField(&field_, field, msg, emitted, false, opts)
 		buf.Write(field_.Bytes())
@@ -109,22 +123,65 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 
 	out.SpecFields = buf.String()
 
-	// Always mark the resource untriaged, whatever we did or did not detect.
+	// Every resource gets this entry, whatever judgementFor turned up.
 	//
-	// The resource-level entry is what actually drives suppression, so it must not
-	// depend on the detector finding anything. Measured on the pilot resource:
-	// LbTrafficExtension carries no google.api.resource_reference on any field,
-	// including forwarding_rules, which is precisely the field that has to become
-	// a ref. A queue built only from annotations would have been empty, so no file
-	// would have been written, nothing would have been suppressed, and the resource
-	// would have gone straight into the missingrefs ratchet and failed. Preventing
-	// exactly that is why the queue exists.
+	// TestMissingRefs suppresses a resource's [refs] findings while the resource
+	// has any entry in the queue, so this one cannot depend on finding an
+	// annotation. LbTrafficExtension shows why: it carries no
+	// google.api.resource_reference on any field, including forwarding_rules,
+	// which is the field that has to become a ref. A queue built from
+	// annotations alone comes out empty, so nothing is suppressed and the
+	// resource fails the missingrefs ratchet.
 	out.Judgement = append([]JudgementItem{{
 		Reason: "untriaged-bulk-generation",
 		Detail: "spec was generated mechanically; confirm refs, omissions and KRM names",
 	}}, out.Judgement...)
 
 	return out, nil
+}
+
+// PrepopulateObservedState returns the body of the resource-level
+// <Kind>ObservedState struct, rendered from details, and a queue entry for each
+// output-only field that did not reach it. details comes from OutputFieldsFor.
+//
+// The imports those fields need come from ExtraImportsFor, which the caller
+// runs over the Spec body as well.
+//
+// On NetworkSecurityURLList and TranscoderJob, the proto gives the same struct
+// a person wrote by hand.
+func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedStateMessages sets.String, opts codegen.WriteOptions) (fields string, judgement []JudgementItem) {
+	if details == nil {
+		return "", nil
+	}
+
+	var buf bytes.Buffer
+	// identityFields leaves out "name", which KCC carries in status.externalRef,
+	// even where the proto marks it OUTPUT_ONLY.
+	notes := codegen.WriteObservedStateFields(&buf, details, observedStateMessages, identityFields, opts)
+	fields = buf.String()
+
+	// A field missing from the struct gets a queue entry, whether the skip map
+	// left it out or WriteField could not type it.
+	for _, n := range notes {
+		switch {
+		case n.Skipped:
+			judgement = append(judgement, JudgementItem{
+				FieldPath: ".status.observedState." + n.JSONName,
+				Reason:    "observedstate-identity-field-omitted",
+				Detail:    "proto marks it OUTPUT_ONLY; KCC carries the resource name in status.externalRef instead. Confirm that is right for this resource",
+			})
+		default:
+			if _, reason, ok := codegen.UnsupportedFieldMarker(n.Rendered); ok {
+				judgement = append(judgement, JudgementItem{
+					FieldPath: ".status.observedState." + n.JSONName,
+					Reason:    "unsupported-field-type",
+					Detail:    reason,
+				})
+			}
+		}
+	}
+
+	return fields, judgement
 }
 
 // judgementFor reports whether a field needs a human decision that the generator
@@ -265,4 +322,31 @@ func FormatOutputOnlyCandidates(kind, group string, items []OutputOnlyCandidate)
 			kind, group, it.FieldPath, it.Comment))
 	}
 	return sb.String()
+}
+
+// ExtraImportsFor returns the import lines the given field bodies need beyond
+// the three the types template always writes.
+//
+// A handful of proto types map to Go types from other packages, such as
+// google.rpc.Status to common.Status and google.protobuf.Struct to
+// apiextensionsv1.JSON. The template imports none of them, so a scaffolded file
+// referencing one does not compile without the line. Pass every body that goes
+// into the file: securitycentermanagement puts an apiextensionsv1.JSON in the
+// Spec, transcoder a common.Status in the status struct.
+func ExtraImportsFor(bodies ...string) []string {
+	var out []string
+	for qualifier, importPath := range codegen.QualifierImports {
+		for _, body := range bodies {
+			if strings.Contains(body, qualifier+".") {
+				// Emit the alias, always. The path's last segment is often not the
+				// qualifier the field uses: apiextensions-apiserver/.../v1 provides
+				// package "v1" while the field says apiextensionsv1.JSON, and goimports
+				// then removes the import as unused rather than fixing it.
+				out = append(out, fmt.Sprintf("%s %q", qualifier, importPath))
+				break
+			}
+		}
+	}
+	sort.Strings(out)
+	return out
 }

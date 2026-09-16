@@ -41,6 +41,13 @@ type APIArgs struct {
 	// field per proto field. Empty means the old three-field stub, which is what
 	// every service gets until it opts in.
 	SpecFields string
+	// ObservedStateFields is the same for the ObservedState struct, and is empty
+	// when the proto marks no field OUTPUT_ONLY.
+	ObservedStateFields string
+	// ExtraImports are complete aliased import lines the rendered fields need
+	// beyond the three below, such as common "github.com/.../apis/common" for a
+	// google.rpc.Status field. ExtraImportsFor explains the alias.
+	ExtraImports []string
 }
 
 const TypesTemplate = `
@@ -64,6 +71,9 @@ import (
 	refsv1beta1 "github.com/GoogleCloudPlatform/k8s-config-connector/apis/refs/v1beta1"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/pkg/apis/k8s/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+{{- range .ExtraImports }}
+	{{ . }}
+{{- end }}
 )
 
 var {{ .Kind }}GVK = GroupVersion.WithKind("{{ .Kind }}")
@@ -104,7 +114,7 @@ type {{ .Kind }}Status struct {
 // +kcc:observedstate:proto={{ .KindProtoTag }}
 {{- end }}
 type {{ .Kind }}ObservedState struct {
-}
+{{ .ObservedStateFields }}}
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

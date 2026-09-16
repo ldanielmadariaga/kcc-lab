@@ -1041,3 +1041,126 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 		t.Errorf("GoTypeForField(%q) with EmitMessageMaps off = %q, %v, want map[string]string", "string_map", got, err)
 	}
 }
+
+// TestWriteObservedStateFieldsNotes pins the two notes
+// PrepopulateObservedState reads: for a field the skip map left out it files no
+// queue entry, and for one WriteField could not type it files
+// unsupported-field-type.
+func TestWriteObservedStateFieldsNotes(t *testing.T) {
+	msg := observedStateTestMessage(t)
+
+	for _, tc := range []struct {
+		name         string
+		field        string
+		wantRendered string
+	}{
+		{
+			name:         "a field with a Go type renders into the struct",
+			field:        "create_time",
+			wantRendered: `json:"createTime`,
+		},
+		{
+			name:         "a field WriteField cannot type leaves a marker",
+			field:        "by_index",
+			wantRendered: "// TODO:",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			// Arrange
+			details := &OutputMessageDetails{
+				Message:      msg,
+				OutputFields: []protoreflect.FieldDescriptor{msg.Fields().ByName(protoreflect.Name(tc.field))},
+			}
+
+			// Act
+			var buf bytes.Buffer
+			notes := WriteObservedStateFields(&buf, details, sets.NewString(), nil, WriteOptions{})
+
+			// Assert
+			if len(notes) != 1 {
+				t.Fatalf("got %d notes, want one", len(notes))
+			}
+			if notes[0].Skipped {
+				t.Errorf("Skipped = true, want false for a field the skip map does not name")
+			}
+			if !strings.Contains(notes[0].Rendered, tc.wantRendered) {
+				t.Errorf("Rendered = %q, want it to contain %q", notes[0].Rendered, tc.wantRendered)
+			}
+			if !strings.Contains(buf.String(), tc.wantRendered) {
+				t.Errorf("struct body = %q, want it to contain %q", buf.String(), tc.wantRendered)
+			}
+		})
+	}
+}
+
+// TestWriteObservedStateFieldsSkips pins the other note
+// PrepopulateObservedState reads, for a field the skip map names: no output,
+// and a note saying the field was left out by decision rather than for want of
+// a Go type.
+func TestWriteObservedStateFieldsSkips(t *testing.T) {
+	// Arrange
+	msg := observedStateTestMessage(t)
+	details := &OutputMessageDetails{
+		Message:      msg,
+		OutputFields: []protoreflect.FieldDescriptor{msg.Fields().ByName("name")},
+	}
+
+	// Act
+	var buf bytes.Buffer
+	notes := WriteObservedStateFields(&buf, details, sets.NewString(), map[string]bool{"name": true}, WriteOptions{})
+
+	// Assert
+	if len(notes) != 1 {
+		t.Fatalf("got %d notes, want one", len(notes))
+	}
+	if !notes[0].Skipped {
+		t.Errorf("Skipped = false, want true")
+	}
+	if notes[0].Rendered != "" {
+		t.Errorf("Rendered = %q, want empty", notes[0].Rendered)
+	}
+	if buf.String() != "" {
+		t.Errorf("struct body = %q, want empty", buf.String())
+	}
+}
+
+// observedStateTestMessage returns a message with one field of each kind the
+// tests above need: name and create_time have Go types, and by_index is a map
+// keyed by int32, which GoTypeForField declines.
+func observedStateTestMessage(t *testing.T) protoreflect.MessageDescriptor {
+	t.Helper()
+	fdp := &descriptorpb.FileDescriptorProto{
+		Name:    protoPtr("obs.proto"),
+		Package: protoPtr("google.cloud.test.v1"),
+		MessageType: []*descriptorpb.DescriptorProto{
+			{
+				Name: protoPtr("TestMessage"),
+				NestedType: []*descriptorpb.DescriptorProto{
+					{
+						Name: protoPtr("ByIndexEntry"),
+						Field: []*descriptorpb.FieldDescriptorProto{
+							{Name: protoPtr("key"), Number: protoPtr(int32(1)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_INT32)},
+							{Name: protoPtr("value"), Number: protoPtr(int32(2)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+						},
+						Options: &descriptorpb.MessageOptions{MapEntry: protoPtr(true)},
+					},
+				},
+				Field: []*descriptorpb.FieldDescriptorProto{
+					{Name: protoPtr("name"), Number: protoPtr(int32(1)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+					{Name: protoPtr("create_time"), Number: protoPtr(int32(2)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+					{
+						Name: protoPtr("by_index"), Number: protoPtr(int32(3)),
+						Type:     typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE),
+						TypeName: protoPtr(".google.cloud.test.v1.TestMessage.ByIndexEntry"),
+						Label:    labelDescriptor(descriptorpb.FieldDescriptorProto_LABEL_REPEATED),
+					},
+				},
+			},
+		},
+	}
+	fd, err := protodesc.NewFile(fdp, nil)
+	if err != nil {
+		t.Fatalf("failed to create file descriptor: %v", err)
+	}
+	return fd.Messages().ByName("TestMessage")
+}
