@@ -153,3 +153,61 @@ func TestIsReferenceFieldPath(t *testing.T) {
 		})
 	}
 }
+
+// TestMatchName pins the name rules. The generator files what they match as
+// possible-reference-by-name, naming the target type, so a rule that widens
+// puts questions about ordinary fields in front of a reviewer.
+func TestMatchName(t *testing.T) {
+	for _, tc := range []struct {
+		fieldPath  string
+		wantTarget string
+	}{
+		{".spec.userTokenSecretVersion", "SecretManagerSecretVersionRef"},
+		{".spec.network", "ComputeNetworkRef"},
+		{".spec.peering.vpc", "ComputeNetworkRef"},
+		{".spec.kmsKeyName", "KMSCryptoKeyRef"},
+		{".spec.clientSecret", "SecretManagerSecretVersionRef"},
+		{".spec.project", "ProjectRef"},
+		{".spec.hosts[]", ""},
+		{".spec.networkConfig", ""},
+		{".spec.projectNumber", ""},
+	} {
+		t.Run(tc.fieldPath, func(t *testing.T) {
+			// Act
+			got, ok := MatchName(tc.fieldPath)
+
+			// Assert
+			if got != tc.wantTarget || ok != (tc.wantTarget != "") {
+				t.Errorf("MatchName(%q) = %q, %v, want %q", tc.fieldPath, got, ok, tc.wantTarget)
+			}
+		})
+	}
+}
+
+// TestMatchDescriptionLoose pins the prose forms of "this is a resource name".
+// The generator files a match as possible-reference-by-description-loose.
+func TestMatchDescriptionLoose(t *testing.T) {
+	for _, tc := range []struct {
+		name      string
+		fieldPath string
+		desc      string
+		want      bool
+	}{
+		{"resource name of", ".spec.destination", "The resource name (URI) of the destination connection profile.", true},
+		{"resource URL", ".spec.securityService", "The resource URL for the network edge security service.", true},
+		{"square-bracket template", ".spec.dataset", "Its format is projects/[project_id]/datasets/[bigquery_dataset_id].", true},
+		{"a sub-message's own name", ".spec.workspace.name", "The resource name of the conversion workspace.", false},
+		{"a catalogue entry", ".spec.machineTypeURI", "The resource URL for the machine type.", false},
+		{"ordinary prose", ".spec.displayName", "A name for people to read.", false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			// Act
+			got := MatchDescriptionLoose(tc.fieldPath, tc.desc)
+
+			// Assert
+			if got != tc.want {
+				t.Errorf("MatchDescriptionLoose(%q, %q) = %v, want %v", tc.fieldPath, tc.desc, got, tc.want)
+			}
+		})
+	}
+}
