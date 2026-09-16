@@ -128,12 +128,30 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 
 	goPackage := strings.TrimSuffix(gv.Group, ".cnrm.cloud.google.com") + "/" + gv.Version
 
+	// Resources this service declares, so a parent segment naming one can be
+	// flagged as a probable reference. Two sources, because neither is complete:
+	// the package scan sees a service split across several generate-types calls,
+	// and this run's own list survives a wipe-based regeneration, which deletes
+	// every _types.go before the generator runs.
+	var thisRun []string
+	for _, resource := range o.Resources {
+		thisRun = append(thisRun, resource.Kind)
+	}
+	siblings := scaffold.SiblingResources(
+		filepath.Join(o.OutputAPIDirectory, goPackage),
+		strings.TrimSuffix(gv.Group, ".cnrm.cloud.google.com"),
+		thisRun...)
+
 	scaffolder := &scaffold.APIScaffolder{
 		BaseDir:         o.OutputAPIDirectory,
 		GoPackage:       goPackage,
 		Group:           gv.Group,
 		Version:         gv.Version,
 		PackageProtoTag: o.ServiceName,
+		Siblings:        siblings,
+		// The scaffolder reads google.api.resource for the resource's pattern,
+		// which is what names the parent segments it emits.
+		Proto: api,
 	}
 	if scaffolder.DocFileNotExist() {
 		if err := scaffolder.AddDocFile(); err != nil {

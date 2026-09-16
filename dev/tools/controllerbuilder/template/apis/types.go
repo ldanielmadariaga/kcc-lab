@@ -31,6 +31,21 @@ type APIArgs struct {
 	// from google.api.resource, e.g. "lbTrafficExtensions". Empty when the proto
 	// declares no pattern, in which case templates fall back to guessing.
 	Collection string
+	// ParentRefFields holds every part of the resource's name below the root:
+	// refs to parent resources, plain strings where no ref type exists, and the
+	// location. The scaffolder renders it, since only it can tell which ref
+	// types the target package can reach.
+	ParentRefFields string
+	// RootRefType, RootRefField and RootRefDescription name the ref for the root
+	// of the resource's name: ProjectRef for nearly everything, OrganizationRef
+	// or FolderRef for a resource rooted outside a project, which has no project
+	// to point at.
+	RootRefType        string
+	RootRefField       string
+	RootRefDescription string
+	// SkipGVK suppresses the GVK var when the package already declares one,
+	// which scaffoldRefsFile does in <kind>_reference.go.
+	SkipGVK bool
 	// ParentStyle is the shape of the resource's parent: "project_location",
 	// "project", "organization", "folder", "other" or "unknown".
 	ParentStyle string
@@ -50,6 +65,16 @@ type APIArgs struct {
 	ExtraImports []string
 }
 
+// Location, emitted only where the proto's resource pattern makes the parent
+// project and location, is a pointer: 100 of the 129 existing resources that
+// declare one use that form, and the value form does not compile against
+// hand-written identity files that dereference it. It carries no omitempty, so
+// the field stays required, as upstream has it.
+//
+// Its comment in the template is the one-line "The location of this resource."
+// and nothing more. Whatever is written there becomes the field's CRD
+// description, which users read, and the generator's own reasoning does not
+// belong in a published API schema.
 const TypesTemplate = `
 // Copyright 2025 Google LLC
 //
@@ -76,18 +101,23 @@ import (
 {{- end }}
 )
 
+{{- if not .SkipGVK }}
 var {{ .Kind }}GVK = GroupVersion.WithKind("{{ .Kind }}")
+{{- end }}
 
 // {{ .Kind }}Spec defines the desired state of {{ .Kind }}
 {{- if .KindProtoTag }}
 // +kcc:spec:proto={{ .KindProtoTag }}
 {{- end }}
 type {{ .Kind }}Spec struct {
+{{- if .RootRefType }}
+	// {{ .RootRefDescription }}
+	{{ .RootRefType }} *refsv1beta1.{{ .RootRefType }} ` + "`" + `json:"{{ .RootRefField }}"` + "`" + `
+{{- else }}
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef ` + "`" + `json:"projectRef"` + "`" + `
-
-	// The location of this resource.
-	Location string ` + "`" + `json:"location"` + "`" + `
+{{- end }}
+{{ .ParentRefFields }}
 
 	// The {{ .Kind }} name. If not given, the metadata.name will be used.
 	ResourceID *string ` + "`" + `json:"resourceID,omitempty"` + "`" + `
