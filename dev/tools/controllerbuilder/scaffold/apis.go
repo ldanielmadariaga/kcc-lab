@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"text/template"
 
@@ -214,6 +215,7 @@ func (a *APIScaffolder) PathToTypeFile(resource options.Resource) string {
 func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *PrepopulateResult) error {
 	typeFilePath := a.PathToTypeFile(resource)
 	cArgs := a.buildAPIArgs(&resource)
+	cArgs.SkipGVK = packageDeclaresGVK(filepath.Join(a.BaseDir, a.GoPackage), cArgs.Kind)
 	if prepopulated != nil {
 		cArgs.SpecFields = prepopulated.SpecFields
 		cArgs.ObservedStateFields = prepopulated.ObservedStateFields
@@ -236,6 +238,32 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 		}
 	}
 	return scaffoldTypeFile(typeFilePath, cArgs)
+}
+
+// packageDeclaresGVK reports whether a Go file in dir, other than a
+// <kind>_types.go, declares <kind>GVK.
+//
+// The types template declares the GVK, and so do 56 hand-written
+// <kind>_reference.go files in apis/. Scaffolding a Kind's types into a
+// package that already has its reference file would declare it twice, and
+// the package would not compile.
+func packageDeclaresGVK(dir, kind string) bool {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return false
+	}
+	want := regexp.MustCompile(`(?m)^var ` + regexp.QuoteMeta(kind) + `GVK\b`)
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".go") ||
+			strings.HasSuffix(e.Name(), "_types.go") {
+			continue
+		}
+		body, err := os.ReadFile(filepath.Join(dir, e.Name()))
+		if err == nil && want.Match(body) {
+			return true
+		}
+	}
+	return false
 }
 
 func scaffoldTypeFile(path string, cArgs *apis.APIArgs) error {
