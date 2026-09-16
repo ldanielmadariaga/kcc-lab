@@ -30,6 +30,7 @@ import (
 // each path in the CRD, so a path must use the CRD's spelling at every depth,
 // and a field the Spec does not contain must not be reported.
 func TestReferenceHints(t *testing.T) {
+	// Arrange
 	msg := referenceHintsMessage(t)
 
 	for _, tc := range []struct {

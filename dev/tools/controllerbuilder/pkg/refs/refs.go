@@ -322,28 +322,8 @@ func notRepresentableReason(fieldPath, desc string) string {
 	return ""
 }
 
-// NameRule matches a field whose name identifies what it points at.
-//
-// These exist because the description signals miss a whole class: a Secret
-// Manager version or a VPC is often named plainly, with no resource-name
-// template in its description, so hasResourceNameTemplate never fires.
-// Measured on the 239-resource run, that class is half of what the rules were
-// missing.
-//
-// On reading their measured precision: 20 of the 21 hints the answer key calls
-// wrong are fields whose exact name upstream turned into a reference in another
-// resource -- "network" is a reference in nine resources and a plain string in
-// BlockchainNodeEngineBlockchainNode, userTokenSecretVersion is a reference in
-// CloudBuildConnection and a string in DevConnectConnection. So the raw figure
-// measures upstream's inconsistency more than this code's error rate, and for a
-// queue that proposes work to a person, surfacing them is the point. Only one
-// hint had a genuinely novel name.
-//
-// Kept as a short list of specific targets rather than a general vocabulary.
-// Matching reference names generically was tried and rejected at 2,164
-// findings. What makes these safe is that each names one target type and was
-// measured against an answer key of the fields upstream modelled, with any rule
-// that did not earn its place removed.
+// NameRule matches a field by its leaf name, and names the reference type the
+// field probably points at.
 type NameRule struct {
 	// Target is the KCC ref type the field points at, for the hint text.
 	Target string
@@ -351,6 +331,7 @@ type NameRule struct {
 	Match func(leaf string) bool
 }
 
+// eq returns a matcher for a leaf equal to one of names, ignoring case.
 func eq(names ...string) func(string) bool {
 	return func(leaf string) bool {
 		for _, n := range names {
@@ -362,13 +343,32 @@ func eq(names ...string) func(string) bool {
 	}
 }
 
+// hasSuffix returns a matcher for a leaf longer than suffix that ends in it,
+// ignoring case.
 func hasSuffix(suffix string) func(string) bool {
 	return func(leaf string) bool {
 		return len(leaf) > len(suffix) && strings.EqualFold(leaf[len(leaf)-len(suffix):], suffix)
 	}
 }
 
-// NameRules is ordered most specific first; the first match wins.
+// NameRules is ordered most specific first, and the first match wins.
+//
+// The description rules miss fields that are named plainly, such as a Secret
+// Manager version or a VPC whose description carries no resource-name
+// template. On the 239-resource run that was half of what they missed.
+//
+// The list stays short, and each rule names one target type. A generic
+// vocabulary of reference names was tried and rejected at 2,164 findings, and
+// each rule here was measured against the fields upstream modelled, with any
+// rule that did not pay for itself removed.
+//
+// Of the 21 hints those measurements count as wrong, 20 are names upstream
+// made a reference in some other resource. network is a reference in nine
+// resources and a plain string in BlockchainNodeEngineBlockchainNode, and
+// userTokenSecretVersion is a reference in CloudBuildConnection and a string
+// in DevConnectConnection. The raw precision therefore measures upstream's
+// inconsistency more than these rules' error, and a queue that proposes work
+// to a person should show those fields.
 var NameRules = []NameRule{
 	// Every confirmed instance ends in SecretVersion, and the suffix is long
 	// enough not to collide with anything else in the corpus.
@@ -378,25 +378,23 @@ var NameRules = []NameRule{
 	// networkConfig or networkPolicy is not a network.
 	{Target: "ComputeNetworkRef", Match: eq("network", "vpc", "vpcName")},
 	{Target: "KMSCryptoKeyRef", Match: eq("kmsKey", "cmekKeyName", "encryptionKey", "kmsKeyName")},
-	// A field whose name calls itself a secret, other than the SecretVersion
-	// suffix the rule above already owns. Measured over fields upstream actually
-	// modelled: 4 references, 0 kept plain. The exclusion matters -- without it
-	// the same measurement reads 16 and 16, because it picks up DevConnect's
-	// userTokenSecretVersion fields, which the suffix rule already hints and
-	// which upstream did keep plain.
+	// A name containing the word secret, unless it ends in SecretVersion, which
+	// the first rule handles. Over the fields upstream modelled this finds 4
+	// references and 0 plain strings. Without the exclusion it finds 16 of each,
+	// because it also picks up DevConnect's userTokenSecretVersion fields, which
+	// upstream kept plain.
 	//
-	// Names around these were measured and rejected: "ends Certificate" is 0 for
-	// 6 and "ends PrivateKey" 0 for 3, because pemCertificate and privateKey are
-	// contents rather than references, whatever ConnectorsConnection does with
-	// its own.
+	// Two neighbouring rules were measured and rejected. A name ending in
+	// Certificate was right 0 times in 6, and one ending in PrivateKey 0 times in
+	// 3, because pemCertificate and privateKey hold contents, not references.
 	{Target: "SecretManagerSecretVersionRef", Match: wholeWordNotSuffix("secret", "SecretVersion")},
-	// Measured 4 for 4. Kept to the exact leaf: "projectNumber" and "projectID"
-	// are values, and this must not become a substring rule.
+	// Right 4 times in 4. It matches only the exact leaf: projectNumber and
+	// projectID hold values, so this must not become a substring rule.
 	{Target: "ProjectRef", Match: eq("project")},
 }
 
-// wholeWordNotSuffix matches a leaf containing word as a camelCase word, unless
-// the leaf ends in exclude -- which another rule owns.
+// wholeWordNotSuffix returns a matcher for a leaf that contains word as a
+// camelCase word and does not end in exclude.
 func wholeWordNotSuffix(word, exclude string) func(string) bool {
 	return func(leaf string) bool {
 		if strings.EqualFold(leaf[max(0, len(leaf)-len(exclude)):], exclude) {
@@ -411,41 +409,39 @@ func wholeWordNotSuffix(word, exclude string) func(string) bool {
 	}
 }
 
-// looseDescriptionRules recognise a description that says "this is a resource
-// name" in prose rather than by spelling out a path template.
+// These patterns recognise a description that says "this is a resource name"
+// in prose, or with a template hasResourceNameTemplate does not accept.
 //
-// hasResourceNameTemplate is deliberately narrow: it wants projects/{ or
-// projects/< so that ordinary prose cannot match. That misses three forms that
-// occur across the corpus and mean exactly the same thing:
+// hasResourceNameTemplate wants projects/{ or projects/< so that ordinary prose
+// cannot match, which misses three forms that occur across the corpus and mean
+// the same thing:
 //
 //	"The resource name (URI) of the destination connection profile"
 //	"The resource URL for the network edge security service"
 //	"Its format is projects/[project_id]/datasets/[bigquery_dataset_id]"
 //
-// The last is the same template with square brackets. The first two are prose.
+// The first two are prose, and the last is the same template with square
+// brackets.
 var (
 	looseResourceName = regexp.MustCompile(`(?i)resource name(\s*\(URI\))?\s+(of|for)\b`)
 	looseResourceURL  = regexp.MustCompile(`(?i)resource URL`)
 	looseBracketPath  = regexp.MustCompile(`(projects|locations|organizations|folders)/\[`)
-	// A catalogue entry rather than an object anyone owns. exemptSuffixes covers
-	// the bare spellings; these are the same names carrying a URI suffix, which
-	// is how Dataproc writes them -- machineTypeURI, acceleratorTypeURI, imageURI.
+	// Zones, machine types, images and the like are catalogue entries, not
+	// resources anyone owns. Classify exempts zone, location, machineType and
+	// acceleratorType by name; this pattern adds image, nodeType and diskType,
+	// and each with the URI suffix Dataproc uses, as in machineTypeURI.
 	looseCatalogueEntry = regexp.MustCompile(`(?i)(zone|location|machineType|acceleratorType|image|nodeType|diskType)(URI|Url)?$`)
 )
 
-// MatchDescriptionLoose reports whether a description describes a resource name
-// in one of the prose forms above.
+// MatchDescriptionLoose reports whether desc describes a resource name in one
+// of the forms above. Classify does not use it, for the reason MatchName
+// gives.
 //
-// Deliberately NOT consulted by Classify, for the same reason as MatchName:
-// Classify feeds TestMissingRefs, whose findings land in missingrefs.txt, a
-// ratchet that refuses new entries. The generator's reference hints propose
-// work in the judgement queue and gate nothing, so they can use this today.
-//
-// Measured over the greenfield corpus, counting only fields upstream actually
-// modelled: 20 references against 14 it would call references that upstream
-// kept plain, so 59%. Several of those 14 -- peerNetwork, metastoreService,
-// sessionTemplate -- are references in all but upstream's modelling, which is
-// the kind of thing a person confirming a hint should see.
+// Over the greenfield corpus, counting only fields upstream modelled, it finds
+// 20 references and 14 fields upstream kept plain, so it is right 59% of the
+// time. Several of those 14, such as peerNetwork, metastoreService and
+// sessionTemplate, look like references that upstream chose to keep as
+// strings, and a person confirming a hint should see them.
 func MatchDescriptionLoose(fieldPath, desc string) bool {
 	leaf := fieldPath
 	if i := strings.LastIndex(leaf, "."); i >= 0 {
@@ -458,21 +454,21 @@ func MatchDescriptionLoose(fieldPath, desc string) bool {
 	if looseResourceURL.MatchString(desc) || looseBracketPath.MatchString(desc) {
 		return true
 	}
-	// A sub-message's own "name" is the commonest false positive by far: a
+	// A sub-message's own "name" is the most common false positive: a
 	// description saying "resource name of the conversion workspace" sits on
 	// conversionWorkspace.name, which upstream keeps plain.
 	return !strings.EqualFold(leaf, "name") && looseResourceName.MatchString(desc)
 }
 
-// MatchName returns the reference target a field's name indicates, if any.
+// MatchName returns the reference type a field's name indicates, if any.
 //
-// Deliberately NOT consulted by Classify. TestMissingRefs writes its findings
-// to missingrefs.txt, a ratchet that refuses new entries even under
-// WRITE_GOLDEN_OUTPUT, and these rules add 28 of them -- correct ones, such as
-// ComputePacketMirroring's .spec.network, but a gate nobody can pass until
-// every one is implemented. The generator's reference hints propose work and
-// gate nothing, so they can use them today. Tightening the check is a separate
-// decision, and has to come with the implementations or reviewed
+// Classify does not use these rules. TestMissingRefs writes Classify's
+// findings to missingrefs.txt, a ratchet that refuses new entries even under
+// WRITE_GOLDEN_OUTPUT, and these rules would add 28. The entries would be
+// right, such as ComputePacketMirroring's .spec.network, but the check would
+// fail until every one was implemented. The generator's hints only propose
+// work, so they can use the rules today. Tightening the check is a separate
+// decision, and it has to come with the implementations or with reviewed
 // refs_deferred.txt entries.
 func MatchName(fieldPath string) (string, bool) {
 	leaf := fieldPath
