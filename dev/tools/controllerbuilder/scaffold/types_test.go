@@ -130,9 +130,9 @@ func TestAddTypeFileWritesPrepopulatedBodies(t *testing.T) {
 	}
 }
 
-// TestPackageDeclaresGVK pins when the types template leaves out <Kind>GVK.
-// Many hand-written <kind>_reference.go files declare it, and a second
-// declaration in a scaffolded <kind>_types.go stops the package compiling.
+// TestPackageDeclaresGVK pins which files count as declaring <Kind>GVK: a
+// top-level var for this exact Kind, in any Go file but a _types.go.
+// AddTypeFile sets SkipGVK from the answer.
 func TestPackageDeclaresGVK(t *testing.T) {
 	for _, tc := range []struct {
 		name  string

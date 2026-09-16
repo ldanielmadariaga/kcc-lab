@@ -241,12 +241,13 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 }
 
 // packageDeclaresGVK reports whether a Go file in dir, other than a
-// <kind>_types.go, declares <kind>GVK.
+// _types.go file, has a top-level "var <kind>GVK" line. It does not see a
+// GVK declared inside a grouped var block, as dataform and iam declare theirs.
 //
-// The types template declares the GVK, and so do 56 hand-written
-// <kind>_reference.go files in apis/. Scaffolding a Kind's types into a
-// package that already has its reference file would declare it twice, and
-// the package would not compile.
+// The types template declares the GVK, and so do most hand-written
+// <kind>_reference.go files in apis/. Without this check, scaffolding a
+// Kind's types next to its reference file declares the variable twice, and
+// the package does not compile.
 func packageDeclaresGVK(dir, kind string) bool {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
