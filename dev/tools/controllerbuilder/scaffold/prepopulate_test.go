@@ -157,6 +157,7 @@ func TestPrepopulateSpecAlwaysQueuesTheResource(t *testing.T) {
 // path in the CRD, so under EmitPluralAcronyms an entry for relatedUris would
 // point at nothing: the struct says relatedURIs.
 func TestPrepopulateSpecQueuesTheEmittedName(t *testing.T) {
+	// Arrange
 	refOpts := &descriptorpb.FieldOptions{}
 	proto.SetExtension(refOpts, annotations.E_ResourceReference,
 		&annotations.ResourceReference{Type: "test.googleapis.com/Thing"})

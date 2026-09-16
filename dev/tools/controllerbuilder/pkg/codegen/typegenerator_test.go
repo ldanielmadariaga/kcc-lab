@@ -289,8 +289,8 @@ func TestGetJSONForKRM(t *testing.T) {
 	fields := msg.Fields()
 	acronyms := WriteOptions{EmitPluralAcronyms: true}
 
-	// The judgement queue names fields by this function, so it has to case a
-	// name the way WriteField did, or an entry names a field the struct lacks.
+	// The flag-on case is the one the judgement queue relies on; see
+	// GetJSONForKRM.
 	tests := []struct {
 		fieldName string
 		opts      WriteOptions

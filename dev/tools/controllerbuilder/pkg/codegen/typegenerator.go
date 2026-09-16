@@ -920,11 +920,12 @@ func goTypeForProtoKind(kind protoreflect.Kind) string {
 	return goType
 }
 
-// GetJSONForKRM returns the KRM JSON name for the field, cased as opts asks.
+// GetJSONForKRM returns the KRM JSON name for the field, cased according to
+// opts.
 //
-// Pass the options the field was written with. A queue path built from a
-// different set names a field the generated type does not have: under
-// EmitPluralAcronyms the struct says relatedURIs, and blank options say
+// Pass the options the field was written with. A judgement-queue path built
+// with any other options can name a field the generated type does not have:
+// under EmitPluralAcronyms the struct says relatedURIs, but blank options give
 // relatedUris.
 func GetJSONForKRM(protoField protoreflect.FieldDescriptor, opts WriteOptions) string {
 	tokens := strings.Split(string(protoField.Name()), "_")
