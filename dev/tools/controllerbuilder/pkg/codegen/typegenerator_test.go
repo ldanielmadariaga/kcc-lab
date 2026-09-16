@@ -274,6 +274,7 @@ func TestGetJSONForKRM(t *testing.T) {
 					{Name: protoPtr("project_id"), Number: protoPtr(int32(1)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
 					{Name: protoPtr("display_name"), Number: protoPtr(int32(2)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
 					{Name: protoPtr("http_header"), Number: protoPtr(int32(3)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+					{Name: protoPtr("related_uris"), Number: protoPtr(int32(4)), Type: typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
 				},
 			},
 		},
@@ -286,14 +287,20 @@ func TestGetJSONForKRM(t *testing.T) {
 
 	msg := fd.Messages().ByName("TestMessage")
 	fields := msg.Fields()
+	acronyms := WriteOptions{EmitPluralAcronyms: true}
 
+	// The flag-on case is the one the judgement queue relies on; see
+	// GetJSONForKRM.
 	tests := []struct {
 		fieldName string
+		opts      WriteOptions
 		expected  string
 	}{
-		{"project_id", "projectID"},
-		{"display_name", "displayName"},
-		{"http_header", "httpHeader"},
+		{"project_id", WriteOptions{}, "projectID"},
+		{"display_name", WriteOptions{}, "displayName"},
+		{"http_header", WriteOptions{}, "httpHeader"},
+		{"related_uris", WriteOptions{}, "relatedUris"},
+		{"related_uris", acronyms, "relatedURIs"},
 	}
 
 	for _, tt := range tests {
@@ -303,8 +310,8 @@ func TestGetJSONForKRM(t *testing.T) {
 			continue
 		}
 
-		if got := GetJSONForKRM(field); got != tt.expected {
-			t.Errorf("GetJSONForKRM(%q) = %q, want %q", tt.fieldName, got, tt.expected)
+		if got := GetJSONForKRM(field, tt.opts); got != tt.expected {
+			t.Errorf("GetJSONForKRM(%q, %+v) = %q, want %q", tt.fieldName, tt.opts, got, tt.expected)
 		}
 	}
 }

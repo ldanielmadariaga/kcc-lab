@@ -616,7 +616,7 @@ func WriteObservedStateFields(out io.Writer, msgDetails *OutputMessageDetails, o
 	for _, field := range msgDetails.OutputFields {
 		if skip[string(field.Name())] {
 			notes = append(notes, ObservedStateFieldNote{
-				JSONName: getJSONForKRM(field, observedOpts),
+				JSONName: GetJSONForKRM(field, observedOpts),
 				Skipped:  true,
 			})
 			continue
@@ -636,7 +636,7 @@ func WriteObservedStateFields(out io.Writer, msgDetails *OutputMessageDetails, o
 		out.Write(field_.Bytes())
 		emitted++
 		notes = append(notes, ObservedStateFieldNote{
-			JSONName: getJSONForKRM(field, observedOpts),
+			JSONName: GetJSONForKRM(field, observedOpts),
 			Rendered: field_.String(),
 		})
 	}
@@ -730,13 +730,13 @@ func GoTypeForField(field protoreflect.FieldDescriptor, isTransitiveOutput bool,
 func WriteField(out io.Writer, field protoreflect.FieldDescriptor, msg protoreflect.MessageDescriptor, fieldIndex int, isTransitiveOutput bool, opts WriteOptions, note string) {
 	sourceLocations := msg.ParentFile().SourceLocations().ByDescriptor(field)
 
-	jsonName := getJSONForKRM(field, opts)
+	jsonName := GetJSONForKRM(field, opts)
 	GoFieldName := goFieldNameOpts(field, opts)
 
 	// The caller's own note wins: it knows something more specific than a name
 	// match, such as why a field was placed in ObservedState.
 	if note == "" {
-		if target, ok := SiblingResource(field, opts.Siblings); ok {
+		if target, ok := SiblingResource(field, opts); ok {
 			note = SiblingGuessMarker + target
 		}
 	}
@@ -920,13 +920,14 @@ func goTypeForProtoKind(kind protoreflect.Kind) string {
 	return goType
 }
 
-// GetJSONForKRM returns the KRM JSON name for the field,
-// honoring KRM conventions
-func GetJSONForKRM(protoField protoreflect.FieldDescriptor) string {
-	return getJSONForKRM(protoField, WriteOptions{})
-}
-
-func getJSONForKRM(protoField protoreflect.FieldDescriptor, opts WriteOptions) string {
+// GetJSONForKRM returns the KRM JSON name for the field, cased according to
+// opts.
+//
+// Pass the options the field was written with. A judgement-queue path built
+// with any other options can name a field the generated type does not have:
+// under EmitPluralAcronyms the struct says relatedURIs, but blank options give
+// relatedUris.
+func GetJSONForKRM(protoField protoreflect.FieldDescriptor, opts WriteOptions) string {
 	tokens := strings.Split(string(protoField.Name()), "_")
 	for i, token := range tokens {
 		if i == 0 {
@@ -1111,7 +1112,7 @@ func IsServerSetField(field protoreflect.FieldDescriptor, msg protoreflect.Messa
 	if hasAnyFieldBehavior(msg) {
 		return false
 	}
-	return serverSetFieldNames[getJSONForKRM(field, opts)]
+	return serverSetFieldNames[GetJSONForKRM(field, opts)]
 }
 
 // hasAnyFieldBehavior reports whether any field of msg carries a

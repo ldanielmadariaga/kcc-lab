@@ -94,7 +94,7 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 		// both structs.
 		if codegen.IsServerSetField(field, msg, opts) {
 			out.Judgement = append(out.Judgement, JudgementItem{
-				FieldPath: ".status.observedState." + codegen.GetJSONForKRM(field),
+				FieldPath: ".status.observedState." + codegen.GetJSONForKRM(field, opts),
 				Reason:    "server-set-field-placed",
 				Detail: "moved to ObservedState because its name is on the " +
 					"server-set allowlist, not because the proto says so: no " +
@@ -127,9 +127,9 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 		// a reference to it. WriteField writes the marker and this records the
 		// matching entry, both through SiblingResource, so the two cannot disagree.
 		// The field stays a string: this reports a candidate, and a person decides.
-		if target, ok := codegen.SiblingResource(field, opts.Siblings); ok {
+		if target, ok := codegen.SiblingResource(field, opts); ok {
 			out.Judgement = append(out.Judgement, JudgementItem{
-				FieldPath: ".spec." + codegen.GetJSONForKRM(field),
+				FieldPath: ".spec." + codegen.GetJSONForKRM(field, opts),
 				Reason:    "possible-reference-by-sibling",
 				Detail: "the name matches " + target + ", a resource this service declares; " +
 					"confirm whether it should be a reference",
@@ -138,12 +138,12 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 
 		if _, reason, ok := codegen.UnsupportedFieldMarker(field_.String()); ok {
 			out.Judgement = append(out.Judgement, JudgementItem{
-				FieldPath: ".spec." + codegen.GetJSONForKRM(field),
+				FieldPath: ".spec." + codegen.GetJSONForKRM(field, opts),
 				Reason:    "unsupported-field-type",
 				Detail:    reason,
 			})
 		}
-		if item, ok := judgementFor(field); ok {
+		if item, ok := judgementFor(field, opts); ok {
 			out.Judgement = append(out.Judgement, item)
 		}
 	}
@@ -224,7 +224,7 @@ func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedSta
 // deliberately under-reports rather than filling the queue with noise. Fields
 // that look like references but carry no annotation are still caught later by
 // TestMissingRefs, once the resource graduates from the queue.
-func judgementFor(field protoreflect.FieldDescriptor) (JudgementItem, bool) {
+func judgementFor(field protoreflect.FieldDescriptor, opts codegen.WriteOptions) (JudgementItem, bool) {
 	if field.Options() == nil {
 		return JudgementItem{}, false
 	}
@@ -242,7 +242,7 @@ func judgementFor(field protoreflect.FieldDescriptor) (JudgementItem, bool) {
 	}
 
 	return JudgementItem{
-		FieldPath: ".spec." + codegen.GetJSONForKRM(field),
+		FieldPath: ".spec." + codegen.GetJSONForKRM(field, opts),
 		Reason:    "possible-reference",
 		Detail:    "target=" + target,
 	}, true
@@ -306,7 +306,7 @@ var outputOnlyPrefixes = []string{"Output only.", "[Output Only]"}
 // structs in the baseline tree, not one carries either spelling in its comment,
 // so there are no measured false positives for either. What is missing is the
 // review, not the accuracy.
-func DetectOutputOnlyInComments(msg protoreflect.MessageDescriptor) []OutputOnlyCandidate {
+func DetectOutputOnlyInComments(msg protoreflect.MessageDescriptor, opts codegen.WriteOptions) []OutputOnlyCandidate {
 	if msg == nil {
 		return nil
 	}
@@ -321,7 +321,7 @@ func DetectOutputOnlyInComments(msg protoreflect.MessageDescriptor) []OutputOnly
 			continue
 		}
 		out = append(out, OutputOnlyCandidate{
-			FieldPath: ".spec." + codegen.GetJSONForKRM(field),
+			FieldPath: ".spec." + codegen.GetJSONForKRM(field, opts),
 			Comment:   comment,
 		})
 	}
