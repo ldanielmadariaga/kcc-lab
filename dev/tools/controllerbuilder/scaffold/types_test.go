@@ -18,9 +18,13 @@ import (
 	"bytes"
 	"go/parser"
 	"go/token"
+	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 	"text/template"
 
+	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/pkg/options"
 	"github.com/GoogleCloudPlatform/k8s-config-connector/dev/tools/controllerbuilder/template/apis"
 )
 
@@ -72,5 +76,48 @@ func TestTypesTemplateRendersValidGo(t *testing.T) {
 				t.Errorf("rendered types file is not valid Go: %v\n%s", err, buf.String())
 			}
 		})
+	}
+}
+
+// TestAddTypeFileWritesPrepopulatedBodies checks that every part of
+// PrepopulateResult reaches the scaffolded file. The test above renders the
+// template directly, so it cannot catch a field the scaffolder leaves out of
+// the template arguments.
+func TestAddTypeFileWritesPrepopulatedBodies(t *testing.T) {
+	// Arrange
+	dir := t.TempDir()
+	scaffolder := &APIScaffolder{
+		BaseDir:         dir,
+		GoPackage:       "networkservices/v1alpha1",
+		Group:           "networkservices.cnrm.cloud.google.com",
+		Version:         "v1alpha1",
+		PackageProtoTag: "google.cloud.networkservices.v1",
+	}
+	resource := options.Resource{Kind: "NetworkServicesLBTrafficExtension", ProtoName: "LbTrafficExtension"}
+	prepopulated := &PrepopulateResult{
+		SpecFields:          "\tDescription *string `json:\"description,omitempty\"`\n",
+		ObservedStateFields: "\tError *common.Status `json:\"error,omitempty\"`\n",
+		ExtraImports:        []string{`common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"`},
+	}
+
+	// Act
+	if err := scaffolder.AddTypeFile(resource, prepopulated); err != nil {
+		t.Fatalf("AddTypeFile: %v", err)
+	}
+
+	// Assert
+	b, err := os.ReadFile(filepath.Join(dir, scaffolder.GoPackage, "networkserviceslbtrafficextension_types.go"))
+	if err != nil {
+		t.Fatalf("reading scaffolded file: %v", err)
+	}
+	got := string(b)
+	for _, want := range []string{
+		"Description *string `json:\"description,omitempty\"`",
+		"Error *common.Status `json:\"error,omitempty\"`",
+		`common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("scaffolded file is missing %s\n%s", want, got)
+		}
 	}
 }

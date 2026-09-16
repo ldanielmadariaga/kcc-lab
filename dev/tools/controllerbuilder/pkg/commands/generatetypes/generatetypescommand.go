@@ -241,12 +241,13 @@ func RunGenerateCRD(ctx context.Context, o *GenerateCRDOptions) error {
 					// so ObservedState is filled here rather than in PrepopulateSpec.
 					if details, ok := typeGenerator.OutputFieldsFor(string(msg.FullName())); ok {
 						var obsJudgement []scaffold.JudgementItem
-						prepopulated.ObservedStateFields, prepopulated.ExtraImports, obsJudgement =
+						prepopulated.ObservedStateFields, obsJudgement =
 							scaffold.PrepopulateObservedState(details, typeGenerator.ObservedStateMessages(), writeOptions)
 						// The ObservedState entries join the Spec's, so one queue file covers the
 						// whole resource.
 						prepopulated.Judgement = append(prepopulated.Judgement, obsJudgement...)
 					}
+					prepopulated.ExtraImports = scaffold.ExtraImportsFor(prepopulated.SpecFields, prepopulated.ObservedStateFields)
 				}
 				if err := scaffolder.AddTypeFile(resource, prepopulated); err != nil {
 					return fmt.Errorf("add type file %s: %w", scaffolder.PathToTypeFile(resource), err)

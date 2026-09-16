@@ -1042,11 +1042,13 @@ func TestGoTypeForFieldMaps(t *testing.T) {
 	}
 }
 
-// TestWriteObservedStateFieldsNotes checks that the notes tell apart the two
-// ways a field can be missing from the struct: the caller's skip map left it
-// out, which is a decision, or WriteField could not type it, which is a gap.
-// Only the "// TODO:" marker in Rendered shows the second.
+// TestWriteObservedStateFieldsNotes checks the note each output-only field
+// comes back with. A field can be missing from the struct two ways, and the
+// caller treats them differently: the skip map left it out, or WriteField could
+// not type it and wrote a "// TODO:" marker instead.
 func TestWriteObservedStateFieldsNotes(t *testing.T) {
+	// Arrange: name is skipped by the caller, create_time renders normally, and
+	// by_index is a map keyed by int32, which GoTypeForField declines.
 	fdp := &descriptorpb.FileDescriptorProto{
 		Name:    protoPtr("obs.proto"),
 		Package: protoPtr("google.cloud.test.v1"),
@@ -1086,9 +1088,11 @@ func TestWriteObservedStateFieldsNotes(t *testing.T) {
 		details.OutputFields = append(details.OutputFields, msg.Fields().Get(i))
 	}
 
+	// Act
 	var buf bytes.Buffer
 	notes := WriteObservedStateFields(&buf, details, sets.NewString(), map[string]bool{"name": true}, WriteOptions{})
 
+	// Assert
 	byName := map[string]ObservedStateFieldNote{}
 	for _, n := range notes {
 		byName[n.JSONName] = n
@@ -1096,27 +1100,30 @@ func TestWriteObservedStateFieldsNotes(t *testing.T) {
 	if len(notes) != 3 {
 		t.Fatalf("got %d notes, want one per output field", len(notes))
 	}
-
-	// The caller skipped name, which is a decision, so it is not in the output.
-	if n := byName["name"]; !n.Skipped {
-		t.Errorf("name: Skipped = false, want true")
-	} else if n.Rendered != "" {
-		t.Errorf("name: Rendered = %q, want empty for a skipped field", n.Rendered)
+	for _, tc := range []struct {
+		field        string
+		wantSkipped  bool
+		wantRendered string
+	}{
+		{field: "name", wantSkipped: true, wantRendered: ""},
+		{field: "createTime", wantRendered: `json:"createTime`},
+		{field: "byIndex", wantRendered: "// TODO:"},
+	} {
+		n := byName[tc.field]
+		if n.Skipped != tc.wantSkipped {
+			t.Errorf("%s: Skipped = %v, want %v", tc.field, n.Skipped, tc.wantSkipped)
+		}
+		if tc.wantRendered == "" {
+			if n.Rendered != "" {
+				t.Errorf("%s: Rendered = %q, want empty", tc.field, n.Rendered)
+			}
+			continue
+		}
+		if !strings.Contains(n.Rendered, tc.wantRendered) {
+			t.Errorf("%s: Rendered = %q, want it to contain %q", tc.field, n.Rendered, tc.wantRendered)
+		}
 	}
 	if strings.Contains(buf.String(), `json:"name`) {
-		t.Error("a skipped field was written to the struct anyway")
-	}
-
-	// createTime is written normally, so its note is neither skipped nor a marker.
-	if n := byName["createTime"]; n.Skipped {
-		t.Errorf("createTime: Skipped = true, want false")
-	} else if !strings.Contains(n.Rendered, `json:"createTime`) {
-		t.Errorf("createTime: Rendered = %q, want the field declaration", n.Rendered)
-	}
-
-	// byIndex has a declined type, and its TODO marker is the only trace the
-	// caller has.
-	if n := byName["byIndex"]; !strings.Contains(n.Rendered, "// TODO:") {
-		t.Errorf("byIndex: Rendered = %q, want a TODO marker the caller can report", n.Rendered)
+		t.Error("a skipped field reached the struct")
 	}
 }

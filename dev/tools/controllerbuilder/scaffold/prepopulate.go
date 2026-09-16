@@ -90,25 +90,20 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 			continue
 		}
 		if identityFields[string(field.Name())] {
-			// We drop the field here and file no entry, deliberately.
+			// Dropped with no queue entry. KCC carries the resource name in
+			// status.externalRef, and an entry here would fire on 219 resources
+			// tree-wide and 81 in the measured corpus, where upstream keeps
+			// status.observedState.name on two of those 81.
 			//
-			// PrepopulateObservedState files observedstate-identity-field-omitted
-			// only for an identity field the proto marks OUTPUT_ONLY. A "name"
-			// without that annotation is dropped here and recorded nowhere, as in
-			// ParameterManagerParameter, whose ObservedState has createTime and no
-			// name.
-			//
-			// A queue entry for this case would fire on 219 resources tree-wide and
-			// 81 in the measured corpus, and upstream keeps status.observedState.name
-			// on only two of those 81. KCC carries the resource name in
-			// status.externalRef, so the answer is nearly always to leave it out.
+			// PrepopulateObservedState does file an entry for a "name" the proto
+			// marks OUTPUT_ONLY. One without that annotation is recorded nowhere,
+			// as in ParameterManagerParameter.
 			continue
 		}
 
-		// We render each field on its own so we can inspect its output before
-		// appending it. When the generator cannot type a field it writes a
-		// "// TODO:" comment and moves on, and the field never reaches the CRD.
-		// That is a silent drop unless somebody records it.
+		// Each field renders into its own buffer so the marker WriteField leaves
+		// for a field it cannot type can be read back. Such a field never reaches
+		// the CRD, and the queue entry below is the only record of it.
 		var field_ bytes.Buffer
 		codegen.WriteField(&field_, field, msg, emitted, false, opts)
 		buf.Write(field_.Bytes())
@@ -132,12 +127,11 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 	//
 	// TestMissingRefs suppresses a resource's [refs] findings while the resource
 	// has any entry in the queue, so this one cannot depend on finding an
-	// annotation. The pilot shows why: LbTrafficExtension carries no
+	// annotation. LbTrafficExtension shows why: it carries no
 	// google.api.resource_reference on any field, including forwarding_rules,
 	// which is the field that has to become a ref. A queue built from
-	// annotations alone would come out empty, so no file would be written,
-	// nothing would be suppressed, and the resource would go straight into the
-	// missingrefs ratchet and fail. The queue exists to prevent that.
+	// annotations alone comes out empty, so nothing is suppressed and the
+	// resource fails the missingrefs ratchet.
 	out.Judgement = append([]JudgementItem{{
 		Reason: "untriaged-bulk-generation",
 		Detail: "spec was generated mechanically; confirm refs, omissions and KRM names",
@@ -146,16 +140,18 @@ func PrepopulateSpec(msg protoreflect.MessageDescriptor, opts codegen.WriteOptio
 	return out, nil
 }
 
-// PrepopulateObservedState renders the body of the resource-level
-// <Kind>ObservedState struct from details, and returns the imports the
-// rendered fields need and a queue entry for each field that did not make
-// it. details comes from OutputFieldsFor.
+// PrepopulateObservedState returns the body of the resource-level
+// <Kind>ObservedState struct, rendered from details, and a queue entry for each
+// output-only field that did not reach it. details comes from OutputFieldsFor.
 //
-// On the pilot resources, NetworkSecurityURLList and TranscoderJob, the
-// proto alone gave the same struct that was written by hand.
-func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedStateMessages sets.String, opts codegen.WriteOptions) (fields string, extraImports []string, judgement []JudgementItem) {
+// The imports those fields need come from ExtraImportsFor, which the caller
+// runs over the Spec body as well.
+//
+// On NetworkSecurityURLList and TranscoderJob, the proto gives the same struct
+// a person wrote by hand.
+func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedStateMessages sets.String, opts codegen.WriteOptions) (fields string, judgement []JudgementItem) {
 	if details == nil {
-		return "", nil, nil
+		return "", nil
 	}
 
 	var buf bytes.Buffer
@@ -164,8 +160,8 @@ func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedSta
 	notes := codegen.WriteObservedStateFields(&buf, details, observedStateMessages, identityFields, opts)
 	fields = buf.String()
 
-	// Every field WriteObservedStateFields skipped or could not type gets a
-	// queue entry.
+	// A field missing from the struct gets a queue entry, whether the skip map
+	// left it out or WriteField could not type it.
 	for _, n := range notes {
 		switch {
 		case n.Skipped:
@@ -185,7 +181,7 @@ func PrepopulateObservedState(details *codegen.OutputMessageDetails, observedSta
 		}
 	}
 
-	return fields, ExtraImportsFor(fields), judgement
+	return fields, judgement
 }
 
 // judgementFor reports whether a field needs a human decision that the generator
@@ -328,16 +324,15 @@ func FormatOutputOnlyCandidates(kind, group string, items []OutputOnlyCandidate)
 	return sb.String()
 }
 
-// ExtraImportsFor reports the imports a rendered field body needs beyond the
-// three the types template always writes.
+// ExtraImportsFor returns the import lines the given field bodies need beyond
+// the three the types template always writes.
 //
 // A handful of proto types map to Go types from other packages, such as
 // google.rpc.Status to common.Status and google.protobuf.Struct to
-// apiextensionsv1.JSON. The template imports none of them, so anything the
-// rendered Spec or ObservedState references has to be declared or the
-// scaffolded file does not compile. Both bodies are scanned, because either can
-// contain such a field: securitycentermanagement puts an apiextensionsv1.JSON
-// in the Spec, transcoder a common.Status in the ObservedState.
+// apiextensionsv1.JSON. The template imports none of them, so a scaffolded file
+// referencing one does not compile without the line. Pass every body that goes
+// into the file: securitycentermanagement puts an apiextensionsv1.JSON in the
+// Spec, transcoder a common.Status in the status struct.
 func ExtraImportsFor(bodies ...string) []string {
 	var out []string
 	for qualifier, importPath := range codegen.QualifierImports {

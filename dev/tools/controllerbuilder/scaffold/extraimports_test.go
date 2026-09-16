@@ -20,23 +20,23 @@ import (
 )
 
 // TestExtraImportsFor covers a special-cased type in each body, since
-// ExtraImportsFor scans both.
+// ExtraImportsFor scans every body it is given.
 func TestExtraImportsFor(t *testing.T) {
 	tests := []struct {
 		name       string
 		spec       string
-		observed   string
+		status     string
 		wantSubstr string
 		wantNone   bool
 	}{
 		{name: "apiextensionsv1 in spec", spec: "\tConfig apiextensionsv1.JSON `json:\"config\"`",
 			wantSubstr: `apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"`},
-		{name: "common in observed state", observed: "\tError *common.Status `json:\"error\"`",
+		{name: "common in status", status: "\tError *common.Status `json:\"error\"`",
 			wantSubstr: `common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"`},
 		{name: "nothing special", spec: "\tName *string `json:\"name\"`", wantNone: true},
 	}
 	for _, tt := range tests {
-		got := ExtraImportsFor(tt.spec, tt.observed)
+		got := ExtraImportsFor(tt.spec, tt.status)
 		if tt.wantNone {
 			if len(got) != 0 {
 				t.Errorf("%s: want no imports, got %v", tt.name, got)
