@@ -63,6 +63,7 @@ func TestTypesTemplateRendersValidGo(t *testing.T) {
 		{name: "prepopulated", args: prepopulated},
 		{name: "organization-rooted", args: organizationRooted},
 		{name: "a resource that is its own root", args: selfRooted},
+		{name: "GVK declared elsewhere", args: func() apis.APIArgs { a := base; a.SkipGVK = true; return a }()},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			// Arrange
@@ -126,5 +127,64 @@ func TestAddTypeFileWritesPrepopulatedBodies(t *testing.T) {
 	}
 	if !strings.Contains(got, `common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"`) {
 		t.Errorf("the import the ObservedState body needs is missing from the scaffolded file:\n%s", got)
+	}
+}
+
+// TestPackageDeclaresGVK pins which files count as declaring <Kind>GVK: a
+// top-level var for this exact Kind, in any Go file but a _types.go.
+// AddTypeFile sets SkipGVK from the answer.
+func TestPackageDeclaresGVK(t *testing.T) {
+	for _, tc := range []struct {
+		name  string
+		files map[string]string
+		want  bool
+	}{
+		{
+			name:  "a reference file declares it",
+			files: map[string]string{"widget_reference.go": "package v1\n\nvar WidgetGVK = GroupVersion.WithKind(\"Widget\")\n"},
+			want:  true,
+		},
+		{
+			name:  "a types file declaring it is the one being replaced",
+			files: map[string]string{"widget_types.go": "package v1\n\nvar WidgetGVK = GroupVersion.WithKind(\"Widget\")\n"},
+			want:  false,
+		},
+		{
+			name:  "another Kind's GVK whose name starts with this one",
+			files: map[string]string{"widgetpart_reference.go": "package v1\n\nvar WidgetPartGVK = GroupVersion.WithKind(\"WidgetPart\")\n"},
+			want:  false,
+		},
+		{
+			name:  "a mention that is not a declaration",
+			files: map[string]string{"widget_identity.go": "package v1\n\nfunc f() { _ = WidgetGVK }\n"},
+			want:  false,
+		},
+		{
+			name: "no package directory yet",
+			want: false,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			// Arrange
+			dir := filepath.Join(t.TempDir(), "v1")
+			if tc.files != nil {
+				if err := os.MkdirAll(dir, 0o755); err != nil {
+					t.Fatal(err)
+				}
+			}
+			for name, body := range tc.files {
+				if err := os.WriteFile(filepath.Join(dir, name), []byte(body), 0o644); err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			// Act
+			got := packageDeclaresGVK(dir, "Widget")
+
+			// Assert
+			if got != tc.want {
+				t.Errorf("packageDeclaresGVK() = %v, want %v", got, tc.want)
+			}
+		})
 	}
 }

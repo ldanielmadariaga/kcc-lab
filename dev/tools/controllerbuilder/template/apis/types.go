@@ -57,6 +57,9 @@ type APIArgs struct {
 	// of the resource's name, projectRef for most resources. Empty for a
 	// resource that is itself a root, such as a billing account.
 	RootRefField string
+	// SkipGVK leaves out the <Kind>GVK declaration because the package already
+	// has one, usually in a hand-written <kind>_reference.go.
+	SkipGVK bool
 }
 
 const TypesTemplate = `
@@ -84,8 +87,10 @@ import (
 	{{ . }}
 {{- end }}
 )
+{{- if not .SkipGVK }}
 
 var {{ .Kind }}GVK = GroupVersion.WithKind("{{ .Kind }}")
+{{- end }}
 
 // {{ .Kind }}Spec defines the desired state of {{ .Kind }}
 {{- if .KindProtoTag }}
