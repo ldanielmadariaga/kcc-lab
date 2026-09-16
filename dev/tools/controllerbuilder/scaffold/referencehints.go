@@ -54,7 +54,8 @@ func ReferenceHints(msg protoreflect.MessageDescriptor, opts codegen.WriteOption
 // It skips what the generator leaves out of the Spec: OUTPUT_ONLY fields at any
 // depth, and at the top level the identity fields and server-set fields that
 // PrepopulateSpec drops. A field the generator cannot type is absent from the
-// CRD too, so it is skipped with its subtree.
+// CRD too, so it is skipped with its subtree. So is a field the generator
+// already writes as a reference, which needs no hint.
 //
 // onPath holds the messages between msg and the root. Proto messages can
 // contain themselves, and the generated struct breaks the cycle with a
@@ -74,7 +75,11 @@ func walkSpecFields(msg protoreflect.MessageDescriptor, prefix string, opts code
 		if top && (identityFields[string(field.Name())] || codegen.IsServerSetField(field, msg, opts)) {
 			continue
 		}
-		if _, err := codegen.GoTypeForField(field, false, opts); err != nil {
+		goType, err := codegen.GoTypeForField(field, false, opts)
+		if err != nil {
+			continue
+		}
+		if generatesAsReference(field, goType) {
 			continue
 		}
 
@@ -93,6 +98,20 @@ func walkSpecFields(msg protoreflect.MessageDescriptor, prefix string, opts code
 			walkSpecFields(field.Message(), path, opts, false, onPath, visit)
 		}
 	}
+}
+
+// generatesAsReference reports whether the generator writes field as a KCC
+// reference type instead of a struct of its own, as it writes
+// google.cloud.connectors.v1.Secret as *secretmanagerv1beta1.SecretRef.
+// goType is what GoTypeForField returned for field.
+//
+// The Ref suffix alone is not enough. DeployedModelRef and
+// NotebookRuntimeTemplateRef are ordinary generated structs whose proto names
+// end in Ref, and their fields still need hints.
+func generatesAsReference(field protoreflect.FieldDescriptor, goType string) bool {
+	return field.Kind() == protoreflect.MessageKind &&
+		!codegen.MapsToGoStruct(field.Message()) &&
+		strings.HasSuffix(goType, "Ref")
 }
 
 // fieldComment returns a field's leading proto comment on one line, which is
