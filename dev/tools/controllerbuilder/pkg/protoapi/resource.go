@@ -142,11 +142,12 @@ func splitPattern(pattern string) (collection string, parentPath string) {
 // words together ("{keyring}", "{datastore}") where the collection beside them
 // keeps the API's own casing ("keyRings", "dataStores").
 //
-// Patterns do not all end in collection/{id}: 274 of the 3160 in googleapis
-// end in a literal naming a singleton, such as
-// "accounts/{account}/programs/{program}/checkoutSettings". Only where the
-// pattern ends on a collection/{id} pair is that pair the resource itself, so
-// only then does the parent lie one pair further back.
+// Patterns end in one of three ways. Most end on the resource's own
+// collection/{id}, where the parent is the pair before it. 274 of the 3160 in
+// googleapis end in a literal naming a singleton, such as
+// "accounts/{account}/programs/{program}/checkoutSettings", where the last
+// pair is already the parent. A pattern ending in two placeholders in a row
+// names no collection between them, so there is no parent to read.
 func ParentPair(pattern string) (collection string, placeholder string) {
 	segs := strings.Split(pattern, "/")
 
@@ -162,13 +163,14 @@ func ParentPair(pattern string) (collection string, placeholder string) {
 		return "", ""
 	}
 
-	last := pairs[len(pairs)-1]
-	endsOnPair := segs[len(segs)-2] == last.collection &&
-		segs[len(segs)-1] == "{"+last.placeholder+"}"
-	if endsOnPair {
+	if strings.HasPrefix(segs[len(segs)-1], "{") {
+		if strings.HasPrefix(segs[len(segs)-2], "{") {
+			return "", ""
+		}
 		parent := pairs[len(pairs)-2]
 		return parent.collection, parent.placeholder
 	}
+	last := pairs[len(pairs)-1]
 	return last.collection, last.placeholder
 }
 
