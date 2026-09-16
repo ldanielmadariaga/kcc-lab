@@ -33,6 +33,7 @@ func TestParentRef(t *testing.T) {
 		refSource  string
 		wantField  string
 		wantReason string
+		wantPath   string
 	}{
 		{
 			name:       "a reference type in the service package is used",
@@ -40,6 +41,7 @@ func TestParentRef(t *testing.T) {
 			refSource:  "package v1alpha1\n\ntype ClusterRef struct{}\n",
 			wantField:  "ClusterRef *ClusterRef `json:\"clusterRef,omitempty\"`",
 			wantReason: "parent-ref-guessed",
+			wantPath:   "projects/{project}/locations/{location}/clusters/{cluster}",
 		},
 		{
 			// PrivateCACertificate: the type carries the Kind's prefix while
@@ -49,6 +51,7 @@ func TestParentRef(t *testing.T) {
 			refSource:  "package v1alpha1\n\ntype PrivateCACAPoolRef struct{}\n",
 			wantField:  "CaPoolRef *PrivateCACAPoolRef `json:\"caPoolRef,omitempty\"`",
 			wantReason: "parent-ref-guessed",
+			wantPath:   "projects/{project}/locations/{location}/caPools/{ca_pool}",
 		},
 		{
 			// apis/kms/v1beta1 declares both, and counting the unexported one
@@ -58,6 +61,7 @@ func TestParentRef(t *testing.T) {
 			refSource:  "package v1alpha1\n\ntype KMSCryptoKeyRef struct{}\n\ntype kmsCryptoKeyRef struct{}\n",
 			wantField:  "CryptoKeyRef *KMSCryptoKeyRef `json:\"cryptoKeyRef,omitempty\"`",
 			wantReason: "parent-ref-guessed",
+			wantPath:   "projects/{project}/locations/{location}/cryptoKeys/{crypto_key}",
 		},
 		{
 			// FirestoreIndex: no CollectionGroupRef exists anywhere.
@@ -65,6 +69,7 @@ func TestParentRef(t *testing.T) {
 			pattern:    "projects/{project}/databases/{database}/collectionGroups/{collection_group}/indexes/{index}",
 			refSource:  "package v1alpha1\n",
 			wantReason: "parent-ref-not-modelled",
+			wantPath:   "projects/{project}/databases/{database}/collectionGroups/{collection_group}",
 		},
 		{
 			// DiscoveryEngineServingConfig: both really exist upstream.
@@ -72,6 +77,7 @@ func TestParentRef(t *testing.T) {
 			pattern:    "projects/{project}/locations/{location}/engines/{engine}/servingConfigs/{config}",
 			refSource:  "package v1alpha1\n\ntype DiscoveryEngineEngineRef struct{}\n\ntype DiscoveryEngineSearchEngineRef struct{}\n",
 			wantReason: "parent-ref-not-modelled",
+			wantPath:   "projects/{project}/locations/{location}/engines/{engine}",
 		},
 		{
 			name:      "a project and location parent is already carried",
@@ -118,6 +124,9 @@ func TestParentRef(t *testing.T) {
 				t.Errorf("queued nothing, want reason %q", g.wantReason)
 			case g.wantReason != "" && item.Reason != g.wantReason:
 				t.Errorf("reason = %q, want %q", item.Reason, g.wantReason)
+			}
+			if g.wantPath != "" && item != nil && !strings.Contains(item.Detail, g.wantPath) {
+				t.Errorf("the queue entry must name the parent path %q, got: %s", g.wantPath, item.Detail)
 			}
 		})
 	}

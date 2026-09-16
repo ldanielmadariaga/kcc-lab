@@ -142,16 +142,22 @@ func TestParentPair(t *testing.T) {
 			// The only patterns in googleapis with two placeholders in a row are
 			// 2 of the 3160, both healthcare FHIR. Nothing between them names a
 			// collection, so the pattern has no parent to read.
-			name:    "two placeholders in a row",
-			pattern: "projects/{project}/locations/{location}/datasets/{dataset}/fhirStores/{fhir_store}/fhir/{resource_type}/{fhir_resource_id}",
+			name:            "two placeholders in a row",
+			pattern:         "projects/{project}/locations/{location}/datasets/{dataset}/fhirStores/{fhir_store}/fhir/{resource_type}/{fhir_resource_id}",
+			wantCollection:  "",
+			wantPlaceholder: "",
 		},
 		{
-			name:    "no parent at all",
-			pattern: "foos/{foo}",
+			name:            "no parent at all",
+			pattern:         "foos/{foo}",
+			wantCollection:  "",
+			wantPlaceholder: "",
 		},
 		{
-			name:    "pattern ending in a literal names no parent",
-			pattern: "projects/{project}/locations",
+			name:            "pattern ending in a literal names no parent",
+			pattern:         "projects/{project}/locations",
+			wantCollection:  "",
+			wantPlaceholder: "",
 		},
 	}
 

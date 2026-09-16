@@ -30,18 +30,14 @@ import (
 // to the repo root.
 const sharedRefsPackage = "apis/refs/v1beta1"
 
-// parentRef renders the Spec field naming a resource's direct parent, together
-// with its queue entry. Both are empty where the pattern names no parent below
-// project and location, which is most resources.
+// parentRef renders the Spec field naming a resource's direct parent and the
+// queue entry that goes with it. Both are empty where the pattern names no
+// parent below project and location.
 //
-// The field is written only where a reference type for the parent already
-// exists. Where none does, or where several match, the entry says so and no
-// field is written: a wrong reference is harder for a reviewer to catch than an
-// absent one, because it compiles and reads as deliberate.
-//
-// Measured against the 46 hand-written kinds with such a parent, upstream
-// models it in 45, names it as the collection segment predicts in 40, and has
-// a reference type for it inside the service in 39.
+// The field is written only where a reference type for the parent exists.
+// Where none does, or several match, the entry names the parent path and no
+// field is written, because a wrong reference is harder to catch in review
+// than an absent one.
 func (a *APIScaffolder) parentRef(pattern string) (field string, item *JudgementItem) {
 	collection, placeholder := protoapi.ParentPair(pattern)
 	switch collection {
