@@ -215,6 +215,7 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 		cArgs.SpecFields = prepopulated.SpecFields
 		cArgs.ObservedStateFields = prepopulated.ObservedStateFields
 		cArgs.ExtraImports = prepopulated.ExtraImports
+		cArgs.RootRefType, cArgs.RootRefField, cArgs.RootRefDescription = rootRef(cArgs.ResourcePattern)
 
 		// The parent field rides on prepopulated because that is the only way its
 		// queue entry reaches the caller. A field emitted without its entry would
@@ -228,6 +229,25 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 		}
 	}
 	return scaffoldTypeFile(typeFilePath, cArgs)
+}
+
+// rootRef returns the reference type, JSON name and description for the Spec
+// field naming the root of pattern, and empty strings when that root is a
+// project or pattern is empty, so the template keeps projectRef.
+//
+// It reads the first segment rather than protoapi.ParentStyle, which calls
+// "organizations/{organization}/locations/{location}/..." ParentOther. That
+// resource has no project either, and a projectRef would give it a field
+// upstream lacks while leaving out the one it has.
+func rootRef(pattern string) (refType, field, description string) {
+	root, _, _ := strings.Cut(pattern, "/")
+	switch root {
+	case "organizations":
+		return "OrganizationRef", "organizationRef", "The organization that this resource belongs to."
+	case "folders":
+		return "FolderRef", "folderRef", "The folder that this resource belongs to."
+	}
+	return "", "", ""
 }
 
 func scaffoldTypeFile(path string, cArgs *apis.APIArgs) error {

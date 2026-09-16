@@ -53,6 +53,12 @@ type APIArgs struct {
 	// Empty unless --emit-parent-refs is on and a reference type for the parent
 	// already exists, which leaves every other resource rendering as before.
 	ParentRefField string
+	// RootRefType, RootRefField and RootRefDescription replace the Spec's
+	// projectRef for a resource whose name starts with organizations/ or
+	// folders/. Empty keeps projectRef, which is right for everything else.
+	RootRefType        string
+	RootRefField       string
+	RootRefDescription string
 }
 
 const TypesTemplate = `
@@ -88,8 +94,13 @@ var {{ .Kind }}GVK = GroupVersion.WithKind("{{ .Kind }}")
 // +kcc:spec:proto={{ .KindProtoTag }}
 {{- end }}
 type {{ .Kind }}Spec struct {
+{{- if .RootRefType }}
+	// {{ .RootRefDescription }}
+	{{ .RootRefType }} *refsv1beta1.{{ .RootRefType }} ` + "`" + `json:"{{ .RootRefField }}"` + "`" + `
+{{- else }}
 	// The project that this resource belongs to.
 	ProjectRef *refsv1beta1.ProjectRef ` + "`" + `json:"projectRef"` + "`" + `
+{{- end }}
 
 	// The location of this resource.
 	Location string ` + "`" + `json:"location"` + "`" + `

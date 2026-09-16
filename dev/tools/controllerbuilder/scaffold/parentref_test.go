@@ -131,3 +131,31 @@ func TestParentRef(t *testing.T) {
 		})
 	}
 }
+
+// TestRootRef pins which Spec field names the root of a resource's name. A
+// resource under an organization or folder has no project, so a projectRef
+// there is a field its API does not accept.
+func TestRootRef(t *testing.T) {
+	for _, tc := range []struct {
+		pattern   string
+		wantType  string
+		wantField string
+	}{
+		{"organizations/{organization}/policies/{policy}", "OrganizationRef", "organizationRef"},
+		{"organizations/{organization}/locations/{location}/postures/{posture}", "OrganizationRef", "organizationRef"},
+		{"folders/{folder}/locations/{location}/settings", "FolderRef", "folderRef"},
+		{"projects/{project}/locations/{location}/widgets/{widget}", "", ""},
+		{"billingAccounts/{billing_account}/budgets/{budget}", "", ""},
+		{"", "", ""},
+	} {
+		t.Run(tc.pattern, func(t *testing.T) {
+			// Act
+			gotType, gotField, _ := rootRef(tc.pattern)
+
+			// Assert
+			if gotType != tc.wantType || gotField != tc.wantField {
+				t.Errorf("rootRef(%q) = %q, %q, want %q, %q", tc.pattern, gotType, gotField, tc.wantType, tc.wantField)
+			}
+		})
+	}
+}
