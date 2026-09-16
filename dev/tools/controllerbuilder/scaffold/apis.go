@@ -133,6 +133,9 @@ func (a *APIScaffolder) buildAPIArgs(resource *options.Resource) *apis.APIArgs {
 		Version:         a.Version,
 		PackageProtoTag: a.PackageProtoTag,
 	}
+	// Without a pattern to read, every resource gets projectRef, as it always
+	// has. AddTypeFile replaces it from the pattern when prepopulating.
+	args.RootRefField, _ = a.rootRef("")
 
 	if resource != nil {
 		args.Kind = resource.Kind
@@ -215,6 +218,11 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 		cArgs.SpecFields = prepopulated.SpecFields
 		cArgs.ObservedStateFields = prepopulated.ObservedStateFields
 		cArgs.ExtraImports = prepopulated.ExtraImports
+		root, item := a.rootRef(cArgs.ResourcePattern)
+		cArgs.RootRefField = root
+		if item != nil {
+			prepopulated.Judgement = append(prepopulated.Judgement, *item)
+		}
 
 		// The parent field rides on prepopulated because that is the only way its
 		// queue entry reaches the caller. A field emitted without its entry would

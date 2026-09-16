@@ -85,6 +85,17 @@ func TestParentRef(t *testing.T) {
 			refSource: "package v1alpha1\n",
 		},
 		{
+			// rootRef names it, and a second field would not compile.
+			name:      "a parent that is the root of the name is left to rootRef",
+			pattern:   "properties/{property}/audiences/{audience}",
+			refSource: "package v1alpha1\n\ntype PropertyRef struct{}\n",
+		},
+		{
+			name:      "an organization parent is left to rootRef",
+			pattern:   "organizations/{organization}/policies/{policy}",
+			refSource: "package v1alpha1\n\ntype OrganizationRef struct{}\n",
+		},
+		{
 			name:      "a resource with no pattern has no parent to name",
 			pattern:   "",
 			refSource: "package v1alpha1\n",
@@ -127,6 +138,98 @@ func TestParentRef(t *testing.T) {
 			}
 			if g.wantPath != "" && item != nil && !strings.Contains(item.Detail, g.wantPath) {
 				t.Errorf("the queue entry must name the parent path %q, got: %s", g.wantPath, item.Detail)
+			}
+		})
+	}
+}
+
+// TestRootRef pins which Spec field names the root of a resource's name. A
+// resource under an organization, a folder or an Analytics property has no
+// project, so a projectRef there is a field its API does not accept, and the
+// judgement queue is where an unmodelled root has to show up instead.
+func TestRootRef(t *testing.T) {
+	grid := []struct {
+		name       string
+		pattern    string
+		sharedRefs string
+		wantField  string
+		wantReason string
+	}{
+		{
+			name:      "a project",
+			pattern:   "projects/{project}/locations/{location}/widgets/{widget}",
+			wantField: "ProjectRef *refsv1beta1.ProjectRef `json:\"projectRef\"`",
+		},
+		{
+			name:      "no pattern keeps projectRef",
+			pattern:   "",
+			wantField: "ProjectRef *refsv1beta1.ProjectRef `json:\"projectRef\"`",
+		},
+		{
+			name:      "an organization",
+			pattern:   "organizations/{organization}/policies/{policy}",
+			wantField: "OrganizationRef *refsv1beta1.OrganizationRef `json:\"organizationRef\"`",
+		},
+		{
+			name:      "an organization with a location",
+			pattern:   "organizations/{organization}/locations/{location}/postures/{posture}",
+			wantField: "OrganizationRef *refsv1beta1.OrganizationRef `json:\"organizationRef\"`",
+		},
+		{
+			name:      "a folder",
+			pattern:   "folders/{folder}/locations/{location}/settings",
+			wantField: "FolderRef *refsv1beta1.FolderRef `json:\"folderRef\"`",
+		},
+		{
+			name:       "another root with a shared reference type",
+			pattern:    "billingAccounts/{billing_account}/budgets/{budget}",
+			sharedRefs: "package v1beta1\n\ntype BillingAccountRef struct{}\n",
+			wantField:  "BillingAccountRef *refsv1beta1.BillingAccountRef `json:\"billingAccountRef,omitempty\"`",
+			wantReason: "root-ref-guessed",
+		},
+		{
+			name:       "another root with no reference type",
+			pattern:    "properties/{property}/audiences/{audience}",
+			wantReason: "root-ref-not-modelled",
+		},
+		{
+			name:    "a resource that is itself a root",
+			pattern: "billingAccounts/{billing_account}",
+		},
+	}
+
+	for _, g := range grid {
+		t.Run(g.name, func(t *testing.T) {
+			// Arrange
+			repo := t.TempDir()
+			scaffolder := &APIScaffolder{BaseDir: filepath.Join(repo, "apis"), GoPackage: "svc/v1alpha1"}
+			sharedDir := filepath.Join(repo, sharedRefsPackage)
+			if err := os.MkdirAll(sharedDir, 0o755); err != nil {
+				t.Fatalf("creating the shared refs package: %v", err)
+			}
+			if g.sharedRefs != "" {
+				if err := os.WriteFile(filepath.Join(sharedDir, "refs.go"), []byte(g.sharedRefs), 0o644); err != nil {
+					t.Fatalf("writing the shared reference types: %v", err)
+				}
+			}
+
+			// Act
+			field, item := scaffolder.rootRef(g.pattern)
+
+			// Assert
+			if g.wantField == "" && field != "" {
+				t.Errorf("emitted a field where none was wanted:\n%s", field)
+			}
+			if g.wantField != "" && !strings.Contains(field, g.wantField) {
+				t.Errorf("field = %q, want it to contain %q", field, g.wantField)
+			}
+			switch {
+			case g.wantReason == "" && item != nil:
+				t.Errorf("queued %q where nothing was wanted", item.Reason)
+			case g.wantReason != "" && item == nil:
+				t.Errorf("queued nothing, want reason %q", g.wantReason)
+			case g.wantReason != "" && item.Reason != g.wantReason:
+				t.Errorf("reason = %q, want %q", item.Reason, g.wantReason)
 			}
 		})
 	}

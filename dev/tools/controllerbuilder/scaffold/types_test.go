@@ -43,12 +43,17 @@ func TestTypesTemplateRendersValidGo(t *testing.T) {
 		ProtoMessageName:     "LbTrafficExtension",
 		ProtoMessageFullName: "google.cloud.networkservices.v1.LbTrafficExtension",
 	}
+	base.RootRefField = fixedRootField("ProjectRef", "projectRef", "project")
 	prepopulated := base
 	prepopulated.SpecFields = "\t// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.description\n" +
 		"\tDescription *string `json:\"description,omitempty\"`\n"
 	prepopulated.ObservedStateFields = "\t// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.create_time\n" +
 		"\tCreateTime *string `json:\"createTime,omitempty\"`\n"
 	prepopulated.ExtraImports = []string{`common "github.com/GoogleCloudPlatform/k8s-config-connector/apis/common"`}
+	organizationRooted := prepopulated
+	organizationRooted.RootRefField = fixedRootField("OrganizationRef", "organizationRef", "organization")
+	selfRooted := base
+	selfRooted.RootRefField = ""
 
 	for _, tc := range []struct {
 		name string
@@ -56,6 +61,8 @@ func TestTypesTemplateRendersValidGo(t *testing.T) {
 	}{
 		{name: "stub", args: base},
 		{name: "prepopulated", args: prepopulated},
+		{name: "organization-rooted", args: organizationRooted},
+		{name: "a resource that is its own root", args: selfRooted},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			// Arrange
