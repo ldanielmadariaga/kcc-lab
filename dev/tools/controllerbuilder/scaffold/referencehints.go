@@ -79,7 +79,7 @@ func walkSpecFields(msg protoreflect.MessageDescriptor, prefix string, opts code
 		if err != nil {
 			continue
 		}
-		if generatesAsReference(goType) {
+		if generatesAsReference(field, goType) {
 			continue
 		}
 
@@ -100,11 +100,18 @@ func walkSpecFields(msg protoreflect.MessageDescriptor, prefix string, opts code
 	}
 }
 
-// generatesAsReference reports whether goType, as GoTypeForField returns it,
-// is a KCC reference type, such as *secretmanagerv1beta1.SecretRef for
-// google.cloud.connectors.v1.Secret.
-func generatesAsReference(goType string) bool {
-	return strings.HasSuffix(goType, "Ref")
+// generatesAsReference reports whether the generator writes field as a KCC
+// reference type instead of a struct of its own, as it writes
+// google.cloud.connectors.v1.Secret as *secretmanagerv1beta1.SecretRef.
+// goType is what GoTypeForField returned for field.
+//
+// The Ref suffix alone is not enough. DeployedModelRef and
+// NotebookRuntimeTemplateRef are ordinary generated structs whose proto names
+// end in Ref, and their fields still need hints.
+func generatesAsReference(field protoreflect.FieldDescriptor, goType string) bool {
+	return field.Kind() == protoreflect.MessageKind &&
+		!codegen.MapsToGoStruct(field.Message()) &&
+		strings.HasSuffix(goType, "Ref")
 }
 
 // fieldComment returns a field's leading proto comment on one line, which is

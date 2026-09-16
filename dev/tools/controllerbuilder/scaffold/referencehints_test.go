@@ -147,10 +147,11 @@ func referenceHintsMessage(t *testing.T) protoreflect.MessageDescriptor {
 	return fd.Messages().ByName("Widget")
 }
 
-// TestReferenceHintsSkipsGeneratedReferences pins that a field the generator
-// already writes as a KCC reference gets no hint. connectors' Secret becomes a
-// SecretRef, so a queue entry asking whether clientSecret should be a
-// reference would ask about something already done.
+// TestReferenceHintsSkipsGeneratedReferences pins which fields the walk treats
+// as already generated as references. connectors' Secret becomes a SecretRef,
+// so clientSecret gets no hint. A proto message that is merely named ModelRef
+// is an ordinary struct, so the walk still descends into it and hints its
+// network field.
 func TestReferenceHintsSkipsGeneratedReferences(t *testing.T) {
 	// Arrange
 	secret := fieldType(descriptorpb.FieldDescriptorProto_TYPE_MESSAGE)
@@ -163,10 +164,15 @@ func TestReferenceHintsSkipsGeneratedReferences(t *testing.T) {
 				Field: []*descriptorpb.FieldDescriptorProto{{Name: strPtr("secret_version"), Number: i32Ptr(1), Type: fieldType(descriptorpb.FieldDescriptorProto_TYPE_STRING)}},
 			},
 			{
+				Name:  strPtr("ModelRef"),
+				Field: []*descriptorpb.FieldDescriptorProto{{Name: strPtr("network"), Number: i32Ptr(1), Type: fieldType(descriptorpb.FieldDescriptorProto_TYPE_STRING)}},
+			},
+			{
 				Name: strPtr("Connection"),
 				Field: []*descriptorpb.FieldDescriptorProto{
 					{Name: strPtr("client_secret"), Number: i32Ptr(1), Type: secret, TypeName: strPtr(".google.cloud.connectors.v1.Secret")},
 					{Name: strPtr("api_secret"), Number: i32Ptr(2), Type: fieldType(descriptorpb.FieldDescriptorProto_TYPE_STRING)},
+					{Name: strPtr("model_ref"), Number: i32Ptr(3), Type: secret, TypeName: strPtr(".google.cloud.connectors.v1.ModelRef")},
 				},
 			},
 		},
@@ -183,7 +189,7 @@ func TestReferenceHintsSkipsGeneratedReferences(t *testing.T) {
 	for _, it := range items {
 		got = append(got, it.FieldPath)
 	}
-	if want := []string{".spec.apiSecret"}; !slices.Equal(got, want) {
+	if want := []string{".spec.apiSecret", ".spec.modelRef.network"}; !slices.Equal(got, want) {
 		t.Errorf("hinted paths = %q, want %q", got, want)
 	}
 }
