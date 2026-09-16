@@ -96,10 +96,10 @@ func TestMissingRefs(t *testing.T) {
 				verdict, reason := refs.Classify(fieldPath, field.props.Description)
 				switch verdict {
 				case refs.NotRepresentable:
-					// Reference-like, but not expressible as a KCC ref today. Recorded
-					// with a reason rather than failing: these need API design or new
-					// KCC resources, so parking them in missingrefs.txt would fill an
-					// actionable list with un-actionable entries.
+					// The field looks like a reference but cannot be one today. It is
+					// recorded with a reason instead of failing the test: these need API
+					// design or new KCC resources, and listing them in missingrefs.txt
+					// would bury the entries someone can act on.
 					notRepresentable = append(notRepresentable,
 						fmt.Sprintf("[not_representable] crd=%s version=%v: field %q reason=%s",
 							crd.Name, version.Name, fieldPath, reason))
