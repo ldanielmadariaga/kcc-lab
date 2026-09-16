@@ -46,9 +46,9 @@ type TypeGenerator struct {
 	unsupportedFields []UnsupportedField
 
 	// siblingGuesses are fields of a nested message that the sibling rule
-	// flagged. PrepopulateSpec records the resource's own fields directly, but a
-	// nested message is written here, so its markers are read back out of the
-	// rendered body instead.
+	// flagged. PrepopulateSpec records the resource's own fields; this generator
+	// writes the nested messages, so their markers are read back out of the
+	// rendered body.
 	siblingGuesses []SiblingGuess
 
 	generatedFileAnnotation *codegenannotations.FileAnnotation
@@ -111,11 +111,10 @@ type WriteOptions struct {
 	// a string field naming one can be marked as a probable reference. See
 	// SiblingResource.
 	//
-	// Unlike the flags above this one cannot change a CRD: it only ever adds a
-	// +kcc:guess comment, which controller-gen strips before publishing. Nor does
-	// a nested message shared between resources cause trouble here, because the
-	// map is a property of one service and a nested message is shared only
-	// within one.
+	// Unlike the flags above, this one cannot change a CRD: it only adds a
+	// +kcc:guess comment, which controller-gen strips before publishing. A shared
+	// nested message is no trouble either, since the map holds one service's
+	// Kinds and a nested message is shared only within a service.
 	Siblings map[string]string
 }
 
@@ -519,12 +518,12 @@ func (g *TypeGenerator) WriteOutputMessages() error {
 
 func WriteMessageAsComment(out io.Writer, msg protoreflect.MessageDescriptor, reason string, opts WriteOptions) {
 	var b bytes.Buffer
-	// No sibling markers in here. This block dumps what the generator would have
-	// written for a type the package already declares by hand, so none of it
-	// reaches the CRD and there is no guess for anyone to review. Left on, it
-	// produced 63 of the 82 markers in the tree, and every one of them broke "a
-	// marker always has a queue entry", because the collector only scans messages
-	// that are really emitted.
+	// Clear the map for this block: it dumps what the generator would have written
+	// for a type the package already declares by hand, so nothing in it reaches
+	// the CRD and there is no guess for anyone to review. With the map left in
+	// place it produced 63 of the 82 markers in the tree, and every one of them
+	// broke "a marker always has a queue entry", because the collector scans only
+	// the messages that are emitted.
 	opts.Siblings = nil
 	WriteMessage(&b, msg, opts)
 	fmt.Fprintf(out, "\n/* %s\n", reason)
