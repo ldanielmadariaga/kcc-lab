@@ -67,6 +67,7 @@ func TestParentRef(t *testing.T) {
 			// FirestoreIndex: no CollectionGroupRef exists anywhere.
 			name:       "no reference type means no field",
 			pattern:    "projects/{project}/databases/{database}/collectionGroups/{collection_group}/indexes/{index}",
+			wantField:  "",
 			refSource:  "package v1alpha1\n",
 			wantReason: "parent-ref-not-modelled",
 			wantPath:   "projects/{project}/databases/{database}/collectionGroups/{collection_group}",
@@ -75,6 +76,7 @@ func TestParentRef(t *testing.T) {
 			// DiscoveryEngineServingConfig: both really exist upstream.
 			name:       "several matching types mean no field",
 			pattern:    "projects/{project}/locations/{location}/engines/{engine}/servingConfigs/{config}",
+			wantField:  "",
 			refSource:  "package v1alpha1\n\ntype DiscoveryEngineEngineRef struct{}\n\ntype DiscoveryEngineSearchEngineRef struct{}\n",
 			wantReason: "parent-ref-not-modelled",
 			wantPath:   "projects/{project}/locations/{location}/engines/{engine}",
@@ -82,22 +84,26 @@ func TestParentRef(t *testing.T) {
 		{
 			name:      "a project and location parent is already carried",
 			pattern:   "projects/{project}/locations/{location}/foos/{foo}",
+			wantField: "",
 			refSource: "package v1alpha1\n",
 		},
 		{
 			// rootRef names it, and a second field would not compile.
 			name:      "a parent that is the root of the name is left to rootRef",
 			pattern:   "properties/{property}/audiences/{audience}",
+			wantField: "",
 			refSource: "package v1alpha1\n\ntype PropertyRef struct{}\n",
 		},
 		{
 			name:      "an organization parent is left to rootRef",
 			pattern:   "organizations/{organization}/policies/{policy}",
+			wantField: "",
 			refSource: "package v1alpha1\n\ntype OrganizationRef struct{}\n",
 		},
 		{
 			name:      "a resource with no pattern has no parent to name",
 			pattern:   "",
+			wantField: "",
 			refSource: "package v1alpha1\n",
 		},
 	}
@@ -190,11 +196,13 @@ func TestRootRef(t *testing.T) {
 		{
 			name:       "another root with no reference type",
 			pattern:    "properties/{property}/audiences/{audience}",
+			wantField:  "",
 			wantReason: "root-ref-not-modelled",
 		},
 		{
-			name:    "a resource that is itself a root",
-			pattern: "billingAccounts/{billing_account}",
+			name:      "a resource that is itself a root",
+			pattern:   "billingAccounts/{billing_account}",
+			wantField: "",
 		},
 	}
 
@@ -278,12 +286,14 @@ func TestLocationRef(t *testing.T) {
 			wantField: "Location string `json:\"location\"`",
 		},
 		{
-			name:    "a project with no location",
-			pattern: "projects/{project}/topics/{topic}",
+			name:      "a project with no location",
+			pattern:   "projects/{project}/topics/{topic}",
+			wantField: "",
 		},
 		{
-			name:    "a location that is the resource itself",
-			pattern: "projects/{project}/locations/{location}",
+			name:      "a location that is the resource itself",
+			pattern:   "projects/{project}/locations/{location}",
+			wantField: "",
 		},
 		{
 			// Dataplex names a resource collection zones; the location comes first.
@@ -293,8 +303,9 @@ func TestLocationRef(t *testing.T) {
 			wantReason: "location-guessed",
 		},
 		{
-			name:    "a fixed location",
-			pattern: "projects/{project}/locations/global/widgets/{widget}",
+			name:      "a fixed location",
+			pattern:   "projects/{project}/locations/global/widgets/{widget}",
+			wantField: "",
 		},
 		{
 			name:       "no pattern keeps the location",
