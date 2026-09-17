@@ -83,6 +83,92 @@ func (a *APIScaffolder) rootRef(pattern string) (field string, item *JudgementIt
 	return a.referenceTo("root", segs[0], strings.Join(segs[:2], "/"), pattern)
 }
 
+// locationRef renders the Spec field naming the location in a resource's
+// name, and a queue entry when the choice is a guess or needs follow-up.
+//
+// The field is written only when the name has a location, region or zone
+// segment with a placeholder, and is named after that segment. It is required
+// when that segment is the resource's direct parent. Higher up, as for
+// .../locations/{location}/clusters/{cluster}/instances/{instance}, the parent
+// already implies it, and upstream is split 17 to 30 on restating it, so it is
+// optional and queued. With no pattern the parent shape is unknown, and the
+// field stays as the template has always written it.
+//
+// The type stays string because template/apis/identity.go reads Spec.Location
+// as one.
+func (a *APIScaffolder) locationRef(pattern string) (field string, item *JudgementItem) {
+	if pattern == "" {
+		return renderLocationField("location", true, false), &JudgementItem{
+			FieldPath: ".spec.location",
+			Reason:    "location-parent-unknown",
+			Detail: "the proto declares no google.api.resource, so the parent shape is unknown; " +
+				"drop location if the resource is not regional",
+		}
+	}
+
+	segs := strings.Split(pattern, "/")
+	collection, placeholder := "", ""
+	for i := 0; i+1 < len(segs); i++ {
+		switch segs[i] {
+		case "locations", "regions", "zones":
+			if strings.HasPrefix(segs[i+1], "{") {
+				collection, placeholder = segs[i], strings.Trim(segs[i+1], "{}")
+			}
+		}
+		if collection != "" {
+			// The resource's own ID, as for projects/{project}/locations/{location},
+			// is resourceID, not a location field.
+			if i+2 == len(segs) {
+				return "", nil
+			}
+			break
+		}
+	}
+	if collection == "" {
+		// No location in the name, or a fixed one such as locations/global.
+		return "", nil
+	}
+
+	name := codegen.Singular(collection)
+	parentCollection, parentPlaceholder := protoapi.ParentPair(pattern)
+	direct := parentCollection == collection && parentPlaceholder == placeholder
+	field = renderLocationField(name, direct, !direct)
+
+	switch {
+	case !direct:
+		item = &JudgementItem{
+			FieldPath: ".spec." + name,
+			Reason:    "location-guessed",
+			Detail: fmt.Sprintf("the %s in %s belongs to an ancestor, which the parent "+
+				"already names; emitted as optional, so keep it only if the API needs it stated", name, pattern),
+		}
+	case name != "location":
+		item = &JudgementItem{
+			FieldPath: ".spec." + name,
+			Reason:    "location-renamed",
+			Detail: fmt.Sprintf("named %s after %s; the identity template reads spec.location, "+
+				"so the generated identity needs the same rename", name, pattern),
+		}
+	}
+	return field, item
+}
+
+// renderLocationField renders a string field called name. A required
+// "location" renders as the types template always wrote it.
+func renderLocationField(name string, required, guess bool) string {
+	var b strings.Builder
+	fmt.Fprintf(&b, "\t// The %s of this resource.\n", name)
+	if guess {
+		b.WriteString("\t// +kcc:guess\n")
+	}
+	tag := name
+	if !required {
+		tag += ",omitempty"
+	}
+	fmt.Fprintf(&b, "\t%s string `json:%q`", exportedName(name), tag)
+	return b.String()
+}
+
 // fixedRootField renders a required reference to one of the roots every KCC
 // resource can point at, using the shared type of that name.
 func fixedRootField(refType, jsonName, noun string) string {
