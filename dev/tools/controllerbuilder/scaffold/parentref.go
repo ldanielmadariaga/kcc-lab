@@ -84,15 +84,19 @@ func (a *APIScaffolder) rootRef(pattern string) (field string, item *JudgementIt
 }
 
 // locationRef renders the Spec field naming the location in a resource's
-// name, and a queue entry when the choice is a guess or needs follow-up.
+// name, and returns a queue entry when that field is a guess or needs
+// follow-up.
 //
 // The field is written only when the name has a location, region or zone
-// segment with a placeholder, and is named after that segment. It is required
-// when that segment is the resource's direct parent. Higher up, as for
+// segment with a placeholder, and is named after that segment. The first such
+// segment counts, so a zones collection below a location, as in Dataplex, is
+// not taken for the location. The field is required when that segment is the
+// resource's direct parent. Higher up, as for
 // .../locations/{location}/clusters/{cluster}/instances/{instance}, the parent
 // already implies it, and upstream is split 17 to 30 on restating it, so it is
 // optional and queued. With no pattern the parent shape is unknown, and the
-// field stays as the template has always written it.
+// field is the required location the template has always written, with a
+// queue entry asking whether the resource is regional.
 //
 // The type stays string because template/apis/identity.go reads Spec.Location
 // as one.
@@ -125,7 +129,7 @@ func (a *APIScaffolder) locationRef(pattern string) (field string, item *Judgeme
 		}
 	}
 	if collection == "" {
-		// No location in the name, or a fixed one such as locations/global.
+		// The name has no location, or only a fixed one such as locations/global.
 		return "", nil
 	}
 
@@ -153,8 +157,9 @@ func (a *APIScaffolder) locationRef(pattern string) (field string, item *Judgeme
 	return field, item
 }
 
-// renderLocationField renders a string field called name. A required
-// "location" renders as the types template always wrote it.
+// renderLocationField renders a string field called name, marked +kcc:guess
+// when guess is set. A required "location" renders exactly as the types
+// template wrote it before, so project/location resources scaffold unchanged.
 func renderLocationField(name string, required, guess bool) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "\t// The %s of this resource.\n", name)
