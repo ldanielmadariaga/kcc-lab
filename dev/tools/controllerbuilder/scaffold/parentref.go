@@ -83,27 +83,28 @@ func (a *APIScaffolder) rootRef(pattern string) (field string, item *JudgementIt
 	return a.referenceTo("root", segs[0], strings.Join(segs[:2], "/"), pattern)
 }
 
-// locationRef renders the Spec field naming the location in a resource's
-// name, and returns a queue entry when that field is a guess or needs
-// follow-up.
+// locationRef renders the Spec's location field and the queue entry that goes
+// with it. Both are empty when the resource's name has no location.
 //
-// The field is written only when the name has a location, region or zone
-// segment with a placeholder. It is called location whichever segment it came
+// The field is written, required and as the types template always wrote it,
+// whenever the name has a locations, regions or zones segment with a
+// placeholder, however deep. It is called location whichever segment it came
 // from: that is the canonical name, and a region or zone is a location. The
-// first such segment counts, so a zones collection below a location, as in
-// Dataplex, is not taken for the location. The field is required when that
-// segment is the resource's direct parent. Higher up, as for
-// .../locations/{location}/clusters/{cluster}/instances/{instance}, the parent
-// already implies it, and upstream is split 17 to 30 on restating it, so it is
-// optional and queued. With no pattern the parent shape is unknown, and the
-// field is the required location the template has always written, with a queue
-// entry asking whether the resource is regional.
+// first such segment counts, so Dataplex's zones collection below a location is
+// not taken for it. A name with a fixed location such as locations/global, or
+// whose location is the resource's own ID, gets no field.
+//
+// Every written field also files location-or-parent-ref, because a reference
+// could carry the location instead: parent.ProjectAndLocationRef for a
+// project/location parent, or a reference to the parent resource for a nested
+// one. With no pattern the parent shape is unknown, so the field stays and the
+// entry asks whether the resource is regional.
 //
 // The type stays string because template/apis/identity.go reads Spec.Location
 // as one.
 func (a *APIScaffolder) locationRef(pattern string) (field string, item *JudgementItem) {
 	if pattern == "" {
-		return renderLocationField(true, false), &JudgementItem{
+		return locationField, &JudgementItem{
 			FieldPath: ".spec.location",
 			Reason:    "location-parent-unknown",
 			Detail: "the proto declares no google.api.resource, so the parent shape is unknown; " +
@@ -134,35 +135,33 @@ func (a *APIScaffolder) locationRef(pattern string) (field string, item *Judgeme
 		return "", nil
 	}
 
+	var detail string
 	parentCollection, parentPlaceholder := protoapi.ParentPair(pattern)
-	if parentCollection == collection && parentPlaceholder == placeholder {
-		return renderLocationField(true, false), nil
+	switch {
+	case parentCollection != collection || parentPlaceholder != placeholder:
+		detail = fmt.Sprintf("the parent is %s, which already names the location; "+
+			"a reference to it could replace location and the root reference",
+			parentPath(pattern, parentCollection, parentPlaceholder))
+	case segs[0] == "projects" && collection == "locations":
+		// Its String() builds projects/.../locations/..., so a region or zone
+		// parent falls through to the next case.
+		detail = "parent.ProjectAndLocationRef in apis/common/parent, inlined, could replace " +
+			"projectRef and location; the CRD keeps the same keys"
+	default:
+		detail = fmt.Sprintf("the parent is %s, and no shared reference type covers it yet; "+
+			"keep location unless one is added", strings.Join(segs[:4], "/"))
 	}
-	return renderLocationField(false, true), &JudgementItem{
+	return locationField, &JudgementItem{
 		FieldPath: ".spec.location",
-		Reason:    "location-guessed",
-		Detail: fmt.Sprintf("the location in %s belongs to an ancestor, which the parent "+
-			"already names; emitted as optional, so keep it only if the API needs it stated", pattern),
+		Reason:    "location-or-parent-ref",
+		Detail:    detail,
 	}
 }
 
-// renderLocationField renders the Spec's location field, optional unless
-// required is set and marked +kcc:guess when guess is set. A required field
-// renders exactly as the types template wrote it before, so project/location
-// resources scaffold unchanged.
-func renderLocationField(required, guess bool) string {
-	var b strings.Builder
-	b.WriteString("\t// The location of this resource.\n")
-	if guess {
-		b.WriteString("\t// +kcc:guess\n")
-	}
-	tag := "location"
-	if !required {
-		tag += ",omitempty"
-	}
-	fmt.Fprintf(&b, "\tLocation string `json:%q`", tag)
-	return b.String()
-}
+// locationField is the Spec's location field, exactly as the types template
+// wrote it before, so a resource with a location scaffolds unchanged.
+const locationField = "\t// The location of this resource.\n" +
+	"\tLocation string `json:\"location\"`"
 
 // fixedRootField renders a required reference to one of the roots every KCC
 // resource can point at, using the shared type of that name.
