@@ -57,6 +57,11 @@ type APIArgs struct {
 	// of the resource's name, projectRef for most resources. Empty for a
 	// resource that is itself a root, such as a billing account.
 	RootRefField string
+	// LocationField is pre-rendered Go source for the Spec field naming the
+	// resource's location, region or zone. Empty when the resource's name has
+	// none, as in projects/{project}/topics/{topic}, or when the location is the
+	// resource itself.
+	LocationField string
 	// SkipGVK leaves out the <Kind>GVK declaration because the package already
 	// has one, usually in a hand-written <kind>_reference.go.
 	SkipGVK bool
@@ -100,9 +105,10 @@ type {{ .Kind }}Spec struct {
 {{- if .RootRefField }}
 {{ .RootRefField }}
 {{- end }}
+{{- if .LocationField }}
 
-	// The location of this resource.
-	Location string ` + "`" + `json:"location"` + "`" + `
+{{ .LocationField }}
+{{- end }}
 {{- if .ParentRefField }}
 
 {{ .ParentRefField }}

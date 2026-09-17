@@ -83,6 +83,86 @@ func (a *APIScaffolder) rootRef(pattern string) (field string, item *JudgementIt
 	return a.referenceTo("root", segs[0], strings.Join(segs[:2], "/"), pattern)
 }
 
+// locationRef renders the Spec's location field and the queue entry that goes
+// with it. Both are empty when the resource's name has no location.
+//
+// The field is written, required and as the types template always wrote it,
+// whenever the name has a locations, regions or zones segment with a
+// placeholder, however deep. It is called location whichever segment it came
+// from: that is the canonical name, and a region or zone is a location. The
+// first such segment counts, so Dataplex's zones collection below a location is
+// not taken for it. A name with a fixed location such as locations/global, or
+// whose location is the resource's own ID, gets no field.
+//
+// Every written field also files location-or-parent-ref, because a reference
+// could carry the location instead: parent.ProjectAndLocationRef for a
+// project/location parent, or a reference to the parent resource for a nested
+// one. With no pattern the parent shape is unknown, so the field stays and the
+// entry asks whether the resource is regional.
+//
+// The type stays string because template/apis/identity.go reads Spec.Location
+// as one.
+func (a *APIScaffolder) locationRef(pattern string) (field string, item *JudgementItem) {
+	if pattern == "" {
+		return locationField, &JudgementItem{
+			FieldPath: ".spec.location",
+			Reason:    "location-parent-unknown",
+			Detail: "the proto declares no google.api.resource, so the parent shape is unknown; " +
+				"drop location if the resource is not regional",
+		}
+	}
+
+	segs := strings.Split(pattern, "/")
+	collection, placeholder := "", ""
+	for i := 0; i+1 < len(segs); i++ {
+		switch segs[i] {
+		case "locations", "regions", "zones":
+			if strings.HasPrefix(segs[i+1], "{") {
+				collection, placeholder = segs[i], strings.Trim(segs[i+1], "{}")
+			}
+		}
+		if collection != "" {
+			// The resource's own ID, as for projects/{project}/locations/{location},
+			// is resourceID, not a location field.
+			if i+2 == len(segs) {
+				return "", nil
+			}
+			break
+		}
+	}
+	if collection == "" {
+		// The name has no location, or only a fixed one such as locations/global.
+		return "", nil
+	}
+
+	var detail string
+	parentCollection, parentPlaceholder := protoapi.ParentPair(pattern)
+	switch {
+	case parentCollection != collection || parentPlaceholder != placeholder:
+		detail = fmt.Sprintf("the parent is %s, which already names the location; "+
+			"a reference to it could replace location and the root reference",
+			parentPath(pattern, parentCollection, parentPlaceholder))
+	case segs[0] == "projects" && collection == "locations":
+		// Its String() builds projects/.../locations/..., so a region or zone
+		// parent falls through to the next case.
+		detail = "parent.ProjectAndLocationRef in apis/common/parent, inlined, could replace " +
+			"projectRef and location; the CRD keeps the same keys"
+	default:
+		detail = fmt.Sprintf("the parent is %s, and no shared reference type covers it yet; "+
+			"keep location unless one is added", strings.Join(segs[:4], "/"))
+	}
+	return locationField, &JudgementItem{
+		FieldPath: ".spec.location",
+		Reason:    "location-or-parent-ref",
+		Detail:    detail,
+	}
+}
+
+// locationField is the Spec's location field, exactly as the types template
+// wrote it before, so a resource with a location scaffolds unchanged.
+const locationField = "\t// The location of this resource.\n" +
+	"\tLocation string `json:\"location\"`"
+
 // fixedRootField renders a required reference to one of the roots every KCC
 // resource can point at, using the shared type of that name.
 func fixedRootField(refType, jsonName, noun string) string {

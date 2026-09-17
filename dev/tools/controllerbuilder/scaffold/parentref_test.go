@@ -67,6 +67,7 @@ func TestParentRef(t *testing.T) {
 			// FirestoreIndex: no CollectionGroupRef exists anywhere.
 			name:       "no reference type means no field",
 			pattern:    "projects/{project}/databases/{database}/collectionGroups/{collection_group}/indexes/{index}",
+			wantField:  "",
 			refSource:  "package v1alpha1\n",
 			wantReason: "parent-ref-not-modelled",
 			wantPath:   "projects/{project}/databases/{database}/collectionGroups/{collection_group}",
@@ -75,6 +76,7 @@ func TestParentRef(t *testing.T) {
 			// DiscoveryEngineServingConfig: both really exist upstream.
 			name:       "several matching types mean no field",
 			pattern:    "projects/{project}/locations/{location}/engines/{engine}/servingConfigs/{config}",
+			wantField:  "",
 			refSource:  "package v1alpha1\n\ntype DiscoveryEngineEngineRef struct{}\n\ntype DiscoveryEngineSearchEngineRef struct{}\n",
 			wantReason: "parent-ref-not-modelled",
 			wantPath:   "projects/{project}/locations/{location}/engines/{engine}",
@@ -82,22 +84,26 @@ func TestParentRef(t *testing.T) {
 		{
 			name:      "a project and location parent is already carried",
 			pattern:   "projects/{project}/locations/{location}/foos/{foo}",
+			wantField: "",
 			refSource: "package v1alpha1\n",
 		},
 		{
 			// rootRef names it, and a second field would not compile.
 			name:      "a parent that is the root of the name is left to rootRef",
 			pattern:   "properties/{property}/audiences/{audience}",
+			wantField: "",
 			refSource: "package v1alpha1\n\ntype PropertyRef struct{}\n",
 		},
 		{
 			name:      "an organization parent is left to rootRef",
 			pattern:   "organizations/{organization}/policies/{policy}",
+			wantField: "",
 			refSource: "package v1alpha1\n\ntype OrganizationRef struct{}\n",
 		},
 		{
 			name:      "a resource with no pattern has no parent to name",
 			pattern:   "",
+			wantField: "",
 			refSource: "package v1alpha1\n",
 		},
 	}
@@ -190,11 +196,13 @@ func TestRootRef(t *testing.T) {
 		{
 			name:       "another root with no reference type",
 			pattern:    "properties/{property}/audiences/{audience}",
+			wantField:  "",
 			wantReason: "root-ref-not-modelled",
 		},
 		{
-			name:    "a resource that is itself a root",
-			pattern: "billingAccounts/{billing_account}",
+			name:      "a resource that is itself a root",
+			pattern:   "billingAccounts/{billing_account}",
+			wantField: "",
 		},
 	}
 
@@ -230,6 +238,134 @@ func TestRootRef(t *testing.T) {
 				t.Errorf("queued nothing, want reason %q", g.wantReason)
 			case g.wantReason != "" && item.Reason != g.wantReason:
 				t.Errorf("reason = %q, want %q", item.Reason, g.wantReason)
+			}
+		})
+	}
+}
+
+// TestLocationRef pins when a scaffolded Spec names a location, and that every
+// location it writes reaches the judgement queue. A location on a resource
+// whose name has none is a field its API rejects, and a reference may replace
+// any location the generator does write.
+func TestLocationRef(t *testing.T) {
+	const field = "Location string `json:\"location\"`"
+	grid := []struct {
+		name       string
+		pattern    string
+		wantField  string
+		wantReason string
+		wantDetail string
+	}{
+		{
+			name:       "the direct parent is a project location",
+			pattern:    "projects/{project}/locations/{location}/widgets/{widget}",
+			wantField:  field,
+			wantReason: "location-or-parent-ref",
+			wantDetail: "parent.ProjectAndLocationRef",
+		},
+		{
+			name:       "a singleton under a location",
+			pattern:    "projects/{project}/locations/{location}/settings",
+			wantField:  field,
+			wantReason: "location-or-parent-ref",
+			wantDetail: "parent.ProjectAndLocationRef",
+		},
+		{
+			name:       "the direct parent is an organization location",
+			pattern:    "organizations/{organization}/locations/{location}/postures/{posture}",
+			wantField:  field,
+			wantReason: "location-or-parent-ref",
+			wantDetail: "the parent is organizations/{organization}/locations/{location}, and no shared reference type",
+		},
+		{
+			name:       "a location above the direct parent",
+			pattern:    "projects/{project}/locations/{location}/clusters/{cluster}/instances/{instance}",
+			wantField:  field,
+			wantReason: "location-or-parent-ref",
+			wantDetail: "the parent is projects/{project}/locations/{location}/clusters/{cluster}, which already names",
+		},
+		{
+			// Dataplex names a resource collection zones; the location comes first.
+			name:       "a zones collection below a location",
+			pattern:    "projects/{project}/locations/{location}/lakes/{lake}/zones/{zone}/assets/{asset}",
+			wantField:  field,
+			wantReason: "location-or-parent-ref",
+			wantDetail: "the parent is projects/{project}/locations/{location}/lakes/{lake}/zones/{zone}, which",
+		},
+		{
+			// Location is the canonical name, and a region is a location.
+			name:       "a region is still called location",
+			pattern:    "projects/{project}/regions/{region}/widgets/{widget}",
+			wantField:  field,
+			wantReason: "location-or-parent-ref",
+			wantDetail: "the parent is projects/{project}/regions/{region}, and no shared reference type",
+		},
+		{
+			name:       "a zone is still called location",
+			pattern:    "projects/{project}/zones/{zone}/widgets/{widget}",
+			wantField:  field,
+			wantReason: "location-or-parent-ref",
+			wantDetail: "the parent is projects/{project}/zones/{zone}, and no shared reference type",
+		},
+		{
+			name:       "a project with no location",
+			pattern:    "projects/{project}/topics/{topic}",
+			wantField:  "",
+			wantReason: "",
+		},
+		{
+			name:       "an organization with no location",
+			pattern:    "organizations/{organization}/policies/{policy}",
+			wantField:  "",
+			wantReason: "",
+		},
+		{
+			name:       "a location that is the resource itself",
+			pattern:    "projects/{project}/locations/{location}",
+			wantField:  "",
+			wantReason: "",
+		},
+		{
+			name:       "a fixed location",
+			pattern:    "projects/{project}/locations/global/widgets/{widget}",
+			wantField:  "",
+			wantReason: "",
+		},
+		{
+			name:       "no pattern keeps the location",
+			pattern:    "",
+			wantField:  field,
+			wantReason: "location-parent-unknown",
+		},
+	}
+
+	for _, g := range grid {
+		t.Run(g.name, func(t *testing.T) {
+			// Arrange
+			scaffolder := &APIScaffolder{BaseDir: t.TempDir(), GoPackage: "svc/v1alpha1"}
+
+			// Act
+			gotField, item := scaffolder.locationRef(g.pattern)
+
+			// Assert
+			if g.wantField == "" && gotField != "" {
+				t.Errorf("emitted a field where none was wanted:\n%s", gotField)
+			}
+			if g.wantField != "" && !strings.Contains(gotField, g.wantField) {
+				t.Errorf("field = %q, want it to contain %q", gotField, g.wantField)
+			}
+			if strings.Contains(gotField, "+kcc:guess") {
+				t.Errorf("the location is read from the name, so it must not be marked a guess:\n%s", gotField)
+			}
+			switch {
+			case g.wantReason == "" && item != nil:
+				t.Errorf("queued %q where nothing was wanted", item.Reason)
+			case g.wantReason != "" && item == nil:
+				t.Errorf("queued nothing, want reason %q", g.wantReason)
+			case g.wantReason != "" && item.Reason != g.wantReason:
+				t.Errorf("reason = %q, want %q", item.Reason, g.wantReason)
+			case g.wantDetail != "" && !strings.Contains(item.Detail, g.wantDetail):
+				t.Errorf("detail = %q, want it to contain %q", item.Detail, g.wantDetail)
 			}
 		})
 	}

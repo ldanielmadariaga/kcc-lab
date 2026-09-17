@@ -134,9 +134,10 @@ func (a *APIScaffolder) buildAPIArgs(resource *options.Resource) *apis.APIArgs {
 		Version:         a.Version,
 		PackageProtoTag: a.PackageProtoTag,
 	}
-	// Without a pattern to read, every resource gets projectRef, as it always
-	// has. AddTypeFile replaces it from the pattern when prepopulating.
+	// Without a pattern to read, every resource gets projectRef and a required
+	// location. AddTypeFile replaces both from the pattern when prepopulating.
 	args.RootRefField, _ = a.rootRef("")
+	args.LocationField, _ = a.locationRef("")
 
 	if resource != nil {
 		args.Kind = resource.Kind
@@ -222,6 +223,11 @@ func (a *APIScaffolder) AddTypeFile(resource options.Resource, prepopulated *Pre
 		cArgs.ExtraImports = prepopulated.ExtraImports
 		root, item := a.rootRef(cArgs.ResourcePattern)
 		cArgs.RootRefField = root
+		if item != nil {
+			prepopulated.Judgement = append(prepopulated.Judgement, *item)
+		}
+		location, item := a.locationRef(cArgs.ResourcePattern)
+		cArgs.LocationField = location
 		if item != nil {
 			prepopulated.Judgement = append(prepopulated.Judgement, *item)
 		}
