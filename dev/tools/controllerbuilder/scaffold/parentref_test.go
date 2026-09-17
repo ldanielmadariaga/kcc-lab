@@ -267,16 +267,15 @@ func TestLocationRef(t *testing.T) {
 			wantReason: "location-guessed",
 		},
 		{
-			name:       "a region",
-			pattern:    "projects/{project}/regions/{region}/widgets/{widget}",
-			wantField:  "Region string `json:\"region\"`",
-			wantReason: "location-renamed",
+			// Location is the canonical name, and a region is a location.
+			name:      "a region is still called location",
+			pattern:   "projects/{project}/regions/{region}/widgets/{widget}",
+			wantField: "Location string `json:\"location\"`",
 		},
 		{
-			name:       "a zone",
-			pattern:    "projects/{project}/zones/{zone}/widgets/{widget}",
-			wantField:  "Zone string `json:\"zone\"`",
-			wantReason: "location-renamed",
+			name:      "a zone is still called location",
+			pattern:   "projects/{project}/zones/{zone}/widgets/{widget}",
+			wantField: "Location string `json:\"location\"`",
 		},
 		{
 			name:    "a project with no location",

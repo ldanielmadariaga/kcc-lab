@@ -88,21 +88,22 @@ func (a *APIScaffolder) rootRef(pattern string) (field string, item *JudgementIt
 // follow-up.
 //
 // The field is written only when the name has a location, region or zone
-// segment with a placeholder, and is named after that segment. The first such
-// segment counts, so a zones collection below a location, as in Dataplex, is
-// not taken for the location. The field is required when that segment is the
-// resource's direct parent. Higher up, as for
+// segment with a placeholder. It is called location whichever segment it came
+// from: that is the canonical name, and a region or zone is a location. The
+// first such segment counts, so a zones collection below a location, as in
+// Dataplex, is not taken for the location. The field is required when that
+// segment is the resource's direct parent. Higher up, as for
 // .../locations/{location}/clusters/{cluster}/instances/{instance}, the parent
 // already implies it, and upstream is split 17 to 30 on restating it, so it is
 // optional and queued. With no pattern the parent shape is unknown, and the
-// field is the required location the template has always written, with a
-// queue entry asking whether the resource is regional.
+// field is the required location the template has always written, with a queue
+// entry asking whether the resource is regional.
 //
 // The type stays string because template/apis/identity.go reads Spec.Location
 // as one.
 func (a *APIScaffolder) locationRef(pattern string) (field string, item *JudgementItem) {
 	if pattern == "" {
-		return renderLocationField("location", true, false), &JudgementItem{
+		return renderLocationField(true, false), &JudgementItem{
 			FieldPath: ".spec.location",
 			Reason:    "location-parent-unknown",
 			Detail: "the proto declares no google.api.resource, so the parent shape is unknown; " +
@@ -133,44 +134,33 @@ func (a *APIScaffolder) locationRef(pattern string) (field string, item *Judgeme
 		return "", nil
 	}
 
-	name := codegen.Singular(collection)
 	parentCollection, parentPlaceholder := protoapi.ParentPair(pattern)
-	direct := parentCollection == collection && parentPlaceholder == placeholder
-	field = renderLocationField(name, direct, !direct)
-
-	switch {
-	case !direct:
-		item = &JudgementItem{
-			FieldPath: ".spec." + name,
-			Reason:    "location-guessed",
-			Detail: fmt.Sprintf("the %s in %s belongs to an ancestor, which the parent "+
-				"already names; emitted as optional, so keep it only if the API needs it stated", name, pattern),
-		}
-	case name != "location":
-		item = &JudgementItem{
-			FieldPath: ".spec." + name,
-			Reason:    "location-renamed",
-			Detail: fmt.Sprintf("named %s after %s; the identity template reads spec.location, "+
-				"so the generated identity needs the same rename", name, pattern),
-		}
+	if parentCollection == collection && parentPlaceholder == placeholder {
+		return renderLocationField(true, false), nil
 	}
-	return field, item
+	return renderLocationField(false, true), &JudgementItem{
+		FieldPath: ".spec.location",
+		Reason:    "location-guessed",
+		Detail: fmt.Sprintf("the location in %s belongs to an ancestor, which the parent "+
+			"already names; emitted as optional, so keep it only if the API needs it stated", pattern),
+	}
 }
 
-// renderLocationField renders a string field called name, marked +kcc:guess
-// when guess is set. A required "location" renders exactly as the types
-// template wrote it before, so project/location resources scaffold unchanged.
-func renderLocationField(name string, required, guess bool) string {
+// renderLocationField renders the Spec's location field, optional unless
+// required is set and marked +kcc:guess when guess is set. A required field
+// renders exactly as the types template wrote it before, so project/location
+// resources scaffold unchanged.
+func renderLocationField(required, guess bool) string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "\t// The %s of this resource.\n", name)
+	b.WriteString("\t// The location of this resource.\n")
 	if guess {
 		b.WriteString("\t// +kcc:guess\n")
 	}
-	tag := name
+	tag := "location"
 	if !required {
 		tag += ",omitempty"
 	}
-	fmt.Fprintf(&b, "\t%s string `json:%q`", exportedName(name), tag)
+	fmt.Fprintf(&b, "\tLocation string `json:%q`", tag)
 	return b.String()
 }
 

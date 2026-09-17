@@ -44,7 +44,7 @@ func TestTypesTemplateRendersValidGo(t *testing.T) {
 		ProtoMessageFullName: "google.cloud.networkservices.v1.LbTrafficExtension",
 	}
 	base.RootRefField = fixedRootField("ProjectRef", "projectRef", "project")
-	base.LocationField = renderLocationField("location", true, false)
+	base.LocationField = renderLocationField(true, false)
 	prepopulated := base
 	prepopulated.SpecFields = "\t// +kcc:proto:field=google.cloud.networkservices.v1.LbTrafficExtension.description\n" +
 		"\tDescription *string `json:\"description,omitempty\"`\n"
