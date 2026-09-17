@@ -370,3 +370,32 @@ func TestLocationRef(t *testing.T) {
 		})
 	}
 }
+
+// TestRepoRoot pins where the scaffolder looks for apis/refs/v1beta1. With the
+// wrong root, parentRef and rootRef never see the shared reference types and
+// queue every such parent as having none.
+func TestRepoRoot(t *testing.T) {
+	for _, tc := range []struct {
+		baseDir string
+		want    string
+	}{
+		// generate-types' default, from GenerateCRDOptions.InitDefaults.
+		{"/repo/apis/", "/repo"},
+		{"/repo/apis", "/repo"},
+		{"/tmp/out", "/tmp/out"},
+		{"/tmp/out/", "/tmp/out"},
+	} {
+		t.Run(tc.baseDir, func(t *testing.T) {
+			// Arrange
+			scaffolder := &APIScaffolder{BaseDir: tc.baseDir}
+
+			// Act
+			got := scaffolder.repoRoot()
+
+			// Assert
+			if got != tc.want {
+				t.Errorf("repoRoot() with BaseDir %q = %q, want %q", tc.baseDir, got, tc.want)
+			}
+		})
+	}
+}

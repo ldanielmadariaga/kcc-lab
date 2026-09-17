@@ -253,13 +253,17 @@ func parentRefTypes(repoRoot, serviceDir, name string) map[string]string {
 	return scan(filepath.Join(repoRoot, sharedRefsPackage), "refsv1beta1")
 }
 
-// repoRoot is the tree BaseDir sits in, so the shared refs package can be
-// found. BaseDir is the output API directory, normally <repo>/apis.
+// repoRoot returns the directory above BaseDir when BaseDir is an apis
+// directory, and BaseDir otherwise, so the shared refs package can be found.
+//
+// generate-types defaults BaseDir to "<repo>/apis/", with a trailing slash,
+// and filepath.Dir of that is "<repo>/apis", so the path is cleaned first.
 func (a *APIScaffolder) repoRoot() string {
-	if filepath.Base(a.BaseDir) == "apis" {
-		return filepath.Dir(a.BaseDir)
+	dir := filepath.Clean(a.BaseDir)
+	if filepath.Base(dir) == "apis" {
+		return filepath.Dir(dir)
 	}
-	return a.BaseDir
+	return dir
 }
 
 // parentPath is the pattern truncated at the parent, which is the whole path a
