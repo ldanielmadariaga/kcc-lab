@@ -21,7 +21,8 @@
 
 package v1alpha1
 
-/* unreachable type Watchlist
+/* found existing non-generated go type with proto tag "google.cloud.chronicle.v1.Watchlist", skipping
+
 // +kcc:proto=google.cloud.chronicle.v1.Watchlist
 type Watchlist struct {
 	// Identifier. Resource name of the watchlist.
@@ -82,7 +83,8 @@ type WatchlistUserPreferences struct {
 	Pinned *bool `json:"pinned,omitempty"`
 }
 
-/* unreachable type WatchlistObservedState
+/* found existing non-generated go type with proto tag "google.cloud.chronicle.v1.Watchlist", skipping
+
 // +kcc:observedstate:proto=google.cloud.chronicle.v1.Watchlist
 type WatchlistObservedState struct {
 	// Output only. Entity count in the watchlist.

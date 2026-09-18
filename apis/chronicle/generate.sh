@@ -31,9 +31,7 @@ source "${REPO_ROOT}/dev/tools/goimports.sh"
 cd ${REPO_ROOT}/dev/tools/controllerbuilder
 ./generate-proto.sh
 
-# An illustration of every opt-in generator flag on one new resource. There is
-# no generate-mapper call: go.mod has no Go client for Chronicle, so a mapper
-# would not compile.
+# An illustration of every opt-in generator flag on one new resource.
 ${CONTROLLERBUILDER} generate-types \
   --service google.cloud.chronicle.v1 \
   --api-version chronicle.cnrm.cloud.google.com/v1alpha1 \
@@ -50,5 +48,16 @@ ${CONTROLLERBUILDER} generate-types \
   --emit-reference-hints \
   --resource ChronicleWatchlist:Watchlist
 
+${CONTROLLERBUILDER} generate-mapper \
+  --service google.cloud.chronicle.v1 \
+  --api-version chronicle.cnrm.cloud.google.com/v1alpha1 \
+  --include-skipped-output \
+  --emit-plural-acronyms \
+  --emit-message-maps
+
 cd ${REPO_ROOT}
 dev/tasks/generate-crds
+
+if [ -d "${REPO_ROOT}/pkg/controller/direct/chronicle" ]; then
+  go run -mod=readonly golang.org/x/tools/cmd/goimports@${GOLANG_X_TOOLS_VERSION} -w pkg/controller/direct/chronicle/
+fi
