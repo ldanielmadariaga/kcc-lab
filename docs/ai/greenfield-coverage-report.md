@@ -1,21 +1,31 @@
 # Bulk-generating greenfield resources
 
-*What a generator can produce of a KCC resource, measured against the resources the team wrote by
-hand. The generator changes reported here are merged in the kcc-lab sandbox repository, each behind
-a flag that is off by default.*
+*How much of a KCC resource a generator can produce deterministically, measured against the
+resources the team has already implemented. The generator changes reported here are merged in the
+kcc-lab sandbox repository, each behind a flag that is off by default.*
 
 ## The question
 
-KCC has direct controllers for 457 of 1,006 create-capable GCP resources, or 45.4%. Reaching 80%
-would mean implementing about 348 more. At the rate a hand-written resource takes, that is a
-multi-year queue, and the tail is made of resources nobody requests loudly enough to prioritise
-individually.
+KCC covers 457 GCP resources, against 549 it does not that expose a create or delete RPC. That is
+45.4% of the 1,006 between them, and reaching 80% means about 348 more.
 
-The open question was how much of that surface a generator can produce rather than a person. This
-report answers it with two numbers. The generator reproduces 91.5% of the fields a KCC engineer
-wrote by hand, at the same path, and 97.1% of them are either reproduced, produced somewhere else,
-or named in a list for a person to rule on. What is left is a field a user cannot set and nobody
-was told about.
+Those resources are not written from scratch any more. Agents draft them and people review, and
+the review is what the effort is made of: someone decides, field by field, whether a string should
+point at another resource, whether a field belongs in status, whether its name follows KRM
+conventions. Pointing more agents at that does not make it cheaper, because the reviewing is the
+part that does not parallelise.
+
+So the question here is not how much of a resource a generator can produce. It is how much it can
+produce **deterministically**, from what the proto states. A deterministic field comes out the same
+on every run, which means a reviewer checks the rule once rather than checking the field every
+time, and a step that behaves the same way every time is the one worth pointing at hundreds of
+resources at once. Everything the proto does not settle goes into a list instead, and a second pass
+works through that list. Agent effort then goes to the fields that needed a decision rather than to
+the ones the proto had already answered.
+
+This report answers it with two numbers. The generator reproduces 91.5% of the fields the shipped
+implementation has, at the same path, and 97.1% of them are either reproduced, produced somewhere
+else, or named in the list. What is left is a field a user cannot set and nobody was told about.
 
 What follows is the method, the measurements, and what they leave open.
 
@@ -26,7 +36,7 @@ fields into the Spec, `projectRef`, `location` and `resourceID`, and left Observ
 Running `generate.sh` on a new resource gave you a stub, and a person read the proto and wrote
 everything else, including every field the API only ever returns.
 
-Measured now, over 275 resources the team had implemented by hand:
+Measured now, over 275 resources the team has already implemented:
 
 | of 13,566 baseline fields | fields | share |
 |---|---|---|
@@ -77,13 +87,13 @@ The obvious way to evaluate a generator is to run it on resources nobody has imp
 the output. That does not work: there is nothing to check the output against, and "looks plausible"
 is not a measurement.
 
-So we did the opposite. We took resources the team had already implemented by hand, deleted our
-types files, regenerated them from the proto, and compared field by field against upstream's CRDs.
+So we did the opposite. We took resources the team had already implemented, deleted our types
+files, regenerated them from the proto, and compared field by field against upstream's CRDs.
 Upstream's version is the known-good answer. Every place the generated CRD differs from it is a
-specific, countable way that mechanical generation falls short. A real engineer made each of those
-hand-written choices, so the diff is a list of the judgements a generator cannot make.
+specific, countable way that mechanical generation falls short. A person reviewed and signed off
+on each of those choices, so the diff is a list of the judgements a generator cannot make.
 
-The method comes with a second oracle for free. The hand-written `_identity.go` and `_reference.go`
+The method comes with a second oracle for free. The checked-in `_identity.go` and `_reference.go`
 files were left in place while the types beneath them were regenerated, so `go build ./apis/...`
 fails wherever the generated types no longer satisfy upstream's own controller code, naming missing
 fields in seconds. The general form is worth stealing: an existing implementation is a test oracle,
@@ -337,6 +347,13 @@ against baseline `c1df0b9326`, measured by `hack/tools/greenfield/silence_report
 are indexed in `docs/ai/experiments/measurements/README.md`, which marks the superseded ones; the
 run before this one moved 80 fields between classes without changing a total, and the run before
 that added 1,448 reproduced fields. Quote the index rather than a figure found in another doc.*
+
+*The 457, 549 and 45.4% come from `hack/tools/greenfield/gap_analysis.txt`, a snapshot written by
+`calculate_coverage.py` on 2026-07-31 against googleapis `73aa1b6` and KCC `e230bd`. The script
+counts a resource as manageable when its service declares a create or a delete RPC, and its
+denominator is the resources KCC covers plus the manageable ones it does not, so a covered resource
+counts whether or not a create RPC was detected for it. That snapshot is older than the baseline
+the rest of this report measures against.*
 
 *One line in that run file is wrong and this report does not follow it. It says "only the
 not-generated rows are fields we produce nowhere", which its own class table contradicts by listing
