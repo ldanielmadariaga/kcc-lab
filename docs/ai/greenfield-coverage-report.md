@@ -6,29 +6,30 @@ kcc-lab sandbox repository, each behind a flag that is off by default.*
 
 ## The question
 
-KCC covers 457 GCP resources, against 549 it does not that expose a create or delete RPC. That is
-45.4% of the 1,006 between them, and reaching 80% means about 348 more. Those three come from
-[`hack/tools/greenfield/gap_analysis.txt`](../../hack/tools/greenfield/gap_analysis.txt), which
-[`calculate_coverage.py`](../../hack/tools/greenfield/calculate_coverage.py) writes; the footer
-says what the script counts and when it last ran.
+KCC covers 457 GCP resources and does not cover 549 more that expose a create or delete RPC. That
+is 45.4% of the 1,006 between them, and reaching 80% means about 348 more. Those three figures come
+from [`hack/tools/greenfield/gap_analysis.txt`](../../hack/tools/greenfield/gap_analysis.txt), which
+[`calculate_coverage.py`](../../hack/tools/greenfield/calculate_coverage.py) writes; the footer says
+what the script counts and when it last ran.
 
 Those resources are not written from scratch any more. Agents draft them and people review, and
 the review is what the effort is made of: someone decides, field by field, whether a string should
 point at another resource, whether a field belongs in status, whether its name follows KRM
-conventions. Pointing more agents at that does not make it cheaper, because the reviewing is the
-part that does not parallelise.
+conventions. More agents pointed at that do not make it cheaper, because the review is the part
+that does not parallelise.
 
 So the question here is not how much of a resource a generator can produce. It is how much it can
-produce **deterministically**, from what the proto states. A deterministic field comes out the same
-on every run, which means a reviewer checks the rule once rather than checking the field every
-time, and a step that behaves the same way every time is the one worth pointing at hundreds of
-resources at once. Everything the proto does not settle goes into a list instead, and a second pass
-works through that list. Agent effort then goes to the fields that needed a decision rather than to
-the ones the proto had already answered.
+produce deterministically, from what the proto states. A deterministic field comes out the same on
+every run, so a reviewer checks the rule once rather than the field every time, and a step that
+behaves the same way every time is the one to run across hundreds of resources. Everything the proto
+does not settle goes into a list instead, and a second pass works through that list. Agent effort
+then goes to the fields that needed a decision rather than to the ones the proto had already
+answered.
 
 This report answers it with two numbers. The generator reproduces 91.5% of the fields the shipped
-implementation has, at the same path, and 97.1% of them are either reproduced, produced somewhere
-else, or named in the list. What is left is a field a user cannot set and nobody was told about.
+implementation has, at the same path, and 97.1% of those fields are either reproduced, produced
+somewhere else, or named in the list. The rest are fields a user cannot set and nobody was told
+about.
 
 What follows is the method, the measurements, and what they leave open.
 
@@ -36,7 +37,7 @@ What follows is the method, the measurements, and what they leave open.
 
 The starting point was not close. Before `--prepopulate-spec`, `generate-types` scaffolded three
 fields into the Spec, `projectRef`, `location` and `resourceID`, and left ObservedState empty.
-Running `generate.sh` on a new resource gave you a stub, and a person read the proto and wrote
+A `generate.sh` run on a new resource gave you a stub, and a person read the proto and wrote
 everything else, including every field the API only ever returns.
 
 Measured now, over 275 resources the team has already implemented:
@@ -59,18 +60,19 @@ it says how much of the API a new resource carries, which is the number to plan 
 | **reproduced, produced somewhere else, or named in the list** | **13,179** | **97.1%** |
 | &nbsp;&nbsp;reproduced at the same path | 12,414 | 91.5% |
 | &nbsp;&nbsp;named in the list for a person to rule on | 422 | 3.1% |
-| &nbsp;&nbsp;produced somewhere else, nobody told | 343 | 2.5% |
+| &nbsp;&nbsp;produced somewhere else, nobody is told | 343 | 2.5% |
 | not ours to produce | 237 | 1.7% |
 | absent from the CRD | 150 | 1.1% |
 
-Leave out the 237 nothing could have produced and the figure is 98.9%. Those are the 177 fields naming
-proto fields our pinned descriptor does not declare and the 60 `protobuf.Value` arms we map whole
-to JSON on purpose.
+Leave out the 237 nothing could have produced and the figure is 98.9%. Those are the 177 fields
+naming proto fields our pinned descriptor does not declare, and the 60 `protobuf.Value` arms we map
+whole to JSON on purpose.
 
 ### The number that says what is left to do
 
 The 150 absent from the CRD are the work. How much of that is the generator failing to generate is
-measured less precisely than the rest, so what follows gives the range rather than one end of it. 37 fields are confirmed: the scorer found the proto field behind them and no annotation for it
+measured less precisely than the rest, so what follows gives the range rather than one end of it.
+37 fields are confirmed: the scorer found the proto field behind them and no annotation for it
 anywhere in our package. Another 109 are references where upstream has a `Ref` object and we have
 no field at that stem, and those were never asked the question, because `classify()` returns from
 its reference branch before reaching the test that separates "we emit this proto field elsewhere"
@@ -85,7 +87,7 @@ person rather than guessing silently.
 
 ## Why we deleted upstream's work to test this
 
-The obvious way to evaluate a generator is to run it on resources nobody has implemented and read
+The obvious way to evaluate a generator is to run it on unimplemented resources and read
 the output. That does not work: there is nothing to check the output against, and "looks plausible"
 is not a measurement.
 
@@ -108,9 +110,9 @@ baseline CRD lands in exactly one of three states, so the columns sum and no ari
 
 ### What counts as one field
 
-The score is a list of paths, and a path is not a field. Three reductions are defensible. They answer different
-questions, so all three are published. The numerator is the same in every row;
-only what counts as one missing thing changes.
+The score is a list of paths, and a path is not a field. Three reductions are defensible. They
+answer different questions, so all three are published. The numerator is the same in every row; only
+what counts as one missing thing changes.
 
 | unit | reproduced | of | share |
 |---|---|---|---|
@@ -119,25 +121,25 @@ only what counts as one missing thing changes.
 | distinct defects, a missing subtree counted once | 12,414 | 13,207 | 94.0% |
 
 KCC encodes a reference as an object with `external`, `name`, `namespace` and sometimes `kind`, so
-one site a user fills in one way expands into five paths; nearly half of every missing path in the
-corpus is a child of one. A repeated field is printed twice, as `foo` and `foo[]`. Both are
+a single site the user fills in expands into five paths, and nearly half of all missing paths in the
+corpus are children of one. A repeated field is printed twice, as `foo` and `foo[]`. Both are
 artefacts of the output rather than facts about the API, which is why the raw count is too big.
 
 Collapsing a missing subtree to one entry goes too far the other way. It is the right unit for a
 work list, because one entry is one thing somebody fixes, but it hides how much sits behind each
 one. A defect stands for 3.4 paths on average, and the spread is wide: `APIHubAPI`'s spec is 87
-paths in 11 defects. Somebody told "11 defects" has no way to know how much of upstream's API that
-covers.
+paths in 11 defects. Somebody who is told "11 defects" has no way to know how much of upstream's API
+that covers.
 
-So the headline counts a missing subtree in full, because a reviewer really is blind to all of it,
-and a missing reference once, because it is one decision and one fix.
+So the headline counts a missing subtree in full, because a reviewer is blind to all of it, and a
+missing reference once, because it is one decision and one fix.
 
 ### The work list
 
-The same divergence, counted as defects rather than fields. 793 things to fix is actionable in a way
-1,152 fields is not.
+This is the same divergence, counted as defects rather than fields. A list of 793 things to fix is
+actionable in a way that 1,152 fields is not.
 
-| state | fields | share |
+| state | defects | share |
 |---|---|---|
 | implemented, the same field at the same path | 12,414 | 94.0% |
 | discrepancy, we produce it but not as upstream has it | 456 | 3.5% |
@@ -154,7 +156,7 @@ reference object. It breaks a user's YAML just as surely, but it needs detecting
 than generating, and a report that files it under "missed" sends people to write generators for
 fields the types file already carries.
 
-### What the silent fields actually are
+### What the silent fields are
 
 "Silent" means the field differs from upstream and nothing in our output says so. It does not mean
 the field is missing, and for the most part it is not. Reading each one back to the proto field
@@ -208,9 +210,8 @@ by population:
 | discrepancy, we produce it in the wrong shape or place | 456 | 325 | 71% |
 | missing, we produce nothing | 337 | 47 | 14% |
 
-A field we emit in the wrong shape is usually something the generator knew it was unsure about; a
-field we emit nowhere is usually something nothing looked for. Quoting the two together as one rate
-describes neither.
+A field we emit in the wrong shape is usually one the generator knew it was unsure about; a field we
+emit nowhere is usually one no rule looked for. A single rate quoted for both describes neither.
 
 The 421 nobody is told about are not one problem. Five classes carry 321 of them:
 
@@ -226,17 +227,17 @@ The detector does best where it has most to do: of 264 `reference-not-detected` 
 an entry. `renamed` is the cheapest of the five: our acronym casing writes `bootDiskMIB` where the
 baseline writes `bootDiskMiB`. Nothing about that needs a person's opinion.
 
-Two limits are worth stating. Of the 372 flagged, only 28 also carry a marker in the types file, so a
-reader opening the type mostly sees a plain string with nothing to suggest it is unfinished. And 29
-of the unflagged are references the baseline renamed rather than suffixed, `DatastreamPrivateConnection`'s
-`vpc` against `networkRef` among them, which no name match bridges. Those are counted as unflagged,
-which overstates the gap rather than flattering it.
+Two limits are worth stating. Of the 372 flagged, only 28 also carry a marker in the types file, so
+a reader opening the type mostly sees a plain string with nothing to suggest it is unfinished. And
+29 of the unflagged are references the baseline renamed rather than suffixed, among them
+`DatastreamPrivateConnection`'s `vpc` against `networkRef`, which no name match bridges. Those count
+as unflagged, which overstates the gap rather than flattering it.
 
-The invariant broke three times during this work and the checker caught all three, in
-places code review would not have looked: a marker written on every generator invocation while the
-queue entry was written on only some; a merge that silently dropped every comment line of the
-existing queue file; and markers emitted into commented-out blocks describing code the generator did
-not produce. A rule nothing checks is a rule that regresses.
+The invariant broke three times during this work and the checker caught all three, in places code
+review would not have looked: a marker written on every generator invocation while the queue entry
+was written on only some; a merge that silently dropped every comment line of the existing queue
+file; and markers emitted into commented-out blocks describing code the generator did not produce. A
+rule nothing checks is a rule that regresses.
 
 ## Detection over prescription
 
@@ -248,7 +249,7 @@ The rule we settled on is detection over prescription. It is more valuable to re
 field needs a human than to guess what the human would say. A flagged field is a fine outcome; a
 field nobody was told about is not.
 
-That reframing gives a test for whether a new rule is worth having. Does it derive its answer from
+It also gives a test for whether a new rule is worth having. Does it derive its answer from
 something the API supplies, or does it remember something a person once noticed?
 
 | signal | source | verdict |
@@ -258,20 +259,20 @@ something the API supplies, or does it remember something a person once noticed?
 | a sibling resource in the same service | the service's own resource list | derives |
 | `refs.NameRules` | a list of known spellings | remembers |
 
-The derived three work on a new service. The remembered one only ever finds
-references somebody has already seen, which is why a growing `NameRules` list is a signal that one of
-the other three is missing something, not a sign of progress.
+The derived three work on a new service. The remembered one only ever finds references somebody has
+already seen, which is why a growing `NameRules` list is a signal that one of the other three is
+missing something, not a sign of progress.
 
-The sibling rule reads the service's own resource list. If a service declares a resource called `DataStore`, then a string field named
-`dataStore` is probably a reference to it. It needs no vocabulary at all, and it gets stronger as
-more resources are generated, because the service's own resource list is what it reads. Measured
-against what upstream did, it runs at 77% precision, and nobody maintains it.
+The sibling rule reads the service's own resource list. If a service declares a resource called
+`DataStore`, then a string field named `dataStore` is probably a reference to it. It needs no
+vocabulary, and it gets stronger as more resources are generated, because that list is what it
+reads. Measured against what upstream did, it runs at 77% precision, and nobody maintains it.
 
 One unknown spelling cost a whole service. The output-only detector tested whether a proto comment
 opened with `Output only.` Compute writes `[Output Only]` instead, and that one unrecognised
 spelling covers 1,605 fields in `compute.proto` alone. Every one of `ComputeInterconnect`'s
 misplaced status fields, `googleIPAddress` and `circuitInfos` and `expectedOutages`, turned out to be
-nothing more exotic than that. Two strings in a list, for a signal that reaches new services.
+nothing more exotic than that. Two strings in a list buy a signal that reaches new services.
 
 ## How non-deterministic behaviour is flagged
 
@@ -287,10 +288,10 @@ is a bug nobody finds.
 
 ### A marker and a queue entry, for every guess
 
-Both halves of that matter. The queue is a work list somebody clears; the types file is what a
-reader opens.
+Both halves matter. The queue is a work list somebody clears; the types file is what a reader
+opens.
 
-| marker | what the generator could not justify | now |
+| marker | what the generator could not justify | count |
 |---|---|---|
 | `parent-location` | a location segment read off the resource pattern: is the resource regional, and is this the name for it? | 193 |
 | `placement` | a field put in ObservedState by name, because the proto carries no `field_behavior` anywhere on the message | 41 |
@@ -301,7 +302,7 @@ reader opens.
 ### Even a typed reference is queued
 
 An earlier version suppressed the queue entry whenever the generator emitted something concrete, on
-the reasoning that a typed ref needs no review. That traded detection for an unflagged guess:
+the reasoning that a typed reference needs no review. That traded detection for an unflagged guess:
 `BigtableCluster` got `Instance *string` where upstream has `spec.instanceRef`, and nothing said so.
 The compiler was proving 32 fields missing while the queue named 2.
 
@@ -322,10 +323,10 @@ written as comments instead, and the tooling reads them back:
 
 ### The queue is also the gate
 
-While a resource has entries, its `[refs]` findings are suppressed, so a half-generated resource does
-not trip a ratchet that can only shrink. Clearing the queue is what graduates it. That also makes the
-queue the throughput limit on the whole idea, which is a question for the team rather than an
-implementation detail.
+While a resource has entries, its `[refs]` findings are suppressed, so a half-generated resource
+does not trip a ratchet that can only shrink. A resource graduates when its queue is empty. That
+also makes the queue the throughput limit on the whole idea, which is a question for the team rather
+than an implementation detail.
 
 ## Limitations
 
@@ -333,28 +334,27 @@ Read 91.5% as a ceiling, not a forecast. The corpus is upstream's choices, not a
 275 are resources the team judged worth implementing, and the unimplemented ones may be
 systematically harder: less documented, odder shapes, or unimplemented precisely because someone
 looked and found a problem. There is direct evidence for that caution: the corpus was once 231
-resources, and the 44 added to it score near 64% where the original 231 scored 94%, scored the same
+resources, and the 44 added to it score near 64%, against 94% for the original 231, counted the same
 way. Almost all of the difference is fields we generate nowhere rather than fields we generate in
 the wrong shape.
 
 22 packages do not compile, and that is by design, for the reason given under "Why we deleted
-upstream's work to test this".
-About 16 of them are a measurement floor we chose not to chase.
+upstream's work to test this". About 16 of them are a measurement floor we chose not to chase.
 
 First-pass output is not production quality. References are generated as plain strings and flagged
-rather than resolved into typed refs, and there are no test fixtures or MockGCP coverage for
+rather than resolved into typed references, and there are no test fixtures or MockGCP coverage for
 generated resources. The strategy is deliberately generate-first and retrofit in corpus-wide passes,
 which is only safe because the sandbox has no users. Upstream would need a different bar.
 
 ---
 
 *Every figure here, apart from the four named below, comes from one run,
-`2026-09-04-275-resources-proto-first.txt` on branch `greenfield-corpus-rebuild`, which is not
-pushed: 275 resources against baseline `c1df0b9326`, measured by
-`hack/tools/greenfield/silence_report.py`. Earlier runs
-are indexed in `docs/ai/experiments/measurements/README.md`, which marks the superseded ones; the
-run before this one moved 80 fields between classes without changing a total, and the run before
-that added 1,448 reproduced fields. Quote the index rather than a figure found in another doc.*
+`2026-09-04-275-resources-proto-first.txt` on the unpushed `greenfield-corpus-rebuild` branch: 275
+resources against baseline `c1df0b9326`, measured by `hack/tools/greenfield/silence_report.py`.
+Earlier runs are indexed in `docs/ai/experiments/measurements/README.md`, which marks the superseded
+ones; the run before this one moved 80 fields between classes without changing a total, and the run
+before that added 1,448 reproduced fields. Quote the index rather than a figure found in another
+doc.*
 
 *The 457, 549 and 45.4% come from `hack/tools/greenfield/gap_analysis.txt`, a snapshot written by
 `calculate_coverage.py` on 2026-07-31 against googleapis `73aa1b6` and KCC `e230bd`. The script
