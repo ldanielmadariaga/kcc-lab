@@ -13,9 +13,9 @@ individually.
 
 The open question was how much of that surface a generator can produce rather than a person. This
 report answers it with two numbers. The generator reproduces 91.5% of the fields a KCC engineer
-wrote by hand, at the same path, and it produces nothing at all for 0.3%. Nearly everything in
-between is a field it does emit, in the wrong section, under another name, or as a plain string
-where the hand-written version has a reference.
+wrote by hand, at the same path, and 97.1% of them are either reproduced, produced somewhere else,
+or named in a list for a person to rule on. What is left is a field a user cannot set and nobody
+was told about.
 
 What follows is the method, the measurements, and what they leave open.
 
@@ -38,12 +38,32 @@ The middle row is the one that does not show up in a coverage number. No generat
 everything on its own, so what matters is what happens to the rest. Ours writes a note in the code
 and adds the field to a per-service list for a person to rule on.
 
+That table says what happened to each field. Regrouping it by whether the field reaches our CRD at
+all says how much of the API a new resource carries, which is the number to plan against:
+
+| | fields | share |
+|---|---|---|
+| generated at the same path | 12,414 | 91.5% |
+| flagged for a person | 422 | 3.1% |
+| generated elsewhere, nobody told | 343 | 2.5% |
+| **generated, generated elsewhere, or flagged** | **13,179** | **97.1%** |
+| not ours to produce | 237 | 1.7% |
+| absent from the CRD | 150 | 1.1% |
+
+Setting aside the 237 nothing could have produced gives 98.9%. Those are the 177 fields naming
+proto fields our pinned descriptor does not declare and the 60 `protobuf.Value` arms we map whole
+to JSON on purpose.
+
 ### The number that says what is left to do
 
-Of the 730 nobody is told about, **37 are fields we produce nowhere at all**, 0.3% of the surface.
-The rest we do produce, at another path, under another name, or in another shape. The largest
-single group, 177 fields, names proto fields our pinned descriptor does not declare, which nothing
-could have produced.
+The 150 absent from the CRD are the work. How much of that is the generator failing to generate is
+measured less precisely than the rest, and the range is worth stating rather than picking an end
+of. 37 fields are confirmed: the scorer found the proto field behind them and no annotation for it
+anywhere in our package. Another 109 are references where upstream has a `Ref` object and we have
+no field at that stem, and those were never asked the question, because `classify()` returns from
+its reference branch before reaching the test that separates "we emit this proto field elsewhere"
+from "we emit it nowhere". So between 37 and 146, plus 4 that are in our Go types and missing from
+the published CRD.
 
 Finding the fields is close to solved. What a deterministic generator cannot decide on its own is
 what to do with a field once it has found it: whether it should point at another resource rather
@@ -128,27 +148,26 @@ fields the types file already carries.
 the field is missing, and for the most part it is not. Reading each one back to the proto field
 behind it:
 
-| why it is silent | fields | |
-|---|---|---|
-| `not-in-our-proto` | 177 | the baseline names a proto field our pinned descriptor does not declare |
-| `reference-shape` | 109 | upstream has a reference and we have no field at that stem |
-| `renamed` | 77 | same field, different name |
-| `map-shape` | 67 | a proto map; upstream renders it as a list or as named keys |
-| `intentionally-different` | 60 | `protobuf.Value` arms, mapped whole to JSON |
-| `snake-case` | 59 | upstream's CRD uses underscores where we use camelCase |
-| `emitted-elsewhere` | 55 | we carry that proto field, at another CRD path |
-| `moved` | 54 | we emit it, in the other section |
-| `reference-not-detected` | 25 | we emit the field and never spotted it is a reference |
-| the tail, four classes | 47 | `not-generated?` 35, `emitted-elsewhere?` 6, `crd-stale` 4, `not-generated` 2 |
+| why it is silent | fields | in our CRD | |
+|---|---|---|---|
+| `not-in-our-proto` | 177 | no | the baseline names a proto field our pinned descriptor does not declare |
+| `reference-shape` | 109 | no | upstream has a reference and we have no field at that stem |
+| `renamed` | 77 | yes | same field, different name |
+| `map-shape` | 67 | yes | a proto map; upstream renders it as a list or as named keys |
+| `intentionally-different` | 60 | no | `protobuf.Value` arms, mapped whole to JSON |
+| `snake-case` | 59 | yes | upstream's CRD uses underscores where we use camelCase |
+| `emitted-elsewhere` | 55 | yes | we carry that proto field, at another CRD path |
+| `moved` | 54 | yes | we emit it, in the other section |
+| `reference-not-detected` | 25 | yes | we emit the field and never spotted it is a reference |
+| the tail, four classes | 47 | mixed | `not-generated?` 35, `emitted-elsewhere?` 6, `crd-stale` 4, `not-generated` 2 |
 
-Only the two `not-generated` rows are fields we produce nowhere: 2 confirmed against the proto, and
-35 that rest on a leaf name with no proto field to confirm them. **37 fields, 0.3% of the surface.**
-A row ending in `?` rests on that weaker test, which is what once made `crd-stale` report 46 where
-the true count was 4.
+The yes rows are the 343 in the accounting above. A row ending in `?` rests on a leaf name with no
+proto field to confirm it, which is the weaker test that once made `crd-stale` report 46 where the
+true count was 4.
 
-Getting down to 37 took three corrections, each of which had been inflating it: `absent` was a
-residual bucket holding fields we emit at another path, the stale-CRD class rested on a leaf-name
-match that mostly caught fields present elsewhere in our own CRD, and 177 fields name proto fields
+Three corrections brought the confirmed produce-nothing count down to 37: `absent` was a residual
+bucket holding fields we emit at another path, the stale-CRD class rested on a leaf-name match that
+mostly caught fields present elsewhere in our own CRD, and 177 fields name proto fields
 that do not exist in the descriptor we compile against.
 
 That last one is worth stating plainly because it is not ours to fix. `apis/git.versions` pins a
@@ -318,6 +337,12 @@ against baseline `c1df0b9326`, measured by `hack/tools/greenfield/silence_report
 are indexed in `docs/ai/experiments/measurements/README.md`, which marks the superseded ones; the
 run before this one moved 80 fields between classes without changing a total, and the run before
 that added 1,448 reproduced fields. Quote the index rather than a figure found in another doc.*
+
+*One line in that run file is wrong and this report does not follow it. It says "only the
+not-generated rows are fields we produce nowhere", which its own class table contradicts by listing
+`reference-shape` as 100 of 102 "we emit nothing". `classify()` settles it: the reference branch
+returns before the test that asks whether the proto field appears anywhere in our package, so those
+fields are unmeasured on that axis rather than produced.*
 
 *The measurement was taken on the experiment branch. The changes have since landed as about twenty
 pull requests, each checked with its flags off against a master build, and nobody has rerun the
