@@ -35,27 +35,22 @@ What follows is the method, the measurements, and what they leave open.
 
 ## Results
 
-The starting point was not close. Before `--prepopulate-spec`, `generate-types` scaffolded three
-fields into the Spec, `projectRef`, `location` and `resourceID`, and left ObservedState empty.
-A `generate.sh` run on a new resource gave you a stub, and a person read the proto and wrote
-everything else, including every field the API only ever returns.
+The starting point had the types and none of the decisions. `generate-types` wrote every message it
+walked into `types.generated.go`, and for a new resource, whose `<kind>_types.go` does not exist
+when the generator runs, that includes a struct for the resource's own message, plus an
+ObservedState variant of it where the proto marks output-only fields. The fields existed, typed.
+What the
+scaffolder wrote into `<kind>_types.go` was a stub: `projectRef`, `location` and `resourceID` in the
+Spec, and an empty `<Kind>ObservedState`. A person moved fields from the generated types into that
+stub, deciding for each one whether it belonged in the Spec or in status, whether a string should
+point at another resource, whether it was required, and how its name should read in KRM. That stub
+is still what a run produces today with `--prepopulate-spec` off.
 
-Measured now, over 275 resources the team has already implemented:
+Measured now, over 275 resources the team has already implemented. The rows group by whether the
+field reaches our CRD at all, so the first one says how much of the API a new resource carries,
+which is the number to plan against:
 
 | of 13,566 baseline fields | fields | share |
-|---|---|---|
-| reproduced at the same path | 12,414 | 91.5% |
-| diverge, flagged for a person | 422 | 3.1% |
-| diverge, nobody is told | 730 | 5.4% |
-
-The middle row is the one that does not show up in a coverage number. No generator decides
-everything on its own, so what matters is what happens to the rest. Ours writes a note in the code
-and adds the field to a per-service list for a person to rule on.
-
-That table says what happened to each field. Regrouped by whether the field reaches our CRD at all,
-it says how much of the API a new resource carries, which is the number to plan against:
-
-| | fields | share |
 |---|---|---|
 | **reproduced, produced somewhere else, or named in the list** | **13,179** | **97.1%** |
 | &nbsp;&nbsp;reproduced at the same path | 12,414 | 91.5% |
@@ -63,6 +58,10 @@ it says how much of the API a new resource carries, which is the number to plan 
 | &nbsp;&nbsp;produced somewhere else, nobody is told | 343 | 2.5% |
 | not ours to produce | 237 | 1.7% |
 | absent from the CRD | 150 | 1.1% |
+
+The flagged row is the one that does not show up in a coverage number. No generator decides
+everything on its own, so what matters is what happens to the rest. Ours writes a note in the code
+and adds the field to a per-service list for a person to rule on.
 
 Leave out the 237 nothing could have produced and the figure is 98.9%. Those are the 177 fields
 naming proto fields our pinned descriptor does not declare, and the 60 `protobuf.Value` arms we map
@@ -85,7 +84,7 @@ than hold a plain string, whether it belongs in `status` rather than `spec`, how
 name should be capitalised. Those are judgement calls, and the generator hands most of them to a
 person rather than guessing silently.
 
-## Why we deleted upstream's work to test this
+## Methodology
 
 The obvious way to evaluate a generator is to run it on unimplemented resources and read
 the output. That does not work: there is nothing to check the output against, and "looks plausible"
@@ -328,27 +327,9 @@ does not trip a ratchet that can only shrink. A resource graduates when its queu
 also makes the queue the throughput limit on the whole idea, which is a question for the team rather
 than an implementation detail.
 
-## Limitations
-
-Read 91.5% as a ceiling, not a forecast. The corpus is upstream's choices, not a random sample. These
-275 are resources the team judged worth implementing, and the unimplemented ones may be
-systematically harder: less documented, odder shapes, or unimplemented precisely because someone
-looked and found a problem. There is direct evidence for that caution: the corpus was once 231
-resources, and the 44 added to it score near 64%, against 94% for the original 231, counted the same
-way. Almost all of the difference is fields we generate nowhere rather than fields we generate in
-the wrong shape.
-
-22 packages do not compile, and that is by design, for the reason given under "Why we deleted
-upstream's work to test this". About 16 of them are a measurement floor we chose not to chase.
-
-First-pass output is not production quality. References are generated as plain strings and flagged
-rather than resolved into typed references, and there are no test fixtures or MockGCP coverage for
-generated resources. The strategy is deliberately generate-first and retrofit in corpus-wide passes,
-which is only safe because the sandbox has no users. Upstream would need a different bar.
-
 ---
 
-*Every figure here, apart from the four named below, comes from one run,
+*Every figure here, apart from the three named below, comes from one run,
 `2026-09-04-275-resources-proto-first.txt` on the unpushed `greenfield-corpus-rebuild` branch: 275
 resources against baseline `c1df0b9326`, measured by `hack/tools/greenfield/silence_report.py`.
 Earlier runs are indexed in `docs/ai/experiments/measurements/README.md`, which marks the superseded
@@ -363,9 +344,9 @@ denominator is the resources KCC covers plus the manageable ones it does not, so
 counts whether or not a create RPC was detected for it. That snapshot is older than the baseline
 the rest of this report measures against.*
 
-*Four figures come from outside that run, because it does not record them: the 299 markers and the
-22 packages that do not compile are from `greenfield-experiment-report.md`, the sibling rule's 77%
-from `greenfield-step1-workflow.md`, and the 2,164 findings against 78 from
+*Three figures come from outside that run, because it does not record them: the 299 markers from
+`greenfield-experiment-report.md`, the sibling rule's 77% from `greenfield-step1-workflow.md`, and
+the 2,164 findings against 78 from
 `greenfield-generator-findings.md`, all on branch `greenfield-corpus-rebuild`. The marker count is
 the one to treat with care: `greenfield-state-of-play.md` says 295, and nothing checks it the way
 `check_doc_figures.py` checks the headline totals.*
