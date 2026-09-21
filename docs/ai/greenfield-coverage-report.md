@@ -1,165 +1,300 @@
-# How much of a CRD the generator now writes
+# Bulk-generating greenfield resources
 
-*The generator changes reported here are merged in the kcc-lab sandbox repository. Every one sits
-behind a flag that is off by default, so no existing resource changes until a service opts in.*
+*What a generator can produce of a KCC resource, measured against the resources the team wrote by
+hand. The generator changes reported here are merged in the kcc-lab sandbox repository, each behind
+a flag that is off by default.*
 
-## Summary
+## The question
 
-KCC has direct controllers for 457 of the 1,006 create-capable GCP resources, or 45.4%. Reaching
-80% means about 348 more, and nobody is going to write 348 CRDs by hand.
+KCC has direct controllers for 457 of 1,006 create-capable GCP resources, or 45.4%. Reaching 80%
+would mean implementing about 348 more. At the rate a hand-written resource takes, that is a
+multi-year queue, and the tail is made of resources nobody requests loudly enough to prioritise
+individually.
 
-Before this work, `generate-types` handed whoever picked up a new resource three fields:
-`projectRef`, `location` and `resourceID`. A person then read the proto and decided, field by
-field, what belonged in the Spec, what belonged in `status.observedState`, what was required, what
-should point at another resource, and what to call it. The generator now writes 91.4% of the fields
-a person wrote, and it records the decisions it could not make in one file per service that both a
-reviewer and the API checks read.
+The open question was how much of that surface a generator can produce rather than a person. This
+report answers it with three numbers. The generator reproduces 91.5% of the fields a KCC engineer
+wrote by hand, at the same path. 98.4% of those fields appear somewhere in its output, in some
+shape. And where the output differs from the hand-written version, it tells somebody more than half
+the time.
 
-Coverage and flagging need different work. Coverage is how much of the API a new resource carries
-on the day it is generated, and flagging is whether anyone learns about the rest. A field absent
-from a CRD cannot be reported as missing from it by any check we have, so an unflagged gap stays
-invisible for as long as the resource exists.
+What follows is the method, the measurements, and what they leave open.
 
-## How coverage is measured
+## Results
 
-There is no way to score a generator on a resource nobody has implemented, because nothing exists
-to compare its output against. So we ran it the other way round: delete 275 resources the team
-implemented by hand, regenerate them from their protos, and compare field by field. The
-hand-written CRD is the known-good answer, and every place the generated one differs names a
-decision a person made and the generator did not.
+Two generators were run over the same 225 resources and scored the same way: does the generated
+resource have the same field, in the same place, as the version a KCC engineer wrote by hand? The
+first is a shallow pass, filling the top level of each API message and working out the resource's
+parent, and it stands in for what generation looked like before this work went deeper. It does not
+walk into nested messages and it records nothing about what it could not decide. The second is the
+generator described in the rest of this report.
 
-Each field in each baseline CRD lands in one of three states, so the columns sum and nothing hides
-in a residue.
-
-| | fields | share | |
-|---|---|---|---|
-| produced as the baseline has it | 10,966 | 91.4% | same field, same path |
-| produced differently | 369 | 3.1% | in the other section, under another name, or as a string where the baseline has a reference |
-| not produced | 665 | 5.5% | nothing at that path at all |
-
-A resource generated today therefore starts with most of its API already written. The last two rows
-need different fixes: a field produced in the wrong shape needs a rule that notices it, and a field
-produced nowhere needs a rule that writes it.
-
-## Where the coverage came from
-
-### The Spec comes from the proto
-
-`--prepopulate-spec` replaces the three-field stub with the proto's own fields. Everything the proto
-does not mark output-only goes to the Spec, everything it does goes to `status.observedState`.
-Almost all of the 91.4% is this one change, and the rest of the work is about the fields it puts in
-the wrong section, spells the wrong way, or cannot type.
-
-### Fields land in the right section
-
-`field_behavior: OUTPUT_ONLY` decides placement, which works until a proto carries no annotations
-at all. Protos derived from a discovery document carry none, and Compute states it in prose
-instead. Three flags handle the protos that do not annotate:
-
-- `--place-server-set-fields` moves a short allowlist of server-computed names, `createTime`,
-  `etag`, `selfLink` and a few more, into ObservedState when the message annotates nothing, and
-  queues each move as a guess.
-- `--detect-output-only-in-comments` reports a field whose comment says "Output only" with no
-  annotation behind it. Its first version tested for `Output only.` and missed `[Output Only]`, the
-  spelling Compute uses, which covers 1,605 fields in `compute.proto` alone.
-- `--detect-empty-observedstate` names a resource whose ObservedState came out empty. The corpus
-  has 36 of them, `ComputeInterconnect` among them, where the baseline carries 19 observed fields.
-  Nothing else notices this, because the struct is written either way and every later check sees a
-  resource that looks finished.
-
-### Fields the generator used to drop
-
-`--emit-message-maps` generates `map<string, Message>` fields, which the generator dropped with a
-`// TODO:` in the source. `--emit-plural-acronyms` writes `relatedURIs` where the
-generator wrote `relatedUris`, as KRM conventions want, and `generate-mapper` takes the same flag
-so the mapper agrees with the types. A field the baseline spells differently counts against us even
-though we emit it, so naming is coverage rather than tidying.
-
-### Parents, roots and locations
-
-The old scaffolder assumed every resource lived at `projects/{project}/locations/{location}`, and
-wrote `projectRef` and a required `location` whatever the resource's name looked like. The
-generator now reads `google.api.resource`. The root becomes `projectRef`, `organizationRef` or
-`folderRef` as the pattern says, or a reference looked up by name for a root such as Analytics'
-`properties/{property}`. The direct parent becomes a reference when one type matches, and a queue
-entry naming the parent path when none does or several do. A `location` field is written only when
-the resource's name contains one.
-
-The generator used to read the parent out of the message name rather than the pattern. The two
-disagree for 752 of the 1,417 messages that carry the annotation.
-
-## What the generator flags
-
-Everything the generator infers rather than reads goes to
-`apis/<service>/needs_judgement_call.txt`, one line per decision, and anything marked `+kcc:guess`
-in the types file has a matching entry. On the corpus that is 295 markers and 295 entries, checked
-by a script rather than by review. The invariant broke three times during this work and the check
-caught each one, including markers written into commented-out blocks describing code the generator
-never produced.
-
-We measure detection by counting the fields that differ from the baseline with nothing saying so.
-On a 189-resource corpus that count went from 450 to 92.
-
-| | unflagged | |
+| 225 resources, scored identically | shallow pass | this work |
 |---|---|---|
-| first measured | 450 | |
-| de-duplicate repeated fields and reference children | 412 | measurement fix |
-| apply the reference rules to every field | 276 | the rules existed and had never been run here |
-| pair the suffix the baseline drops when it adds `Ref` | 256 | measurement fix |
-| gate the queue per Kind rather than per service | 259 | costs 3, and stops a ratchet being pruned |
-| flag an empty ObservedState | 217 | 36 resources, one line each |
-| name every parent segment left out | 203 | |
-| separate renamed references from undetected ones | 109 | measurement fix |
-| apply the reference rules inside map values | 97 | |
-| two name rules, each measured before it was added | 92 | `secret` and `project`, four hits and no misses each |
+| fields reproduced exactly | 70.2% | **82.5%** |
+| differences flagged for a person to decide | 0.0% | **9.5%** |
+| differences nobody is told about | 29.0% | **7.3%** |
 
-Three of those corrected the measurement rather than the output. They stay in the table because the
-number they corrected had already been published.
+Resource by resource, the deeper generator is ahead on 85, level on 139, and behind on one.
 
-## References, the largest category
+The second row is the one that does not show up in a coverage number. No generator decides
+everything on its own, so the question is what happens to the rest. Ours writes a note in the code
+and adds the field to a per-service list of things a person needs to rule on, which covers 57% of
+what it gets differently. The shallow pass records nothing, so a reviewer has to find those
+differences on their own.
 
-`google.api.resource_reference` states the target and is rare. One run needed 111 reference fields;
-with only that annotation to go on, the queue named 11 of them. `--emit-reference-hints` applies
-three more rules to every Spec field at any depth: a resource-name template in the field's
-description, looser prose such as "the resource name of", and a short list of well-known names
-such as `network` and `kmsKeyName`. Together they name 82 of the 111. On another run, the
-generator wrote 263 references as plain strings and flagged 246 of them.
+### Why you will also see 91.5%
 
-None of these rules turns a field into a reference. Each files an entry naming the likely target,
-because a wrong reference is harder to catch in review than an absent one.
+Both numbers describe the same run: the same 9,682 fields, on the same 225 resources, divided by
+two different ideas of how many fields there were to get. The awkwardness comes from how KCC writes
+a pointer to another resource, which is not one string but a small object with `external`, `name`
+and `namespace` inside it. Miss one pointer and a strict count sees three to five separate misses.
+Count every entry and you get 82.5%; count a pointer as the one thing a user fills in and you get
+91.5%. Our own 275-resource corpus lands in almost the same place, at 82.3% and 91.5%.
 
-We decide whether to add a rule by asking whether it reads something the API supplies or remembers
-something a person noticed. The sibling rule reads the service's own resource list, so a string
-field called `dataStore` in a service that declares a `DataStore` resource is queued as a reference
-to it. It scores 77% against what the baseline did, needs no list anyone maintains, and gets
-stronger as more of a service is generated. We rejected a rule matching field names alone: it
-produced 2,164 findings where the description rules produce 78, because a name like `network`
-recurs across unrelated services.
+### The number that says what is left to do
 
-`refs.Classify` decides both what `TestMissingRefs` reports and what the generator files, from one
-copy, so the check and the queue cannot drift apart. While a Kind has queue entries,
-`TestMissingRefs` suppresses its findings and carries its existing `missingrefs.txt` entries
-forward, so a half-finished resource can merge without the ratchet reading the queue as a fix.
+**98.4% of the fields in the hand-written resources turn up somewhere in our output**, even if at a
+different path, under a different name, or in a different shape. The 1.6% missing altogether is
+mostly fields absent from the version of the proto we build against, which nothing could have
+produced. Counting only what our generator could have done something about, it produces nothing for
+**0.3%**.
 
-## Limits
+Finding the fields is close to solved. What a deterministic generator cannot decide on its own is
+what to do with a field once it has found it: whether it should point at another resource rather
+than hold a plain string, whether it belongs in `status` rather than `spec`, how an acronym in its
+name should be capitalised. Those are judgement calls, and the generator hands most of them to a
+person rather than guessing silently. More than 90% of a resource can be generated deterministically
+and safely, leaving roughly 10% for an agent or a person, and that 10% arrives as a list rather than
+as something a reviewer has to go looking for.
 
-The corpus is the set of resources the team chose to implement, not a sample of what is left. When
-44 resources that had been missing from it were added, the same generator scored near 64% on those
-against 94% on the original set. Read 91.4% as a ceiling.
+## Why we deleted upstream's work to test this
 
-First-pass output is not production quality. References are flagged rather than resolved, and a
-generated resource has no fixtures and no MockGCP coverage. That is deliberate in a sandbox with no
-users, and upstream would want a different bar.
+The obvious way to evaluate a generator is to run it on resources nobody has implemented and read
+the output. That does not work: there is nothing to check the output against, and "looks plausible"
+is not a measurement.
 
-These figures were measured on the experiment branch, against baseline `c1df0b9326`, with that
-branch's generator. The changes have since landed as about twenty pull requests, each checked with
-its flags off against a master build, but nobody has rerun the corpus against master.
+So we did the opposite. We took resources the team had already implemented by hand, deleted our
+types files, regenerated them from the proto, and compared field by field against upstream's CRDs.
+Upstream's version is the known-good answer. Every place the generated CRD differs from it is a
+specific, countable way that mechanical generation falls short. A real engineer made each of those
+hand-written choices, so the diff is a list of the judgements a generator cannot make.
 
-## What we would like decided
+The method comes with a second oracle for free. The hand-written `_identity.go` and `_reference.go`
+files were left in place while the types beneath them were regenerated, so `go build ./apis/...`
+fails wherever the generated types no longer satisfy upstream's own controller code, naming missing
+fields in seconds. The general form is worth stealing: an existing implementation is a test oracle,
+and deleting it is how you use it.
 
-1. Is 5.5% of fields not produced, with three quarters of the differences flagged, a reasonable
-   place to start generating resources nobody has implemented?
-2. What has to land with a generated resource: typed references, fixtures and MockGCP in the same
-   change, or in later passes?
-3. The queue assumes a person reviews each resource before it graduates, which makes that review
-   the limit on throughput rather than generation. It is worth designing rather than inheriting.
+## Coverage
+
+All 275 in-scope resources generate both a types file and a published CRD. Every field in every
+baseline CRD lands in exactly one of three states, so the columns sum and no arithmetic can drift.
+
+### What counts as one field
+
+The score is a list of paths, and a path is not a field. Three reductions are defensible, they
+answer different questions, so all three are published. The numerator is the same in every row;
+only what counts as one missing thing changes.
+
+| unit | reproduced | of | share |
+|---|---|---|---|
+| every missing path, raw scorer output | 12,414 | 15,083 | 82.3% |
+| **references counted once**, the headline | 12,414 | 13,566 | **91.5%** |
+| distinct defects, a missing subtree counted once | 12,414 | 13,207 | 94.0% |
+
+KCC encodes a reference as an object with `external`, `name`, `namespace` and sometimes `kind`, so
+one site a user fills in one way expands into five paths; nearly half of every missing path in the
+corpus is a child of one. A repeated field is printed twice, as `foo` and `foo[]`. Both are
+artefacts of the output rather than facts about the API, which is why the raw count is too big.
+
+Collapsing a missing subtree to one entry goes too far the other way. It is the right unit for a
+work list, since we do not generate `ComputeFutureReservation`'s `shareSettings.projectMap` at all
+and fixing that one thing resolves twelve paths, but the collapse ratio runs from 1x on a flat
+resource to 32x on `NetworkSecurityAuthzPolicy`, where 321 missing paths reduce to ten lines.
+Somebody told "ten defects" has no way to know how much of upstream's API sits behind them.
+
+So the headline counts a missing subtree in full, because a reviewer really is blind to all of it,
+and a missing reference once, because it is one decision and one fix.
+
+### The work list
+
+The same divergence, counted as defects rather than fields. 802 things to fix is actionable in a way
+1,425 fields is not.
+
+| state | fields | share |
+|---|---|---|
+| implemented, the same field at the same path | 12,414 | 94.0% |
+| discrepancy, we produce it but not as upstream has it | 456 | 3.5% |
+| &nbsp;&nbsp;flagged for a second pass | 325 | 71% |
+| &nbsp;&nbsp;nothing says so | 131 | 29% |
+| missing, we produce nothing at all | 337 | 2.6% |
+| &nbsp;&nbsp;a gap to close | 219 | 1.7% |
+| &nbsp;&nbsp;we model it differently on purpose | 62 | 0.5% |
+
+The split is on what we produced, not on whether we mentioned it. A discrepancy is a field we do
+emit, in the other section or under a different name or as a plain string where upstream has a
+reference object. It breaks a user's YAML just as surely, but it needs detecting or moving rather
+than generating, and a report that files it under "missed" sends people to write generators for
+fields the types file already carries.
+
+### What the silent fields actually are
+
+"Silent" means the field differs from upstream and nothing in our output says so. It does not mean
+the field is missing, and for the most part it is not. Reading each one back to the proto field
+behind it:
+
+| why it is silent | fields | share of surface |
+|---|---|---|
+| we produce it, in another shape or place | 456 | 3.4% |
+| nobody could produce it; the baseline names a proto field our pinned descriptor does not declare | 177 | 1.3% |
+| we model it differently on purpose, `protobuf.Value` arms mapped whole to JSON | 60 | 0.4% |
+| **we produce nothing for it** | **37** | **0.3%** |
+
+The last row is the one that means what "missing" sounds like, and it is 37 fields. Getting to it
+took three corrections, each of which had been inflating it: `absent` was a residual bucket holding
+fields we emit at another path, a stale-CRD class rested on a leaf-name match that mostly caught
+fields present elsewhere in our own CRD, and 177 fields name proto fields that do not exist in the
+descriptor we compile against.
+
+That last one is worth stating plainly because it is not ours to fix. `apis/git.versions` pins a
+googleapis commit, and the baseline pins the same one, but the baseline's checked-in types files are
+older than that pin, generated against a newer googleapis and never regenerated. Running upstream's
+own `generate.sh` today would delete those fields. `APIHubAPI` shows it cleanly: its `Api` message
+emits everything through field 15 and nothing from 16 on, because fields 16 through 20 were added to
+googleapis after the pin.
+
+The 456 we produce differently are the real work, and they are detection rather than generation: a
+reference we emit as a plain string, a field placed in Spec where upstream has it in ObservedState,
+an acronym cased the other way.
+
+## Flagging what needs judgement
+
+Anything the generator cannot justify from the proto gets a `+kcc:guess` marker in the types file
+and an entry in that service's judgement queue. There are 299 markers today, and a checker enforces
+that none of them lacks an entry.
+
+That covers what the generator knows it guessed. Measured against upstream instead, 1,034 fields
+diverge in some way, and the flagging rate splits sharply by kind. Of the 369 discrepancies, 281
+carry a queue entry. Of the 665 absences, only 39 do. A field we emit in the wrong shape is usually
+something the generator knew it was unsure about; a field we emit nowhere is usually something
+nothing looked for.
+
+The invariant broke three separate times during this work and the checker caught all three, in
+places code review would not have looked: a marker written on every generator invocation while the
+queue entry was written on only some; a merge that silently dropped every comment line of the
+existing queue file; and markers emitted into commented-out blocks describing code the generator did
+not produce. A rule nothing checks is a rule that regresses.
+
+## Detection over prescription
+
+Early on the instinct was to fix each coverage gap directly: see a missing field, write a rule that
+produces it. That does not scale and it does not transfer, because you cannot enumerate the ways a
+thousand APIs differ, and a rule learned from one service usually misfires on another.
+
+The rule we settled on is detection over prescription. It is more valuable to reliably notice that a
+field needs a human than to guess what the human would say. A flagged field is a fine outcome; a
+field nobody was told about is not.
+
+That reframing gives a test for whether a new rule is worth having. Does it derive its answer from
+something the API supplies, or does it remember something a person once noticed?
+
+| signal | source | verdict |
+|---|---|---|
+| `google.api.resource_reference` | the proto states it | fact |
+| resource-name templates in a description | the field's own docs | derives |
+| a sibling resource in the same service | the service's own resource list | derives |
+| `refs.NameRules` | a list of known spellings | remembers |
+
+The derived three work on a service nobody has looked at. The remembered one only ever finds
+references somebody has already seen, which is why a growing `NameRules` list is a signal that one of
+the other three is missing something, not a sign of progress.
+
+**The sibling rule.** If a service declares a resource called `DataStore`, then a string field named
+`dataStore` is probably a reference to it. It needs no vocabulary at all, and it gets stronger as
+more resources are generated, because the service's own resource list is what it reads. Measured
+against what upstream did, it runs at 77% precision, and nobody maintains it.
+
+**A spelling the detector did not know.** The output-only detector tested whether a proto comment
+opened with `Output only.` Compute writes `[Output Only]` instead, and that one unrecognised
+spelling covers 1,605 fields in `compute.proto` alone. Every one of `ComputeInterconnect`'s
+misplaced status fields, `googleIPAddress` and `circuitInfos` and `expectedOutages`, turned out to be
+nothing more exotic than that. Two strings in a list, for a signal that reaches services nobody has
+looked at.
+
+## How non-deterministic behaviour is flagged
+
+Some decisions cannot be derived from a proto. Whether a plural noun in a resource pattern names a
+real KCC Kind, whether a field the proto never annotated is server-set, whether a string is a
+reference: each of those needs a person. The generator's job on them is not to guess better, but to
+make sure the guess is visible to whoever reviews it.
+
+A field the generator cannot vouch for is still emitted, with the open question recorded separately.
+Omitting it instead would hide it from every other check in the system, because a field absent from
+the CRD cannot be reported as missing from it. A wrong field is a bug someone finds; a missing field
+is a bug nobody finds.
+
+### A marker and a queue entry, for every guess
+
+Anything the generator cannot justify from the proto produces both a marker in the generated Go and
+an entry in that service's `needs_judgement_call.txt`. Neither alone is enough. The queue is a work
+list somebody clears; the types file is what a reader actually opens.
+
+| marker | what the generator could not justify | now |
+|---|---|---|
+| `parent-location` | a location segment read off the resource pattern: is the resource regional, and is this the name for it? | 193 |
+| `placement` | a field put in ObservedState by name, because the proto carries no `field_behavior` anywhere on the message | 41 |
+| `parent-segment` | a name segment emitted as a plain string; upstream may want a reference | 26 |
+| `possible-reference` | a field whose name matches a resource this service declares | 26 |
+| `parent-ref` | a typed reference whose target was assumed from a collection segment | 13 |
+
+### Even a typed reference is queued
+
+An earlier version suppressed the queue entry whenever the generator emitted something concrete, on
+the reasoning that a typed ref needs no review. That traded detection for an unflagged guess:
+`BigtableCluster` got `Instance *string` where upstream has `spec.instanceRef`, and nothing said so.
+The compiler was proving 32 fields missing while the queue named 2.
+
+"Very sure" is not a state a generator can be in about a target it inferred from a plural noun.
+Anything marked as a guess belongs in the queue, typed references included.
+
+### When a finding belongs to no Kind
+
+A nested message is shared by every resource that references it, so a finding against one cannot be
+attributed to a single Kind. Every non-comment line in the queue suppresses `[refs]` findings for the
+Kind it names, so inventing an owner would quietly switch off a real check. Those findings are
+written as comments instead, and the tooling reads them back:
+
+```
+# possible-reference-by-sibling: google.cloud.compute.v1.NetworkInterface.subnetwork target=ComputeSubnetwork
+# dropped: …TranslationTaskDetails.specialTokenMap reason=unsupported map type with key string and value enum
+```
+
+### The queue is also the gate
+
+While a resource has entries, its `[refs]` findings are suppressed, so a half-generated resource does
+not trip a ratchet that can only shrink. Clearing the queue is what graduates it. That also makes the
+queue the throughput limit on the whole idea, which is a question for the team rather than an
+implementation detail.
+
+## Limitations
+
+Read 91.5% as a ceiling, not a forecast. The corpus is upstream's choices, not a random sample. These
+275 are resources the team judged worth implementing, and the unimplemented ones may be
+systematically harder: less documented, odder shapes, or unimplemented precisely because someone
+looked and found a problem. Adding 44 resources that had been missing from the corpus moved the
+headline by nearly three points, which is direct evidence for that caution.
+
+22 packages do not compile, and that is by design, for the reason given under the method above. About
+16 of them are a measurement floor we chose not to chase.
+
+First-pass output is not production quality. References are generated as plain strings and flagged
+rather than resolved into typed refs, and there are no test fixtures or MockGCP coverage for
+generated resources. The strategy is deliberately generate-first and retrofit in corpus-wide passes,
+which is only safe because the sandbox has no users. Upstream would need a different bar.
+
+---
+
+*275 resources against baseline `c1df0b9326`, measured by `hack/tools/greenfield/silence_report.py`.
+The like-for-like 225-resource comparison rescored both generators with one harness. Figures were
+measured on the experiment branch; the changes have since landed as about twenty pull requests, each
+checked with its flags off against a master build, and nobody has rerun the corpus against master.*
