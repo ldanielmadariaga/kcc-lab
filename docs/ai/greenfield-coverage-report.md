@@ -48,15 +48,15 @@ The middle row is the one that does not show up in a coverage number. No generat
 everything on its own, so what matters is what happens to the rest. Ours writes a note in the code
 and adds the field to a per-service list for a person to rule on.
 
-That table says what happened to each field. Regrouping it by whether the field reaches our CRD at
-all says how much of the API a new resource carries, which is the number to plan against:
+That table says what happened to each field. Regrouped by whether the field reaches our CRD at all,
+it says how much of the API a new resource carries, which is the number to plan against:
 
 | | fields | share |
 |---|---|---|
-| generated at the same path | 12,414 | 91.5% |
-| flagged for a person | 422 | 3.1% |
-| generated elsewhere, nobody told | 343 | 2.5% |
-| **generated, generated elsewhere, or flagged** | **13,179** | **97.1%** |
+| **reproduced, produced somewhere else, or named in the list** | **13,179** | **97.1%** |
+| &nbsp;&nbsp;reproduced at the same path | 12,414 | 91.5% |
+| &nbsp;&nbsp;named in the list for a person to rule on | 422 | 3.1% |
+| &nbsp;&nbsp;produced somewhere else, nobody told | 343 | 2.5% |
 | not ours to produce | 237 | 1.7% |
 | absent from the CRD | 150 | 1.1% |
 
