@@ -63,15 +63,14 @@ it says how much of the API a new resource carries, which is the number to plan 
 | not ours to produce | 237 | 1.7% |
 | absent from the CRD | 150 | 1.1% |
 
-Setting aside the 237 nothing could have produced gives 98.9%. Those are the 177 fields naming
+Leave out the 237 nothing could have produced and the figure is 98.9%. Those are the 177 fields naming
 proto fields our pinned descriptor does not declare and the 60 `protobuf.Value` arms we map whole
 to JSON on purpose.
 
 ### The number that says what is left to do
 
 The 150 absent from the CRD are the work. How much of that is the generator failing to generate is
-measured less precisely than the rest, and the range is worth stating rather than picking an end
-of. 37 fields are confirmed: the scorer found the proto field behind them and no annotation for it
+measured less precisely than the rest, so what follows gives the range rather than one end of it. 37 fields are confirmed: the scorer found the proto field behind them and no annotation for it
 anywhere in our package. Another 109 are references where upstream has a `Ref` object and we have
 no field at that stem, and those were never asked the question, because `classify()` returns from
 its reference branch before reaching the test that separates "we emit this proto field elsewhere"
@@ -109,8 +108,8 @@ baseline CRD lands in exactly one of three states, so the columns sum and no ari
 
 ### What counts as one field
 
-The score is a list of paths, and a path is not a field. Three reductions are defensible, they
-answer different questions, so all three are published. The numerator is the same in every row;
+The score is a list of paths, and a path is not a field. Three reductions are defensible. They answer different
+questions, so all three are published. The numerator is the same in every row;
 only what counts as one missing thing changes.
 
 | unit | reproduced | of | share |
@@ -200,8 +199,9 @@ Anything the generator cannot justify from the proto gets a `+kcc:guess` marker 
 and an entry in that service's judgement queue. There are 299 markers today, and a checker enforces
 that none of them lacks an entry.
 
-That covers what the generator knows it guessed. Measured against upstream instead, 793 fields
-diverge in some way and 372 of them carry an entry, and the rate splits sharply by population:
+That covers what the generator knows it guessed. Measured against upstream instead, and counted as
+defects rather than fields, 793 diverge in some way and 372 carry an entry. The rate splits sharply
+by population:
 
 | | total | flagged | |
 |---|---|---|---|
@@ -212,25 +212,27 @@ A field we emit in the wrong shape is usually something the generator knew it wa
 field we emit nowhere is usually something nothing looked for. Quoting the two together as one rate
 describes neither.
 
-The 421 nobody is told about are not one problem. Four classes carry almost all of them:
+The 421 nobody is told about are not one problem. Five classes carry 321 of them:
 
-| class | we emit it | flagged | |
+| class | unflagged | of | |
 |---|---|---|---|
-| `reference-not-detected` | 264 | 239 | the detector is doing well here |
-| `moved` | 80 | 37 | server-set fields the proto never annotated |
-| `not-in-our-proto` | 57 | 58 | the baseline names fields our pinned descriptor lacks |
-| `renamed` | 53 | 0 | casing only, and a fix rather than a judgement call |
+| `reference-shape` | 92 | 102 | upstream has a reference object and we have no field at that stem |
+| `not-in-our-proto` | 73 | 131 | the baseline names fields our pinned descriptor lacks |
+| `intentionally-different` | 60 | 60 | `protobuf.Value` arms, mapped whole to JSON on purpose |
+| `renamed` | 53 | 53 | casing only, a fix rather than a judgement call |
+| `moved` | 43 | 80 | server-set fields the proto never annotated |
 
-`renamed` is the largest unflagged group and the cheapest: our acronym casing writes `bootDiskMIB`
-where the baseline writes `bootDiskMiB`. Nothing about that needs a person's opinion.
+The detector does best where it has most to do: of 264 `reference-not-detected` defects, 239 carry
+an entry. `renamed` is the cheapest of the five: our acronym casing writes `bootDiskMIB` where the
+baseline writes `bootDiskMiB`. Nothing about that needs a person's opinion.
 
-Two limits worth stating. Of the 372 flagged, only 28 also carry a marker in the types file, so a
+Two limits are worth stating. Of the 372 flagged, only 28 also carry a marker in the types file, so a
 reader opening the type mostly sees a plain string with nothing to suggest it is unfinished. And 29
 of the unflagged are references the baseline renamed rather than suffixed, `DatastreamPrivateConnection`'s
 `vpc` against `networkRef` among them, which no name match bridges. Those are counted as unflagged,
 which overstates the gap rather than flattering it.
 
-The invariant broke three separate times during this work and the checker caught all three, in
+The invariant broke three times during this work and the checker caught all three, in
 places code review would not have looked: a marker written on every generator invocation while the
 queue entry was written on only some; a merge that silently dropped every comment line of the
 existing queue file; and markers emitted into commented-out blocks describing code the generator did
@@ -256,21 +258,20 @@ something the API supplies, or does it remember something a person once noticed?
 | a sibling resource in the same service | the service's own resource list | derives |
 | `refs.NameRules` | a list of known spellings | remembers |
 
-The derived three work on a service nobody has looked at. The remembered one only ever finds
+The derived three work on a new service. The remembered one only ever finds
 references somebody has already seen, which is why a growing `NameRules` list is a signal that one of
 the other three is missing something, not a sign of progress.
 
-**The sibling rule.** If a service declares a resource called `DataStore`, then a string field named
+The sibling rule reads the service's own resource list. If a service declares a resource called `DataStore`, then a string field named
 `dataStore` is probably a reference to it. It needs no vocabulary at all, and it gets stronger as
 more resources are generated, because the service's own resource list is what it reads. Measured
 against what upstream did, it runs at 77% precision, and nobody maintains it.
 
-**A spelling the detector did not know.** The output-only detector tested whether a proto comment
+One unknown spelling cost a whole service. The output-only detector tested whether a proto comment
 opened with `Output only.` Compute writes `[Output Only]` instead, and that one unrecognised
 spelling covers 1,605 fields in `compute.proto` alone. Every one of `ComputeInterconnect`'s
 misplaced status fields, `googleIPAddress` and `circuitInfos` and `expectedOutages`, turned out to be
-nothing more exotic than that. Two strings in a list, for a signal that reaches services nobody has
-looked at.
+nothing more exotic than that. Two strings in a list, for a signal that reaches new services.
 
 ## How non-deterministic behaviour is flagged
 
@@ -286,9 +287,8 @@ is a bug nobody finds.
 
 ### A marker and a queue entry, for every guess
 
-Anything the generator cannot justify from the proto produces both a marker in the generated Go and
-an entry in that service's `needs_judgement_call.txt`. Neither alone is enough. The queue is a work
-list somebody clears; the types file is what a reader actually opens.
+Both halves of that matter. The queue is a work list somebody clears; the types file is what a
+reader opens.
 
 | marker | what the generator could not justify | now |
 |---|---|---|
@@ -337,7 +337,8 @@ resources, and the 44 added to it score near 64% where the original 231 scored 9
 way. Almost all of the difference is fields we generate nowhere rather than fields we generate in
 the wrong shape.
 
-22 packages do not compile, and that is by design, for the reason given under the method above.
+22 packages do not compile, and that is by design, for the reason given under "Why we deleted
+upstream's work to test this".
 About 16 of them are a measurement floor we chose not to chase.
 
 First-pass output is not production quality. References are generated as plain strings and flagged
@@ -347,8 +348,10 @@ which is only safe because the sandbox has no users. Upstream would need a diffe
 
 ---
 
-*Every figure here comes from one run, `2026-09-04-275-resources-proto-first.txt`: 275 resources
-against baseline `c1df0b9326`, measured by `hack/tools/greenfield/silence_report.py`. Earlier runs
+*Every figure here, apart from the four named below, comes from one run,
+`2026-09-04-275-resources-proto-first.txt` on branch `greenfield-corpus-rebuild`, which is not
+pushed: 275 resources against baseline `c1df0b9326`, measured by
+`hack/tools/greenfield/silence_report.py`. Earlier runs
 are indexed in `docs/ai/experiments/measurements/README.md`, which marks the superseded ones; the
 run before this one moved 80 fields between classes without changing a total, and the run before
 that added 1,448 reproduced fields. Quote the index rather than a figure found in another doc.*
