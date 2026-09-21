@@ -12,60 +12,44 @@ multi-year queue, and the tail is made of resources nobody requests loudly enoug
 individually.
 
 The open question was how much of that surface a generator can produce rather than a person. This
-report answers it with three numbers. The generator reproduces 91.5% of the fields a KCC engineer
-wrote by hand, at the same path. 98.4% of those fields appear somewhere in its output, in some
-shape. And where the output differs from the hand-written version, it tells somebody more than half
-the time.
+report answers it with two numbers. The generator reproduces 91.5% of the fields a KCC engineer
+wrote by hand, at the same path, and it produces nothing at all for 0.3%. Nearly everything in
+between is a field it does emit, in the wrong section, under another name, or as a plain string
+where the hand-written version has a reference.
 
 What follows is the method, the measurements, and what they leave open.
 
 ## Results
 
-Two generators were run over the same 225 resources and scored the same way: does the generated
-resource have the same field, in the same place, as the version a KCC engineer wrote by hand? The
-first is a shallow pass, filling the top level of each API message and working out the resource's
-parent, and it stands in for what generation looked like before this work went deeper. It does not
-walk into nested messages and it records nothing about what it could not decide. The second is the
-generator described in the rest of this report.
+The starting point was not close. Before `--prepopulate-spec`, `generate-types` scaffolded three
+fields into the Spec, `projectRef`, `location` and `resourceID`, and left ObservedState empty.
+Running `generate.sh` on a new resource gave you a stub, and a person read the proto and wrote
+everything else, including every field the API only ever returns.
 
-| 225 resources, scored identically | shallow pass | this work |
+Measured now, over 275 resources the team had implemented by hand:
+
+| of 13,566 baseline fields | fields | share |
 |---|---|---|
-| fields reproduced exactly | 70.2% | **82.5%** |
-| differences flagged for a person to decide | 0.0% | **9.5%** |
-| differences nobody is told about | 29.0% | **7.3%** |
+| reproduced at the same path | 12,414 | 91.5% |
+| diverge, flagged for a person | 422 | 3.1% |
+| diverge, nobody is told | 730 | 5.4% |
 
-Resource by resource, the deeper generator is ahead on 85, level on 139, and behind on one.
-
-The second row is the one that does not show up in a coverage number. No generator decides
-everything on its own, so the question is what happens to the rest. Ours writes a note in the code
-and adds the field to a per-service list of things a person needs to rule on, which covers 57% of
-what it gets differently. The shallow pass records nothing, so a reviewer has to find those
-differences on their own.
-
-### Why you will also see 91.5%
-
-Both numbers describe the same run: the same 9,682 fields, on the same 225 resources, divided by
-two different ideas of how many fields there were to get. The awkwardness comes from how KCC writes
-a pointer to another resource, which is not one string but a small object with `external`, `name`
-and `namespace` inside it. Miss one pointer and a strict count sees three to five separate misses.
-Count every entry and you get 82.5%; count a pointer as the one thing a user fills in and you get
-91.5%. Our own 275-resource corpus lands in almost the same place, at 82.3% and 91.5%.
+The middle row is the one that does not show up in a coverage number. No generator decides
+everything on its own, so what matters is what happens to the rest. Ours writes a note in the code
+and adds the field to a per-service list for a person to rule on.
 
 ### The number that says what is left to do
 
-**98.4% of the fields in the hand-written resources turn up somewhere in our output**, even if at a
-different path, under a different name, or in a different shape. The 1.6% missing altogether is
-mostly fields absent from the version of the proto we build against, which nothing could have
-produced. Counting only what our generator could have done something about, it produces nothing for
-**0.3%**.
+Of the 730 nobody is told about, **37 are fields we produce nowhere at all**, 0.3% of the surface.
+The rest we do produce, at another path, under another name, or in another shape. The largest
+single group, 177 fields, names proto fields our pinned descriptor does not declare, which nothing
+could have produced.
 
 Finding the fields is close to solved. What a deterministic generator cannot decide on its own is
 what to do with a field once it has found it: whether it should point at another resource rather
 than hold a plain string, whether it belongs in `status` rather than `spec`, how an acronym in its
 name should be capitalised. Those are judgement calls, and the generator hands most of them to a
-person rather than guessing silently. More than 90% of a resource can be generated deterministically
-and safely, leaving roughly 10% for an agent or a person, and that 10% arrives as a list rather than
-as something a reviewer has to go looking for.
+person rather than guessing silently.
 
 ## Why we deleted upstream's work to test this
 
@@ -118,8 +102,8 @@ and a missing reference once, because it is one decision and one fix.
 
 ### The work list
 
-The same divergence, counted as defects rather than fields. 802 things to fix is actionable in a way
-1,425 fields is not.
+The same divergence, counted as defects rather than fields. 793 things to fix is actionable in a way
+1,152 fields is not.
 
 | state | fields | share |
 |---|---|---|
@@ -128,8 +112,9 @@ The same divergence, counted as defects rather than fields. 802 things to fix is
 | &nbsp;&nbsp;flagged for a second pass | 325 | 71% |
 | &nbsp;&nbsp;nothing says so | 131 | 29% |
 | missing, we produce nothing at all | 337 | 2.6% |
-| &nbsp;&nbsp;a gap to close | 219 | 1.7% |
-| &nbsp;&nbsp;we model it differently on purpose | 62 | 0.5% |
+| &nbsp;&nbsp;a gap to close | 193 | |
+| &nbsp;&nbsp;we model it differently on purpose | 144 | |
+| &nbsp;&nbsp;flagged for a second pass | 47 | 14% |
 
 The split is on what we produced, not on whether we mentioned it. A discrepancy is a field we do
 emit, in the other section or under a different name or as a plain string where upstream has a
@@ -143,18 +128,28 @@ fields the types file already carries.
 the field is missing, and for the most part it is not. Reading each one back to the proto field
 behind it:
 
-| why it is silent | fields | share of surface |
+| why it is silent | fields | |
 |---|---|---|
-| we produce it, in another shape or place | 456 | 3.4% |
-| nobody could produce it; the baseline names a proto field our pinned descriptor does not declare | 177 | 1.3% |
-| we model it differently on purpose, `protobuf.Value` arms mapped whole to JSON | 60 | 0.4% |
-| **we produce nothing for it** | **37** | **0.3%** |
+| `not-in-our-proto` | 177 | the baseline names a proto field our pinned descriptor does not declare |
+| `reference-shape` | 109 | upstream has a reference and we have no field at that stem |
+| `renamed` | 77 | same field, different name |
+| `map-shape` | 67 | a proto map; upstream renders it as a list or as named keys |
+| `intentionally-different` | 60 | `protobuf.Value` arms, mapped whole to JSON |
+| `snake-case` | 59 | upstream's CRD uses underscores where we use camelCase |
+| `emitted-elsewhere` | 55 | we carry that proto field, at another CRD path |
+| `moved` | 54 | we emit it, in the other section |
+| `reference-not-detected` | 25 | we emit the field and never spotted it is a reference |
+| the tail, four classes | 47 | `not-generated?` 35, `emitted-elsewhere?` 6, `crd-stale` 4, `not-generated` 2 |
 
-The last row is the one that means what "missing" sounds like, and it is 37 fields. Getting to it
-took three corrections, each of which had been inflating it: `absent` was a residual bucket holding
-fields we emit at another path, a stale-CRD class rested on a leaf-name match that mostly caught
-fields present elsewhere in our own CRD, and 177 fields name proto fields that do not exist in the
-descriptor we compile against.
+Only the two `not-generated` rows are fields we produce nowhere: 2 confirmed against the proto, and
+35 that rest on a leaf name with no proto field to confirm them. **37 fields, 0.3% of the surface.**
+A row ending in `?` rests on that weaker test, which is what once made `crd-stale` report 46 where
+the true count was 4.
+
+Getting down to 37 took three corrections, each of which had been inflating it: `absent` was a
+residual bucket holding fields we emit at another path, the stale-CRD class rested on a leaf-name
+match that mostly caught fields present elsewhere in our own CRD, and 177 fields name proto fields
+that do not exist in the descriptor we compile against.
 
 That last one is worth stating plainly because it is not ours to fix. `apis/git.versions` pins a
 googleapis commit, and the baseline pins the same one, but the baseline's checked-in types files are
@@ -173,11 +168,35 @@ Anything the generator cannot justify from the proto gets a `+kcc:guess` marker 
 and an entry in that service's judgement queue. There are 299 markers today, and a checker enforces
 that none of them lacks an entry.
 
-That covers what the generator knows it guessed. Measured against upstream instead, 1,034 fields
-diverge in some way, and the flagging rate splits sharply by kind. Of the 369 discrepancies, 281
-carry a queue entry. Of the 665 absences, only 39 do. A field we emit in the wrong shape is usually
-something the generator knew it was unsure about; a field we emit nowhere is usually something
-nothing looked for.
+That covers what the generator knows it guessed. Measured against upstream instead, 793 fields
+diverge in some way and 372 of them carry an entry, and the rate splits sharply by population:
+
+| | total | flagged | |
+|---|---|---|---|
+| discrepancy, we produce it in the wrong shape or place | 456 | 325 | 71% |
+| missing, we produce nothing | 337 | 47 | 14% |
+
+A field we emit in the wrong shape is usually something the generator knew it was unsure about; a
+field we emit nowhere is usually something nothing looked for. Quoting the two together as one rate
+describes neither.
+
+The 421 nobody is told about are not one problem. Four classes carry almost all of them:
+
+| class | we emit it | flagged | |
+|---|---|---|---|
+| `reference-not-detected` | 264 | 239 | the detector is doing well here |
+| `moved` | 80 | 37 | server-set fields the proto never annotated |
+| `not-in-our-proto` | 57 | 58 | the baseline names fields our pinned descriptor lacks |
+| `renamed` | 53 | 0 | casing only, and a fix rather than a judgement call |
+
+`renamed` is the largest unflagged group and the cheapest: our acronym casing writes `bootDiskMIB`
+where the baseline writes `bootDiskMiB`. Nothing about that needs a person's opinion.
+
+Two limits worth stating. Of the 372 flagged, only 28 also carry a marker in the types file, so a
+reader opening the type mostly sees a plain string with nothing to suggest it is unfinished. And 29
+of the unflagged are references the baseline renamed rather than suffixed, `DatastreamPrivateConnection`'s
+`vpc` against `networkRef` among them, which no name match bridges. Those are counted as unflagged,
+which overstates the gap rather than flattering it.
 
 The invariant broke three separate times during this work and the checker caught all three, in
 places code review would not have looked: a marker written on every generator invocation while the
@@ -294,7 +313,12 @@ which is only safe because the sandbox has no users. Upstream would need a diffe
 
 ---
 
-*275 resources against baseline `c1df0b9326`, measured by `hack/tools/greenfield/silence_report.py`.
-The like-for-like 225-resource comparison rescored both generators with one harness. Figures were
-measured on the experiment branch; the changes have since landed as about twenty pull requests, each
-checked with its flags off against a master build, and nobody has rerun the corpus against master.*
+*Every figure here comes from one run, `2026-09-04-275-resources-proto-first.txt`: 275 resources
+against baseline `c1df0b9326`, measured by `hack/tools/greenfield/silence_report.py`. Earlier runs
+are indexed in `docs/ai/experiments/measurements/README.md`, which marks the superseded ones; the
+run before this one moved 80 fields between classes without changing a total, and the run before
+that added 1,448 reproduced fields. Quote the index rather than a figure found in another doc.*
+
+*The measurement was taken on the experiment branch. The changes have since landed as about twenty
+pull requests, each checked with its flags off against a master build, and nobody has rerun the
+corpus against master.*
