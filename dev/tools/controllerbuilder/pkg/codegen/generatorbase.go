@@ -264,8 +264,9 @@ func (f *generatedFile) usedImports() map[string]string {
 	body := f.body.String()
 
 	// The type generator adds imports for google.rpc.Status and connectors'
-	// Secret, but not for google.protobuf.Struct, which becomes
-	// apiextensionsv1.JSON. Checking the body for every qualifier in
+	// Secret, but not for google.protobuf.Struct, Value or ListValue, which
+	// become apiextensionsv1.JSON, and ces and visionai generated files that
+	// did not compile. Checking the body for every qualifier in
 	// QualifierImports covers each type in protoMessagesNotMappedToGoStruct,
 	// including any added later.
 	for qualifier, pkgName := range QualifierImports {

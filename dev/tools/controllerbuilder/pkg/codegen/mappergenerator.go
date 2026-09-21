@@ -570,7 +570,7 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 					functionName = krmFromProtoFunctionName(protoField, krmField.Name)
 				}
 
-				if functionName == "direct.Struct_FromProto" && !strings.HasPrefix(krmField.Type, "*") {
+				if krmIsUnpointeredJSON(protoField, krmField.Type) {
 					fmt.Fprintf(out, "\tif v := %s(mapCtx, in.%s); v != nil {\n", functionName, protoAccessor)
 					fmt.Fprintf(out, "\t\tout.%s = *v\n", krmFieldName)
 					fmt.Fprintf(out, "\t}\n")
@@ -911,7 +911,7 @@ func (v *MapperGenerator) writeMapFunctionsForPair(out io.Writer, srcDir string,
 					continue
 				}
 				valPrefix := ""
-				if functionName == "direct.Struct_ToProto" && !strings.HasPrefix(krmField.Type, "*") {
+				if krmIsUnpointeredJSON(protoField, krmField.Type) {
 					valPrefix = "&"
 				}
 				fmt.Fprintf(out, "\tout.%s = %s(mapCtx, %sin.%s)\n",
@@ -1245,6 +1245,29 @@ func krmMapValueType(elemType, krmFieldType, krmImportName string) (goType strin
 	return elem, false
 }
 
+// krmIsUnpointeredJSON reports whether a field is one the type generator
+// deliberately declared without a pointer.
+//
+// GoTypeForField rewrites "*apiextensionsv1.JSON" to "apiextensionsv1.JSON",
+// because that type is already a wrapper around a byte slice and carries its
+// own empty state. The converters in pkg/controller/direct still take and
+// return a pointer, so every call site has to bridge the difference:
+// dereference what comes back, and take the address of what goes in.
+//
+// This used to be spelled as a comparison against the literal name
+// "direct.Struct_FromProto", which silently failed to cover the other proto
+// messages that map to the same Go type, and covered neither in a oneof.
+func krmIsUnpointeredJSON(protoField protoreflect.FieldDescriptor, krmFieldType string) bool {
+	if protoField.Kind() != protoreflect.MessageKind {
+		return false
+	}
+	goType, ok := protoMessagesNotMappedToGoStruct[string(protoField.Message().FullName())]
+	if !ok || goType != "apiextensionsv1.JSON" {
+		return false
+	}
+	return !strings.HasPrefix(krmFieldType, "*")
+}
+
 func krmFromProtoFunctionName(protoField protoreflect.FieldDescriptor, krmFieldName string) string {
 	fullname := string(protoField.Message().FullName())
 	switch fullname {
@@ -1252,6 +1275,10 @@ func krmFromProtoFunctionName(protoField protoreflect.FieldDescriptor, krmFieldN
 		return "direct.StringTimestamp_FromProto"
 	case "google.protobuf.Struct":
 		return "direct.Struct_FromProto"
+	case "google.protobuf.Value":
+		return "direct.Value_FromProto"
+	case "google.protobuf.ListValue":
+		return "direct.ListValue_FromProto"
 	case "google.protobuf.Duration":
 		return "direct.StringDuration_FromProto"
 	case "google.protobuf.Int64Value":
@@ -1286,6 +1313,10 @@ func krmToProtoFunctionName(protoField protoreflect.FieldDescriptor, krmFieldNam
 		return "direct.StringTimestamp_ToProto"
 	case "google.protobuf.Struct":
 		return "direct.Struct_ToProto"
+	case "google.protobuf.Value":
+		return "direct.Value_ToProto"
+	case "google.protobuf.ListValue":
+		return "direct.ListValue_ToProto"
 	case "google.protobuf.Duration":
 		return "direct.StringDuration_ToProto"
 	case "google.protobuf.Int64Value":

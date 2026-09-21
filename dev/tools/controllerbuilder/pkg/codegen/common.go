@@ -75,6 +75,8 @@ var protoMessagesNotMappedToGoStruct = map[string]string{
 	"google.protobuf.StringValue":       "string",
 	"google.protobuf.BoolValue":         "bool",
 	"google.protobuf.Struct":            "apiextensionsv1.JSON",
+	"google.protobuf.Value":             "apiextensionsv1.JSON",
+	"google.protobuf.ListValue":         "apiextensionsv1.JSON",
 	"google.rpc.Status":                 "common.Status",
 	"google.cloud.connectors.v1.Secret": "secretmanagerv1beta1.SecretRef",
 }
