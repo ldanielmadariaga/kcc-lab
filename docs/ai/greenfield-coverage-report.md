@@ -35,20 +35,20 @@ What follows is the method, the measurements, and what they leave open.
 
 ## Results
 
-The starting point had the types and none of the decisions. `generate-types` wrote every message it
+The starting point had the types but none of the decisions. `generate-types` wrote every message it
 walked into `types.generated.go`, and for a new resource, whose `<kind>_types.go` does not exist
 when the generator runs, that includes a struct for the resource's own message, plus an
-ObservedState variant of it where the proto marks output-only fields. The fields existed, typed.
-What the
-scaffolder wrote into `<kind>_types.go` was a stub: `projectRef`, `location` and `resourceID` in the
-Spec, and an empty `<Kind>ObservedState`. A person moved fields from the generated types into that
-stub, deciding for each one whether it belonged in the Spec or in status, whether a string should
-point at another resource, whether it was required, and how its name should read in KRM. That stub
-is still what a run produces today with `--prepopulate-spec` off.
+ObservedState variant of it where the proto marks output-only fields. Every field was there, with a
+Go type on it. What the scaffolder wrote into `<kind>_types.go` was a stub: `projectRef`, `location`
+and `resourceID` in the Spec, and an empty `<Kind>ObservedState`. A person moved fields from the
+generated types into that stub, deciding for each one whether it belonged in the Spec or in status,
+whether a string should point at another resource, whether it was required, and how its name should
+read in KRM. That stub is still what a run produces today with `--prepopulate-spec` off.
 
-Measured now, over 275 resources the team has already implemented. The rows group by whether the
-field reaches our CRD at all, so the first one says how much of the API a new resource carries,
-which is the number to plan against:
+The measurement below covers 275 resources the team has already implemented. It compares what the
+generator produces with the CRDs those implementations publish, which the tables call the baseline.
+The rows group by whether the field reaches our CRD at all, so the first row says how much of the
+API a new resource carries, which is the number to plan against:
 
 | of 13,566 baseline fields | fields | share |
 |---|---|---|
@@ -60,8 +60,8 @@ which is the number to plan against:
 | absent from the CRD | 150 | 1.1% |
 
 The flagged row is the one that does not show up in a coverage number. No generator decides
-everything on its own, so what matters is what happens to the rest. Ours writes a note in the code
-and adds the field to a per-service list for a person to rule on.
+everything on its own, so what matters is what happens to the rest. This generator writes a note in
+the code and adds the field to a per-service list for a person to rule on.
 
 Leave out the 237 nothing could have produced and the figure is 98.9%. Those are the 177 fields
 naming proto fields our pinned descriptor does not declare, and the 60 `protobuf.Value` arms we map
@@ -78,7 +78,7 @@ its reference branch before reaching the test that separates "we emit this proto
 from "we emit it nowhere". So between 37 and 146, plus 4 that are in our Go types and missing from
 the published CRD.
 
-Finding the fields is close to solved. What a deterministic generator cannot decide on its own is
+Most of what is left is not about finding fields. What a deterministic generator cannot decide is
 what to do with a field once it has found it: whether it should point at another resource rather
 than hold a plain string, whether it belongs in `status` rather than `spec`, how an acronym in its
 name should be capitalised. Those are judgement calls, and the generator hands most of them to a
@@ -96,11 +96,11 @@ Upstream's version is the known-good answer. Every place the generated CRD diffe
 specific, countable way that mechanical generation falls short. A person reviewed and signed off
 on each of those choices, so the diff is a list of the judgements a generator cannot make.
 
-The method comes with a second oracle for free. The checked-in `_identity.go` and `_reference.go`
+The method gives a second check at no extra cost. The checked-in `_identity.go` and `_reference.go`
 files were left in place while the types beneath them were regenerated, so `go build ./apis/...`
 fails wherever the generated types no longer satisfy upstream's own controller code, naming missing
-fields in seconds. The general form is worth stealing: an existing implementation is a test oracle,
-and deleting it is how you use it.
+fields in seconds. Any existing implementation can be used this way: delete the part you want to
+generate, regenerate it, and let the code around it report what no longer fits.
 
 ## Coverage
 
@@ -124,19 +124,19 @@ a single site the user fills in expands into five paths, and nearly half of all 
 corpus are children of one. A repeated field is printed twice, as `foo` and `foo[]`. Both are
 artefacts of the output rather than facts about the API, which is why the raw count is too big.
 
-Collapsing a missing subtree to one entry goes too far the other way. It is the right unit for a
-work list, because one entry is one thing somebody fixes, but it hides how much sits behind each
-one. A defect stands for 3.4 paths on average, and the spread is wide: `APIHubAPI`'s spec is 87
-paths in 11 defects. Somebody who is told "11 defects" has no way to know how much of upstream's API
-that covers.
+A count that collapses a missing subtree to one entry goes too far the other way. It is the right
+unit for a work list, because one entry is one thing somebody fixes, which is what the tables call a
+defect, but it hides how much sits behind each one. A defect stands for 3.4 paths on average, and
+the spread is wide: `APIHubAPI`'s spec is 87 paths in 11 defects. Somebody who is told "11 defects"
+has no way to know how much of upstream's API that covers.
 
 So the headline counts a missing subtree in full, because a reviewer is blind to all of it, and a
 missing reference once, because it is one decision and one fix.
 
 ### The work list
 
-This is the same divergence, counted as defects rather than fields. A list of 793 things to fix is
-actionable in a way that 1,152 fields is not.
+This is the same divergence, counted as defects rather than fields: 793 things to fix rather than
+1,152 fields.
 
 | state | defects | share |
 |---|---|---|
@@ -158,13 +158,13 @@ fields the types file already carries.
 ### What the silent fields are
 
 "Silent" means the field differs from upstream and nothing in our output says so. It does not mean
-the field is missing, and for the most part it is not. Reading each one back to the proto field
+the field is missing, and for the most part it is not. We read each one back to the proto field
 behind it:
 
 | why it is silent | fields | in our CRD | |
 |---|---|---|---|
 | `not-in-our-proto` | 177 | no | the baseline names a proto field our pinned descriptor does not declare |
-| `reference-shape` | 109 | no | upstream has a reference and we have no field at that stem |
+| `reference-shape` | 109 | no | upstream has a reference and we have no field at the same path |
 | `renamed` | 77 | yes | same field, different name |
 | `map-shape` | 67 | yes | a proto map; upstream renders it as a list or as named keys |
 | `intentionally-different` | 60 | no | `protobuf.Value` arms, mapped whole to JSON |
@@ -196,27 +196,40 @@ an acronym cased the other way.
 
 ## Flagging what needs judgement
 
+Some decisions cannot be derived from a proto. Whether a plural noun in a resource pattern names a
+real KCC Kind, whether a field the proto never annotated is server-set, whether a string is a
+reference: each of those needs a person. The generator's job on them is not to guess better, but to
+make sure the guess is visible to whoever reviews it.
+
 Anything the generator cannot justify from the proto gets a `+kcc:guess` marker in the types file
-and an entry in that service's judgement queue. There are 299 markers today, and a checker enforces
-that none of them lacks an entry.
+and an entry in that service's judgement queue. Both are needed, because the queue is a work list
+somebody clears and the types file is what a reader opens. There are 299 markers today, and a
+checker enforces that none of them lacks an entry.
+
+A field the generator cannot vouch for is still emitted, with the open question recorded separately.
+Omitting it instead would hide it from every other check in the system, because a field absent from
+the CRD cannot be reported as missing from it.
+
+| marker | what the generator could not justify | count |
+|---|---|---|
+| `parent-location` | a location segment read off the resource pattern: is the resource regional, and is this the name for it? | 193 |
+| `placement` | a field put in ObservedState by name, because the proto carries no `field_behavior` anywhere on the message | 41 |
+| `parent-segment` | a name segment emitted as a plain string; upstream may want a reference | 26 |
+| `possible-reference` | a field whose name matches a resource this service declares | 26 |
+| `parent-ref` | a typed reference whose target was assumed from a collection segment | 13 |
 
 That covers what the generator knows it guessed. Measured against upstream instead, and counted as
 defects rather than fields, 793 diverge in some way and 372 carry an entry. The rate splits sharply
-by population:
-
-| | total | flagged | |
-|---|---|---|---|
-| discrepancy, we produce it in the wrong shape or place | 456 | 325 | 71% |
-| missing, we produce nothing | 337 | 47 | 14% |
-
-A field we emit in the wrong shape is usually one the generator knew it was unsure about; a field we
-emit nowhere is usually one no rule looked for. A single rate quoted for both describes neither.
+by population: of the 456 we produce in the wrong shape or place, 325 are flagged, 71%, and of the
+337 we produce nothing for, 47 are, 14%. A field we emit in the wrong shape is usually one the
+generator knew it was unsure about, and a field we emit nowhere is usually one no rule looked for. A
+single rate quoted for both describes neither.
 
 The 421 nobody is told about are not one problem. Five classes carry 321 of them:
 
 | class | unflagged | of | |
 |---|---|---|---|
-| `reference-shape` | 92 | 102 | upstream has a reference object and we have no field at that stem |
+| `reference-shape` | 92 | 102 | upstream has a reference object and we have no field at the same path |
 | `not-in-our-proto` | 73 | 131 | the baseline names fields our pinned descriptor lacks |
 | `intentionally-different` | 60 | 60 | `protobuf.Value` arms, mapped whole to JSON on purpose |
 | `renamed` | 53 | 53 | casing only, a fix rather than a judgement call |
@@ -235,8 +248,36 @@ as unflagged, which overstates the gap rather than flattering it.
 The invariant broke three times during this work and the checker caught all three, in places code
 review would not have looked: a marker written on every generator invocation while the queue entry
 was written on only some; a merge that silently dropped every comment line of the existing queue
-file; and markers emitted into commented-out blocks describing code the generator did not produce. A
-rule nothing checks is a rule that regresses.
+file; and markers emitted into commented-out blocks describing code the generator did not produce.
+
+### Even a typed reference is queued
+
+An earlier version suppressed the queue entry whenever the generator emitted something concrete, on
+the reasoning that a typed reference needs no review. That traded detection for an unflagged guess:
+`BigtableCluster` got `Instance *string` where upstream has `spec.instanceRef`, and nothing said so.
+The compiler was proving 32 fields missing while the queue named 2.
+
+A target inferred from a plural noun is a guess however concrete the output looks, so anything
+marked as a guess belongs in the queue, typed references included.
+
+### When a finding belongs to no Kind
+
+A nested message is shared by every resource that references it, so a finding against one cannot be
+attributed to a single Kind. Every non-comment line in the queue suppresses `[refs]` findings for
+the Kind it names, so inventing an owner would quietly switch off a real check. Those findings are
+written as comments instead, and the tooling reads them back:
+
+```
+# possible-reference-by-sibling: google.cloud.compute.v1.NetworkInterface.subnetwork target=ComputeSubnetwork
+# dropped: …TranslationTaskDetails.specialTokenMap reason=unsupported map type with key string and value enum
+```
+
+### The queue is also the gate
+
+While a resource has entries, its `[refs]` findings are suppressed, so a half-generated resource
+does not trip a ratchet that can only shrink. A resource leaves the queue when its entries are
+cleared, and the ratchet applies to it again. That also makes the queue the throughput limit on the
+whole idea, which is a question for the team rather than an implementation detail.
 
 ## Detection over prescription
 
@@ -244,9 +285,9 @@ Early on the instinct was to fix each coverage gap directly: see a missing field
 produces it. That does not scale and it does not transfer, because you cannot enumerate the ways a
 thousand APIs differ, and a rule learned from one service usually misfires on another.
 
-The rule we settled on is detection over prescription. It is more valuable to reliably notice that a
-field needs a human than to guess what the human would say. A flagged field is a fine outcome; a
-field nobody was told about is not.
+The rule we settled on is detection over prescription: notice reliably that a field needs a person,
+rather than guess what that person would decide. What we cannot accept is a field nobody was told
+about.
 
 It also gives a test for whether a new rule is worth having. Does it derive its answer from
 something the API supplies, or does it remember something a person once noticed?
@@ -267,65 +308,12 @@ The sibling rule reads the service's own resource list. If a service declares a 
 vocabulary, and it gets stronger as more resources are generated, because that list is what it
 reads. Measured against what upstream did, it runs at 77% precision, and nobody maintains it.
 
-One unknown spelling cost a whole service. The output-only detector tested whether a proto comment
-opened with `Output only.` Compute writes `[Output Only]` instead, and that one unrecognised
-spelling covers 1,605 fields in `compute.proto` alone. Every one of `ComputeInterconnect`'s
-misplaced status fields, `googleIPAddress` and `circuitInfos` and `expectedOutages`, turned out to be
-nothing more exotic than that. Two strings in a list buy a signal that reaches new services.
-
-## How non-deterministic behaviour is flagged
-
-Some decisions cannot be derived from a proto. Whether a plural noun in a resource pattern names a
-real KCC Kind, whether a field the proto never annotated is server-set, whether a string is a
-reference: each of those needs a person. The generator's job on them is not to guess better, but to
-make sure the guess is visible to whoever reviews it.
-
-A field the generator cannot vouch for is still emitted, with the open question recorded separately.
-Omitting it instead would hide it from every other check in the system, because a field absent from
-the CRD cannot be reported as missing from it. A wrong field is a bug someone finds; a missing field
-is a bug nobody finds.
-
-### A marker and a queue entry, for every guess
-
-Both halves matter. The queue is a work list somebody clears; the types file is what a reader
-opens.
-
-| marker | what the generator could not justify | count |
-|---|---|---|
-| `parent-location` | a location segment read off the resource pattern: is the resource regional, and is this the name for it? | 193 |
-| `placement` | a field put in ObservedState by name, because the proto carries no `field_behavior` anywhere on the message | 41 |
-| `parent-segment` | a name segment emitted as a plain string; upstream may want a reference | 26 |
-| `possible-reference` | a field whose name matches a resource this service declares | 26 |
-| `parent-ref` | a typed reference whose target was assumed from a collection segment | 13 |
-
-### Even a typed reference is queued
-
-An earlier version suppressed the queue entry whenever the generator emitted something concrete, on
-the reasoning that a typed reference needs no review. That traded detection for an unflagged guess:
-`BigtableCluster` got `Instance *string` where upstream has `spec.instanceRef`, and nothing said so.
-The compiler was proving 32 fields missing while the queue named 2.
-
-"Very sure" is not a state a generator can be in about a target it inferred from a plural noun.
-Anything marked as a guess belongs in the queue, typed references included.
-
-### When a finding belongs to no Kind
-
-A nested message is shared by every resource that references it, so a finding against one cannot be
-attributed to a single Kind. Every non-comment line in the queue suppresses `[refs]` findings for the
-Kind it names, so inventing an owner would quietly switch off a real check. Those findings are
-written as comments instead, and the tooling reads them back:
-
-```
-# possible-reference-by-sibling: google.cloud.compute.v1.NetworkInterface.subnetwork target=ComputeSubnetwork
-# dropped: …TranslationTaskDetails.specialTokenMap reason=unsupported map type with key string and value enum
-```
-
-### The queue is also the gate
-
-While a resource has entries, its `[refs]` findings are suppressed, so a half-generated resource
-does not trip a ratchet that can only shrink. A resource graduates when its queue is empty. That
-also makes the queue the throughput limit on the whole idea, which is a question for the team rather
-than an implementation detail.
+The output-only detector tested whether a proto comment opened with `Output only.` Compute writes
+`[Output Only]` instead, and that one unrecognised spelling covers 1,605 fields in `compute.proto`
+alone. Every one of `ComputeInterconnect`'s misplaced status fields, `googleIPAddress` and
+`circuitInfos` and `expectedOutages`, turned out to be nothing more exotic than that. Adding the
+second spelling was a two-string change, and it applies to every service rather than to compute
+alone.
 
 ---
 
