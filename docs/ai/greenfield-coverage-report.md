@@ -7,7 +7,10 @@ kcc-lab sandbox repository, each behind a flag that is off by default.*
 ## The question
 
 KCC covers 457 GCP resources, against 549 it does not that expose a create or delete RPC. That is
-45.4% of the 1,006 between them, and reaching 80% means about 348 more.
+45.4% of the 1,006 between them, and reaching 80% means about 348 more. Those three come from
+[`hack/tools/greenfield/gap_analysis.txt`](../../hack/tools/greenfield/gap_analysis.txt), which
+[`calculate_coverage.py`](../../hack/tools/greenfield/calculate_coverage.py) writes; the footer
+says what the script counts and when it last ran.
 
 Those resources are not written from scratch any more. Agents draft them and people review, and
 the review is what the effort is made of: someone decides, field by field, whether a string should
@@ -122,10 +125,10 @@ corpus is a child of one. A repeated field is printed twice, as `foo` and `foo[]
 artefacts of the output rather than facts about the API, which is why the raw count is too big.
 
 Collapsing a missing subtree to one entry goes too far the other way. It is the right unit for a
-work list, since we do not generate `ComputeFutureReservation`'s `shareSettings.projectMap` at all
-and fixing that one thing resolves twelve paths, but the collapse ratio runs from 1x on a flat
-resource to 32x on `NetworkSecurityAuthzPolicy`, where 321 missing paths reduce to ten lines.
-Somebody told "ten defects" has no way to know how much of upstream's API sits behind them.
+work list, because one entry is one thing somebody fixes, but it hides how much sits behind each
+one. A defect stands for 3.4 paths on average, and the spread is wide: `APIHubAPI`'s spec is 87
+paths in 11 defects. Somebody told "11 defects" has no way to know how much of upstream's API that
+covers.
 
 So the headline counts a missing subtree in full, because a reviewer really is blind to all of it,
 and a missing reference once, because it is one decision and one fix.
@@ -329,11 +332,13 @@ implementation detail.
 Read 91.5% as a ceiling, not a forecast. The corpus is upstream's choices, not a random sample. These
 275 are resources the team judged worth implementing, and the unimplemented ones may be
 systematically harder: less documented, odder shapes, or unimplemented precisely because someone
-looked and found a problem. Adding 44 resources that had been missing from the corpus moved the
-headline by nearly three points, which is direct evidence for that caution.
+looked and found a problem. There is direct evidence for that caution: the corpus was once 231
+resources, and the 44 added to it score near 64% where the original 231 scored 94%, scored the same
+way. Almost all of the difference is fields we generate nowhere rather than fields we generate in
+the wrong shape.
 
-22 packages do not compile, and that is by design, for the reason given under the method above. About
-16 of them are a measurement floor we chose not to chase.
+22 packages do not compile, and that is by design, for the reason given under the method above.
+About 16 of them are a measurement floor we chose not to chase.
 
 First-pass output is not production quality. References are generated as plain strings and flagged
 rather than resolved into typed refs, and there are no test fixtures or MockGCP coverage for
@@ -354,6 +359,13 @@ counts a resource as manageable when its service declares a create or a delete R
 denominator is the resources KCC covers plus the manageable ones it does not, so a covered resource
 counts whether or not a create RPC was detected for it. That snapshot is older than the baseline
 the rest of this report measures against.*
+
+*Four figures come from outside that run, because it does not record them: the 299 markers and the
+22 packages that do not compile are from `greenfield-experiment-report.md`, the sibling rule's 77%
+from `greenfield-step1-workflow.md`, and the 2,164 findings against 78 from
+`greenfield-generator-findings.md`, all on branch `greenfield-corpus-rebuild`. The marker count is
+the one to treat with care: `greenfield-state-of-play.md` says 295, and nothing checks it the way
+`check_doc_figures.py` checks the headline totals.*
 
 *One line in that run file is wrong and this report does not follow it. It says "only the
 not-generated rows are fields we produce nowhere", which its own class table contradicts by listing
