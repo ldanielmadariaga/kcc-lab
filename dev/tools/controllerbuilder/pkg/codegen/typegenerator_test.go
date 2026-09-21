@@ -869,10 +869,11 @@ type PSCConfig struct {
 
 func TestAcronymCasing(t *testing.T) {
 	tests := []struct {
-		token   string
-		plurals bool
-		want    string
-		wantOK  bool
+		token     string
+		plurals   bool
+		mixedCase bool
+		want      string
+		wantOK    bool
 	}{
 		// Singular has always worked, with or without the option.
 		{token: "url", plurals: false, want: "URL", wantOK: true},
@@ -894,16 +895,81 @@ func TestAcronymCasing(t *testing.T) {
 		{token: "s", plurals: true, wantOK: false},
 		{token: "values", plurals: true, wantOK: false},
 		{token: "description", plurals: true, wantOK: false},
+
+		// The two entries the list spells in mixed case. Without the option they
+		// come back capitalised, which is where bootDiskMIB and backupdr's
+		// OAUTH2ClientID keys come from.
+		{token: "mib", mixedCase: false, want: "MIB", wantOK: true},
+		{token: "mib", mixedCase: true, want: "MiB", wantOK: true},
+		{token: "oauth2", mixedCase: false, want: "OAUTH2", wantOK: true},
+		{token: "oauth2", mixedCase: true, want: "OAuth2", wantOK: true},
+
+		// An all-caps entry reads the same from the list as from ToUpper, so the
+		// option must leave every other acronym alone.
+		{token: "api", mixedCase: true, want: "API", wantOK: true},
+		{token: "url", mixedCase: true, want: "URL", wantOK: true},
+		{token: "x509", mixedCase: true, want: "X509", wantOK: true},
+
+		// The two options are independent, and compose on the plural path.
+		{token: "uris", plurals: true, mixedCase: true, want: "URIs", wantOK: true},
+		{token: "mibs", plurals: true, mixedCase: true, want: "MiBs", wantOK: true},
+		{token: "mibs", plurals: true, mixedCase: false, want: "MIBs", wantOK: true},
+		{token: "mibs", plurals: false, mixedCase: true, wantOK: false},
 	}
 	for _, tt := range tests {
-		got, ok := AcronymCasing(tt.token, tt.plurals)
+		// Arrange.
+		opts := WriteOptions{EmitPluralAcronyms: tt.plurals, EmitMixedCaseAcronyms: tt.mixedCase}
+
+		// Act.
+		got, ok := AcronymCasing(tt.token, opts)
+
+		// Assert.
 		if ok != tt.wantOK {
-			t.Errorf("AcronymCasing(%q, %v) ok = %v, want %v", tt.token, tt.plurals, ok, tt.wantOK)
+			t.Errorf("AcronymCasing(%q, plurals=%v mixedCase=%v) ok = %v, want %v",
+				tt.token, tt.plurals, tt.mixedCase, ok, tt.wantOK)
 			continue
 		}
 		if ok && got != tt.want {
-			t.Errorf("AcronymCasing(%q, %v) = %q, want %q", tt.token, tt.plurals, got, tt.want)
+			t.Errorf("AcronymCasing(%q, plurals=%v mixedCase=%v) = %q, want %q",
+				tt.token, tt.plurals, tt.mixedCase, got, tt.want)
 		}
+	}
+}
+
+// TestGetJSONForKRMMixedCaseAcronym pins the CRD key EmitMixedCaseAcronyms
+// produces, which is what a user writes in a manifest. apis/batch serves
+// bootDiskMIB today, and every CRD naming the unit writes MiB.
+func TestGetJSONForKRMMixedCaseAcronym(t *testing.T) {
+	// Arrange.
+	fdp := &descriptorpb.FileDescriptorProto{
+		Name:    protoPtr("acronyms.proto"),
+		Package: protoPtr("google.cloud.test.v1"),
+		MessageType: []*descriptorpb.DescriptorProto{{
+			Name: protoPtr("TestMessage"),
+			Field: []*descriptorpb.FieldDescriptorProto{{
+				Name:   protoPtr("boot_disk_mib"),
+				Number: protoPtr(int32(1)),
+				Type:   typeDescriptor(descriptorpb.FieldDescriptorProto_TYPE_INT64),
+				Label:  labelDescriptor(descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL),
+			}},
+		}},
+	}
+	fd, err := protodesc.NewFile(fdp, nil)
+	if err != nil {
+		t.Fatalf("failed to create file descriptor: %v", err)
+	}
+	field := fd.Messages().ByName("TestMessage").Fields().ByName("boot_disk_mib")
+
+	// Act.
+	off := GetJSONForKRM(field, WriteOptions{})
+	on := GetJSONForKRM(field, WriteOptions{EmitMixedCaseAcronyms: true})
+
+	// Assert.
+	if off != "bootDiskMIB" {
+		t.Errorf("with the option off, GetJSONForKRM = %q, want %q", off, "bootDiskMIB")
+	}
+	if on != "bootDiskMiB" {
+		t.Errorf("with the option on, GetJSONForKRM = %q, want %q", on, "bootDiskMiB")
 	}
 }
 

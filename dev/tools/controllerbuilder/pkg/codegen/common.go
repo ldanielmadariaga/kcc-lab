@@ -125,12 +125,22 @@ var Acronyms = []string{
 
 // IsAcronym returns true if the given string is an acronym
 func IsAcronym(s string) bool {
+	_, ok := acronymEntry(s)
+	return ok
+}
+
+// acronymEntry returns the Acronyms entry that matches s ignoring case, and
+// whether there was one.
+//
+// The entry carries the casing the list intends, which most of them spell in
+// capitals but MiB and OAuth2 do not.
+func acronymEntry(s string) (string, bool) {
 	for _, acronym := range Acronyms {
 		if strings.EqualFold(s, acronym) {
-			return true
+			return acronym, true
 		}
 	}
-	return false
+	return "", false
 }
 
 // AcronymCasing returns the correctly-cased form of a name token, and whether
@@ -146,18 +156,35 @@ func IsAcronym(s string) bool {
 // Off by default because switching it on renames 83 fields across 23 packages,
 // 34 of them in v1beta1, and renaming a served field is a worse break than
 // moving one.
-func AcronymCasing(token string, plurals bool) (string, bool) {
-	if IsAcronym(token) {
+//
+// EmitMixedCaseAcronyms returns the list entry's own casing rather than
+// capitalising the token. The two are the same for every all-caps entry and
+// differ only for MiB and OAuth2, which the list spells that way on purpose:
+// the comment above Acronyms asks an abbreviation to take "its most known form
+// with upper letters reflecting how it is pronounced". Also opt-in, because
+// bootDiskMIB and three backupdr OAUTH2ClientID keys are served today.
+//
+// GoNameForProtoMessage cases type names with its own copy of this rule and is
+// unchanged. Its callers do not carry WriteOptions, and a renamed Go type
+// breaks hand-written code rather than a manifest, so it wants its own change.
+func AcronymCasing(token string, opts WriteOptions) (string, bool) {
+	if entry, ok := acronymEntry(token); ok {
+		if opts.EmitMixedCaseAcronyms {
+			return entry, true
+		}
 		return strings.ToUpper(token), true
 	}
-	if !plurals || len(token) < 2 {
+	if !opts.EmitPluralAcronyms || len(token) < 2 {
 		return "", false
 	}
 	if last := token[len(token)-1]; last != 's' && last != 'S' {
 		return "", false
 	}
-	if stem := token[:len(token)-1]; IsAcronym(stem) {
-		return strings.ToUpper(stem) + "s", true
+	if entry, ok := acronymEntry(token[:len(token)-1]); ok {
+		if opts.EmitMixedCaseAcronyms {
+			return entry + "s", true
+		}
+		return strings.ToUpper(entry) + "s", true
 	}
 	return "", false
 }

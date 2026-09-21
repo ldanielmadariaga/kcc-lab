@@ -99,6 +99,10 @@ type WriteOptions struct {
 	// related_uris becomes RelatedURIs rather than RelatedUris. See AcronymCasing
 	// for why this is opt-in.
 	EmitPluralAcronyms bool
+	// EmitMixedCaseAcronyms spells an acronym the way the Acronyms list spells
+	// it, so boot_disk_mib becomes bootDiskMiB rather than bootDiskMIB. See
+	// AcronymCasing for the two entries this affects and why it is opt-in.
+	EmitMixedCaseAcronyms bool
 	// EmitMessageMaps generates map<string, Message> fields as a map of the
 	// value's Go type. Without it they are left out, with a "// TODO:" marker
 	// in their place.
@@ -934,7 +938,7 @@ func GetJSONForKRM(protoField protoreflect.FieldDescriptor, opts WriteOptions) s
 			// Do not capitalize first token
 			continue
 		}
-		if cased, ok := AcronymCasing(token, opts.EmitPluralAcronyms); ok {
+		if cased, ok := AcronymCasing(token, opts); ok {
 			token = cased
 		} else {
 			token = strings.Title(token)
@@ -953,7 +957,7 @@ func goFieldName(protoField protoreflect.FieldDescriptor) string {
 func goFieldNameOpts(protoField protoreflect.FieldDescriptor, opts WriteOptions) string {
 	tokens := strings.Split(string(protoField.Name()), "_")
 	for i, token := range tokens {
-		if cased, ok := AcronymCasing(token, opts.EmitPluralAcronyms); ok {
+		if cased, ok := AcronymCasing(token, opts); ok {
 			token = cased
 		} else {
 			token = strings.Title(token)
